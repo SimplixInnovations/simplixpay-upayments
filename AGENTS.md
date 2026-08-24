@@ -7,10 +7,11 @@ These instructions apply to the entire repository. A nested `AGENTS.md` may tigh
 Before substantive work, read in this order:
 
 1. `docs/project/PROJECT-STATUS.md`
-2. `docs/project/NAMING-IDENTITY-STANDARD.md`
-3. `docs/project/NEW-CHAT-HANDOFF.md`
-4. relevant sections of `docs/project/MASTER-ENGINEERING-PLAYBOOK.md`
-5. `docs/project/BASELINE-H12.md` when token/saved-card/subscription identity is relevant
+2. `docs/project/REPOSITORY-READINESS.md` when the pre-Phase-0 readiness gate is not closed
+3. `docs/project/NAMING-IDENTITY-STANDARD.md`
+4. `docs/project/NEW-CHAT-HANDOFF.md`
+5. relevant sections of `docs/project/MASTER-ENGINEERING-PLAYBOOK.md`
+6. `docs/project/BASELINE-H12.md` when token/saved-card/subscription identity is relevant
 
 ## Canonical identity
 
@@ -22,6 +23,8 @@ Before substantive work, read in this order:
 - New PHP namespace root: `Simplix\Pay\UPayments`
 - New global prefix: `simplixpay_upayments_`
 - New constants: `SIMPLIXPAY_UPAYMENTS_*`
+
+`SimplixPay` alone is reserved for the future broader/multi-provider payment product. Do not use it as the short name for this provider-specific plugin when ambiguity matters.
 
 Do not invent alternate product names, slugs, prefixes or namespace schemes.
 
@@ -37,6 +40,12 @@ Never assume a documented SHA/status is current. Before implementation or review
 - use current official provider/platform documentation when behavior depends on it.
 
 Live evidence beats stale project text. Do not rewrite historical facts merely to make a status document look current.
+
+## Phase gate rule
+
+If `PROJECT-STATUS.md` says **pre-Phase-0 repository readiness** is open, finish `REPOSITORY-READINESS.md` before changing plugin/runtime identity, updater behavior, main plugin file, text domain or protected payment identifiers.
+
+Do not start a later phase because code has been drafted. Phase progression requires independent verification and an explicit current-state update.
 
 ## Protected compatibility identities
 
@@ -56,7 +65,7 @@ Protected by default:
 - existing billing-attempt tables/state;
 - historical order payment-method identity.
 
-Changing one requires an explicitly approved migration contract, fallback/rollback semantics and tests.
+Changing one requires an explicitly approved migration contract, old/new precedence, fallback/rollback semantics and tests.
 
 ## Payment/security engineering
 
@@ -69,6 +78,13 @@ Changing one requires an explicitly approved migration contract, fallback/rollba
 - Preserve H12 token/provenance contracts unless a later approved phase explicitly supersedes them.
 - Never expose API secrets, bearer tokens, card data, customer/card tokens, H12 identity secrets/provenance, unnecessary PII or production database exports.
 
+## Public claims
+
+- A green H12 workflow is a regression baseline, not broad production certification.
+- Do not add WooCommerce/WordPress/PHP/HPOS/Blocks/WPML/performance compatibility badges until the corresponding matrix is independently verified.
+- External credentials such as the Simplix Innovations Woo Agency Partner listing may be shown only while the official source remains verifiable.
+- Do not imply WooCommerce or UPayments endorses this plugin.
+
 ## Change discipline
 
 - Work on a dedicated branch from a freshly verified base.
@@ -80,7 +96,7 @@ Changing one requires an explicitly approved migration contract, fallback/rollba
 
 ## Review and merge
 
-Agent reports are evidence requests, not proof. Independently verify source, diff, tests and checks. Pin approval to exact base/head SHAs.
+Agent/bot reports are evidence requests, not proof. Independently verify source, diff, tests and checks. Pin approval to exact base/head SHAs.
 
 If verification fails:
 
