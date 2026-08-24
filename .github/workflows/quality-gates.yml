@@ -19,9 +19,10 @@ jobs:
     name: Governance
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           fetch-depth: 0
+          persist-credentials: false
       - name: Required control files
         shell: bash
         run: |
@@ -39,14 +40,18 @@ jobs:
     name: H12 Regression Harness
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
       - uses: shivammathur/setup-php@v2
         with:
           php-version: '8.2'
           coverage: none
-      - uses: actions/setup-node@v4
+          tools: none
+      - uses: actions/setup-node@v6
         with:
-          node-version: '20'
+          node-version: '24'
+          package-manager-cache: false
       - name: PHP syntax
         shell: bash
         run: |
