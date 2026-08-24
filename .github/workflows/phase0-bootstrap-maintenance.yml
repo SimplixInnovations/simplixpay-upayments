@@ -1,0 +1,31 @@
+name: Phase 0 Bootstrap Maintenance
+
+on:
+  push:
+    branches:
+      - phase-0/release-identity-updater
+
+permissions:
+  contents: write
+
+jobs:
+  patch-bootstrap:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: phase-0/release-identity-updater
+          fetch-depth: 0
+          persist-credentials: true
+
+      - name: Configure commit identity
+        shell: bash
+        run: |
+          git config user.name 'Simplix Innovations'
+          git config user.email '136711735+SimplixInnovationsAdmin@users.noreply.github.com'
+
+      - name: Apply exact guarded bootstrap patch
+        shell: pwsh
+        run: ./tools/phase0-apply-bootstrap-patch.ps1
