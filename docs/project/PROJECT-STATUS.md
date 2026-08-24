@@ -10,7 +10,7 @@
 
 **Provider upstream:** `upaymentskwt/woocommerce`
 
-> Live GitHub/source evidence always wins over recorded SHAs. Recorded SHAs below are verified milestones, not substitutes for a fresh remote check.
+> Live GitHub/source evidence always wins over recorded SHAs. Recorded SHAs are verified milestones/evidence anchors, not substitutes for a fresh remote check.
 
 ## Current program state
 
@@ -19,145 +19,80 @@
 | Product | **SimplixPay for UPayments** |
 | Canonical slug | `simplixpay-upayments` |
 | Product family reserved for broader future use | **SimplixPay** |
+| Current development version | **0.1.0** |
 | Production maturity | **Pre-release engineering hardening** |
 | Stable SimplixPay release | **NO** |
 | WordPress.org release | **NO** |
 | H12 token-identity hardening | **DONE / VERIFIED** |
-| Repository governance | **DONE / VERIFIED** |
-| Pre-Phase-0 repository readiness | **READY / VERIFIED** |
-| Next permitted runtime-changing phase | **Phase 0 — SimplixPay release identity and updater ownership** |
+| Repository foundation/readiness | **DONE / VERIFIED** |
+| Phase 0 — release identity/updater ownership | **DONE / VERIFIED** |
+| Current implementation gate | **Phase 9I — Historical token-identity migration** |
 
-**PRE-PHASE-0 READY / VERIFIED.** Repository foundation/readiness is closed. This does **not** mean the plugin is production-certified or release-ready; it means the repository, governance, provenance, baseline CI, security controls, branch policy, public presentation and local-history state are ready for controlled Phase 0 engineering.
+**PHASE 0 IS CLOSED.** The plugin now has Simplix-owned public release identity/versioning and no inherited upstream update authority. This does **not** mean the plugin is broadly production-certified or release-ready.
 
-## Readiness evidence base
+## Latest verified implementation milestone
 
-The readiness gate was closed from independently reviewed evidence gathered on 2026-08-25.
+Phase 0 implementation PR #9 was squash-merged as:
 
-### Canonical repository
-
-- standalone public repository (`fork: false`);
-- default branch: `main`;
-- remote real branch inventory before the closing PR: **`main` only**;
-- open PRs before the closing PR: **0**;
-- no inherited Git tags;
-- no GitHub Releases;
-- MIT recognized by GitHub;
-- Projects/Wiki/Discussions off;
-- homepage: `https://simplixi.com`;
-- description: `SimplixPay for UPayments — independently engineered WooCommerce payment integration by Simplix Innovations.`;
-- squash merge enabled; merge commits and rebase disabled;
-- automatic source-branch deletion enabled and independently proven.
-
-Readiness evidence-base commit before this closing change:
-
-- `main`: `7e530c2c6881c04a3170e110b23289d90185da14`
-- tree: `64973fa4918061bdf8489319712ef2c79813a45b`
+- `main` milestone: `678f3bdae32b7a0d5922c6ebb7fa7535ede256dd`
+- tree: `80618e737476a92357bd463f6e1495c364157e83`
 - GitHub signature: **VERIFIED**
+- author: `SimplixInnovationsAdmin`
 
-### Main ruleset
+Immediately after merge:
 
-Active repository ruleset `21327778` applies to the default branch and was verified to enforce:
+- real remote branches: `main` only;
+- open PRs: 0;
+- Phase 0 feature branch auto-deleted;
+- inherited Plugin Update Checker path absent;
+- active plugin header identifies **SimplixPay for UPayments 0.1.0** by Simplix Innovations;
+- uninstall is non-destructive by default.
 
-- branch deletion restriction;
-- non-fast-forward / force-push restriction;
-- required linear history;
-- pull request required before merge;
-- review-thread resolution required;
-- squash as the only allowed merge method;
-- required status checks with strict/up-to-date policy:
-  - **Governance** — GitHub Actions integration `15368`;
-  - **H12 Regression Harness** — GitHub Actions integration `15368`.
+Treat this SHA as Phase 0 evidence. A new session must always check the actual live `main` again.
 
-The ruleset has no bypass actors and reports `current_user_can_bypass: never` at the readiness review.
+## Phase 0 release identity — verified state
 
-### Security controls
+Public header:
 
-Verified enabled:
+- Plugin Name: **SimplixPay for UPayments**
+- Plugin URI: `https://github.com/SimplixInnovations/simplixpay-upayments`
+- Description: `Independently engineered UPayments payment integration for WooCommerce by Simplix Innovations.`
+- Version: `0.1.0`
+- Author: **Simplix Innovations**
+- Author URI: `https://simplixi.com`
+- License: MIT
+- Text Domain: `upayments` — transitional by design
+- Domain Path: `/languages`
 
-- private vulnerability reporting;
-- Dependabot security updates;
-- secret scanning;
-- secret-scanning push protection;
-- vulnerability alerts/dependency graph enable command completed successfully.
+Canonical code-side release identity is `Simplix\Pay\UPayments\Release\Identity`.
 
-`secret_scanning_non_provider_patterns` and `secret_scanning_validity_checks` remained unavailable/disabled after an accepted repository PATCH. They are optional enhancements, not a pre-Phase-0 blocker.
+External self-update channel is intentionally **disabled** until a separately tested physical package/basename migration establishes a safe Simplix distribution identity.
 
-### Contributor/account presentation
+The inherited bundled Plugin Update Checker and `upaymentskwt/woocommerce` update authority are gone.
 
-GitHub's repository contributors API returned only:
+See `PHASE-0-RELEASE-IDENTITY.md` for the exact contract and evidence.
 
-- `SimplixInnovationsAdmin` — 5 contributions at verification time.
+## Transitional install/i18n identities
 
-The sole-contributor repository presentation objective is therefore satisfied. The parentless root retains `Simplix Innovations <info@simplixi.com>` as its historical author string. Because the GitHub CLI user-email scope was not granted during readiness review, account-level verification of `info@simplixi.com` was not independently read through the API. **Before any future manual IDE-authored commit using `info@simplixi.com`, verify that address in GitHub Settings so future local commits map to `SimplixInnovationsAdmin`.** This is account hygiene, not a blocker to repository readiness.
+Phase 0 deliberately did **not** physically rename the active main file or mechanically change the runtime text domain.
 
-### Local IDE clone
+Current transitional identities:
 
-Externally verified local state before the closing PR:
+- main file: `UPayments.php`;
+- runtime/header text domain: `upayments`.
 
-- working tree clean;
-- `HEAD...origin/main` divergence: `0 0`;
-- remote tracking shows `origin/main`; `origin/HEAD -> origin/main` is only the normal symbolic default-branch pointer;
-- local commit identity configured as `Simplix Innovations <info@simplixi.com>`.
+Frozen eventual targets:
 
-After this closing PR merges, any local clone must simply `git pull --ff-only origin main` before new work.
+- main file: `simplixpay-upayments.php`;
+- text domain: `simplixpay-upayments`.
 
-### About/topics
+Those transitions are explicit upgrade/i18n migrations requiring their own install/rollback/duplicate-plugin/WPML characterization. They are not incomplete branding work to perform by search/replace.
 
-Live topics were reduced to neutral discovery/scope terms without unearned certification claims:
+## Frozen H12 compatibility/runtime contracts
 
-`checkout-blocks`, `ecommerce`, `hpos`, `payment-gateway`, `payments`, `php`, `simplixpay`, `upayments`, `woocommerce`, `woocommerce-payment-gateway`, `wordpress`, `wpml`.
+Do not rename merely for branding:
 
-`hpos-compatible` and `wpml-ready` are intentionally absent until evidence supports those claims.
-
-## Frozen H12 production baseline
-
-Repository-readiness work did not alter payment/runtime source. Frozen anchors remain:
-
-- `UPayments.php` — `64c789e81ae4d292ef9b1d7382812c319a44bc25`
-- `includes/Token/CustomerTokenIdentity.php` — `85430d37e9baf540842f5655b86ccf0eca3e6aea`
-- `includes/class-wc-gateway-upayments-blocks.php` — `813d192d69c069eb7ee11df93acc9dbdf03e270a`
-- `includes/Subscription/Cron/Scheduler.php` — `5251866d4df2d1326e7c09f0c8ec1d146c0bb325`
-- `includes/Subscription/Cron/CycleClaim.php` — `c34d83e2d77cc65024fe663e4c378cecb2b17347`
-- archived H12 engineering changelog — `8c42bc6fdae163dd4159b8036b05cd2f70cc3d5d`
-
-Last exact reviewed readiness CI before gate closure:
-
-- Governance: **SUCCESS**
-- all tracked PHP syntax: **SUCCESS**
-- H12 PHP: **1927 PASS / 0 FAIL**
-  - semantic runtime 368
-  - helper unit runtime 841
-  - static source 46
-  - harness self-test 662
-  - lint tooling 10
-- Blocks syntax: **SUCCESS**
-- H12 Blocks: **144 PASS / 0 FAIL**
-  - runtime 88
-  - static 15
-  - harness 41
-
-This custom H12 harness is a regression baseline, not broad WordPress/WooCommerce/PHP/HPOS/Blocks/WPML/browser/security/performance certification.
-
-## Whole-repository audit status
-
-`REPOSITORY-AUDIT.md` classifies the complete tracked tree. Known inherited/runtime debts remain deliberately deferred until characterization and the correct engineering phase, including:
-
-- large inherited `UPayments.php` bootstrap;
-- H12-critical token/subscription classes;
-- empty inherited files and duplicate provider assets;
-- legacy screenshots and multiple JS paths;
-- bundled Plugin Update Checker;
-- inherited `uninstall.php` data-deletion behavior;
-- absence of the future `src/` + Composer/PSR-4 package structure;
-- absence of the future broad PHPUnit/WP/Woo/browser/static-analysis platform.
-
-Those are Phase 0 or later work, not unfinished repository-readiness tasks.
-
-## Protected compatibility identities
-
-Do not rename merely for branding. Protected by default include:
-
-- WooCommerce gateway/payment method ID `upayments`;
+- gateway/payment method ID `upayments`;
 - `woocommerce_upayments_settings`;
 - Blocks/Store API identity `upayments`;
 - callback route `wc_upayments`;
@@ -165,33 +100,114 @@ Do not rename merely for branding. Protected by default include:
 - `upayments_token_identity_secret_v2` and H12 provenance/scope/generation state;
 - subscription scheduler/historical cleanup identities;
 - billing-attempt table/schema state;
-- historical order payment-method values.
+- historical order payment-method values;
+- existing UPayments classes/namespaces unless separately characterized.
 
-See `NAMING-IDENTITY-STANDARD.md` for the full compatibility registry.
+The exact naming/compatibility registry in `NAMING-IDENTITY-STANDARD.md` remains authoritative.
 
-## Next permitted action — Phase 0
+## Phase 0 test evidence
 
-Phase 0 may now begin, but only under the existing PR/CI/review rules. Its objectives are:
+Initial characterization before implementation:
 
-1. eliminate/replace the upstream-controlled update path;
-2. establish independent SimplixPay semantic versioning (`0.x` while hardening; `1.0.0` only after stable-release gates);
-3. change public plugin metadata to **SimplixPay for UPayments** / Simplix Innovations;
-4. design and test folder + main-file + text-domain transition as an upgrade problem;
-5. preserve protected persisted/runtime identifiers unless an explicit tested migration changes them;
-6. add updater/version/install/upgrade/rollback regression evidence.
+- Phase 0 harness: **22 PASS / 13 FAIL** — exactly the inherited header/updater/vendor defects.
 
-The inherited `UPayments.php` filename, updater, version and provider-branded plugin header remain intentionally unchanged at the readiness baseline and are Phase 0 work.
+Final exact reviewed PR #9 head `8b67259bd05453150f837cda4b961f649f50cf02`:
 
-## Post-Phase-0 program blockers already known
+- Governance: **SUCCESS**
+- tracked PHP syntax: **SUCCESS**
+- Phase 0 release identity: **35 PASS / 0 FAIL**
+- H12 PHP: **1927 PASS / 0 FAIL**
+  - semantic runtime: 368
+  - helper unit runtime: 841
+  - static source: 46
+  - harness self-test: 662
+  - lint tooling: 10
+- Blocks syntax: **SUCCESS**
+- H12 Blocks: **144 PASS / 0 FAIL**
+  - runtime: 88
+  - static: 15
+  - harness: 41
 
-- Phase 9I historical token-identity migration remains open;
-- provider contract/payment lifecycle/webhook/status/refund audits remain incomplete;
-- security threat-model closure remains incomplete;
-- full automated quality platform remains incomplete;
-- broad WooCommerce/WordPress/PHP/HPOS/Blocks/WPML/feature/browser/performance certification remains incomplete;
-- release packaging and WordPress.org preparation remain incomplete.
+Four H12 implementation anchors outside the intentionally changed bootstrap remain frozen:
 
-## Phase 9I blockers — all 13 remain open
+- `includes/Token/CustomerTokenIdentity.php` — `85430d37e9baf540842f5655b86ccf0eca3e6aea`
+- `includes/class-wc-gateway-upayments-blocks.php` — `813d192d69c069eb7ee11df93acc9dbdf03e270a`
+- `includes/Subscription/Cron/Scheduler.php` — `5251866d4df2d1326e7c09f0c8ec1d146c0bb325`
+- `includes/Subscription/Cron/CycleClaim.php` — `c34d83e2d77cc65024fe663e4c378cecb2b17347`
+
+The H12 harness remains a regression baseline, not broad platform/security/performance certification.
+
+## Repository/governance state
+
+Repository readiness remains closed/verified:
+
+- standalone repository (`fork: false`);
+- protected default branch `main`;
+- squash-only merge policy;
+- required PR + review-thread resolution;
+- strict required `Governance` and `H12 Regression Harness` checks;
+- linear history + deletion/non-fast-forward restrictions;
+- auto-delete merged branches;
+- secret scanning + push protection;
+- Dependabot security updates;
+- private vulnerability reporting;
+- MIT recognized;
+- Projects/Wiki/Discussions off;
+- evidence-safe topics;
+- sole contributor presentation previously verified as `SimplixInnovationsAdmin`.
+
+See the closed `REPOSITORY-READINESS.md` for the repository-foundation evidence record.
+
+## Whole-repository audit status after Phase 0
+
+Resolved since the original audit:
+
+- **upstream updater authority** — removed;
+- **bundled Plugin Update Checker** — removed;
+- **provider-branded plugin header/version** — replaced by Simplix identity/version;
+- **destructive uninstall behavior** — removed; data retained by default;
+- **new Simplix namespace foothold** — `Simplix\Pay\UPayments\Release` introduced;
+- **release-identity characterization CI** — permanent Phase 0 harness added.
+
+Still deliberately deferred:
+
+- broad extraction of the large inherited bootstrap;
+- physical main-file/folder migration;
+- text-domain migration;
+- explicit coexistence/conflict detection;
+- empty/duplicate/legacy asset cleanup;
+- full Composer/PSR-4 package architecture;
+- full PHPUnit/WP/Woo/browser/static-analysis platform;
+- broad Woo/WP/PHP/HPOS/Blocks/WPML/security/performance certification.
+
+## Current implementation gate — Phase 9I
+
+Phase 9I must close the historical token-identity migration blockers **without provider calls or writes during preflight**.
+
+Required design:
+
+### A. Read-only deterministic preflight
+
+Classify evidence as exactly one of:
+
+- `CLEAN`
+- `MIGRATABLE`
+- `BLOCKED`
+- `INDETERMINATE`
+
+Preflight must perform zero provider calls and zero identity mutation.
+
+### B. Executor
+
+Execute only explicit `MIGRATABLE` cases.
+
+Attributable legacy identity may become `legacy_compat` / `legacy_verified_capture`; the executor must never fabricate canonical/Create-201 provenance.
+
+### C. Operational surface
+
+Provide bounded, idempotent, resumable admin/CLI batch behavior with dry-run capability and per-user ledger/state. Do not perform unbounded historical scans on checkout hot paths.
+
+## Phase 9I blockers — all 13 open at Phase 0 closure
 
 1. Unscoped legacy tokens
 2. Current-scope orphan histories
@@ -202,11 +218,26 @@ The inherited `UPayments.php` filename, updater, version and provider-branded pl
 7. Prior-scope same-generation histories
 8. Non-scalar evidence
 9. Orphan metadata
-10. >200/incomplete history
+10. >200/incomplete history → `INDETERMINATE`
 11. Unloadable orders
 12. Force-refresh failures
 13. Malformed-vs-missing secret distinction
 
+No Phase 9I implementation is approved merely because it handles a subset of these cases.
+
+## Later program blockers
+
+After Phase 9I:
+
+- provider contract/payment lifecycle/webhook/status/refund audit;
+- deterministic payment state machine/reconciliation;
+- security threat-model closure;
+- architecture/code-quality foundation;
+- full automated quality platform;
+- platform/feature/browser/performance certification;
+- onboarding/diagnostics/observability;
+- release packaging and eventual WordPress.org publication.
+
 ## Update rule
 
-Update this file after every independently verified milestone merge or program-state change. Never claim a recorded SHA is still live without checking GitHub. Never approve or merge from an implementation/agent report alone; verify exact source, tree/diff, checks and post-merge state.
+Update this file after every independently verified milestone merge or program-state change. Never mark a gate DONE from an implementation/agent report alone; verify exact source, diff/tree, checks, review state and post-merge `main` first.
