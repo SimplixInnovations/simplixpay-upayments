@@ -1,9 +1,13 @@
 # Repository Audit Ledger
 
-**Repository:** `SimplixInnovations/simplixpay-upayments`  
-**Audit base:** `c6e8c32044da254654e7a928e80900d943843e7a`  
-**Audit date:** 2026-08-24  
-**Purpose:** classify the entire tracked repository before runtime-changing Phase 0 work.  
+**Repository:** `SimplixInnovations/simplixpay-upayments`
+
+**Audit base:** `c6e8c32044da254654e7a928e80900d943843e7a`
+
+**Audit date:** 2026-08-24
+
+**Purpose:** classify the entire tracked repository before runtime-changing Phase 0 work.
+
 **Rule:** this audit records debt; it does not authorize drive-by runtime cleanup.
 
 ## Executive classification
