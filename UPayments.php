@@ -1,13 +1,13 @@
 <?php
 /**
- * Plugin Name: UPayments
- * Plugin URI: https://developers.upayments.com/reference/woocommerce
- * Description: UPayments Plugin with Unified payment gateway supporting Old/New design, Save Card, and Multimerchant. Supports Block Checkout, Auto Deduction for Subscriptions, Bookable Products.
- * Version: 3.1.1
- * Author: <a href="https://developers.upayments.com/reference/woocommerce" target="_blank">UPayments Company</a>
- * Author URI: https://developers.upayments.com/reference/woocommerce
+ * Plugin Name: SimplixPay for UPayments
+ * Plugin URI: https://github.com/SimplixInnovations/simplixpay-upayments
+ * Description: Independently engineered UPayments payment integration for WooCommerce by Simplix Innovations.
+ * Version: 0.1.0
+ * Author: Simplix Innovations
+ * Author URI: https://simplixi.com
  * Requires at least: 5.6
- * Requires PHP: 7.2+
+ * Requires PHP: 7.2
  * License: MIT
  * Text Domain: upayments
  * Domain Path: /languages
@@ -22,23 +22,19 @@ define("UP_PLUGIN_URL", plugin_dir_url(__FILE__));
 define("UP_PLUGIN_PATH", plugin_dir_path(__FILE__));
 define('UPAYMENTS_PLUGIN_FILE', __FILE__ );
 
-require_once __DIR__ . '/vendor/plugin-update-checker/plugin-update-checker.php';
+require_once __DIR__ . '/src/Release/Identity.php';
 require_once __DIR__ . '/includes/Token/CustomerTokenIdentity.php';
 
+use Simplix\Pay\UPayments\Release\Identity;
 use UPayments\Subscription\Cron\Scheduler;
 use UPayments\Subscription\Checkout\Fields;
 use UPayments\Subscription\Manager;
 use UPayments\Token\CustomerTokenIdentity;
-use YahnisElsts\PluginUpdateChecker\v5\PucFactory;
 
-$updateChecker = PucFactory::buildUpdateChecker(
-    'https://github.com/upaymentskwt/woocommerce',
-    __FILE__,
-    'upayments-V2.2.1'
-);
-
-// Optional: use releases instead of tags
-$updateChecker->getVcsApi()->enableReleaseAssets();
+define('SIMPLIXPAY_UPAYMENTS_VERSION', Identity::VERSION);
+define('SIMPLIXPAY_UPAYMENTS_SLUG', Identity::SLUG);
+define('SIMPLIXPAY_UPAYMENTS_PLUGIN_FILE', __FILE__);
+define('SIMPLIXPAY_UPAYMENTS_UPDATE_CHANNEL', Identity::UPDATE_CHANNEL);
 
 add_action( 'plugins_loaded', 'woocommerceUpaymentsInit' );
 function woocommerceUpaymentsInit() {
