@@ -2,9 +2,12 @@
 
 **Purpose:** close repository, governance, presentation and local-history issues before any runtime-changing SimplixPay release-identity work begins.
 
-**Canonical repository:** `SimplixInnovations/simplixpay-upayments`  
-**Audited base:** `c6e8c32044da254654e7a928e80900d943843e7a`  
-**Audit date:** 2026-08-24  
+**Canonical repository:** `SimplixInnovations/simplixpay-upayments`
+
+**Audited base:** `c6e8c32044da254654e7a928e80900d943843e7a`
+
+**Audit date:** 2026-08-24
+
 **Runtime-change scope:** **NONE**
 
 > Live GitHub state always wins over recorded SHAs. Re-verify before acting.
@@ -23,6 +26,7 @@ Phase 0 — SimplixPay release identity and updater ownership may begin only whe
 | Historical engineering provenance retained | **DONE / VERIFIED** | `SimplixInnovations/upayments-woocommerce` remains the audit archive. |
 | H12 production anchors preserved through governance | **DONE / VERIFIED** | Five frozen blob SHAs match `BASELINE-H12.md`. |
 | Old engineering changelog retained without presenting it as product releases | **IN THIS READINESS CHANGE** | Archive old blob under `docs/history/H12-ENGINEERING-CHANGELOG.md`; root changelog becomes product-oriented. |
+| Whole tracked tree classified | **IN THIS READINESS CHANGE** | See `REPOSITORY-AUDIT.md` for keep/fix/defer decisions. |
 
 ## B. Naming and public identity
 
@@ -41,6 +45,7 @@ Phase 0 — SimplixPay release identity and updater ownership may begin only whe
 |---|---|
 | Root `AGENTS.md` | **DONE** |
 | Project status ledger | **DONE; refreshed in this readiness change** |
+| Repository audit ledger | **IN THIS READINESS CHANGE** |
 | Naming/identity standard | **DONE / FROZEN** |
 | Master Engineering Playbook | **DONE** |
 | New-chat handoff | **DONE; refreshed in this readiness change** |
