@@ -20,7 +20,7 @@
 | WordPress.org release | **NO** |
 | Active phase | **Phase 0 — Release & Repository Safety** |
 | Active branch | `phase-0/repository-governance` |
-| Active PR | pending creation |
+| Active PR | **#1 — repository governance** |
 
 ## Current objective
 
