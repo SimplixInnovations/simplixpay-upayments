@@ -40,10 +40,12 @@ jobs:
             .github/CODEOWNERS
             docs/project/PROJECT-STATUS.md
             docs/project/REPOSITORY-READINESS.md
+            docs/project/REPOSITORY-AUDIT.md
             docs/project/NAMING-IDENTITY-STANDARD.md
             docs/project/MASTER-ENGINEERING-PLAYBOOK.md
             docs/project/NEW-CHAT-HANDOFF.md
             docs/project/BASELINE-H12.md
+            docs/history/H12-ENGINEERING-CHANGELOG.md
           )
           for path in "${required[@]}"; do
             test -s "$path" || { echo "Missing or empty required control file: $path"; exit 1; }
@@ -54,13 +56,20 @@ jobs:
         run: |
           set -euo pipefail
           grep -Fq 'SimplixPay for UPayments' README.md
-          grep -Fq 'Canonical slug: `simplixpay-upayments`' docs/project/NAMING-IDENTITY-STANDARD.md
+          grep -Fq '**Canonical slug:** `simplixpay-upayments`' docs/project/NAMING-IDENTITY-STANDARD.md
           grep -Fq 'SimplixInnovations/simplixpay-upayments' AGENTS.md
           grep -Fq 'upayments' docs/project/NAMING-IDENTITY-STANDARD.md
+          grep -Fq 'Phase 0 — SimplixPay release identity and updater ownership' docs/project/PROJECT-STATUS.md
 
       - name: Whitespace errors
         shell: bash
-        run: git diff --check
+        run: |
+          set -euo pipefail
+          if [[ "$GITHUB_EVENT_NAME" == "pull_request" ]]; then
+            git diff --check "origin/${GITHUB_BASE_REF}...HEAD"
+          else
+            git diff-tree --check --no-commit-id -r HEAD
+          fi
 
   h12-regression:
     name: H12 Regression Harness
