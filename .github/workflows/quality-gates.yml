@@ -18,48 +18,90 @@ jobs:
   governance:
     name: Governance
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
           persist-credentials: false
+
       - name: Required control files
         shell: bash
         run: |
           set -euo pipefail
-          test -s AGENTS.md
-          test -s docs/project/PROJECT-STATUS.md
-          test -s docs/project/NAMING-IDENTITY-STANDARD.md
-          test -s docs/project/MASTER-ENGINEERING-PLAYBOOK.md
-          test -s .github/CODEOWNERS
+          required=(
+            AGENTS.md
+            README.md
+            CHANGELOG.md
+            LICENSE
+            NOTICE.md
+            SECURITY.md
+            SUPPORT.md
+            .github/CODEOWNERS
+            docs/project/PROJECT-STATUS.md
+            docs/project/REPOSITORY-READINESS.md
+            docs/project/REPOSITORY-AUDIT.md
+            docs/project/NAMING-IDENTITY-STANDARD.md
+            docs/project/MASTER-ENGINEERING-PLAYBOOK.md
+            docs/project/NEW-CHAT-HANDOFF.md
+            docs/project/BASELINE-H12.md
+            docs/history/H12-ENGINEERING-CHANGELOG.md
+          )
+          for path in "${required[@]}"; do
+            test -s "$path" || { echo "Missing or empty required control file: $path"; exit 1; }
+          done
+
+      - name: Repository identity invariants
+        shell: bash
+        run: |
+          set -euo pipefail
+          grep -Fq 'SimplixPay for UPayments' README.md
+          grep -Fq '**Canonical slug:** `simplixpay-upayments`' docs/project/NAMING-IDENTITY-STANDARD.md
+          grep -Fq 'SimplixInnovations/simplixpay-upayments' AGENTS.md
+          grep -Fq 'upayments' docs/project/NAMING-IDENTITY-STANDARD.md
+          grep -Fq 'Phase 0 — SimplixPay release identity and updater ownership' docs/project/PROJECT-STATUS.md
+
       - name: Whitespace errors
         shell: bash
-        run: git diff --check HEAD^ HEAD || git diff --check
+        run: |
+          set -euo pipefail
+          if [[ "$GITHUB_EVENT_NAME" == "pull_request" ]]; then
+            git diff --check "origin/${GITHUB_BASE_REF}...HEAD"
+          else
+            git diff-tree --check --no-commit-id -r HEAD
+          fi
 
   h12-regression:
     name: H12 Regression Harness
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
-      - uses: shivammathur/setup-php@v2
+
+      - uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # v2.37.2
         with:
           php-version: '8.2'
           coverage: none
           tools: none
-      - uses: actions/setup-node@v6
+
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version: '24'
           package-manager-cache: false
-      - name: PHP syntax
+
+      - name: Tracked PHP syntax
         shell: bash
         run: |
           set -euo pipefail
-          find UPayments.php includes tests -type f -name '*.php' -print0 | xargs -0 -n1 php -l
+          git ls-files -z '*.php' | xargs -0 -r -n1 php -l
+
       - name: H12 PHP harness
         run: php tests/harness/phase-9g-h12-php-harness.php
+
       - name: Blocks harness syntax
         run: node --check tests/harness/phase-9g-h12-blocks-harness.js
+
       - name: H12 Blocks harness
         run: node tests/harness/phase-9g-h12-blocks-harness.js

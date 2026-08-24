@@ -4,7 +4,13 @@ updates:
     directory: "/"
     schedule:
       interval: weekly
-    open-pull-requests-limit: 5
-    labels:
-      - dependencies
-      - ci
+      day: monday
+      time: "06:00"
+      timezone: Asia/Dubai
+    open-pull-requests-limit: 3
+    reviewers:
+      - SimplixInnovationsAdmin
+    groups:
+      github-actions:
+        patterns:
+          - "*"

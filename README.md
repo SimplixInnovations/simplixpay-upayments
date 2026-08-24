@@ -1,105 +1,159 @@
 <p align="center">
-  <img src="assets/images/logo.png" alt="UPayments" width="120">
+  <img src="assets/images/logo.png" alt="UPayments" width="112">
 </p>
 
 <h1 align="center">SimplixPay for UPayments</h1>
 
 <p align="center">
-  <strong>Independently engineered UPayments integration for WooCommerce</strong><br>
-  maintained by <a href="https://simplixi.com">Simplix Innovations</a>
+  <strong>Independently engineered UPayments payment integration for WooCommerce</strong><br>
+  by <a href="https://simplixi.com">Simplix Innovations</a>
 </p>
 
 <p align="center">
+  <a href="https://github.com/SimplixInnovations/simplixpay-upayments/actions/workflows/quality-gates.yml"><img alt="Quality Gates" src="https://github.com/SimplixInnovations/simplixpay-upayments/actions/workflows/quality-gates.yml/badge.svg?branch=main"></a>
+  <a href="https://woocommerce.com/development-services/simplix-innovations-woocommerce-full-service-agency/232995338/"><img alt="Woo Agency Partner" src="https://img.shields.io/badge/Woo-Agency%20Partner-96588A?style=flat-square&logo=woocommerce&logoColor=white"></a>
   <a href="https://simplixi.com"><img alt="Maintained by Simplix Innovations" src="https://img.shields.io/badge/Maintained%20by-Simplix%20Innovations-111111?style=flat-square"></a>
-  <a href="https://github.com/upaymentskwt/woocommerce"><img alt="Upstream UPayments WooCommerce" src="https://img.shields.io/badge/Upstream-UPayments-4b5563?style=flat-square"></a>
-  <img alt="Status" src="https://img.shields.io/badge/Status-Engineering%20hardening-f59e0b?style=flat-square">
+  <a href="LICENSE"><img alt="MIT License" src="https://img.shields.io/badge/License-MIT-2ea44f?style=flat-square"></a>
+  <a href="SECURITY.md"><img alt="Security Policy" src="https://img.shields.io/badge/Security-Private%20Reporting-2ea44f?style=flat-square"></a>
+  <a href="https://developers.upayments.com/reference/woocommerce"><img alt="Provider: UPayments" src="https://img.shields.io/badge/Provider-UPayments-4b5563?style=flat-square"></a>
+  <img alt="Maturity: Pre-release engineering" src="https://img.shields.io/badge/Maturity-Pre--release%20engineering-f59e0b?style=flat-square">
+</p>
+
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset=".github/assets/simplix-innovations-logo-white.svg">
+    <source media="(prefers-color-scheme: light)" srcset=".github/assets/simplix-innovations-logo-black.svg">
+    <img src=".github/assets/simplix-innovations-logo-black.svg" alt="Simplix Innovations" width="260">
+  </picture>
 </p>
 
 > [!IMPORTANT]
-> **SimplixPay for UPayments** is independently engineered and maintained by Simplix Innovations. UPayments is the payment provider and owns its respective trademarks. This repository is not the official UPayments plugin distribution unless explicitly stated otherwise by UPayments.
+> **SimplixPay for UPayments** is independently engineered and maintained by **Simplix Innovations**. UPayments is the payment provider and owner of its respective names and trademarks. This repository is not represented as the official UPayments distribution unless explicitly stated by UPayments.
 
-## Current status
+## Project status
 
-This is the **standalone canonical SimplixPay UPayments product repository**. It was initialized from the exact independently verified H12 source tree; the full pre-product fork/PR history remains preserved separately in `SimplixInnovations/upayments-woocommerce` as the engineering audit archive.
+This is the standalone canonical repository for **SimplixPay for UPayments**. The project is in **pre-release engineering hardening** and is **not yet a broadly certified stable production release** or a WordPress.org release.
 
-The project is currently **R0 — engineering hardening**. It is **not yet a broadly certified stable production release** and is not yet published on WordPress.org. Compatibility claims are evidence-based.
+Repository governance, provenance, baseline CI and the H12 token-identity regression baseline are established. The next runtime-changing program gate is **Phase 0 — SimplixPay release identity and updater ownership**; that phase does not begin until the repository-readiness checklist is closed.
 
-See [`docs/project/PROJECT-STATUS.md`](docs/project/PROJECT-STATUS.md) for the live engineering state.
+| Item | Current position |
+|---|---|
+| Canonical repository | `SimplixInnovations/simplixpay-upayments` |
+| Formal product | **SimplixPay for UPayments** |
+| Maintainer | **Simplix Innovations** |
+| Provider | **UPayments** |
+| Repository maturity | Pre-release engineering hardening |
+| Stable SimplixPay release | **Not yet published** |
+| WordPress.org release | **Not yet published** |
+| H12 regression baseline | PHP 1927 PASS / 0 FAIL; Blocks 144 PASS / 0 FAIL |
+| Broad Woo/WP/PHP/HPOS/Blocks/WPML certification | **Pending** |
 
-## Why this project exists
+The H12 counts are regression assertions from the existing custom harness, not a substitute for the planned PHPUnit, WordPress/WooCommerce integration, browser and compatibility certification suites.
 
-Payment extensions are business-critical infrastructure. A WooCommerce gateway must remain correct across provider failures, WordPress/WooCommerce changes, PHP upgrades, HPOS, Checkout Blocks, multilingual stacks, saved-card/token flows, subscriptions, webhooks, redirects, order persistence and recovery conditions.
+For the exact live engineering ledger, see [`docs/project/PROJECT-STATUS.md`](docs/project/PROJECT-STATUS.md).
 
-SimplixPay UPayments is being hardened around:
+## Why SimplixPay for UPayments exists
 
-- payment integrity and deterministic state handling;
-- independent release/update ownership;
-- saved-card/token identity safety and historical migration;
-- WooCommerce Classic Checkout and Blocks;
+Payment extensions are business-critical infrastructure. A WooCommerce gateway must remain correct not only on a happy-path checkout, but across provider failures, retries, callbacks, webhooks, WordPress/WooCommerce changes, PHP upgrades, HPOS, Checkout Blocks, multilingual commerce, saved-card identity, subscriptions, refunds, multi-merchant routing, order persistence and recovery conditions.
+
+Simplix Innovations is engineering this integration around:
+
+- deterministic payment-state handling and recovery;
+- independent Simplix-controlled release/update ownership;
+- saved-card and customer-token identity safety;
+- historical migration without guessing or silently rewriting payment identity;
+- Classic Checkout and Checkout Blocks interoperability;
 - HPOS and modern WooCommerce compatibility;
-- WPML/WCML/multilingual and RTL behavior;
-- subscriptions, wallets, refunds and multi-merchant flows;
-- scoped frontend assets and accessibility;
-- structured diagnostics/logging with sensitive-data redaction;
-- performance/stability engineering;
-- reproducible tests, CI and release discipline.
+- WPML/WCML, multilingual, multicurrency and RTL commerce;
+- subscriptions, refunds, wallets and multi-merchant flows;
+- scoped frontend assets, accessibility and theme interoperability;
+- structured diagnostics and sensitive-data-safe logging;
+- performance, stability and operational supportability;
+- evidence-based compatibility claims, CI and controlled releases.
 
 ## Product identity
 
-- Formal name: **SimplixPay for UPayments**
-- Short integration reference: **SimplixPay UPayments**
-- Canonical slug: `simplixpay-upayments`
-- Maintainer: **Simplix Innovations**
-- Provider: **UPayments**
+- **Formal plugin/product:** SimplixPay for UPayments
+- **Short integration reference:** SimplixPay UPayments
+- **Product family reserved for the future multi-provider product:** SimplixPay
+- **Canonical slug:** `simplixpay-upayments`
+- **Company / maintainer:** Simplix Innovations
+- **Provider:** UPayments
 
-`SimplixPay` alone is reserved for the broader Simplix payment-product family and future multi-provider direction.
+`SimplixPay` alone is intentionally reserved for the broader future payment product, including the planned multi-provider **SimplixPay for WooCommerce** direction. See [`docs/project/NAMING-IDENTITY-STANDARD.md`](docs/project/NAMING-IDENTITY-STANDARD.md).
 
-See [`docs/project/NAMING-IDENTITY-STANDARD.md`](docs/project/NAMING-IDENTITY-STANDARD.md).
+## Compatibility principle
 
-## Critical compatibility rule
+Public rebranding must never silently rewrite persisted payment identity. Existing compatibility-sensitive identifiers such as the WooCommerce gateway ID `upayments`, `woocommerce_upayments_settings`, callback route `wc_upayments`, existing `_upay_*` metadata, H12 token/provenance state and historical scheduler/table identities remain protected unless a dedicated, tested migration explicitly changes them.
 
-Public branding does not justify renaming persisted payment identity. Existing identifiers such as gateway ID `upayments`, `woocommerce_upayments_settings`, callback `wc_upayments`, `_upay_*` metadata, token-identity secret/provenance keys and existing scheduler/table identities remain protected unless a dedicated migration proves a change safe.
+See [`docs/COMPATIBILITY.md`](docs/COMPATIBILITY.md) for the evidence matrix.
+
+## Current verified engineering baseline
+
+The canonical repository was established from the exact independently reviewed H12 source tree. The complete pre-product fork/PR history is preserved separately in [`SimplixInnovations/upayments-woocommerce`](https://github.com/SimplixInnovations/upayments-woocommerce) as the engineering audit archive.
+
+Current repository CI performs:
+
+- governance/control-file checks;
+- tracked PHP syntax validation;
+- H12 PHP regression harness;
+- H12 Blocks harness syntax validation;
+- H12 Blocks regression harness.
+
+This is a **baseline gate**, not final certification. The full quality platform described in the engineering playbook remains future work.
+
+## Simplix Innovations and WooCommerce
+
+**Simplix Innovations is listed by WooCommerce as a Woo Agency Partner** and is based in the United Arab Emirates while serving clients worldwide. The official WooCommerce partner listing includes WooCommerce development, payment gateways, multilingual/multicurrency commerce, performance, integrations, maintenance and enterprise-level support.
+
+- [Official WooCommerce Agency Partner profile](https://woocommerce.com/development-services/simplix-innovations-woocommerce-full-service-agency/232995338/)
+- [Simplix Innovations](https://simplixi.com)
+- Contact: **info@simplixi.com**
+
+The Woo Agency Partner listing reflects Simplix Innovations' broader WooCommerce practice. It is not an endorsement by WooCommerce or UPayments of this specific plugin.
 
 ## Engineering control plane
 
-Start with:
+For engineering work, read in this order:
 
-- [`AGENTS.md`](AGENTS.md) — mandatory repository execution rules
-- [`docs/project/PROJECT-STATUS.md`](docs/project/PROJECT-STATUS.md) — current verified state
-- [`docs/project/NAMING-IDENTITY-STANDARD.md`](docs/project/NAMING-IDENTITY-STANDARD.md) — frozen identity contract
-- [`docs/project/NEW-CHAT-HANDOFF.md`](docs/project/NEW-CHAT-HANDOFF.md) — compact continuation context
-- [`docs/project/MASTER-ENGINEERING-PLAYBOOK.md`](docs/project/MASTER-ENGINEERING-PLAYBOOK.md) — complete engineering program
-- [`docs/project/BASELINE-H12.md`](docs/project/BASELINE-H12.md) — clean-root/H12 provenance
+1. [`AGENTS.md`](AGENTS.md) — mandatory repository execution rules.
+2. [`docs/project/PROJECT-STATUS.md`](docs/project/PROJECT-STATUS.md) — live verified state and next permitted gate.
+3. [`docs/project/REPOSITORY-READINESS.md`](docs/project/REPOSITORY-READINESS.md) — pre-Phase-0 repository readiness checklist.
+4. [`docs/project/NAMING-IDENTITY-STANDARD.md`](docs/project/NAMING-IDENTITY-STANDARD.md) — frozen identity and compatibility rules.
+5. [`docs/project/NEW-CHAT-HANDOFF.md`](docs/project/NEW-CHAT-HANDOFF.md) — compact continuation context.
+6. [`docs/project/MASTER-ENGINEERING-PLAYBOOK.md`](docs/project/MASTER-ENGINEERING-PLAYBOOK.md) — complete engineering program.
+7. [`docs/project/BASELINE-H12.md`](docs/project/BASELINE-H12.md) — H12 provenance and baseline anchors.
 
-Additional policies: [`SECURITY.md`](SECURITY.md), [`SUPPORT.md`](SUPPORT.md), [`CONTRIBUTING.md`](CONTRIBUTING.md), [`MAINTAINERS.md`](MAINTAINERS.md), [`UPSTREAM.md`](UPSTREAM.md), [`CHANGELOG.md`](CHANGELOG.md).
+Additional repository policies: [`SECURITY.md`](SECURITY.md), [`SUPPORT.md`](SUPPORT.md), [`CONTRIBUTING.md`](CONTRIBUTING.md), [`MAINTAINERS.md`](MAINTAINERS.md), [`UPSTREAM.md`](UPSTREAM.md), [`NOTICE.md`](NOTICE.md), [`CHANGELOG.md`](CHANGELOG.md).
 
-## Compatibility policy
+## Roadmap immediately ahead
 
-A feature is marked **Verified** only after Simplix Innovations records a reproducible tested environment. Provider/upstream documentation is a capability baseline, not automatic certification of this distribution. See [`docs/COMPATIBILITY.md`](docs/COMPATIBILITY.md).
+Before runtime identity work:
 
-## Current Phase 0 priorities
+1. close the repository-readiness checklist;
+2. enable the required GitHub repository/rules/security settings;
+3. reconcile any local clones created before the canonical history rewrite;
+4. confirm contributor attribution/cache has converged.
 
-1. repository governance and baseline CI;
-2. remove/replace the upstream-controlled updater;
-3. establish independent SimplixPay version/product identity;
-4. test upgrade behavior for filename/folder/text-domain changes;
-5. configure required checks, branch/rulesets and GitHub security settings;
-6. then proceed to Phase 9I historical token-identity migration.
+Then begin **Phase 0 — SimplixPay release identity and updater ownership**:
 
-## Reporting issues
+1. remove or replace the upstream-controlled updater;
+2. establish independent SimplixPay semantic versioning;
+3. change public plugin metadata to SimplixPay for UPayments / Simplix Innovations;
+4. design and test folder/main-file/text-domain transition as an upgrade problem;
+5. preserve protected legacy payment identities;
+6. add install/update/upgrade/rollback regression evidence.
 
-GitHub Issues may be used for reproducible bugs, compatibility reports and feature requests. Never include live API keys, bearer tokens, card data, customer tokens, customer PII, database exports or production secrets.
+See [`docs/ENGINEERING-ROADMAP.md`](docs/ENGINEERING-ROADMAP.md).
 
-Security-sensitive findings must follow [`SECURITY.md`](SECURITY.md) instead of a public issue.
+## Issues, security and support
 
-## Support boundaries
+Use GitHub Issues for reproducible bugs, compatibility reports and feature requests. Never publish API keys, bearer tokens, card data, customer/card tokens, token-identity secrets, customer PII, private production payloads or database exports.
 
-Simplix Innovations maintains the WooCommerce integration layer. UPayments remains responsible for merchant onboarding, KYC, settlements, acquiring, pricing, account status, production API enablement and provider-platform operations.
+Security-sensitive findings must follow [`SECURITY.md`](SECURITY.md), not a public issue.
 
-- Simplix Innovations: https://simplixi.com
-- Contact: info@simplixi.com
-- UPayments developer documentation: https://developers.upayments.com/reference/woocommerce
+Simplix Innovations maintains the WooCommerce integration layer. UPayments remains responsible for merchant onboarding, KYC, settlements, acquiring, pricing, provider account status, production API enablement and provider-platform operations.
 
 ## License and provenance
 
-The source lineage is MIT-licensed. Upstream provenance and independence are documented in [`UPSTREAM.md`](UPSTREAM.md). Distribution/license packaging remains part of Phase 0 review before public stable/WordPress.org publication.
+This repository is distributed under the [MIT License](LICENSE). Upstream provenance, independent maintenance and trademark boundaries are documented in [`NOTICE.md`](NOTICE.md) and [`UPSTREAM.md`](UPSTREAM.md). Historical engineering-only changelog material is retained under [`docs/history/`](docs/history/) rather than presented as SimplixPay product releases.
