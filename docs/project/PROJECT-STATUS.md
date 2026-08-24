@@ -1,9 +1,13 @@
 # SimplixPay for UPayments — Project Status
 
-**Status document:** canonical living engineering state  
-**Last updated:** 2026-08-24  
-**Canonical repository:** `SimplixInnovations/simplixpay-upayments`  
-**Historical audit archive:** `SimplixInnovations/upayments-woocommerce`  
+**Status document:** canonical living engineering state
+
+**Last updated:** 2026-08-24
+
+**Canonical repository:** `SimplixInnovations/simplixpay-upayments`
+
+**Historical audit archive:** `SimplixInnovations/upayments-woocommerce`
+
 **Provider upstream:** `upaymentskwt/woocommerce`
 
 > Always verify live GitHub state before acting. Recorded SHAs are verified milestones/audit bases, not substitutes for a fresh remote check.
