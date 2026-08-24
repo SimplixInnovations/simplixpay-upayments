@@ -28,6 +28,20 @@ if ((git status --porcelain).Length -ne 0) {
 
 $source = [IO.File]::ReadAllText((Join-Path (Get-Location) $File)) -replace "`r`n", "`n"
 
+$forbidden = @(
+    'https://github.com/upaymentskwt/woocommerce',
+    'PucFactory',
+    'plugin-update-checker'
+)
+
+if ($source.Contains('Plugin Name: SimplixPay for UPayments')) {
+    foreach ($needle in $forbidden) {
+        if ($source.Contains($needle)) { throw "Patched bootstrap still contains forbidden updater authority: $needle" }
+    }
+    Write-Host 'Bootstrap is already patched; nothing to do.'
+    exit 0
+}
+
 $old = @'
 <?php
 /**
@@ -126,11 +140,6 @@ if (($source.Split($old, [StringSplitOptions]::None).Count - 1) -ne 1) {
 
 $patched = $new + $source.Substring($old.Length)
 
-$forbidden = @(
-    'https://github.com/upaymentskwt/woocommerce',
-    'PucFactory',
-    'plugin-update-checker'
-)
 foreach ($needle in $forbidden) {
     if ($patched.Contains($needle)) { throw "Forbidden updater authority remains: $needle" }
 }
