@@ -1,190 +1,178 @@
-# Pre-Phase-0 Repository Readiness
+# Pre-Phase-0 Repository Readiness — CLOSED
 
-**Purpose:** close repository, governance, presentation, settings, attribution, and local-history issues before any runtime-changing SimplixPay release-identity work begins.
+**Purpose:** historical record of the repository, governance, presentation, settings, attribution and local-history gate required before runtime-changing SimplixPay release-identity work.
 
 **Canonical repository:** `SimplixInnovations/simplixpay-upayments`
 
-**Last live audit:** 2026-08-25
+**Closed:** 2026-08-25
 
-**Runtime-change scope:** **NONE**
+**Runtime-change scope of this gate:** **NONE**
 
-> Live GitHub state always wins over recorded SHAs. Re-verify before acting.
+> **Gate status: PRE-PHASE-0 READY / VERIFIED.** Phase 0 is now permitted under the repository's normal PR/CI/review controls.
 
-## Readiness definition
+## Closure summary
 
-Phase 0 — SimplixPay release identity and updater ownership may begin only when every required item below is **DONE / VERIFIED**.
+Every repository-readiness requirement was independently verified or explicitly classified as non-blocking account/optional hygiene.
 
-## A. Canonical history and source integrity
+### A. Canonical history and source integrity
 
 | Gate | State | Evidence |
 |---|---|---|
 | Standalone repository, not GitHub fork | **DONE / VERIFIED** | Live repo reports `fork: false`. |
-| Clean canonical root | **DONE / VERIFIED** | Parentless product root `1caf38410354322c1d842c28a40b0909ba31026d`. |
-| Reachable default-branch history is clean | **DONE / VERIFIED** | Five canonical commits before this final-certification change: root + four reviewed squash merges. |
-| Historical engineering provenance retained | **DONE / VERIFIED** | Historical audit repo retained separately. |
-| H12 production anchors preserved | **DONE / VERIFIED** | Five frozen blob SHAs re-fetched on `main` and match exactly. |
-| Historical H12 engineering changelog preserved | **DONE / VERIFIED** | `docs/history/H12-ENGINEERING-CHANGELOG.md` retains blob `8c42bc6fdae163dd4159b8036b05cd2f70cc3d5d`. |
-| Product changelog separated | **DONE / VERIFIED** | Root `CHANGELOG.md` is product-oriented. |
+| Clean canonical root | **DONE / VERIFIED** | Parentless root `1caf38410354322c1d842c28a40b0909ba31026d`. |
+| Historical engineering provenance retained | **DONE / VERIFIED** | `SimplixInnovations/upayments-woocommerce` retained separately. |
+| H12 production anchors preserved | **DONE / VERIFIED** | Five frozen runtime blobs unchanged throughout repository-readiness work. |
+| Historical H12 changelog retained | **DONE / VERIFIED** | `docs/history/H12-ENGINEERING-CHANGELOG.md` blob `8c42bc6fdae163dd4159b8036b05cd2f70cc3d5d`. |
+| Product changelog separated | **DONE / VERIFIED** | Root `CHANGELOG.md` is SimplixPay product history. |
 | Whole tracked tree classified | **DONE / VERIFIED** | `REPOSITORY-AUDIT.md`. |
-| Remote branch cleanup | **DONE / VERIFIED** | Live remote branch inventory is `main` only. |
-| Open PR cleanup | **DONE / VERIFIED** | Live open PR count is 0 before this final-certification PR. |
+| Remote branch cleanup | **DONE / VERIFIED** | Real remote branch inventory before closure: `main` only. |
+| Open PR cleanup | **DONE / VERIFIED** | 0 open PRs before the closing PR. |
+| Tags/releases clean | **DONE / VERIFIED** | No canonical Git tags; no GitHub Releases. |
 
-## B. Naming and public identity
-
-| Gate | State | Evidence |
-|---|---|---|
-| Formal name | **FROZEN** | `SimplixPay for UPayments`. |
-| Short integration reference | **FROZEN** | `SimplixPay UPayments`; `SimplixPay` alone reserved for broader product family. |
-| Canonical technical slug | **FROZEN** | `simplixpay-upayments`. |
-| Compatibility-sensitive historical IDs protected | **DONE / POLICY** | Naming standard + `AGENTS.md`. |
-| README/product presentation | **DONE IN FINAL CERTIFICATION** | Simplix-led presentation, Woo Agency Partner proof, truthful maturity/provider badges. |
-| GitHub description/homepage | **DONE / VERIFIED** | Live repo metadata matches SimplixPay/Simplix target. |
-| GitHub license recognition | **DONE / VERIFIED** | Live repo reports SPDX MIT. |
-| About topics do not overstate certification | **EXTERNAL ACTION REQUIRED** | Remove `hpos-compatible` and `wpml-ready`; neutral `hpos` / `wpml` may remain. |
-
-## C. Governance and documentation
-
-| Gate | State |
-|---|---|
-| Root `AGENTS.md` | **DONE** |
-| Project status ledger | **DONE; refreshed in final certification** |
-| Repository readiness ledger | **DONE; refreshed in final certification** |
-| Repository audit ledger | **DONE** |
-| Naming/identity standard | **DONE / FROZEN** |
-| Master Engineering Playbook | **DONE** |
-| New-chat handoff | **DONE; refreshed in final certification** |
-| H12 baseline record | **DONE** |
-| CODEOWNERS | **DONE** |
-| Security/support/contribution/maintainer/upstream/provenance policies | **DONE** |
-| Product changelog separated from engineering archive | **DONE / VERIFIED** |
-
-## D. CI and dependency hygiene
+### B. Naming and public identity
 
 | Gate | State | Evidence |
 |---|---|---|
-| Pull-request/main quality workflow | **DONE** | `Quality Gates`. |
-| H12 PHP baseline | **DONE / VERIFIED** | Exact reviewed PR heads: 1927 PASS / 0 FAIL. |
-| H12 Blocks baseline | **DONE / VERIFIED** | Exact reviewed PR heads: 144 PASS / 0 FAIL. |
-| Third-party Actions immutable pins | **DONE / VERIFIED** | checkout/setup-php/setup-node pinned to full SHAs. |
-| Current audited checkout/setup-node majors | **DONE** | checkout v7.0.1; setup-node v7.0.0; Node 24. |
-| Complete tracked PHP syntax gate | **DONE** | CI uses `git ls-files` for all tracked PHP. |
-| Dependabot PR noise | **DONE** | grouped weekly Actions updates; old individual major PRs closed as superseded. |
-| Full PHPUnit/WP/Woo/browser/static-analysis platform | **NOT A PRE-PHASE-0 BLOCKER** | Planned later; H12 green is not marketed as broad certification. |
+| Formal name | **FROZEN** | **SimplixPay for UPayments**. |
+| Short integration reference | **FROZEN** | **SimplixPay UPayments**. |
+| Canonical slug | **FROZEN** | `simplixpay-upayments`. |
+| Legacy compatibility identity protected | **DONE / POLICY** | Naming standard + `AGENTS.md`. |
+| README/public presentation | **DONE / VERIFIED** | Simplix-led; UPayments identified as provider; Woo Agency Partner proof retained; maturity claims bounded. |
+| Description/homepage/license | **DONE / VERIFIED** | Live repo metadata correct; MIT recognized. |
+| About topics evidence-safe | **DONE / VERIFIED** | Neutral topics only; no `hpos-compatible` / `wpml-ready` claim. |
 
-For documentation/control-only squash merges, exact green PR-head Quality Gates plus independently verified merged tree/runtime anchors are accepted evidence. A separate push-triggered `main` run is useful but is not required when the merged tree is proven equivalent to the reviewed green head and runtime anchors are unchanged.
+Final verified discovery topics at closure:
 
-## E. Repository settings — live verified vs private-detail check
+`checkout-blocks`, `ecommerce`, `hpos`, `payment-gateway`, `payments`, `php`, `simplixpay`, `upayments`, `woocommerce`, `woocommerce-payment-gateway`, `wordpress`, `wpml`.
 
-### Verified through repository API
+### C. Governance/documentation
 
-- Issues: ON
-- Projects: OFF
-- Wiki: OFF
-- Discussions: OFF
-- homepage: `https://simplixi.com`
-- correct SimplixPay description
-- squash merging: ON
-- merge commits: OFF
-- rebase merging: OFF
-- auto-delete source branches: ON and independently proven
-- auto-merge: OFF
-- default branch: `main`
-- `main`: `protected: true`
-- repository license: MIT
+All permanent control-plane files are established and reviewed:
 
-### Still requires manual/private GitHub verification
+- root `AGENTS.md`;
+- `PROJECT-STATUS.md`;
+- this readiness record;
+- `REPOSITORY-AUDIT.md`;
+- `NAMING-IDENTITY-STANDARD.md`;
+- `MASTER-ENGINEERING-PLAYBOOK.md`;
+- `NEW-CHAT-HANDOFF.md`;
+- `BASELINE-H12.md`;
+- `.github/CODEOWNERS`;
+- root security/support/contribution/maintainer/upstream/license/provenance policies.
 
-The connected API does not expose the active ruleset body or security-analysis/private-vulnerability settings. Confirm:
+### D. CI/dependency hygiene
 
-- `main` deletion restricted;
-- force pushes blocked;
-- pull request required before merging;
-- conversation resolution required;
-- required checks include **Governance** and **H12 Regression Harness**;
-- branch-up-to-date behavior is intentional;
-- linear history enforced/preferred;
-- administrator/bypass behavior is intentional;
-- dependency graph enabled;
-- Dependabot alerts enabled;
-- Dependabot security updates enabled;
-- secret scanning enabled;
-- push protection enabled;
-- private vulnerability reporting enabled.
+| Gate | State | Evidence |
+|---|---|---|
+| Quality workflow | **DONE / VERIFIED** | Governance + all tracked PHP syntax + H12 PHP + H12 Blocks. |
+| H12 PHP | **DONE / VERIFIED** | 1927 PASS / 0 FAIL. |
+| H12 Blocks | **DONE / VERIFIED** | 144 PASS / 0 FAIL. |
+| Third-party Actions immutable pins | **DONE / VERIFIED** | Full commit SHA pins. |
+| checkout/setup-node current audited majors | **DONE** | checkout v7.0.1; setup-node v7.0.0; Node 24. |
+| Dependabot Actions hygiene | **DONE** | Grouped updates; superseded individual PRs closed. |
+| Full future quality platform | **NOT A READINESS BLOCKER** | Planned later; H12 is explicitly not broad certification. |
 
-Do not claim these details from `protected: true` alone.
+### E. Main ruleset
 
-## F. Contributor attribution
+Repository ruleset `21327778` is active on `~DEFAULT_BRANCH` and was read back after mutation.
 
-### Current Git truth
+Verified rules:
 
-Canonical `main` contains only the clean standalone product history. Former fork/upstream commits are not reachable from the canonical default branch.
+- deletion restriction;
+- non-fast-forward / force-push restriction;
+- required linear history;
+- pull request required;
+- review-thread resolution required;
+- allowed merge method: **squash only**;
+- strict required status checks:
+  - `Governance` — integration `15368`;
+  - `H12 Regression Harness` — integration `15368`;
+- `do_not_enforce_on_create: true`;
+- no bypass actors;
+- `current_user_can_bypass: never` at verification time.
 
-### Remaining attribution evidence
+No approval-count requirement is imposed because the repository currently has a single accountable maintainer; independent evidence/reviewer discipline is enforced procedurally through `AGENTS.md` and exact-head verification.
 
-The parentless root commit is authored as `Simplix Innovations <info@simplixi.com>`, but the live commit API still returns `author: null` for that root. Required account state:
+### F. Security
 
-1. GitHub personal **Settings → Emails** for `SimplixInnovationsAdmin`.
-2. `info@simplixi.com` present and verified.
-3. Keep it associated with the account.
-4. Allow contributor statistics time to rebuild.
+Verified enabled:
 
-Do not rewrite canonical history again merely to force the contributor UI.
+- private vulnerability reporting;
+- Dependabot security updates;
+- secret scanning;
+- secret-scanning push protection;
+- vulnerability-alert/dependency-graph endpoint enabled successfully.
 
-## G. Local IDE clone reconciliation
+Optional enhanced secret-scanning features `secret_scanning_non_provider_patterns` and `secret_scanning_validity_checks` remained disabled after an accepted repository PATCH. Their availability is GitHub-plan/feature dependent and they are not a pre-Phase-0 blocker.
 
-This cannot be verified remotely. Final local evidence must show:
+### G. Contributor/account presentation
 
-- no uncommitted work that should be preserved;
-- current branch tracking `origin/main` as intended;
-- `HEAD...origin/main` divergence `0 0` after final readiness merge/fetch;
-- only expected remote branch `origin/main` after pruning.
+Verified repository contributors API result at closure:
 
-A pre-rewrite clone can otherwise show misleading historical divergence.
+- `SimplixInnovationsAdmin` — 5 contributions;
+- no other contributor returned.
 
-## H. Tags and releases
+This satisfies the canonical repository's sole-contributor presentation objective after the clean-root rewrite.
 
-The new canonical repository must start the Simplix version line cleanly.
+The historical root commit retains author text `Simplix Innovations <info@simplixi.com>`. The GitHub CLI did not receive the `user` scope needed to enumerate account emails, so verification of that exact account email was not independently read through the API. **Before any future manual IDE-authored commit using `info@simplixi.com`, verify the address in GitHub Settings so those future commits map to `SimplixInnovationsAdmin`.** This is account-level commit-attribution hygiene and is not a blocker to the verified repository gate.
 
-Before Phase 0 begins, externally verify:
+### H. Local IDE clone
 
-- no inherited Git tags remain in the canonical repo;
-- no unintended GitHub Releases exist;
-- the historical audit repo may retain historical tags/releases as provenance.
+Externally verified before closure:
 
-Do not create a Simplix release/tag until Phase 0 establishes the version/update strategy.
+- `git status --short`: clean;
+- `HEAD...origin/main`: `0 0`;
+- tracking: `origin/main`;
+- `origin/HEAD -> origin/main` recognized as the normal symbolic default-branch pointer;
+- local identity configured to `Simplix Innovations <info@simplixi.com>`.
 
-## I. Branch/PR cleanup
+After this closing PR merges, the local clone will be one fast-forward behind until `git pull --ff-only origin main` is run. That expected post-merge fast-forward does not reopen repository readiness.
 
-**DONE / VERIFIED** before this final-certification branch:
+### I. Final-certification merge evidence
 
-- live remote branches: `main` only;
-- open pull requests: 0;
-- old Dependabot PRs closed/unmerged/superseded;
-- merged source branches removed;
-- automatic branch deletion independently proven on PR #6.
+The final public-presentation/status-certification PR immediately before closure changed only repository documentation and passed:
 
-The transient final-certification branch must auto-delete after merge and be independently checked.
+- Governance: **SUCCESS**;
+- all tracked PHP syntax: **SUCCESS**;
+- H12 PHP: **1927 PASS / 0 FAIL**;
+- Blocks syntax: **SUCCESS**;
+- H12 Blocks: **144 PASS / 0 FAIL**.
 
-## J. Pre-Phase-0 exit gate
+It merged as `7e530c2c6881c04a3170e110b23289d90185da14` with tree `64973fa4918061bdf8489319712ef2c79813a45b`, GitHub-signature verified. Its transient branch auto-deleted.
 
-Required before Phase 0 starts:
+## Frozen production anchors
 
-- [x] standalone canonical repository and clean root verified;
-- [x] H12 source/runtime anchors preserved;
-- [x] historical audit provenance preserved separately;
-- [x] permanent governance/control docs established;
-- [x] public README/support/provenance/license presentation reviewed;
-- [x] whole tracked tree classified;
-- [x] immutable baseline CI/dependency hygiene established;
-- [x] remote branch/PR cleanup completed;
-- [x] About description/homepage/feature/merge policy verified through live repository metadata;
-- [x] `main` reports protected;
-- [ ] remove overclaiming About topics `hpos-compatible` and `wpml-ready`;
-- [ ] detailed ruleset/security settings manually verified;
-- [ ] local IDE clone reconciled to final `origin/main` with divergence `0 0`;
-- [ ] `info@simplixi.com` associated/verified and GitHub attribution allowed to refresh;
-- [ ] canonical repo confirmed to have no inherited tags/unintended releases;
-- [ ] final-certification PR merged from exact green head, `main` re-verified, transient branch auto-deleted;
-- [ ] `PROJECT-STATUS.md` changed to **PRE-PHASE-0 READY / VERIFIED** only after every item above passes.
+- `UPayments.php` — `64c789e81ae4d292ef9b1d7382812c319a44bc25`
+- `includes/Token/CustomerTokenIdentity.php` — `85430d37e9baf540842f5655b86ccf0eca3e6aea`
+- `includes/class-wc-gateway-upayments-blocks.php` — `813d192d69c069eb7ee11df93acc9dbdf03e270a`
+- `includes/Subscription/Cron/Scheduler.php` — `5251866d4df2d1326e7c09f0c8ec1d146c0bb325`
+- `includes/Subscription/Cron/CycleClaim.php` — `c34d83e2d77cc65024fe663e4c378cecb2b17347`
 
-Only then proceed to **Phase 0 — SimplixPay release identity and updater ownership**.
+## Exit gate
+
+- [x] standalone canonical repository / clean root;
+- [x] historical provenance retained;
+- [x] H12 runtime anchors preserved;
+- [x] permanent governance/control plane established;
+- [x] whole repository classified;
+- [x] public presentation reviewed;
+- [x] About topics evidence-safe;
+- [x] immutable baseline CI established;
+- [x] main ruleset independently read back and verified;
+- [x] required CI checks enforced;
+- [x] repository security controls enabled and verified;
+- [x] sole-contributor API presentation verified;
+- [x] local clone reconciled to `0 0` before closure;
+- [x] canonical tags/releases confirmed empty;
+- [x] old branches/PRs cleaned;
+- [x] transient readiness branches auto-delete after merges;
+- [x] final repository-only certification PR green and merged;
+- [x] readiness status changed to **PRE-PHASE-0 READY / VERIFIED**.
+
+## Result
+
+**PRE-PHASE-0 READY / VERIFIED.**
+
+The next permitted runtime-changing work is **Phase 0 — SimplixPay release identity and updater ownership**.
+
+Do not reinterpret this closed repository gate as a claim of stable plugin release readiness, broad compatibility certification, provider certification or WordPress.org readiness.
