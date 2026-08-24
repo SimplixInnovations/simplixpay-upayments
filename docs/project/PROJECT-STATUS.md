@@ -24,89 +24,67 @@
 | WordPress.org release | **NO** |
 | H12 token-identity hardening | **DONE / VERIFIED** |
 | Repository governance | **DONE / VERIFIED** |
-| Pre-Phase-0 repository readiness | **IN PROGRESS — final external cleanup** |
+| Pre-Phase-0 repository readiness | **FINAL EXTERNAL VERIFICATION** |
 | Next runtime-changing phase | **Phase 0 — SimplixPay release identity and updater ownership** |
+
+Phase 0 remains blocked until the final external-only readiness evidence in `REPOSITORY-READINESS.md` is closed.
 
 ## Latest independently verified canonical state
 
-Verified on 2026-08-25 before this status-sync change:
+Verified on 2026-08-25 before the current final-certification change:
 
-- `main`: `7c86bbc29dd6d311004c0305533d5d731327f05e`
-- `main` tree: `b11efcf0d0acf008d2088c67b9975226a72d7e5d`
+- `main`: `9e77bddfad66b08356be9f0e4dcdf6ebf8350af7`
+- `main` tree: `011ebc2af187c86e87b70b2e34ee0cb248b0e829`
 - tip commit: GitHub-signature **VERIFIED**
 - default branch: `main`
+- live remote branch inventory: **`main` only**
+- open pull requests: **0**
+- repository: standalone (`fork: false`), public, MIT-recognized
+- merge policy: squash only; merge commits off; rebase off
+- automatic source-branch deletion: on and independently proven by PR #6 cleanup
 - `main`: GitHub reports **protected: true**
-- canonical reachable history: four commits only
+- Projects/Wiki/Discussions: off
+- homepage: `https://simplixi.com`
+- description: `SimplixPay for UPayments — independently engineered WooCommerce payment integration by Simplix Innovations.`
+- canonical reachable history: five commits only
   1. parentless product root `1caf38410354322c1d842c28a40b0909ba31026d`
   2. governance squash `cc565779c541178f63ae21f8e712f9708035361e`
   3. governance/license squash `c6e8c32044da254654e7a928e80900d943843e7a`
   4. readiness squash `7c86bbc29dd6d311004c0305533d5d731327f05e`
-- PR #5 approved head tree equals merged `main` tree exactly: `b11efcf0d0acf008d2088c67b9975226a72d7e5d`
-- PR #5 Quality Gates: **SUCCESS**
-  - Governance: success
-  - tracked PHP syntax: success
-  - H12 PHP: **1927 PASS / 0 FAIL**
-  - Blocks syntax: success
-  - H12 Blocks: **144 PASS / 0 FAIL**
-- open pull requests: **0** at verification time
-- Dependabot PR #2: closed / not merged / superseded
-- Dependabot PR #3: closed / not merged / superseded
+  5. status-sync squash `9e77bddfad66b08356be9f0e4dcdf6ebf8350af7`
 
-The connected workflow-run helper enumerates pull-request-triggered runs, not push-triggered runs. Therefore the verified CI evidence for the final readiness tree is the successful exact PR head plus byte-identical merged tree; a separate main-push run must be checked in GitHub Actions UI if required by the final exit review.
+PR #6 changed only three control documents and passed the exact-head Quality Gates before merge:
 
-## Repository settings independently verified
+- Governance: **SUCCESS**
+- tracked PHP syntax: **SUCCESS**
+- H12 PHP: **1927 PASS / 0 FAIL**
+- Blocks syntax: **SUCCESS**
+- H12 Blocks: **144 PASS / 0 FAIL**
 
-The live repository metadata now confirms:
+The connected workflow helper enumerates PR-triggered runs but does not reliably list push-triggered `main` runs. Exact green PR-head evidence plus independently verified squash-merge tree/runtime integrity is the accepted repository gate for these documentation-only changes.
 
-- standalone repository (`fork: false`);
-- correct description: `SimplixPay for UPayments — independently engineered WooCommerce payment integration by Simplix Innovations.`;
-- homepage: `https://simplixi.com`;
-- license recognized by GitHub as **MIT**;
-- Issues enabled;
-- Projects disabled;
-- Wiki disabled;
-- Discussions disabled;
-- squash merge enabled;
-- merge commits disabled;
-- rebase merge disabled;
-- automatic source-branch deletion enabled;
-- `main` reports protected;
-- WooCommerce / WordPress / payments / UPayments / SimplixPay / HPOS / WPML topics populated.
+## Repository presentation / metadata findings
 
-The current connector does not expose the active ruleset body or security-analysis/private-vulnerability settings. Required-check names, force-push/deletion rules, secret scanning, push protection and private vulnerability reporting therefore remain **manual-verification items**, not assumed facts.
+The public repository presentation is now Simplix-led and clearly identifies UPayments as the provider rather than presenting the provider logo as the repository owner.
+
+The live About metadata is broadly correct, but two current topics overstate uncompleted compatibility certification:
+
+- `hpos-compatible`
+- `wpml-ready`
+
+Those topics must be removed before the pre-Phase-0 gate is marked READY. Neutral discovery topics such as `hpos` and `wpml` are acceptable because they describe engineering scope without asserting certification.
 
 ## Remaining pre-Phase-0 blockers
 
-### 1. Remove three obsolete remote branches
+Only evidence/actions that cannot be fully verified or mutated through the connected GitHub surface remain:
 
-Live branch inventory before the transient status-sync branch:
+1. **About-topic claim cleanup** — remove `hpos-compatible` and `wpml-ready` from repository topics.
+2. **Local IDE clone convergence** — local `HEAD...origin/main` divergence must be `0 0`, with no uncommitted work.
+3. **Root-commit account attribution** — parentless root remains authored as `Simplix Innovations <info@simplixi.com>` but GitHub's commit API still returns `author: null`; ensure `info@simplixi.com` is associated and verified on `SimplixInnovationsAdmin`, then allow contributor statistics to refresh.
+4. **Detailed ruleset/security verification** — verify the active `main` ruleset and repository security settings listed in `REPOSITORY-READINESS.md`. `protected: true` alone is insufficient evidence of the individual controls.
+5. **Tag/release cleanliness** — confirm the canonical repo has no inherited tags/releases before the Simplix version line is intentionally established.
 
-- `main`
-- `phase-0/repository-governance`
-- `phase-0/governance-finalize`
-- `pre-phase0/repository-readiness`
-
-All three non-main branches are proven safe to delete:
-
-- `phase-0/repository-governance` was PR #1 head `7a81489a16cd0c264f26784d547542dcc2417e19`; its final tree `aa387ff76c300a12933c25932dece75e8def534e` exactly equals squash commit `cc565779c541178f63ae21f8e712f9708035361e` tree.
-- `phase-0/governance-finalize` was PR #4 head `5878a165e0352b64c323efb354e2fa5e58348131`; its final tree `bb1bdc29d51a73edcdb1c4da7ca4ba99cede9b80` exactly equals squash commit `c6e8c32044da254654e7a928e80900d943843e7a` tree.
-- `pre-phase0/repository-readiness` was PR #5 head `792a0a9f2d995a9c9a1b80f7718e50be2d4396c0`; its final tree `b11efcf0d0acf008d2088c67b9975226a72d7e5d` exactly equals squash commit `7c86bbc29dd6d311004c0305533d5d731327f05e` tree.
-
-The connected GitHub tool has no delete-ref operation, so deletion is the one repository mutation that must be performed externally.
-
-### 2. Reconcile the local IDE clone
-
-A clone from before the canonical history rewrite can show a misleading large divergence such as 1 incoming / 131 outgoing despite no source edits. This cannot be verified remotely. Follow `REPOSITORY-READINESS.md` and require final `HEAD...origin/main` divergence `0 0` before closing readiness.
-
-### 3. Fix root-commit GitHub attribution and allow statistics to refresh
-
-The parentless root commit remains authored as `Simplix Innovations <info@simplixi.com>`, but GitHub's commit API currently returns `author: null` for that commit. Associate and verify `info@simplixi.com` on `SimplixInnovationsAdmin`.
-
-The rewrite occurred on 2026-08-24; GitHub documents that contributor statistics may take about 24 hours after history changes to refresh. Do not rewrite canonical history again merely to change the contributor UI.
-
-### 4. Manually verify ruleset/security details
-
-Confirm in GitHub Settings that the active `main` ruleset requires the intended controls/checks and that repository security settings are enabled as specified in `REPOSITORY-READINESS.md`. The API surface available to this reviewer confirms `protected: true` but does not expose those details.
+No runtime/plugin identity change is authorized until those items close.
 
 ## Frozen H12 production blob anchors
 
@@ -119,6 +97,21 @@ These remain byte-identical on verified `main`:
 - `includes/Subscription/Cron/CycleClaim.php` — `c34d83e2d77cc65024fe663e4c378cecb2b17347`
 
 The archived H12 engineering changelog remains original blob `8c42bc6fdae163dd4159b8036b05cd2f70cc3d5d`.
+
+## Whole-repository audit status
+
+`REPOSITORY-AUDIT.md` classifies the complete tracked tree. Known inherited/runtime debts are deliberately deferred rather than silently cleaned before characterization, including:
+
+- the large inherited `UPayments.php` bootstrap;
+- H12-critical token/subscription classes;
+- empty inherited files and duplicate provider assets;
+- legacy screenshots and multiple JS paths;
+- bundled Plugin Update Checker;
+- inherited `uninstall.php` data-deletion behavior;
+- absence of the future `src/` + Composer/PSR-4 package structure;
+- absence of the future broad PHPUnit/WP/Woo/browser/static-analysis platform.
+
+Those are Phase 0 or later engineering concerns, not pre-Phase-0 repository-governance defects.
 
 ## Protected compatibility identities
 
@@ -138,7 +131,7 @@ See `NAMING-IDENTITY-STANDARD.md` for the full compatibility registry.
 
 ## Phase 0 — blocked until readiness closes
 
-Phase 0 is **not authorized to start yet**. After every final readiness item is independently verified, Phase 0 will:
+After every final readiness item is independently verified, Phase 0 will:
 
 - eliminate the upstream-controlled update path;
 - establish independent SimplixPay semantic versioning;

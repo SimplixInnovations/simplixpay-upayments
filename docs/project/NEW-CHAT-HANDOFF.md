@@ -18,7 +18,7 @@ Use this file with root `AGENTS.md`, `PROJECT-STATUS.md`, `REPOSITORY-READINESS.
 
 ## Current program position
 
-The repository remains in **pre-Phase-0 repository readiness — final external cleanup**.
+The repository is in **pre-Phase-0 final external verification**.
 
 **Do not begin runtime/plugin identity changes until `REPOSITORY-READINESS.md` is closed and `PROJECT-STATUS.md` says PRE-PHASE-0 READY / VERIFIED.**
 
@@ -28,59 +28,57 @@ The next runtime-changing program phase is:
 
 ## Latest independently verified canonical state
 
-Before the current status-sync change:
+Before the current final-certification change:
 
-- `main`: `7c86bbc29dd6d311004c0305533d5d731327f05e`
-- `main` tree: `b11efcf0d0acf008d2088c67b9975226a72d7e5d`
+- `main`: `9e77bddfad66b08356be9f0e4dcdf6ebf8350af7`
+- `main` tree: `011ebc2af187c86e87b70b2e34ee0cb248b0e829`
 - tip signature: **VERIFIED**
-- `main`: default branch and reports **protected: true**
-- canonical reachable history: four commits only
-- PR #5 approved head tree exactly equals merged `main` tree
-- PR #5 Quality Gates: **SUCCESS**
+- default branch: `main`
+- remote branch inventory: **`main` only**
+- open pull requests: **0**
+- standalone repo (`fork: false`)
+- license: MIT
+- squash-only merges
+- automatic source-branch deletion on and verified
+- `main` reports protected
+- Projects/Wiki/Discussions off
+- homepage `https://simplixi.com`
 - H12 PHP: **1927 PASS / 0 FAIL**
 - H12 Blocks: **144 PASS / 0 FAIL**
-- open pull requests: **0** at verification time
-- PR #2/#3 Dependabot updates: closed, unmerged, superseded
 - production maturity: **pre-release engineering hardening**
 - stable SimplixPay release: **NO**
 - WordPress.org release: **NO**
 
 Treat every recorded SHA as milestone evidence only. A new session must always re-check live GitHub first.
 
-## Live repository settings already verified
+## Repository presentation and governance
 
-The repository API confirms:
+The public README is Simplix-led, includes verified Woo Agency Partner proof, identifies UPayments as the provider, and explicitly avoids broad compatibility certification claims.
 
-- standalone repo (`fork: false`);
-- correct SimplixPay description;
-- homepage `https://simplixi.com`;
-- GitHub recognizes the license as MIT;
-- Issues on;
-- Projects off;
-- Wiki off;
-- Discussions off;
-- squash merging on;
-- merge commits off;
-- rebase merging off;
-- automatic source-branch deletion on;
-- `main` protected;
-- relevant WooCommerce / WordPress / payments / UPayments / SimplixPay / HPOS / WPML topics populated.
+Permanent control plane:
 
-The current connector does **not** expose active ruleset details or repository security-analysis/private-vulnerability settings, so those details still require a manual GitHub Settings verification before readiness closes.
+- `AGENTS.md` — mandatory execution rules;
+- `docs/project/PROJECT-STATUS.md` — living verified engineering state;
+- `docs/project/REPOSITORY-READINESS.md` — pre-Phase-0 exit gate;
+- `docs/project/REPOSITORY-AUDIT.md` — whole tracked-tree classification;
+- `docs/project/NAMING-IDENTITY-STANDARD.md` — frozen identity/compatibility registry;
+- `docs/project/MASTER-ENGINEERING-PLAYBOOK.md` — complete engineering program;
+- `docs/project/BASELINE-H12.md` — canonical-root/H12 provenance;
+- `.github/CODEOWNERS` — ownership by `@SimplixInnovationsAdmin`;
+- `Quality Gates` CI — governance, all tracked PHP syntax and H12 regression baseline;
+- root security/support/contribution/upstream/license/provenance policies.
 
-## Remaining pre-Phase-0 blockers
+## Remaining pre-Phase-0 external evidence
 
-1. Delete three old remote branches:
-   - `phase-0/repository-governance`
-   - `phase-0/governance-finalize`
-   - `pre-phase0/repository-readiness`
-2. Reconcile any old local clone to `origin/main`; final divergence must be `0 0`.
-3. Associate/verify `info@simplixi.com` on `SimplixInnovationsAdmin`; current root commit API still returns `author: null`.
-4. Allow GitHub contributor statistics time to refresh after the history rewrite; GitHub documents roughly a 24-hour refresh window.
-5. Manually verify the detailed `main` ruleset requirements and security settings listed in `REPOSITORY-READINESS.md`.
-6. If final exit policy requires explicit push-run evidence, inspect the `main` Quality Gates run in GitHub Actions UI; the current connector enumerates PR-triggered runs but not the push-run listing.
+Only items not fully observable/mutable through the connected GitHub surface remain:
 
-The three stale branches are independently proven safe to delete: each branch's final tree exactly equals the corresponding squash-merge tree on canonical history. See `REPOSITORY-READINESS.md` for the exact SHAs and deletion command.
+1. remove About topics `hpos-compatible` and `wpml-ready`; neutral `hpos`/`wpml` may remain;
+2. reconcile local IDE clone after the final readiness merge; divergence must be `0 0` and no uncommitted work should remain;
+3. ensure `info@simplixi.com` is associated and verified on `SimplixInnovationsAdmin`; root commit currently still maps to `author: null` through GitHub's commit API;
+4. manually verify the detailed `main` ruleset and repository security controls listed in `REPOSITORY-READINESS.md`;
+5. confirm the canonical repo has no inherited Git tags or unintended GitHub Releases.
+
+Do not rewrite canonical history again merely to force contributor statistics.
 
 ## Frozen H12 evidence
 
@@ -92,19 +90,6 @@ Current verified `main` retains:
 - Scheduler — `5251866d4df2d1326e7c09f0c8ec1d146c0bb325`
 - CycleClaim — `c34d83e2d77cc65024fe663e4c378cecb2b17347`
 - archived H12 engineering changelog — `8c42bc6fdae163dd4159b8036b05cd2f70cc3d5d`
-
-## Permanent governance/control plane
-
-- `AGENTS.md` — mandatory execution rules;
-- `docs/project/PROJECT-STATUS.md` — living verified engineering state;
-- `docs/project/REPOSITORY-READINESS.md` — current pre-Phase-0 exit gate;
-- `docs/project/REPOSITORY-AUDIT.md` — full tracked-tree classification;
-- `docs/project/NAMING-IDENTITY-STANDARD.md` — frozen public/technical identity and compatibility registry;
-- `docs/project/MASTER-ENGINEERING-PLAYBOOK.md` — complete engineering program;
-- `docs/project/BASELINE-H12.md` — canonical-root/H12 provenance;
-- `.github/CODEOWNERS` — canonical ownership by `@SimplixInnovationsAdmin`;
-- `Quality Gates` CI — governance, all tracked PHP syntax and H12 regression baseline;
-- root security/support/contribution/upstream/license/provenance policies.
 
 ## H12 non-negotiable token/provider rules
 
@@ -169,7 +154,7 @@ Phase 0 must:
 
 ## Program sequence
 
-0. **Repository Foundation / Readiness Gate** — current; final cleanup remains.
+0. **Repository Foundation / Readiness Gate** — final external verification.
 1. **Phase 0 — SimplixPay release identity and updater ownership**.
 2. **Phase 9I — Historical token-identity migration**.
 3. Provider contract + payment lifecycle/state machine audit.
