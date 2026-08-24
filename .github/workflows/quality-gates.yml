@@ -97,6 +97,9 @@ jobs:
           set -euo pipefail
           git ls-files -z '*.php' | xargs -0 -r -n1 php -l
 
+      - name: Phase 0 release identity harness
+        run: php tests/harness/phase-0-release-identity-harness.php
+
       - name: H12 PHP harness
         run: php tests/harness/phase-9g-h12-php-harness.php
 
