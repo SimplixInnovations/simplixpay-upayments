@@ -14,58 +14,96 @@ Use this file with root `AGENTS.md`, `PROJECT-STATUS.md`, `REPOSITORY-READINESS.
 - Maintainer: **Simplix Innovations**
 - Provider: **UPayments**
 
-`SimplixPay` alone is reserved for the future broader/multi-provider payment product, including the planned **SimplixPay for WooCommerce** direction.
+`SimplixPay` alone is reserved for the future broader/multi-provider payment product.
 
 ## Current program position
 
-The repository is in **pre-Phase-0 repository readiness**.
+The repository remains in **pre-Phase-0 repository readiness — final external cleanup**.
 
-**Do not begin runtime/plugin identity changes until `docs/project/REPOSITORY-READINESS.md` is closed and `PROJECT-STATUS.md` says PRE-PHASE-0 READY / VERIFIED.**
+**Do not begin runtime/plugin identity changes until `REPOSITORY-READINESS.md` is closed and `PROJECT-STATUS.md` says PRE-PHASE-0 READY / VERIFIED.**
 
 The next runtime-changing program phase is:
 
 **Phase 0 — SimplixPay release identity and updater ownership.**
 
-## Last independently verified canonical milestones
+## Latest independently verified canonical state
 
-- clean standalone product root: `1caf38410354322c1d842c28a40b0909ba31026d` — parentless;
-- governance PR #1: **DONE / VERIFIED**;
-- governance squash merge: `cc565779c541178f63ae21f8e712f9708035361e`;
-- governance/license follow-up PR #4: `c6e8c32044da254654e7a928e80900d943843e7a`;
-- historical H12 merge retained in audit repo: `93e9925247a8bfade626cb822136852fd96eaea2`;
-- H12 customer-token identity hardening: **DONE / VERIFIED**;
-- last verified H12 baseline: PHP **1927 PASS / 0 FAIL**; Blocks **144 PASS / 0 FAIL**;
-- production maturity: **pre-release engineering hardening**;
-- stable SimplixPay release: **NO**;
-- WordPress.org release: **NO**.
+Before the current status-sync change:
 
-Treat every recorded SHA as milestone evidence only. First action in a new session is always live GitHub verification.
+- `main`: `7c86bbc29dd6d311004c0305533d5d731327f05e`
+- `main` tree: `b11efcf0d0acf008d2088c67b9975226a72d7e5d`
+- tip signature: **VERIFIED**
+- `main`: default branch and reports **protected: true**
+- canonical reachable history: four commits only
+- PR #5 approved head tree exactly equals merged `main` tree
+- PR #5 Quality Gates: **SUCCESS**
+- H12 PHP: **1927 PASS / 0 FAIL**
+- H12 Blocks: **144 PASS / 0 FAIL**
+- open pull requests: **0** at verification time
+- PR #2/#3 Dependabot updates: closed, unmerged, superseded
+- production maturity: **pre-release engineering hardening**
+- stable SimplixPay release: **NO**
+- WordPress.org release: **NO**
 
-## Pre-Phase-0 readiness findings
+Treat every recorded SHA as milestone evidence only. A new session must always re-check live GitHub first.
 
-The readiness audit found and is correcting:
+## Live repository settings already verified
 
-1. README had become too internal and had lost the verified Woo Agency Partner proof/link.
-2. Root `CHANGELOG.md` was a ~113 KB pre-product engineering transcript rather than a product release changelog.
-3. GitHub Actions were on mutable major tags and one major behind current releases.
-4. Dependabot opened separate setup-node/checkout major PRs; the canonical workflow should incorporate audited current releases and group future Actions updates.
-5. GitHub About topics/homepage, merge policy, branch rules and security settings require manual configuration because current connected tools cannot write them.
-6. Merged governance branches and Dependabot branches need cleanup.
-7. A local clone made before the history rewrite can show misleading large sync divergence (for example 1 incoming / 131 outgoing) despite no file changes.
-8. GitHub contributor statistics can remain stale after the history rewrite. The clean-root author email `info@simplixi.com` also needs to be associated/verified on `SimplixInnovationsAdmin` so GitHub can map that commit correctly.
+The repository API confirms:
 
-Exact actions live in `REPOSITORY-READINESS.md`.
+- standalone repo (`fork: false`);
+- correct SimplixPay description;
+- homepage `https://simplixi.com`;
+- GitHub recognizes the license as MIT;
+- Issues on;
+- Projects off;
+- Wiki off;
+- Discussions off;
+- squash merging on;
+- merge commits off;
+- rebase merging off;
+- automatic source-branch deletion on;
+- `main` protected;
+- relevant WooCommerce / WordPress / payments / UPayments / SimplixPay / HPOS / WPML topics populated.
+
+The current connector does **not** expose active ruleset details or repository security-analysis/private-vulnerability settings, so those details still require a manual GitHub Settings verification before readiness closes.
+
+## Remaining pre-Phase-0 blockers
+
+1. Delete three old remote branches:
+   - `phase-0/repository-governance`
+   - `phase-0/governance-finalize`
+   - `pre-phase0/repository-readiness`
+2. Reconcile any old local clone to `origin/main`; final divergence must be `0 0`.
+3. Associate/verify `info@simplixi.com` on `SimplixInnovationsAdmin`; current root commit API still returns `author: null`.
+4. Allow GitHub contributor statistics time to refresh after the history rewrite; GitHub documents roughly a 24-hour refresh window.
+5. Manually verify the detailed `main` ruleset requirements and security settings listed in `REPOSITORY-READINESS.md`.
+6. If final exit policy requires explicit push-run evidence, inspect the `main` Quality Gates run in GitHub Actions UI; the current connector enumerates PR-triggered runs but not the push-run listing.
+
+The three stale branches are independently proven safe to delete: each branch's final tree exactly equals the corresponding squash-merge tree on canonical history. See `REPOSITORY-READINESS.md` for the exact SHAs and deletion command.
+
+## Frozen H12 evidence
+
+Current verified `main` retains:
+
+- `UPayments.php` — `64c789e81ae4d292ef9b1d7382812c319a44bc25`
+- `includes/Token/CustomerTokenIdentity.php` — `85430d37e9baf540842f5655b86ccf0eca3e6aea`
+- Blocks integration — `813d192d69c069eb7ee11df93acc9dbdf03e270a`
+- Scheduler — `5251866d4df2d1326e7c09f0c8ec1d146c0bb325`
+- CycleClaim — `c34d83e2d77cc65024fe663e4c378cecb2b17347`
+- archived H12 engineering changelog — `8c42bc6fdae163dd4159b8036b05cd2f70cc3d5d`
 
 ## Permanent governance/control plane
 
 - `AGENTS.md` — mandatory execution rules;
 - `docs/project/PROJECT-STATUS.md` — living verified engineering state;
 - `docs/project/REPOSITORY-READINESS.md` — current pre-Phase-0 exit gate;
+- `docs/project/REPOSITORY-AUDIT.md` — full tracked-tree classification;
 - `docs/project/NAMING-IDENTITY-STANDARD.md` — frozen public/technical identity and compatibility registry;
 - `docs/project/MASTER-ENGINEERING-PLAYBOOK.md` — complete engineering program;
 - `docs/project/BASELINE-H12.md` — canonical-root/H12 provenance;
 - `.github/CODEOWNERS` — canonical ownership by `@SimplixInnovationsAdmin`;
-- `Quality Gates` CI — governance, PHP syntax and H12 regression baseline;
+- `Quality Gates` CI — governance, all tracked PHP syntax and H12 regression baseline;
 - root security/support/contribution/upstream/license/provenance policies.
 
 ## H12 non-negotiable token/provider rules
@@ -119,9 +157,9 @@ Phase 0 must:
 ## Required working method
 
 1. Read root `AGENTS.md`.
-2. Read `PROJECT-STATUS.md`, then `REPOSITORY-READINESS.md` if readiness is not closed.
+2. Read `PROJECT-STATUS.md`, then `REPOSITORY-READINESS.md` while readiness is open.
 3. Read naming standard before touching names/IDs.
-4. Verify live `main`, open PRs/branches, exact source and CI before implementation.
+4. Verify live `main`, PRs/branches, exact source and CI before implementation.
 5. Reconcile documented state with live GitHub; report drift.
 6. Prefer direct GitHub operations; delegate only genuinely inaccessible actions.
 7. Never approve/merge from an Agent or bot report alone.
@@ -131,7 +169,7 @@ Phase 0 must:
 
 ## Program sequence
 
-0. **Repository Foundation / Readiness Gate** — current; must close first.
+0. **Repository Foundation / Readiness Gate** — current; final cleanup remains.
 1. **Phase 0 — SimplixPay release identity and updater ownership**.
 2. **Phase 9I — Historical token-identity migration**.
 3. Provider contract + payment lifecycle/state machine audit.
