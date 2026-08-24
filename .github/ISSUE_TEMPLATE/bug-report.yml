@@ -1,17 +1,17 @@
 name: Bug report
-description: Report a reproducible defect in the Simplix-maintained WooCommerce integration.
+description: Report a reproducible defect in SimplixPay for UPayments.
 title: "[Bug]: "
 labels: []
 body:
   - type: markdown
     attributes:
       value: |
-        Thank you for reporting a reproducible issue. Do not include API keys, bearer tokens, card data, customer PII, or other production secrets.
+        Provide a minimal reproducible issue. Never include API keys, bearer tokens, card data, customer tokens, PII, database exports, or production secrets. Security findings must follow SECURITY.md.
   - type: input
     id: plugin-version
     attributes:
-      label: Plugin version or commit
-      placeholder: "3.1.1 or commit SHA"
+      label: SimplixPay version or commit
+      placeholder: "Version or full commit SHA"
     validations:
       required: true
   - type: input
@@ -57,16 +57,15 @@ body:
     id: wpml
     attributes:
       label: WPML / multilingual setup
-      placeholder: "Not installed, or list relevant plugin versions"
+      placeholder: "Not installed, or exact relevant versions"
   - type: input
     id: theme
     attributes:
-      label: Theme
+      label: Theme and version
   - type: textarea
     id: reproduce
     attributes:
       label: Reproduction steps
-      description: Provide the smallest reliable sequence that reproduces the problem.
     validations:
       required: true
   - type: textarea
@@ -82,15 +81,14 @@ body:
     validations:
       required: true
   - type: textarea
-    id: logs
+    id: evidence
     attributes:
-      label: Sanitized logs or stack trace
-      description: Remove credentials, tokens, customer data, and sensitive payload content.
-      render: shell
+      label: Sanitized evidence
+      description: Logs/stack traces/screenshots with secrets, tokens and PII removed.
   - type: checkboxes
     id: safety
     attributes:
       label: Sensitive-data confirmation
       options:
-        - label: I have removed API keys, bearer tokens, card data, customer PII, and production secrets.
+        - label: I removed credentials, tokens, card data, PII and production secrets.
           required: true

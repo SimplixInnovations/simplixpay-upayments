@@ -1,24 +1,26 @@
-# Upstream Relationship
+# Upstream Relationship and Provenance
 
-## Source project
+## Source lineage
 
-This repository is a maintained fork of the UPayments WooCommerce integration:
+**SimplixPay for UPayments** is independently maintained by Simplix Innovations and derives from the UPayments WooCommerce integration:
 
-- Upstream repository: https://github.com/upaymentskwt/woocommerce
-- Upstream product documentation: https://developers.upayments.com/reference/woocommerce
+- canonical Simplix repository: https://github.com/SimplixInnovations/simplixpay-upayments
+- historical Simplix engineering/audit archive: https://github.com/SimplixInnovations/upayments-woocommerce
+- provider upstream repository: https://github.com/upaymentskwt/woocommerce
+- provider documentation: https://developers.upayments.com/reference/woocommerce
+
+The canonical repository is deliberately **standalone**, not a GitHub fork. The former fork remains preserved separately so PR/review/commit provenance for hardening work remains auditable.
 
 ## Maintenance model
 
-Simplix Innovations maintains this fork independently. Upstream changes are reviewed before they are incorporated; they are not merged automatically into production releases. Changes are assessed for payment-flow risk, compatibility impact, security implications, and regression potential.
+Upstream changes are inputs for review, not automatic updates. Nothing from upstream should be merged or distributed merely because it is newer. Changes require payment-flow, compatibility, security and regression analysis.
 
-The goal is to preserve merchant compatibility while improving engineering quality and modern WooCommerce interoperability.
+The canonical Simplix distribution must own its release/update channel; it must never be silently replaceable by the upstream repository.
 
 ## Attribution and trademarks
 
-UPayments, its product names, logos, and related trademarks belong to their respective owners. This fork does not claim ownership of the UPayments brand and does not imply sponsorship, endorsement, or an official maintenance relationship unless such a relationship is explicitly announced by the relevant parties.
-
-Simplix Innovations is responsible for the modifications and maintenance work it publishes in this fork. Historical upstream authorship and licensing remain intact.
+UPayments and related names/logos/trademarks belong to their respective owners. SimplixPay for UPayments does not imply UPayments sponsorship, endorsement or official maintenance status unless explicitly announced by the relevant parties. Simplix Innovations is responsible for modifications/releases it publishes.
 
 ## Compatibility claims
 
-Documentation from UPayments is treated as the upstream capability baseline. Simplix Innovations only marks a compatibility area as **Verified** after independent testing against a documented environment. See [docs/COMPATIBILITY.md](docs/COMPATIBILITY.md).
+UPayments documentation is the provider capability baseline. Simplix Innovations marks a capability **Verified** only after independent reproducible validation. See `docs/COMPATIBILITY.md`.

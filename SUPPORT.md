@@ -2,38 +2,16 @@
 
 ## Scope
 
-This repository covers the WooCommerce integration layer maintained by Simplix Innovations.
-
-Appropriate reports include:
-
-- reproducible WooCommerce checkout failures;
-- WordPress/WooCommerce/PHP compatibility regressions;
-- WPML or multilingual interoperability issues;
-- Classic Checkout or Checkout Blocks integration defects;
-- HPOS compatibility issues;
-- payment callback, webhook, redirect, or order-status defects attributable to the plugin;
-- plugin frontend asset conflicts;
-- saved-card, tokenization, subscription, or multi-merchant integration defects;
-- performance or logging behavior caused by the plugin.
+This repository covers **SimplixPay for UPayments**, the WooCommerce integration layer maintained by Simplix Innovations. Appropriate reports include reproducible checkout failures, WordPress/WooCommerce/PHP regressions, WPML/multilingual issues, Classic/Blocks defects, HPOS issues, callback/webhook/order-status defects, frontend asset conflicts, saved-card/tokenization/subscription/multi-merchant integration defects, performance regressions and logging/diagnostics behavior caused by the plugin.
 
 ## Out of scope
 
-UPayments merchant onboarding, KYC, settlement, acquiring, pricing, account suspension, production API enablement, platform incidents, and commercial questions must be handled through UPayments' official channels.
+UPayments merchant onboarding, KYC, settlement, acquiring, pricing, account suspension, production API enablement, provider incidents and commercial questions belong to UPayments official channels.
 
 ## Sensitive information
 
-Never publish:
-
-- API keys or bearer tokens;
-- live merchant credentials;
-- cardholder or payment-card data;
-- customer personal data;
-- private webhook payloads containing sensitive information;
-- database exports;
-- production secrets or session tokens.
-
-Redact sensitive values before attaching logs or screenshots.
+Never publish API keys, bearer tokens, merchant credentials, card data, customer unique/card tokens, identity secrets/provenance, customer PII, private webhook payloads, database exports or session secrets. Redact screenshots/logs before posting.
 
 ## Professional support
 
-Commercial WooCommerce engineering, emergency production debugging, implementation assistance, or ongoing maintenance is available through Simplix Innovations at https://simplixi.com.
+Commercial WooCommerce engineering, production debugging, implementation assistance and ongoing maintenance are available through Simplix Innovations at https://simplixi.com or info@simplixi.com.

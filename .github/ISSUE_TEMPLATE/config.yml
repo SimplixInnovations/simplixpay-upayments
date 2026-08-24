@@ -2,7 +2,10 @@ blank_issues_enabled: false
 contact_links:
   - name: Simplix Innovations professional WooCommerce support
     url: https://simplixi.com
-    about: Commercial integration, production debugging, and long-term WooCommerce maintenance.
+    about: Commercial implementation, production debugging and long-term WooCommerce engineering.
+  - name: Security policy
+    url: https://github.com/SimplixInnovations/simplixpay-upayments/security/policy
+    about: Do not post suspected vulnerabilities publicly.
   - name: Official UPayments developer documentation
     url: https://developers.upayments.com/reference/woocommerce
-    about: UPayments platform, API, merchant, and official integration documentation.
+    about: UPayments platform/API/merchant documentation.
