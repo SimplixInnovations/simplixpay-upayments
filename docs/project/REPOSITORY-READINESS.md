@@ -2,8 +2,10 @@
 
 **Purpose:** historical record of the repository, governance, presentation, settings, attribution and local-history gate required before runtime-changing SimplixPay release-identity work.
 
-**Canonical repository:** `SimplixInnovations/simplixpay-upayments`  
-**Closed:** 2026-08-25  
+**Canonical repository:** `SimplixInnovations/simplixpay-upayments`
+
+**Closed:** 2026-08-25
+
 **Runtime-change scope of this gate:** **NONE**
 
 > **Gate status: PRE-PHASE-0 READY / VERIFIED.** Phase 0 is now permitted under the repository's normal PR/CI/review controls.
@@ -173,4 +175,4 @@ It merged as `7e530c2c6881c04a3170e110b23289d90185da14` with tree `64973fa491806
 
 The next permitted runtime-changing work is **Phase 0 — SimplixPay release identity and updater ownership**.
 
-Do not reinterpret this closed repository gate as a claim of stable plugin release readiness, broad compatibility certification, provider certification, or WordPress.org readiness.
+Do not reinterpret this closed repository gate as a claim of stable plugin release readiness, broad compatibility certification, provider certification or WordPress.org readiness.
