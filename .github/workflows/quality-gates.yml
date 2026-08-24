@@ -1,0 +1,65 @@
+name: Quality Gates
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: quality-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  governance:
+    name: Governance
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Required control files
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -s AGENTS.md
+          test -s docs/project/PROJECT-STATUS.md
+          test -s docs/project/NAMING-IDENTITY-STANDARD.md
+          test -s docs/project/MASTER-ENGINEERING-PLAYBOOK.md
+          test -s .github/CODEOWNERS
+      - name: Whitespace errors
+        shell: bash
+        run: git diff --check HEAD^ HEAD || git diff --check
+
+  h12-regression:
+    name: H12 Regression Harness
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          coverage: none
+          tools: none
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '24'
+          package-manager-cache: false
+      - name: PHP syntax
+        shell: bash
+        run: |
+          set -euo pipefail
+          find UPayments.php includes tests -type f -name '*.php' -print0 | xargs -0 -n1 php -l
+      - name: H12 PHP harness
+        run: php tests/harness/phase-9g-h12-php-harness.php
+      - name: Blocks harness syntax
+        run: node --check tests/harness/phase-9g-h12-blocks-harness.js
+      - name: H12 Blocks harness
+        run: node tests/harness/phase-9g-h12-blocks-harness.js

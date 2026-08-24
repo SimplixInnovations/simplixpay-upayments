@@ -1,41 +1,21 @@
 # Contribution Policy
 
-Thank you for helping improve the reliability of UPayments on WooCommerce.
+Thank you for helping improve **SimplixPay for UPayments**.
 
 ## Current contribution model
 
-This fork is maintained under the Simplix Innovations engineering program. Public bug reports, compatibility reports, reproduction cases, and technical evidence are welcome once GitHub Issues are enabled.
+The canonical repository is maintained under the Simplix Innovations engineering program. Public bug reports, compatibility reports, reproduction cases and technical evidence are welcome through GitHub Issues.
 
-External code pull requests are **not accepted by default**. This keeps release authorship, payment-risk ownership, and long-term maintenance responsibility inside the Simplix Innovations maintenance process. A code contribution should only be opened when explicitly requested by a maintainer.
+External code pull requests are **not accepted by default**. Payment-risk ownership, canonical authorship and long-term release responsibility remain inside the Simplix Innovations maintenance process. Open a code PR only when a maintainer explicitly requests it.
 
 ## Before reporting a defect
 
-Prepare a minimal reproduction and record:
+Record the smallest reproducible case and include WordPress, WooCommerce, PHP, plugin version/commit, checkout mode, HPOS state, multilingual stack, theme, payment feature, expected/actual behavior and sanitized evidence.
 
-- WordPress version;
-- WooCommerce version;
-- PHP version;
-- plugin version/commit;
-- Classic or Block Checkout;
-- HPOS status;
-- WPML/multilingual status;
-- active theme;
-- relevant payment feature (standard payment, saved card, subscription, multi-merchant, etc.);
-- expected behavior;
-- actual behavior;
-- sanitized logs or stack trace.
+Never include secrets, card data, customer tokens, customer PII or production database exports. Security findings belong in the private process described in `SECURITY.md`.
 
-Never include secrets or customer/payment data.
+## Engineering standard for requested changes
 
-## Engineering standards
+Read `AGENTS.md` and the project control documents first. Requested changes must be phase-scoped, reviewable, backward-conscious and supported by evidence. Payment-flow behavior, persisted IDs and provider contracts must not be changed casually.
 
-Requested code changes must be narrow, reviewable, backward-conscious, and supported by a reproducible failure or clearly defined improvement. Payment-flow behavior should not be changed casually.
-
-Every change should document:
-
-1. the problem or requirement;
-2. root cause;
-3. implementation scope;
-4. compatibility impact;
-5. validation performed;
-6. rollback considerations.
+Every change should document requirement/root cause, scope, payment/security risk, compatibility impact, validation, rollback/recovery considerations and documentation updates.

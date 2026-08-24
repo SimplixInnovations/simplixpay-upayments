@@ -1,38 +1,34 @@
 # Compatibility Matrix
 
-This document separates **upstream capability claims** from **Simplix Innovations verification**. A feature is not marked Verified until it has passed a documented test environment.
+This document separates **provider/upstream capability claims** from **SimplixPay UPayments verification**. A feature is not marked Verified until it has passed a documented reproducible environment.
 
-| Area | Upstream position | Simplix status | Notes |
+> Current project posture: **R0 — engineering hardening**. The plugin bootstrap still carries legacy upstream public metadata during Phase 0; that is not a compatibility certification.
+
+| Area | Provider/upstream position | Simplix status | Notes |
 |---|---|---|---|
-| Classic WooCommerce Checkout | Supported | Pending regression validation | Core upstream integration path. |
-| Cart/Checkout Blocks — standard products | UPayments documents native support | Pending independent validation | WooCommerce requires payment gateways to register a frontend payment-method integration as well as declare compatibility. |
-| Checkout Blocks — subscription/tokenization flows | UPayments recommends Classic Checkout for the most reliable subscription experience | Pending validation | Must be tested separately from standard-product Blocks support. |
-| High-Performance Order Storage (HPOS) | No verified declaration recorded in this maintenance track yet | Audit required | Direct order/post access must be reviewed before declaring compatibility. |
-| WPML / String Translation | Known upstream defect reproduced | Fix implemented — validation pending | Upstream gateway can pass a `null` gettext text domain, causing current WPML String Translation to throw a fatal `TypeError`. The `WC_Upayments::$domain` property is now initialized to `upayments` and the plugin `Text Domain` header is the stable `upayments` string instead of a URL. Runtime validation is still required before this row can be marked `Verified`. |
-| My Account / theme interoperability | Generic UPayments account CSS previously forced WooCommerce My Account navigation/content dimensions and navigation presentation | Fix implemented — validation pending | Core WooCommerce selectors (`.woocommerce-MyAccount-content`, `.woocommerce-MyAccount-navigation`, and its descendants) and the generic `.woocommerce-page table.shop_table_responsive` rule have been removed from `assets/css/customer.css` so layout remains under the active theme/WooCommerce. Runtime cross-theme validation is pending. |
-| PHP 8.4 / 8.5 | Not independently certified by this fork | Audit required | Compatibility will be based on runtime testing and static analysis, not header claims alone. |
-| Saved cards / tokenization | Upstream feature | Pending regression validation | UPayments documents customer-token/card APIs. |
-| Multi-merchant | Upstream feature | Pending regression validation | UPayments documents `ExtraMerchantsData`-based multi-merchant processing. |
-| Webhook payment updates | UPayments documents `notificationUrl` as mandatory | Audit required | Plugin handling must be reviewed for validation, idempotency, order matching, and failure behavior. |
-| Payment status verification | UPayments provides status lookup | Audit required | UPayments documents lookup by `track_id` and other identifiers; retry/rate-limit behavior must be respected. |
+| Classic WooCommerce Checkout | Supported upstream | Pending regression validation | Core integration path; broad certification pending. |
+| Cart/Checkout Blocks — standard products | UPayments documents support | Pending independent validation | Registration and real checkout behavior must both be tested. |
+| Blocks — subscription/tokenization | UPayments guidance has historically favored Classic for subscription reliability | Pending validation | Test separately from standard products. |
+| HPOS | No current Simplix certification | Audit required | Direct post/order access must be reviewed and tested. |
+| WPML / String Translation | Historical upstream defect reproduced | Fix implemented — certification pending | Existing remediation remains subject to full WPML/WCML validation and planned text-domain identity migration. |
+| My Account / theme interoperability | Historical generic CSS conflict reproduced | Fix implemented — certification pending | Cross-theme/device/accessibility validation remains open. |
+| PHP versions | No broad current Simplix certification | Audit required | Header claims do not substitute for runtime/static evidence. |
+| Saved cards / tokenization | Upstream feature | H12 identity hardening verified; migration/regression certification pending | Historical migration Phase 9I remains required for existing stores. |
+| Multi-merchant | Upstream feature | Pending regression validation | Provider contract/sum/routing behavior must be audited. |
+| Webhook payment updates | `notificationUrl` documented by UPayments | Audit required | Validation, idempotency, order matching, replay/failure behavior pending. |
+| Payment status verification | UPayments status API exists | Audit required | Retry/rate-limit/reconciliation contract must be frozen. |
+| Refunds | UPayments refund capability exists | Audit required | Full/partial/idempotency/reconciliation semantics pending. |
+| Subscriptions / auto deduction | Upstream feature | Targeted safety hardening exists; broad certification pending | Concurrency/idempotency/lifecycle/recovery matrix remains open. |
 
-## Evidence sources
+## Evidence rule
 
-### UPayments
+A Simplix **Verified** entry must identify exact WordPress, WooCommerce, PHP, checkout mode, HPOS state, multilingual state, relevant plugin versions and payment feature. Validation must be reproducible and linked to CI/test/review evidence where practical.
 
-- WooCommerce integration: https://developers.upayments.com/reference/woocommerce
-- Checkout Blocks support: https://developers.upayments.com/reference/woocommerce-core-block-checkout-support
-- Webhooks: https://developers.upayments.com/reference/webhook
-- Payment status: https://developers.upayments.com/reference/checkpaymentstatus
-- Saved cards: https://developers.upayments.com/reference/retrievecustomercards
-- Multi-merchant: https://developers.upayments.com/reference/multi-vendor-api
+## Primary documentation
 
-### WooCommerce
-
-- Extension compatibility: https://developer.woocommerce.com/docs/extensions/best-practices-extensions/compatibility
-- Cart/Checkout extensibility: https://developer.woocommerce.com/docs/block-development/extensible-blocks/cart-and-checkout-blocks/
-- HPOS extension guidance: https://developer.woocommerce.com/docs/features/orders/high-performance-order-storage/recipe-book/
-
-## Verification rule
-
-A Simplix Verified entry should identify the tested WordPress, WooCommerce, PHP, checkout mode, HPOS state, multilingual state, and relevant payment feature. Validation evidence should be reproducible.
+- UPayments WooCommerce: https://developers.upayments.com/reference/woocommerce
+- UPayments webhook: https://developers.upayments.com/reference/webhook
+- UPayments payment status: https://developers.upayments.com/reference/checkpaymentstatus
+- UPayments saved cards: https://developers.upayments.com/reference/retrievecustomercards
+- WooCommerce compatibility guidance: https://developer.woocommerce.com/docs/extensions/best-practices-extensions/compatibility
+- WooCommerce HPOS: https://developer.woocommerce.com/docs/features/orders/high-performance-order-storage/recipe-book/
