@@ -8,8 +8,16 @@ Write-Host '=== Phase 0 guarded bootstrap patch ==='
 git fetch origin --prune
 if ($LASTEXITCODE -ne 0) { throw 'git fetch failed' }
 
-git switch $Branch
-if ($LASTEXITCODE -ne 0) { throw "Could not switch to $Branch. Run: git switch -c $Branch --track origin/$Branch" }
+$localBranchExists = $false
+git show-ref --verify --quiet "refs/heads/$Branch"
+if ($LASTEXITCODE -eq 0) { $localBranchExists = $true }
+
+if ($localBranchExists) {
+    git switch $Branch
+} else {
+    git switch -c $Branch --track "origin/$Branch"
+}
+if ($LASTEXITCODE -ne 0) { throw "Could not switch/create $Branch" }
 
 git pull --ff-only origin $Branch
 if ($LASTEXITCODE -ne 0) { throw 'Could not fast-forward Phase 0 branch' }
@@ -131,7 +139,7 @@ $required = @(
     'Plugin Name: SimplixPay for UPayments',
     'Version: 0.1.0',
     "define('UPAYMENTS_PLUGIN_FILE', __FILE__ );",
-    "SIMPLIXPAY_UPAYMENTS_VERSION",
+    'SIMPLIXPAY_UPAYMENTS_VERSION',
     '/src/Release/Identity.php',
     '?wc-api=wc_upayments'
 )
