@@ -2,11 +2,12 @@
 
 defined('WP_UNINSTALL_PLUGIN') || exit;
 
-global $wpdb;
-
-$wpdb->query("DROP TABLE IF EXISTS {$wpdb->prefix}upay_subscriptions");
-
-delete_option('upay_subscription_settings');
-delete_option('upayments_payment_methods_rate_gate_live');
-delete_option('upayments_payment_methods_rate_gate_test');
-delete_option('upayments_payment_methods_rate_gate');
+/**
+ * SimplixPay UPayments intentionally preserves merchant/payment data on
+ * uninstall. Settings, historical compatibility options, subscription state,
+ * payment/token identity, and legacy tables are not silently erased.
+ *
+ * A future explicit cleanup/erasure tool must define its own confirmation,
+ * retention, migration, and rollback contract before destructive deletion is
+ * permitted.
+ */
