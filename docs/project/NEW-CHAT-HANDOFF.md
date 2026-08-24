@@ -1,6 +1,6 @@
 # SimplixPay for UPayments — Clean Chat Handoff
 
-Use this file with root `AGENTS.md`, `PROJECT-STATUS.md`, `REPOSITORY-READINESS.md`, the naming standard and the Master Engineering Playbook.
+Use this file with root `AGENTS.md`, `PROJECT-STATUS.md`, the closed readiness record, the naming standard and the Master Engineering Playbook.
 
 ## Project identity
 
@@ -18,71 +18,72 @@ Use this file with root `AGENTS.md`, `PROJECT-STATUS.md`, `REPOSITORY-READINESS.
 
 ## Current program position
 
-The repository is in **pre-Phase-0 final external verification**.
+**PRE-PHASE-0 READY / VERIFIED.** Repository foundation/readiness is closed.
 
-**Do not begin runtime/plugin identity changes until `REPOSITORY-READINESS.md` is closed and `PROJECT-STATUS.md` says PRE-PHASE-0 READY / VERIFIED.**
-
-The next runtime-changing program phase is:
+The next permitted runtime-changing phase is:
 
 **Phase 0 — SimplixPay release identity and updater ownership.**
 
-## Latest independently verified canonical state
+This does not mean the plugin is stable, broadly certified, production-release ready or WordPress.org ready. It means the repository/control plane is ready for controlled Phase 0 engineering.
 
-Before the current final-certification change:
+## Readiness evidence base
 
-- `main`: `9e77bddfad66b08356be9f0e4dcdf6ebf8350af7`
-- `main` tree: `011ebc2af187c86e87b70b2e34ee0cb248b0e829`
-- tip signature: **VERIFIED**
-- default branch: `main`
-- remote branch inventory: **`main` only**
-- open pull requests: **0**
+Immediately before the closing readiness-status PR:
+
+- `main`: `7e530c2c6881c04a3170e110b23289d90185da14`
+- tree: `64973fa4918061bdf8489319712ef2c79813a45b`
+- GitHub signature: **VERIFIED**
+- real remote branches: `main` only
+- open PRs: 0
+- tags: none
+- releases: none
 - standalone repo (`fork: false`)
-- license: MIT
-- squash-only merges
-- automatic source-branch deletion on and verified
-- `main` reports protected
+- MIT recognized
+- squash-only merging
+- automatic source-branch deletion enabled and verified
 - Projects/Wiki/Discussions off
 - homepage `https://simplixi.com`
 - H12 PHP: **1927 PASS / 0 FAIL**
 - H12 Blocks: **144 PASS / 0 FAIL**
-- production maturity: **pre-release engineering hardening**
-- stable SimplixPay release: **NO**
-- WordPress.org release: **NO**
 
-Treat every recorded SHA as milestone evidence only. A new session must always re-check live GitHub first.
+Repository ruleset `21327778` was verified active with deletion/non-fast-forward protection, linear history, PR requirement, review-thread resolution, squash-only merging and strict required `Governance` + `H12 Regression Harness` checks.
 
-## Repository presentation and governance
+Security verified enabled: private vulnerability reporting, Dependabot security updates, secret scanning and push protection.
 
-The public README is Simplix-led, includes verified Woo Agency Partner proof, identifies UPayments as the provider, and explicitly avoids broad compatibility certification claims.
+GitHub contributors API returned only `SimplixInnovationsAdmin`. Local clone evidence before closure was clean with `HEAD...origin/main = 0 0`.
 
-Permanent control plane:
+Treat recorded SHAs as milestone evidence only. Always re-check live GitHub before acting.
 
-- `AGENTS.md` — mandatory execution rules;
-- `docs/project/PROJECT-STATUS.md` — living verified engineering state;
-- `docs/project/REPOSITORY-READINESS.md` — pre-Phase-0 exit gate;
+## Permanent governance/control plane
+
+- `AGENTS.md` — mandatory execution/review rules;
+- `docs/project/PROJECT-STATUS.md` — living verified program state;
+- `docs/project/REPOSITORY-READINESS.md` — closed repository-readiness evidence record;
 - `docs/project/REPOSITORY-AUDIT.md` — whole tracked-tree classification;
-- `docs/project/NAMING-IDENTITY-STANDARD.md` — frozen identity/compatibility registry;
+- `docs/project/NAMING-IDENTITY-STANDARD.md` — frozen public/technical identity + compatibility registry;
 - `docs/project/MASTER-ENGINEERING-PLAYBOOK.md` — complete engineering program;
 - `docs/project/BASELINE-H12.md` — canonical-root/H12 provenance;
-- `.github/CODEOWNERS` — ownership by `@SimplixInnovationsAdmin`;
+- `.github/CODEOWNERS` — canonical ownership by `@SimplixInnovationsAdmin`;
 - `Quality Gates` CI — governance, all tracked PHP syntax and H12 regression baseline;
 - root security/support/contribution/upstream/license/provenance policies.
 
-## Remaining pre-Phase-0 external evidence
+## Public repository state
 
-Only items not fully observable/mutable through the connected GitHub surface remain:
+README is Simplix-led, retains the Woo Agency Partner proof/link, clearly identifies UPayments as the provider, and explicitly bounds maturity/compatibility claims.
 
-1. remove About topics `hpos-compatible` and `wpml-ready`; neutral `hpos`/`wpml` may remain;
-2. reconcile local IDE clone after the final readiness merge; divergence must be `0 0` and no uncommitted work should remain;
-3. ensure `info@simplixi.com` is associated and verified on `SimplixInnovationsAdmin`; root commit currently still maps to `author: null` through GitHub's commit API;
-4. manually verify the detailed `main` ruleset and repository security controls listed in `REPOSITORY-READINESS.md`;
-5. confirm the canonical repo has no inherited Git tags or unintended GitHub Releases.
+Evidence-safe About topics at readiness closure:
 
-Do not rewrite canonical history again merely to force contributor statistics.
+`checkout-blocks`, `ecommerce`, `hpos`, `payment-gateway`, `payments`, `php`, `simplixpay`, `upayments`, `woocommerce`, `woocommerce-payment-gateway`, `wordpress`, `wpml`.
+
+`hpos-compatible` and `wpml-ready` are intentionally absent until certification evidence exists.
+
+## Contributor/account note
+
+The repository contributors API returned only `SimplixInnovationsAdmin`, satisfying the sole-contributor presentation objective. The historical root author string remains `Simplix Innovations <info@simplixi.com>`.
+
+The GitHub CLI was not granted the `user` scope needed to enumerate account emails. Before any future manual IDE-authored commit using `info@simplixi.com`, verify that address in GitHub Settings so future local commits map to `SimplixInnovationsAdmin`. This is account-level commit hygiene, not a blocker to the closed repository gate.
 
 ## Frozen H12 evidence
-
-Current verified `main` retains:
 
 - `UPayments.php` — `64c789e81ae4d292ef9b1d7382812c319a44bc25`
 - `includes/Token/CustomerTokenIdentity.php` — `85430d37e9baf540842f5655b86ccf0eca3e6aea`
@@ -112,7 +113,7 @@ Do not globally rename historical `upayments` / `_upay_*` identities for brandin
 
 Any change requires an explicit tested migration contract.
 
-## Phase 0 — only after readiness closes
+## Phase 0 — now permitted
 
 Phase 0 must:
 
@@ -122,6 +123,8 @@ Phase 0 must:
 4. design/test folder + main filename + text-domain transition as an upgrade problem;
 5. preserve protected persisted/runtime identifiers unless a dedicated migration explicitly changes them;
 6. add updater/version/install/upgrade/rollback regression evidence.
+
+The current inherited `UPayments.php` name/header/version/updater are intentionally still present at the baseline. They are Phase 0 work, not a readiness defect.
 
 ## Phase 9I blockers — all remain open
 
@@ -142,20 +145,21 @@ Phase 0 must:
 ## Required working method
 
 1. Read root `AGENTS.md`.
-2. Read `PROJECT-STATUS.md`, then `REPOSITORY-READINESS.md` while readiness is open.
-3. Read naming standard before touching names/IDs.
-4. Verify live `main`, PRs/branches, exact source and CI before implementation.
-5. Reconcile documented state with live GitHub; report drift.
-6. Prefer direct GitHub operations; delegate only genuinely inaccessible actions.
-7. Never approve/merge from an Agent or bot report alone.
-8. Pin review/merge decisions to exact base/head SHAs.
-9. After merge, verify resulting `main`, critical files/checks and branch cleanup before DONE.
-10. Update `PROJECT-STATUS.md` after verified milestone/state changes.
+2. Read `PROJECT-STATUS.md`.
+3. Read the naming standard before touching names/IDs.
+4. Read the closed readiness record when repository-foundation evidence is relevant.
+5. Verify live `main`, branches, PRs, exact source and CI before implementation.
+6. Reconcile documented state with live GitHub; report drift.
+7. Prefer direct GitHub operations; delegate only genuinely inaccessible actions.
+8. Never approve/merge from an Agent or bot report alone.
+9. Pin review/merge decisions to exact base/head SHAs.
+10. After merge, verify resulting `main`, critical files/checks and branch cleanup before DONE.
+11. Update `PROJECT-STATUS.md` after verified milestone/state changes.
 
 ## Program sequence
 
-0. **Repository Foundation / Readiness Gate** — final external verification.
-1. **Phase 0 — SimplixPay release identity and updater ownership**.
+0. **Repository Foundation / Readiness Gate** — **DONE / VERIFIED**.
+1. **Phase 0 — SimplixPay release identity and updater ownership** — next.
 2. **Phase 9I — Historical token-identity migration**.
 3. Provider contract + payment lifecycle/state machine audit.
 4. Security threat-model closure.
@@ -169,11 +173,11 @@ Phase 0 must:
 ```text
 Continue the SimplixPay for UPayments engineering program in SimplixInnovations/simplixpay-upayments.
 
-Read AGENTS.md first, then docs/project/PROJECT-STATUS.md. If pre-Phase-0 readiness is not closed, read docs/project/REPOSITORY-READINESS.md and finish that gate before any runtime identity work. Then read docs/project/NAMING-IDENTITY-STANDARD.md, docs/project/NEW-CHAT-HANDOFF.md and relevant sections of docs/project/MASTER-ENGINEERING-PLAYBOOK.md.
+Read AGENTS.md first, then docs/project/PROJECT-STATUS.md, docs/project/NAMING-IDENTITY-STANDARD.md, docs/project/NEW-CHAT-HANDOFF.md and relevant sections of docs/project/MASTER-ENGINEERING-PLAYBOOK.md. Repository readiness is closed; use docs/project/REPOSITORY-READINESS.md as the evidence record if needed.
 
 Treat documented SHAs/status as milestone evidence until you independently verify live GitHub main, branches, PRs, current source and checks. Reconcile drift before work.
 
 Work directly in GitHub wherever tools permit. Delegate only genuinely inaccessible actions. Preserve protected historical upayments/upay identifiers unless an approved tested migration changes them. Never approve or merge without independent verification pinned to exact SHAs.
 
-Continue from the first unfinished permitted gate in PROJECT-STATUS.md.
+Continue from the first unfinished permitted task in Phase 0.
 ```

@@ -28,9 +28,9 @@
 
 ## Project status
 
-This is the standalone canonical repository for **SimplixPay for UPayments**. The project is in **pre-release engineering hardening**. It is not yet a broadly certified stable production release and has not yet been published to WordPress.org.
+This is the standalone canonical repository for **SimplixPay for UPayments**. The project remains in **pre-release engineering hardening**; it is not yet a broadly certified stable release and has not yet been published to WordPress.org.
 
-Repository governance, provenance, baseline CI, whole-tree audit controls, and the H12 token-identity regression baseline are established. The repository-readiness gate is in final verification before any runtime identity/updater work begins.
+**Repository foundation / pre-Phase-0 readiness is READY / VERIFIED.** Governance, provenance, branch/ruleset policy, baseline CI, security controls, whole-tree audit controls, contributor presentation and public repository metadata have been independently checked. The next permitted runtime-changing work is **Phase 0 — SimplixPay release identity and updater ownership**.
 
 | Item | Current position |
 |---|---|
@@ -39,36 +39,22 @@ Repository governance, provenance, baseline CI, whole-tree audit controls, and t
 | Short integration reference | **SimplixPay UPayments** |
 | Maintainer | **Simplix Innovations** |
 | Payment provider | **UPayments** |
+| Repository foundation/readiness | **READY / VERIFIED** |
 | Repository maturity | Pre-release engineering hardening |
 | Stable SimplixPay release | **Not yet published** |
 | WordPress.org release | **Not yet published** |
 | H12 regression baseline | PHP 1927 PASS / 0 FAIL; Blocks 144 PASS / 0 FAIL |
 | Broad Woo/WP/PHP/HPOS/Blocks/WPML certification | **Pending** |
 
-The H12 counts are regression assertions from the existing custom harness. They do **not** substitute for the planned PHPUnit, WordPress/WooCommerce integration, browser, security, performance, or compatibility certification suites.
+The H12 counts are regression assertions from the existing custom harness. They do **not** substitute for the planned broader automated and compatibility certification suites.
 
-For the exact live engineering ledger, see [`docs/project/PROJECT-STATUS.md`](docs/project/PROJECT-STATUS.md).
+For the exact engineering ledger, see [`docs/project/PROJECT-STATUS.md`](docs/project/PROJECT-STATUS.md). The closed readiness evidence is retained at [`docs/project/REPOSITORY-READINESS.md`](docs/project/REPOSITORY-READINESS.md).
 
-## Why SimplixPay for UPayments exists
+## Why this project exists
 
-Payment extensions are business-critical infrastructure. A WooCommerce gateway must remain correct across provider failures, retries, callbacks, webhooks, WordPress/WooCommerce changes, PHP upgrades, HPOS, Checkout Blocks, multilingual commerce, saved-card identity, subscriptions, refunds, multi-merchant routing, order persistence, and recovery conditions.
+Payment extensions are business-critical infrastructure. Simplix Innovations is engineering this integration around deterministic payment-state handling, independent release/update ownership, saved-card and customer-token identity safety, historical migration without guessing, Classic/Blocks interoperability, modern WooCommerce compatibility, multilingual commerce, subscriptions/refunds/multi-merchant flows, diagnostics, performance and evidence-based release controls.
 
-Simplix Innovations is engineering this integration around:
-
-- deterministic payment-state handling and recovery;
-- independent Simplix-controlled release/update ownership;
-- saved-card and customer-token identity safety;
-- historical migration without guessing or silently rewriting payment identity;
-- Classic Checkout and Checkout Blocks interoperability;
-- HPOS and modern WooCommerce compatibility;
-- WPML/WCML, multilingual, multicurrency, and RTL commerce;
-- subscriptions, refunds, wallets, and multi-merchant flows;
-- scoped frontend assets, accessibility, and theme interoperability;
-- structured diagnostics and sensitive-data-safe logging;
-- performance, stability, and operational supportability;
-- evidence-based compatibility claims, CI, and controlled releases.
-
-These are engineering targets unless the compatibility matrix explicitly marks a capability **Verified**.
+These are engineering targets unless [`docs/COMPATIBILITY.md`](docs/COMPATIBILITY.md) explicitly marks a capability **Verified**.
 
 ## Product identity
 
@@ -83,27 +69,26 @@ These are engineering targets unless the compatibility matrix explicitly marks a
 
 ## Compatibility principle
 
-Public rebranding must never silently rewrite persisted payment identity. Existing compatibility-sensitive identifiers such as WooCommerce gateway ID `upayments`, `woocommerce_upayments_settings`, callback route `wc_upayments`, existing `_upay_*` metadata, H12 token/provenance state, and historical scheduler/table identities remain protected unless a dedicated, tested migration explicitly changes them.
+Public rebranding must never silently rewrite persisted payment identity. Existing compatibility-sensitive `upayments` / `_upay_*` identifiers remain protected unless a dedicated, tested migration explicitly changes them.
 
-See [`docs/COMPATIBILITY.md`](docs/COMPATIBILITY.md) for the evidence matrix.
+## Verified repository baseline
 
-## Current verified engineering baseline
+The canonical repository was established from the exact independently reviewed H12 source tree. The complete pre-product history is preserved separately in [`SimplixInnovations/upayments-woocommerce`](https://github.com/SimplixInnovations/upayments-woocommerce) as the historical engineering/audit archive.
 
-The canonical repository was established from the exact independently reviewed H12 source tree. The complete pre-product fork/PR history is preserved separately in [`SimplixInnovations/upayments-woocommerce`](https://github.com/SimplixInnovations/upayments-woocommerce) as the historical engineering/audit archive.
-
-Current repository CI performs:
+Current repository controls include:
 
 - governance/control-file checks;
 - syntax validation for all tracked PHP files;
 - H12 PHP regression harness;
-- H12 Blocks harness syntax validation;
-- H12 Blocks regression harness.
+- H12 Blocks regression harness;
+- active default-branch rules requiring PRs, linear history, squash-only merges, resolved review threads and the two quality jobs;
+- secret scanning, push protection, Dependabot security updates and private vulnerability reporting.
 
-This is a **baseline safety gate**, not final product certification. The full quality platform remains part of the engineering program.
+This is a **baseline safety gate**, not final product certification.
 
 ## Simplix Innovations and WooCommerce
 
-**Simplix Innovations is listed by WooCommerce as a Woo Agency Partner** and serves WooCommerce clients internationally from the United Arab Emirates. The official WooCommerce partner listing covers development, payment gateways, multilingual/multicurrency commerce, performance, integrations, maintenance, and enterprise support.
+**Simplix Innovations is listed by WooCommerce as a Woo Agency Partner** and serves WooCommerce clients internationally from the United Arab Emirates.
 
 - [Official WooCommerce Agency Partner profile](https://woocommerce.com/development-services/simplix-innovations-woocommerce-full-service-agency/232995338/)
 - [Simplix Innovations](https://simplixi.com)
@@ -113,42 +98,38 @@ The Woo Agency Partner listing reflects Simplix Innovations' broader WooCommerce
 
 ## Engineering control plane
 
-For engineering work, read in this order:
+Read in this order for engineering work:
 
-1. [`AGENTS.md`](AGENTS.md) — mandatory repository execution rules.
-2. [`docs/project/PROJECT-STATUS.md`](docs/project/PROJECT-STATUS.md) — live verified state and next permitted gate.
-3. [`docs/project/REPOSITORY-READINESS.md`](docs/project/REPOSITORY-READINESS.md) — pre-Phase-0 repository readiness checklist.
-4. [`docs/project/REPOSITORY-AUDIT.md`](docs/project/REPOSITORY-AUDIT.md) — whole tracked-tree classification and deferred debt.
-5. [`docs/project/NAMING-IDENTITY-STANDARD.md`](docs/project/NAMING-IDENTITY-STANDARD.md) — frozen identity and compatibility rules.
-6. [`docs/project/NEW-CHAT-HANDOFF.md`](docs/project/NEW-CHAT-HANDOFF.md) — compact continuation context.
-7. [`docs/project/MASTER-ENGINEERING-PLAYBOOK.md`](docs/project/MASTER-ENGINEERING-PLAYBOOK.md) — complete engineering program.
-8. [`docs/project/BASELINE-H12.md`](docs/project/BASELINE-H12.md) — H12 provenance and baseline anchors.
+1. [`AGENTS.md`](AGENTS.md)
+2. [`docs/project/PROJECT-STATUS.md`](docs/project/PROJECT-STATUS.md)
+3. [`docs/project/NAMING-IDENTITY-STANDARD.md`](docs/project/NAMING-IDENTITY-STANDARD.md)
+4. [`docs/project/NEW-CHAT-HANDOFF.md`](docs/project/NEW-CHAT-HANDOFF.md)
+5. [`docs/project/MASTER-ENGINEERING-PLAYBOOK.md`](docs/project/MASTER-ENGINEERING-PLAYBOOK.md)
+6. [`docs/project/REPOSITORY-AUDIT.md`](docs/project/REPOSITORY-AUDIT.md)
+7. [`docs/project/REPOSITORY-READINESS.md`](docs/project/REPOSITORY-READINESS.md) — closed evidence record
+8. [`docs/project/BASELINE-H12.md`](docs/project/BASELINE-H12.md)
 
 Additional policies: [`SECURITY.md`](SECURITY.md), [`SUPPORT.md`](SUPPORT.md), [`CONTRIBUTING.md`](CONTRIBUTING.md), [`MAINTAINERS.md`](MAINTAINERS.md), [`UPSTREAM.md`](UPSTREAM.md), [`NOTICE.md`](NOTICE.md), and [`CHANGELOG.md`](CHANGELOG.md).
 
 ## Roadmap immediately ahead
 
-Before runtime identity work, close the remaining repository-readiness evidence that cannot be independently observed through the connected GitHub API: local-clone convergence, account email attribution, and detailed branch/security rule configuration.
-
-Then begin **Phase 0 — SimplixPay release identity and updater ownership**:
+Repository readiness is closed. Phase 0 will:
 
 1. remove or replace the upstream-controlled updater;
 2. establish independent SimplixPay semantic versioning;
 3. change public plugin metadata to SimplixPay for UPayments / Simplix Innovations;
-4. design and test folder/main-file/text-domain transition as an upgrade problem;
+4. design and test the folder/main-file/text-domain transition as an upgrade problem;
 5. preserve protected legacy payment identities;
 6. add install/update/upgrade/rollback regression evidence.
 
 See [`docs/ENGINEERING-ROADMAP.md`](docs/ENGINEERING-ROADMAP.md).
 
-## Issues, security, and support
+## Issues, security and support
 
-Use GitHub Issues for reproducible bugs, compatibility reports, and feature requests. Never publish API keys, bearer tokens, card data, customer/card tokens, token-identity secrets, customer PII, private production payloads, or database exports.
+Use GitHub Issues for reproducible bugs, compatibility reports and feature requests. Security-sensitive findings must follow [`SECURITY.md`](SECURITY.md), which includes the repository's private reporting path.
 
-Security-sensitive findings must follow [`SECURITY.md`](SECURITY.md), not a public issue.
-
-Simplix Innovations maintains the WooCommerce integration layer. UPayments remains responsible for merchant onboarding, KYC, settlements, acquiring, pricing, provider account status, production API enablement, and provider-platform operations.
+Simplix Innovations maintains the WooCommerce integration layer. UPayments remains responsible for merchant/provider-platform operations.
 
 ## License and provenance
 
-This repository is distributed under the [MIT License](LICENSE). Upstream provenance, independent maintenance, and trademark boundaries are documented in [`NOTICE.md`](NOTICE.md) and [`UPSTREAM.md`](UPSTREAM.md). Historical engineering-only changelog material is retained under [`docs/history/`](docs/history/) rather than presented as SimplixPay product releases.
+This repository is distributed under the [MIT License](LICENSE). Upstream provenance, independent maintenance and trademark boundaries are documented in [`NOTICE.md`](NOTICE.md) and [`UPSTREAM.md`](UPSTREAM.md). Historical engineering-only changelog material is retained under [`docs/history/`](docs/history/) rather than presented as SimplixPay product releases.
