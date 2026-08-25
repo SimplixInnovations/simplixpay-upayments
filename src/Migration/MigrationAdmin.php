@@ -95,7 +95,7 @@ final class MigrationAdmin {
 
         echo '<div class="wrap">';
         echo '<h1>' . esc_html__('SimplixPay UPayments — Historical Identity Migration', 'upayments') . '</h1>';
-        echo '<p>' . esc_html__('Run a bounded read-only preflight first. Execute mode creates only verified legacy provenance and never contacts UPayments.', 'upayments') . '</p>';
+        echo '<p>' . esc_html__('Run a bounded identity-nonmutating preflight first. Dry-run records only redacted operations-result checkpoints; execute mode creates only verified legacy provenance. Neither path contacts UPayments.', 'upayments') . '</p>';
         echo '<p><strong>' . esc_html__('Credentials are read from the existing UPayments gateway settings and are never displayed or submitted by this form.', 'upayments') . '</strong></p>';
 
         if ($error !== null) {
@@ -124,7 +124,7 @@ final class MigrationAdmin {
         echo '<tr><th scope="row"><label for="simplixpay-limit">' . esc_html__('Batch limit', 'upayments') . '</label></th><td>';
         echo '<input id="simplixpay-limit" name="limit" type="number" min="1" max="' . esc_attr((string) MigrationBatch::MAX_LIMIT) . '" step="1" value="' . esc_attr($form['limit']) . '"></td></tr>';
         echo '<tr><th scope="row">' . esc_html__('Mode', 'upayments') . '</th><td>';
-        echo '<label><input type="radio" name="migration_action" value="preflight" ' . checked($form['migration_action'], 'preflight', false) . '> ' . esc_html__('Dry-run preflight', 'upayments') . '</label><br>';
+        echo '<label><input type="radio" name="migration_action" value="preflight" ' . checked($form['migration_action'], 'preflight', false) . '> ' . esc_html__('Dry-run preflight + result checkpoint', 'upayments') . '</label><br>';
         echo '<label><input type="radio" name="migration_action" value="execute" ' . checked($form['migration_action'], 'execute', false) . '> ' . esc_html__('Execute verified migrations', 'upayments') . '</label><br>';
         echo '<label><input type="checkbox" name="confirm_execute" value="yes"> ' . esc_html__('I explicitly confirm execute mode. This is required only when Execute is selected.', 'upayments') . '</label>';
         echo '</td></tr>';
