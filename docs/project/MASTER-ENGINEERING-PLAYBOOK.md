@@ -1534,7 +1534,7 @@ Known remaining P0/P1 program blockers:
 - release engineering/distribution
 ```
 
-The provider lifecycle implementation anchor above is post-merge verified. `PROJECT-STATUS.md` and live GitHub remain authoritative; future verified gate merges must update this living block without rewriting dated historical baselines.
+The security implementation anchor above is post-merge verified. `PROJECT-STATUS.md` and live GitHub remain authoritative; future verified gate merges must update this living block without rewriting dated historical baselines.
 
 ## 108. Completion ledger
 

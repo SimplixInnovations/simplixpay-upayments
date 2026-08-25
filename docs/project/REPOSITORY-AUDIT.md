@@ -138,7 +138,7 @@ Four valid review findings were corrected before merge: rate-gate/wp_salt seam, 
 - arbitrary multi-entry marketplace splitting remains uncertified; current behavior supports one additional merchant allocation only;
 - subscription auto-deduction remains on its separately characterized path.
 
-These are explicit later/security inputs, not hidden implementation gaps that may be guessed through cleanup.
+These remain explicit later-gate inputs, not hidden implementation gaps that may be guessed through cleanup.
 
 ## Security Threat-Model Closure — resolved
 
