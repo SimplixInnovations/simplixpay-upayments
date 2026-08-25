@@ -2,110 +2,124 @@
 
 **Repository:** `SimplixInnovations/simplixpay-upayments`
 
-**Audit base:** `c6e8c32044da254654e7a928e80900d943843e7a`
+**Original audit base:** `c6e8c32044da254654e7a928e80900d943843e7a`
 
-**Audit date:** 2026-08-24
+**Phase 0 verified implementation:** `678f3bdae32b7a0d5922c6ebb7fa7535ede256dd`
 
-**Purpose:** classify the entire tracked repository before runtime-changing Phase 0 work.
+**Last reconciled:** 2026-08-25
 
-**Rule:** this audit records debt; it does not authorize drive-by runtime cleanup.
+**Purpose:** maintain the tracked-tree debt classification without authorizing drive-by runtime cleanup.
 
 ## Executive classification
 
-The repository is usable as the verified H12 engineering baseline, but it is **not yet the intended final SimplixPay package architecture**. Repository/governance presentation is being corrected in the pre-Phase-0 readiness change. Runtime/package identity and updater ownership belong to Phase 0. Larger architecture, testing and compatibility cleanup belong to later controlled phases.
+Repository foundation/readiness and **Phase 0 — release identity/updater ownership are DONE / VERIFIED**. The repository is still a pre-release engineering codebase, not the intended final SimplixPay package architecture and not a broad compatibility/security/performance certification.
 
-No item below is a compatibility certification unless explicitly marked as independently verified elsewhere.
+Phase 0 deliberately made only the minimum characterized runtime changes needed to take ownership of public release identity and eliminate upstream update authority. Historical payment/runtime identifiers remain protected.
 
-## Top-level inventory
+## Top-level inventory after Phase 0
 
 | Area | Current state | Classification | Next owner/gate |
 |---|---|---|---|
-| `.github/` | CODEOWNERS, issue/PR templates, Dependabot, Quality Gates, Simplix assets | **KEEP / HARDEN NOW** | Readiness: immutable Action pins, grouped Dependabot, repo settings |
-| `.editorconfig`, `.gitattributes`, `.gitignore` | Basic repository hygiene present | **KEEP** | Extend only when tooling/packaging requires it |
-| `AGENTS.md` | Permanent execution/review rules | **KEEP / CONTROL PLANE** | Keep synchronized with active project gates |
-| `README.md` | Public product page | **REVISE NOW** | Readiness public presentation |
-| `CHANGELOG.md` | 113 KB pre-product engineering transcript on audit base | **SPLIT NOW** | Root product changelog + byte-preserved historical archive |
-| `LICENSE` | Canonical MIT, GitHub detects SPDX MIT | **KEEP** | No change unless legal review requires it |
-| `NOTICE.md`, `UPSTREAM.md` | Provenance/trademark/independence boundaries | **KEEP** | Review at release/publication gates |
-| `SECURITY.md`, `SUPPORT.md`, `CONTRIBUTING.md`, `MAINTAINERS.md` | Simplix-oriented policies | **KEEP / CONSISTENCY PASS** | Readiness |
-| `UPayments.php` | 256,735-byte inherited bootstrap/gateway plus current hardening | **PHASE 0 + LATER ARCHITECTURE** | Do not refactor during repository readiness |
-| `includes/` | Token, subscription and Blocks implementation | **RUNTIME — PROTECTED** | Phase-scoped work only |
-| `assets/` | CSS/JS/images/screenshots from inherited integration | **RUNTIME/PUBLIC ASSET AUDIT LATER** | Phase 0 identity + later UX/performance certification |
-| `templates/` | Old/new design and order templates | **RUNTIME** | Later characterization/UX/accessibility work |
-| `tests/harness/` | Large custom H12 regression harness | **KEEP AS BASELINE** | Later supplement with standard test platform |
-| `vendor/plugin-update-checker/` | Bundled Plugin Update Checker only | **PHASE 0 BLOCKER/DECISION** | Updater ownership and distribution strategy |
-| `index.php` | Minimal plugin directory guard | **KEEP** | Re-evaluate only with packaging structure |
-| `uninstall.php` | Deletes inherited subscription table/options | **PHASE 0 INSTALL/UNINSTALL AUDIT** | Must be characterized before first Simplix release |
+| `.github/` | CODEOWNERS, templates, Dependabot, protected Quality Gates | **KEEP / CONTROL PLANE** | Keep synchronized with active gates |
+| `AGENTS.md` | Permanent execution/review rules | **KEEP / CONTROL PLANE** | Mandatory before substantive work |
+| `README.md`, `CHANGELOG.md` | Simplix-led public/project records | **KEEP CURRENT** | Update at verified milestones |
+| `LICENSE`, `NOTICE.md`, `UPSTREAM.md` | MIT + provenance/trademark boundaries | **KEEP** | Re-review at publication gates |
+| `UPayments.php` | Active inherited large bootstrap/gateway with Simplix 0.1.0 header/release ownership | **PROTECTED / LATER ARCHITECTURE** | No broad refactor before characterization |
+| `src/Release/Identity.php` | Canonical Simplix release identity foothold | **KEEP** | Extend new architecture under `Simplix\Pay\UPayments` only as phase-owned |
+| `includes/Token/CustomerTokenIdentity.php` | H12-critical token identity implementation | **PHASE 9I / PROTECTED** | Historical migration work only under characterization |
+| `includes/Subscription/` | Subscription/auto-deduction implementation | **RUNTIME — PROTECTED** | Later phase-scoped work |
+| Blocks integration | H12-critical Blocks implementation | **RUNTIME — PROTECTED** | Later phase-scoped work |
+| `assets/`, `templates/` | Inherited frontend/admin paths and assets | **AUDIT LATER** | UX/performance/architecture phases |
+| `tests/harness/` | H12 + Phase 0 custom regression harnesses | **KEEP AS BASELINE** | Supplement, never replace without evidence |
+| `vendor/plugin-update-checker/` | **ABSENT — REMOVED IN PHASE 0** | **RESOLVED** | Do not reintroduce without explicit distribution design |
+| `uninstall.php` | Non-destructive by default | **RESOLVED FOR PHASE 0** | Future erasure feature needs explicit contract |
+| `index.php` | Minimal directory guard | **KEEP** | Re-evaluate only with packaging migration |
 
-## Detailed findings
+## Phase 0 resolved findings
 
-### Bootstrap / runtime structure
+### Public release identity
 
-`UPayments.php` is **256,735 bytes** on the audit base. It remains the active bootstrap/gateway surface and still contains inherited public plugin metadata and the upstream-controlled update path. Its size and mixed responsibilities are architecture debt, but broad extraction before characterization would increase payment risk.
+Resolved. The active header identifies **SimplixPay for UPayments 0.1.0** by **Simplix Innovations** and loads `Simplix\Pay\UPayments\Release\Identity`.
 
-**Decision:** Phase 0 may make only the minimum tested changes required for release identity/updater ownership. Larger extraction into `Simplix\Pay\UPayments` modules belongs to the later architecture program.
-
-### Token and subscription modules
-
-- `includes/Token/CustomerTokenIdentity.php`: **96,821 bytes**; H12 critical.
-- `includes/Subscription/Cron/Scheduler.php`: **47,965 bytes**; payment/auto-deduction critical.
-- `includes/Subscription/Cron/CycleClaim.php`: **15,954 bytes**; H12 durable attempt journal.
-- Blocks integration: **9,587 bytes**.
-
-**Decision:** preserve exact H12 blobs throughout repository readiness. Future cleanup requires characterization and exact regression evidence.
-
-### Empty inherited files
-
-Two tracked files are empty on the audit base:
-
-- `includes/admin-footer.php`
-- `assets/css/old-design.css`
-
-They may be obsolete, but deletion can still affect includes/enqueues, packaging expectations or upgrade diffs.
-
-**Decision:** record as dead-code/package candidates; do not delete during pre-Phase-0 readiness. Confirm references first in the architecture/code-quality phase or a narrowly scoped earlier package test if Phase 0 proves they affect installation identity.
-
-### Frontend/admin assets
-
-The repository contains multiple inherited JS paths, including `new-upay.js`, `old-upay.js`, `upay.js`, `upayments-block.js`, `upayments-blocks-integration.js`, `upayments-thankyou.js`, and subscription/admin/multi-merchant scripts.
-
-**Risk:** duplicate/legacy execution paths, asset scope, dependency ordering, bundle overlap and naming debt are not yet fully certified.
-
-**Decision:** no mechanical rename/delete before dependency and runtime characterization. Asset handles/names can migrate only under tests.
-
-### Images and screenshots
-
-- `assets/images/logo.png` and `assets/images/upayment.png` are the same tracked blob.
-- Existing screenshots are named/presented around inherited UPayments plugin/admin/payment screens.
-
-**Decision:** the duplicate image is a later package-cleanup candidate. Existing screenshots are historical/inherited visual evidence, not current SimplixPay product marketing. Replace or relocate them only after SimplixPay admin/runtime identity exists so new screenshots are truthful.
+The inherited provider version `3.1.1` is no longer the Simplix product version.
 
 ### Vendor/updater dependency
 
-The only tracked vendor package is `vendor/plugin-update-checker/`, and the bootstrap currently points its updater at the upstream UPayments GitHub repository.
+Resolved for the current engineering phase.
 
-**Decision:** this is the highest-priority Phase 0 runtime blocker. Phase 0 must decide the Simplix-owned update strategy, GitHub-vs-WordPress.org build behavior, dependency/vendor treatment and rollback/update tests. Do not remove the library during repository readiness because the current bootstrap requires it.
+The original audit found that `UPayments.php` loaded a bundled Plugin Update Checker configured against `upaymentskwt/woocommerce`. Phase 0 removed:
+
+- the upstream update authority;
+- the Plugin Update Checker include/use/initialization;
+- the complete `vendor/plugin-update-checker/` subtree.
+
+External self-updates are intentionally `disabled` until the physical package/basename migration has a separately tested distribution contract.
 
 ### Uninstall behavior
 
-Current `uninstall.php` drops `{$wpdb->prefix}upay_subscriptions` and deletes several inherited subscription/payment-method rate-gate options. It does not represent a documented SimplixPay data-retention/uninstall policy and predates the current H12/migration architecture.
+Resolved for the current engineering phase.
 
-**Decision:** Phase 0 install/update/upgrade/uninstall characterization must include this file before any public SimplixPay release. Do not expand destructive cleanup without an explicit data-retention policy and migration tests.
+The original uninstall dropped an inherited subscription table and deleted persisted options. Phase 0 replaced that with non-destructive retention by default. A future destructive erasure path must be explicit, confirmed and independently tested.
 
-### Tests
+### Release-identity characterization
 
-The tracked test surface is currently `tests/harness/` only. The H12 PHP harness is large (~453 KB) and the Blocks harness is ~87 KB. This is valuable historical regression protection, but there is no root PHPUnit/Composer test platform, WordPress/WooCommerce integration suite, browser E2E suite or broad static-analysis configuration yet.
+Added in Phase 0. `tests/harness/phase-0-release-identity-harness.php` is now part of the required H12 Regression Harness job and closed at **35 PASS / 0 FAIL** while H12 remained **1927/0 PHP** and **144/0 Blocks**.
 
-**Decision:** keep H12 harness green as the immediate safety baseline. Do not market it as broad certification. Add the standard quality platform in the planned testing/architecture phases, with targeted install/update tests introduced earlier where Phase 0 needs them.
+## Deliberately unresolved package/identity work
 
-### Missing intended final package structure
+### Physical plugin basename
 
-The audit base intentionally does **not** yet contain the future final structure such as root `composer.json` with `Simplix\Pay\UPayments` PSR-4, `src/`, a root SimplixPay `languages/` catalog, WordPress.org `readme.txt`, or final `simplixpay-upayments.php` bootstrap filename.
+The active main filename remains `UPayments.php`.
 
-**Decision:** not a readiness defect. These belong to explicit later gates. Introducing them prematurely would mix repository cleanup with runtime/installation identity changes.
+Frozen eventual target: `simplixpay-upayments.php`.
 
-## Files intentionally not changed by repository readiness
+Changing the main file/folder affects WordPress plugin basename, activation/update identity, rollback and duplicate-package behavior. Treat it as an explicit upgrade/package migration, never cosmetic cleanup.
 
-The readiness change must not modify `UPayments.php`, `includes/`, runtime `assets/`, `templates/`, `tests/harness/`, `vendor/`, `uninstall.php`, or `index.php`.
+### Text domain
 
-**Repository ready** means the repository/history/presentation/governance/settings/local-clone state is trustworthy enough to begin Phase 0. It does **not** mean the plugin itself is production-ready.
+Runtime/header text domain remains `upayments` during the transition.
+
+Frozen eventual target: `simplixpay-upayments`.
+
+The migration requires dedicated i18n/WPML/String Translation evidence and must not be a blind global replacement.
+
+### Coexistence/conflict detection
+
+Because existing-install compatibility requires preserving historical gateway/classes/callback identities, simultaneous activation with another UPayments plugin that owns the same globals cannot be assumed safe. Explicit install/onboarding conflict detection remains future work.
+
+## Protected runtime debt
+
+### Large bootstrap
+
+`UPayments.php` remains a large mixed-responsibility inherited surface. Phase 0 intentionally changed only its public header/updater prefix. Larger extraction belongs to the later architecture program and requires characterization first.
+
+### Token and subscription modules
+
+The Phase 0 final implementation preserved these H12 anchors byte-for-byte outside the intentionally changed bootstrap:
+
+- `includes/Token/CustomerTokenIdentity.php` — `85430d37e9baf540842f5655b86ccf0eca3e6aea`
+- `includes/class-wc-gateway-upayments-blocks.php` — `813d192d69c069eb7ee11df93acc9dbdf03e270a`
+- `includes/Subscription/Cron/Scheduler.php` — `5251866d4df2d1326e7c09f0c8ec1d146c0bb325`
+- `includes/Subscription/Cron/CycleClaim.php` — `c34d83e2d77cc65024fe663e4c378cecb2b17347`
+
+The current gate is Phase 9I historical token-identity migration. Do not mix unrelated cleanup into that work.
+
+### Empty/duplicate/legacy assets
+
+Known inherited candidates still include empty files, duplicate provider images, historical screenshots and multiple JS paths. Their existence is recorded debt, not authorization to delete/rename them before dependency/runtime characterization.
+
+### Test platform
+
+The custom harness is valuable regression protection but is not a full modern quality platform. Root PHPUnit/WordPress/WooCommerce integration, broad static analysis, coding standards, browser E2E, accessibility and performance suites remain later planned work.
+
+## Current next owner/gate
+
+**Phase 9I — Historical token-identity migration**.
+
+Its preflight must be read-only, deterministic and perform zero provider calls/writes. Historical evidence must resolve to `CLEAN`, `MIGRATABLE`, `BLOCKED` or `INDETERMINATE`; execution may operate only on explicit `MIGRATABLE` cases and must never fabricate canonical/Create-201 provenance.
+
+See `PROJECT-STATUS.md` for the 13 blocker classes and current live milestone.
+
+## Rule
+
+This ledger records debt and gate ownership. It does not authorize mechanical cleanup of payment/runtime code. `PROJECT-STATUS.md`, the naming standard, AGENTS.md and fresh live GitHub evidence control execution truth.
