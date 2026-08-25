@@ -40,6 +40,7 @@ jobs:
             .github/CODEOWNERS
             docs/project/PROJECT-STATUS.md
             docs/project/PHASE-0-RELEASE-IDENTITY.md
+            docs/project/PHASE-9I-MIGRATION.md
             docs/project/REPOSITORY-READINESS.md
             docs/project/REPOSITORY-AUDIT.md
             docs/project/NAMING-IDENTITY-STANDARD.md
@@ -61,6 +62,7 @@ jobs:
           grep -Fq 'SimplixInnovations/simplixpay-upayments' AGENTS.md
           grep -Fq 'upayments' docs/project/NAMING-IDENTITY-STANDARD.md
           grep -Fq '**Status:** DONE / VERIFIED' docs/project/PHASE-0-RELEASE-IDENTITY.md
+          grep -Fq '**Status:** IN PROGRESS' docs/project/PHASE-9I-MIGRATION.md
           grep -Fq '| Phase 0 — release identity/updater ownership | **DONE / VERIFIED** |' docs/project/PROJECT-STATUS.md
           grep -Fq '| Current implementation gate | **Phase 9I — Historical token-identity migration** |' docs/project/PROJECT-STATUS.md
 
@@ -102,6 +104,9 @@ jobs:
 
       - name: Phase 0 release identity harness
         run: php tests/harness/phase-0-release-identity-harness.php
+
+      - name: Phase 9I migration preflight harness
+        run: php tests/harness/phase-9i-preflight-harness.php
 
       - name: H12 PHP harness
         run: php tests/harness/phase-9g-h12-php-harness.php
