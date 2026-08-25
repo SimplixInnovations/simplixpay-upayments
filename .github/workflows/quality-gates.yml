@@ -111,6 +111,7 @@ jobs:
           }
 
           reject_across_live_records 'Security Threat-Model Closure — DISCOVERY'
+          reject_across_live_records 'Security Threat-Model Closure — CURRENT GATE / DISCOVERY'
           reject_across_live_records 'Security Threat-Model Closure — **CURRENT / DISCOVERY**'
           reject_across_live_records 'Security threat-model audit | **DISCOVERY — CURRENT GATE**'
           reject_across_live_records 'Security Threat-Model Closure — **DISCOVERY / CURRENT GATE**'
