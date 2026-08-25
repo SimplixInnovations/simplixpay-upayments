@@ -1,0 +1,62 @@
+name: Temporary Phase 9I Bootstrap Patch
+
+on:
+  push:
+    branches: [phase-9i/operations]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: phase-9i/operations
+          fetch-depth: 1
+          persist-credentials: true
+
+      - name: Guard and patch bootstrap
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          old_sha="a2cbeeb04e762de3233d8752d665890da6d52bd9"
+          actual_sha="$(git hash-object UPayments.php)"
+
+          if grep -Fq "require_once __DIR__ . '/src/Migration/MigrationBootstrap.php';" UPayments.php; then
+            echo "Phase 9I bootstrap already wired; no change needed."
+            exit 0
+          fi
+
+          if [[ "$actual_sha" != "$old_sha" ]]; then
+            echo "Refusing patch: UPayments.php blob changed unexpectedly: $actual_sha" >&2
+            exit 1
+          fi
+
+          python3 - <<'PY'
+          from pathlib import Path
+          path = Path('UPayments.php')
+          text = path.read_text(encoding='utf-8')
+          old = "require_once __DIR__ . '/src/Release/Identity.php';\nrequire_once __DIR__ . '/includes/Token/CustomerTokenIdentity.php';"
+          new = old + "\nrequire_once __DIR__ . '/src/Migration/MigrationBootstrap.php';"
+          if text.count(old) != 1:
+              raise SystemExit(f"expected exact bootstrap anchor once, found {text.count(old)}")
+          text = text.replace(old, new, 1)
+          path.write_text(text, encoding='utf-8')
+          PY
+
+          php -l UPayments.php
+          test "$(grep -Fc "require_once __DIR__ . '/src/Migration/MigrationBootstrap.php';" UPayments.php)" -eq 1
+
+          git config user.name "Simplix Innovations"
+          git config user.email "136711735+SimplixInnovationsAdmin@users.noreply.github.com"
+          git add UPayments.php
+          if git diff --cached --quiet; then
+            exit 0
+          fi
+          git commit -m "feat: wire Phase 9I operational bootstrap"
+          git push origin HEAD:phase-9i/operations
