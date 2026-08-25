@@ -1,0 +1,40 @@
+name: Security Hardening Once
+
+on:
+  push:
+    branches:
+      - security/threat-model-discovery
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    if: ${{ github.actor != 'github-actions[bot]' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: security/threat-model-discovery
+          fetch-depth: 0
+
+      - name: Apply exact security hardening
+        run: python .github/scripts/security-hardening-once.py
+
+      - name: Verify and commit
+        shell: bash
+        run: |
+          set -euo pipefail
+          git diff --check
+          php -l UPayments.php
+          php -l src/Payment/PaymentLifecycle.php
+          php -l src/Security/PublicOrderStatus.php
+          php -l templates/new-design-form.php
+          php -l templates/old-design-form.php
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add UPayments.php src/Payment/PaymentLifecycle.php templates/new-design-form.php templates/old-design-form.php
+          git diff --cached --quiet && exit 0
+          git commit -m 'security: close public and customer action boundaries'
+          git push origin HEAD:security/threat-model-discovery
