@@ -30,21 +30,21 @@ Phase 0 took ownership of public release identity and removed inherited update a
 
 The current owner/gate is **Architecture & Code-Quality Foundation — DISCOVERY**. This gate may characterize and incrementally extract mixed responsibilities and establish code-quality baselines, but it does not authorize a big-bang rewrite, protected-identity renames, or weakening closed Security/Payment/H12/Phase 9I contracts.
 
-## Top-level inventory after Provider Lifecycle closure
+## Top-level inventory after Security Threat-Model closure
 
 | Area | Current state | Classification | Next owner/gate |
 |---|---|---|---|
-| `.github/` | CODEOWNERS, templates, Dependabot, protected Quality Gates | **KEEP / CONTROL PLANE** | Security gate audits workflow/supply-chain trust |
+| `.github/` | CODEOWNERS, templates, Dependabot, protected Quality Gates | **KEEP / CONTROL PLANE** | Architecture gate preserves CI/security controls; quality-platform gate may extend tooling later |
 | `AGENTS.md` | Permanent execution/review rules | **KEEP / CONTROL PLANE** | Mandatory before substantive work |
 | `README.md`, `CHANGELOG.md` | Simplix-led public/project records | **KEEP CURRENT** | Update at verified milestones |
 | `LICENSE`, `NOTICE.md`, `UPSTREAM.md` | MIT + provenance/trademark boundaries | **KEEP** | Re-review at publication gates |
 | `UPayments.php` | Active inherited large gateway/bootstrap with Simplix 0.1.0 identity; Charge/config/subscription and legacy callback paths remain | **PROTECTED / ARCHITECTURE AUDIT** | Characterize responsibilities; extract incrementally |
 | `src/Release/Identity.php` | Canonical Simplix release identity + conditional runtime foothold | **KEEP / CHARACTERIZED** | Preserve Phase 0 isolation contract |
-| `src/Migration/` | Verified Phase 9I preflight/executor/admin/CLI operations | **DONE / VERIFIED / PROTECTED** | Security-audit capabilities/nonces/credentials/ledgers without weakening migration semantics |
+| `src/Migration/` | Verified Phase 9I preflight/executor/admin/CLI operations | **DONE / VERIFIED / PROTECTED** | Architecture gate preserves the migration boundary; later quality/platform work may extend coverage without weakening semantics |
 | `src/Payment/` | Verified provider result, rate gate, order lock, status verifier and lifecycle strangler | **DONE / VERIFIED / PROTECTED** | Architecture gate may extract only behind full characterization/regression |
 | `src/Security/` | Verified public order-status authorization boundary | **DONE / VERIFIED / PROTECTED** | Preserve SEC-01 contract during architecture work |
-| `includes/Token/CustomerTokenIdentity.php` | H12-critical token identity implementation | **DONE / VERIFIED H12 + PHASE 9I DEPENDENCY** | Security-audit secret/token boundaries; no casual semantic changes |
-| `includes/Subscription/` | Subscription/auto-deduction implementation | **RUNTIME — PROTECTED** | Security threat model, then later feature certification |
+| `includes/Token/CustomerTokenIdentity.php` | H12-critical token identity implementation | **DONE / VERIFIED H12 + PHASE 9I DEPENDENCY** | Architecture gate treats token identity as a protected dependency; later certification may extend evidence without casual semantic changes |
+| `includes/Subscription/` | Subscription/auto-deduction implementation | **RUNTIME — PROTECTED** | Architecture only under full characterization; later feature certification owns recurring-billing certification |
 | Blocks integration | H12-critical Blocks implementation with local checkout chevrons | **RUNTIME — SECURITY VERIFIED / PROTECTED** | Architecture only with Blocks/H12/security regressions; platform certification later |
 | `assets/`, `templates/` | Inherited frontend/admin paths and assets; bounded checkout dependency/output fixes verified | **PARTIALLY SECURITY-CHARACTERIZED / AUDIT LATER** | Architecture/UX/performance gates; preserve security escaping/dependency contracts |
 | `tests/harness/` | Phase 0 + Phase 9I + Provider Lifecycle + Security Threat-Model + H12 custom regressions | **KEEP AS REQUIRED BASELINE** | Architecture/static-analysis additions supplement rather than replace |
