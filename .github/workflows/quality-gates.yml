@@ -72,6 +72,13 @@ jobs:
           grep -Fq '| Provider Contract & Payment Lifecycle | **DONE / VERIFIED** |' docs/project/PROJECT-STATUS.md
           grep -Fq '| Security Threat-Model Closure | **DONE / VERIFIED** |' docs/project/PROJECT-STATUS.md
           grep -Fq '| Current program gate | **Architecture & Code-Quality Foundation — DISCOVERY** |' docs/project/PROJECT-STATUS.md
+          grep -Fq '| Security threat-model audit | **DONE / VERIFIED** | Critical |' docs/project/MASTER-ENGINEERING-PLAYBOOK.md
+          grep -Fq '| Architecture/code quality | **DISCOVERY — CURRENT GATE** | High |' docs/project/MASTER-ENGINEERING-PLAYBOOK.md
+          grep -Fq 'the current permitted program gate is **Architecture & Code-Quality Foundation — DISCOVERY**' docs/project/REPOSITORY-READINESS.md
+          grep -Fq 'the current permitted gate is **Architecture & Code-Quality Foundation — DISCOVERY**' docs/project/PHASE-0-RELEASE-IDENTITY.md
+          grep -Fq 'The current program gate is **Architecture & Code-Quality Foundation — DISCOVERY**' docs/project/PHASE-9I-MIGRATION.md
+          grep -Fq 'The current permitted program gate is **Architecture & Code-Quality Foundation — DISCOVERY**' docs/project/PROVIDER-PAYMENT-LIFECYCLE.md
+          grep -Fq -- '- Current program gate: **Architecture & Code-Quality Foundation — DISCOVERY**' docs/project/NEW-CHAT-HANDOFF.md
 
       - name: Whitespace errors
         shell: bash
