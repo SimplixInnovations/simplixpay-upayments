@@ -4,7 +4,7 @@
 **Upstream:** `upaymentskwt/woocommerce`  
 **Document purpose:** authoritative project plan, engineering standard, status ledger, clean-chat handoff, and Agent execution guide  
 **Baseline date:** 2026-08-24  
-**Last independently verified `main`:** `1caf38410354322c1d842c28a40b0909ba31026d`  
+**Last independently verified implementation `main`:** `db1c4ea4dab45bc1ffaf4529e0ccb940153cd999`  
 **Current project posture:** engineering hardening; **not yet a generally certified public production release**
 
 ---
@@ -19,7 +19,7 @@ The preferred long-term product position is:
 
 The project must remain transparent that UPayments is the payment provider and owns its trademarks; Simplix Innovations owns and supports its modifications and distribution. Upstream changes are inputs to review, not changes that are automatically trusted or merged.
 
-The current codebase contains substantial security hardening, especially the H12 customer-token identity work, but it is not yet appropriate to advertise as universally production-certified. Before a broad production release, the project must complete release-safety work, historical migration handling, full payment-lifecycle validation, repository/CI hardening, compatibility certification, and release engineering.
+The current codebase contains substantial security hardening, especially the H12 customer-token identity work, but it is not yet appropriate to advertise as universally production-certified. Before a broad production release, the project must complete full payment-lifecycle validation, security closure, compatibility certification, quality-platform expansion, operational readiness and release engineering.
 
 The engineering principle for the remainder of the project is:
 
@@ -94,13 +94,15 @@ Never use “done,” “fixed,” “compatible,” “secure,” or “product
 
 ## 4. Verified repository state as of 2026-08-24
 
+This section is a dated historical baseline. Later living-status sections and `PROJECT-STATUS.md` supersede its then-current blockers without rewriting the historical facts recorded here.
+
 ### 4.1 Repository
 
 - Canonical repository: `SimplixInnovations/simplixpay-upayments`
 - Visibility: **public**
 - Relationship: **standalone canonical Simplix repository** (`fork:false`)
 - Default branch: `main`
-- Last independently verified `main`: `1caf38410354322c1d842c28a40b0909ba31026d`
+- Last independently verified `main` at this historical baseline: `1caf38410354322c1d842c28a40b0909ba31026d`
 - Canonical root tree: `34594c00d243b59345ec9fbb3a88d2e1ec8f3efc`
 - Canonical root commit has **no parents** and intentionally starts the SimplixPay product history cleanly.
 - Historical engineering/audit repository: `SimplixInnovations/upayments-woocommerce`
@@ -123,7 +125,7 @@ Frozen production blob identities at the merge:
 
 These SHAs are historical H12 verification anchors, not permanent prohibitions on future changes. When a later phase intentionally modifies one of these files, that phase must replace the old anchor with new reviewed evidence rather than pretending the file remained frozen.
 
-### 4.3 Current repository governance/tooling facts
+### 4.3 Current repository governance/tooling facts at the clean-root baseline
 
 At the clean-root baseline:
 
@@ -136,20 +138,20 @@ At the clean-root baseline:
 - README, `docs/COMPATIBILITY.md`, `docs/ENGINEERING-ROADMAP.md`, `SECURITY.md`, `SUPPORT.md`, `CONTRIBUTING.md`, `MAINTAINERS.md`, and `UPSTREAM.md` exist.
 - Those documents still reflected the former fork-era identity before the Phase 0 governance bootstrap.
 
-### 4.4 Current release-identity blocker
+### 4.4 Release-identity blocker at the historical baseline
 
-The current plugin bootstrap still declares the upstream identity approximately as:
+The plugin bootstrap at that baseline still declared the upstream identity approximately as:
 
 - Plugin Name: `UPayments`
 - Version: `3.1.1`
 - Author: UPayments Company
 - Text Domain: `upayments`
 
-It also still constructs the bundled update checker against:
+It also still constructed the bundled update checker against:
 
 `https://github.com/upaymentskwt/woocommerce`
 
-This is a P0 release blocker because a Simplix-maintained deployment must never be silently replaced by upstream code. The public product/release identity transition must be implemented and tested without indiscriminately renaming persisted compatibility identifiers.
+This was a P0 release blocker because a Simplix-maintained deployment must never be silently replaced by upstream code. Phase 0 subsequently closed this blocker; the historical record is retained here for provenance.
 
 ---
 
@@ -296,9 +298,9 @@ Key rules:
 
 # PART IV — PHASE 9I MIGRATION BLOCKERS
 
-## 9. All 13 H12-to-9I blockers remain open
+## 9. Thirteen H12-to-9I blocker families — DONE / VERIFIED disposition
 
-The following are not solved merely because H12 is done:
+The following historical blocker families were the required Phase 9I safety scope:
 
 1. Unscoped legacy tokens.
 2. Current-scope orphan histories.
@@ -314,7 +316,9 @@ The following are not solved merely because H12 is done:
 12. Force-refresh failures.
 13. Malformed-versus-missing secret distinction.
 
-Phase 9I must resolve these deterministically without guessing.
+Phase 9I is now **DONE / VERIFIED**. These families are no longer unimplemented gaps: the verified classifier/executor contract assigns explicit fail-closed semantics and the bounded operational layer records/resumes sanitized per-user outcomes. A real merchant can still legitimately receive `BLOCKED` or `INDETERMINATE`; closure does not authorize guessing those users into valid identity.
+
+See `docs/project/PHASE-9I-MIGRATION.md` for the closed implementation/evidence record.
 
 ---
 
@@ -469,10 +473,10 @@ Requirements:
 | Program | Current status | Release importance |
 |---|---|---|
 | H12 / Phase 9G token identity | **DONE / VERIFIED** | Foundational |
-| Phase 0 — Release & repository safety | **IN PROGRESS** | Critical before distribution |
-| Phase 9I — Historical migration | **NOT STARTED** | Critical for upgrades/existing customers |
-| Provider contract audit | **PARTIAL** | Critical |
-| Payment lifecycle/state machine | **PARTIAL / AUDIT REQUIRED** | Critical |
+| Phase 0 — Release & repository safety | **DONE / VERIFIED** | Critical before distribution |
+| Phase 9I — Historical migration | **DONE / VERIFIED** | Critical for upgrades/existing customers |
+| Provider contract audit | **DISCOVERY — CURRENT GATE** | Critical |
+| Payment lifecycle/state machine | **DISCOVERY — CURRENT GATE** | Critical |
 | Security threat-model audit | **PARTIAL** | Critical |
 | Architecture/code quality | **PARTIAL** | High |
 | Full automated quality platform | **NOT STARTED** | Critical before public stable |
@@ -488,28 +492,29 @@ Requirements:
 | WordPress.org publication | **DEFERRED UNTIL READY** | Strategic |
 | Continuous maintenance | **ONGOING AFTER FIRST STABLE** | Critical long-term |
 
+The current unified gate is **Provider Contract & Payment Lifecycle — DISCOVERY**. Provider contract and lifecycle rows remain separated in this roadmap because they have distinct deliverables, but discovery/characterization must be coordinated before payment-critical refactoring.
+
 ## 18. Phase ordering
 
 Recommended execution order:
 
-1. Phase 0 — Release & Repository Safety.
-2. Phase 9I — Historical Token-Identity Migration.
-3. Provider Contract Audit.
-4. Payment Lifecycle / State Machine.
-5. Security Threat-Model Audit.
-6. Architecture & Code Quality Foundation.
-7. Full Test-Driven Quality Platform.
-8. WooCommerce / WordPress / PHP Certification.
-9. WPML / i18n / multilingual / multicurrency / RTL.
-10. Feature-specific certification — saved cards, subscriptions, wallets, multi-merchant, refunds.
-11. Performance & Stability Engineering.
-12. Frontend/UI/UX/Accessibility/Browser/Device Program.
-13. Merchant Onboarding, Site Health & Diagnostics.
-14. Error Handling / Observability / Logging / Support.
-15. Documentation / README / SEO / Badges.
-16. Release Engineering & Distribution.
-17. WordPress.org Publication.
-18. Continuous Maintenance.
+1. Phase 0 — Release & Repository Safety — **DONE / VERIFIED**.
+2. Phase 9I — Historical Token-Identity Migration — **DONE / VERIFIED**.
+3. Provider Contract & Payment Lifecycle — **CURRENT / DISCOVERY**.
+4. Security Threat-Model Audit.
+5. Architecture & Code Quality Foundation.
+6. Full Test-Driven Quality Platform.
+7. WooCommerce / WordPress / PHP Certification.
+8. WPML / i18n / multilingual / multicurrency / RTL.
+9. Feature-specific certification — saved cards, subscriptions, wallets, multi-merchant, refunds.
+10. Performance & Stability Engineering.
+11. Frontend/UI/UX/Accessibility/Browser/Device Program.
+12. Merchant Onboarding, Site Health & Diagnostics.
+13. Error Handling / Observability / Logging / Support.
+14. Documentation / README / SEO / Badges.
+15. Release Engineering & Distribution.
+16. WordPress.org Publication.
+17. Continuous Maintenance.
 
 This order is not an excuse to defer a critical security defect discovered later. P0 defects pre-empt normal sequencing.
 
@@ -517,9 +522,11 @@ This order is not an excuse to defer a critical security defect discovered later
 
 # PHASE 0 — RELEASE & REPOSITORY SAFETY
 
-**Status:** IN PROGRESS  
+**Status:** DONE / VERIFIED  
 **Priority:** P0  
 **Dependency:** H12 DONE / VERIFIED
+
+Phase 0 closed through the independently verified repository-foundation and release-identity work. The following sections retain the original phase contract for audit/reference; they are not current implementation instructions. See `docs/project/PHASE-0-RELEASE-IDENTITY.md` and `PROJECT-STATUS.md` for closure evidence.
 
 ## 19. Goal
 
@@ -547,31 +554,31 @@ Do not globally rename legacy persisted identifiers.
 
 ## 19.2 Updater ownership
 
-The current bundled updater points to the provider/upstream repository. This must be neutralized/replaced before a Simplix build is treated as a controlled release.
+The historical bundled updater pointed to the provider/upstream repository. Phase 0 neutralized that authority and removed the bundled Plugin Update Checker. External self-updates remain disabled until a separately tested distribution/basename contract is established.
 
-Requirements:
+Permanent requirements remain:
 
 - no path by which upstream releases silently replace the Simplix build;
 - separate policy for GitHub/private distribution versus future WordPress.org distribution;
 - update channel tied to Simplix release identity;
-- upgrade/update behavior tested;
+- upgrade/update behavior tested before enabling a channel;
 - rollback/recovery understood;
 - external updater excluded from WordPress.org build unless policy and review explicitly permit it.
 
 ## 19.3 Repository governance
 
-Required:
+Required and established for the current repository:
 
 - root `AGENTS.md`;
 - canonical project docs under `docs/project/`;
 - CODEOWNERS;
 - PR and issue templates;
-- protected/default branch rules after checks exist;
+- protected/default branch rules with required checks;
 - no direct unreviewed payment-critical changes to `main`;
 - review pinned to exact head SHA;
 - merge verification and status-ledger updates.
 
-Repository settings to verify/configure where GitHub supports them:
+Repository settings to preserve/verify where GitHub supports them:
 
 - require PR before merge where practical;
 - require passing status checks;
@@ -586,12 +593,14 @@ Repository settings to verify/configure where GitHub supports them:
 
 ## 19.4 Baseline CI bootstrap
 
-Introduce initial CI without pretending it is the final quality platform:
+Initial CI exists and must not be mistaken for the final quality platform:
 
 - PHP syntax lint across plugin-owned PHP;
+- Phase 0 release-identity harness;
+- Phase 9I preflight/executor/operations harnesses;
 - existing H12 PHP harness;
 - existing Blocks harness;
-- basic whitespace/governance checks;
+- whitespace/governance checks;
 - later add install/activation smoke, Composer/PHPUnit/static analysis, matrix/runtime integration and release checks.
 
 ## 19.5 Credential hygiene
@@ -604,7 +613,7 @@ Introduce initial CI without pretending it is the final quality platform:
 
 ## 19.6 Documentation sync
 
-Update:
+Maintain:
 
 - README current status;
 - roadmap/status docs;
@@ -623,27 +632,30 @@ Update:
 - CODEOWNERS;
 - updated README/roadmap/status;
 - credential hygiene result;
-- upgrade-path tests for plugin identity transition.
+- explicit deferral of physical basename/text-domain migration until separately characterized.
 
 ## 21. Phase 0 exit gate
 
-Phase 0 is DONE only when:
+Phase 0 is DONE because the verified implementation established:
 
-- `main` is protected;
-- exact required checks run on PRs;
+- protected `main` and required checks;
 - upstream cannot silently overwrite a Simplix build;
-- release identity is unambiguous;
-- no known live secret remains exposed;
-- docs accurately describe current state;
-- upgrade from supported historical packaging/identity is tested or explicitly constrained.
+- Simplix release identity/version ownership is unambiguous;
+- external updater is disabled pending a separately tested distribution contract;
+- docs accurately describe the transitional package/text-domain identity;
+- Phase 0 and H12 regression evidence remained green.
+
+Physical basename/folder/text-domain migration remains a later separately tested release/i18n concern, not an open Phase 0 status.
 
 ---
 
 # PHASE 9I — HISTORICAL TOKEN-IDENTITY MIGRATION
 
-**Status:** NOT STARTED  
+**Status:** DONE / VERIFIED  
 **Priority:** P0  
-**Dependency:** H12 DONE; Phase 0 release safety recommended
+**Dependency:** H12 DONE / VERIFIED; Phase 0 DONE / VERIFIED
+
+Phase 9I closed through three independently reviewed implementation tranches: preflight PR #11, executor PR #12 and operations PR #13. The sections below retain the original design requirements as permanent safety contracts. See `docs/project/PHASE-9I-MIGRATION.md` for exact merge/evidence details.
 
 ## 22. Goal
 
@@ -651,30 +663,32 @@ Allow existing stores to transition historical saved-card/customer-token evidenc
 
 ## 23. Phase 9I-A — Read-only migration decision engine
 
-Build a deterministic inspector that produces one top-level result:
+The verified deterministic inspector produces one top-level result:
 
 - `CLEAN`
 - `MIGRATABLE`
 - `BLOCKED`
 - `INDETERMINATE`
 
-The result must include a machine-stable reason code and sanitized diagnostic details.
+The result includes a machine-stable reason code and sanitized diagnostic details.
 
 ### 23.1 Rules
 
-- read-only;
-- zero provider mutations;
-- zero user/order metadata writes;
+- core preflight is read-only;
+- zero provider mutations/calls;
+- zero identity/user/order metadata writes in core preflight;
 - bounded work;
 - deterministic precedence;
 - no checkout-hot-path full historical scan;
 - no unsafe token/card retrieval from ambiguous identity;
 - malformed secret never silently regenerated;
-- all 13 blockers covered by explicit cases.
+- all 13 blocker families covered by explicit cases.
+
+The operational dry-run wrapper intentionally writes only its separate redacted operations-result checkpoint so interrupted work can resume safely; this does not mutate H12 identity or contact the provider.
 
 ### 23.2 Cross-user conflict detection
 
-A migration decision that could establish or preserve a customer token must detect whether that token is attributable to another user/history. Cross-user collision is a security block, not a “first match wins” scenario.
+A migration decision that could establish or preserve a customer token detects whether that token is attributable to another user/history. Cross-user collision is a security block, not a “first match wins” scenario.
 
 ### 23.3 Incomplete evidence
 
@@ -682,38 +696,43 @@ If evidence cannot be safely completed because of scan cap, load failure, cache 
 
 ## 24. Phase 9I-B — Migration executor
 
-Only explicit `MIGRATABLE` results may mutate state.
+Only explicit fresh `MIGRATABLE` results may mutate state.
 
-Requirements:
+Verified requirements:
 
 - idempotent;
-- re-validates preconditions before mutation;
-- writes truthful `legacy_compat` provenance for legacy identity;
-- never writes fake canonical provenance;
+- re-validates preconditions under the correct lock before mutation;
+- writes truthful `legacy_compat` / `legacy_verified_capture` provenance for attributable legacy identity;
+- never writes fake canonical/Create-201 provenance;
 - persistence verified;
-- partial failures rollback or enter an explicit recoverable state;
-- no provider mutation unless a separately defined case explicitly requires it;
-- audit record sanitized.
+- safe recoverable failure semantics;
+- zero provider calls;
+- historical order metadata remains immutable;
+- successful identity ledger is sanitized.
 
 ## 25. Phase 9I-C — Operational migration tooling
 
-Provide bounded merchant/admin/CLI/background execution:
+Verified bounded merchant/admin/CLI execution provides:
 
-- dry run;
-- batch sizing;
-- resumability;
+- identity/provider non-mutating dry run plus redacted operations-result checkpoint;
+- explicit confirmed execute;
+- strict list and batch sizing;
+- explicit offset and durable resumability;
 - idempotency;
 - per-user decision/result ledger;
 - safe retry;
-- rate/DB/caching awareness;
+- DB/caching-aware bounded work;
 - no checkout-time mass scan;
-- clear blocked/indeterminate remediation.
+- clear blocked/indeterminate result semantics;
+- fail-closed checkpoint persistence behavior.
 
-After 9I-C, rerun the H12 regression suites and add migration-specific suites.
+The final Phase 9I implementation head reran Phase 0, preflight, executor, operations, H12 PHP and H12 Blocks regression suites successfully before PR #13 merged.
 
 ---
 
 # PROVIDER CONTRACT AUDIT
+
+**Current program status:** DISCOVERY, coordinated with Payment Lifecycle / State Machine.
 
 ## 26. Goal
 
@@ -753,6 +772,8 @@ When provider documentation conflicts, do not choose the more permissive interpr
 ---
 
 # PAYMENT LIFECYCLE / STATE MACHINE
+
+**Current program status:** DISCOVERY, coordinated with Provider Contract Audit.
 
 ## 28. Goal
 
@@ -1488,25 +1509,27 @@ Where security correctness requires a fresh read, verify or invalidate caches de
 
 ```text
 LAST VERIFIED PROJECT STATE
-Date: 2026-08-24
+Date: 2026-08-25
 Repository: SimplixInnovations/simplixpay-upayments
-Main SHA: 1caf38410354322c1d842c28a40b0909ba31026d
-Canonical main tree: 34594c00d243b59345ec9fbb3a88d2e1ec8f3efc
+Last verified implementation main SHA before Phase 9I closure reconciliation: db1c4ea4dab45bc1ffaf4529e0ccb940153cd999
+Canonical implementation tree: 5bec24ad26c66a504cd0dd609f4311f9e70add76
 Historical H12 merge: SimplixInnovations/upayments-woocommerce@93e9925247a8bfade626cb822136852fd96eaea2
-Active phase: Phase 0 — release/repository safety
-Active branch: phase-0/repository-governance
-Active PR: governance PR pending creation
+Repository foundation/readiness: DONE / VERIFIED
+Phase 0 release identity/updater ownership: DONE / VERIFIED
+Phase 9I historical token-identity migration: DONE / VERIFIED
+Current program gate: Provider Contract & Payment Lifecycle — DISCOVERY
 Production readiness: R0 — engineering hardening
 Public stable release: NO
 WordPress.org release: NO
-Known P0 blockers:
-- Simplix release identity/updater ownership
-- repository required checks/protection
-- Phase 9I migration
-- provider/payment lifecycle validation
-- broad compatibility certification
-- release engineering
+Known remaining P0/P1 program blockers:
+- provider contract/payment lifecycle validation and deterministic state/reconciliation contract
+- security threat-model closure
+- broad compatibility/feature certification
+- full automated quality platform
+- release engineering/distribution
 ```
+
+The exact closure-PR merge SHA cannot be written before that PR is merged. `PROJECT-STATUS.md` and live GitHub remain authoritative; the next verified state update should replace the implementation anchor above with the closure merge if needed.
 
 ## 108. Completion ledger
 
@@ -1522,24 +1545,29 @@ Known P0 blockers:
 - [x] Strict token/provenance/generation/scope contracts established.
 - [x] H12 targeted PHP and Blocks harness evidence established.
 - [x] H12 production blob anchors copied byte-identically into canonical root.
+- [x] Repository foundation/readiness completed and verified.
+- [x] Phase 0 release/repository safety and updater ownership completed and verified.
+- [x] Required Governance and H12 Regression Harness checks established for protected `main`.
+- [x] Phase 9I deterministic read-only preflight completed and verified (PR #11).
+- [x] Phase 9I locked fail-closed executor completed and verified (PR #12).
+- [x] Phase 9I bounded admin/CLI operations with durable redacted per-user result checkpoints completed and verified (PR #13).
+- [x] Phase 9I final implementation-head regression evidence: Phase 0 35/0, preflight 123/0, executor 59/0, operations 81/0, H12 PHP 1927/0, H12 Blocks 144/0.
 
 ### Remaining P0/P1 work
 
-- [ ] Phase 0 release/repository safety — **IN PROGRESS**.
-- [ ] Phase 9I migration.
+- [ ] Provider Contract & Payment Lifecycle — **DISCOVERY / CURRENT GATE**.
 - [ ] Full provider contract spec.
-- [ ] Payment lifecycle/webhook/status/refund state machine.
+- [ ] Deterministic payment lifecycle/webhook/status/refund state machine/reconciliation contract.
 - [ ] Security threat-model closure.
 - [ ] Standard Composer/PHPUnit/static-analysis platform.
-- [ ] CI required checks and branch protection.
 - [ ] WordPress/WooCommerce/PHP compatibility certification.
 - [ ] WPML/WCML certification.
-- [ ] Feature-specific certification: saved cards/subscriptions/wallets/multi-merchant.
+- [ ] Feature-specific certification: saved cards/subscriptions/wallets/multi-merchant/refunds.
 - [ ] Performance/stability program.
 - [ ] UI/UX/accessibility/browser/device program.
 - [ ] Onboarding/Site Health/diagnostics.
 - [ ] Structured error taxonomy/logging/observability.
-- [ ] Product branding/docs/SEO/badges.
+- [ ] Product branding/docs/SEO/badges finalization.
 - [ ] Reproducible release engineering.
 - [ ] Public stable release.
 - [ ] WordPress.org submission.
@@ -1554,7 +1582,7 @@ Known P0 blockers:
 Do not begin pilot until all are true:
 
 - [ ] exact release commit/tag frozen;
-- [ ] updater cannot switch to upstream;
+- [x] updater cannot switch to upstream;
 - [ ] API credentials rotated/secure;
 - [ ] backup/rollback ready;
 - [ ] migration status for this store known;
@@ -1597,7 +1625,7 @@ Copy/paste:
 ```text
 PROJECT: SimplixPay for UPayments / SimplixInnovations/simplixpay-upayments
 
-Read root AGENTS.md first, then docs/project/PROJECT-STATUS.md, docs/project/NAMING-IDENTITY-STANDARD.md, docs/project/NEW-CHAT-HANDOFF.md and the relevant sections of docs/project/MASTER-ENGINEERING-PLAYBOOK.md.
+Read root AGENTS.md first, then docs/project/PROJECT-STATUS.md, docs/project/NAMING-IDENTITY-STANDARD.md, docs/project/NEW-CHAT-HANDOFF.md, docs/project/PHASE-9I-MIGRATION.md and the relevant sections of docs/project/MASTER-ENGINEERING-PLAYBOOK.md.
 
 Rules for this session:
 1. Treat recorded Git SHAs as historical until live GitHub verification confirms them.
@@ -1701,6 +1729,7 @@ Awaiting reviewer verification of merge.
 - Current Simplix README: repository `README.md`
 - Current project status: repository `docs/project/PROJECT-STATUS.md`
 - Naming/identity standard: repository `docs/project/NAMING-IDENTITY-STANDARD.md`
+- Closed Phase 9I evidence: repository `docs/project/PHASE-9I-MIGRATION.md`
 - Current compatibility matrix: repository `docs/COMPATIBILITY.md`
 - Current security policy: repository `SECURITY.md`
 - Current upstream relationship: repository `UPSTREAM.md`
