@@ -255,12 +255,15 @@ const handleSubscriptionChange = (plan, interval) => {
                                                 fontWeight: '600' 
                                             } 
                                         }, `${cart_total} ${currency_display}`),
-                                        createElement('i', { 
-                                            className: 'fa fa-chevron-right', 
-                                            style: { 
-                                                marginLeft: '10px' 
-                                            } 
-                                        })
+                                        createElement('span', {
+                                  className: 'upay-chevron',
+                                  'aria-hidden': 'true',
+                                  style: {
+                                      marginLeft: '10px',
+                                      fontSize: '20px',
+                                      lineHeight: '1'
+                                  }
+                              }, '›')
                                     );
                                 })
                             )
@@ -353,12 +356,15 @@ const handleSubscriptionChange = (plan, interval) => {
                                             fontWeight: '600' 
                                         } 
                                     }, `${cart_total} ${currency_display}`),
-                                    createElement('i', { 
-                                        className: 'fa fa-chevron-right', 
-                                        style: { 
-                                            marginLeft: '10px' 
-                                        } 
-                                    })
+                                    createElement('span', {
+                                  className: 'upay-chevron',
+                                  'aria-hidden': 'true',
+                                  style: {
+                                      marginLeft: '10px',
+                                      fontSize: '20px',
+                                      lineHeight: '1'
+                                  }
+                              }, '›')
                                 )
                             ))
                         ),
@@ -404,7 +410,15 @@ const handleSubscriptionChange = (plan, interval) => {
                                     )
                                 )),
                                 createElement('span', { style: { marginLeft: 'auto', fontWeight: '600' } }, `${cart_total} ${currency_display}`),
-                                createElement('i', { className: 'fa fa-chevron-right', style: { marginLeft: '10px' } })
+                                createElement('span', {
+                                  className: 'upay-chevron',
+                                  'aria-hidden': 'true',
+                                  style: {
+                                      marginLeft: '10px',
+                                      fontSize: '20px',
+                                      lineHeight: '1'
+                                  }
+                              }, '›')
                             )
                         )
                     )

@@ -137,7 +137,7 @@ Closure contract:
 
 - remove those external checkout stylesheet requests;
 - use site/system typography;
-- replace Font Awesome chevrons with local text/CSS presentation;
+- replace Font Awesome chevrons in both classic and Blocks renderers with local text/CSS presentation;
 - do not add a replacement remote asset dependency.
 
 ### SEC-04 — Plain persisted/provider values permitted broader HTML than necessary

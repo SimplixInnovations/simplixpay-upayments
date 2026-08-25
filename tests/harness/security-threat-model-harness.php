@@ -93,6 +93,7 @@ $status_verifier = sec_source('src/Payment/StatusVerifier.php');
 $migration_admin = sec_source('src/Migration/MigrationAdmin.php');
 $new_template = sec_source('templates/new-design-form.php');
 $old_template = sec_source('templates/old-design-form.php');
+$blocks_js = sec_source('assets/js/upayments-block.js');
 $workflow = sec_source('.github/workflows/quality-gates.yml');
 $security_doc = sec_source('docs/project/SECURITY-THREAT-MODEL.md');
 
@@ -119,6 +120,8 @@ sec_assert(strpos($gateway, 'fonts.googleapis.com') === false, 'checkout no long
 sec_assert(strpos($gateway, 'cdnjs.cloudflare.com') === false, 'checkout no longer requests cdnjs Font Awesome');
 sec_assert(strpos($new_template, 'fa fa-chevron-right') === false, 'new checkout template does not depend on Font Awesome chevron');
 sec_assert(strpos($new_template, 'upay-chevron') !== false, 'new checkout template uses local text/CSS chevron');
+sec_assert(strpos($blocks_js, 'fa fa-chevron-right') === false, 'Blocks checkout renderer does not depend on Font Awesome chevron');
+sec_assert(substr_count($blocks_js, "className: 'upay-chevron'") >= 3, 'Blocks checkout renderer uses local chevrons for all payment rows');
 
 // SEC-04: plain persisted/provider data is escaped as text, not trusted HTML.
 sec_assert(strpos($gateway, 'wp_kses_post($payment_status)') === false, 'thank-you payment status is not permitted arbitrary post HTML');
