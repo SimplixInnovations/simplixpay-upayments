@@ -24,6 +24,7 @@ define('UPAYMENTS_PLUGIN_FILE', __FILE__ );
 
 require_once __DIR__ . '/src/Release/Identity.php';
 require_once __DIR__ . '/includes/Token/CustomerTokenIdentity.php';
+require_once __DIR__ . '/src/Migration/MigrationBootstrap.php';
 
 use Simplix\Pay\UPayments\Release\Identity;
 use UPayments\Subscription\Cron\Scheduler;
