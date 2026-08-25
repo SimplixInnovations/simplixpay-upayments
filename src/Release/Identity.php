@@ -32,3 +32,11 @@ final class Identity {
     private function __construct() {
     }
 }
+
+// Incremental payment-lifecycle strangler. The Phase 0 identity harness loads
+// this file in deliberate isolation, outside a WordPress hook environment, so
+// runtime registration is conditional on the real WordPress hook API existing.
+if (function_exists('add_action')) {
+    require_once dirname(__DIR__) . '/Payment/PaymentLifecycle.php';
+    \Simplix\Pay\UPayments\Payment\PaymentLifecycle::bootstrap();
+}
