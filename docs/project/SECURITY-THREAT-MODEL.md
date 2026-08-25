@@ -88,7 +88,7 @@ The gate follows the repository's existing fail-closed rules plus current WordPr
 
 ### SEC-01 — Public historical order-status poll accepted order ID as authority
 
-**Severity:** P1  
+**Severity:** P1
 **State:** FIX IN THIS TRANCHE
 
 The inherited `?wc-api=wc_upayments&get_order_status=...&wc_order_id=N` path delegated around the hardened payment lifecycle and read `UPayments_WHS` by numeric post/order ID without an order key, exact logged-in ownership, or even an UPayments payment-method preflight.
@@ -110,7 +110,7 @@ Closure contract:
 
 ### SEC-02 — Subscription state changes used nonce-bearing GET URLs
 
-**Severity:** P1  
+**Severity:** P1
 **State:** FIX IN THIS TRANCHE
 
 The current handler already checks exact logged-in order ownership and an action-specific WordPress nonce. That prevents ordinary cross-user IDOR and CSRF. The remaining problem is that pause/resume/unsubscribe are state-changing operations represented as GET URLs. Browsers, prefetchers, link scanners, history replays or copied URLs can re-request a valid nonce-bearing URL.
@@ -128,7 +128,7 @@ Closure contract:
 
 ### SEC-03 — Third-party CSS/font dependencies loaded on checkout
 
-**Severity:** P2  
+**Severity:** P2
 **State:** FIX IN THIS TRANCHE
 
 Classic checkout currently requests Google Fonts and cdnjs Font Awesome. Neither is required for payment correctness. They add third-party availability, privacy and supply-chain boundaries on the payment page.
@@ -142,7 +142,7 @@ Closure contract:
 
 ### SEC-04 — Plain persisted/provider values permitted broader HTML than necessary
 
-**Severity:** P2  
+**Severity:** P2
 **State:** FIX IN THIS TRANCHE
 
 Several legacy display/settings surfaces are safe in normal operation but use broader output handling than their data contract warrants, including plain provider payment status/ID through `wp_kses_post()` and stored multimerchant values echoed into attributes without explicit `esc_attr()`.
@@ -156,7 +156,7 @@ Closure contract:
 
 ### SEC-05 — Product custom-meta callback relied only on WooCommerce upstream save ordering
 
-**Severity:** P2 defense in depth  
+**Severity:** P2 defense in depth
 **State:** FIX IN THIS TRANCHE
 
 WooCommerce's current product meta-box pipeline verifies `woocommerce_meta_nonce` against `woocommerce_save_data`, binds `post_ID`, checks `edit_post`, then fires `woocommerce_process_product_meta`. The plugin's callback is therefore currently behind upstream authorization, but it performs its own write and should defend its boundary explicitly rather than relying solely on hook provenance.

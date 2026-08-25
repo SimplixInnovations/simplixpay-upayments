@@ -4957,8 +4957,6 @@ function saveCustomFieldData( $post_id ) {
 
     if ( $custom_field_value !== '' ) {
         update_post_meta( $post_id, '_custom_field_id', $custom_field_value );
-    } else {
-        delete_post_meta( $post_id, '_custom_field_id' );
     }
 }
 
