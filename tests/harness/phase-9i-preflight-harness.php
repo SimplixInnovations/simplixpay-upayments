@@ -317,7 +317,7 @@ p9_run('P9I-09 orphan metadata', function () {
 // #10 >200 incomplete history.
 p9_run('P9I-10 over cap', function () {
     $ids = array(); for ($i = 1; $i <= 201; $i++) $ids[] = $i; p9_state()['history_ids_override'] = $ids;
-    for ($i = 1; $i <= 200; $i++) p9_order($i, 1, null);
+    for ($i = 1; $i <= 201; $i++) p9_order($i, 1, null);
 }, MigrationPreflight::INDETERMINATE, 'incomplete_history_scan');
 
 // #11 unloadable order.
