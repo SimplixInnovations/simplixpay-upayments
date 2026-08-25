@@ -108,6 +108,9 @@ jobs:
       - name: Phase 9I migration preflight harness
         run: php tests/harness/phase-9i-preflight-harness.php
 
+      - name: Phase 9I migration executor harness
+        run: php tests/harness/phase-9i-executor-harness.php
+
       - name: H12 PHP harness
         run: php tests/harness/phase-9g-h12-php-harness.php
 
