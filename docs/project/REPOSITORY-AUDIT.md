@@ -8,37 +8,44 @@
 
 **Phase 9I verified operations implementation:** `db1c4ea4dab45bc1ffaf4529e0ccb940153cd999`
 
+**Provider lifecycle verified implementation:** `9569e39973a9e94926087738eae06c3846361943`
+
+**Provider lifecycle tree:** `40ec562674361624c2764263ba55cfba84594955`
+
 **Last reconciled:** 2026-08-25
 
-**Purpose:** maintain the tracked-tree debt classification without authorizing drive-by runtime cleanup.
+**Purpose:** maintain tracked-tree debt classification and current gate ownership without authorizing drive-by runtime cleanup.
 
 ## Executive classification
 
-Repository foundation/readiness, **Phase 0 — release identity/updater ownership**, and **Phase 9I — historical token-identity migration** are **DONE / VERIFIED**. The repository is still a pre-release engineering codebase, not the intended final SimplixPay package architecture and not a broad compatibility/security/performance certification.
+Repository foundation/readiness, **Phase 0**, **Phase 9I**, and **Provider Contract & Payment Lifecycle** are **DONE / VERIFIED**.
 
-Phase 0 deliberately made only the minimum characterized runtime changes needed to take ownership of public release identity and eliminate upstream update authority. Phase 9I then added an isolated historical-identity classifier/executor/operations layer while preserving protected payment/runtime identities and historical order evidence.
+The repository remains a pre-release engineering codebase. It is not the intended final SimplixPay package architecture and is not yet broadly security/platform/feature/performance certified.
 
-The current owner/gate is **Provider Contract & Payment Lifecycle — DISCOVERY**. No broad runtime cleanup is authorized by that gate; current provider and payment behavior must be characterized before refactoring.
+Phase 0 took ownership of public release identity and removed inherited update authority. Phase 9I added isolated historical-identity migration tooling. The provider lifecycle gate then added an isolated `Simplix\Pay\UPayments\Payment` strangler for ordinary browser/webhook/status truth and WooCommerce payment-state transitions without broadly rewriting the inherited gateway bootstrap.
 
-## Top-level inventory after Phase 9I
+The current owner/gate is **Security Threat-Model Closure — DISCOVERY**. This gate may characterize and remediate security-critical behavior, but it does not authorize unrelated cleanup or weakening closed payment/H12/Phase 9I contracts.
+
+## Top-level inventory after Provider Lifecycle closure
 
 | Area | Current state | Classification | Next owner/gate |
 |---|---|---|---|
-| `.github/` | CODEOWNERS, templates, Dependabot, protected Quality Gates | **KEEP / CONTROL PLANE** | Keep synchronized with active gates |
+| `.github/` | CODEOWNERS, templates, Dependabot, protected Quality Gates | **KEEP / CONTROL PLANE** | Security gate audits workflow/supply-chain trust |
 | `AGENTS.md` | Permanent execution/review rules | **KEEP / CONTROL PLANE** | Mandatory before substantive work |
 | `README.md`, `CHANGELOG.md` | Simplix-led public/project records | **KEEP CURRENT** | Update at verified milestones |
 | `LICENSE`, `NOTICE.md`, `UPSTREAM.md` | MIT + provenance/trademark boundaries | **KEEP** | Re-review at publication gates |
-| `UPayments.php` | Active inherited large bootstrap/gateway with Simplix 0.1.0 header/release ownership | **PROTECTED / PROVIDER-LIFECYCLE AUDIT** | Characterize payment-critical behavior before refactor |
-| `src/Release/Identity.php` | Canonical Simplix release identity foothold | **KEEP** | Extend new architecture under `Simplix\Pay\UPayments` only as phase-owned |
-| `src/Migration/` | Verified Phase 9I preflight/executor/admin/CLI operations | **DONE / VERIFIED / PROTECTED** | Keep as closed migration contract unless separately changed |
-| `includes/Token/CustomerTokenIdentity.php` | H12-critical token identity implementation | **DONE / VERIFIED H12 + PHASE 9I DEPENDENCY** | Do not weaken during provider lifecycle work |
-| `includes/Subscription/` | Subscription/auto-deduction implementation | **RUNTIME — PROTECTED** | Provider lifecycle/feature characterization where relevant |
-| Blocks integration | H12-critical Blocks implementation | **RUNTIME — PROTECTED** | Later phase-scoped work unless provider lifecycle characterization requires observation only |
-| `assets/`, `templates/` | Inherited frontend/admin paths and assets | **AUDIT LATER** | UX/performance/architecture phases |
-| `tests/harness/` | H12 + Phase 0 + Phase 9I custom regression harnesses | **KEEP AS BASELINE** | Supplement, never replace without evidence |
-| `vendor/plugin-update-checker/` | **ABSENT — REMOVED IN PHASE 0** | **RESOLVED** | Do not reintroduce without explicit distribution design |
-| `uninstall.php` | Non-destructive by default | **RESOLVED FOR PHASE 0** | Future erasure feature needs explicit contract |
-| `index.php` | Minimal directory guard | **KEEP** | Re-evaluate only with packaging migration |
+| `UPayments.php` | Active inherited large gateway/bootstrap with Simplix 0.1.0 identity; Charge/config/subscription and legacy callback paths remain | **PROTECTED / SECURITY + ARCHITECTURE AUDIT** | Security threat model first; broad extraction later |
+| `src/Release/Identity.php` | Canonical Simplix release identity + conditional runtime foothold | **KEEP / CHARACTERIZED** | Preserve Phase 0 isolation contract |
+| `src/Migration/` | Verified Phase 9I preflight/executor/admin/CLI operations | **DONE / VERIFIED / PROTECTED** | Security-audit capabilities/nonces/credentials/ledgers without weakening migration semantics |
+| `src/Payment/` | Verified provider result, rate gate, order lock, status verifier and lifecycle strangler | **DONE / VERIFIED / SECURITY INPUT** | Security threat-model callback/status/SSRF/replay/concurrency/logging boundaries |
+| `includes/Token/CustomerTokenIdentity.php` | H12-critical token identity implementation | **DONE / VERIFIED H12 + PHASE 9I DEPENDENCY** | Security-audit secret/token boundaries; no casual semantic changes |
+| `includes/Subscription/` | Subscription/auto-deduction implementation | **RUNTIME — PROTECTED** | Security threat model, then later feature certification |
+| Blocks integration | H12-critical Blocks implementation | **RUNTIME — PROTECTED** | Security input boundaries now; broader platform certification later |
+| `assets/`, `templates/` | Inherited frontend/admin paths and assets | **AUDIT LATER / SECURITY OBSERVABLE** | Security output/XSS checks where relevant; UX/performance cleanup later |
+| `tests/harness/` | Phase 0 + Phase 9I + Provider Lifecycle + H12 custom regressions | **KEEP AS REQUIRED BASELINE** | Add security characterization; supplement rather than replace |
+| `vendor/plugin-update-checker/` | absent | **RESOLVED** | Do not reintroduce without explicit distribution design |
+| `uninstall.php` | non-destructive by default | **RESOLVED FOR PHASE 0** | Future erasure path requires explicit contract |
+| `index.php` | minimal directory guard | **KEEP** | Re-evaluate only with packaging migration |
 
 ## Phase 0 resolved findings
 
@@ -46,29 +53,17 @@ The current owner/gate is **Provider Contract & Payment Lifecycle — DISCOVERY*
 
 Resolved. The active header identifies **SimplixPay for UPayments 0.1.0** by **Simplix Innovations** and loads `Simplix\Pay\UPayments\Release\Identity`.
 
-The inherited provider version `3.1.1` is no longer the Simplix product version.
-
 ### Vendor/updater dependency
 
-Resolved for the current engineering phase.
-
-The original audit found that `UPayments.php` loaded a bundled Plugin Update Checker configured against `upaymentskwt/woocommerce`. Phase 0 removed:
-
-- the upstream update authority;
-- the Plugin Update Checker include/use/initialization;
-- the complete `vendor/plugin-update-checker/` subtree.
-
-External self-updates are intentionally `disabled` until the physical package/basename migration has a separately tested distribution contract.
+Resolved. The inherited Plugin Update Checker and `upaymentskwt/woocommerce` update authority were removed. External self-updates remain disabled until a separately tested package/basename distribution contract exists.
 
 ### Uninstall behavior
 
-Resolved for the current engineering phase.
-
-The original uninstall dropped an inherited subscription table and deleted persisted options. Phase 0 replaced that with non-destructive retention by default. A future destructive erasure path must be explicit, confirmed and independently tested.
+Resolved for current engineering scope. Uninstall retains merchant/payment data by default. Future destructive erasure must be explicit, confirmed and independently tested.
 
 ### Release-identity characterization
 
-Added in Phase 0. `tests/harness/phase-0-release-identity-harness.php` is part of the required H12 Regression Harness job and remains at **35 PASS / 0 FAIL** while the H12 baseline remains **1927/0 PHP** and **144/0 Blocks**.
+Permanent Phase 0 regression: **35 PASS / 0 FAIL**, alongside H12 PHP **1927/0** and H12 Blocks **144/0**.
 
 ## Phase 9I resolved historical-identity gap
 
@@ -76,54 +71,89 @@ Phase 9I is **DONE / VERIFIED** through PRs #11, #12 and #13.
 
 Verified implementation milestones:
 
-- preflight PR #11 → `8cca32819dd165e35efa0fcc5a48bdd551757d8c`;
-- executor PR #12 → `708253bd9d0daf217735fbb087b360e8b848136c`;
-- operations PR #13 → `db1c4ea4dab45bc1ffaf4529e0ccb940153cd999`, tree `5bec24ad26c66a504cd0dd609f4311f9e70add76`, GitHub signature VERIFIED.
+- preflight → `8cca32819dd165e35efa0fcc5a48bdd551757d8c`;
+- executor → `708253bd9d0daf217735fbb087b360e8b848136c`;
+- operations → `db1c4ea4dab45bc1ffaf4529e0ccb940153cd999`, tree `5bec24ad26c66a504cd0dd609f4311f9e70add76`.
 
-The closed contract provides:
+Closed contract:
 
-- exact read-only `CLEAN` / `MIGRATABLE` / `BLOCKED` / `INDETERMINATE` preflight classification;
-- explicit fail-closed handling for all 13 historical blocker families;
+- exact read-only `CLEAN` / `MIGRATABLE` / `BLOCKED` / `INDETERMINATE` preflight;
+- all 13 historical blocker families fail closed;
 - locked execution only for fresh `MIGRATABLE` evidence;
 - only `legacy_compat` / `legacy_verified_capture` historical provenance;
 - no fabricated canonical/Create-201 provenance;
 - historical order metadata immutability;
-- bounded admin/CLI operation with dry-run and confirmed execute;
-- separate redacted durable operations-result checkpoints for every processed user;
-- credential/mode/list-scoped durable resume without persisting API credentials;
-- no provider, checkout, Store API, frontend or cron migration hooks.
+- bounded admin/CLI operation with redacted durable result checkpoints and credential/mode/list-scoped resume;
+- no provider/checkout/frontend migration hooks.
 
-Phase 9I completion certifies the migration system/safety contract, not automatic migration of every merchant installation. Site-specific `BLOCKED` or `INDETERMINATE` results remain valid fail-closed outcomes.
+## Provider Contract & Payment Lifecycle — resolved
+
+Provider Contract & Payment Lifecycle is **DONE / VERIFIED** through PR #15.
+
+Verified final reviewed head:
+
+- `d2b08ebe1e65ad4ea8f4e06b41423e7bd9904fc3`
+
+Verified merge:
+
+- `9569e39973a9e94926087738eae06c3846361943`;
+- tree `40ec562674361624c2764263ba55cfba84594955`;
+- sole parent `8e5a93ceb4f133663fdf433cc1a10b8b36c13d97`;
+- GitHub signature VERIFIED;
+- implementation branch deleted;
+- push-triggered post-merge Quality Gates run #71 SUCCESS.
+
+The closed implementation provides:
+
+- non-authoritative browser/webhook payloads;
+- authenticated Get Payment Status as financial truth;
+- exact UPayments HTTPS status-host/path enforcement before Bearer credentials are sent;
+- strict status schema and order/provider-order/reference/currency/amount binding;
+- canonical decimal amount equality without display rounding;
+- deterministic provider-result classification with `NULL`/Processing/unknown uncertainty preserved;
+- Woo `payment_complete($payment_id)` for verified capture and standard transaction-ID semantics;
+- duplicate/replay idempotency and paid/refunded no-resurrection rules;
+- separate unverified/trusted retry cursors scoped to current `UPayments_order_id`;
+- bounded 60/120/240/480 reconciliation, maximum four attempts, never retries Charge;
+- compare-and-swap per-order lifecycle lock semantics;
+- callback GET/POST conflict rejection with cookies/`$_REQUEST` excluded;
+- stricter 30/min status-query automation while provider documentation remains contradictory.
+
+Permanent lifecycle regression evidence:
+
+- Provider Payment Lifecycle **141 PASS / 0 FAIL**;
+- Provider Exact Amount Binding **4 PASS / 0 FAIL**.
+
+Four valid review findings were corrected before merge: rate-gate/wp_salt seam, first-query transient reconciliation, stale-lock race, and display-rounded amount mismatch.
+
+### Deliberately unresolved provider/feature boundaries
+
+- webhook HMAC/signature verification remains provider-document unresolved because the public docs reviewed did not publish a complete stable verification contract;
+- automatic WooCommerce refunds remain unsupported pending durable refund idempotency/reconciliation design;
+- arbitrary multi-entry marketplace splitting remains uncertified; current behavior supports one additional merchant allocation only;
+- subscription auto-deduction remains on its separately characterized path.
+
+These are explicit later/security inputs, not hidden implementation gaps that may be guessed through cleanup.
 
 ## Deliberately unresolved package/identity work
 
 ### Physical plugin basename
 
-The active main filename remains `UPayments.php`.
-
-Frozen eventual target: `simplixpay-upayments.php`.
-
-Changing the main file/folder affects WordPress plugin basename, activation/update identity, rollback and duplicate-package behavior. Treat it as an explicit upgrade/package migration, never cosmetic cleanup.
+Active main filename remains `UPayments.php`; eventual target `simplixpay-upayments.php` requires explicit upgrade/package migration evidence.
 
 ### Text domain
 
-Runtime/header text domain remains `upayments` during the transition.
-
-Frozen eventual target: `simplixpay-upayments`.
-
-The migration requires dedicated i18n/WPML/String Translation evidence and must not be a blind global replacement.
+Runtime/header text domain remains `upayments`; eventual `simplixpay-upayments` migration requires dedicated i18n/WPML/String Translation evidence.
 
 ### Coexistence/conflict detection
 
-Because existing-install compatibility requires preserving historical gateway/classes/callback identities, simultaneous activation with another UPayments plugin that owns the same globals cannot be assumed safe. Explicit install/onboarding conflict detection remains future work.
+Simultaneous activation with another UPayments plugin that owns the same globals/classes/callback identities cannot be assumed safe. Explicit install/onboarding conflict detection remains future work.
 
 ## Protected runtime debt
 
 ### Large bootstrap
 
-`UPayments.php` remains a large mixed-responsibility inherited surface. Phase 0 intentionally changed only its public header/updater prefix; later Phase 9I added only its isolated migration bootstrap include. Larger extraction belongs to the later architecture program and requires characterization first.
-
-The current Provider Contract & Payment Lifecycle gate may characterize payment-critical methods in this file, but it does not authorize broad cleanup before the provider/state contracts and executable characterization are frozen.
+`UPayments.php` remains a large mixed-responsibility inherited surface. The provider lifecycle gate deliberately used an isolated strangler rather than broad cleanup. Security Threat-Model Closure may inspect/remediate security-critical paths, but general decomposition belongs to the later Architecture & Code-Quality gate.
 
 ### Token and subscription modules
 
@@ -134,26 +164,36 @@ Historical H12 anchors remain regression evidence:
 - `includes/Subscription/Cron/Scheduler.php` — `5251866d4df2d1326e7c09f0c8ec1d146c0bb325`
 - `includes/Subscription/Cron/CycleClaim.php` — `c34d83e2d77cc65024fe663e4c378cecb2b17347`
 
-These are historical regression anchors, not permanent claims that later reviewed phases can never modify the files.
+These are historical regression anchors, not claims that stronger later reviewed phases can never modify the files.
 
 ### Empty/duplicate/legacy assets
 
-Known inherited candidates still include empty files, duplicate provider images, historical screenshots and multiple JS paths. Their existence is recorded debt, not authorization to delete/rename them before dependency/runtime characterization.
+Known inherited empty/duplicate/legacy assets remain recorded debt. Do not delete/rename them without dependency/runtime characterization.
 
 ### Test platform
 
-The custom harness is valuable regression protection but is not a full modern quality platform. Root PHPUnit/WordPress/WooCommerce integration, broad static analysis, coding standards, browser E2E, accessibility and performance suites remain later planned work.
+The required custom harness stack now includes Phase 0, all Phase 9I suites, Provider Lifecycle, Exact Amount, H12 PHP and H12 Blocks. It remains regression protection rather than a replacement for full PHPUnit/WordPress/WooCommerce integration, broad static analysis, browser E2E, accessibility and performance testing.
 
 ## Current next owner/gate
 
-**Provider Contract & Payment Lifecycle — DISCOVERY**.
+**Security Threat-Model Closure — DISCOVERY**.
 
-The gate must first compare current exact source with current official UPayments documentation and freeze evidence-backed contracts for charge, webhook/status/browser-return truth, deterministic WooCommerce payment/order transitions, reconciliation/idempotency/retry semantics, refunds and multi-merchant boundaries.
+The gate must first build a security asset/trust-boundary/data-flow map and characterize:
 
-Do not treat inherited runtime behavior as certified merely because it exists. Do not start with a broad refactor.
+- authorization/capabilities and CSRF/nonces;
+- callback/webhook abuse, replay and IDOR;
+- SSRF/redirect/host allowlists;
+- provider credentials, H12 token/secrets and migration material;
+- input parsing/type confusion/injection and output escaping;
+- logs/order notes/diagnostics redaction;
+- concurrency/race/idempotency security;
+- dependency/supply-chain/GitHub Actions trust;
+- fail-closed handling of undocumented provider security contracts.
 
-See `PROJECT-STATUS.md` for the current live milestone and `PHASE-9I-MIGRATION.md` for the closed historical-identity contract.
+Do not start with a broad refactor. Closed provider lifecycle/H12/Phase 9I contracts remain regression constraints unless an explicit stronger security contract replaces one.
+
+See `PROJECT-STATUS.md` for live program state, `PHASE-9I-MIGRATION.md` for historical-identity migration, and `PROVIDER-PAYMENT-LIFECYCLE.md` for the closed ordinary-checkout lifecycle contract.
 
 ## Rule
 
-This ledger records debt and gate ownership. It does not authorize mechanical cleanup of payment/runtime code. `PROJECT-STATUS.md`, the naming standard, AGENTS.md and fresh live GitHub/provider evidence control execution truth.
+This ledger records debt and gate ownership. It does not authorize mechanical cleanup of payment/runtime code. `PROJECT-STATUS.md`, the naming standard, `AGENTS.md`, closed phase contracts and fresh live GitHub/provider evidence control execution truth.
