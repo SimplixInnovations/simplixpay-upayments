@@ -8,7 +8,7 @@
 
 **Runtime-change scope of this gate:** **NONE**
 
-> **Gate status: PRE-PHASE-0 READY / VERIFIED.** Phase 0 is now permitted under the repository's normal PR/CI/review controls.
+> **Gate status: PRE-PHASE-0 READY / VERIFIED.** At this gate's closure, Phase 0 became permitted under the repository's normal PR/CI/review controls. Phase 0, Phase 9I, Provider Contract & Payment Lifecycle, and the bounded Security Threat-Model Closure are now **DONE / VERIFIED**; **Architecture & Code-Quality Foundation — DISCOVERY** is the current program gate.
 
 ## Closure summary
 
@@ -126,7 +126,7 @@ Externally verified before closure:
 - `origin/HEAD -> origin/main` recognized as the normal symbolic default-branch pointer;
 - local identity configured to `Simplix Innovations <info@simplixi.com>`.
 
-After this closing PR merges, the local clone will be one fast-forward behind until `git pull --ff-only origin main` is run. That expected post-merge fast-forward does not reopen repository readiness.
+At readiness closure, the local clone was expected to become one fast-forward behind after the closing PR merged until `git pull --ff-only origin main` was run. That historical post-merge fast-forward did not reopen repository readiness.
 
 ### I. Final-certification merge evidence
 
@@ -173,6 +173,6 @@ It merged as `7e530c2c6881c04a3170e110b23289d90185da14` with tree `64973fa491806
 
 **PRE-PHASE-0 READY / VERIFIED.**
 
-The next permitted runtime-changing work is **Phase 0 — SimplixPay release identity and updater ownership**.
+The runtime-changing gate immediately following repository readiness was **Phase 0 — SimplixPay release identity and updater ownership**. Phase 0, Phase 9I, Provider Contract & Payment Lifecycle, and the bounded Security Threat-Model Closure are now **DONE / VERIFIED**; the current permitted program gate is **Architecture & Code-Quality Foundation — DISCOVERY**.
 
 Do not reinterpret this closed repository gate as a claim of stable plugin release readiness, broad compatibility certification, provider certification or WordPress.org readiness.

@@ -16,7 +16,7 @@ Phase 0 took ownership of the public SimplixPay release identity without rewriti
 
 The plugin now publicly identifies as **SimplixPay for UPayments** by **Simplix Innovations**, uses an independent pre-1.0 version line, has no inherited external updater authority, and preserves the historical runtime identifiers required for existing stores/orders/tokens/subscriptions.
 
-This gate does **not** mean the plugin is broadly production-certified. It closes release-identity/updater ownership only. Subsequent migration, payment-lifecycle, security, architecture, compatibility and release-certification phases remain required.
+This gate does **not** mean the plugin is broadly production-certified. It closes release-identity/updater ownership only. At Phase 0 closure, migration, payment-lifecycle, security, architecture, compatibility and release-certification phases still remained. Phase 9I, Provider Contract & Payment Lifecycle, and the bounded Security Threat-Model Closure have since become **DONE / VERIFIED**; **Architecture & Code-Quality Foundation — DISCOVERY** is the current program gate.
 
 ## Verified public plugin identity
 
@@ -192,4 +192,4 @@ Post-merge verification established:
 
 No tag or GitHub Release is created by this engineering milestone.
 
-The next permitted implementation gate is **Phase 9I — Historical token-identity migration**, under the frozen H12 identity/provider contracts and the normal protected-branch review/CI rules.
+The implementation gate immediately following Phase 0 was **Phase 9I — Historical token-identity migration**. Phase 9I, Provider Contract & Payment Lifecycle, and the bounded Security Threat-Model Closure are now **DONE / VERIFIED**; the current permitted gate is **Architecture & Code-Quality Foundation — DISCOVERY**, under the same protected-branch review/CI discipline and frozen compatibility contracts.
