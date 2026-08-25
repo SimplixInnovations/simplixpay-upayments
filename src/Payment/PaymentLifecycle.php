@@ -4,6 +4,9 @@ namespace Simplix\Pay\UPayments\Payment;
 
 defined('ABSPATH') || exit;
 
+use Simplix\Pay\UPayments\Security\PublicOrderStatus;
+
+require_once dirname(__DIR__) . '/Security/PublicOrderStatus.php';
 require_once __DIR__ . '/ProviderResult.php';
 require_once __DIR__ . '/StatusRateGate.php';
 require_once __DIR__ . '/OrderLock.php';
@@ -39,13 +42,14 @@ final class PaymentLifecycle {
     }
 
     /**
-     * WC-API entrypoint. The inherited get_order_status display poll remains delegated.
+     * WC-API entrypoint. The historical get_order_status poll is intercepted here before inherited priority 10.
      */
     public static function handle_callback() {
         $get = isset($_GET) && is_array($_GET) ? $_GET : array();
         $post = isset($_POST) && is_array($_POST) ? $_POST : array();
 
         if (array_key_exists('get_order_status', $get)) {
+            PublicOrderStatus::handle();
             return;
         }
 
