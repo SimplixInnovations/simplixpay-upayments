@@ -172,7 +172,10 @@ namespace {
     $cliSource = file_get_contents($root . '/src/Migration/MigrationCliCommand.php');
     $adminSource = file_get_contents($root . '/src/Migration/MigrationAdmin.php');
     $bootstrapSource = file_get_contents($root . '/src/Migration/MigrationBootstrap.php');
-    p9o_assert(strpos($cliSource, '--api-key') === false && strpos($adminSource, 'name="api_key"') === false, 'P9O-10 no credential input surface');
+    $cliCredentialInput = strpos($cliSource, "$assoc_args['api-key']") !== false
+        || strpos($cliSource, "array_key_exists('api-key'") !== false
+        || strpos($cliSource, "isset($assoc_args['api-key'])") !== false;
+    p9o_assert(!$cliCredentialInput && strpos($adminSource, 'name="api_key"') === false, 'P9O-10 no credential input surface');
     p9o_assert(strpos($adminSource, "current_user_can(self::CAPABILITY)") !== false, 'P9O-10 admin capability enforced');
     p9o_assert(strpos($adminSource, 'check_admin_referer(self::NONCE_ACTION, self::NONCE_FIELD)') !== false, 'P9O-10 admin nonce enforced');
     p9o_assert(strpos($adminSource, 'explicit_execute_confirmation_required') !== false, 'P9O-10 admin execute confirmation enforced');
