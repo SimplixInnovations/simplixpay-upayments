@@ -27,11 +27,60 @@
 | Phase 0 — release identity/updater ownership | **DONE / VERIFIED** |
 | Phase 9I — historical token-identity migration | **DONE / VERIFIED** |
 | Provider Contract & Payment Lifecycle | **DONE / VERIFIED** |
-| Current program gate | **Security Threat-Model Closure — DISCOVERY** |
+| Security Threat-Model Closure | **DONE / VERIFIED** |
+| Current program gate | **Architecture & Code-Quality Foundation — DISCOVERY** |
 
-The plugin remains a pre-release engineering project. Closure of the provider/payment lifecycle gate certifies the reviewed ordinary-checkout lifecycle contract and its executable regression evidence; it does not constitute broad security, platform, feature, performance or release certification.
+The plugin remains a pre-release engineering project. Security Threat-Model Closure is now DONE / VERIFIED for the bounded findings and executable controls recorded in `SECURITY-THREAT-MODEL.md`; it does not constitute broad penetration-test, PCI/compliance, platform, feature, performance or release certification.
 
-## Latest verified implementation milestone — Provider Contract & Payment Lifecycle
+## Latest verified implementation milestone — Security Threat-Model Closure
+
+PR #17 final reviewed head:
+
+- `fba12225899c3e01d6b23a6bba2f757a3b5f6a4a`
+
+Verified squash merge on `main`:
+
+- merge: `01f3fc59eed8641b3e5372558f61a7a0f0cdfac9`
+- tree: `e0027005f059fad03d8c08273b7aac6553c45f53`
+- parent: `08054a93c619f3c34fef747a6e530abce1e8986e`
+- GitHub signature: **VERIFIED**
+- implementation branch `security/threat-model-discovery`: **deleted after verified merge**
+- exact PR merge-ref Quality Gates run #88: **SUCCESS**
+- push-triggered post-merge Quality Gates run #89: **SUCCESS**
+
+Exact final implementation-head regression evidence:
+
+- Governance: **SUCCESS**
+- tracked PHP syntax: **SUCCESS**
+- Phase 0 release identity: **35 PASS / 0 FAIL**
+- Phase 9I preflight: **123 PASS / 0 FAIL**
+- Phase 9I executor: **59 PASS / 0 FAIL**
+- Phase 9I operations: **81 PASS / 0 FAIL**
+- Provider Payment Lifecycle: **141 PASS / 0 FAIL**
+- Provider Exact Amount Binding: **4 PASS / 0 FAIL**
+- Security Threat-Model: **81 PASS / 0 FAIL**
+- H12 PHP: **1927 PASS / 0 FAIL**
+- Blocks syntax: **SUCCESS**
+- H12 Blocks: **144 PASS / 0 FAIL**
+
+The final security implementation closed five bounded findings: public status-poll IDOR, state-changing subscription GET actions, checkout third-party font/icon trust, overly broad plain-data output trust, and product-meta save defense in depth. A valid P2 automated review finding on Checkout Blocks chevrons was fixed before merge and added to the permanent security harness.
+
+## Closed security threat-model contract
+
+The verified bounded security closure now has these frozen properties:
+
+- numeric order ID is never authority for public status polling; exact logged-in ownership or exact Woo order key is required, and only UPayments orders are eligible;
+- customer subscription pause/resume/unsubscribe mutations are POST-only, exact-owner-bound, action-nonced, object-preflighted and transition-validated;
+- classic and Checkout Blocks no longer depend on Google Fonts/cdnjs Font Awesome for checkout presentation;
+- plain provider/order values are escaped as text and stored settings use attribute-context escaping;
+- checkout display markers no longer consume `$_REQUEST`;
+- product custom-meta writes mirror WooCommerce nonce, posted-ID and `edit_post` authorization preconditions locally;
+- existing payment lifecycle host/TLS/redirect/Bearer, H12 identity, Phase 9I capability/nonce, no-blind-retry and immutable Actions-pin controls remain regression-protected;
+- the permanent security harness is part of required Quality Gates.
+
+Explicitly unresolved boundaries remain explicit: provider webhook HMAC/signature details are provider-document unresolved; subscription auto-deduction is not promoted to broad recurring-billing certification; automatic refunds remain unsupported pending durable idempotency/reconciliation design; H12 token/provenance and Phase 9I migration contracts remain frozen.
+
+## Previous verified implementation milestone — Provider Contract & Payment Lifecycle
 
 PR #15 final reviewed head:
 
@@ -189,31 +238,27 @@ Repository readiness remains DONE / VERIFIED:
 - private vulnerability reporting;
 - MIT recognized.
 
-## Current program gate — Security Threat-Model Closure
+## Current program gate — Architecture & Code-Quality Foundation
 
 **Status: DISCOVERY.**
 
-The next gate must threat-model and close security boundaries across the now-frozen provider/payment lifecycle plus the protected H12/Phase 9I surfaces. Minimum scope:
+Security Threat-Model Closure is complete. The next gate may now characterize and incrementally decompose the inherited architecture without weakening the closed security/payment/H12/Phase 9I contracts. Minimum first scope:
 
-- authorization and capability boundaries;
-- CSRF/nonces and state-changing admin/CLI surfaces;
-- callback/webhook authentication and replay/abuse resistance;
-- IDOR/order ownership and object-reference boundaries;
-- SSRF/URL/redirect/host allowlists;
-- provider credentials, token identity, secrets and key material;
-- input parsing/type confusion/injection and output escaping;
-- logs, order notes, diagnostics and secret/PII redaction;
-- concurrency/race/idempotency security properties;
-- dependency/supply-chain and GitHub Actions trust boundaries;
-- fail-closed behavior for undocumented provider/security ambiguity.
+- map mixed responsibilities in `UPayments.php` and current `Simplix\Pay\UPayments` strangler boundaries;
+- establish characterization around any runtime surface before extraction;
+- define target module boundaries, dependency direction and compatibility seams;
+- introduce standard static-analysis/coding-quality baselines incrementally;
+- identify dead/duplicate code only after dependency/runtime characterization;
+- preserve protected gateway IDs, callback routes, metadata, token/provenance, migration and subscription identities;
+- no big-bang runtime rename or cosmetic decomposition of payment-critical code;
+- keep Security Threat-Model **81/0**, Provider Lifecycle **141/0 + 4/0**, all Phase 9I suites, Phase 0 and H12 regressions green throughout.
 
-The gate must start with source/data-flow/threat characterization and executable security regressions before broad cleanup or architecture refactoring.
+The gate starts with architecture characterization and a frozen extraction contract before broad refactoring.
 
 ## Later program blockers
 
-After Security Threat-Model Closure:
+After Architecture & Code-Quality Foundation:
 
-- architecture/code-quality foundation;
 - full automated quality platform;
 - platform and feature certification;
 - performance/UX/operations/diagnostics;

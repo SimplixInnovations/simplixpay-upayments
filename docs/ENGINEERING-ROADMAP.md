@@ -8,6 +8,7 @@ Use:
 - [`project/PHASE-0-RELEASE-IDENTITY.md`](project/PHASE-0-RELEASE-IDENTITY.md) for the closed Phase 0 evidence record;
 - [`project/PHASE-9I-MIGRATION.md`](project/PHASE-9I-MIGRATION.md) for the closed historical token-identity migration record;
 - [`project/PROVIDER-PAYMENT-LIFECYCLE.md`](project/PROVIDER-PAYMENT-LIFECYCLE.md) for the closed provider/payment lifecycle record;
+- [`project/SECURITY-THREAT-MODEL.md`](project/SECURITY-THREAT-MODEL.md) for the closed bounded security threat-model record;
 - [`project/REPOSITORY-READINESS.md`](project/REPOSITORY-READINESS.md) for the closed repository-foundation record;
 - [`project/MASTER-ENGINEERING-PLAYBOOK.md`](project/MASTER-ENGINEERING-PLAYBOOK.md) for detailed phases and release criteria;
 - [`project/NAMING-IDENTITY-STANDARD.md`](project/NAMING-IDENTITY-STANDARD.md) for product/slug/namespace and compatibility identity rules.
@@ -62,20 +63,20 @@ Use:
    - final PR #15 evidence: Provider Lifecycle **141/0**, Exact Amount **4/0**, Phase 0 **35/0**, Phase 9I **123/0 + 59/0 + 81/0**, H12 PHP **1927/0**, H12 Blocks **144/0**;
    - squash merge `9569e39973a9e94926087738eae06c3846361943`, tree `40ec562674361624c2764263ba55cfba84594955`, VERIFIED signature, deleted implementation branch, green post-merge run #71.
 
-4. **Security Threat-Model Closure — CURRENT GATE / DISCOVERY**
-   - map assets, trust boundaries, actors, financial/security state and data flows;
-   - audit authorization/capability boundaries and CSRF/nonces;
-   - audit callback/webhook abuse, replay, IDOR and order-object reference boundaries;
-   - audit SSRF, redirect and URL/host allowlists;
-   - audit API credentials, saved-card/customer-token identity, secret roots and migration security material;
-   - audit input parsing/type confusion/injection and output escaping;
-   - audit logs/order notes/diagnostics for secret and PII redaction;
-   - audit concurrency, race and idempotency properties as security controls;
-   - audit dependency/supply-chain and GitHub Actions trust boundaries;
-   - retain fail-closed behavior where provider security documentation is incomplete;
-   - add executable security characterization before broad refactoring.
+4. **Security Threat-Model Closure — DONE / VERIFIED**
+   - closed public status-poll IDOR with exact owner/order-key authorization and UPayments object preflight;
+   - moved subscription customer mutations to POST-only owner/nonce/object/transition boundaries;
+   - removed checkout Google Fonts/cdnjs Font Awesome trust across classic and Blocks;
+   - tightened output-context escaping and checkout request-source handling;
+   - mirrored WooCommerce product-meta authorization preconditions locally;
+   - retained provider status transport/payment-truth, H12, Phase 9I, subscription no-blind-retry and immutable Actions-pin controls;
+   - permanent Security Threat-Model regression **81 PASS / 0 FAIL**;
+   - final PR #17 head `fba12225899c3e01d6b23a6bba2f757a3b5f6a4a` passed merge-ref Quality Gates #88;
+   - squash merge `01f3fc59eed8641b3e5372558f61a7a0f0cdfac9`, tree `e0027005f059fad03d8c08273b7aac6553c45f53`, VERIFIED signature, deleted implementation branch, green post-merge run #89;
+   - webhook HMAC/signature remains provider-document unresolved; automatic refunds and broad recurring-billing certification remain outside this gate;
+   - bounded closure is not broad penetration-test/PCI/platform/feature/performance/production certification.
 
-5. **Architecture & Code-Quality Foundation**
+5. **Architecture & Code-Quality Foundation — CURRENT GATE / DISCOVERY**
    - incremental `Simplix\Pay\UPayments` architecture extraction;
    - characterization before refactoring;
    - static analysis/coding standards/dead-code/complexity cleanup;

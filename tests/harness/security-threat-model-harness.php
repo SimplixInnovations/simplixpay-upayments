@@ -163,7 +163,7 @@ if (isset($matches[1])) {
 sec_assert($all_pinned, 'all quality workflow Actions are immutable full-SHA pins');
 
 // Control-plane continuity is itself a security/recovery invariant.
-sec_assert(strpos($security_doc, '**Status:** IMPLEMENTATION / REVIEW') !== false, 'security threat-model record tracks in-flight tranche status');
+sec_assert(strpos($security_doc, '**Status:** DONE / VERIFIED') !== false, 'security threat-model record tracks verified closed status');
 sec_assert(strpos($security_doc, '08054a93c619f3c34fef747a6e530abce1e8986e') !== false, 'security record pins verified closure base');
 sec_assert(strpos($security_doc, 'SEC-01') !== false && strpos($security_doc, 'SEC-05') !== false, 'security record names characterized findings');
 

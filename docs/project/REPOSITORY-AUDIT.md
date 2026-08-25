@@ -12,37 +12,42 @@
 
 **Provider lifecycle tree:** `40ec562674361624c2764263ba55cfba84594955`
 
+**Security Threat-Model verified implementation:** `01f3fc59eed8641b3e5372558f61a7a0f0cdfac9`
+
+**Security Threat-Model tree:** `e0027005f059fad03d8c08273b7aac6553c45f53`
+
 **Last reconciled:** 2026-08-25
 
 **Purpose:** maintain tracked-tree debt classification and current gate ownership without authorizing drive-by runtime cleanup.
 
 ## Executive classification
 
-Repository foundation/readiness, **Phase 0**, **Phase 9I**, and **Provider Contract & Payment Lifecycle** are **DONE / VERIFIED**.
+Repository foundation/readiness, **Phase 0**, **Phase 9I**, **Provider Contract & Payment Lifecycle**, and bounded **Security Threat-Model Closure** are **DONE / VERIFIED**.
 
 The repository remains a pre-release engineering codebase. It is not the intended final SimplixPay package architecture and is not yet broadly security/platform/feature/performance certified.
 
 Phase 0 took ownership of public release identity and removed inherited update authority. Phase 9I added isolated historical-identity migration tooling. The provider lifecycle gate then added an isolated `Simplix\Pay\UPayments\Payment` strangler for ordinary browser/webhook/status truth and WooCommerce payment-state transitions without broadly rewriting the inherited gateway bootstrap.
 
-The current owner/gate is **Security Threat-Model Closure — DISCOVERY**. This gate may characterize and remediate security-critical behavior, but it does not authorize unrelated cleanup or weakening closed payment/H12/Phase 9I contracts.
+The current owner/gate is **Architecture & Code-Quality Foundation — DISCOVERY**. This gate may characterize and incrementally extract mixed responsibilities and establish code-quality baselines, but it does not authorize a big-bang rewrite, protected-identity renames, or weakening closed Security/Payment/H12/Phase 9I contracts.
 
-## Top-level inventory after Provider Lifecycle closure
+## Top-level inventory after Security Threat-Model closure
 
 | Area | Current state | Classification | Next owner/gate |
 |---|---|---|---|
-| `.github/` | CODEOWNERS, templates, Dependabot, protected Quality Gates | **KEEP / CONTROL PLANE** | Security gate audits workflow/supply-chain trust |
+| `.github/` | CODEOWNERS, templates, Dependabot, protected Quality Gates | **KEEP / CONTROL PLANE** | Architecture gate preserves CI/security controls; quality-platform gate may extend tooling later |
 | `AGENTS.md` | Permanent execution/review rules | **KEEP / CONTROL PLANE** | Mandatory before substantive work |
 | `README.md`, `CHANGELOG.md` | Simplix-led public/project records | **KEEP CURRENT** | Update at verified milestones |
 | `LICENSE`, `NOTICE.md`, `UPSTREAM.md` | MIT + provenance/trademark boundaries | **KEEP** | Re-review at publication gates |
-| `UPayments.php` | Active inherited large gateway/bootstrap with Simplix 0.1.0 identity; Charge/config/subscription and legacy callback paths remain | **PROTECTED / SECURITY + ARCHITECTURE AUDIT** | Security threat model first; broad extraction later |
+| `UPayments.php` | Active inherited large gateway/bootstrap with Simplix 0.1.0 identity; Charge/config/subscription and legacy callback paths remain | **PROTECTED / ARCHITECTURE AUDIT** | Characterize responsibilities; extract incrementally |
 | `src/Release/Identity.php` | Canonical Simplix release identity + conditional runtime foothold | **KEEP / CHARACTERIZED** | Preserve Phase 0 isolation contract |
-| `src/Migration/` | Verified Phase 9I preflight/executor/admin/CLI operations | **DONE / VERIFIED / PROTECTED** | Security-audit capabilities/nonces/credentials/ledgers without weakening migration semantics |
-| `src/Payment/` | Verified provider result, rate gate, order lock, status verifier and lifecycle strangler | **DONE / VERIFIED / SECURITY INPUT** | Security threat-model callback/status/SSRF/replay/concurrency/logging boundaries |
-| `includes/Token/CustomerTokenIdentity.php` | H12-critical token identity implementation | **DONE / VERIFIED H12 + PHASE 9I DEPENDENCY** | Security-audit secret/token boundaries; no casual semantic changes |
-| `includes/Subscription/` | Subscription/auto-deduction implementation | **RUNTIME — PROTECTED** | Security threat model, then later feature certification |
-| Blocks integration | H12-critical Blocks implementation | **RUNTIME — PROTECTED** | Security input boundaries now; broader platform certification later |
-| `assets/`, `templates/` | Inherited frontend/admin paths and assets | **AUDIT LATER / SECURITY OBSERVABLE** | Security output/XSS checks where relevant; UX/performance cleanup later |
-| `tests/harness/` | Phase 0 + Phase 9I + Provider Lifecycle + H12 custom regressions | **KEEP AS REQUIRED BASELINE** | Add security characterization; supplement rather than replace |
+| `src/Migration/` | Verified Phase 9I preflight/executor/admin/CLI operations | **DONE / VERIFIED / PROTECTED** | Architecture gate preserves the migration boundary; later quality/platform work may extend coverage without weakening semantics |
+| `src/Payment/` | Verified provider result, rate gate, order lock, status verifier and lifecycle strangler | **DONE / VERIFIED / PROTECTED** | Architecture gate may extract only behind full characterization/regression |
+| `src/Security/` | Verified public order-status authorization boundary | **DONE / VERIFIED / PROTECTED** | Preserve SEC-01 contract during architecture work |
+| `includes/Token/CustomerTokenIdentity.php` | H12-critical token identity implementation | **DONE / VERIFIED H12 + PHASE 9I DEPENDENCY** | Architecture gate treats token identity as a protected dependency; later certification may extend evidence without casual semantic changes |
+| `includes/Subscription/` | Subscription/auto-deduction implementation | **RUNTIME — PROTECTED** | Architecture only under full characterization; later feature certification owns recurring-billing certification |
+| Blocks integration | H12-critical Blocks implementation with local checkout chevrons | **RUNTIME — SECURITY VERIFIED / PROTECTED** | Architecture only with Blocks/H12/security regressions; platform certification later |
+| `assets/`, `templates/` | Inherited frontend/admin paths and assets; bounded checkout dependency/output fixes verified | **PARTIALLY SECURITY-CHARACTERIZED / AUDIT LATER** | Architecture/UX/performance gates; preserve security escaping/dependency contracts |
+| `tests/harness/` | Phase 0 + Phase 9I + Provider Lifecycle + Security Threat-Model + H12 custom regressions | **KEEP AS REQUIRED BASELINE** | Architecture/static-analysis additions supplement rather than replace |
 | `vendor/plugin-update-checker/` | absent | **RESOLVED** | Do not reintroduce without explicit distribution design |
 | `uninstall.php` | non-destructive by default | **RESOLVED FOR PHASE 0** | Future erasure path requires explicit contract |
 | `index.php` | minimal directory guard | **KEEP** | Re-evaluate only with packaging migration |
@@ -133,7 +138,35 @@ Four valid review findings were corrected before merge: rate-gate/wp_salt seam, 
 - arbitrary multi-entry marketplace splitting remains uncertified; current behavior supports one additional merchant allocation only;
 - subscription auto-deduction remains on its separately characterized path.
 
-These are explicit later/security inputs, not hidden implementation gaps that may be guessed through cleanup.
+These remain explicit later-gate inputs, not hidden implementation gaps that may be guessed through cleanup.
+
+## Security Threat-Model Closure — resolved
+
+Bounded Security Threat-Model Closure is **DONE / VERIFIED** through PR #17.
+
+Verified implementation:
+
+- final reviewed head `fba12225899c3e01d6b23a6bba2f757a3b5f6a4a`;
+- squash merge `01f3fc59eed8641b3e5372558f61a7a0f0cdfac9`;
+- tree `e0027005f059fad03d8c08273b7aac6553c45f53`;
+- sole parent `08054a93c619f3c34fef747a6e530abce1e8986e`;
+- VERIFIED GitHub signature;
+- merge-ref Quality Gates #88 SUCCESS;
+- post-merge Quality Gates #89 SUCCESS;
+- implementation branch deleted;
+- permanent Security Threat-Model harness **81 PASS / 0 FAIL**.
+
+Closed findings:
+
+- SEC-01 public legacy status IDOR — exact UPayments object + owner/order-key authorization and allowlisted output;
+- SEC-02 subscription GET mutation — POST-only exact-owner/action-nonce/object/transition boundary;
+- SEC-03 checkout CDN trust — remote fonts/icons removed across classic and Blocks with local presentation;
+- SEC-04 output trust — context-correct escaping and no checkout `$_REQUEST` display markers;
+- SEC-05 product-meta defense in depth — local WooCommerce nonce/post-ID/capability preconditions.
+
+One valid P2 automated review finding on Checkout Blocks chevrons was corrected and permanently characterized before merge.
+
+Explicit non-closures: webhook HMAC/signature remains provider-document unresolved; automatic refunds remain unsupported pending durable idempotency/reconciliation; subscription auto-deduction is not broad recurring-billing certification; no penetration-test/PCI/platform/feature/performance/production certification is claimed.
 
 ## Deliberately unresolved package/identity work
 
@@ -153,7 +186,7 @@ Simultaneous activation with another UPayments plugin that owns the same globals
 
 ### Large bootstrap
 
-`UPayments.php` remains a large mixed-responsibility inherited surface. The provider lifecycle gate deliberately used an isolated strangler rather than broad cleanup. Security Threat-Model Closure may inspect/remediate security-critical paths, but general decomposition belongs to the later Architecture & Code-Quality gate.
+`UPayments.php` remains a large mixed-responsibility inherited surface. Provider and Security gates deliberately used isolated strangler/boundary changes rather than broad cleanup. General decomposition now belongs to the current Architecture & Code-Quality Foundation gate and must be incremental and characterization-led.
 
 ### Token and subscription modules
 
@@ -172,25 +205,22 @@ Known inherited empty/duplicate/legacy assets remain recorded debt. Do not delet
 
 ### Test platform
 
-The required custom harness stack now includes Phase 0, all Phase 9I suites, Provider Lifecycle, Exact Amount, H12 PHP and H12 Blocks. It remains regression protection rather than a replacement for full PHPUnit/WordPress/WooCommerce integration, broad static analysis, browser E2E, accessibility and performance testing.
+The required custom harness stack now includes Phase 0, all Phase 9I suites, Provider Lifecycle, Exact Amount, Security Threat-Model, H12 PHP and H12 Blocks. It remains regression protection rather than a replacement for full PHPUnit/WordPress/WooCommerce integration, broad static analysis, browser E2E, accessibility and performance testing.
 
 ## Current next owner/gate
 
-**Security Threat-Model Closure — DISCOVERY**.
+**Architecture & Code-Quality Foundation — DISCOVERY**.
 
-The gate must first build a security asset/trust-boundary/data-flow map and characterize:
+The gate must first characterize responsibility/dependency seams and freeze incremental extraction contracts for:
 
-- authorization/capabilities and CSRF/nonces;
-- callback/webhook abuse, replay and IDOR;
-- SSRF/redirect/host allowlists;
-- provider credentials, H12 token/secrets and migration material;
-- input parsing/type confusion/injection and output escaping;
-- logs/order notes/diagnostics redaction;
-- concurrency/race/idempotency security;
-- dependency/supply-chain/GitHub Actions trust;
-- fail-closed handling of undocumented provider security contracts.
+- the large `UPayments.php` bootstrap/gateway surface;
+- current `src/Payment/` and `src/Security/` strangler boundaries;
+- H12 token identity and Phase 9I migration dependencies;
+- subscription and Blocks integration seams;
+- global/hook/static side effects and compatibility-sensitive runtime identities;
+- baseline static-analysis/coding-standard debt versus runtime behavior.
 
-Do not start with a broad refactor. Closed provider lifecycle/H12/Phase 9I contracts remain regression constraints unless an explicit stronger security contract replaces one.
+Do not start with a big-bang refactor or mechanical rename. Closed Security/Provider/H12/Phase 9I contracts remain required regressions throughout architecture work.
 
 See `PROJECT-STATUS.md` for live program state, `PHASE-9I-MIGRATION.md` for historical-identity migration, and `PROVIDER-PAYMENT-LIFECYCLE.md` for the closed ordinary-checkout lifecycle contract.
 

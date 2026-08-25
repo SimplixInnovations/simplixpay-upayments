@@ -66,11 +66,88 @@ jobs:
           grep -Fq '**Status:** DONE / VERIFIED' docs/project/PHASE-0-RELEASE-IDENTITY.md
           grep -Fq '**Status:** DONE / VERIFIED' docs/project/PHASE-9I-MIGRATION.md
           grep -Fq '**Status:** DONE / VERIFIED' docs/project/PROVIDER-PAYMENT-LIFECYCLE.md
-          grep -Fq '**Status:** IMPLEMENTATION / REVIEW' docs/project/SECURITY-THREAT-MODEL.md
+          grep -Fq '**Status:** DONE / VERIFIED' docs/project/SECURITY-THREAT-MODEL.md
           grep -Fq '| Phase 0 — release identity/updater ownership | **DONE / VERIFIED** |' docs/project/PROJECT-STATUS.md
           grep -Fq '| Phase 9I — historical token-identity migration | **DONE / VERIFIED** |' docs/project/PROJECT-STATUS.md
           grep -Fq '| Provider Contract & Payment Lifecycle | **DONE / VERIFIED** |' docs/project/PROJECT-STATUS.md
-          grep -Fq '| Current program gate | **Security Threat-Model Closure — DISCOVERY** |' docs/project/PROJECT-STATUS.md
+          grep -Fq '| Security Threat-Model Closure | **DONE / VERIFIED** |' docs/project/PROJECT-STATUS.md
+          grep -Fq '| Current program gate | **Architecture & Code-Quality Foundation — DISCOVERY** |' docs/project/PROJECT-STATUS.md
+          grep -Fq 'The current program gate is **Architecture & Code-Quality Foundation — DISCOVERY**.' README.md
+          grep -Fq '**Architecture & Code-Quality Foundation — DISCOVERY** is now the active gate.' CHANGELOG.md
+          grep -Fq '5. **Architecture & Code-Quality Foundation — CURRENT GATE / DISCOVERY**' docs/ENGINEERING-ROADMAP.md
+          grep -Fq '| Security threat-model audit | **DONE / VERIFIED** | Critical |' docs/project/MASTER-ENGINEERING-PLAYBOOK.md
+          grep -Fq '| Architecture/code quality | **DISCOVERY — CURRENT GATE** | High |' docs/project/MASTER-ENGINEERING-PLAYBOOK.md
+          grep -Fq 'The current owner/gate is **Architecture & Code-Quality Foundation — DISCOVERY**' docs/project/REPOSITORY-AUDIT.md
+          grep -Fq 'the current permitted program gate is **Architecture & Code-Quality Foundation — DISCOVERY**' docs/project/REPOSITORY-READINESS.md
+          grep -Fq 'the current permitted gate is **Architecture & Code-Quality Foundation — DISCOVERY**' docs/project/PHASE-0-RELEASE-IDENTITY.md
+          grep -Fq 'The current program gate is **Architecture & Code-Quality Foundation — DISCOVERY**' docs/project/PHASE-9I-MIGRATION.md
+          grep -Fq 'The current permitted program gate is **Architecture & Code-Quality Foundation — DISCOVERY**' docs/project/PROVIDER-PAYMENT-LIFECYCLE.md
+          grep -Fq -- '- Current program gate: **Architecture & Code-Quality Foundation — DISCOVERY**' docs/project/NEW-CHAT-HANDOFF.md
+
+      - name: Reject stale gate ownership markers
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          live_gate_files=(
+            AGENTS.md
+            README.md
+            CHANGELOG.md
+            docs/ENGINEERING-ROADMAP.md
+            docs/project/PROJECT-STATUS.md
+            docs/project/MASTER-ENGINEERING-PLAYBOOK.md
+            docs/project/NEW-CHAT-HANDOFF.md
+            docs/project/PHASE-0-RELEASE-IDENTITY.md
+            docs/project/PHASE-9I-MIGRATION.md
+            docs/project/PROVIDER-PAYMENT-LIFECYCLE.md
+            docs/project/REPOSITORY-AUDIT.md
+            docs/project/REPOSITORY-READINESS.md
+            docs/project/SECURITY-THREAT-MODEL.md
+          )
+
+          reject_across_live_records() {
+            local marker="$1"
+            if grep -FnH -F -- "$marker" "${live_gate_files[@]}"; then
+              echo "Obsolete live gate marker detected: ${marker}"
+              exit 1
+            fi
+          }
+
+          reject_across_live_records 'Security Threat-Model Closure — DISCOVERY'
+          reject_across_live_records 'Security Threat-Model Closure — CURRENT GATE / DISCOVERY'
+          reject_across_live_records 'Security Threat-Model Closure — **CURRENT / DISCOVERY**'
+          reject_across_live_records 'Security threat-model audit | **DISCOVERY — CURRENT GATE**'
+          reject_across_live_records 'Security Threat-Model Closure — **DISCOVERY / CURRENT GATE**'
+          reject_across_live_records '## Current program gate — Security Threat-Model Closure'
+          reject_across_live_records '## Current engineering gate — Security Threat-Model Closure'
+          reject_across_live_records '## Next gate — Security Threat-Model Closure'
+
+          if grep -FnH -F -- '**Current program status:** DISCOVERY / CURRENT GATE.' docs/project/MASTER-ENGINEERING-PLAYBOOK.md; then
+            echo 'Obsolete Security program-status marker detected in Master Playbook.'
+            exit 1
+          fi
+
+          if grep -FnH -F -- '**Status:** IMPLEMENTATION / REVIEW' docs/project/SECURITY-THREAT-MODEL.md; then
+            echo 'Security record regressed to an in-flight status.'
+            exit 1
+          fi
+          if grep -FnH -F -- '**Current branch:** `security/threat-model-discovery`' docs/project/SECURITY-THREAT-MODEL.md; then
+            echo 'Security record regressed to the deleted implementation branch.'
+            exit 1
+          fi
+
+          if grep -FnH -F -- 'The next permitted implementation gate is **Phase 9I — Historical token-identity migration**' docs/project/PHASE-0-RELEASE-IDENTITY.md; then
+            echo 'Phase 0 record regressed to a stale next-gate instruction.'
+            exit 1
+          fi
+          if grep -FnH -F -- "Phase 0 is now permitted under the repository's normal PR/CI/review controls." docs/project/REPOSITORY-READINESS.md; then
+            echo 'Repository Readiness record regressed to stale live Phase 0 wording.'
+            exit 1
+          fi
+          if grep -FnH -F -- 'The next permitted runtime-changing work is **Phase 0 — SimplixPay release identity and updater ownership**.' docs/project/REPOSITORY-READINESS.md; then
+            echo 'Repository Readiness record regressed to a stale next-gate instruction.'
+            exit 1
+          fi
 
       - name: Whitespace errors
         shell: bash

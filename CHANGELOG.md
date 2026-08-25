@@ -6,6 +6,25 @@ The project is still in pre-release engineering hardening. Entries below are eng
 
 ## [Unreleased]
 
+### Security Threat-Model Closure — DONE / VERIFIED
+
+- Closed the public historical order-status IDOR by requiring an UPayments order plus exact logged-in ownership or exact WooCommerce order key; numeric order ID alone is no longer authority and returned state is allowlisted.
+- Replaced nonce-bearing subscription pause/resume/unsubscribe GET mutations with exact-owner-bound POST forms/actions, action-specific nonce verification, subscription object preflight and valid transition checks.
+- Removed Google Fonts and cdnjs Font Awesome checkout dependencies and replaced classic plus Checkout Blocks chevrons with local presentation.
+- Tightened plain provider/order metadata to text escaping, stored settings to attribute escaping, and removed `$_REQUEST` from checkout display markers.
+- Added local WooCommerce nonce/post-ID/`edit_post` preconditions before plugin product-meta writes.
+- Added permanent `tests/harness/security-threat-model-harness.php` to required Quality Gates; final characterization is **81 PASS / 0 FAIL**.
+- Preserved existing provider host/TLS/redirect/Bearer, payment-truth, H12 identity, Phase 9I authorization, subscription no-blind-retry and immutable GitHub Actions-pin controls.
+- Fixed one valid automated P2 review finding before merge by covering the Checkout Blocks Font Awesome seam explicitly in the permanent security harness.
+- Exact final PR #17 head `fba12225899c3e01d6b23a6bba2f757a3b5f6a4a` passed full merge-ref Quality Gates run #88.
+- Squash-merged PR #17 as `01f3fc59eed8641b3e5372558f61a7a0f0cdfac9`, tree `e0027005f059fad03d8c08273b7aac6553c45f53`, with VERIFIED GitHub signature; implementation branch was deleted.
+- Post-merge `main` Quality Gates run #89 passed the complete workflow again.
+- Explicit non-claims remain: webhook HMAC/signature is provider-document unresolved, automatic refunds are unsupported pending durable idempotency/reconciliation, subscription auto-deduction is not broadly recurring-billing certified, and this is not broad penetration-test/PCI/platform/feature/performance/production certification.
+
+### Current program gate
+
+**Architecture & Code-Quality Foundation — DISCOVERY** is now the active gate. It begins with responsibility/dependency mapping and characterization before incremental extraction; it must not weaken closed Security, Provider, H12 or Phase 9I contracts or protected persisted/runtime identities.
+
 ### Provider Contract & Payment Lifecycle — DONE / VERIFIED
 
 - Researched and froze the ordinary-checkout UPayments/WooCommerce lifecycle contract against current official provider and WooCommerce documentation before implementation.
@@ -33,12 +52,6 @@ The project is still in pre-release engineering hardening. Entries below are eng
 - Exact final PR #15 reviewed head `d2b08ebe1e65ad4ea8f4e06b41423e7bd9904fc3` passed Governance, tracked PHP syntax, Phase 0 **35/0**, Phase 9I preflight **123/0**, executor **59/0**, operations **81/0**, Provider Lifecycle **141/0**, Provider Exact Amount **4/0**, H12 PHP **1927/0**, Blocks syntax and H12 Blocks **144/0**.
 - Squash-merged PR #15 as `9569e39973a9e94926087738eae06c3846361943`, tree `40ec562674361624c2764263ba55cfba84594955`, with VERIFIED GitHub signature and implementation-branch deletion.
 - Post-merge `main` Quality Gates run #71 passed the complete workflow again.
-
-### Current program gate
-
-**Security Threat-Model Closure — DISCOVERY** is now the active gate.
-
-The next work must threat-model the frozen payment lifecycle plus protected H12/Phase 9I surfaces across authorization/CSRF, callback/replay/IDOR/SSRF, input/output boundaries, credentials/secrets, logging/redaction, concurrency/idempotency, dependencies/supply chain and fail-closed provider ambiguity before broader architecture refactoring.
 
 ### Phase 9I — historical token-identity migration — DONE / VERIFIED
 

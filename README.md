@@ -34,9 +34,10 @@ The following engineering gates are **DONE / VERIFIED**:
 - Repository Foundation & Readiness;
 - Phase 0 — SimplixPay release identity/updater ownership;
 - Phase 9I — historical token-identity migration;
-- Provider Contract & Payment Lifecycle.
+- Provider Contract & Payment Lifecycle;
+- Security Threat-Model Closure.
 
-The current program gate is **Security Threat-Model Closure — DISCOVERY**.
+The current program gate is **Architecture & Code-Quality Foundation — DISCOVERY**.
 
 The project remains in **pre-release engineering hardening**. It is not yet a broadly certified stable production release and has not yet been published to WordPress.org.
 
@@ -51,7 +52,8 @@ The project remains in **pre-release engineering hardening**. It is not yet a br
 | Phase 0 release identity/updater ownership | **DONE / VERIFIED** |
 | Phase 9I historical token-identity migration | **DONE / VERIFIED** |
 | Provider Contract & Payment Lifecycle | **DONE / VERIFIED** |
-| Current engineering gate | **Security Threat-Model Closure — DISCOVERY** |
+| Security Threat-Model Closure | **DONE / VERIFIED** |
+| Current engineering gate | **Architecture & Code-Quality Foundation — DISCOVERY** |
 | Stable SimplixPay release | **Not yet published** |
 | WordPress.org release | **Not yet published** |
 | Phase 0 release-identity harness | **35 PASS / 0 FAIL** |
@@ -60,8 +62,10 @@ The project remains in **pre-release engineering hardening**. It is not yet a br
 | Phase 9I operations | **81 PASS / 0 FAIL** |
 | Provider lifecycle harness | **141 PASS / 0 FAIL** |
 | Provider exact-amount harness | **4 PASS / 0 FAIL** |
+| Security threat-model harness | **81 PASS / 0 FAIL** |
 | H12 regression baseline | **PHP 1927 PASS / 0 FAIL; Blocks 144 PASS / 0 FAIL** |
-| Broad security/platform/feature certification | **Pending** |
+| Bounded Security Threat-Model Closure | **DONE / VERIFIED** |
+| Broad penetration-test/PCI/platform/feature certification | **Pending** |
 
 These harness counts are targeted regression evidence, not a substitute for the planned broader WordPress/WooCommerce integration, security, browser, performance and compatibility certification suites.
 
@@ -72,6 +76,28 @@ Closed evidence records:
 - [`docs/project/PHASE-0-RELEASE-IDENTITY.md`](docs/project/PHASE-0-RELEASE-IDENTITY.md)
 - [`docs/project/PHASE-9I-MIGRATION.md`](docs/project/PHASE-9I-MIGRATION.md)
 - [`docs/project/PROVIDER-PAYMENT-LIFECYCLE.md`](docs/project/PROVIDER-PAYMENT-LIFECYCLE.md)
+- [`docs/project/SECURITY-THREAT-MODEL.md`](docs/project/SECURITY-THREAT-MODEL.md)
+
+## Verified Security Threat-Model Closure outcome
+
+PR #17 closed five bounded security findings without broad architectural cleanup: public order-status IDOR, state-changing subscription GET actions, checkout third-party font/icon trust, overly broad plain-data output trust, and product-meta write defense in depth.
+
+Verified evidence:
+
+- final reviewed head: `fba12225899c3e01d6b23a6bba2f757a3b5f6a4a`;
+- squash merge: `01f3fc59eed8641b3e5372558f61a7a0f0cdfac9`;
+- merge tree: `e0027005f059fad03d8c08273b7aac6553c45f53`;
+- sole parent: `08054a93c619f3c34fef747a6e530abce1e8986e`;
+- GitHub signature: **VERIFIED**;
+- exact PR merge-ref Quality Gates run #88: **SUCCESS**;
+- post-merge `main` Quality Gates run #89: **SUCCESS**;
+- implementation branch deleted;
+- Security Threat-Model harness: **81 PASS / 0 FAIL**;
+- all Phase 0, Phase 9I, Provider Lifecycle, H12 PHP and H12 Blocks regression gates remained green.
+
+One valid automated P2 review finding—remaining Font Awesome chevrons in Checkout Blocks after removing the CDN stylesheet—was fixed before merge and made a permanent security regression.
+
+The closure remains intentionally bounded: webhook HMAC/signature details are provider-document unresolved, automatic refunds remain unsupported pending durable idempotency/reconciliation design, subscription auto-deduction is not broadly recurring-billing certified, and this gate is not a penetration-test/PCI/platform/feature/performance/production certification.
 
 ## Verified Provider Contract & Payment Lifecycle outcome
 
@@ -129,22 +155,11 @@ Phase 9I remains DONE / VERIFIED through three independently reviewed tranches:
 
 Phase 9I system completion does not mean every merchant installation was automatically migrated. `BLOCKED` and `INDETERMINATE` site-specific outcomes remain valid fail-closed results.
 
-## Current engineering gate — Security Threat-Model Closure
+## Current engineering gate — Architecture & Code-Quality Foundation
 
-The next gate starts with source/data-flow/threat characterization before broad refactoring. Minimum review scope includes:
+The next gate starts with exact-source responsibility/dependency mapping and characterization before extraction. It may incrementally decompose inherited mixed responsibilities and introduce standard code-quality/static-analysis baselines, but it must preserve the closed payment lifecycle, Security Threat-Model, H12 and Phase 9I contracts and protected persisted/runtime identities.
 
-- authorization/capabilities and CSRF/nonces;
-- callback/webhook abuse, replay and provider-authentication boundaries;
-- IDOR/order object-reference boundaries;
-- SSRF/redirect/host allowlists;
-- API credentials, token identity, secrets and key material;
-- input parsing/type confusion/injection and output escaping;
-- logging/order-note/diagnostic redaction;
-- concurrency/race/idempotency security properties;
-- dependency/supply-chain and GitHub Actions trust;
-- fail-closed behavior when provider security documentation is incomplete.
-
-The closed provider lifecycle contract is now a security dependency and must not be weakened casually during threat-model work.
+No big-bang rewrite, runtime branding rename or broad compatibility claim is authorized by this gate.
 
 ## Transitional identities — deliberate compatibility choices
 
@@ -169,7 +184,7 @@ These are engineering targets unless [`docs/COMPATIBILITY.md`](docs/COMPATIBILIT
 
 The project uses protected `main` with squash-only merge policy, PR/review-thread workflow, required Governance and H12 Regression Harness checks, linear history, merged-branch cleanup, secret scanning/push protection, Dependabot security updates and private vulnerability reporting.
 
-Current CI validates all tracked PHP syntax, Phase 0, all Phase 9I suites, Provider Payment Lifecycle, Provider Exact Amount Binding, H12 PHP and H12 Blocks behavior.
+Current CI validates all tracked PHP syntax, Phase 0, all Phase 9I suites, Provider Payment Lifecycle, Provider Exact Amount Binding, Security Threat-Model, H12 PHP and H12 Blocks behavior.
 
 ## Simplix Innovations and WooCommerce
 
@@ -192,10 +207,11 @@ Read in this order for engineering work:
 5. [`docs/project/PHASE-0-RELEASE-IDENTITY.md`](docs/project/PHASE-0-RELEASE-IDENTITY.md)
 6. [`docs/project/PHASE-9I-MIGRATION.md`](docs/project/PHASE-9I-MIGRATION.md)
 7. [`docs/project/PROVIDER-PAYMENT-LIFECYCLE.md`](docs/project/PROVIDER-PAYMENT-LIFECYCLE.md)
-8. [`docs/project/MASTER-ENGINEERING-PLAYBOOK.md`](docs/project/MASTER-ENGINEERING-PLAYBOOK.md)
-9. [`docs/project/REPOSITORY-AUDIT.md`](docs/project/REPOSITORY-AUDIT.md)
-10. [`docs/project/REPOSITORY-READINESS.md`](docs/project/REPOSITORY-READINESS.md)
-11. [`docs/project/BASELINE-H12.md`](docs/project/BASELINE-H12.md)
+8. [`docs/project/SECURITY-THREAT-MODEL.md`](docs/project/SECURITY-THREAT-MODEL.md)
+9. [`docs/project/MASTER-ENGINEERING-PLAYBOOK.md`](docs/project/MASTER-ENGINEERING-PLAYBOOK.md)
+10. [`docs/project/REPOSITORY-AUDIT.md`](docs/project/REPOSITORY-AUDIT.md)
+11. [`docs/project/REPOSITORY-READINESS.md`](docs/project/REPOSITORY-READINESS.md)
+12. [`docs/project/BASELINE-H12.md`](docs/project/BASELINE-H12.md)
 
 Additional policies: [`SECURITY.md`](SECURITY.md), [`SUPPORT.md`](SUPPORT.md), [`CONTRIBUTING.md`](CONTRIBUTING.md), [`MAINTAINERS.md`](MAINTAINERS.md), [`UPSTREAM.md`](UPSTREAM.md), [`NOTICE.md`](NOTICE.md), and [`CHANGELOG.md`](CHANGELOG.md).
 
