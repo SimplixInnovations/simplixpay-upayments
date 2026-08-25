@@ -109,7 +109,7 @@ The gate follows the repository's existing fail-closed rules plus current WordPr
 
 The inherited `?wc-api=wc_upayments&get_order_status=...&wc_order_id=N` path delegated around the hardened payment lifecycle and read `UPayments_WHS` by numeric post/order ID without an order key, exact logged-in ownership, or even an UPayments payment-method preflight.
 
-This is an IDOR/privacy boundary defect even though the returned field is narrow. Numeric object identifiers are enumerable and cannot grant access.
+This was an IDOR/privacy boundary defect even though the returned field was narrow. Numeric object identifiers are enumerable and cannot grant access.
 
 Closure contract:
 
