@@ -158,21 +158,30 @@ namespace {
     $cli->execute(array(), array('user-ids'=>'1','yes'=>true));
     p9o_eq($GLOBALS['p9o']['executor_calls'][0]['dry_run'], false, 'P9O-08 confirmed execute writes enabled');
 
-    // 9. Static operational safety contracts.
+    // 9. Failed CLI batch emits redacted result, then exits non-zero.
+    p9o_reset_runtime();
+    $threw = false;
+    try { $cli->preflight(array(), array('user-ids'=>'3')); } catch (RuntimeException $e) { $threw = true; }
+    p9o_eq($threw, true, 'P9O-09 failed CLI batch exits nonzero');
+    p9o_eq(count($GLOBALS['p9o']['cli_lines']), 1, 'P9O-09 failed CLI batch emits result first');
+    p9o_assert(strpos($GLOBALS['p9o']['cli_lines'][0], 'secret-api') === false, 'P9O-09 failed output hides API key');
+    p9o_assert(count($GLOBALS['p9o']['cli_errors']) === 1 && strpos($GLOBALS['p9o']['cli_errors'][0], 'preflight_completed_with_failures') !== false, 'P9O-09 failure exit reason exact');
+
+    // 10. Static operational safety contracts.
     $batchSource = file_get_contents($root . '/src/Migration/MigrationBatch.php');
     $cliSource = file_get_contents($root . '/src/Migration/MigrationCliCommand.php');
     $adminSource = file_get_contents($root . '/src/Migration/MigrationAdmin.php');
     $bootstrapSource = file_get_contents($root . '/src/Migration/MigrationBootstrap.php');
-    p9o_assert(strpos($cliSource, '--api-key') === false && strpos($adminSource, 'name="api_key"') === false, 'P9O-09 no credential input surface');
-    p9o_assert(strpos($adminSource, "current_user_can(self::CAPABILITY)") !== false, 'P9O-09 admin capability enforced');
-    p9o_assert(strpos($adminSource, 'check_admin_referer(self::NONCE_ACTION, self::NONCE_FIELD)') !== false, 'P9O-09 admin nonce enforced');
-    p9o_assert(strpos($adminSource, 'explicit_execute_confirmation_required') !== false, 'P9O-09 admin execute confirmation enforced');
-    p9o_assert(strpos($bootstrapSource, "add_command('simplixpay-upayments migration'") !== false, 'P9O-09 canonical CLI namespace');
-    p9o_assert(strpos($bootstrapSource, "add_action('admin_menu'") !== false, 'P9O-09 admin menu registered');
-    p9o_assert(strpos($bootstrapSource, 'wp_enqueue_scripts') === false && strpos($bootstrapSource, 'woocommerce_checkout') === false, 'P9O-09 no checkout/frontend hook');
+    p9o_assert(strpos($cliSource, '--api-key') === false && strpos($adminSource, 'name="api_key"') === false, 'P9O-10 no credential input surface');
+    p9o_assert(strpos($adminSource, "current_user_can(self::CAPABILITY)") !== false, 'P9O-10 admin capability enforced');
+    p9o_assert(strpos($adminSource, 'check_admin_referer(self::NONCE_ACTION, self::NONCE_FIELD)') !== false, 'P9O-10 admin nonce enforced');
+    p9o_assert(strpos($adminSource, 'explicit_execute_confirmation_required') !== false, 'P9O-10 admin execute confirmation enforced');
+    p9o_assert(strpos($bootstrapSource, "add_command('simplixpay-upayments migration'") !== false, 'P9O-10 canonical CLI namespace');
+    p9o_assert(strpos($bootstrapSource, "add_action('admin_menu'") !== false, 'P9O-10 admin menu registered');
+    p9o_assert(strpos($bootstrapSource, 'wp_enqueue_scripts') === false && strpos($bootstrapSource, 'woocommerce_checkout') === false, 'P9O-10 no checkout/frontend hook');
     $opsSource = $batchSource . $cliSource . $adminSource . $bootstrapSource;
-    p9o_assert(strpos($opsSource, 'curl_') === false && strpos($opsSource, 'wp_remote_') === false && strpos($opsSource, 'getSavedCards') === false, 'P9O-09 no provider transport path');
-    p9o_assert(strpos($batchSource, 'MAX_LIMIT = 50') !== false && strpos($batchSource, 'MAX_INPUT_USERS = 500') !== false, 'P9O-09 hard batch bounds present');
+    p9o_assert(strpos($opsSource, 'curl_') === false && strpos($opsSource, 'wp_remote_') === false && strpos($opsSource, 'getSavedCards') === false, 'P9O-10 no provider transport path');
+    p9o_assert(strpos($batchSource, 'MAX_LIMIT = 50') !== false && strpos($batchSource, 'MAX_INPUT_USERS = 500') !== false, 'P9O-10 hard batch bounds present');
 
     echo "\n--- Phase 9I Operations Report ---\nPASS: $pass\nFAIL: $fail\n";
     exit($fail === 0 ? 0 : 1);
