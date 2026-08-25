@@ -62,6 +62,14 @@ Every architecture tranche must keep those suites mandatory.
 
 This mixed ownership is the principal architecture debt. The gate must reduce it by delegation behind stable compatibility wrappers rather than deleting or globally renaming entry points.
 
+File size alone is not authority to refactor; it is only a hotspot signal.
+
+### Monolith ratchet contract
+
+The permanent architecture harness records the **exact accepted `UPayments.php` byte size for the current architecture milestone**, not merely the original entry ceiling. Any tranche that changes `UPayments.php` must update that accepted size to the exact reviewed post-change size, so every shrink becomes the next ratchet point instead of allowing later regrowth back to 257,832 bytes.
+
+Normal architecture tranches may hold or reduce the ratchet. Increasing it is merge-blocking unless the PR documents a concrete defect/compatibility necessity, proves why the change cannot safely live behind an extracted boundary, and receives explicit independent review. Size ratcheting must also be supplemented by responsibility-specific assertions; removed bytes may not simply be replaced with a new unrelated responsibility.
+
 ### Existing extracted Simplix-owned seams
 
 `src/` already provides useful strangler boundaries:
@@ -79,8 +87,6 @@ Legacy but already separated protected areas remain under `includes/`:
 - `includes/Subscription/Checkout/Fields.php`;
 - `includes/Subscription/Manager.php`;
 - `includes/class-wc-gateway-upayments-blocks.php` — Blocks gateway integration.
-
-File size alone is not authority to refactor; it is only a hotspot signal.
 
 ## Protected compatibility boundaries
 
