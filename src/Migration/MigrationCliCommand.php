@@ -19,7 +19,10 @@ final class MigrationCliCommand {
      * : Comma/whitespace separated positive WooCommerce customer IDs.
      *
      * [--offset=<n>]
-     * : Zero-based resume offset. Default 0.
+     * : Zero-based explicit offset. Default 0.
+     *
+     * [--resume]
+     * : Recover the first not-durably-evaluated offset from the operations result ledger. Mutually exclusive with --offset.
      *
      * [--limit=<n>]
      * : Users processed this invocation. Default 20, maximum 50.
@@ -34,6 +37,12 @@ final class MigrationCliCommand {
         $settings = MigrationSettings::resolve();
         if (empty($settings['ok'])) {
             self::cliError(isset($settings['reason']) ? $settings['reason'] : 'settings_unavailable');
+            return;
+        }
+
+        $request = self::resolveResume($request, $settings, true);
+        if (!$request['ok']) {
+            self::cliError($request['reason']);
             return;
         }
 
@@ -63,7 +72,10 @@ final class MigrationCliCommand {
      * : Required explicit confirmation for write mode.
      *
      * [--offset=<n>]
-     * : Zero-based resume offset. Default 0.
+     * : Zero-based explicit offset. Default 0.
+     *
+     * [--resume]
+     * : Recover the first not-durably-evaluated offset from the operations result ledger. Mutually exclusive with --offset.
      *
      * [--limit=<n>]
      * : Users processed this invocation. Default 20, maximum 50.
@@ -83,6 +95,12 @@ final class MigrationCliCommand {
         $settings = MigrationSettings::resolve();
         if (empty($settings['ok'])) {
             self::cliError(isset($settings['reason']) ? $settings['reason'] : 'settings_unavailable');
+            return;
+        }
+
+        $request = self::resolveResume($request, $settings, false);
+        if (!$request['ok']) {
+            self::cliError($request['reason']);
             return;
         }
 
@@ -109,6 +127,11 @@ final class MigrationCliCommand {
             return array('ok' => false, 'reason' => $parsed['reason']);
         }
 
+        $resume = array_key_exists('resume', $assoc_args);
+        if ($resume && array_key_exists('offset', $assoc_args)) {
+            return array('ok' => false, 'reason' => 'resume_with_offset_invalid');
+        }
+
         $offset = 0;
         if (array_key_exists('offset', $assoc_args)) {
             $offset = self::strictInt($assoc_args['offset'], true);
@@ -131,7 +154,26 @@ final class MigrationCliCommand {
             'user_ids' => $parsed['user_ids'],
             'offset' => $offset,
             'limit' => $limit,
+            'resume' => $resume,
         );
+    }
+
+    private static function resolveResume($request, $settings, $dry_run) {
+        if (!is_array($request) || empty($request['ok']) || empty($request['resume'])) {
+            return $request;
+        }
+        $resume = MigrationBatch::resumeOffset(
+            $request['user_ids'],
+            $settings['api_key'],
+            $settings['is_test_mode'],
+            $dry_run
+        );
+        if (empty($resume['ok'])) {
+            return array('ok' => false, 'reason' => isset($resume['reason']) ? $resume['reason'] : 'resume_unavailable');
+        }
+        $request['offset'] = $resume['offset'];
+        $request['resume_reason'] = $resume['reason'];
+        return $request;
     }
 
     private static function strictInt($value, $allow_zero) {
