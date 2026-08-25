@@ -1,56 +1,49 @@
 # Changelog
 
-All notable **SimplixPay for UPayments** product changes will be documented in this file.
+All notable **SimplixPay for UPayments** product changes are documented here.
 
-The project has not yet published a stable SimplixPay release. During pre-release engineering, entries describe repository and engineering milestones rather than implying merchant-facing release availability.
-
-Versioning follows [Semantic Versioning](https://semver.org/) once the SimplixPay version line is established. The intended development line is `0.x`; `1.0.0` is reserved for the first release that satisfies the stable-release gates.
+The project is still in pre-release engineering hardening. Entries below are engineering milestones and do not imply a merchant-facing stable release. The independent Simplix development line is `0.x`; `1.0.0` remains reserved for the first release that satisfies the stable-release gates.
 
 ## [Unreleased]
 
-### Repository foundation
+### Phase 0 — release identity and updater ownership — DONE / VERIFIED
 
-- Established the standalone canonical repository `SimplixInnovations/simplixpay-upayments` from the independently verified H12 source tree.
+- Established the active public plugin identity as **SimplixPay for UPayments** by **Simplix Innovations**.
+- Established the independent Simplix development version at **0.1.0**.
+- Added canonical code-side release identity under `Simplix\Pay\UPayments\Release\Identity` and `SIMPLIXPAY_UPAYMENTS_*` release constants.
+- Removed the inherited `upaymentskwt/woocommerce` update authority and all Plugin Update Checker bootstrap logic.
+- Removed the bundled `vendor/plugin-update-checker/` dependency.
+- Deliberately disabled external self-updates until the physical package/basename migration has its own tested distribution contract.
+- Preserved the transitional physical main file `UPayments.php` and runtime/header text domain `upayments`; their eventual `simplixpay-upayments` targets remain explicit upgrade/i18n migrations rather than cosmetic renames.
+- Preserved compatibility-sensitive payment identities including gateway ID `upayments`, `woocommerce_upayments_settings`, callback `wc_upayments`, `_upay_*` metadata, H12 token/provenance identities and subscription scheduling/table/schema state.
+- Changed uninstall behavior to retain merchant/payment data by default; destructive cleanup now requires a future explicit, separately tested erasure contract.
+- Added a permanent Phase 0 release-identity harness to the required Quality Gates workflow.
+- Proved red → green characterization: **22 PASS / 13 FAIL** before implementation, then **35 PASS / 0 FAIL** on the final implementation head.
+- Retained the frozen H12 regression baseline at **PHP 1927 PASS / 0 FAIL** and **Blocks 144 PASS / 0 FAIL**.
+- Squash-merged implementation PR #9 as `678f3bdae32b7a0d5922c6ebb7fa7535ede256dd` with tree `80618e737476a92357bd463f6e1495c364157e83`, followed by independent post-merge verification.
+
+### Repository foundation — DONE / VERIFIED
+
+- Established standalone canonical repository `SimplixInnovations/simplixpay-upayments` from the independently reviewed H12 source tree.
 - Preserved the complete pre-product fork/PR history in `SimplixInnovations/upayments-woocommerce` for audit provenance.
-- Established the formal product identity **SimplixPay for UPayments** and canonical slug `simplixpay-upayments` while protecting compatibility-sensitive persisted `upayments` / `_upay_*` identities.
+- Established the formal product identity **SimplixPay for UPayments** and canonical slug `simplixpay-upayments` while protecting persisted historical UPayments identities.
 - Added permanent repository agent instructions, project-control documents, CODEOWNERS, issue/PR governance, security/support policies, MIT license and provenance notice.
-- Added GitHub Actions quality gates for governance, PHP syntax, H12 PHP regression and H12 Blocks regression.
+- Added GitHub Actions quality gates for governance, tracked PHP syntax, H12 PHP regression and H12 Blocks regression.
 - Normalized repository licensing so GitHub recognizes SPDX `MIT`.
-- Completed whole-repository readiness auditing and Simplix-led public repository presentation.
-- Closed the pre-Phase-0 repository-readiness gate as **READY / VERIFIED** after validating branch/ruleset policy, required CI checks, security controls, contributor presentation, local-clone convergence, empty canonical tags/releases and preserved H12 runtime anchors.
+- Completed whole-repository readiness auditing, Simplix-led public presentation, protected-branch policy, security controls and contributor/history cleanup.
 
-### H12 regression baseline retained
+### Current implementation gate
 
-The current frozen baseline remains:
+**Phase 9I — Historical token-identity migration** is next.
 
-- PHP harness: **1927 PASS / 0 FAIL**
-  - semantic runtime: 368
-  - helper unit runtime: 841
-  - static source: 46
-  - harness self-test: 662
-  - lint tooling: 10
-- Blocks harness: **144 PASS / 0 FAIL**
-  - runtime: 88
-  - static: 15
-  - harness: 41
+It must provide a read-only deterministic preflight that classifies historical evidence as `CLEAN`, `MIGRATABLE`, `BLOCKED` or `INDETERMINATE`; perform zero provider calls/writes during preflight; execute only explicit `MIGRATABLE` cases; never fabricate canonical/Create-201 provenance; and provide bounded, idempotent, resumable operational behavior.
 
-These are regression assertions from the existing H12 custom harness. They are not a substitute for the planned PHPUnit, WordPress/WooCommerce integration, browser, compatibility, security and performance certification suites.
-
-### Next runtime-changing gate
-
-**Phase 0 — SimplixPay release identity and updater ownership** will:
-
-- remove/replace the upstream-controlled updater;
-- establish independent SimplixPay versioning;
-- change public plugin metadata to SimplixPay for UPayments / Simplix Innovations;
-- design and test the plugin folder/main-file/text-domain transition;
-- preserve protected historical payment identities;
-- add install/update/upgrade/rollback regression evidence.
+The 13 open Phase 9I blocker classes are tracked in `docs/project/PROJECT-STATUS.md`.
 
 ## Historical engineering record
 
-The large pre-product hardening changelog inherited from the H12 source baseline is preserved byte-for-byte at:
+The large pre-product H12 engineering changelog is preserved byte-for-byte at:
 
 [`docs/history/H12-ENGINEERING-CHANGELOG.md`](docs/history/H12-ENGINEERING-CHANGELOG.md)
 
-That archive documents engineering corrections made before the standalone SimplixPay product history was established. It is retained for auditability and should not be interpreted as a sequence of SimplixPay product releases.
+It documents engineering corrections made before the standalone SimplixPay product history was established and must not be interpreted as SimplixPay product releases.

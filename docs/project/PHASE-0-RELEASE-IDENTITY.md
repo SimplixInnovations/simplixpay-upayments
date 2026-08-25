@@ -1,20 +1,26 @@
 # Phase 0 — Release Identity and Updater Ownership
 
-**Status:** IN PROGRESS
+**Status:** DONE / VERIFIED
 
 **Canonical repository:** `SimplixInnovations/simplixpay-upayments`
 
-**Phase 0 development version:** `0.1.0`
+**Development version established:** `0.1.0`
 
-## Objective
+**Implementation merge:** PR #9 → `678f3bdae32b7a0d5922c6ebb7fa7535ede256dd`
 
-Take ownership of the public plugin/release identity without rewriting persisted payment identity or allowing upstream code to replace the Simplix-maintained integration.
+**Merged tree:** `80618e737476a92357bd463f6e1495c364157e83`
 
-## Frozen decisions
+## Outcome
 
-### Public plugin identity
+Phase 0 took ownership of the public SimplixPay release identity without rewriting persisted UPayments payment identity and without leaving upstream code in control of updates.
 
-The active plugin header moves to:
+The plugin now publicly identifies as **SimplixPay for UPayments** by **Simplix Innovations**, uses an independent pre-1.0 version line, has no inherited external updater authority, and preserves the historical runtime identifiers required for existing stores/orders/tokens/subscriptions.
+
+This gate does **not** mean the plugin is broadly production-certified. It closes release-identity/updater ownership only. Subsequent migration, payment-lifecycle, security, architecture, compatibility and release-certification phases remain required.
+
+## Verified public plugin identity
+
+The active `UPayments.php` header is:
 
 - Plugin Name: **SimplixPay for UPayments**
 - Plugin URI: `https://github.com/SimplixInnovations/simplixpay-upayments`
@@ -22,30 +28,39 @@ The active plugin header moves to:
 - Version: `0.1.0`
 - Author: **Simplix Innovations**
 - Author URI: `https://simplixi.com`
+- Requires at least: `5.6`
+- Requires PHP: `7.2`
 - License: MIT
+- Text Domain: `upayments` — intentionally transitional
 - Domain Path: `/languages`
 
-The inherited `Requires at least` / `Requires PHP` values are not expanded during this phase. Broad compatibility claims remain evidence-gated.
+The Simplix code-side identity is defined by `Simplix\Pay\UPayments\Release\Identity` and exposes canonical product/version/slug/repository/update-channel constants.
 
-### Independent version line
+## Independent version line
 
-The inherited provider version `3.1.1` is no longer the Simplix product version. SimplixPay uses independent semantic versioning beginning at `0.1.0` while engineering hardening continues. `1.0.0` remains reserved for stable-release gates.
+The inherited provider version `3.1.1` is no longer the Simplix product version.
 
-`Simplix\Pay\UPayments\Release\Identity::VERSION` is the canonical code-side version constant and must equal the plugin header.
+The Simplix development line begins at `0.1.0`. `1.0.0` remains reserved for the first stable release that satisfies the later release-readiness gates.
 
-### Update authority
+The Phase 0 harness requires the plugin header version to equal `Simplix\Pay\UPayments\Release\Identity::VERSION`.
 
-External self-update checking is **disabled** in Phase 0.
+## Update authority — resolved
 
-The inherited bundled Plugin Update Checker and its `upaymentskwt/woocommerce` authority are removed. This prevents a Simplix-maintained installation from being silently replaced by upstream code.
+External self-update checking is deliberately **disabled** at Phase 0 closure.
 
-A Simplix-controlled external updater is intentionally **not** introduced yet. The current Plugin Update Checker documentation recommends aligning its slug with the plugin directory, while the physical plugin basename/package migration is intentionally not yet performed. Update distribution will be reintroduced only after that migration/package contract is independently tested.
+Verified changes:
 
-A future WordPress.org build should normally use WordPress.org update infrastructure rather than ship a conflicting external updater.
+- inherited `upaymentskwt/woocommerce` update authority removed from the bootstrap;
+- `PucFactory` updater initialization removed;
+- Plugin Update Checker bootstrap include removed;
+- complete bundled `vendor/plugin-update-checker/` subtree removed;
+- canonical `SIMPLIXPAY_UPAYMENTS_UPDATE_CHANNEL` reports `disabled`.
 
-### Physical plugin basename
+A Simplix-controlled external updater is intentionally not introduced until the physical package/basename migration has a tested contract. A future WordPress.org distribution should use WordPress.org update infrastructure rather than ship a conflicting external updater.
 
-Phase 0 deliberately retains the existing main filename:
+## Physical plugin basename — deliberately transitional
+
+Phase 0 retains the existing main filename:
 
 `UPayments.php`
 
@@ -53,15 +68,26 @@ The frozen eventual target remains:
 
 `simplixpay-upayments.php`
 
-Changing the main filename changes WordPress activation/update identity. It is therefore an **upgrade migration**, not a branding cleanup. No filename removal/rename is permitted until tests prove existing active installations, rollback, replacement packages, and duplicate-plugin failure modes.
+Changing the main file/folder changes WordPress activation/update identity. It is therefore an explicit upgrade/package migration, not a cosmetic rebrand. No blind rename is authorized.
 
-### Text domain
+Before a physical basename migration, tests must cover at least:
 
-Existing runtime translation calls use the legacy domain `upayments`. Phase 0 therefore retains the plugin header text domain `upayments` rather than creating a header/source mismatch or mechanically rewriting translation identities.
+- an already-active existing installation;
+- replacement/upgrade package behavior;
+- activation/deactivation state;
+- rollback/downgrade;
+- duplicate-package behavior;
+- conflict with another plugin owning the same historical UPayments identities.
 
-The frozen eventual target remains `simplixpay-upayments`. The text-domain transition requires a dedicated WPML/String Translation/i18n compatibility tranche.
+## Text domain — deliberately transitional
 
-### Persisted/runtime compatibility identity
+Existing runtime translation calls still use `upayments`. Phase 0 therefore keeps header Text Domain `upayments` rather than creating a header/source mismatch or mechanically changing i18n identity.
+
+The frozen eventual target remains `simplixpay-upayments`.
+
+That transition requires a dedicated i18n/WPML/String Translation compatibility tranche and must not be performed by global search/replace.
+
+## Persisted/runtime compatibility identity — preserved
 
 Phase 0 does not rename protected historical identities, including:
 
@@ -70,50 +96,100 @@ Phase 0 does not rename protected historical identities, including:
 - Blocks/Store API `upayments` identity;
 - callback `wc_upayments`;
 - existing `_upay_*` metadata;
-- H12 secret/provenance identities;
+- `upayments_token_identity_secret_v2` and H12 provenance/scope/generation state;
 - subscription cron/table/schema state;
 - historical order payment-method values;
 - existing `UPayments\...`, `WC_Upayments`, and Blocks class identities unless separately characterized.
 
-### Uninstall data retention
+These are compatibility contracts, not stale branding to clean mechanically.
 
-Uninstall is non-destructive by default. The plugin does not drop legacy payment/subscription tables or delete persisted merchant/payment options merely because the plugin is removed.
+## Uninstall data retention — resolved
 
-Any future data-erasure feature requires an explicit merchant action and a separately tested retention/deletion contract.
+The inherited destructive uninstall behavior was removed.
 
-## Coexistence with another UPayments plugin
+`uninstall.php` now preserves merchant/payment data by default and performs no table drop or persisted-option deletion merely because the plugin is removed.
 
-The Simplix integration and another plugin that owns the same historical gateway/class/callback identities must not be advertised as safe for simultaneous activation. The legacy identities are intentionally preserved for existing-install compatibility; symmetrical coexistence cannot be guaranteed when the other plugin also defines those identities.
+Any future explicit data-erasure feature requires its own confirmation, retention, deletion, migration and rollback contract.
 
-A future install/onboarding tranche must provide explicit conflict detection and user guidance before broad distribution.
+## Coexistence boundary
 
-## Phase 0 acceptance tests
+The Simplix integration must not be advertised as safe for simultaneous activation with another plugin that defines the same historical gateway/class/callback identities.
 
-`tests/harness/phase-0-release-identity-harness.php` must pass and is run inside the required `H12 Regression Harness` CI job.
+Preserving those identities is necessary for existing-install compatibility, but it prevents guaranteeing symmetric coexistence with another UPayments plugin that owns the same global/runtime identifiers.
 
-It verifies:
+A future onboarding/install-safety tranche should add explicit conflict detection and merchant guidance before broad distribution.
 
-- canonical public header fields;
-- independent `0.1.0` version contract;
-- canonical Simplix release constants;
-- complete removal of upstream update authority and bundled Plugin Update Checker;
-- deliberate retention of `UPayments.php` during this phase;
-- deliberate retention of legacy `upayments` text domain until controlled migration;
-- presence of protected callback/gateway/token/subscription identities;
-- non-destructive uninstall;
-- exact canonical slug/repository values.
+## Test evidence
 
-The existing H12 PHP and Blocks regression baselines must also remain green.
+### Red characterization
 
-## Exit condition
+Before implementation, the Phase 0 release-identity harness produced:
 
-Phase 0 release-identity/updater ownership is DONE / VERIFIED only after:
+- **22 PASS**
+- **13 FAIL**
 
-1. the exact implementation PR passes Governance, the Phase 0 harness, tracked PHP syntax, H12 PHP and H12 Blocks;
-2. review conversations are resolved;
-3. the exact reviewed head is squash-merged;
-4. merged `main` is independently read back;
-5. the feature branch auto-deletes;
-6. project status/changelog/handoff record the new verified state.
+The 13 failures were exactly the intended inherited release/updater contract: provider-branded header/version/author, absent Simplix release constants, upstream updater authority and bundled Plugin Update Checker.
 
-No tag or GitHub Release is created by this phase.
+### Final exact-head evidence
+
+Final reviewed PR #9 head:
+
+`8b67259bd05453150f837cda4b961f649f50cf02`
+
+Passed:
+
+- Governance: **SUCCESS**
+- tracked PHP syntax: **SUCCESS**
+- Phase 0 release identity: **35 PASS / 0 FAIL**
+- H12 PHP: **1927 PASS / 0 FAIL**
+  - semantic runtime: 368
+  - helper unit runtime: 841
+  - static source: 46
+  - harness self-test: 662
+  - lint tooling: 10
+- Blocks syntax: **SUCCESS**
+- H12 Blocks: **144 PASS / 0 FAIL**
+  - runtime: 88
+  - static: 15
+  - harness: 41
+
+The only review thread described the intentionally red pre-implementation state; it was satisfied by the implementation and resolved before merge.
+
+## H12 integrity through Phase 0
+
+The bootstrap intentionally changed only its public release/header/updater prefix. Four H12 implementation anchors outside that prefix remained byte-identical on the final reviewed head:
+
+- `includes/Token/CustomerTokenIdentity.php` — `85430d37e9baf540842f5655b86ccf0eca3e6aea`
+- `includes/class-wc-gateway-upayments-blocks.php` — `813d192d69c069eb7ee11df93acc9dbdf03e270a`
+- `includes/Subscription/Cron/Scheduler.php` — `5251866d4df2d1326e7c09f0c8ec1d146c0bb325`
+- `includes/Subscription/Cron/CycleClaim.php` — `c34d83e2d77cc65024fe663e4c378cecb2b17347`
+
+The full H12 semantic/runtime harness also remained exact at 1927/0 and 144/0.
+
+## Post-merge verification
+
+PR #9 was squash-merged as:
+
+`678f3bdae32b7a0d5922c6ebb7fa7535ede256dd`
+
+with tree:
+
+`80618e737476a92357bd463f6e1495c364157e83`
+
+Post-merge verification established:
+
+- GitHub signature: **VERIFIED**;
+- author mapped to `SimplixInnovationsAdmin`;
+- public header/version/Simplix constants present on `main`;
+- bundled Plugin Update Checker path absent;
+- uninstall non-destructive;
+- Phase 0 branch auto-deleted;
+- open PRs returned to zero.
+
+## Exit verdict
+
+**PHASE 0 — RELEASE IDENTITY AND UPDATER OWNERSHIP: DONE / VERIFIED.**
+
+No tag or GitHub Release is created by this engineering milestone.
+
+The next permitted implementation gate is **Phase 9I — Historical token-identity migration**, under the frozen H12 identity/provider contracts and the normal protected-branch review/CI rules.
