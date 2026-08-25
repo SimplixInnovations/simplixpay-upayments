@@ -38,6 +38,11 @@ jobs:
           for line in body.splitlines():
               code_lines.append(line[10:] if line.startswith('          ') else line)
           code = '\n'.join(code_lines) + '\n'
+          old_regex = "text2, count = re.subn(pattern, replacement, text, count=1, flags=re.S)"
+          new_regex = "text2, count = re.subn(pattern, lambda _m: replacement, text, count=1, flags=re.S)"
+          if code.count(old_regex) != 1:
+              raise SystemExit(f'closure regex helper contract changed: {code.count(old_regex)}')
+          code = code.replace(old_regex, new_regex, 1)
           script = Path('/tmp/security-closure.py')
           script.write_text(code, encoding='utf-8')
           compiled = compile(code, str(script), 'exec')
