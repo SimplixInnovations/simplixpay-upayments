@@ -47,7 +47,7 @@ final class MigrationCliCommand {
         );
         self::emit($result, $settings);
         if (!$result['success']) {
-            self::cliError('preflight_completed_with_failures', false);
+            self::cliError('preflight_completed_with_failures');
         }
     }
 
@@ -96,7 +96,7 @@ final class MigrationCliCommand {
         );
         self::emit($result, $settings);
         if (!$result['success']) {
-            self::cliError('execute_completed_with_failures', false);
+            self::cliError('execute_completed_with_failures');
         }
     }
 
