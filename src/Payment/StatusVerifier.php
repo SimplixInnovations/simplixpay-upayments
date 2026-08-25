@@ -6,18 +6,8 @@ defined('ABSPATH') || exit;
 
 /**
  * Bearer-authenticated Get Payment Status client + strict order binding.
- *
- * Callback/browser values never authorize state. This verifier accepts only a
- * provider response from the gateway's fixed UPayments API base, then binds the
- * transaction to the WooCommerce order before exposing a local classification.
  */
 final class StatusVerifier {
-    /**
-     * @param object $gateway Active WC_Upayments gateway instance.
-     * @param object $order   WooCommerce order.
-     * @param mixed  $track_id Provider lookup cursor.
-     * @return array<string,mixed>
-     */
     public static function verify($gateway, $order, $track_id) {
         $result = self::base_result('invalid_request');
 
@@ -42,13 +32,16 @@ final class StatusVerifier {
             return self::base_result('credentials_missing');
         }
 
-        if (!StatusRateGate::acquire($gateway)) {
-            return self::base_result('status_rate_limited');
+        // Validate the exact provider destination before consuming a provider
+        // rate-limit slot. This also prevents a compromised/extended gateway
+        // object from turning the Bearer token into a cross-host credential leak.
+        $url = $gateway->getAPIUrl('get-payment-status/' . rawurlencode($track_id));
+        if (!self::is_allowed_status_url($url, $track_id)) {
+            return self::base_result('status_url_invalid');
         }
 
-        $url = $gateway->getAPIUrl('get-payment-status/' . rawurlencode($track_id));
-        if (!self::is_allowed_status_url($url)) {
-            return self::base_result('status_url_invalid');
+        if (!StatusRateGate::acquire($gateway)) {
+            return self::base_result('status_rate_limited');
         }
 
         $response = wp_remote_get($url, array(
@@ -94,12 +87,6 @@ final class StatusVerifier {
 
     /**
      * Pure binding/classification seam used by the executable harness.
-     *
-     * @param object $gateway
-     * @param object $order
-     * @param mixed  $track_id
-     * @param mixed  $transaction
-     * @return array<string,mixed>
      */
     public static function bind_transaction($gateway, $order, $track_id, $transaction) {
         $result = self::base_result('binding_invalid');
@@ -123,8 +110,20 @@ final class StatusVerifier {
             return $result;
         }
 
+        // UPayments explicitly documents NULL/processing-style result states as
+        // non-terminal. Result must therefore be present, but null is a valid
+        // fail-closed INDETERMINATE value. All identity/binding fields remain
+        // mandatory and non-empty.
+        if (!array_key_exists('result', $transaction)) {
+            $result['reason'] = 'missing_field_result';
+            return $result;
+        }
+        if ($transaction['result'] !== null && !is_string($transaction['result'])) {
+            $result['reason'] = 'result_not_string_or_null';
+            return $result;
+        }
+
         $required = array(
-            'result',
             'track_id',
             'merchant_requested_order_id',
             'total_price',
@@ -139,11 +138,6 @@ final class StatusVerifier {
                 $result['reason'] = 'missing_field_' . $field;
                 return $result;
             }
-        }
-
-        if (!is_string($transaction['result'])) {
-            $result['reason'] = 'result_not_string';
-            return $result;
         }
 
         if ((string) $transaction['track_id'] !== $track_id) {
@@ -161,8 +155,7 @@ final class StatusVerifier {
             return $result;
         }
 
-        $local_order_id = (string) $order->get_id();
-        if ((string) $transaction['reference'] !== $local_order_id) {
+        if ((string) $transaction['reference'] !== (string) $order->get_id()) {
             $result['reason'] = 'binding_reference';
             return $result;
         }
@@ -238,14 +231,19 @@ final class StatusVerifier {
         return $value;
     }
 
-    private static function is_allowed_status_url($url) {
-        if (!is_string($url) || $url === '' || strlen($url) > 500) {
+    private static function is_allowed_status_url($url, $track_id) {
+        if (!is_string($url) || $url === '' || strlen($url) > 500 || !is_string($track_id)) {
             return false;
         }
         $parts = parse_url($url);
         if (!is_array($parts)
             || !isset($parts['scheme'], $parts['host'], $parts['path'])
             || strtolower((string) $parts['scheme']) !== 'https'
+            || isset($parts['user'])
+            || isset($parts['pass'])
+            || isset($parts['port'])
+            || isset($parts['query'])
+            || isset($parts['fragment'])
         ) {
             return false;
         }
@@ -253,7 +251,8 @@ final class StatusVerifier {
         if ($host !== 'sandboxapi.upayments.com' && $host !== 'apiv2api.upayments.com') {
             return false;
         }
-        return strpos((string) $parts['path'], '/api/v1/get-payment-status/') === 0;
+        $expected_path = '/api/v1/get-payment-status/' . rawurlencode($track_id);
+        return (string) $parts['path'] === $expected_path;
     }
 
     private static function base_result($reason) {
@@ -266,6 +265,5 @@ final class StatusVerifier {
         );
     }
 
-    private function __construct() {
-    }
+    private function __construct() {}
 }
