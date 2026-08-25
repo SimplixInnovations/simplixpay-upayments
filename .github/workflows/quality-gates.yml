@@ -41,6 +41,7 @@ jobs:
             docs/project/PROJECT-STATUS.md
             docs/project/PHASE-0-RELEASE-IDENTITY.md
             docs/project/PHASE-9I-MIGRATION.md
+            docs/project/PROVIDER-PAYMENT-LIFECYCLE.md
             docs/project/REPOSITORY-READINESS.md
             docs/project/REPOSITORY-AUDIT.md
             docs/project/NAMING-IDENTITY-STANDARD.md
@@ -114,6 +115,9 @@ jobs:
 
       - name: Phase 9I operations harness
         run: php tests/harness/phase-9i-operations-harness.php
+
+      - name: Provider payment lifecycle harness
+        run: php tests/harness/provider-payment-lifecycle-harness.php
 
       - name: H12 PHP harness
         run: php tests/harness/phase-9g-h12-php-harness.php
