@@ -53,7 +53,7 @@ arch_assert(arch_contains($architecture, 'A1 — provider endpoint/mode resoluti
 arch_assert(arch_contains($architecture, 'A2 — payment-method availability client/cache'), 'second extraction seam is frozen');
 arch_assert(arch_contains($architecture, 'A5 — checkout payload/orchestration core'), 'high-risk checkout core is explicitly late');
 arch_assert(arch_contains($architecture, 'no production runtime behavior changes in the discovery PR'), 'discovery tranche forbids runtime behavior changes');
-arch_assert(arch_contains($architecture, 'no big-bang rewrite'), 'big-bang rewrite is prohibited');
+arch_assert(arch_contains($architecture, 'This is not permission for a big-bang rewrite'), 'big-bang rewrite is prohibited');
 arch_assert(arch_contains($architecture, 'Composer only with an explicit distribution rule'), 'Composer introduction is gated by distribution contract');
 arch_assert(arch_contains($architecture, 'PHPCS/WPCS and PHPStan incrementally'), 'static-analysis rollout is incremental');
 
