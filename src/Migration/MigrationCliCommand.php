@@ -7,11 +7,13 @@ defined('ABSPATH') || exit;
  * WP-CLI operational surface for Phase 9I.
  *
  * Credentials are resolved from the existing WooCommerce gateway settings;
- * there is deliberately no --api-key argument.
+ * there is deliberately no --api-key argument. Dry-run never mutates H12
+ * identity or calls the provider, but the operations layer records its
+ * redacted per-user decision/result checkpoints for durable resume.
  */
 final class MigrationCliCommand {
     /**
-     * Read-only preflight for an explicit bounded list of users.
+     * Identity-nonmutating preflight for an explicit bounded list of users.
      *
      * ## OPTIONS
      *
