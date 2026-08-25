@@ -143,7 +143,7 @@ sec_assert(strpos($status_verifier, "'sslverify'   => true") !== false, 'provide
 sec_assert(strpos($status_verifier, "sandboxapi.upayments.com") !== false && strpos($status_verifier, "apiv2api.upayments.com") !== false, 'status verifier retains exact UPayments host allowlist');
 sec_assert(strpos($status_verifier, "'Authorization' => 'Bearer ' . \$gateway->apiKey") !== false, 'provider status authority remains server-side Bearer authenticated');
 sec_assert(strpos($migration_admin, "current_user_can(self::CAPABILITY)") !== false, 'migration admin retains capability authorization');
-sec_assert(strpos($migration_admin, "check_admin_referer(self::NONCE_ACTION)") !== false, 'migration admin retains CSRF nonce verification');
+sec_assert(strpos($migration_admin, "check_admin_referer(self::NONCE_ACTION, self::NONCE_FIELD)") !== false, 'migration admin retains action-and-field CSRF nonce verification');
 
 // Supply-chain workflow controls: third-party Actions stay full-SHA pinned.
 $action_lines = preg_match_all('/^\s*- uses:\s+[^\s@]+@([^\s#]+)/m', $workflow, $matches);
