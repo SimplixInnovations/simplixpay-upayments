@@ -90,15 +90,18 @@ jobs:
           set -euo pipefail
 
           live_gate_files=(
+            AGENTS.md
             README.md
             CHANGELOG.md
             docs/ENGINEERING-ROADMAP.md
             docs/project/PROJECT-STATUS.md
             docs/project/MASTER-ENGINEERING-PLAYBOOK.md
             docs/project/NEW-CHAT-HANDOFF.md
+            docs/project/PHASE-0-RELEASE-IDENTITY.md
             docs/project/PHASE-9I-MIGRATION.md
             docs/project/PROVIDER-PAYMENT-LIFECYCLE.md
             docs/project/REPOSITORY-AUDIT.md
+            docs/project/REPOSITORY-READINESS.md
             docs/project/SECURITY-THREAT-MODEL.md
           )
 
