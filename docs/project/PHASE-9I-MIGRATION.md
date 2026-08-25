@@ -38,7 +38,7 @@ A Phase 9I migration may create only:
 
 It must never fabricate `canonical` / `create_201`. Canonical provenance remains proof of the strict provider Create-token 201 contract only.
 
-## Preflight — merged / verified tranche
+## Preflight — merged / verified
 
 The read-only implementation is `Simplix\Pay\UPayments\Migration\MigrationPreflight`.
 
@@ -91,25 +91,36 @@ Raw customer tokens are security-sensitive migration material. Preflight exposes
 
 The preflight also fails closed on multiple tokens for one user, historical/current provenance contradictions, malformed provenance, scoped history with a missing secret, unstable pagination, malformed query/result shapes, invalid order IDs, and incomplete cross-user attribution scans.
 
-## Executor contract — current tranche
+## Executor — merged / verified
 
-The implementation under review is `Simplix\Pay\UPayments\Migration\MigrationExecutor`.
+`Simplix\Pay\UPayments\Migration\MigrationExecutor` was independently reviewed and squash-merged in PR #12.
 
-It must:
+Verified merge milestone:
 
-1. call a fresh preflight and act only on `MIGRATABLE`;
-2. support true dry-run with zero writes/provider calls;
-3. acquire the H12-compatible bootstrap lock when a secret is absent, otherwise the exact per-user/current-scope lock;
-4. rerun preflight while holding the lock before mutation;
-5. create a genuinely missing H12 secret only while the bootstrap lock is held and verify its exact readback;
-6. rerun preflight after secret creation and require the exact same candidate token before provenance mutation;
-7. derive current scope/generation from the validated secret record;
-8. create only immutable H12 `legacy_compat` / `legacy_verified_capture` provenance;
-9. verify provenance readback exactly;
-10. rerun preflight after provenance creation and require `CLEAN`;
-11. be idempotent under normal rerun and concurrent-worker completion;
-12. record only a redacted Simplix-owned per-user ledger (`simplixpay_upayments_migration_v1`) containing token digest, never raw token;
-13. perform zero provider calls and zero historical order-meta mutation.
+- merge commit `708253bd9d0daf217735fbb087b360e8b848136c`;
+- tree `e222a18c9808229fdde79efb42268d8c3fbd33ae`;
+- GitHub signature: VERIFIED;
+- exact executor harness: **59 PASS / 0 FAIL**;
+- preflight: **123 PASS / 0 FAIL**;
+- Phase 0: **35 PASS / 0 FAIL**;
+- H12 PHP: **1927 PASS / 0 FAIL**;
+- H12 Blocks: **144 PASS / 0 FAIL**.
+
+The executor:
+
+1. calls a fresh preflight and acts only on `MIGRATABLE`;
+2. supports true dry-run with zero writes/provider calls;
+3. acquires the H12-compatible bootstrap lock when a secret is absent, otherwise the exact per-user/current-scope lock;
+4. reruns preflight while holding the lock before mutation;
+5. creates a genuinely missing H12 secret only while the bootstrap lock is held and verifies exact readback;
+6. reruns preflight after secret creation and requires the exact same candidate token before provenance mutation;
+7. derives current scope/generation from the validated secret record;
+8. creates only immutable H12 `legacy_compat` / `legacy_verified_capture` provenance;
+9. verifies provenance readback exactly;
+10. reruns preflight after provenance creation and requires `CLEAN`;
+11. is idempotent under normal rerun and concurrent-worker completion;
+12. records only a redacted Simplix-owned per-user ledger (`simplixpay_upayments_migration_v1`) containing token digest, never raw token;
+13. performs zero provider calls and zero historical order-meta mutation.
 
 ### Historical order immutability decision
 
@@ -127,54 +138,84 @@ This supersedes the earlier draft idea of “normalizing” candidate order snap
 - final preflight not `CLEAN`: fail closed;
 - ledger failure after verified identity migration: do not roll back valid provenance; surface `migrated_ledger_write_failed` so operations can repair observability separately.
 
-## Executor test gate
+## Operational surface — current tranche
 
-`tests/harness/phase-9i-executor-harness.php` must run inside the required `H12 Regression Harness` CI job.
+The operational tranche is intentionally explicit rather than auto-discovering every historical customer. Automatic discovery would require its own bounded, resumable global-census contract and is not silently introduced here.
 
-The executor harness uses the real Phase 9I preflight and real frozen H12 identity class. It must prove at minimum:
+### Shared batch engine
 
-- zero-write dry-run;
-- full missing-secret/unscoped migration;
-- exact `legacy_compat` / `legacy_verified_capture` provenance;
-- raw-token redaction from result/ledger;
-- idempotent rerun;
-- current-scope orphan migration without option write;
-- malformed-secret fail-closed behavior;
-- lock contention with zero mutation;
-- evidence-change-under-lock fail closed;
-- retry safety after provenance persistence failure;
-- ledger-failure observability without identity rollback;
-- cross-user conflict no-write behavior;
-- already-clean dry-run no-write behavior;
-- static prohibition on order mutation/provider transport/`create_201` fabrication.
+`Simplix\Pay\UPayments\Migration\MigrationBatch`:
 
-Phase 0, Phase 9I preflight, H12 PHP and H12 Blocks harnesses must remain green unchanged.
+- accepts an explicit list of positive user IDs;
+- maximum submitted list: **500 users**;
+- default users per invocation: **20**;
+- hard maximum users per invocation: **50**;
+- rejects duplicate, leading-zero, exponent, negative, zero, overflow and malformed IDs;
+- resumes through an explicit zero-based `offset` and returned `next_offset`;
+- isolates one-user executor exceptions so a bounded page can report all processed results;
+- exposes only redacted per-user fields and aggregate reason/classification counters;
+- does not persist API credentials, raw tokens, batch queues or checkout state;
+- relies on the executor's Simplix-owned per-user ledger for durable migrated-user evidence.
 
-## Operational contract — next Phase 9I tranche
+### Credential/mode resolution
 
-Admin/CLI migration must be:
+`MigrationSettings` reads the protected existing WooCommerce option `woocommerce_upayments_settings`.
 
-- explicit, not checkout-triggered;
-- dry-run capable;
-- bounded per invocation;
-- resumable;
-- idempotent;
-- permission/capability checked;
-- safe under concurrent workers;
-- redacted: no raw token/card/API-key output;
-- observable through reason/classification counters and per-user ledger state.
+- existing `api_key` is consumed in memory only;
+- existing `test_mode` must be exact Woo checkbox state `yes`/`no`;
+- no Phase 9I API-key option, CLI argument or admin input is introduced;
+- reporting returns mode only and never the API key.
 
-The intended CLI namespace remains `wp simplixpay-upayments`.
+This prevents credentials from entering shell history, process arguments, migration form posts or Simplix migration storage.
+
+### WP-CLI
+
+Canonical registration:
+
+`wp simplixpay-upayments migration`
+
+Subcommands:
+
+- `preflight --user-ids=<ids> [--offset=<n>] [--limit=<n>]`
+- `execute --user-ids=<ids> --yes [--offset=<n>] [--limit=<n>]`
+
+Write mode requires explicit `--yes`. Output is redacted JSON only. There is deliberately no `--api-key` argument.
+
+### WooCommerce admin
+
+A WooCommerce submenu page is registered as **SimplixPay Migration**.
+
+Security controls:
+
+- capability: `manage_woocommerce`;
+- WordPress nonce required for POST;
+- default mode is read-only preflight;
+- execute mode requires a separate explicit confirmation checkbox;
+- user IDs, resume offset and batch limit are strictly validated;
+- no credential field exists;
+- output is escaped, redacted JSON only.
+
+### Runtime isolation
+
+`MigrationBootstrap` is loaded by the plugin bootstrap but exits immediately unless the request is WordPress admin or WP-CLI.
+
+It registers no checkout, Store API, frontend, cron or provider hooks. Operational source contains no provider transport path. Historical order metadata remains immutable.
+
+### Operations test gate
+
+`tests/harness/phase-9i-operations-harness.php` is required inside `H12 Regression Harness` CI.
+
+It covers strict ID parsing, settings resolution/redaction, bounded page/resume behavior, per-user failure aggregation, executor exception isolation, invalid-window no-execution behavior, safe CLI output, CLI execute confirmation, admin capability/nonce/confirmation source contracts, canonical CLI namespace, no checkout/frontend hook, no provider transport and hard batch bounds.
 
 ## Exit condition
 
-Phase 9I is **not** complete when preflight or executor alone is merged.
+Phase 9I is **not** complete until the operational tranche itself is independently reviewed and merged.
 
 The phase closes only after:
 
 1. read-only preflight is independently verified;
 2. executor is independently verified;
-3. bounded dry-run/execute operational surface is independently verified;
+3. bounded dry-run/execute admin + CLI operational surface is independently verified;
 4. all 13 blocker classes retain explicit fail-closed test evidence;
 5. Phase 0 + H12 regressions remain green;
 6. project status/changelog/handoff are reconciled;
