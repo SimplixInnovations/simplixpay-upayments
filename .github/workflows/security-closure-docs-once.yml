@@ -69,9 +69,11 @@ jobs:
           grep -Fq 'Architecture & Code-Quality Foundation — DISCOVERY' docs/project/NEW-CHAT-HANDOFF.md
           grep -Fq 'Security Threat-Model Closure: DONE / VERIFIED' docs/project/MASTER-ENGINEERING-PLAYBOOK.md
           grep -Fq 'Security threat-model harness | **81 PASS / 0 FAIL**' README.md
+          # Permanent workflow YAML is reconciled separately through the authorized GitHub connector.
+          git restore .github/workflows/quality-gates.yml
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add AGENTS.md README.md CHANGELOG.md docs/ENGINEERING-ROADMAP.md docs/project/PROJECT-STATUS.md docs/project/NEW-CHAT-HANDOFF.md docs/project/MASTER-ENGINEERING-PLAYBOOK.md docs/project/REPOSITORY-AUDIT.md docs/project/SECURITY-THREAT-MODEL.md .github/workflows/quality-gates.yml tests/harness/security-threat-model-harness.php
+          git add AGENTS.md README.md CHANGELOG.md docs/ENGINEERING-ROADMAP.md docs/project/PROJECT-STATUS.md docs/project/NEW-CHAT-HANDOFF.md docs/project/MASTER-ENGINEERING-PLAYBOOK.md docs/project/REPOSITORY-AUDIT.md docs/project/SECURITY-THREAT-MODEL.md tests/harness/security-threat-model-harness.php
           git diff --cached --quiet && exit 0
           git commit -m 'docs: close security threat-model gate and advance architecture'
           git push origin HEAD:docs/security-threat-model-closure
