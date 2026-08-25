@@ -33,8 +33,10 @@ final class Identity {
     }
 }
 
-// Incremental payment-lifecycle strangler. Loading from this existing bootstrap
-// foothold avoids mechanical edits to the inherited 250KB gateway while keeping
-// the historical wc_upayments route and runtime identity intact.
-require_once dirname(__DIR__) . '/Payment/PaymentLifecycle.php';
-\Simplix\Pay\UPayments\Payment\PaymentLifecycle::bootstrap();
+// Incremental payment-lifecycle strangler. The Phase 0 identity harness loads
+// this file in deliberate isolation, outside a WordPress hook environment, so
+// runtime registration is conditional on the real WordPress hook API existing.
+if (function_exists('add_action')) {
+    require_once dirname(__DIR__) . '/Payment/PaymentLifecycle.php';
+    \Simplix\Pay\UPayments\Payment\PaymentLifecycle::bootstrap();
+}
