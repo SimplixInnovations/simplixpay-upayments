@@ -1,6 +1,6 @@
 # Phase 9I — Historical Token-Identity Migration
 
-**Status:** IN PROGRESS
+**Status:** DONE / VERIFIED
 
 **Canonical repository:** `SimplixInnovations/simplixpay-upayments`
 
@@ -10,13 +10,28 @@
 
 Safely classify and migrate historical UPayments customer-token identity evidence that H12 correctly refuses to guess.
 
-Phase 9I extends the frozen H12 identity model; it does not replace it. Existing `UPayments\Token\CustomerTokenIdentity` runtime behavior remains the regression oracle while new migration orchestration lives under `Simplix\Pay\UPayments\Migration`.
+Phase 9I extends the frozen H12 identity model; it does not replace it. Existing `UPayments\Token\CustomerTokenIdentity` runtime behavior remains the regression oracle while migration orchestration lives under `Simplix\Pay\UPayments\Migration`.
+
+## Closure decision
+
+Phase 9I is **DONE / VERIFIED** because the full required architecture has been independently reviewed, merged and post-merge verified:
+
+1. deterministic read-only preflight;
+2. locked fail-closed executor;
+3. bounded admin/CLI operational surface with durable redacted per-user result checkpoints;
+4. all 13 historical blocker families retain explicit fail-closed evidence;
+5. Phase 0 and H12 regressions remained green through the final implementation tranche;
+6. implementation branches were merged and cleaned.
+
+Phase completion certifies the migration **system and safety contract**. It does **not** mean every merchant installation has been automatically classified or migrated. Site-specific migration remains an explicit bounded operational action. A real site may legitimately contain `BLOCKED` or `INDETERMINATE` users; those states remain fail closed.
 
 ## Non-negotiable rule
 
 Historical identity must never be promoted by inference when attribution is ambiguous.
 
-Preflight is read-only. It performs zero provider calls, secret creation/rotation, option writes, user-meta writes, order-meta writes, or checkout-hot-path migration work.
+The core preflight is read-only. It performs zero provider calls, secret creation/rotation, option writes, user-meta writes, order-meta writes, or checkout-hot-path migration work.
+
+The operational dry-run wrapper is identity/provider non-mutating but intentionally persists only its separate redacted operations-result checkpoint so interrupted batches can resume safely.
 
 ## Exact preflight classifications
 
@@ -27,7 +42,7 @@ Every evaluated user resolves to exactly one of:
 - `BLOCKED` — contradictory, malformed, security-sensitive or otherwise unsafe evidence requires manual investigation or a future explicit repair policy;
 - `INDETERMINATE` — the system cannot prove a complete trustworthy view of the relevant history.
 
-`BLOCKED` and `INDETERMINATE` are fail-closed states. The executor must never act on them.
+`BLOCKED` and `INDETERMINATE` are fail-closed states. The executor never acts on them.
 
 ## Frozen migration provenance
 
@@ -38,7 +53,7 @@ A Phase 9I migration may create only:
 
 It must never fabricate `canonical` / `create_201`. Canonical provenance remains proof of the strict provider Create-token 201 contract only.
 
-## Preflight — merged / verified
+## Preflight — DONE / VERIFIED
 
 The read-only implementation is `Simplix\Pay\UPayments\Migration\MigrationPreflight`.
 
@@ -73,7 +88,7 @@ SQL may only discover bounded provenance candidates. Exact decoded-record compar
 
 Raw customer tokens are security-sensitive migration material. Preflight exposes a SHA-256 digest for reporting; raw token material exists only in the in-memory migration payload supplied to the executor. CLI/admin/log output must never print it.
 
-## Thirteen blocker classes
+## Thirteen blocker classes — verified disposition
 
 1. **Unscoped legacy tokens** — potentially `MIGRATABLE` only for one complete, attributable token.
 2. **Current-scope orphan histories** — potentially `MIGRATABLE` only for structurally exact `legacy_compat` evidence under current scope/generation; orphan `canonical` evidence is `BLOCKED`.
@@ -91,7 +106,9 @@ Raw customer tokens are security-sensitive migration material. Preflight exposes
 
 The preflight also fails closed on multiple tokens for one user, historical/current provenance contradictions, malformed provenance, scoped history with a missing secret, unstable pagination, malformed query/result shapes, invalid order IDs, and incomplete cross-user attribution scans.
 
-## Executor — merged / verified
+These are no longer unimplemented Phase 9I gaps. They remain permanent safety classifications unless a later separately reviewed repair/migration contract deliberately changes a case.
+
+## Executor — DONE / VERIFIED
 
 `Simplix\Pay\UPayments\Migration\MigrationExecutor` was independently reviewed and squash-merged in PR #12.
 
@@ -109,7 +126,7 @@ Verified merge milestone:
 The executor:
 
 1. calls a fresh preflight and acts only on `MIGRATABLE`;
-2. supports true dry-run with zero writes/provider calls;
+2. supports true core dry-run with zero identity writes/provider calls;
 3. acquires the H12-compatible bootstrap lock when a secret is absent, otherwise the exact per-user/current-scope lock;
 4. reruns preflight while holding the lock before mutation;
 5. creates a genuinely missing H12 secret only while the bootstrap lock is held and verifies exact readback;
@@ -118,7 +135,7 @@ The executor:
 8. creates only immutable H12 `legacy_compat` / `legacy_verified_capture` provenance;
 9. verifies provenance readback exactly;
 10. reruns preflight after provenance creation and requires `CLEAN`;
-11. is idempotent under normal rerun and concurrent-worker completion;
+11. is idempotent under normal rerun and characterized concurrent-worker completion;
 12. records only a redacted Simplix-owned successful-migration identity ledger (`simplixpay_upayments_migration_v1`) containing token digest, never raw token;
 13. performs zero provider calls and zero historical order-meta mutation.
 
@@ -138,9 +155,19 @@ This supersedes the earlier draft idea of “normalizing” candidate order snap
 - final preflight not `CLEAN`: fail closed;
 - executor identity-ledger failure after verified identity migration: do not roll back valid provenance; surface `migrated_ledger_write_failed` so operations can repair observability separately.
 
-## Operational surface — current tranche
+## Operational surface — DONE / VERIFIED
 
 The operational tranche is intentionally explicit rather than auto-discovering every historical customer. Automatic discovery would require its own bounded, resumable global-census contract and is not silently introduced here.
+
+Verified merge milestone:
+
+- PR #13;
+- final reviewed head `2989862683754f8a8eda8e9d4239ada4a61b23f4`;
+- squash merge `db1c4ea4dab45bc1ffaf4529e0ccb940153cd999`;
+- tree `5bec24ad26c66a504cd0dd609f4311f9e70add76`;
+- parent `708253bd9d0daf217735fbb087b360e8b848136c`;
+- GitHub signature: VERIFIED;
+- implementation branch `phase-9i/operations`: deleted after verified merge.
 
 ### Shared batch engine
 
@@ -199,7 +226,7 @@ Security/operations controls:
 
 - capability: `manage_woocommerce`;
 - WordPress nonce required for POST;
-- default mode is read-only preflight;
+- default mode is identity-nonmutating dry-run preflight plus redacted operations-result checkpoint persistence;
 - execute mode requires a separate explicit confirmation checkbox;
 - user IDs, explicit offset and batch limit are strictly validated;
 - durable-resume checkbox recovers the first not-durably-evaluated position and cannot be combined with a nonzero explicit offset;
@@ -214,20 +241,36 @@ It registers no checkout, Store API, frontend, cron or provider hooks. Operation
 
 ### Operations test gate
 
-`tests/harness/phase-9i-operations-harness.php` is required inside `H12 Regression Harness` CI.
+`tests/harness/phase-9i-operations-harness.php` is permanently required inside `H12 Regression Harness` CI.
 
 It covers strict ID parsing, settings resolution/redaction, bounded page behavior, per-user durable result persistence, BLOCKED/exception ledger coverage, durable resume recovery, credential/mode/dry-run checkpoint isolation, checkpoint-write failure/retry semantics, per-user failure aggregation, invalid-window no-execution behavior, safe CLI output, nonzero CLI failure status, CLI execute confirmation, admin capability/nonce/confirmation/resume source contracts, canonical CLI namespace, no checkout/frontend hook, no provider transport and hard batch bounds.
 
-## Exit condition
+## Final implementation-head regression evidence
 
-Phase 9I is **not** complete until the operational tranche itself is independently reviewed and merged.
+Exact reviewed PR #13 head `2989862683754f8a8eda8e9d4239ada4a61b23f4` passed:
 
-The phase closes only after:
+- Governance: **SUCCESS**
+- tracked PHP syntax: **SUCCESS**
+- Phase 0 release identity: **35 PASS / 0 FAIL**
+- Phase 9I preflight: **123 PASS / 0 FAIL**
+- Phase 9I executor: **59 PASS / 0 FAIL**
+- Phase 9I operations: **81 PASS / 0 FAIL**
+- H12 PHP: **1927 PASS / 0 FAIL**
+- Blocks syntax: **SUCCESS**
+- H12 Blocks: **144 PASS / 0 FAIL**
 
-1. read-only preflight is independently verified;
-2. executor is independently verified;
-3. bounded dry-run/execute admin + CLI operational surface is independently verified;
-4. all 13 blocker classes retain explicit fail-closed test evidence;
-5. Phase 0 + H12 regressions remain green;
-6. project status/changelog/handoff are reconciled;
-7. implementation branches are merged/cleaned under the protected-branch rules.
+The separate Phase 9I closure documentation PR must rerun this complete stack before its own merge. Targeted harness success remains regression evidence, not broad production/platform certification.
+
+## Closed exit condition
+
+The original exit conditions are satisfied:
+
+1. read-only preflight independently verified — **YES**;
+2. executor independently verified — **YES**;
+3. bounded dry-run/execute admin + CLI operational surface independently verified — **YES**;
+4. all 13 blocker classes retain explicit fail-closed test evidence — **YES**;
+5. Phase 0 + H12 regressions remained green — **YES**;
+6. project status/changelog/README/roadmap/handoff reconciled by the closure tranche — **YES, subject to closure-PR merge verification**;
+7. implementation branches merged/cleaned under protected-branch rules — **YES**.
+
+The next program gate is **Provider Contract & Payment Lifecycle — DISCOVERY**.
