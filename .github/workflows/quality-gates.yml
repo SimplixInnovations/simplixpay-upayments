@@ -43,6 +43,7 @@ jobs:
             docs/project/PHASE-9I-MIGRATION.md
             docs/project/PROVIDER-PAYMENT-LIFECYCLE.md
             docs/project/SECURITY-THREAT-MODEL.md
+            docs/project/ARCHITECTURE-CODE-QUALITY.md
             docs/project/REPOSITORY-READINESS.md
             docs/project/REPOSITORY-AUDIT.md
             docs/project/NAMING-IDENTITY-STANDARD.md
@@ -67,6 +68,7 @@ jobs:
           grep -Fq '**Status:** DONE / VERIFIED' docs/project/PHASE-9I-MIGRATION.md
           grep -Fq '**Status:** DONE / VERIFIED' docs/project/PROVIDER-PAYMENT-LIFECYCLE.md
           grep -Fq '**Status:** DONE / VERIFIED' docs/project/SECURITY-THREAT-MODEL.md
+          grep -Fq '**Status:** DISCOVERY / CHARACTERIZATION' docs/project/ARCHITECTURE-CODE-QUALITY.md
           grep -Fq '| Phase 0 — release identity/updater ownership | **DONE / VERIFIED** |' docs/project/PROJECT-STATUS.md
           grep -Fq '| Phase 9I — historical token-identity migration | **DONE / VERIFIED** |' docs/project/PROJECT-STATUS.md
           grep -Fq '| Provider Contract & Payment Lifecycle | **DONE / VERIFIED** |' docs/project/PROJECT-STATUS.md
@@ -103,6 +105,7 @@ jobs:
             docs/project/REPOSITORY-AUDIT.md
             docs/project/REPOSITORY-READINESS.md
             docs/project/SECURITY-THREAT-MODEL.md
+            docs/project/ARCHITECTURE-CODE-QUALITY.md
           )
 
           reject_across_live_records() {
@@ -205,6 +208,9 @@ jobs:
 
       - name: Security threat-model harness
         run: php tests/harness/security-threat-model-harness.php
+
+      - name: Architecture foundation harness
+        run: php tests/harness/architecture-foundation-harness.php
 
       - name: H12 PHP harness
         run: php tests/harness/phase-9g-h12-php-harness.php
