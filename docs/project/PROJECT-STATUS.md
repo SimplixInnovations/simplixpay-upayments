@@ -194,6 +194,53 @@ Do not rename merely for branding:
 
 The exact naming/compatibility registry in `NAMING-IDENTITY-STANDARD.md` remains authoritative.
 
+## Phase 0/H12 evidence retained
+
+Initial Phase 0 characterization before implementation:
+
+- Phase 0 harness: **22 PASS / 13 FAIL** — exactly the inherited header/updater/vendor defects.
+
+Final exact reviewed Phase 0 PR #9 head `8b67259bd05453150f837cda4b961f649f50cf02`:
+
+- Governance: **SUCCESS**
+- tracked PHP syntax: **SUCCESS**
+- Phase 0 release identity: **35 PASS / 0 FAIL**
+- H12 PHP: **1927 PASS / 0 FAIL**
+- Blocks syntax: **SUCCESS**
+- H12 Blocks: **144 PASS / 0 FAIL**
+
+Four H12 implementation anchors outside the intentionally changed bootstrap remain historical regression anchors until a later phase deliberately replaces them with new reviewed evidence:
+
+- `includes/Token/CustomerTokenIdentity.php` — `85430d37e9baf540842f5655b86ccf0eca3e6aea`
+- `includes/class-wc-gateway-upayments-blocks.php` — `813d192d69c069eb7ee11df93acc9dbdf03e270a`
+- `includes/Subscription/Cron/Scheduler.php` — `5251866d4df2d1326e7c09f0c8ec1d146c0bb325`
+- `includes/Subscription/Cron/CycleClaim.php` — `c34d83e2d77cc65024fe663e4c378cecb2b17347`
+
+The H12 harness remains a regression baseline, not broad platform/security/performance certification.
+
+## Whole-repository audit status retained
+
+Resolved since the original audit:
+
+- **upstream updater authority** — removed;
+- **bundled Plugin Update Checker** — removed;
+- **provider-branded plugin header/version** — replaced by Simplix identity/version;
+- **destructive uninstall behavior** — removed; data retained by default;
+- **new Simplix namespace foothold** — `Simplix\Pay\UPayments\Release` introduced;
+- **release-identity characterization CI** — permanent Phase 0 harness added;
+- **historical token-identity migration gap** — Phase 9I classifier/executor/operations now DONE / VERIFIED.
+
+Still deliberately deferred:
+
+- broad extraction of the large inherited bootstrap;
+- physical main-file/folder migration;
+- text-domain migration;
+- explicit coexistence/conflict detection;
+- empty/duplicate/legacy asset cleanup;
+- full Composer/PSR-4 package architecture;
+- full PHPUnit/WP/Woo/browser/static-analysis platform;
+- broad Woo/WP/PHP/HPOS/Blocks/WPML/security/performance certification.
+
 ## Repository/governance state
 
 Repository readiness remains closed/verified:
@@ -208,7 +255,10 @@ Repository readiness remains closed/verified:
 - secret scanning + push protection;
 - Dependabot security updates;
 - private vulnerability reporting;
-- MIT recognized.
+- MIT recognized;
+- Projects/Wiki/Discussions off;
+- evidence-safe repository topics;
+- Simplix-owned contributor/repository presentation.
 
 ## Current program gate — Provider Contract & Payment Lifecycle
 
