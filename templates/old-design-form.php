@@ -13,7 +13,7 @@ defined( 'ABSPATH' ) || exit;
 <div class="form-row form-row-wide">
     <?php 
     echo wp_kses_post($gateway->description);
-    if (isset($_REQUEST["cancelled"]))
+    if (isset($_GET["cancelled"]))
     {
         $notice_html = '<div class="woocommerce-NoticeGroup woocommerce-NoticeGroup-checkout"><div class="woocommerce-error alert-color">'
             . esc_html__('Payment canceled by customer', $gateway->domain)
@@ -26,7 +26,7 @@ defined( 'ABSPATH' ) || exit;
         });
     </script>
     <?php
-    } elseif (isset($_REQUEST["failed"])) {
+    } elseif (isset($_GET["failed"])) {
         $notice_html = '<div class="woocommerce-NoticeGroup woocommerce-NoticeGroup-checkout"><div class="woocommerce-error alert-color">'
             . esc_html__('Payment error from UPayments', $gateway->domain)
             . '</div></div>';
@@ -38,7 +38,7 @@ defined( 'ABSPATH' ) || exit;
         });
     </script>
     <?php
-    } elseif (isset($_REQUEST["suspected"])){
+    } elseif (isset($_GET["suspected"])){
         $notice_html = '<div class="woocommerce-NoticeGroup woocommerce-NoticeGroup-checkout"><div class="woocommerce-error alert-color">'
             . esc_html__('Payment failed for suspected fraud.', $gateway->domain)
             . '</div></div>';

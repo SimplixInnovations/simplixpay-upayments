@@ -1605,13 +1605,7 @@ function woocommerceUpaymentsInit() {
                 </div>
                 <div class="payment-panel-cancelled" style="<?php echo $status == "cancelled" ? "display: block" : "display: none"; ?>">
                     <div style="<?php echo $style; ?>">
-                        <?php
-                            if (isset($status_message) && !empty($status_message)){
-                                echo $status_message;
-                            }else{
-                                esc_html_e("Your order is cancelled.", $this->domain);
-                            }
-                        ?>
+                        <?php esc_html_e("Your order is cancelled.", $this->domain); ?>
                     </div>
                 </div>
                 <div class="payment-panel-error" style="display: none">
@@ -1622,13 +1616,13 @@ function woocommerceUpaymentsInit() {
                 <div class="upayment-status-holder" style="display: none">
                     <li class="woocommerce-order-overview__payment-status status">
                         <?php esc_html_e("Payment Status:", "woocommerce"); ?>
-                        <strong id="upayment-status-holder-strong"><?php echo wp_kses_post($payment_status); ?></strong>
+                        <strong id="upayment-status-holder-strong"><?php echo esc_html($payment_status); ?></strong>
                     </li>
                 </div>
                 <div class="upayment-id-holder" style="display: none">
                     <li class="woocommerce-order-overview__payment-id payment-id">
                         <?php esc_html_e("UPayment ID:", "woocommerce"); ?>
-                        <strong id="upayment-id-holder-strong"><?php echo wp_kses_post($upayment_id); ?></strong>
+                        <strong id="upayment-id-holder-strong"><?php echo esc_html($upayment_id); ?></strong>
                     </li>
                 </div>
             </div>
@@ -1637,30 +1631,7 @@ function woocommerceUpaymentsInit() {
 
         public function get_payment_staus()
         {
-            $status = "wait";
-            $message = "";
-
-            try{
-                $order_id = (int)sanitize_text_field($_GET["wc_order_id"]);
-                if ($order_id == 0)
-                {
-                    throw new \Exception(__("Order not found.", $this->domain));
-                }
-
-                $payment_status = get_post_meta($order_id, "UPayments_WHS", true);
-                if ($payment_status && !empty($payment_status))
-                {
-                    $status = $payment_status;
-                }
-            }catch(\Exception $e){
-                $status = "error";
-                $message = $e->getMessage();
-            }
-            $this->log($status);
-            $data = ["status" => $status, "message" => $message, ];
-
-            echo json_encode($data);
-            die();
+            \Simplix\Pay\UPayments\Security\PublicOrderStatus::handle();
         }
 
         /**
@@ -3652,9 +3623,8 @@ function woocommerceUpaymentsInit() {
                 return;
             }
             
-            // Always enqueue core scripts (e.g., utility functions, global validation)
-            wp_enqueue_style('google-fonts', 'https://fonts.googleapis.com/css2?family=Almarai&display=swap');
-            wp_enqueue_style('font-awesome', 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css');
+            // Checkout must not depend on third-party font/icon CDNs.
+            // Use site/system typography and plugin-local presentation only.
 
             if (is_checkout() && !is_wc_endpoint_url()) {
                 if ($this->get_option('use_new_design') == 'yes') {
@@ -3903,10 +3873,10 @@ function woocommerceUpaymentsInit() {
                             <tbody>
                                 <tr class="">
                                     <td>
-                                        <input type="text" name="woocommerce_upayments_iban_number" data-field="iban_number" value="<?php echo $this->get_option('iban_number'); ?>" placeholder="<?php esc_html_e('KWK00445...', $this->domain); ?>" style="width: 400px;"/>
+                                        <input type="text" name="woocommerce_upayments_iban_number" data-field="iban_number" value="<?php echo esc_attr( $this->get_option('iban_number') ); ?>" placeholder="<?php esc_html_e('KWK00445...', $this->domain); ?>" style="width: 400px;"/>
                                     </td>
                                     <td>
-                                        <input type="number" name="woocommerce_upayments_knet_charge" data-field="knet_charge" value="<?php echo $this->get_option('knet_charge'); ?>" placeholder="<?php esc_html_e('0.000', $this->domain);?>" min="0.000" max="10.000" step="0.010"/>
+                                        <input type="number" name="woocommerce_upayments_knet_charge" data-field="knet_charge" value="<?php echo esc_attr( $this->get_option('knet_charge') ); ?>" placeholder="<?php esc_html_e('0.000', $this->domain);?>" min="0.000" max="10.000" step="0.010"/>
                                     </td>
                                     <td>
                                         <select data-field="knet_charge_type" name="woocommerce_upayments_knet_charge_type">
@@ -3919,7 +3889,7 @@ function woocommerceUpaymentsInit() {
                                         </select>
                                     </td>
                                     <td>
-                                        <input type="number" name="woocommerce_upayments_cc_charge" data-field="cc_charge" value="<?php echo $this->get_option('cc_charge'); ?>" placeholder="<?php esc_html_e('0.000', $this->domain); ?>" min="0.000" max="10.000" step="0.010"/>
+                                        <input type="number" name="woocommerce_upayments_cc_charge" data-field="cc_charge" value="<?php echo esc_attr( $this->get_option('cc_charge') ); ?>" placeholder="<?php esc_html_e('0.000', $this->domain); ?>" min="0.000" max="10.000" step="0.010"/>
                                     </td>
                                     <td>
                                         <select data-field="cc_charge_type" name="woocommerce_upayments_cc_charge_type">
@@ -4961,10 +4931,34 @@ function addCustomDataPanel() {
 
 add_action( 'woocommerce_process_product_meta', 'saveCustomFieldData' );
 function saveCustomFieldData( $post_id ) {
-    $custom_field_value = isset( $_POST['_custom_field_id'] ) ? $_POST['_custom_field_id'] : '';
-    
-    if ( ! empty( $custom_field_value ) ) {
-        update_post_meta( $post_id, '_custom_field_id', sanitize_text_field( $custom_field_value ) );
+    $post_id = absint( $post_id );
+    if ( $post_id <= 0 ) {
+        return;
+    }
+
+    if ( empty( $_POST['woocommerce_meta_nonce'] )
+        || ! wp_verify_nonce( wp_unslash( $_POST['woocommerce_meta_nonce'] ), 'woocommerce_save_data' )
+    ) {
+        return;
+    }
+
+    if ( empty( $_POST['post_ID'] ) || absint( $_POST['post_ID'] ) !== $post_id ) {
+        return;
+    }
+
+    if ( ! current_user_can( 'edit_post', $post_id ) ) {
+        return;
+    }
+
+    $custom_field_value = isset( $_POST['_custom_field_id'] )
+        && is_string( $_POST['_custom_field_id'] )
+        ? sanitize_text_field( wp_unslash( $_POST['_custom_field_id'] ) )
+        : '';
+
+    if ( $custom_field_value !== '' ) {
+        update_post_meta( $post_id, '_custom_field_id', $custom_field_value );
+    } else {
+        delete_post_meta( $post_id, '_custom_field_id' );
     }
 }
 
@@ -5140,40 +5134,29 @@ add_action('woocommerce_order_details_after_order_table', function ($order) {
     <?php
         $isAutoDeductionOrder = $order->get_meta('UPayments_AutoDeduction') === 'yes' ? true : false;
         if (!$isAutoDeductionOrder) {
-            $unsubscribe_url = wp_nonce_url(
-                add_query_arg([
-                    'upay_action' => 'unsubscribe',
-                    'order_id'    => $order->get_id(),
-                ], wc_get_account_endpoint_url('view-order')),
-                'upay_unsubscribe_' . $order->get_id()
-            );
-    ?>
-    <p class="upay-subscription-actions">
-        <a href="<?php echo esc_url($unsubscribe_url); ?>"
-            class="button upay-unsubscribe-button"
-            onclick="return confirm('<?php esc_attr_e('Are you sure you want to unsubscribe?', 'woocommerce'); ?>');">
-            <?php esc_html_e('Unsubscribe', 'woocommerce'); ?>
-        </a>
-    </p>
-
-    <?php
             $status = $order->get_meta('_upay_subscription_status') ?: 'active';
             $action = $status === 'paused' ? 'resume' : 'pause';
             $label  = $status === 'paused' ? 'Resume Subscription' : 'Pause Subscription';
-
-            $url = wp_nonce_url(
-                add_query_arg([
-                    'upay_action' => $action,
-                    'order_id'    => $order->get_id(),
-                ], wc_get_account_endpoint_url('view-order')),
-                'upay_' . $action . '_' . $order->get_id()
-            );
+            $form_action = wc_get_account_endpoint_url('view-order') . $order->get_id();
     ?>
-    <p class="upay-subscription-actions">
-        <a href="<?php echo esc_url($url); ?>" class="button upay-pause-resume-button">
+    <form method="post" class="upay-subscription-actions" action="<?php echo esc_url($form_action); ?>">
+        <input type="hidden" name="upay_action" value="unsubscribe" />
+        <input type="hidden" name="order_id" value="<?php echo esc_attr($order->get_id()); ?>" />
+        <?php wp_nonce_field('upay_unsubscribe_' . $order->get_id(), '_wpnonce', false); ?>
+        <button type="submit" class="button upay-unsubscribe-button"
+            onclick="return confirm('<?php echo esc_js(__('Are you sure you want to unsubscribe?', 'woocommerce')); ?>');">
+            <?php esc_html_e('Unsubscribe', 'woocommerce'); ?>
+        </button>
+    </form>
+
+    <form method="post" class="upay-subscription-actions" action="<?php echo esc_url($form_action); ?>">
+        <input type="hidden" name="upay_action" value="<?php echo esc_attr($action); ?>" />
+        <input type="hidden" name="order_id" value="<?php echo esc_attr($order->get_id()); ?>" />
+        <?php wp_nonce_field('upay_' . $action . '_' . $order->get_id(), '_wpnonce', false); ?>
+        <button type="submit" class="button upay-pause-resume-button">
             <?php echo esc_html($label); ?>
-        </a>
-    </p>
+        </button>
+    </form>
     <?php
     }
 });
@@ -5242,12 +5225,19 @@ add_action('woocommerce_init', function () {
 });
 
 add_action('init', function () {
-    $action = isset($_GET['upay_action'])
-        ? sanitize_key(wp_unslash($_GET['upay_action']))
+    $method = isset($_SERVER['REQUEST_METHOD']) && is_string($_SERVER['REQUEST_METHOD'])
+        ? strtoupper($_SERVER['REQUEST_METHOD'])
+        : '';
+    if ($method !== 'POST') {
+        return;
+    }
+
+    $action = isset($_POST['upay_action']) && is_string($_POST['upay_action'])
+        ? sanitize_key(wp_unslash($_POST['upay_action']))
         : '';
 
-    $order_id = isset($_GET['order_id'])
-        ? absint(wp_unslash($_GET['order_id']))
+    $order_id = isset($_POST['order_id'])
+        ? absint(wp_unslash($_POST['order_id']))
         : 0;
 
     if (empty($action) || empty($order_id)) {
@@ -5264,16 +5254,48 @@ add_action('init', function () {
         return;
     }
 
-    // Authorization: nonce is CSRF protection, not authorization.
-    if (!is_user_logged_in() || get_current_user_id() !== $order->get_user_id()) {
+    // Authorization: nonce is CSRF protection, never object authorization.
+    if (!is_user_logged_in() || get_current_user_id() !== (int) $order->get_user_id()) {
         wc_add_notice(__('Unauthorized request.', 'woocommerce'), 'error');
         wp_safe_redirect(wc_get_account_endpoint_url('orders'));
         exit;
     }
 
+    // Object contract: this customer action belongs only to manual UPayments
+    // subscription orders. Auto-deduction orders remain scheduler-controlled.
+    $plan = $order->get_meta('_upay_subscription_plan');
+    $interval = (int) $order->get_meta('_upay_subscription_interval');
+    $allowed_intervals = array(
+        'daily' => array(1),
+        'weekly' => array(1, 2, 3),
+        'monthly' => array(1, 2),
+        'quarterly' => array(1, 2, 3),
+        'yearly' => array(1),
+    );
+    if ((string) $order->get_payment_method() !== 'upayments'
+        || $order->get_meta('UPayments_AutoDeduction') === 'yes'
+        || !is_string($plan)
+        || !isset($allowed_intervals[$plan])
+        || !in_array($interval, $allowed_intervals[$plan], true)
+    ) {
+        wc_add_notice(__('Invalid subscription request.', 'woocommerce'), 'error');
+        wp_safe_redirect(wc_get_account_endpoint_url('orders'));
+        exit;
+    }
+
+    $current_status = $order->get_meta('_upay_subscription_status') ?: 'active';
+    $transition_allowed = ($action === 'unsubscribe' && in_array($current_status, array('active', 'paused'), true))
+        || ($action === 'pause' && $current_status === 'active')
+        || ($action === 'resume' && $current_status === 'paused');
+    if (!$transition_allowed) {
+        wc_add_notice(__('Invalid subscription state transition.', 'woocommerce'), 'error');
+        wp_safe_redirect(wc_get_account_endpoint_url('view-order') . $order_id);
+        exit;
+    }
+
     // Nonce verification: required for every state-changing action.
-    $nonce = isset($_GET['_wpnonce'])
-        ? sanitize_text_field(wp_unslash($_GET['_wpnonce']))
+    $nonce = isset($_POST['_wpnonce']) && is_string($_POST['_wpnonce'])
+        ? sanitize_text_field(wp_unslash($_POST['_wpnonce']))
         : '';
 
     if ($action === 'unsubscribe') {

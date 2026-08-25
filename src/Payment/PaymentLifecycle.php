@@ -4,6 +4,9 @@ namespace Simplix\Pay\UPayments\Payment;
 
 defined('ABSPATH') || exit;
 
+use Simplix\Pay\UPayments\Security\PublicOrderStatus;
+
+require_once dirname(__DIR__) . '/Security/PublicOrderStatus.php';
 require_once __DIR__ . '/ProviderResult.php';
 require_once __DIR__ . '/StatusRateGate.php';
 require_once __DIR__ . '/OrderLock.php';
@@ -46,6 +49,7 @@ final class PaymentLifecycle {
         $post = isset($_POST) && is_array($_POST) ? $_POST : array();
 
         if (array_key_exists('get_order_status', $get)) {
+            PublicOrderStatus::handle();
             return;
         }
 

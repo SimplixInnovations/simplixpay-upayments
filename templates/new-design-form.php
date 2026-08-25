@@ -34,7 +34,7 @@ defined( 'ABSPATH' ) || exit;
 <div id="wc-toast" class="wc-toast"></div>
 <div class="form-row form-row-wide">
     <?php 
-    if (isset($_REQUEST["cancelled"])){
+    if (isset($_GET["cancelled"])){
         $notice_html = '<div class="woocommerce-NoticeGroup woocommerce-NoticeGroup-checkout"><div class="woocommerce-error alert-color">'
             . esc_html__('Payment canceled by customer', $gateway->domain)
             . '</div></div>';
@@ -46,7 +46,7 @@ defined( 'ABSPATH' ) || exit;
             });
         </script>
     <?php
-    } elseif (isset($_REQUEST["failed"])){
+    } elseif (isset($_GET["failed"])){
         $notice_html = '<div class="woocommerce-NoticeGroup woocommerce-NoticeGroup-checkout"><div class="woocommerce-error alert-color">'
             . esc_html__('Payment error from UPayments', $gateway->domain)
             . '</div></div>';
@@ -58,7 +58,7 @@ defined( 'ABSPATH' ) || exit;
             });
         </script>
     <?php
-    } elseif (isset($_REQUEST["suspected"])) {
+    } elseif (isset($_GET["suspected"])) {
         $notice_html = '<div class="woocommerce-NoticeGroup woocommerce-NoticeGroup-checkout"><div class="woocommerce-error alert-color">'
             . esc_html__('Payment failed for suspected fraud.', $gateway->domain)
             . '</div></div>';
@@ -176,7 +176,7 @@ defined( 'ABSPATH' ) || exit;
                         <span class="payment-method-icon"><img src="<?php echo esc_url(UP_PLUGIN_URL . 'assets/images/cc.png'); ?>" alt="<?php echo $card_number; ?>"  title="<?php echo $card_number; ?>"/></span>
                         <span class="payment-method-label"><?php echo $card_number_text; ?></span>
                         <span class="payment-method-price"><?php echo esc_html($total); ?> <?php echo wp_kses($currency, array()); ?></span>
-                        <span class="payment-method-icon2"><i class="fa fa-chevron-right"></i></span>
+                        <span class="payment-method-icon2"><span class="upay-chevron" aria-hidden="true">&#8250;</span></span>
                         </button>
 
                     <?php
@@ -224,7 +224,7 @@ defined( 'ABSPATH' ) || exit;
                     </span>
                     <span class="payment-method-label"><?php echo $value_text; ?></span>
                     <span class="payment-method-price"><?php echo esc_html($total); ?> <?php echo wp_kses($currency, array()); ?></span>
-                    <span class="payment-method-icon2"><i class="fa fa-chevron-right"></i></span>
+                    <span class="payment-method-icon2"><span class="upay-chevron" aria-hidden="true">&#8250;</span></span>
                 </button>
             
             <?php if ($key_string == 'cc' && $save_card_enabled && $is_logged_in) { ?>
@@ -268,7 +268,7 @@ defined( 'ABSPATH' ) || exit;
             }
     ?>
             <span class="payment-method-price"><?php echo esc_html($total); ?> <?php echo wp_kses($currency, array()); ?></span>
-            <span class="payment-method-icon2"><i class="fa fa-chevron-right"></i></span>
+            <span class="payment-method-icon2"><span class="upay-chevron" aria-hidden="true">&#8250;</span></span>
             </button>
         </div>
     <?php
