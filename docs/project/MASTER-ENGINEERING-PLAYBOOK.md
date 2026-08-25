@@ -4,7 +4,7 @@
 **Upstream:** `upaymentskwt/woocommerce`  
 **Document purpose:** authoritative project plan, engineering standard, status ledger, clean-chat handoff, and Agent execution guide  
 **Baseline date:** 2026-08-24  
-**Last independently verified implementation `main`:** `db1c4ea4dab45bc1ffaf4529e0ccb940153cd999`
+**Last independently verified implementation `main`:** `9569e39973a9e94926087738eae06c3846361943`
 **Current project posture:** engineering hardening; **not yet a generally certified public production release**
 
 ---
@@ -19,7 +19,7 @@ The preferred long-term product position is:
 
 The project must remain transparent that UPayments is the payment provider and owns its trademarks; Simplix Innovations owns and supports its modifications and distribution. Upstream changes are inputs to review, not changes that are automatically trusted or merged.
 
-The current codebase contains substantial security hardening, especially the H12 customer-token identity work, but it is not yet appropriate to advertise as universally production-certified. Before a broad production release, the project must complete full payment-lifecycle validation, security closure, compatibility certification, quality-platform expansion, operational readiness and release engineering.
+The current codebase contains substantial security hardening, especially the H12 customer-token identity work, but it is not yet appropriate to advertise as universally production-certified. Provider Contract & Payment Lifecycle is now DONE / VERIFIED. Before a broad production release, the project must still complete security closure, compatibility certification, quality-platform expansion, operational readiness and release engineering.
 
 The engineering principle for the remainder of the project is:
 
@@ -475,9 +475,9 @@ Requirements:
 | H12 / Phase 9G token identity | **DONE / VERIFIED** | Foundational |
 | Phase 0 — Release & repository safety | **DONE / VERIFIED** | Critical before distribution |
 | Phase 9I — Historical migration | **DONE / VERIFIED** | Critical for upgrades/existing customers |
-| Provider contract audit | **DISCOVERY — CURRENT GATE** | Critical |
-| Payment lifecycle/state machine | **DISCOVERY — CURRENT GATE** | Critical |
-| Security threat-model audit | **PARTIAL** | Critical |
+| Provider contract audit | **DONE / VERIFIED** | Critical |
+| Payment lifecycle/state machine | **DONE / VERIFIED** | Critical |
+| Security threat-model audit | **DISCOVERY — CURRENT GATE** | Critical |
 | Architecture/code quality | **PARTIAL** | High |
 | Full automated quality platform | **NOT STARTED** | Critical before public stable |
 | WooCommerce/WordPress/PHP certification | **PENDING** | Critical |
@@ -492,7 +492,7 @@ Requirements:
 | WordPress.org publication | **DEFERRED UNTIL READY** | Strategic |
 | Continuous maintenance | **ONGOING AFTER FIRST STABLE** | Critical long-term |
 
-The current unified gate is **Provider Contract & Payment Lifecycle — DISCOVERY**. Provider contract and lifecycle rows remain separated in this roadmap because they have distinct deliverables, but discovery/characterization must be coordinated before payment-critical refactoring.
+Provider Contract & Payment Lifecycle is **DONE / VERIFIED**. The current unified gate is **Security Threat-Model Closure — DISCOVERY**. Provider contract and lifecycle rows remain separated because they retain distinct closed contracts and regression evidence.
 
 ## 18. Phase ordering
 
@@ -500,8 +500,8 @@ Recommended execution order:
 
 1. Phase 0 — Release & Repository Safety — **DONE / VERIFIED**.
 2. Phase 9I — Historical Token-Identity Migration — **DONE / VERIFIED**.
-3. Provider Contract & Payment Lifecycle — **CURRENT / DISCOVERY**.
-4. Security Threat-Model Audit.
+3. Provider Contract & Payment Lifecycle — **DONE / VERIFIED**.
+4. Security Threat-Model Closure — **CURRENT / DISCOVERY**.
 5. Architecture & Code Quality Foundation.
 6. Full Test-Driven Quality Platform.
 7. WooCommerce / WordPress / PHP Certification.
@@ -598,6 +598,7 @@ Initial CI exists and must not be mistaken for the final quality platform:
 - PHP syntax lint across plugin-owned PHP;
 - Phase 0 release-identity harness;
 - Phase 9I preflight/executor/operations harnesses;
+- Provider Payment Lifecycle and Provider Exact Amount Binding harnesses;
 - existing H12 PHP harness;
 - existing Blocks harness;
 - whitespace/governance checks;
@@ -732,7 +733,7 @@ The final Phase 9I implementation head reran Phase 0, preflight, executor, opera
 
 # PROVIDER CONTRACT AUDIT
 
-**Current program status:** DISCOVERY, coordinated with Payment Lifecycle / State Machine.
+**Current program status:** DONE / VERIFIED. The closed contract/evidence is retained in `docs/project/PROVIDER-PAYMENT-LIFECYCLE.md`.
 
 ## 26. Goal
 
@@ -773,7 +774,7 @@ When provider documentation conflicts, do not choose the more permissive interpr
 
 # PAYMENT LIFECYCLE / STATE MACHINE
 
-**Current program status:** DISCOVERY, coordinated with Provider Contract Audit.
+**Current program status:** DONE / VERIFIED. The ordinary-checkout lifecycle is frozen by `docs/project/PROVIDER-PAYMENT-LIFECYCLE.md` and its required regression harnesses.
 
 ## 28. Goal
 
@@ -807,6 +808,8 @@ Model events such as:
 ---
 
 # SECURITY THREAT-MODEL AUDIT
+
+**Current program status:** DISCOVERY / CURRENT GATE.
 
 ## 30. Scope
 
@@ -1511,25 +1514,25 @@ Where security correctness requires a fresh read, verify or invalidate caches de
 LAST VERIFIED PROJECT STATE
 Date: 2026-08-25
 Repository: SimplixInnovations/simplixpay-upayments
-Last verified implementation main SHA before Phase 9I closure reconciliation: db1c4ea4dab45bc1ffaf4529e0ccb940153cd999
-Canonical implementation tree: 5bec24ad26c66a504cd0dd609f4311f9e70add76
+Last verified implementation main SHA: 9569e39973a9e94926087738eae06c3846361943
+Canonical implementation tree: 40ec562674361624c2764263ba55cfba84594955
 Historical H12 merge: SimplixInnovations/upayments-woocommerce@93e9925247a8bfade626cb822136852fd96eaea2
 Repository foundation/readiness: DONE / VERIFIED
 Phase 0 release identity/updater ownership: DONE / VERIFIED
 Phase 9I historical token-identity migration: DONE / VERIFIED
-Current program gate: Provider Contract & Payment Lifecycle — DISCOVERY
+Provider Contract & Payment Lifecycle: DONE / VERIFIED
+Current program gate: Security Threat-Model Closure — DISCOVERY
 Production readiness: R0 — engineering hardening
 Public stable release: NO
 WordPress.org release: NO
 Known remaining P0/P1 program blockers:
-- provider contract/payment lifecycle validation and deterministic state/reconciliation contract
 - security threat-model closure
 - broad compatibility/feature certification
 - full automated quality platform
 - release engineering/distribution
 ```
 
-The exact closure-PR merge SHA cannot be written before that PR is merged. `PROJECT-STATUS.md` and live GitHub remain authoritative; the next verified state update should replace the implementation anchor above with the closure merge if needed.
+The provider lifecycle implementation anchor above is post-merge verified. `PROJECT-STATUS.md` and live GitHub remain authoritative; future verified gate merges must update this living block without rewriting dated historical baselines.
 
 ## 108. Completion ledger
 
@@ -1552,13 +1555,13 @@ The exact closure-PR merge SHA cannot be written before that PR is merged. `PROJ
 - [x] Phase 9I locked fail-closed executor completed and verified (PR #12).
 - [x] Phase 9I bounded admin/CLI operations with durable redacted per-user result checkpoints completed and verified (PR #13).
 - [x] Phase 9I final implementation-head regression evidence: Phase 0 35/0, preflight 123/0, executor 59/0, operations 81/0, H12 PHP 1927/0, H12 Blocks 144/0.
+- [x] Provider Contract & Payment Lifecycle completed and independently verified (PR #15).
+- [x] Provider lifecycle evidence: Provider Payment Lifecycle 141/0, Provider Exact Amount 4/0, H12 PHP 1927/0, H12 Blocks 144/0, with Governance/syntax green on the exact PR merge-ref and post-merge `main`.
+- [x] Provider lifecycle squash merge `9569e39973a9e94926087738eae06c3846361943`, tree `40ec562674361624c2764263ba55cfba84594955`, VERIFIED signature and implementation-branch cleanup.
 
 ### Remaining P0/P1 work
 
-- [ ] Provider Contract & Payment Lifecycle — **DISCOVERY / CURRENT GATE**.
-- [ ] Full provider contract spec.
-- [ ] Deterministic payment lifecycle/webhook/status/refund state machine/reconciliation contract.
-- [ ] Security threat-model closure.
+- [ ] Security Threat-Model Closure — **DISCOVERY / CURRENT GATE**.
 - [ ] Standard Composer/PHPUnit/static-analysis platform.
 - [ ] WordPress/WooCommerce/PHP compatibility certification.
 - [ ] WPML/WCML certification.
@@ -1625,7 +1628,7 @@ Copy/paste:
 ```text
 PROJECT: SimplixPay for UPayments / SimplixInnovations/simplixpay-upayments
 
-Read root AGENTS.md first, then docs/project/PROJECT-STATUS.md, docs/project/NAMING-IDENTITY-STANDARD.md, docs/project/NEW-CHAT-HANDOFF.md, docs/project/PHASE-9I-MIGRATION.md and the relevant sections of docs/project/MASTER-ENGINEERING-PLAYBOOK.md.
+Read root AGENTS.md first, then docs/project/PROJECT-STATUS.md, docs/project/NAMING-IDENTITY-STANDARD.md, docs/project/NEW-CHAT-HANDOFF.md, docs/project/PHASE-0-RELEASE-IDENTITY.md, docs/project/PHASE-9I-MIGRATION.md, docs/project/PROVIDER-PAYMENT-LIFECYCLE.md and the relevant sections of docs/project/MASTER-ENGINEERING-PLAYBOOK.md.
 
 Rules for this session:
 1. Treat recorded Git SHAs as historical until live GitHub verification confirms them.
@@ -1730,6 +1733,7 @@ Awaiting reviewer verification of merge.
 - Current project status: repository `docs/project/PROJECT-STATUS.md`
 - Naming/identity standard: repository `docs/project/NAMING-IDENTITY-STANDARD.md`
 - Closed Phase 9I evidence: repository `docs/project/PHASE-9I-MIGRATION.md`
+- Closed Provider Contract & Payment Lifecycle evidence: repository `docs/project/PROVIDER-PAYMENT-LIFECYCLE.md`
 - Current compatibility matrix: repository `docs/COMPATIBILITY.md`
 - Current security policy: repository `SECURITY.md`
 - Current upstream relationship: repository `UPSTREAM.md`
