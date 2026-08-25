@@ -62,9 +62,10 @@ jobs:
           grep -Fq 'SimplixInnovations/simplixpay-upayments' AGENTS.md
           grep -Fq 'upayments' docs/project/NAMING-IDENTITY-STANDARD.md
           grep -Fq '**Status:** DONE / VERIFIED' docs/project/PHASE-0-RELEASE-IDENTITY.md
-          grep -Fq '**Status:** IN PROGRESS' docs/project/PHASE-9I-MIGRATION.md
+          grep -Fq '**Status:** DONE / VERIFIED' docs/project/PHASE-9I-MIGRATION.md
           grep -Fq '| Phase 0 — release identity/updater ownership | **DONE / VERIFIED** |' docs/project/PROJECT-STATUS.md
-          grep -Fq '| Current implementation gate | **Phase 9I — Historical token-identity migration** |' docs/project/PROJECT-STATUS.md
+          grep -Fq '| Phase 9I — historical token-identity migration | **DONE / VERIFIED** |' docs/project/PROJECT-STATUS.md
+          grep -Fq '| Current program gate | **Provider Contract & Payment Lifecycle — DISCOVERY** |' docs/project/PROJECT-STATUS.md
 
       - name: Whitespace errors
         shell: bash
