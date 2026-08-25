@@ -7,11 +7,15 @@ These instructions apply to the entire repository. A nested `AGENTS.md` may tigh
 Before substantive work, read in this order:
 
 1. `docs/project/PROJECT-STATUS.md`
-2. `docs/project/REPOSITORY-READINESS.md` when the pre-Phase-0 readiness gate is not closed
-3. `docs/project/NAMING-IDENTITY-STANDARD.md`
-4. `docs/project/NEW-CHAT-HANDOFF.md`
-5. relevant sections of `docs/project/MASTER-ENGINEERING-PLAYBOOK.md`
-6. `docs/project/BASELINE-H12.md` when token/saved-card/subscription identity is relevant
+2. `docs/project/NAMING-IDENTITY-STANDARD.md`
+3. `docs/project/NEW-CHAT-HANDOFF.md`
+4. `docs/project/PHASE-0-RELEASE-IDENTITY.md`
+5. `docs/project/PHASE-9I-MIGRATION.md`
+6. `docs/project/PROVIDER-PAYMENT-LIFECYCLE.md`
+7. `docs/project/SECURITY-THREAT-MODEL.md`
+8. relevant living sections of `docs/project/MASTER-ENGINEERING-PLAYBOOK.md`
+9. `docs/project/BASELINE-H12.md` when token/saved-card/subscription identity is relevant
+10. `docs/project/REPOSITORY-READINESS.md` for historical repository-foundation evidence when relevant
 
 ## Canonical identity
 
@@ -120,6 +124,7 @@ After merge, independently verify `main`, expected topology for the chosen merge
 Until the standard quality platform replaces them:
 
 ```bash
+php tests/harness/security-threat-model-harness.php
 php tests/harness/phase-9g-h12-php-harness.php
 node --check tests/harness/phase-9g-h12-blocks-harness.js
 node tests/harness/phase-9g-h12-blocks-harness.js

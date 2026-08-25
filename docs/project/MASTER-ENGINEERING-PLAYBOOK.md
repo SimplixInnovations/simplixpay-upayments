@@ -4,7 +4,7 @@
 **Upstream:** `upaymentskwt/woocommerce`  
 **Document purpose:** authoritative project plan, engineering standard, status ledger, clean-chat handoff, and Agent execution guide  
 **Baseline date:** 2026-08-24  
-**Last independently verified implementation `main`:** `9569e39973a9e94926087738eae06c3846361943`
+**Last independently verified implementation `main`:** `01f3fc59eed8641b3e5372558f61a7a0f0cdfac9`
 **Current project posture:** engineering hardening; **not yet a generally certified public production release**
 
 ---
@@ -19,7 +19,7 @@ The preferred long-term product position is:
 
 The project must remain transparent that UPayments is the payment provider and owns its trademarks; Simplix Innovations owns and supports its modifications and distribution. Upstream changes are inputs to review, not changes that are automatically trusted or merged.
 
-The current codebase contains substantial security hardening, especially the H12 customer-token identity work, but it is not yet appropriate to advertise as universally production-certified. Provider Contract & Payment Lifecycle is now DONE / VERIFIED. Before a broad production release, the project must still complete security closure, compatibility certification, quality-platform expansion, operational readiness and release engineering.
+The current codebase contains substantial security hardening, especially the H12 customer-token identity work. Provider Contract & Payment Lifecycle and the bounded Security Threat-Model Closure are now DONE / VERIFIED, but the project is still not appropriate to advertise as universally production-certified. Before a broad production release, it must still complete architecture/code-quality foundation, quality-platform expansion, compatibility/feature certification, operational readiness and release engineering.
 
 The engineering principle for the remainder of the project is:
 
@@ -1514,19 +1514,21 @@ Where security correctness requires a fresh read, verify or invalidate caches de
 LAST VERIFIED PROJECT STATE
 Date: 2026-08-25
 Repository: SimplixInnovations/simplixpay-upayments
-Last verified implementation main SHA: 9569e39973a9e94926087738eae06c3846361943
-Canonical implementation tree: 40ec562674361624c2764263ba55cfba84594955
+Last verified implementation main SHA: 01f3fc59eed8641b3e5372558f61a7a0f0cdfac9
+Canonical implementation tree: e0027005f059fad03d8c08273b7aac6553c45f53
 Historical H12 merge: SimplixInnovations/upayments-woocommerce@93e9925247a8bfade626cb822136852fd96eaea2
 Repository foundation/readiness: DONE / VERIFIED
 Phase 0 release identity/updater ownership: DONE / VERIFIED
 Phase 9I historical token-identity migration: DONE / VERIFIED
 Provider Contract & Payment Lifecycle: DONE / VERIFIED
-Current program gate: Security Threat-Model Closure — DISCOVERY
+Security Threat-Model Closure: DONE / VERIFIED
+Security Threat-Model implementation: PR #17; 81 PASS / 0 FAIL; post-merge Quality Gates #89 SUCCESS
+Current program gate: Architecture & Code-Quality Foundation — DISCOVERY
 Production readiness: R0 — engineering hardening
 Public stable release: NO
 WordPress.org release: NO
 Known remaining P0/P1 program blockers:
-- security threat-model closure
+- architecture/code-quality foundation
 - broad compatibility/feature certification
 - full automated quality platform
 - release engineering/distribution
@@ -1558,10 +1560,13 @@ The provider lifecycle implementation anchor above is post-merge verified. `PROJ
 - [x] Provider Contract & Payment Lifecycle completed and independently verified (PR #15).
 - [x] Provider lifecycle evidence: Provider Payment Lifecycle 141/0, Provider Exact Amount 4/0, H12 PHP 1927/0, H12 Blocks 144/0, with Governance/syntax green on the exact PR merge-ref and post-merge `main`.
 - [x] Provider lifecycle squash merge `9569e39973a9e94926087738eae06c3846361943`, tree `40ec562674361624c2764263ba55cfba84594955`, VERIFIED signature and implementation-branch cleanup.
+- [x] Security Threat-Model Closure implementation completed and independently verified (PR #17).
+- [x] Security evidence: Security Threat-Model **81/0**, with Phase 0 **35/0**, Phase 9I **123/0 + 59/0 + 81/0**, Provider **141/0 + 4/0**, H12 PHP **1927/0**, H12 Blocks **144/0**, Governance/syntax green.
+- [x] Security squash merge `01f3fc59eed8641b3e5372558f61a7a0f0cdfac9`, tree `e0027005f059fad03d8c08273b7aac6553c45f53`, VERIFIED signature, green post-merge Quality Gates #89 and implementation-branch cleanup.
 
 ### Remaining P0/P1 work
 
-- [ ] Security Threat-Model Closure — **DISCOVERY / CURRENT GATE**.
+- [ ] Architecture & Code-Quality Foundation — **DISCOVERY / CURRENT GATE**.
 - [ ] Standard Composer/PHPUnit/static-analysis platform.
 - [ ] WordPress/WooCommerce/PHP compatibility certification.
 - [ ] WPML/WCML certification.

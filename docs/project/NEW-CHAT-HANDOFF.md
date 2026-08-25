@@ -1,6 +1,6 @@
 # SimplixPay for UPayments — Clean Chat Handoff
 
-Use this file with root `AGENTS.md`, `PROJECT-STATUS.md`, the naming standard, the closed Phase 0 / Phase 9I / Provider Lifecycle records and the Master Engineering Playbook.
+Use this file with root `AGENTS.md`, `PROJECT-STATUS.md`, the naming standard, the closed Phase 0 / Phase 9I / Provider Lifecycle / Security Threat-Model records and the Master Engineering Playbook.
 
 ## Project identity
 
@@ -21,13 +21,63 @@ Use this file with root `AGENTS.md`, `PROJECT-STATUS.md`, the naming standard, t
 - Phase 0 — release identity/updater ownership: **DONE / VERIFIED**
 - Phase 9I — historical token-identity migration: **DONE / VERIFIED**
 - Provider Contract & Payment Lifecycle: **DONE / VERIFIED**
-- Current program gate: **Security Threat-Model Closure — DISCOVERY**
+- Security Threat-Model Closure: **DONE / VERIFIED**
+- Current program gate: **Architecture & Code-Quality Foundation — DISCOVERY**
 - Stable production release: **NO**
 - WordPress.org release: **NO**
 
 Always verify live GitHub before acting. Recorded SHAs are milestone evidence, not substitutes for fresh source/check/review verification.
 
-## Latest verified implementation milestone — Provider Contract & Payment Lifecycle
+## Latest verified implementation milestone — Security Threat-Model Closure
+
+PR #17 final reviewed head:
+
+- `fba12225899c3e01d6b23a6bba2f757a3b5f6a4a`
+
+Verified squash merge on `main`:
+
+- merge: `01f3fc59eed8641b3e5372558f61a7a0f0cdfac9`
+- tree: `e0027005f059fad03d8c08273b7aac6553c45f53`
+- parent: `08054a93c619f3c34fef747a6e530abce1e8986e`
+- GitHub signature: **VERIFIED**
+- `security/threat-model-discovery` branch: **deleted after verified merge**
+- exact PR merge-ref Quality Gates run #88: **SUCCESS**
+- post-merge Quality Gates run #89 on `main`: **SUCCESS**
+
+Exact final implementation-head evidence:
+
+- Governance: **SUCCESS**
+- tracked PHP syntax: **SUCCESS**
+- Phase 0: **35 PASS / 0 FAIL**
+- Phase 9I preflight/executor/operations: **123/0 + 59/0 + 81/0**
+- Provider Lifecycle / Exact Amount: **141/0 + 4/0**
+- Security Threat-Model: **81 PASS / 0 FAIL**
+- H12 PHP: **1927 PASS / 0 FAIL**
+- Blocks syntax: **SUCCESS**
+- H12 Blocks: **144 PASS / 0 FAIL**
+
+### Closed bounded security architecture
+
+- public legacy status polling requires an UPayments order plus exact owner or exact Woo order key; numeric ID alone is never authority;
+- subscription pause/resume/unsubscribe is POST-only with exact owner, action nonce, subscription object preflight and valid transition;
+- checkout has no Google Fonts/cdnjs Font Awesome dependency; classic and Blocks chevrons are local;
+- plain provider/order metadata and stored settings are escaped to their exact output context;
+- checkout templates exclude `$_REQUEST`;
+- product-meta writes mirror WooCommerce nonce/post-ID/capability preconditions;
+- payment host/TLS/redirect/Bearer controls, H12 identity, Phase 9I authorization, no-blind-retry and immutable Actions pins remain protected by regression evidence.
+
+### Explicit unresolved security/feature boundaries
+
+Do not silently claim these are solved:
+
+- UPayments webhook HMAC/signature remains provider-document unresolved; authenticated Get Payment Status remains financial truth;
+- subscription auto-deduction remains a separately characterized no-blind-retry/cycle-journal path, not broad recurring-billing certification;
+- automatic WooCommerce refunds remain unsupported pending durable idempotency/reconciliation design;
+- this closure is not broad penetration-test, PCI/compliance, platform, feature, performance or production certification.
+
+See `docs/project/SECURITY-THREAT-MODEL.md` for the complete closed record.
+
+## Previous verified implementation milestone — Provider Contract & Payment Lifecycle
 
 PR #15 final reviewed head:
 
@@ -201,33 +251,21 @@ Do not globally rename:
 - malformed H12 secret is distinct from missing and fails closed.
 - selected saved card requires current valid provenance + exact scope/generation + fresh provider Retrieve + exact membership.
 
-## Next gate — Security Threat-Model Closure
+## Next gate — Architecture & Code-Quality Foundation
 
-**Status: DISCOVERY. Do not start with broad cleanup/refactoring.**
+**Status: DISCOVERY. Do not start with a big-bang refactor.**
 
 Required first sequence:
 
-1. Freshly verify live `main`, PRs/branches/checks and current security-sensitive source.
-2. Build an asset/trust-boundary/data-flow map across checkout, callback/status lifecycle, saved-card/customer-token identity, Phase 9I operations, subscriptions, admin settings, CLI, logging and CI/supply chain.
-3. Enumerate threat scenarios and existing controls before implementation.
-4. Characterize security-critical behavior with executable tests/static guards.
-5. Prioritize P0/P1 exploitability paths and freeze narrow remediation contracts before edits.
-6. Preserve closed payment-lifecycle/H12/Phase 9I contracts unless a security fix explicitly replaces one with stronger reviewed evidence.
+1. Freshly verify live `main`, PRs/branches/checks and the current control-plane documents.
+2. Build a responsibility/dependency map for the inherited `UPayments.php`, current `src/Payment`, `src/Security`, H12 token, Phase 9I migration, subscription and Blocks seams.
+3. Characterize behavior before moving payment/security-critical code.
+4. Freeze incremental target module boundaries and compatibility adapters before extraction.
+5. Establish standard static-analysis/coding-quality baselines without turning baseline debt into drive-by runtime edits.
+6. Preserve gateway IDs, callback routes, persisted metadata, token/provenance, migration and subscription identities unless a separately approved migration changes them.
+7. Keep all closed Phase 0, Phase 9I, Provider, Security and H12 regression suites mandatory through every extraction.
 
-Minimum audit scope:
-
-- authorization/capabilities;
-- CSRF/nonces;
-- callback/webhook abuse and replay;
-- IDOR/order-object references;
-- SSRF/redirect/host allowlists;
-- provider credentials, saved-card/customer-token secrets and migration roots;
-- input parsing/type confusion/injection;
-- output escaping/XSS;
-- log/order-note/diagnostic redaction;
-- concurrency/race/idempotency security;
-- dependency/supply-chain/GitHub Actions trust;
-- fail-closed behavior for undocumented provider security contracts.
+The architecture gate may improve structure; it may not reinterpret provider truth, weaken authorization, or silently broaden certified feature/platform claims.
 
 ## Permanent control plane
 
@@ -240,10 +278,11 @@ Read in this order:
 5. `docs/project/PHASE-0-RELEASE-IDENTITY.md`
 6. `docs/project/PHASE-9I-MIGRATION.md`
 7. `docs/project/PROVIDER-PAYMENT-LIFECYCLE.md`
-8. relevant sections of `docs/project/MASTER-ENGINEERING-PLAYBOOK.md`
-9. `docs/project/REPOSITORY-AUDIT.md`
-10. `docs/project/REPOSITORY-READINESS.md`
-11. `docs/project/BASELINE-H12.md`
+8. `docs/project/SECURITY-THREAT-MODEL.md`
+9. relevant sections of `docs/project/MASTER-ENGINEERING-PLAYBOOK.md`
+10. `docs/project/REPOSITORY-AUDIT.md`
+11. `docs/project/REPOSITORY-READINESS.md`
+12. `docs/project/BASELINE-H12.md`
 
 ## Required working method
 
@@ -264,8 +303,8 @@ Read in this order:
 1. Phase 0 — release identity/updater ownership — **DONE / VERIFIED**
 2. Phase 9I — Historical token-identity migration — **DONE / VERIFIED**
 3. Provider Contract & Payment Lifecycle — **DONE / VERIFIED**
-4. Security Threat-Model Closure — **CURRENT / DISCOVERY**
-5. Architecture/code-quality foundation
+4. Security Threat-Model Closure — **DONE / VERIFIED**
+5. Architecture & Code-Quality Foundation — **CURRENT / DISCOVERY**
 6. Full automated quality platform
 7. Platform certification: Woo/WP/PHP/HPOS/Blocks/WPML
 8. Feature certification
@@ -278,13 +317,15 @@ Read in this order:
 ```text
 Continue the SimplixPay for UPayments engineering program in SimplixInnovations/simplixpay-upayments.
 
-Read AGENTS.md first, then docs/project/PROJECT-STATUS.md, docs/project/NAMING-IDENTITY-STANDARD.md, docs/project/NEW-CHAT-HANDOFF.md, docs/project/PHASE-0-RELEASE-IDENTITY.md, docs/project/PHASE-9I-MIGRATION.md, docs/project/PROVIDER-PAYMENT-LIFECYCLE.md and relevant sections of docs/project/MASTER-ENGINEERING-PLAYBOOK.md.
+Read AGENTS.md first, then docs/project/PROJECT-STATUS.md, docs/project/NAMING-IDENTITY-STANDARD.md, docs/project/NEW-CHAT-HANDOFF.md, docs/project/PHASE-0-RELEASE-IDENTITY.md, docs/project/PHASE-9I-MIGRATION.md, docs/project/PROVIDER-PAYMENT-LIFECYCLE.md, docs/project/SECURITY-THREAT-MODEL.md and the relevant living sections of docs/project/MASTER-ENGINEERING-PLAYBOOK.md.
 
-Treat recorded SHAs/status as milestone evidence until live GitHub is independently verified. Reconcile drift before work.
+Treat recorded SHAs/status as verified milestone anchors, not substitutes for live GitHub. Freshly verify current main, open PRs/branches, checks, review state and current source before acting; reconcile any drift first.
 
-Repository readiness, Phase 0, Phase 9I and Provider Contract & Payment Lifecycle are DONE / VERIFIED. The current gate is Security Threat-Model Closure — DISCOVERY.
+Repository readiness, Phase 0, Phase 9I, Provider Contract & Payment Lifecycle, and Security Threat-Model Closure are DONE / VERIFIED. The verified security implementation milestone is main 01f3fc59eed8641b3e5372558f61a7a0f0cdfac9, tree e0027005f059fad03d8c08273b7aac6553c45f53, from PR #17; its final security harness is 81 PASS / 0 FAIL and post-merge Quality Gates run #89 passed. The current permitted gate is Architecture & Code-Quality Foundation — DISCOVERY.
 
-Start with a fresh security asset/trust-boundary/data-flow map and current exact source. Characterize authorization, CSRF, callback/replay/IDOR/SSRF, credentials/secrets, input/output, logging/redaction, concurrency/idempotency and supply-chain boundaries before proposing runtime changes. Preserve the closed payment-lifecycle, H12 and Phase 9I contracts unless a stronger security contract explicitly replaces them.
+Start architecture work with a responsibility/dependency map and characterization of current exact source. Use incremental strangler/extraction seams, not a big-bang rewrite. Preserve the closed payment lifecycle, security, H12 and Phase 9I contracts and protected persisted/runtime identities unless a separately reviewed migration explicitly changes them. Keep all existing regression suites mandatory.
+
+Do not claim broad security, PCI/compliance, platform, feature, performance or production certification from the bounded security closure. UPayments webhook signature details remain provider-document unresolved, automatic refunds remain unsupported pending durable idempotency/reconciliation design, and subscription auto-deduction remains separately characterized rather than broadly certified.
 
 Work directly in GitHub wherever tools permit. Never approve or merge without independent exact-SHA source/diff/check/review verification and post-merge verification.
 ```

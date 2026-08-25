@@ -1,6 +1,6 @@
 # Security Threat-Model Closure
 
-**Status:** IMPLEMENTATION / REVIEW
+**Status:** DONE / VERIFIED
 
 **Canonical repository:** `SimplixInnovations/simplixpay-upayments`
 
@@ -8,7 +8,23 @@
 
 **Base tree:** `5d11a9a7e72e110b12298a0d11b0e3740a6476f3`
 
-**Current branch:** `security/threat-model-discovery`
+**Implementation PR:** #17
+
+**Final reviewed implementation head:** `fba12225899c3e01d6b23a6bba2f757a3b5f6a4a`
+
+**Verified squash merge on `main`:** `01f3fc59eed8641b3e5372558f61a7a0f0cdfac9`
+
+**Verified merge tree:** `e0027005f059fad03d8c08273b7aac6553c45f53`
+
+**Merge parent:** `08054a93c619f3c34fef747a6e530abce1e8986e`
+
+**GitHub signature:** **VERIFIED**
+
+**Post-merge Quality Gates:** run #89 — **SUCCESS**
+
+**Implementation branch:** **deleted after verified merge**
+
+**Closure reconciliation PR:** #18
 
 ## Purpose
 
@@ -89,7 +105,7 @@ The gate follows the repository's existing fail-closed rules plus current WordPr
 ### SEC-01 — Public historical order-status poll accepted order ID as authority
 
 **Severity:** P1
-**State:** FIX IN THIS TRANCHE
+**State:** DONE / VERIFIED
 
 The inherited `?wc-api=wc_upayments&get_order_status=...&wc_order_id=N` path delegated around the hardened payment lifecycle and read `UPayments_WHS` by numeric post/order ID without an order key, exact logged-in ownership, or even an UPayments payment-method preflight.
 
@@ -111,7 +127,7 @@ Closure contract:
 ### SEC-02 — Subscription state changes used nonce-bearing GET URLs
 
 **Severity:** P1
-**State:** FIX IN THIS TRANCHE
+**State:** DONE / VERIFIED
 
 The current handler already checks exact logged-in order ownership and an action-specific WordPress nonce. That prevents ordinary cross-user IDOR and CSRF. The remaining problem is that pause/resume/unsubscribe are state-changing operations represented as GET URLs. Browsers, prefetchers, link scanners, history replays or copied URLs can re-request a valid nonce-bearing URL.
 
@@ -129,7 +145,7 @@ Closure contract:
 ### SEC-03 — Third-party CSS/font dependencies loaded on checkout
 
 **Severity:** P2
-**State:** FIX IN THIS TRANCHE
+**State:** DONE / VERIFIED
 
 Classic checkout currently requests Google Fonts and cdnjs Font Awesome. Neither is required for payment correctness. They add third-party availability, privacy and supply-chain boundaries on the payment page.
 
@@ -143,7 +159,7 @@ Closure contract:
 ### SEC-04 — Plain persisted/provider values permitted broader HTML than necessary
 
 **Severity:** P2
-**State:** FIX IN THIS TRANCHE
+**State:** DONE / VERIFIED
 
 Several legacy display/settings surfaces are safe in normal operation but use broader output handling than their data contract warrants, including plain provider payment status/ID through `wp_kses_post()` and stored multimerchant values echoed into attributes without explicit `esc_attr()`.
 
@@ -157,7 +173,7 @@ Closure contract:
 ### SEC-05 — Product custom-meta callback relied only on WooCommerce upstream save ordering
 
 **Severity:** P2 defense in depth
-**State:** FIX IN THIS TRANCHE
+**State:** DONE / VERIFIED
 
 WooCommerce's current product meta-box pipeline verifies `woocommerce_meta_nonce` against `woocommerce_save_data`, binds `post_ID`, checks `edit_post`, then fires `woocommerce_process_product_meta`. The plugin's callback is therefore currently behind upstream authorization, but it performs its own write and should defend its boundary explicitly rather than relying solely on hook provenance.
 
@@ -220,6 +236,8 @@ Still unsupported. The security gate must not add a mutating refund transport be
 
 It must run inside the permanent `H12 Regression Harness` job together with every existing Phase 0, Phase 9I, Provider Lifecycle and H12 regression suite.
 
+Final verified implementation-head security characterization: **81 PASS / 0 FAIL**. The exact cleaned PR #17 head `fba12225899c3e01d6b23a6bba2f757a3b5f6a4a` passed full merge-ref Quality Gates run #88; merged `main` `01f3fc59eed8641b3e5372558f61a7a0f0cdfac9` passed the complete push-triggered workflow again in run #89.
+
 ## Merge/closure process
 
 1. implement only the characterized bounded fixes above;
@@ -233,6 +251,23 @@ It must run inside the permanent `H12 Regression Harness` job together with ever
 9. closure tranche updates `PROJECT-STATUS.md`, `NEW-CHAT-HANDOFF.md`, the living Master Engineering Playbook, README/changelog/roadmap/audit and this file to exact post-merge truth;
 10. closure merge must itself receive review, full regression and post-merge verification before Security Threat-Model Closure becomes DONE / VERIFIED.
 
+## Verified implementation closure evidence
+
+- implementation PR: **#17**;
+- final reviewed implementation head: `fba12225899c3e01d6b23a6bba2f757a3b5f6a4a`;
+- exact final merge-ref Quality Gates run #88: **SUCCESS**;
+- final security harness: **81 PASS / 0 FAIL**;
+- one valid automated P2 review finding (Checkout Blocks Font Awesome dependency) was fixed with permanent Blocks regression coverage before final approval;
+- squash merge on `main`: `01f3fc59eed8641b3e5372558f61a7a0f0cdfac9`;
+- tree: `e0027005f059fad03d8c08273b7aac6553c45f53`;
+- sole parent: `08054a93c619f3c34fef747a6e530abce1e8986e`;
+- GitHub signature: **VERIFIED**;
+- push-triggered post-merge Quality Gates run #89: **SUCCESS**;
+- implementation branch: **deleted after verified merge**;
+- closure reconciliation: **PR #18**, documentation/control-plane only, with no payment/runtime behavior change.
+
+The bounded threat-model gate is therefore closed. This remains deliberately narrower than penetration testing, PCI/compliance certification, broad platform/feature certification, performance certification, or public-production readiness.
+
 ## New-chat continuity requirement
 
 This record is a required clean-chat source after implementation merges. A new conversation must be able to reconstruct, without hidden memory:
@@ -242,6 +277,6 @@ This record is a required clean-chat source after implementation merges. A new c
 - security harness counts;
 - fixed findings and frozen invariants;
 - unresolved provider/feature boundaries;
-- current next gate and what work is prohibited before it.
+- current next gate: **Architecture & Code-Quality Foundation — DISCOVERY**, and what work is prohibited before it.
 
 `PROJECT-STATUS.md` remains the first current-state authority, with `NEW-CHAT-HANDOFF.md` as the concise operational restart. The Master Engineering Playbook living state must agree with both while dated historical sections remain historical.
