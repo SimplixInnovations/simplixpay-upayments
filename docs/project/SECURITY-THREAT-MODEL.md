@@ -129,7 +129,7 @@ Closure contract:
 **Severity:** P1
 **State:** DONE / VERIFIED
 
-The current handler already checks exact logged-in order ownership and an action-specific WordPress nonce. That prevents ordinary cross-user IDOR and CSRF. The remaining problem is that pause/resume/unsubscribe are state-changing operations represented as GET URLs. Browsers, prefetchers, link scanners, history replays or copied URLs can re-request a valid nonce-bearing URL.
+Before remediation, the handler already checked exact logged-in order ownership and an action-specific WordPress nonce. That prevented ordinary cross-user IDOR and CSRF. The remaining defect was that pause/resume/unsubscribe were state-changing operations represented as GET URLs, so browsers, prefetchers, link scanners, history replays or copied URLs could re-request a valid nonce-bearing URL.
 
 Closure contract:
 
@@ -147,7 +147,7 @@ Closure contract:
 **Severity:** P2
 **State:** DONE / VERIFIED
 
-Classic checkout currently requests Google Fonts and cdnjs Font Awesome. Neither is required for payment correctness. They add third-party availability, privacy and supply-chain boundaries on the payment page.
+Before remediation, Classic checkout requested Google Fonts and cdnjs Font Awesome. Neither was required for payment correctness; both added third-party availability, privacy and supply-chain boundaries on the payment page.
 
 Closure contract:
 
@@ -161,7 +161,7 @@ Closure contract:
 **Severity:** P2
 **State:** DONE / VERIFIED
 
-Several legacy display/settings surfaces are safe in normal operation but use broader output handling than their data contract warrants, including plain provider payment status/ID through `wp_kses_post()` and stored multimerchant values echoed into attributes without explicit `esc_attr()`.
+Before remediation, several legacy display/settings surfaces used broader output handling than their data contract warranted, including plain provider payment status/ID through `wp_kses_post()` and stored multimerchant values echoed into attributes without explicit `esc_attr()`.
 
 Closure contract:
 
@@ -175,7 +175,7 @@ Closure contract:
 **Severity:** P2 defense in depth
 **State:** DONE / VERIFIED
 
-WooCommerce's current product meta-box pipeline verifies `woocommerce_meta_nonce` against `woocommerce_save_data`, binds `post_ID`, checks `edit_post`, then fires `woocommerce_process_product_meta`. The plugin's callback is therefore currently behind upstream authorization, but it performs its own write and should defend its boundary explicitly rather than relying solely on hook provenance.
+WooCommerce's product meta-box pipeline verifies `woocommerce_meta_nonce` against `woocommerce_save_data`, binds `post_ID`, checks `edit_post`, then fires `woocommerce_process_product_meta`. Before remediation, the plugin callback was therefore behind upstream authorization, but because it performed its own write it still needed to defend its boundary explicitly rather than relying solely on hook provenance.
 
 Closure contract mirrors WooCommerce's save preconditions locally:
 
