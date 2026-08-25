@@ -16,14 +16,7 @@ Phase 9I extends the frozen H12 identity model; it does not replace it. Existing
 
 Historical identity must never be promoted by inference when attribution is ambiguous.
 
-Preflight is read-only. It performs:
-
-- zero provider calls;
-- zero secret creation/rotation;
-- zero option writes;
-- zero user-meta writes;
-- zero order-meta writes;
-- zero checkout-hot-path migration work.
+Preflight is read-only. It performs zero provider calls, secret creation/rotation, option writes, user-meta writes, order-meta writes, or checkout-hot-path migration work.
 
 ## Exact preflight classifications
 
@@ -43,28 +36,20 @@ A Phase 9I migration may create only:
 - kind: `legacy_compat`;
 - source: `legacy_verified_capture`.
 
-It must never fabricate:
+It must never fabricate `canonical` / `create_201`. Canonical provenance remains proof of the strict provider Create-token 201 contract only.
 
-- kind: `canonical`;
-- source: `create_201`.
+## Preflight — merged / verified tranche
 
-Canonical provenance remains proof of the strict provider Create-token 201 contract only.
+The read-only implementation is `Simplix\Pay\UPayments\Migration\MigrationPreflight`.
 
-## Preflight evidence model
+Verified merge milestone:
 
-The current preflight implementation is `Simplix\Pay\UPayments\Migration\MigrationPreflight`.
+- PR #11;
+- merge commit `8cca32819dd165e35efa0fcc5a48bdd551757d8c`;
+- tree `c0af8a2ab1fbd2494f961ee9f924c00aaf519ab0`;
+- GitHub signature: VERIFIED.
 
-It reuses H12 public validators/readers including:
-
-- secret-record validation;
-- atomic current scope/generation context;
-- authoritative provenance reading;
-- prior-provenance inspection;
-- exact historical metadata cardinality;
-- order-meta force refresh;
-- legacy/canonical token grammar.
-
-It independently performs the migration-specific attribution/collision census that H12 intentionally does not perform.
+It reuses H12 public validators/readers for secret validation, atomic scope/generation context, provenance, historical metadata cardinality, force refresh, and token grammar while performing migration-specific bounded attribution/collision census.
 
 ### Historical scan bounds
 
@@ -84,106 +69,88 @@ A candidate token is not migratable until both are clear:
 1. no UPayments order owned by another user/guest contains the exact customer token;
 2. no provenance record owned by another user contains the exact customer token.
 
-The provenance collision query may use SQL only as a bounded candidate discovery mechanism. Exact decoded-record comparison is mandatory before declaring a conflict.
+SQL may only discover bounded provenance candidates. Exact decoded-record comparison is mandatory before declaring a conflict.
 
-Raw customer tokens are security-sensitive migration material. Preflight exposes a SHA-256 digest for reporting; any raw token exists only in the in-memory migration payload supplied to the executor. CLI/admin/log output must never print the raw token.
+Raw customer tokens are security-sensitive migration material. Preflight exposes a SHA-256 digest for reporting; raw token material exists only in the in-memory migration payload supplied to the executor. CLI/admin/log output must never print it.
 
 ## Thirteen blocker classes
 
-### 1. Unscoped legacy tokens
+1. **Unscoped legacy tokens** — potentially `MIGRATABLE` only for one complete, attributable token.
+2. **Current-scope orphan histories** — potentially `MIGRATABLE` only for structurally exact `legacy_compat` evidence under current scope/generation; orphan `canonical` evidence is `BLOCKED`.
+3. **Cross-user token conflicts** — `BLOCKED`.
+4. **Malformed scoped histories** — `BLOCKED`.
+5. **Secret generation mismatches** — `BLOCKED`.
+6. **Card-token-only historical identity** — `BLOCKED`.
+7. **Prior-scope same-generation histories** — `BLOCKED`.
+8. **Non-scalar or duplicate evidence** — `BLOCKED`.
+9. **Orphan metadata** — `BLOCKED`.
+10. **>200 or otherwise incomplete history** — `INDETERMINATE`.
+11. **Unloadable orders** — `INDETERMINATE`.
+12. **Force-refresh failures** — `INDETERMINATE`.
+13. **Malformed versus missing secret** — malformed is `BLOCKED`; genuinely missing is distinct and can be initialized only by a locked verified executor transition.
 
-Potentially `MIGRATABLE` only when the complete relevant history contains exactly one valid legacy token and cross-user attribution is clear.
+The preflight also fails closed on multiple tokens for one user, historical/current provenance contradictions, malformed provenance, scoped history with a missing secret, unstable pagination, malformed query/result shapes, invalid order IDs, and incomplete cross-user attribution scans.
 
-### 2. Current-scope orphan histories
+## Executor contract — current tranche
 
-Potentially `MIGRATABLE` only when the orphan snapshot already asserts `legacy_compat`, token/scope/generation are structurally valid, scope/generation equal the current identity context, and attribution is unambiguous.
+The implementation under review is `Simplix\Pay\UPayments\Migration\MigrationExecutor`.
 
-An orphan claiming `canonical` without an authoritative provenance record is `BLOCKED`; Phase 9I will not invent Create-201 proof.
+It must:
 
-### 3. Cross-user token conflicts
+1. call a fresh preflight and act only on `MIGRATABLE`;
+2. support true dry-run with zero writes/provider calls;
+3. acquire the H12-compatible bootstrap lock when a secret is absent, otherwise the exact per-user/current-scope lock;
+4. rerun preflight while holding the lock before mutation;
+5. create a genuinely missing H12 secret only while the bootstrap lock is held and verify its exact readback;
+6. rerun preflight after secret creation and require the exact same candidate token before provenance mutation;
+7. derive current scope/generation from the validated secret record;
+8. create only immutable H12 `legacy_compat` / `legacy_verified_capture` provenance;
+9. verify provenance readback exactly;
+10. rerun preflight after provenance creation and require `CLEAN`;
+11. be idempotent under normal rerun and concurrent-worker completion;
+12. record only a redacted Simplix-owned per-user ledger (`simplixpay_upayments_migration_v1`) containing token digest, never raw token;
+13. perform zero provider calls and zero historical order-meta mutation.
 
-`BLOCKED`.
+### Historical order immutability decision
 
-### 4. Malformed scoped histories
+The executor deliberately **does not rewrite historical order snapshots**. Those records are evidence and may be consumed by subscriptions/renewals. Phase 9I establishes authoritative current H12 provenance while preserving historical order metadata byte-for-byte unless a future separately characterized migration proves a specific order-field repair is necessary.
 
-`BLOCKED`.
+This supersedes the earlier draft idea of “normalizing” candidate order snapshots during identity migration.
 
-### 5. Secret generation mismatches
+### Failure/recovery semantics
 
-`BLOCKED`.
+- lock contention: fail with no mutation;
+- evidence change under lock: fail closed before mutation;
+- malformed secret: never replace;
+- safe secret creation followed by provenance failure: retain the valid root and allow retry;
+- provenance verification failure: fail closed and surface the failure;
+- final preflight not `CLEAN`: fail closed;
+- ledger failure after verified identity migration: do not roll back valid provenance; surface `migrated_ledger_write_failed` so operations can repair observability separately.
 
-### 6. Card-token-only historical identity
+## Executor test gate
 
-`BLOCKED`.
+`tests/harness/phase-9i-executor-harness.php` must run inside the required `H12 Regression Harness` CI job.
 
-A credit-card token is not a customer identity token and must not be used to synthesize one.
+The executor harness uses the real Phase 9I preflight and real frozen H12 identity class. It must prove at minimum:
 
-### 7. Prior-scope same-generation histories
+- zero-write dry-run;
+- full missing-secret/unscoped migration;
+- exact `legacy_compat` / `legacy_verified_capture` provenance;
+- raw-token redaction from result/ledger;
+- idempotent rerun;
+- current-scope orphan migration without option write;
+- malformed-secret fail-closed behavior;
+- lock contention with zero mutation;
+- evidence-change-under-lock fail closed;
+- retry safety after provenance persistence failure;
+- ledger-failure observability without identity rollback;
+- cross-user conflict no-write behavior;
+- already-clean dry-run no-write behavior;
+- static prohibition on order mutation/provider transport/`create_201` fabrication.
 
-`BLOCKED`.
+Phase 0, Phase 9I preflight, H12 PHP and H12 Blocks harnesses must remain green unchanged.
 
-Changing scope may represent a credential/mode boundary; migration cannot collapse that boundary by assumption.
-
-### 8. Non-scalar or duplicate evidence
-
-`BLOCKED`.
-
-### 9. Orphan metadata
-
-Partial kind/scope/generation evidence without an attributable customer token is `BLOCKED`.
-
-### 10. >200 or otherwise incomplete history
-
-`INDETERMINATE`.
-
-### 11. Unloadable orders
-
-`INDETERMINATE`.
-
-### 12. Force-refresh failures
-
-`INDETERMINATE`.
-
-### 13. Malformed versus missing secret
-
-A malformed existing secret is `BLOCKED` and must never be silently replaced.
-
-A genuinely missing secret is distinct. Secret creation is allowed only by the future executor after a locked re-preflight proves a single attributable legacy token and zero provenance artifacts under the missing root.
-
-## Additional contradictions
-
-The preflight also fails closed on:
-
-- multiple different customer tokens for one user;
-- historical token contradicting current authoritative provenance;
-- current or prior malformed provenance;
-- provenance generation mismatch;
-- scoped history while the secret is missing;
-- duplicate order IDs or unstable pagination totals/page counts;
-- malformed query/result shapes;
-- invalid historical order IDs;
-- cross-user attribution scans that cannot be proven complete.
-
-## Executor contract — next tranche
-
-The executor is not part of the initial preflight PR.
-
-When implemented it must:
-
-1. accept only a fresh `MIGRATABLE` preflight decision;
-2. acquire a bounded per-user/current-context migration lock;
-3. rerun preflight under that lock before any mutation;
-4. create a missing H12 secret only through a separately safe/verified transition;
-5. derive the authoritative current scope/generation from the resulting valid secret;
-6. normalize only the exact candidate historical order snapshots identified by preflight;
-7. create immutable H12 provenance only as `legacy_compat` / `legacy_verified_capture`;
-8. verify durable persistence after every mutation;
-9. fail closed and provide explicit rollback/recovery semantics for partial failure;
-10. be idempotent: a successful rerun resolves to `CLEAN` with no duplicate provenance/order mutation;
-11. record a per-user migration ledger using new Simplix-prefixed state and token digest only;
-12. perform zero provider calls.
-
-## Operational contract — later Phase 9I tranche
+## Operational contract — next Phase 9I tranche
 
 Admin/CLI migration must be:
 
@@ -199,25 +166,16 @@ Admin/CLI migration must be:
 
 The intended CLI namespace remains `wp simplixpay-upayments`.
 
-## Preflight test gate
-
-`tests/harness/phase-9i-preflight-harness.php` is a standalone synthetic WP/Woo harness for the new preflight layer.
-
-Every scenario asserts:
-
-- exact classification;
-- exact reason;
-- option writes = 0;
-- user-meta writes = 0;
-- order writes = 0;
-- provider calls = 0.
-
-It covers all 13 named blocker classes plus fresh state, valid current provenance, token contradictions and database uncertainty.
-
-The existing Phase 0 and H12 harnesses must remain green unchanged.
-
 ## Exit condition
 
-Phase 9I is **not** complete when preflight alone is merged.
+Phase 9I is **not** complete when preflight or executor alone is merged.
 
-The phase closes only after preflight, executor and bounded operational surface are independently verified; all 13 blocker classes have explicit test evidence; H12 remains green; project status is reconciled; and all implementation branches are merged/cleaned under the normal protected-branch rules.
+The phase closes only after:
+
+1. read-only preflight is independently verified;
+2. executor is independently verified;
+3. bounded dry-run/execute operational surface is independently verified;
+4. all 13 blocker classes retain explicit fail-closed test evidence;
+5. Phase 0 + H12 regressions remain green;
+6. project status/changelog/handoff are reconciled;
+7. implementation branches are merged/cleaned under the protected-branch rules.
