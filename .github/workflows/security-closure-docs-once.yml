@@ -1,0 +1,634 @@
+name: Security Closure Docs Once
+
+on:
+  push:
+    branches:
+      - docs/security-threat-model-closure
+
+permissions:
+  contents: write
+
+jobs:
+  reconcile:
+    if: ${{ github.actor != 'github-actions[bot]' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: docs/security-threat-model-closure
+          fetch-depth: 0
+
+      - name: Reconcile permanent project control plane
+        shell: python
+        run: |
+          from pathlib import Path
+          import re
+
+          IMPL_HEAD = 'fba12225899c3e01d6b23a6bba2f757a3b5f6a4a'
+          MERGE = '01f3fc59eed8641b3e5372558f61a7a0f0cdfac9'
+          TREE = 'e0027005f059fad03d8c08273b7aac6553c45f53'
+          PARENT = '08054a93c619f3c34fef747a6e530abce1e8986e'
+
+          def read(path):
+              return Path(path).read_text(encoding='utf-8')
+
+          def write(path, text):
+              Path(path).write_text(text, encoding='utf-8')
+
+          def once(text, old, new, label):
+              count = text.count(old)
+              if count != 1:
+                  raise SystemExit(f'{label}: expected 1 occurrence, found {count}')
+              return text.replace(old, new, 1)
+
+          def exact(text, old, new, expected, label):
+              count = text.count(old)
+              if count != expected:
+                  raise SystemExit(f'{label}: expected {expected} occurrences, found {count}')
+              return text.replace(old, new)
+
+          def regex_once(text, pattern, replacement, label):
+              text2, count = re.subn(pattern, replacement, text, count=1, flags=re.S)
+              if count != 1:
+                  raise SystemExit(f'{label}: expected 1 regex match, found {count}')
+              return text2
+
+          # SECURITY-THREAT-MODEL.md
+          p = 'docs/project/SECURITY-THREAT-MODEL.md'
+          s = read(p)
+          s = once(s, '**Status:** IMPLEMENTATION / REVIEW', '**Status:** DONE / VERIFIED', 'security status')
+          s = once(s, '**Current branch:** `security/threat-model-discovery`', f'''**Implementation PR:** #17
+
+**Final reviewed implementation head:** `{IMPL_HEAD}`
+
+**Verified squash merge on `main`:** `{MERGE}`
+
+**Verified merge tree:** `{TREE}`
+
+**Merge parent:** `{PARENT}`
+
+**GitHub signature:** **VERIFIED**
+
+**Post-merge Quality Gates:** run #89 — **SUCCESS**
+
+**Implementation branch:** **deleted after verified merge**
+
+**Closure reconciliation PR:** #18''', 'security implementation evidence header')
+          s = exact(s, '**State:** FIX IN THIS TRANCHE', '**State:** DONE / VERIFIED', 5, 'security finding states')
+          marker = 'It must run inside the permanent `H12 Regression Harness` job together with every existing Phase 0, Phase 9I, Provider Lifecycle and H12 regression suite.\n'
+          addition = marker + f'''\nFinal verified implementation-head security characterization: **81 PASS / 0 FAIL**. The exact cleaned PR #17 head `{IMPL_HEAD}` passed full merge-ref Quality Gates run #88; merged `main` `{MERGE}` passed the complete push-triggered workflow again in run #89.\n'''
+          s = once(s, marker, addition, 'security executable evidence')
+          insert = '''## Verified implementation closure evidence
+
+- implementation PR: **#17**;
+- final reviewed implementation head: `fba12225899c3e01d6b23a6bba2f757a3b5f6a4a`;
+- exact final merge-ref Quality Gates run #88: **SUCCESS**;
+- final security harness: **81 PASS / 0 FAIL**;
+- one valid automated P2 review finding (Checkout Blocks Font Awesome dependency) was fixed with permanent Blocks regression coverage before final approval;
+- squash merge on `main`: `01f3fc59eed8641b3e5372558f61a7a0f0cdfac9`;
+- tree: `e0027005f059fad03d8c08273b7aac6553c45f53`;
+- sole parent: `08054a93c619f3c34fef747a6e530abce1e8986e`;
+- GitHub signature: **VERIFIED**;
+- push-triggered post-merge Quality Gates run #89: **SUCCESS**;
+- implementation branch: **deleted after verified merge**;
+- closure reconciliation: **PR #18**, documentation/control-plane only, with no payment/runtime behavior change.
+
+The bounded threat-model gate is therefore closed. This remains deliberately narrower than penetration testing, PCI/compliance certification, broad platform/feature certification, performance certification, or public-production readiness.
+
+'''
+          s = once(s, '## New-chat continuity requirement\n', insert + '## New-chat continuity requirement\n', 'security closure evidence section')
+          s = once(s, '- current next gate and what work is prohibited before it.', '- current next gate: **Architecture & Code-Quality Foundation — DISCOVERY**, and what work is prohibited before it.', 'security next gate continuity')
+          write(p, s)
+
+          # PROJECT-STATUS.md
+          p = 'docs/project/PROJECT-STATUS.md'
+          s = read(p)
+          s = once(s,
+              '| Provider Contract & Payment Lifecycle | **DONE / VERIFIED** |\n| Current program gate | **Security Threat-Model Closure — DISCOVERY** |',
+              '| Provider Contract & Payment Lifecycle | **DONE / VERIFIED** |\n| Security Threat-Model Closure | **DONE / VERIFIED** |\n| Current program gate | **Architecture & Code-Quality Foundation — DISCOVERY** |',
+              'project status gate rows')
+          s = once(s,
+              'The plugin remains a pre-release engineering project. Closure of the provider/payment lifecycle gate certifies the reviewed ordinary-checkout lifecycle contract and its executable regression evidence; it does not constitute broad security, platform, feature, performance or release certification.',
+              'The plugin remains a pre-release engineering project. Security Threat-Model Closure is now DONE / VERIFIED for the bounded findings and executable controls recorded in `SECURITY-THREAT-MODEL.md`; it does not constitute broad penetration-test, PCI/compliance, platform, feature, performance or release certification.',
+              'project status maturity paragraph')
+          security_milestone = f'''## Latest verified implementation milestone — Security Threat-Model Closure
+
+PR #17 final reviewed head:
+
+- `{IMPL_HEAD}`
+
+Verified squash merge on `main`:
+
+- merge: `{MERGE}`
+- tree: `{TREE}`
+- parent: `{PARENT}`
+- GitHub signature: **VERIFIED**
+- implementation branch `security/threat-model-discovery`: **deleted after verified merge**
+- exact PR merge-ref Quality Gates run #88: **SUCCESS**
+- push-triggered post-merge Quality Gates run #89: **SUCCESS**
+
+Exact final implementation-head regression evidence:
+
+- Governance: **SUCCESS**
+- tracked PHP syntax: **SUCCESS**
+- Phase 0 release identity: **35 PASS / 0 FAIL**
+- Phase 9I preflight: **123 PASS / 0 FAIL**
+- Phase 9I executor: **59 PASS / 0 FAIL**
+- Phase 9I operations: **81 PASS / 0 FAIL**
+- Provider Payment Lifecycle: **141 PASS / 0 FAIL**
+- Provider Exact Amount Binding: **4 PASS / 0 FAIL**
+- Security Threat-Model: **81 PASS / 0 FAIL**
+- H12 PHP: **1927 PASS / 0 FAIL**
+- Blocks syntax: **SUCCESS**
+- H12 Blocks: **144 PASS / 0 FAIL**
+
+The final security implementation closed five bounded findings: public status-poll IDOR, state-changing subscription GET actions, checkout third-party font/icon trust, overly broad plain-data output trust, and product-meta save defense in depth. A valid P2 automated review finding on Checkout Blocks chevrons was fixed before merge and added to the permanent security harness.
+
+## Closed security threat-model contract
+
+The verified bounded security closure now has these frozen properties:
+
+- numeric order ID is never authority for public status polling; exact logged-in ownership or exact Woo order key is required, and only UPayments orders are eligible;
+- customer subscription pause/resume/unsubscribe mutations are POST-only, exact-owner-bound, action-nonced, object-preflighted and transition-validated;
+- classic and Checkout Blocks no longer depend on Google Fonts/cdnjs Font Awesome for checkout presentation;
+- plain provider/order values are escaped as text and stored settings use attribute-context escaping;
+- checkout display markers no longer consume `$_REQUEST`;
+- product custom-meta writes mirror WooCommerce nonce, posted-ID and `edit_post` authorization preconditions locally;
+- existing payment lifecycle host/TLS/redirect/Bearer, H12 identity, Phase 9I capability/nonce, no-blind-retry and immutable Actions-pin controls remain regression-protected;
+- the permanent security harness is part of required Quality Gates.
+
+Explicitly unresolved boundaries remain explicit: provider webhook HMAC/signature details are provider-document unresolved; subscription auto-deduction is not promoted to broad recurring-billing certification; automatic refunds remain unsupported pending durable idempotency/reconciliation design; H12 token/provenance and Phase 9I migration contracts remain frozen.
+
+'''
+          s = once(s, '## Latest verified implementation milestone — Provider Contract & Payment Lifecycle\n', security_milestone + '## Previous verified implementation milestone — Provider Contract & Payment Lifecycle\n', 'project security milestone insert')
+          s = regex_once(s,
+              r'## Current program gate — Security Threat-Model Closure\n.*?(?=## Later program blockers)',
+              '''## Current program gate — Architecture & Code-Quality Foundation
+
+**Status: DISCOVERY.**
+
+Security Threat-Model Closure is complete. The next gate may now characterize and incrementally decompose the inherited architecture without weakening the closed security/payment/H12/Phase 9I contracts. Minimum first scope:
+
+- map mixed responsibilities in `UPayments.php` and current `Simplix\\Pay\\UPayments` strangler boundaries;
+- establish characterization around any runtime surface before extraction;
+- define target module boundaries, dependency direction and compatibility seams;
+- introduce standard static-analysis/coding-quality baselines incrementally;
+- identify dead/duplicate code only after dependency/runtime characterization;
+- preserve protected gateway IDs, callback routes, metadata, token/provenance, migration and subscription identities;
+- no big-bang runtime rename or cosmetic decomposition of payment-critical code;
+- keep Security Threat-Model **81/0**, Provider Lifecycle **141/0 + 4/0**, all Phase 9I suites, Phase 0 and H12 regressions green throughout.
+
+The gate starts with architecture characterization and a frozen extraction contract before broad refactoring.
+
+''', 'project current architecture gate')
+          s = once(s,
+              'After Security Threat-Model Closure:\n\n- architecture/code-quality foundation;\n- full automated quality platform;',
+              'After Architecture & Code-Quality Foundation:\n\n- full automated quality platform;',
+              'project later blockers')
+          write(p, s)
+
+          # NEW-CHAT-HANDOFF.md
+          p = 'docs/project/NEW-CHAT-HANDOFF.md'
+          s = read(p)
+          s = once(s,
+              'Use this file with root `AGENTS.md`, `PROJECT-STATUS.md`, the naming standard, the closed Phase 0 / Phase 9I / Provider Lifecycle records and the Master Engineering Playbook.',
+              'Use this file with root `AGENTS.md`, `PROJECT-STATUS.md`, the naming standard, the closed Phase 0 / Phase 9I / Provider Lifecycle / Security Threat-Model records and the Master Engineering Playbook.',
+              'handoff intro')
+          s = once(s,
+              '- Provider Contract & Payment Lifecycle: **DONE / VERIFIED**\n- Current program gate: **Security Threat-Model Closure — DISCOVERY**',
+              '- Provider Contract & Payment Lifecycle: **DONE / VERIFIED**\n- Security Threat-Model Closure: **DONE / VERIFIED**\n- Current program gate: **Architecture & Code-Quality Foundation — DISCOVERY**',
+              'handoff current position')
+          handoff_security = f'''## Latest verified implementation milestone — Security Threat-Model Closure
+
+PR #17 final reviewed head:
+
+- `{IMPL_HEAD}`
+
+Verified squash merge on `main`:
+
+- merge: `{MERGE}`
+- tree: `{TREE}`
+- parent: `{PARENT}`
+- GitHub signature: **VERIFIED**
+- `security/threat-model-discovery` branch: **deleted after verified merge**
+- exact PR merge-ref Quality Gates run #88: **SUCCESS**
+- post-merge Quality Gates run #89 on `main`: **SUCCESS**
+
+Exact final implementation-head evidence:
+
+- Governance: **SUCCESS**
+- tracked PHP syntax: **SUCCESS**
+- Phase 0: **35 PASS / 0 FAIL**
+- Phase 9I preflight/executor/operations: **123/0 + 59/0 + 81/0**
+- Provider Lifecycle / Exact Amount: **141/0 + 4/0**
+- Security Threat-Model: **81 PASS / 0 FAIL**
+- H12 PHP: **1927 PASS / 0 FAIL**
+- Blocks syntax: **SUCCESS**
+- H12 Blocks: **144 PASS / 0 FAIL**
+
+### Closed bounded security architecture
+
+- public legacy status polling requires an UPayments order plus exact owner or exact Woo order key; numeric ID alone is never authority;
+- subscription pause/resume/unsubscribe is POST-only with exact owner, action nonce, subscription object preflight and valid transition;
+- checkout has no Google Fonts/cdnjs Font Awesome dependency; classic and Blocks chevrons are local;
+- plain provider/order metadata and stored settings are escaped to their exact output context;
+- checkout templates exclude `$_REQUEST`;
+- product-meta writes mirror WooCommerce nonce/post-ID/capability preconditions;
+- payment host/TLS/redirect/Bearer controls, H12 identity, Phase 9I authorization, no-blind-retry and immutable Actions pins remain protected by regression evidence.
+
+### Explicit unresolved security/feature boundaries
+
+Do not silently claim these are solved:
+
+- UPayments webhook HMAC/signature remains provider-document unresolved; authenticated Get Payment Status remains financial truth;
+- subscription auto-deduction remains a separately characterized no-blind-retry/cycle-journal path, not broad recurring-billing certification;
+- automatic WooCommerce refunds remain unsupported pending durable idempotency/reconciliation design;
+- this closure is not broad penetration-test, PCI/compliance, platform, feature, performance or production certification.
+
+See `docs/project/SECURITY-THREAT-MODEL.md` for the complete closed record.
+
+'''
+          s = once(s, '## Latest verified implementation milestone — Provider Contract & Payment Lifecycle\n', handoff_security + '## Previous verified implementation milestone — Provider Contract & Payment Lifecycle\n', 'handoff security milestone')
+          s = regex_once(s,
+              r'## Next gate — Security Threat-Model Closure\n.*?(?=## Permanent control plane)',
+              '''## Next gate — Architecture & Code-Quality Foundation
+
+**Status: DISCOVERY. Do not start with a big-bang refactor.**
+
+Required first sequence:
+
+1. Freshly verify live `main`, PRs/branches/checks and the current control-plane documents.
+2. Build a responsibility/dependency map for the inherited `UPayments.php`, current `src/Payment`, `src/Security`, H12 token, Phase 9I migration, subscription and Blocks seams.
+3. Characterize behavior before moving payment/security-critical code.
+4. Freeze incremental target module boundaries and compatibility adapters before extraction.
+5. Establish standard static-analysis/coding-quality baselines without turning baseline debt into drive-by runtime edits.
+6. Preserve gateway IDs, callback routes, persisted metadata, token/provenance, migration and subscription identities unless a separately approved migration changes them.
+7. Keep all closed Phase 0, Phase 9I, Provider, Security and H12 regression suites mandatory through every extraction.
+
+The architecture gate may improve structure; it may not reinterpret provider truth, weaken authorization, or silently broaden certified feature/platform claims.
+
+''', 'handoff next architecture gate')
+          old_control = '''1. `AGENTS.md`
+2. `docs/project/PROJECT-STATUS.md`
+3. `docs/project/NAMING-IDENTITY-STANDARD.md`
+4. `docs/project/NEW-CHAT-HANDOFF.md`
+5. `docs/project/PHASE-0-RELEASE-IDENTITY.md`
+6. `docs/project/PHASE-9I-MIGRATION.md`
+7. `docs/project/PROVIDER-PAYMENT-LIFECYCLE.md`
+8. relevant sections of `docs/project/MASTER-ENGINEERING-PLAYBOOK.md`
+9. `docs/project/REPOSITORY-AUDIT.md`
+10. `docs/project/REPOSITORY-READINESS.md`
+11. `docs/project/BASELINE-H12.md`'''
+          new_control = '''1. `AGENTS.md`
+2. `docs/project/PROJECT-STATUS.md`
+3. `docs/project/NAMING-IDENTITY-STANDARD.md`
+4. `docs/project/NEW-CHAT-HANDOFF.md`
+5. `docs/project/PHASE-0-RELEASE-IDENTITY.md`
+6. `docs/project/PHASE-9I-MIGRATION.md`
+7. `docs/project/PROVIDER-PAYMENT-LIFECYCLE.md`
+8. `docs/project/SECURITY-THREAT-MODEL.md`
+9. relevant sections of `docs/project/MASTER-ENGINEERING-PLAYBOOK.md`
+10. `docs/project/REPOSITORY-AUDIT.md`
+11. `docs/project/REPOSITORY-READINESS.md`
+12. `docs/project/BASELINE-H12.md`'''
+          s = once(s, old_control, new_control, 'handoff permanent control plane')
+          s = once(s,
+              '4. Security Threat-Model Closure — **CURRENT / DISCOVERY**\n5. Architecture/code-quality foundation',
+              '4. Security Threat-Model Closure — **DONE / VERIFIED**\n5. Architecture & Code-Quality Foundation — **CURRENT / DISCOVERY**',
+              'handoff program sequence')
+          prompt = f'''## Copy-ready opening prompt
+
+```text
+Continue the SimplixPay for UPayments engineering program in SimplixInnovations/simplixpay-upayments.
+
+Read AGENTS.md first, then docs/project/PROJECT-STATUS.md, docs/project/NAMING-IDENTITY-STANDARD.md, docs/project/NEW-CHAT-HANDOFF.md, docs/project/PHASE-0-RELEASE-IDENTITY.md, docs/project/PHASE-9I-MIGRATION.md, docs/project/PROVIDER-PAYMENT-LIFECYCLE.md, docs/project/SECURITY-THREAT-MODEL.md and the relevant living sections of docs/project/MASTER-ENGINEERING-PLAYBOOK.md.
+
+Treat recorded SHAs/status as verified milestone anchors, not substitutes for live GitHub. Freshly verify current main, open PRs/branches, checks, review state and current source before acting; reconcile any drift first.
+
+Repository readiness, Phase 0, Phase 9I, Provider Contract & Payment Lifecycle, and Security Threat-Model Closure are DONE / VERIFIED. The verified security implementation milestone is main {MERGE}, tree {TREE}, from PR #17; its final security harness is 81 PASS / 0 FAIL and post-merge Quality Gates run #89 passed. The current permitted gate is Architecture & Code-Quality Foundation — DISCOVERY.
+
+Start architecture work with a responsibility/dependency map and characterization of current exact source. Use incremental strangler/extraction seams, not a big-bang rewrite. Preserve the closed payment lifecycle, security, H12 and Phase 9I contracts and protected persisted/runtime identities unless a separately reviewed migration explicitly changes them. Keep all existing regression suites mandatory.
+
+Do not claim broad security, PCI/compliance, platform, feature, performance or production certification from the bounded security closure. UPayments webhook signature details remain provider-document unresolved, automatic refunds remain unsupported pending durable idempotency/reconciliation design, and subscription auto-deduction remains separately characterized rather than broadly certified.
+
+Work directly in GitHub wherever tools permit. Never approve or merge without independent exact-SHA source/diff/check/review verification and post-merge verification.
+```
+'''
+          s = regex_once(s, r'## Copy-ready opening prompt\n.*\Z', prompt, 'handoff copy-ready prompt')
+          write(p, s)
+
+          # MASTER-ENGINEERING-PLAYBOOK.md — update only living/current control-plane sections; preserve dated history.
+          p = 'docs/project/MASTER-ENGINEERING-PLAYBOOK.md'
+          s = read(p)
+          s = once(s,
+              '**Last independently verified implementation `main`:** `9569e39973a9e94926087738eae06c3846361943`',
+              f'**Last independently verified implementation `main`:** `{MERGE}`',
+              'playbook top main anchor')
+          s = once(s,
+              'The current codebase contains substantial security hardening, especially the H12 customer-token identity work, but it is not yet appropriate to advertise as universally production-certified. Provider Contract & Payment Lifecycle is now DONE / VERIFIED. Before a broad production release, the project must still complete security closure, compatibility certification, quality-platform expansion, operational readiness and release engineering.',
+              'The current codebase contains substantial security hardening, especially the H12 customer-token identity work. Provider Contract & Payment Lifecycle and the bounded Security Threat-Model Closure are now DONE / VERIFIED, but the project is still not appropriate to advertise as universally production-certified. Before a broad production release, it must still complete architecture/code-quality foundation, quality-platform expansion, compatibility/feature certification, operational readiness and release engineering.',
+              'playbook executive current state')
+          s = once(s,
+              'Last verified implementation main SHA: 9569e39973a9e94926087738eae06c3846361943\nCanonical implementation tree: 40ec562674361624c2764263ba55cfba84594955',
+              f'Last verified implementation main SHA: {MERGE}\nCanonical implementation tree: {TREE}',
+              'playbook living sha/tree')
+          s = once(s,
+              'Provider Contract & Payment Lifecycle: DONE / VERIFIED\nCurrent program gate: Security Threat-Model Closure — DISCOVERY',
+              'Provider Contract & Payment Lifecycle: DONE / VERIFIED\nSecurity Threat-Model Closure: DONE / VERIFIED\nSecurity Threat-Model implementation: PR #17; 81 PASS / 0 FAIL; post-merge Quality Gates #89 SUCCESS\nCurrent program gate: Architecture & Code-Quality Foundation — DISCOVERY',
+              'playbook living gate')
+          s = once(s,
+              'Known remaining P0/P1 program blockers:\n- security threat-model closure\n- broad compatibility/feature certification\n- full automated quality platform\n- release engineering/distribution',
+              'Known remaining P0/P1 program blockers:\n- architecture/code-quality foundation\n- broad compatibility/feature certification\n- full automated quality platform\n- release engineering/distribution',
+              'playbook living blockers')
+          completion_marker = '- [x] Provider lifecycle squash merge `9569e39973a9e94926087738eae06c3846361943`, tree `40ec562674361624c2764263ba55cfba84594955`, VERIFIED signature and implementation-branch cleanup.\n'
+          completion_add = completion_marker + f'''- [x] Security Threat-Model Closure implementation completed and independently verified (PR #17).
+- [x] Security evidence: Security Threat-Model **81/0**, with Phase 0 **35/0**, Phase 9I **123/0 + 59/0 + 81/0**, Provider **141/0 + 4/0**, H12 PHP **1927/0**, H12 Blocks **144/0**, Governance/syntax green.
+- [x] Security squash merge `{MERGE}`, tree `{TREE}`, VERIFIED signature, green post-merge Quality Gates #89 and implementation-branch cleanup.
+'''
+          s = once(s, completion_marker, completion_add, 'playbook completion security')
+          s = once(s,
+              '- [ ] Security Threat-Model Closure — **DISCOVERY / CURRENT GATE**.\n- [ ] Standard Composer/PHPUnit/static-analysis platform.',
+              '- [ ] Architecture & Code-Quality Foundation — **DISCOVERY / CURRENT GATE**.\n- [ ] Standard Composer/PHPUnit/static-analysis platform.',
+              'playbook remaining current gate')
+          write(p, s)
+
+          # README.md
+          p = 'README.md'
+          s = read(p)
+          s = once(s,
+              '- Provider Contract & Payment Lifecycle.\n\nThe current program gate is **Security Threat-Model Closure — DISCOVERY**.',
+              '- Provider Contract & Payment Lifecycle;\n- Security Threat-Model Closure.\n\nThe current program gate is **Architecture & Code-Quality Foundation — DISCOVERY**.',
+              'readme status list')
+          s = once(s,
+              '| Provider Contract & Payment Lifecycle | **DONE / VERIFIED** |\n| Current engineering gate | **Security Threat-Model Closure — DISCOVERY** |',
+              '| Provider Contract & Payment Lifecycle | **DONE / VERIFIED** |\n| Security Threat-Model Closure | **DONE / VERIFIED** |\n| Current engineering gate | **Architecture & Code-Quality Foundation — DISCOVERY** |',
+              'readme table gate')
+          s = once(s,
+              '| Provider exact-amount harness | **4 PASS / 0 FAIL** |\n| H12 regression baseline |',
+              '| Provider exact-amount harness | **4 PASS / 0 FAIL** |\n| Security threat-model harness | **81 PASS / 0 FAIL** |\n| H12 regression baseline |',
+              'readme security harness row')
+          s = once(s,
+              '| Broad security/platform/feature certification | **Pending** |',
+              '| Bounded Security Threat-Model Closure | **DONE / VERIFIED** |\n| Broad penetration-test/PCI/platform/feature certification | **Pending** |',
+              'readme bounded claim row')
+          s = once(s,
+              '- [`docs/project/PROVIDER-PAYMENT-LIFECYCLE.md`](docs/project/PROVIDER-PAYMENT-LIFECYCLE.md)\n',
+              '- [`docs/project/PROVIDER-PAYMENT-LIFECYCLE.md`](docs/project/PROVIDER-PAYMENT-LIFECYCLE.md)\n- [`docs/project/SECURITY-THREAT-MODEL.md`](docs/project/SECURITY-THREAT-MODEL.md)\n',
+              'readme closed records')
+          security_readme = f'''## Verified Security Threat-Model Closure outcome
+
+PR #17 closed five bounded security findings without broad architectural cleanup: public order-status IDOR, state-changing subscription GET actions, checkout third-party font/icon trust, overly broad plain-data output trust, and product-meta write defense in depth.
+
+Verified evidence:
+
+- final reviewed head: `{IMPL_HEAD}`;
+- squash merge: `{MERGE}`;
+- merge tree: `{TREE}`;
+- sole parent: `{PARENT}`;
+- GitHub signature: **VERIFIED**;
+- exact PR merge-ref Quality Gates run #88: **SUCCESS**;
+- post-merge `main` Quality Gates run #89: **SUCCESS**;
+- implementation branch deleted;
+- Security Threat-Model harness: **81 PASS / 0 FAIL**;
+- all Phase 0, Phase 9I, Provider Lifecycle, H12 PHP and H12 Blocks regression gates remained green.
+
+One valid automated P2 review finding—remaining Font Awesome chevrons in Checkout Blocks after removing the CDN stylesheet—was fixed before merge and made a permanent security regression.
+
+The closure remains intentionally bounded: webhook HMAC/signature details are provider-document unresolved, automatic refunds remain unsupported pending durable idempotency/reconciliation design, subscription auto-deduction is not broadly recurring-billing certified, and this gate is not a penetration-test/PCI/platform/feature/performance/production certification.
+
+'''
+          s = once(s, '## Verified Provider Contract & Payment Lifecycle outcome\n', security_readme + '## Verified Provider Contract & Payment Lifecycle outcome\n', 'readme security outcome')
+          s = regex_once(s,
+              r'## Current engineering gate — Security Threat-Model Closure\n.*?(?=## Transitional identities)',
+              '''## Current engineering gate — Architecture & Code-Quality Foundation
+
+The next gate starts with exact-source responsibility/dependency mapping and characterization before extraction. It may incrementally decompose inherited mixed responsibilities and introduce standard code-quality/static-analysis baselines, but it must preserve the closed payment lifecycle, Security Threat-Model, H12 and Phase 9I contracts and protected persisted/runtime identities.
+
+No big-bang rewrite, runtime branding rename or broad compatibility claim is authorized by this gate.
+
+''', 'readme architecture gate')
+          s = once(s,
+              'Current CI validates all tracked PHP syntax, Phase 0, all Phase 9I suites, Provider Payment Lifecycle, Provider Exact Amount Binding, H12 PHP and H12 Blocks behavior.',
+              'Current CI validates all tracked PHP syntax, Phase 0, all Phase 9I suites, Provider Payment Lifecycle, Provider Exact Amount Binding, Security Threat-Model, H12 PHP and H12 Blocks behavior.',
+              'readme CI coverage')
+          s = once(s,
+              '7. [`docs/project/PROVIDER-PAYMENT-LIFECYCLE.md`](docs/project/PROVIDER-PAYMENT-LIFECYCLE.md)\n8. [`docs/project/MASTER-ENGINEERING-PLAYBOOK.md`](docs/project/MASTER-ENGINEERING-PLAYBOOK.md)\n9. [`docs/project/REPOSITORY-AUDIT.md`](docs/project/REPOSITORY-AUDIT.md)\n10. [`docs/project/REPOSITORY-READINESS.md`](docs/project/REPOSITORY-READINESS.md)\n11. [`docs/project/BASELINE-H12.md`](docs/project/BASELINE-H12.md)',
+              '7. [`docs/project/PROVIDER-PAYMENT-LIFECYCLE.md`](docs/project/PROVIDER-PAYMENT-LIFECYCLE.md)\n8. [`docs/project/SECURITY-THREAT-MODEL.md`](docs/project/SECURITY-THREAT-MODEL.md)\n9. [`docs/project/MASTER-ENGINEERING-PLAYBOOK.md`](docs/project/MASTER-ENGINEERING-PLAYBOOK.md)\n10. [`docs/project/REPOSITORY-AUDIT.md`](docs/project/REPOSITORY-AUDIT.md)\n11. [`docs/project/REPOSITORY-READINESS.md`](docs/project/REPOSITORY-READINESS.md)\n12. [`docs/project/BASELINE-H12.md`](docs/project/BASELINE-H12.md)',
+              'readme control plane')
+          write(p, s)
+
+          # CHANGELOG.md
+          p = 'CHANGELOG.md'
+          s = read(p)
+          security_changelog = f'''### Security Threat-Model Closure — DONE / VERIFIED
+
+- Closed the public historical order-status IDOR by requiring an UPayments order plus exact logged-in ownership or exact WooCommerce order key; numeric order ID alone is no longer authority and returned state is allowlisted.
+- Replaced nonce-bearing subscription pause/resume/unsubscribe GET mutations with exact-owner-bound POST forms/actions, action-specific nonce verification, subscription object preflight and valid transition checks.
+- Removed Google Fonts and cdnjs Font Awesome checkout dependencies and replaced classic plus Checkout Blocks chevrons with local presentation.
+- Tightened plain provider/order metadata to text escaping, stored settings to attribute escaping, and removed `$_REQUEST` from checkout display markers.
+- Added local WooCommerce nonce/post-ID/`edit_post` preconditions before plugin product-meta writes.
+- Added permanent `tests/harness/security-threat-model-harness.php` to required Quality Gates; final characterization is **81 PASS / 0 FAIL**.
+- Preserved existing provider host/TLS/redirect/Bearer, payment-truth, H12 identity, Phase 9I authorization, subscription no-blind-retry and immutable GitHub Actions-pin controls.
+- Fixed one valid automated P2 review finding before merge by covering the Checkout Blocks Font Awesome seam explicitly in the permanent security harness.
+- Exact final PR #17 head `{IMPL_HEAD}` passed full merge-ref Quality Gates run #88.
+- Squash-merged PR #17 as `{MERGE}`, tree `{TREE}`, with VERIFIED GitHub signature; implementation branch was deleted.
+- Post-merge `main` Quality Gates run #89 passed the complete workflow again.
+- Explicit non-claims remain: webhook HMAC/signature is provider-document unresolved, automatic refunds are unsupported pending durable idempotency/reconciliation, subscription auto-deduction is not broadly recurring-billing certified, and this is not broad penetration-test/PCI/platform/feature/performance/production certification.
+
+### Current program gate
+
+**Architecture & Code-Quality Foundation — DISCOVERY** is now the active gate. It begins with responsibility/dependency mapping and characterization before incremental extraction; it must not weaken closed Security, Provider, H12 or Phase 9I contracts or protected persisted/runtime identities.
+
+'''
+          s = once(s, '## [Unreleased]\n\n', '## [Unreleased]\n\n' + security_changelog, 'changelog security entry')
+          old_gate = '''### Current program gate
+
+**Security Threat-Model Closure — DISCOVERY** is now the active gate.
+
+The next work must threat-model the frozen payment lifecycle plus protected H12/Phase 9I surfaces across authorization/CSRF, callback/replay/IDOR/SSRF, input/output boundaries, credentials/secrets, logging/redaction, concurrency/idempotency, dependencies/supply chain and fail-closed provider ambiguity before broader architecture refactoring.
+
+'''
+          s = once(s, old_gate, '', 'changelog old gate removal')
+          write(p, s)
+
+          # docs/ENGINEERING-ROADMAP.md
+          p = 'docs/ENGINEERING-ROADMAP.md'
+          s = read(p)
+          s = once(s,
+              '- [`project/PROVIDER-PAYMENT-LIFECYCLE.md`](project/PROVIDER-PAYMENT-LIFECYCLE.md) for the closed provider/payment lifecycle record;\n',
+              '- [`project/PROVIDER-PAYMENT-LIFECYCLE.md`](project/PROVIDER-PAYMENT-LIFECYCLE.md) for the closed provider/payment lifecycle record;\n- [`project/SECURITY-THREAT-MODEL.md`](project/SECURITY-THREAT-MODEL.md) for the closed bounded security threat-model record;\n',
+              'roadmap security record')
+          s = regex_once(s,
+              r'4\. \*\*Security Threat-Model Closure — CURRENT GATE / DISCOVERY\*\*\n.*?(?=5\. \*\*Architecture & Code-Quality Foundation\*\*)',
+              f'''4. **Security Threat-Model Closure — DONE / VERIFIED**
+   - closed public status-poll IDOR with exact owner/order-key authorization and UPayments object preflight;
+   - moved subscription customer mutations to POST-only owner/nonce/object/transition boundaries;
+   - removed checkout Google Fonts/cdnjs Font Awesome trust across classic and Blocks;
+   - tightened output-context escaping and checkout request-source handling;
+   - mirrored WooCommerce product-meta authorization preconditions locally;
+   - retained provider status transport/payment-truth, H12, Phase 9I, subscription no-blind-retry and immutable Actions-pin controls;
+   - permanent Security Threat-Model regression **81 PASS / 0 FAIL**;
+   - final PR #17 head `{IMPL_HEAD}` passed merge-ref Quality Gates #88;
+   - squash merge `{MERGE}`, tree `{TREE}`, VERIFIED signature, deleted implementation branch, green post-merge run #89;
+   - webhook HMAC/signature remains provider-document unresolved; automatic refunds and broad recurring-billing certification remain outside this gate;
+   - bounded closure is not broad penetration-test/PCI/platform/feature/performance/production certification.
+
+''', 'roadmap security closed')
+          s = once(s,
+              '5. **Architecture & Code-Quality Foundation**',
+              '5. **Architecture & Code-Quality Foundation — CURRENT GATE / DISCOVERY**',
+              'roadmap architecture current')
+          write(p, s)
+
+          # docs/project/REPOSITORY-AUDIT.md
+          p = 'docs/project/REPOSITORY-AUDIT.md'
+          s = read(p)
+          s = once(s,
+              '**Provider lifecycle tree:** `40ec562674361624c2764263ba55cfba84594955`\n',
+              f'**Provider lifecycle tree:** `40ec562674361624c2764263ba55cfba84594955`\n\n**Security Threat-Model verified implementation:** `{MERGE}`\n\n**Security Threat-Model tree:** `{TREE}`\n',
+              'audit security anchors')
+          s = once(s,
+              'Repository foundation/readiness, **Phase 0**, **Phase 9I**, and **Provider Contract & Payment Lifecycle** are **DONE / VERIFIED**.',
+              'Repository foundation/readiness, **Phase 0**, **Phase 9I**, **Provider Contract & Payment Lifecycle**, and bounded **Security Threat-Model Closure** are **DONE / VERIFIED**.',
+              'audit executive done gates')
+          s = once(s,
+              'The current owner/gate is **Security Threat-Model Closure — DISCOVERY**. This gate may characterize and remediate security-critical behavior, but it does not authorize unrelated cleanup or weakening closed payment/H12/Phase 9I contracts.',
+              'The current owner/gate is **Architecture & Code-Quality Foundation — DISCOVERY**. This gate may characterize and incrementally extract mixed responsibilities and establish code-quality baselines, but it does not authorize a big-bang rewrite, protected-identity renames, or weakening closed Security/Payment/H12/Phase 9I contracts.',
+              'audit current owner')
+          s = once(s,
+              '| `UPayments.php` | Active inherited large gateway/bootstrap with Simplix 0.1.0 identity; Charge/config/subscription and legacy callback paths remain | **PROTECTED / SECURITY + ARCHITECTURE AUDIT** | Security threat model first; broad extraction later |',
+              '| `UPayments.php` | Active inherited large gateway/bootstrap with Simplix 0.1.0 identity; Charge/config/subscription and legacy callback paths remain | **PROTECTED / ARCHITECTURE AUDIT** | Characterize responsibilities; extract incrementally |',
+              'audit bootstrap inventory')
+          s = once(s,
+              '| `src/Payment/` | Verified provider result, rate gate, order lock, status verifier and lifecycle strangler | **DONE / VERIFIED / SECURITY INPUT** | Security threat-model callback/status/SSRF/replay/concurrency/logging boundaries |',
+              '| `src/Payment/` | Verified provider result, rate gate, order lock, status verifier and lifecycle strangler | **DONE / VERIFIED / PROTECTED** | Architecture gate may extract only behind full characterization/regression |\n| `src/Security/` | Verified public order-status authorization boundary | **DONE / VERIFIED / PROTECTED** | Preserve SEC-01 contract during architecture work |',
+              'audit payment/security inventory')
+          s = once(s,
+              '| Blocks integration | H12-critical Blocks implementation | **RUNTIME — PROTECTED** | Security input boundaries now; broader platform certification later |',
+              '| Blocks integration | H12-critical Blocks implementation with local checkout chevrons | **RUNTIME — SECURITY VERIFIED / PROTECTED** | Architecture only with Blocks/H12/security regressions; platform certification later |',
+              'audit blocks inventory')
+          s = once(s,
+              '| `assets/`, `templates/` | Inherited frontend/admin paths and assets | **AUDIT LATER / SECURITY OBSERVABLE** | Security output/XSS checks where relevant; UX/performance cleanup later |',
+              '| `assets/`, `templates/` | Inherited frontend/admin paths and assets; bounded checkout dependency/output fixes verified | **PARTIALLY SECURITY-CHARACTERIZED / AUDIT LATER** | Architecture/UX/performance gates; preserve security escaping/dependency contracts |',
+              'audit assets inventory')
+          s = once(s,
+              '| `tests/harness/` | Phase 0 + Phase 9I + Provider Lifecycle + H12 custom regressions | **KEEP AS REQUIRED BASELINE** | Add security characterization; supplement rather than replace |',
+              '| `tests/harness/` | Phase 0 + Phase 9I + Provider Lifecycle + Security Threat-Model + H12 custom regressions | **KEEP AS REQUIRED BASELINE** | Architecture/static-analysis additions supplement rather than replace |',
+              'audit tests inventory')
+          security_audit = f'''## Security Threat-Model Closure — resolved
+
+Bounded Security Threat-Model Closure is **DONE / VERIFIED** through PR #17.
+
+Verified implementation:
+
+- final reviewed head `{IMPL_HEAD}`;
+- squash merge `{MERGE}`;
+- tree `{TREE}`;
+- sole parent `{PARENT}`;
+- VERIFIED GitHub signature;
+- merge-ref Quality Gates #88 SUCCESS;
+- post-merge Quality Gates #89 SUCCESS;
+- implementation branch deleted;
+- permanent Security Threat-Model harness **81 PASS / 0 FAIL**.
+
+Closed findings:
+
+- SEC-01 public legacy status IDOR — exact UPayments object + owner/order-key authorization and allowlisted output;
+- SEC-02 subscription GET mutation — POST-only exact-owner/action-nonce/object/transition boundary;
+- SEC-03 checkout CDN trust — remote fonts/icons removed across classic and Blocks with local presentation;
+- SEC-04 output trust — context-correct escaping and no checkout `$_REQUEST` display markers;
+- SEC-05 product-meta defense in depth — local WooCommerce nonce/post-ID/capability preconditions.
+
+One valid P2 automated review finding on Checkout Blocks chevrons was corrected and permanently characterized before merge.
+
+Explicit non-closures: webhook HMAC/signature remains provider-document unresolved; automatic refunds remain unsupported pending durable idempotency/reconciliation; subscription auto-deduction is not broad recurring-billing certification; no penetration-test/PCI/platform/feature/performance/production certification is claimed.
+
+'''
+          s = once(s, '## Deliberately unresolved package/identity work\n', security_audit + '## Deliberately unresolved package/identity work\n', 'audit security resolved section')
+          s = once(s,
+              '`UPayments.php` remains a large mixed-responsibility inherited surface. The provider lifecycle gate deliberately used an isolated strangler rather than broad cleanup. Security Threat-Model Closure may inspect/remediate security-critical paths, but general decomposition belongs to the later Architecture & Code-Quality gate.',
+              '`UPayments.php` remains a large mixed-responsibility inherited surface. Provider and Security gates deliberately used isolated strangler/boundary changes rather than broad cleanup. General decomposition now belongs to the current Architecture & Code-Quality Foundation gate and must be incremental and characterization-led.',
+              'audit large bootstrap current owner')
+          s = once(s,
+              'The required custom harness stack now includes Phase 0, all Phase 9I suites, Provider Lifecycle, Exact Amount, H12 PHP and H12 Blocks.',
+              'The required custom harness stack now includes Phase 0, all Phase 9I suites, Provider Lifecycle, Exact Amount, Security Threat-Model, H12 PHP and H12 Blocks.',
+              'audit test platform')
+          s = regex_once(s,
+              r'## Current next owner/gate\n\n\*\*Security Threat-Model Closure — DISCOVERY\*\*\.\n.*?(?=See `PROJECT-STATUS\.md`)',
+              '''## Current next owner/gate
+
+**Architecture & Code-Quality Foundation — DISCOVERY**.
+
+The gate must first characterize responsibility/dependency seams and freeze incremental extraction contracts for:
+
+- the large `UPayments.php` bootstrap/gateway surface;
+- current `src/Payment/` and `src/Security/` strangler boundaries;
+- H12 token identity and Phase 9I migration dependencies;
+- subscription and Blocks integration seams;
+- global/hook/static side effects and compatibility-sensitive runtime identities;
+- baseline static-analysis/coding-standard debt versus runtime behavior.
+
+Do not start with a big-bang refactor or mechanical rename. Closed Security/Provider/H12/Phase 9I contracts remain required regressions throughout architecture work.
+
+''', 'audit current architecture owner')
+          write(p, s)
+
+          # AGENTS.md
+          p = 'AGENTS.md'
+          s = read(p)
+          old_read = '''1. `docs/project/PROJECT-STATUS.md`
+2. `docs/project/REPOSITORY-READINESS.md` when the pre-Phase-0 readiness gate is not closed
+3. `docs/project/NAMING-IDENTITY-STANDARD.md`
+4. `docs/project/NEW-CHAT-HANDOFF.md`
+5. relevant sections of `docs/project/MASTER-ENGINEERING-PLAYBOOK.md`
+6. `docs/project/BASELINE-H12.md` when token/saved-card/subscription identity is relevant'''
+          new_read = '''1. `docs/project/PROJECT-STATUS.md`
+2. `docs/project/NAMING-IDENTITY-STANDARD.md`
+3. `docs/project/NEW-CHAT-HANDOFF.md`
+4. `docs/project/PHASE-0-RELEASE-IDENTITY.md`
+5. `docs/project/PHASE-9I-MIGRATION.md`
+6. `docs/project/PROVIDER-PAYMENT-LIFECYCLE.md`
+7. `docs/project/SECURITY-THREAT-MODEL.md`
+8. relevant living sections of `docs/project/MASTER-ENGINEERING-PLAYBOOK.md`
+9. `docs/project/BASELINE-H12.md` when token/saved-card/subscription identity is relevant
+10. `docs/project/REPOSITORY-READINESS.md` for historical repository-foundation evidence when relevant'''
+          s = once(s, old_read, new_read, 'agents read order')
+          s = once(s,
+              'php tests/harness/phase-9g-h12-php-harness.php\nnode --check tests/harness/phase-9g-h12-blocks-harness.js',
+              'php tests/harness/security-threat-model-harness.php\nphp tests/harness/phase-9g-h12-php-harness.php\nnode --check tests/harness/phase-9g-h12-blocks-harness.js',
+              'agents initial security harness')
+          write(p, s)
+
+          # Quality Gates governance current-state invariants.
+          p = '.github/workflows/quality-gates.yml'
+          s = read(p)
+          s = once(s,
+              "grep -Fq '**Status:** IMPLEMENTATION / REVIEW' docs/project/SECURITY-THREAT-MODEL.md",
+              "grep -Fq '**Status:** DONE / VERIFIED' docs/project/SECURITY-THREAT-MODEL.md",
+              'quality security status invariant')
+          s = once(s,
+              "grep -Fq '| Provider Contract & Payment Lifecycle | **DONE / VERIFIED** |' docs/project/PROJECT-STATUS.md\n          grep -Fq '| Current program gate | **Security Threat-Model Closure — DISCOVERY** |' docs/project/PROJECT-STATUS.md",
+              "grep -Fq '| Provider Contract & Payment Lifecycle | **DONE / VERIFIED** |' docs/project/PROJECT-STATUS.md\n          grep -Fq '| Security Threat-Model Closure | **DONE / VERIFIED** |' docs/project/PROJECT-STATUS.md\n          grep -Fq '| Current program gate | **Architecture & Code-Quality Foundation — DISCOVERY** |' docs/project/PROJECT-STATUS.md",
+              'quality current gate invariants')
+          write(p, s)
+
+      - name: Verify closure reconciliation and commit
+        shell: bash
+        run: |
+          set -euo pipefail
+          git diff --check
+          php -l tests/harness/security-threat-model-harness.php
+          php tests/harness/security-threat-model-harness.php
+          grep -Fq '**Status:** DONE / VERIFIED' docs/project/SECURITY-THREAT-MODEL.md
+          grep -Fq '| Security Threat-Model Closure | **DONE / VERIFIED** |' docs/project/PROJECT-STATUS.md
+          grep -Fq '| Current program gate | **Architecture & Code-Quality Foundation — DISCOVERY** |' docs/project/PROJECT-STATUS.md
+          grep -Fq 'Architecture & Code-Quality Foundation — DISCOVERY' docs/project/NEW-CHAT-HANDOFF.md
+          grep -Fq 'Security Threat-Model Closure: DONE / VERIFIED' docs/project/MASTER-ENGINEERING-PLAYBOOK.md
+          grep -Fq 'Security threat-model harness | **81 PASS / 0 FAIL**' README.md
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add AGENTS.md README.md CHANGELOG.md docs/ENGINEERING-ROADMAP.md docs/project/PROJECT-STATUS.md docs/project/NEW-CHAT-HANDOFF.md docs/project/MASTER-ENGINEERING-PLAYBOOK.md docs/project/REPOSITORY-AUDIT.md docs/project/SECURITY-THREAT-MODEL.md .github/workflows/quality-gates.yml
+          git diff --cached --quiet && exit 0
+          git commit -m 'docs: close security threat-model gate and advance architecture'
+          git push origin HEAD:docs/security-threat-model-closure
