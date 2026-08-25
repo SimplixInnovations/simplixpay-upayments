@@ -20,7 +20,20 @@ jobs:
           fetch-depth: 0
 
       - name: Apply exact security hardening
-        run: python .github/scripts/security-hardening-once.py
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+          path = Path('.github/scripts/security-hardening-once.py')
+          text = path.read_text(encoding='utf-8')
+          old = 're.subn(pattern, replacement, text, count=1, flags=re.S)'
+          new = 're.subn(pattern, lambda _match: replacement, text, count=1, flags=re.S)'
+          if text.count(old) != 1:
+              raise SystemExit('regex helper patch contract changed')
+          path.write_text(text.replace(old, new, 1), encoding='utf-8')
+          PY
+          python .github/scripts/security-hardening-once.py
 
       - name: Verify and commit
         shell: bash
