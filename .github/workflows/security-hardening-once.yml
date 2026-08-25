@@ -19,35 +19,30 @@ jobs:
           ref: security/threat-model-discovery
           fetch-depth: 0
 
-      - name: Apply exact security hardening
-        shell: bash
+      - name: Reconcile hardened callback comment
+        shell: python
         run: |
-          set -euo pipefail
-          python - <<'PY'
           from pathlib import Path
-          path = Path('.github/scripts/security-hardening-once.py')
+          path = Path('src/Payment/PaymentLifecycle.php')
           text = path.read_text(encoding='utf-8')
-          old = 're.subn(pattern, replacement, text, count=1, flags=re.S)'
-          new = 're.subn(pattern, lambda _match: replacement, text, count=1, flags=re.S)'
+          old = '     * WC-API entrypoint. The inherited get_order_status display poll remains delegated.'
+          new = '     * WC-API entrypoint. The historical get_order_status poll is intercepted here before inherited priority 10.'
           if text.count(old) != 1:
-              raise SystemExit('regex helper patch contract changed')
+              raise SystemExit(f'callback comment contract changed: {text.count(old)}')
           path.write_text(text.replace(old, new, 1), encoding='utf-8')
-          PY
-          python .github/scripts/security-hardening-once.py
 
-      - name: Verify and commit
+      - name: Run security threat-model harness
+        run: php tests/harness/security-threat-model-harness.php
+
+      - name: Verify and commit comment only
         shell: bash
         run: |
           set -euo pipefail
           git diff --check
-          php -l UPayments.php
           php -l src/Payment/PaymentLifecycle.php
-          php -l src/Security/PublicOrderStatus.php
-          php -l templates/new-design-form.php
-          php -l templates/old-design-form.php
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add UPayments.php src/Payment/PaymentLifecycle.php templates/new-design-form.php templates/old-design-form.php
+          git add src/Payment/PaymentLifecycle.php
           git diff --cached --quiet && exit 0
-          git commit -m 'security: close public and customer action boundaries'
+          git commit -m 'docs: align hardened callback contract comment'
           git push origin HEAD:security/threat-model-discovery
