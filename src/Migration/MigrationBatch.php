@@ -6,14 +6,17 @@ defined('ABSPATH') || exit;
 /**
  * Bounded, resumable Phase 9I batch orchestration.
  *
- * The batch is intentionally stateless. Resume is explicit through the
- * returned next_offset; per-user durable state belongs to MigrationExecutor's
- * Simplix-owned ledger. No credentials or raw tokens are persisted here.
+ * Every processed user receives a separate Simplix-owned, redacted operations
+ * result ledger. This is deliberately distinct from MigrationExecutor's
+ * successful-migration identity ledger. No API key, raw customer token, raw
+ * preflight payload, or provider response is persisted by this class.
  */
 final class MigrationBatch {
     const MAX_INPUT_USERS = 500;
     const DEFAULT_LIMIT = 20;
     const MAX_LIMIT = 50;
+    const RESULT_LEDGER_KEY = '_simplixpay_upayments_migration_result_v1';
+    const RESULT_LEDGER_VERSION = 1;
 
     /**
      * Strictly parse a comma/whitespace separated user-id list.
@@ -60,6 +63,53 @@ final class MigrationBatch {
     }
 
     /**
+     * Recover the first not-durably-evaluated position for an exact batch.
+     *
+     * The fingerprint is HMAC-scoped to the current API key and therefore does
+     * not persist the credential itself. Failed/BLOCKED/INDETERMINATE results
+     * count as evaluated; an operator may deliberately re-evaluate them by
+     * supplying an explicit offset instead of choosing resume mode.
+     *
+     * @param array  $user_ids
+     * @param string $api_key
+     * @param bool   $is_test_mode
+     * @param bool   $dry_run
+     * @return array{ok:bool,reason:string,offset:int}
+     */
+    public static function resumeOffset($user_ids, $api_key, $is_test_mode, $dry_run) {
+        $validated = self::validateResumeInputs($user_ids, $api_key, $is_test_mode, $dry_run);
+        if (!$validated['ok']) {
+            return array('ok' => false, 'reason' => $validated['reason'], 'offset' => 0);
+        }
+        $user_ids = $validated['user_ids'];
+        $digest = self::batchDigest($user_ids, $api_key, $is_test_mode, $dry_run);
+        if ($digest === null) {
+            return array('ok' => false, 'reason' => 'batch_digest_failed', 'offset' => 0);
+        }
+
+        $total = count($user_ids);
+        for ($position = 0; $position < $total; $position++) {
+            $record = get_user_meta($user_ids[$position], self::RESULT_LEDGER_KEY, true);
+            if (!self::isResultLedgerRecord($record)
+                || !hash_equals($digest, $record['batch_digest'])
+                || $record['position'] !== $position
+                || $record['next_offset'] !== ($position + 1)
+                || $record['input_count'] !== $total
+                || $record['dry_run'] !== $dry_run
+                || $record['mode'] !== ($is_test_mode ? 'test' : 'live')
+            ) {
+                return array(
+                    'ok' => true,
+                    'reason' => $position === 0 ? 'no_durable_checkpoint' : 'durable_checkpoint_recovered',
+                    'offset' => $position,
+                );
+            }
+        }
+
+        return array('ok' => true, 'reason' => 'batch_already_evaluated', 'offset' => $total);
+    }
+
+    /**
      * Run one bounded page of explicit user IDs.
      *
      * @param array  $user_ids
@@ -82,16 +132,27 @@ final class MigrationBatch {
         $total = count($user_ids);
         $base['input_count'] = $total;
 
+        $batch_digest = self::batchDigest($user_ids, $api_key, $is_test_mode, $dry_run);
+        if ($batch_digest === null) {
+            $base['reason'] = 'batch_digest_failed';
+            return $base;
+        }
+
         if ($offset >= $total) {
             $base['success'] = true;
             $base['reason'] = 'batch_complete';
             $base['done'] = true;
             $base['next_offset'] = null;
+            $base['checkpoint_offset'] = $total;
             return $base;
         }
 
         $slice = array_slice($user_ids, $offset, $limit);
-        foreach ($slice as $user_id) {
+        $checkpoint_failed = false;
+        $checkpoint_offset = $offset;
+
+        foreach ($slice as $index => $user_id) {
+            $position = $offset + $index;
             try {
                 $execution = MigrationExecutor::execute($user_id, $api_key, $is_test_mode, $dry_run);
             } catch (\Throwable $e) {
@@ -107,9 +168,46 @@ final class MigrationBatch {
             }
 
             $safe = self::redactExecution($user_id, $execution);
+            $record = self::buildResultLedgerRecord(
+                $batch_digest,
+                $position,
+                $total,
+                $is_test_mode,
+                $dry_run,
+                $safe
+            );
+            $ledger_written = self::writeResultLedger($user_id, $record);
+            $safe['operations_ledger_written'] = $ledger_written;
+
+            if (!$ledger_written) {
+                // The executor may already have completed an idempotent identity
+                // mutation. Do not roll it back. Stop this page and make the
+                // durable resume point the current user so the next invocation
+                // safely re-evaluates it rather than skipping uncertain state.
+                $safe['success'] = false;
+                $safe['reason'] = 'operations_result_ledger_write_failed';
+                $checkpoint_failed = true;
+                $checkpoint_offset = $position;
+            } else {
+                $checkpoint_offset = $position + 1;
+            }
+
             $base['results'][] = $safe;
             $base['processed']++;
             self::accumulate($base['summary'], $safe);
+
+            if ($checkpoint_failed) {
+                break;
+            }
+        }
+
+        $base['checkpoint_offset'] = $checkpoint_offset;
+        if ($checkpoint_failed) {
+            $base['done'] = false;
+            $base['next_offset'] = $checkpoint_offset;
+            $base['success'] = false;
+            $base['reason'] = 'batch_checkpoint_failed';
+            return $base;
         }
 
         $next = $offset + $base['processed'];
@@ -121,6 +219,20 @@ final class MigrationBatch {
     }
 
     private static function validateInputs($user_ids, $api_key, $is_test_mode, $dry_run, $offset, $limit) {
+        $validated = self::validateResumeInputs($user_ids, $api_key, $is_test_mode, $dry_run);
+        if (!$validated['ok']) {
+            return $validated;
+        }
+        if (!is_int($offset) || $offset < 0) {
+            return array('ok' => false, 'reason' => 'invalid_offset', 'user_ids' => array());
+        }
+        if (!is_int($limit) || $limit <= 0 || $limit > self::MAX_LIMIT) {
+            return array('ok' => false, 'reason' => 'invalid_limit', 'user_ids' => array());
+        }
+        return $validated;
+    }
+
+    private static function validateResumeInputs($user_ids, $api_key, $is_test_mode, $dry_run) {
         if (!is_array($user_ids) || count($user_ids) === 0) {
             return array('ok' => false, 'reason' => 'user_ids_missing', 'user_ids' => array());
         }
@@ -132,12 +244,6 @@ final class MigrationBatch {
         }
         if (!is_bool($is_test_mode) || !is_bool($dry_run)) {
             return array('ok' => false, 'reason' => 'invalid_mode', 'user_ids' => array());
-        }
-        if (!is_int($offset) || $offset < 0) {
-            return array('ok' => false, 'reason' => 'invalid_offset', 'user_ids' => array());
-        }
-        if (!is_int($limit) || $limit <= 0 || $limit > self::MAX_LIMIT) {
-            return array('ok' => false, 'reason' => 'invalid_limit', 'user_ids' => array());
         }
 
         $clean = array();
@@ -155,6 +261,89 @@ final class MigrationBatch {
         return array('ok' => true, 'reason' => 'valid', 'user_ids' => $clean);
     }
 
+    private static function batchDigest($user_ids, $api_key, $is_test_mode, $dry_run) {
+        if (!is_array($user_ids) || !is_string($api_key) || $api_key === '') {
+            return null;
+        }
+        $message = 'phase9i-operations-v1|'
+            . ($is_test_mode ? 'test' : 'live') . '|'
+            . ($dry_run ? 'dry-run' : 'execute') . '|'
+            . implode(',', $user_ids);
+        return hash_hmac('sha256', $message, $api_key);
+    }
+
+    private static function buildResultLedgerRecord($batch_digest, $position, $input_count, $is_test_mode, $dry_run, $safe) {
+        return array(
+            'version' => self::RESULT_LEDGER_VERSION,
+            'batch_digest' => $batch_digest,
+            'position' => $position,
+            'next_offset' => $position + 1,
+            'input_count' => $input_count,
+            'dry_run' => $dry_run,
+            'mode' => $is_test_mode ? 'test' : 'live',
+            'success' => !empty($safe['success']),
+            'reason' => isset($safe['reason']) ? $safe['reason'] : 'unknown',
+            'classification' => isset($safe['classification']) ? $safe['classification'] : null,
+            'migrated' => !empty($safe['migrated']),
+            'idempotent' => !empty($safe['idempotent']),
+            'executor_ledger_written' => !empty($safe['ledger_written']),
+            'token_digest' => isset($safe['token_digest']) ? $safe['token_digest'] : null,
+            'processed_at_gmt' => time(),
+        );
+    }
+
+    private static function writeResultLedger($user_id, $record) {
+        if (!is_int($user_id) || $user_id <= 0 || !self::isResultLedgerRecord($record)) {
+            return false;
+        }
+
+        $written = update_user_meta($user_id, self::RESULT_LEDGER_KEY, $record);
+        $readback = get_user_meta($user_id, self::RESULT_LEDGER_KEY, true);
+
+        // update_user_meta() returns false when the exact value already exists;
+        // exact durable readback therefore remains the authoritative result.
+        if ($written === false && $readback !== $record) {
+            return false;
+        }
+        return is_array($readback) && $readback === $record;
+    }
+
+    private static function isResultLedgerRecord($record) {
+        if (!is_array($record)
+            || !isset($record['version']) || $record['version'] !== self::RESULT_LEDGER_VERSION
+            || !isset($record['batch_digest']) || !is_string($record['batch_digest']) || preg_match('/^[0-9a-f]{64}$/', $record['batch_digest']) !== 1
+            || !isset($record['position']) || !is_int($record['position']) || $record['position'] < 0
+            || !isset($record['next_offset']) || !is_int($record['next_offset']) || $record['next_offset'] !== ($record['position'] + 1)
+            || !isset($record['input_count']) || !is_int($record['input_count']) || $record['input_count'] <= 0 || $record['input_count'] > self::MAX_INPUT_USERS
+            || !isset($record['dry_run']) || !is_bool($record['dry_run'])
+            || !isset($record['mode']) || ($record['mode'] !== 'test' && $record['mode'] !== 'live')
+            || !isset($record['success']) || !is_bool($record['success'])
+            || !isset($record['reason']) || !self::isSafeReason($record['reason'])
+            || !array_key_exists('classification', $record) || !self::isSafeClassification($record['classification'])
+            || !isset($record['migrated']) || !is_bool($record['migrated'])
+            || !isset($record['idempotent']) || !is_bool($record['idempotent'])
+            || !isset($record['executor_ledger_written']) || !is_bool($record['executor_ledger_written'])
+            || !array_key_exists('token_digest', $record)
+            || ($record['token_digest'] !== null && (!is_string($record['token_digest']) || preg_match('/^[0-9a-f]{64}$/', $record['token_digest']) !== 1))
+            || !isset($record['processed_at_gmt']) || !is_int($record['processed_at_gmt']) || $record['processed_at_gmt'] <= 0
+        ) {
+            return false;
+        }
+        return true;
+    }
+
+    private static function isSafeReason($reason) {
+        return is_string($reason) && strlen($reason) <= 96 && preg_match('/^[a-z0-9_]+$/', $reason) === 1;
+    }
+
+    private static function isSafeClassification($classification) {
+        return $classification === null
+            || $classification === 'CLEAN'
+            || $classification === 'MIGRATABLE'
+            || $classification === 'BLOCKED'
+            || $classification === 'INDETERMINATE';
+    }
+
     private static function redactExecution($user_id, $execution) {
         $safe = array(
             'user_id' => $user_id,
@@ -165,16 +354,17 @@ final class MigrationBatch {
             'idempotent' => false,
             'ledger_written' => false,
             'token_digest' => null,
+            'operations_ledger_written' => false,
         );
         if (!is_array($execution)) {
             return $safe;
         }
 
         $safe['success'] = !empty($execution['success']);
-        if (isset($execution['reason']) && is_string($execution['reason'])) {
+        if (isset($execution['reason']) && self::isSafeReason($execution['reason'])) {
             $safe['reason'] = $execution['reason'];
         }
-        if (isset($execution['classification']) && (is_string($execution['classification']) || $execution['classification'] === null)) {
+        if (isset($execution['classification']) && self::isSafeClassification($execution['classification'])) {
             $safe['classification'] = $execution['classification'];
         }
         $safe['migrated'] = !empty($execution['migrated']);
@@ -225,6 +415,7 @@ final class MigrationBatch {
             'input_count' => 0,
             'processed' => 0,
             'next_offset' => null,
+            'checkpoint_offset' => $offset,
             'done' => false,
             'summary' => array(
                 'processed' => 0,
