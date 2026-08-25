@@ -1,0 +1,42 @@
+name: Security SEC01 Tense Once
+
+on:
+  push:
+    branches:
+      - docs/security-threat-model-closure
+
+permissions:
+  contents: write
+
+jobs:
+  reconcile:
+    if: ${{ github.actor != 'github-actions[bot]' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: docs/security-threat-model-closure
+          fetch-depth: 0
+      - name: Correct SEC-01 historical tense
+        shell: python
+        run: |
+          from pathlib import Path
+          p = Path('docs/project/SECURITY-THREAT-MODEL.md')
+          text = p.read_text(encoding='utf-8')
+          old = 'This is an IDOR/privacy boundary defect even though the returned field is narrow. Numeric object identifiers are enumerable and cannot grant access.'
+          new = 'This was an IDOR/privacy boundary defect even though the returned field was narrow. Numeric object identifiers are enumerable and cannot grant access.'
+          if text.count(old) != 1:
+              raise SystemExit(f'expected one SEC-01 stale sentence, found {text.count(old)}')
+          p.write_text(text.replace(old, new, 1), encoding='utf-8')
+      - name: Verify and commit
+        shell: bash
+        run: |
+          set -euo pipefail
+          git diff --check
+          grep -Fq 'This was an IDOR/privacy boundary defect' docs/project/SECURITY-THREAT-MODEL.md
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add docs/project/SECURITY-THREAT-MODEL.md
+          git commit -m 'docs: make SEC-01 closure wording historical'
+          git push origin HEAD:docs/security-threat-model-closure
