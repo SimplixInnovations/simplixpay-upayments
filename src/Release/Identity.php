@@ -32,3 +32,9 @@ final class Identity {
     private function __construct() {
     }
 }
+
+// Incremental payment-lifecycle strangler. Loading from this existing bootstrap
+// foothold avoids mechanical edits to the inherited 250KB gateway while keeping
+// the historical wc_upayments route and runtime identity intact.
+require_once dirname(__DIR__) . '/Payment/PaymentLifecycle.php';
+\Simplix\Pay\UPayments\Payment\PaymentLifecycle::bootstrap();
