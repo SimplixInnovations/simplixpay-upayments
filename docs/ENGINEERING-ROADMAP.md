@@ -6,6 +6,7 @@ Use:
 
 - [`project/PROJECT-STATUS.md`](project/PROJECT-STATUS.md) for current verified state and the next permitted action;
 - [`project/PHASE-0-RELEASE-IDENTITY.md`](project/PHASE-0-RELEASE-IDENTITY.md) for the closed Phase 0 evidence record;
+- [`project/PHASE-9I-MIGRATION.md`](project/PHASE-9I-MIGRATION.md) for the closed historical token-identity migration evidence record;
 - [`project/REPOSITORY-READINESS.md`](project/REPOSITORY-READINESS.md) for the closed repository-foundation evidence record;
 - [`project/MASTER-ENGINEERING-PLAYBOOK.md`](project/MASTER-ENGINEERING-PLAYBOOK.md) for detailed phases and release criteria;
 - [`project/NAMING-IDENTITY-STANDARD.md`](project/NAMING-IDENTITY-STANDARD.md) for product/slug/namespace and compatibility identity rules.
@@ -31,21 +32,34 @@ Use:
    - protected historical payment identities preserved;
    - Phase 0 characterization **35 PASS / 0 FAIL** with H12 **1927/0 PHP** and **144/0 Blocks**.
 
-2. **Phase 9I — Historical token-identity migration — CURRENT GATE**
-   - read-only deterministic preflight;
-   - exact `CLEAN` / `MIGRATABLE` / `BLOCKED` / `INDETERMINATE` classification;
-   - zero provider calls and zero identity writes during preflight;
-   - explicit executor only for `MIGRATABLE` evidence;
-   - no fabricated canonical/Create-201 provenance;
-   - bounded/idempotent/resumable admin/CLI workflow with dry-run and per-user ledger;
-   - all 13 historical blocker classes characterized and tested;
-   - rerun/freeze H12 evidence after migration work.
+2. **Phase 9I — Historical token-identity migration — DONE / VERIFIED**
+   - deterministic read-only preflight with exact `CLEAN` / `MIGRATABLE` / `BLOCKED` / `INDETERMINATE` classification;
+   - zero provider calls and zero identity writes in the core preflight;
+   - all 13 historical blocker families explicitly characterized and fail closed;
+   - locked executor acts only on fresh `MIGRATABLE` evidence;
+   - historical identity can become only `legacy_compat` / `legacy_verified_capture`; no fabricated canonical/Create-201 provenance;
+   - historical order evidence remains immutable;
+   - bounded/idempotent admin/CLI workflow with dry-run, confirmed execute, explicit offsets and durable resume;
+   - redacted per-user operations-result checkpoints for every processed outcome;
+   - credential/mode/list-scoped HMAC resume identity without persisting credentials;
+   - checkpoint-persistence failure stops progress and keeps the current user as the retry point;
+   - no provider, checkout, Store API, frontend or cron migration hooks;
+   - verified implementation sequence: PR #11 preflight, PR #12 executor, PR #13 operations;
+   - final implementation-head evidence: Phase 0 **35/0**, preflight **123/0**, executor **59/0**, operations **81/0**, H12 PHP **1927/0**, H12 Blocks **144/0**, plus Governance/PHP/Blocks syntax success.
 
-3. **Provider Contract & Payment Lifecycle**
-   - charge/status/webhook/return/refund/multi-merchant contracts;
-   - deterministic payment state machine;
-   - reconciliation/idempotency/rate-limit rules;
-   - failure and ambiguity semantics.
+   Phase completion certifies the migration system and safety contract. It does not mean every merchant installation has already been migrated; site-specific classification/migration remains an explicit operational action.
+
+3. **Provider Contract & Payment Lifecycle — CURRENT GATE / DISCOVERY**
+   - compare exact current source against current official UPayments documentation before implementation;
+   - freeze charge request/response and success/failure contracts;
+   - freeze authoritative truth hierarchy across validated server webhook, status reconciliation and browser return;
+   - characterize callback authentication, replay/idempotency and duplicate-event behavior;
+   - characterize current WooCommerce order/payment state transitions and ambiguity paths;
+   - freeze reconciliation, retry, transient-failure and rate-limit rules without blindly retrying non-idempotent financial operations;
+   - freeze refund contracts including full/partial refund, idempotency and failure recovery;
+   - characterize multi-merchant routing and identity boundaries;
+   - define redacted logging/evidence requirements for reconciliation and support;
+   - centralize into a deterministic payment lifecycle/state-machine architecture only after characterization and contract review.
 
 4. **Security Threat-Model Closure**
    - authorization/CSRF/replay/IDOR/SSRF/input/output/secrets/logging;
