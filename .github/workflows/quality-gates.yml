@@ -42,6 +42,7 @@ jobs:
             docs/project/PHASE-0-RELEASE-IDENTITY.md
             docs/project/PHASE-9I-MIGRATION.md
             docs/project/PROVIDER-PAYMENT-LIFECYCLE.md
+            docs/project/SECURITY-THREAT-MODEL.md
             docs/project/REPOSITORY-READINESS.md
             docs/project/REPOSITORY-AUDIT.md
             docs/project/NAMING-IDENTITY-STANDARD.md
@@ -65,6 +66,7 @@ jobs:
           grep -Fq '**Status:** DONE / VERIFIED' docs/project/PHASE-0-RELEASE-IDENTITY.md
           grep -Fq '**Status:** DONE / VERIFIED' docs/project/PHASE-9I-MIGRATION.md
           grep -Fq '**Status:** DONE / VERIFIED' docs/project/PROVIDER-PAYMENT-LIFECYCLE.md
+          grep -Fq '**Status:** IMPLEMENTATION / REVIEW' docs/project/SECURITY-THREAT-MODEL.md
           grep -Fq '| Phase 0 — release identity/updater ownership | **DONE / VERIFIED** |' docs/project/PROJECT-STATUS.md
           grep -Fq '| Phase 9I — historical token-identity migration | **DONE / VERIFIED** |' docs/project/PROJECT-STATUS.md
           grep -Fq '| Provider Contract & Payment Lifecycle | **DONE / VERIFIED** |' docs/project/PROJECT-STATUS.md
@@ -123,6 +125,9 @@ jobs:
 
       - name: Provider exact amount binding harness
         run: php tests/harness/provider-payment-amount-binding-harness.php
+
+      - name: Security threat-model harness
+        run: php tests/harness/security-threat-model-harness.php
 
       - name: H12 PHP harness
         run: php tests/harness/phase-9g-h12-php-harness.php
