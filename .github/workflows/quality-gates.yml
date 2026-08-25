@@ -39,6 +39,7 @@ jobs:
             SUPPORT.md
             .github/CODEOWNERS
             docs/project/PROJECT-STATUS.md
+            docs/project/PHASE-0-RELEASE-IDENTITY.md
             docs/project/REPOSITORY-READINESS.md
             docs/project/REPOSITORY-AUDIT.md
             docs/project/NAMING-IDENTITY-STANDARD.md
@@ -59,7 +60,9 @@ jobs:
           grep -Fq '**Canonical slug:** `simplixpay-upayments`' docs/project/NAMING-IDENTITY-STANDARD.md
           grep -Fq 'SimplixInnovations/simplixpay-upayments' AGENTS.md
           grep -Fq 'upayments' docs/project/NAMING-IDENTITY-STANDARD.md
-          grep -Fq 'Phase 0 — SimplixPay release identity and updater ownership' docs/project/PROJECT-STATUS.md
+          grep -Fq '**Status:** DONE / VERIFIED' docs/project/PHASE-0-RELEASE-IDENTITY.md
+          grep -Fq '| Phase 0 — release identity/updater ownership | **DONE / VERIFIED** |' docs/project/PROJECT-STATUS.md
+          grep -Fq '| Current implementation gate | **Phase 9I — Historical token-identity migration** |' docs/project/PROJECT-STATUS.md
 
       - name: Whitespace errors
         shell: bash
