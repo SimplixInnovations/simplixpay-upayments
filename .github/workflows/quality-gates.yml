@@ -119,6 +119,9 @@ jobs:
       - name: Provider payment lifecycle harness
         run: php tests/harness/provider-payment-lifecycle-harness.php
 
+      - name: Provider exact amount binding harness
+        run: php tests/harness/provider-payment-amount-binding-harness.php
+
       - name: H12 PHP harness
         run: php tests/harness/phase-9g-h12-php-harness.php
 
