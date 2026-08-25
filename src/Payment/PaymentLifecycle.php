@@ -42,7 +42,7 @@ final class PaymentLifecycle {
     }
 
     /**
-     * WC-API entrypoint. The inherited get_order_status display poll remains delegated.
+     * WC-API entrypoint. The historical get_order_status poll is intercepted here before inherited priority 10.
      */
     public static function handle_callback() {
         $get = isset($_GET) && is_array($_GET) ? $_GET : array();
