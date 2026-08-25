@@ -1,0 +1,58 @@
+name: Security Review Fix Once
+
+on:
+  push:
+    branches:
+      - security/threat-model-discovery
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    if: ${{ github.actor != 'github-actions[bot]' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: security/threat-model-discovery
+          fetch-depth: 0
+
+      - name: Apply exact review fixes
+        shell: python
+        run: |
+          from pathlib import Path
+
+          gateway_path = Path('UPayments.php')
+          gateway = gateway_path.read_text(encoding='utf-8')
+          old = """    if ( $custom_field_value !== '' ) {\n        update_post_meta( $post_id, '_custom_field_id', $custom_field_value );\n    } else {\n        delete_post_meta( $post_id, '_custom_field_id' );\n    }"""
+          new = """    if ( $custom_field_value !== '' ) {\n        update_post_meta( $post_id, '_custom_field_id', $custom_field_value );\n    }"""
+          if gateway.count(old) != 1:
+              raise SystemExit(f'product-meta semantic contract changed: {gateway.count(old)}')
+          gateway_path.write_text(gateway.replace(old, new, 1), encoding='utf-8')
+
+          doc_path = Path('docs/project/SECURITY-THREAT-MODEL.md')
+          doc = doc_path.read_text(encoding='utf-8')
+          for value in ('P1', 'P2', 'P2 defense in depth'):
+              old_line = f'**Severity:** {value}  \n'
+              new_line = f'**Severity:** {value}\n'
+              expected = 2 if value == 'P1' else 1
+              if doc.count(old_line) != expected:
+                  raise SystemExit(f'severity whitespace contract changed for {value}: {doc.count(old_line)}')
+              doc = doc.replace(old_line, new_line)
+          doc_path.write_text(doc, encoding='utf-8')
+
+      - name: Verify full security contract and commit
+        shell: bash
+        run: |
+          set -euo pipefail
+          git diff --check
+          php -l UPayments.php
+          php tests/harness/security-threat-model-harness.php
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add UPayments.php docs/project/SECURITY-THREAT-MODEL.md
+          git diff --cached --quiet && exit 0
+          git commit -m 'security: preserve product-meta behavior and fix governance whitespace'
+          git push origin HEAD:security/threat-model-discovery
