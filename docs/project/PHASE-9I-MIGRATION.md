@@ -119,7 +119,7 @@ The executor:
 9. verifies provenance readback exactly;
 10. reruns preflight after provenance creation and requires `CLEAN`;
 11. is idempotent under normal rerun and concurrent-worker completion;
-12. records only a redacted Simplix-owned per-user ledger (`simplixpay_upayments_migration_v1`) containing token digest, never raw token;
+12. records only a redacted Simplix-owned successful-migration identity ledger (`simplixpay_upayments_migration_v1`) containing token digest, never raw token;
 13. performs zero provider calls and zero historical order-meta mutation.
 
 ### Historical order immutability decision
@@ -136,7 +136,7 @@ This supersedes the earlier draft idea of “normalizing” candidate order snap
 - safe secret creation followed by provenance failure: retain the valid root and allow retry;
 - provenance verification failure: fail closed and surface the failure;
 - final preflight not `CLEAN`: fail closed;
-- ledger failure after verified identity migration: do not roll back valid provenance; surface `migrated_ledger_write_failed` so operations can repair observability separately.
+- executor identity-ledger failure after verified identity migration: do not roll back valid provenance; surface `migrated_ledger_write_failed` so operations can repair observability separately.
 
 ## Operational surface — current tranche
 
@@ -151,11 +151,19 @@ The operational tranche is intentionally explicit rather than auto-discovering e
 - default users per invocation: **20**;
 - hard maximum users per invocation: **50**;
 - rejects duplicate, leading-zero, exponent, negative, zero, overflow and malformed IDs;
-- resumes through an explicit zero-based `offset` and returned `next_offset`;
-- isolates one-user executor exceptions so a bounded page can report all processed results;
+- supports explicit zero-based `offset` plus returned `next_offset`;
+- persists a separate redacted operations result ledger for **every processed user** at `_simplixpay_upayments_migration_result_v1`, including `CLEAN`, `BLOCKED`, `INDETERMINATE`, dry-run and executor-exception outcomes;
+- records position, next offset, input count, mode, dry-run/write mode, sanitized result fields and timestamp, but never raw tokens, API credentials or nested preflight/provider payloads;
+- scopes durable resume evidence with an HMAC-SHA256 batch fingerprint keyed by the in-memory existing API key, so the credential itself is never persisted and stale results from another credential/mode/list cannot be reused;
+- can recover the first not-durably-evaluated position for the exact credential/mode/list through `resumeOffset()`;
+- treats a persisted failed/BLOCKED/INDETERMINATE outcome as evaluated for resume purposes; an operator can deliberately re-evaluate it by choosing an explicit offset rather than resume mode;
+- stops the page if the operations result ledger cannot be durably written, surfaces `batch_checkpoint_failed`, and leaves that same user as the retry offset;
+- never rolls back an already-verified identity mutation merely because the auxiliary operations ledger failed; executor idempotency makes re-evaluation safe;
+- isolates one-user executor exceptions while persisting their sanitized outcome when storage is available;
 - exposes only redacted per-user fields and aggregate reason/classification counters;
-- does not persist API credentials, raw tokens, batch queues or checkout state;
-- relies on the executor's Simplix-owned per-user ledger for durable migrated-user evidence.
+- does not persist API credentials, raw tokens, unbounded batch queues or checkout state.
+
+The operations result ledger is deliberately separate from `MigrationExecutor`'s `simplixpay_upayments_migration_v1` identity-migration ledger. The latter remains evidence only for a successfully verified migration; the operations ledger records the decision/result checkpoint for every evaluated user.
 
 ### Credential/mode resolution
 
@@ -176,22 +184,25 @@ Canonical registration:
 
 Subcommands:
 
-- `preflight --user-ids=<ids> [--offset=<n>] [--limit=<n>]`
-- `execute --user-ids=<ids> --yes [--offset=<n>] [--limit=<n>]`
+- `preflight --user-ids=<ids> [--offset=<n> | --resume] [--limit=<n>]`
+- `execute --user-ids=<ids> --yes [--offset=<n> | --resume] [--limit=<n>]`
 
-Write mode requires explicit `--yes`. Output is redacted JSON only. There is deliberately no `--api-key` argument.
+`--resume` recovers the first user without a matching durable operations-result checkpoint for the exact credential/mode/list. It is mutually exclusive with explicit `--offset`; explicit offset remains the deliberate re-evaluation mechanism.
+
+Write mode requires explicit `--yes`. Failed batches emit their redacted JSON result before terminating non-zero. There is deliberately no `--api-key` argument.
 
 ### WooCommerce admin
 
 A WooCommerce submenu page is registered as **SimplixPay Migration**.
 
-Security controls:
+Security/operations controls:
 
 - capability: `manage_woocommerce`;
 - WordPress nonce required for POST;
 - default mode is read-only preflight;
 - execute mode requires a separate explicit confirmation checkbox;
-- user IDs, resume offset and batch limit are strictly validated;
+- user IDs, explicit offset and batch limit are strictly validated;
+- durable-resume checkbox recovers the first not-durably-evaluated position and cannot be combined with a nonzero explicit offset;
 - no credential field exists;
 - output is escaped, redacted JSON only.
 
@@ -205,7 +216,7 @@ It registers no checkout, Store API, frontend, cron or provider hooks. Operation
 
 `tests/harness/phase-9i-operations-harness.php` is required inside `H12 Regression Harness` CI.
 
-It covers strict ID parsing, settings resolution/redaction, bounded page/resume behavior, per-user failure aggregation, executor exception isolation, invalid-window no-execution behavior, safe CLI output, CLI execute confirmation, admin capability/nonce/confirmation source contracts, canonical CLI namespace, no checkout/frontend hook, no provider transport and hard batch bounds.
+It covers strict ID parsing, settings resolution/redaction, bounded page behavior, per-user durable result persistence, BLOCKED/exception ledger coverage, durable resume recovery, credential/mode/dry-run checkpoint isolation, checkpoint-write failure/retry semantics, per-user failure aggregation, invalid-window no-execution behavior, safe CLI output, nonzero CLI failure status, CLI execute confirmation, admin capability/nonce/confirmation/resume source contracts, canonical CLI namespace, no checkout/frontend hook, no provider transport and hard batch bounds.
 
 ## Exit condition
 
