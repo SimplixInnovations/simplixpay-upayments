@@ -175,12 +175,15 @@ final class StatusVerifier {
             return $result;
         }
 
-        $decimals = function_exists('wc_get_price_decimals') ? (int) wc_get_price_decimals() : 2;
-        $expected_amount = wc_format_decimal($local_amount, $decimals);
-        $normalized_amount = wc_format_decimal($verified_amount, $decimals);
-        if (!is_string($expected_amount)
-            || !is_string($normalized_amount)
-            || $normalized_amount !== $expected_amount
+        // Exact numeric equality without display/store-decimal rounding.
+        // Trailing-zero variants (10, 10.0, 10.000) are the same amount, while
+        // any non-zero extra precision (10.004 vs 10.00) is a hard mismatch.
+        // This comparison never casts the validated decimal to float.
+        $verified_canonical = self::canonical_decimal($verified_amount);
+        $local_canonical = self::canonical_decimal($local_amount);
+        if ($verified_canonical === null
+            || $local_canonical === null
+            || !hash_equals($local_canonical, $verified_canonical)
         ) {
             $result['reason'] = 'binding_amount';
             return $result;
@@ -229,6 +232,20 @@ final class StatusVerifier {
             return null;
         }
         return $value;
+    }
+
+    private static function canonical_decimal($value) {
+        $value = self::normalize_decimal($value);
+        if ($value === null) {
+            return null;
+        }
+        $dot = strpos($value, '.');
+        if ($dot === false) {
+            return $value;
+        }
+        $integer = substr($value, 0, $dot);
+        $fraction = rtrim(substr($value, $dot + 1), '0');
+        return $fraction === '' ? $integer : $integer . '.' . $fraction;
     }
 
     private static function is_allowed_status_url($url, $track_id) {
