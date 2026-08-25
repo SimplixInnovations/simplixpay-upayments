@@ -77,7 +77,7 @@ jobs:
           grep -Fq '5. **Architecture & Code-Quality Foundation — CURRENT GATE / DISCOVERY**' docs/ENGINEERING-ROADMAP.md
           grep -Fq '| Security threat-model audit | **DONE / VERIFIED** | Critical |' docs/project/MASTER-ENGINEERING-PLAYBOOK.md
           grep -Fq '| Architecture/code quality | **DISCOVERY — CURRENT GATE** | High |' docs/project/MASTER-ENGINEERING-PLAYBOOK.md
-          grep -Fq 'the current owner/gate is **Architecture & Code-Quality Foundation — DISCOVERY**' docs/project/REPOSITORY-AUDIT.md
+          grep -Fq 'The current owner/gate is **Architecture & Code-Quality Foundation — DISCOVERY**' docs/project/REPOSITORY-AUDIT.md
           grep -Fq 'the current permitted program gate is **Architecture & Code-Quality Foundation — DISCOVERY**' docs/project/REPOSITORY-READINESS.md
           grep -Fq 'the current permitted gate is **Architecture & Code-Quality Foundation — DISCOVERY**' docs/project/PHASE-0-RELEASE-IDENTITY.md
           grep -Fq 'The current program gate is **Architecture & Code-Quality Foundation — DISCOVERY**' docs/project/PHASE-9I-MIGRATION.md
@@ -89,43 +89,61 @@ jobs:
         run: |
           set -euo pipefail
 
-          reject_marker() {
-            local file="$1"
-            local marker="$2"
-            if grep -Fq -- "$marker" "$file"; then
-              echo "Stale gate marker found in ${file}: ${marker}"
+          live_gate_files=(
+            README.md
+            CHANGELOG.md
+            docs/ENGINEERING-ROADMAP.md
+            docs/project/PROJECT-STATUS.md
+            docs/project/MASTER-ENGINEERING-PLAYBOOK.md
+            docs/project/NEW-CHAT-HANDOFF.md
+            docs/project/PHASE-9I-MIGRATION.md
+            docs/project/PROVIDER-PAYMENT-LIFECYCLE.md
+            docs/project/REPOSITORY-AUDIT.md
+            docs/project/SECURITY-THREAT-MODEL.md
+          )
+
+          reject_across_live_records() {
+            local marker="$1"
+            if grep -FnH -F -- "$marker" "${live_gate_files[@]}"; then
+              echo "Obsolete live gate marker detected: ${marker}"
               exit 1
             fi
           }
 
-          reject_marker docs/project/PROJECT-STATUS.md '| Current program gate | **Security Threat-Model Closure — DISCOVERY** |'
-          reject_marker README.md 'The current program gate is **Security Threat-Model Closure — DISCOVERY**.'
-          reject_marker CHANGELOG.md '**Security Threat-Model Closure — DISCOVERY** is now the active gate.'
-          reject_marker docs/ENGINEERING-ROADMAP.md '4. **Security Threat-Model Closure — CURRENT GATE / DISCOVERY**'
+          reject_across_live_records 'Security Threat-Model Closure — DISCOVERY'
+          reject_across_live_records 'Security Threat-Model Closure — **CURRENT / DISCOVERY**'
+          reject_across_live_records 'Security threat-model audit | **DISCOVERY — CURRENT GATE**'
+          reject_across_live_records 'Security Threat-Model Closure — **DISCOVERY / CURRENT GATE**'
+          reject_across_live_records '## Current program gate — Security Threat-Model Closure'
+          reject_across_live_records '## Current engineering gate — Security Threat-Model Closure'
+          reject_across_live_records '## Next gate — Security Threat-Model Closure'
 
-          reject_marker docs/project/MASTER-ENGINEERING-PLAYBOOK.md '| Security threat-model audit | **DISCOVERY — CURRENT GATE** | Critical |'
-          reject_marker docs/project/MASTER-ENGINEERING-PLAYBOOK.md 'The current unified gate is **Security Threat-Model Closure — DISCOVERY**.'
-          reject_marker docs/project/MASTER-ENGINEERING-PLAYBOOK.md '4. Security Threat-Model Closure — **CURRENT / DISCOVERY**.'
-          reject_marker docs/project/MASTER-ENGINEERING-PLAYBOOK.md '**Current program status:** DISCOVERY / CURRENT GATE.'
-          reject_marker docs/project/MASTER-ENGINEERING-PLAYBOOK.md 'Current program gate: Security Threat-Model Closure — DISCOVERY'
-          reject_marker docs/project/MASTER-ENGINEERING-PLAYBOOK.md '- [ ] Security Threat-Model Closure — **DISCOVERY / CURRENT GATE**.'
+          if grep -FnH -F -- '**Current program status:** DISCOVERY / CURRENT GATE.' docs/project/MASTER-ENGINEERING-PLAYBOOK.md; then
+            echo 'Obsolete Security program-status marker detected in Master Playbook.'
+            exit 1
+          fi
 
-          reject_marker docs/project/NEW-CHAT-HANDOFF.md '- Current program gate: **Security Threat-Model Closure — DISCOVERY**'
-          reject_marker docs/project/NEW-CHAT-HANDOFF.md '## Next gate — Security Threat-Model Closure'
-          reject_marker docs/project/NEW-CHAT-HANDOFF.md '4. Security Threat-Model Closure — **CURRENT / DISCOVERY**'
-          reject_marker docs/project/NEW-CHAT-HANDOFF.md 'The current gate is Security Threat-Model Closure — DISCOVERY.'
+          if grep -FnH -F -- '**Status:** IMPLEMENTATION / REVIEW' docs/project/SECURITY-THREAT-MODEL.md; then
+            echo 'Security record regressed to an in-flight status.'
+            exit 1
+          fi
+          if grep -FnH -F -- '**Current branch:** `security/threat-model-discovery`' docs/project/SECURITY-THREAT-MODEL.md; then
+            echo 'Security record regressed to the deleted implementation branch.'
+            exit 1
+          fi
 
-          reject_marker docs/project/PHASE-9I-MIGRATION.md 'The current program gate is **Security Threat-Model Closure — DISCOVERY**.'
-          reject_marker docs/project/PROVIDER-PAYMENT-LIFECYCLE.md 'The next program gate is **Security Threat-Model Closure — DISCOVERY**.'
-          reject_marker docs/project/PROVIDER-PAYMENT-LIFECYCLE.md 'The next permitted program gate is **Security Threat-Model Closure — DISCOVERY**.'
-          reject_marker docs/project/REPOSITORY-AUDIT.md 'The current owner/gate is **Security Threat-Model Closure — DISCOVERY**.'
-          reject_marker docs/project/REPOSITORY-AUDIT.md '**Security Threat-Model Closure — DISCOVERY**.'
-          reject_marker docs/project/SECURITY-THREAT-MODEL.md '**Status:** IMPLEMENTATION / REVIEW'
-          reject_marker docs/project/SECURITY-THREAT-MODEL.md '**Current branch:** `security/threat-model-discovery`'
-
-          reject_marker docs/project/PHASE-0-RELEASE-IDENTITY.md 'The next permitted implementation gate is **Phase 9I — Historical token-identity migration**'
-          reject_marker docs/project/REPOSITORY-READINESS.md "Phase 0 is now permitted under the repository's normal PR/CI/review controls."
-          reject_marker docs/project/REPOSITORY-READINESS.md 'The next permitted runtime-changing work is **Phase 0 — SimplixPay release identity and updater ownership**.'
+          if grep -FnH -F -- 'The next permitted implementation gate is **Phase 9I — Historical token-identity migration**' docs/project/PHASE-0-RELEASE-IDENTITY.md; then
+            echo 'Phase 0 record regressed to a stale next-gate instruction.'
+            exit 1
+          fi
+          if grep -FnH -F -- "Phase 0 is now permitted under the repository's normal PR/CI/review controls." docs/project/REPOSITORY-READINESS.md; then
+            echo 'Repository Readiness record regressed to stale live Phase 0 wording.'
+            exit 1
+          fi
+          if grep -FnH -F -- 'The next permitted runtime-changing work is **Phase 0 — SimplixPay release identity and updater ownership**.' docs/project/REPOSITORY-READINESS.md; then
+            echo 'Repository Readiness record regressed to a stale next-gate instruction.'
+            exit 1
+          fi
 
       - name: Whitespace errors
         shell: bash
