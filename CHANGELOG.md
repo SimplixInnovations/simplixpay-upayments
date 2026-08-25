@@ -6,6 +6,32 @@ The project is still in pre-release engineering hardening. Entries below are eng
 
 ## [Unreleased]
 
+### Phase 9I — historical token-identity migration — DONE / VERIFIED
+
+- Added deterministic read-only migration preflight with exact `CLEAN`, `MIGRATABLE`, `BLOCKED` and `INDETERMINATE` classifications.
+- Covered all 13 historical blocker families with explicit fail-closed behavior, including cross-user conflicts, malformed/mismatched scope or secret evidence, incomplete history, unloadable orders and force-refresh uncertainty.
+- Kept preflight at zero provider calls and zero identity writes.
+- Added a locked migration executor that acts only on fresh `MIGRATABLE` evidence and never fabricates `canonical` / `create_201` provenance.
+- Limited migrated historical identity to `legacy_compat` / `legacy_verified_capture` with exact readback and final CLEAN verification.
+- Preserved historical order metadata instead of rewriting payment/subscription evidence during migration.
+- Added bounded admin and WP-CLI operations with dry-run, explicit execute confirmation, strict user-list/window bounds and no separate credential input surface.
+- Added a separate redacted `_simplixpay_upayments_migration_result_v1` operations-result ledger for every processed user, including CLEAN, BLOCKED, INDETERMINATE, dry-run and exception outcomes.
+- Added durable resume using credential/mode/list-scoped HMAC batch fingerprints without persisting the API key.
+- Added fail-closed checkpoint semantics: if a result checkpoint cannot be durably written, the page stops and leaves that same user as the retry point; valid identity mutation is not rolled back and executor idempotency makes re-evaluation safe.
+- Ensured failed CLI batches emit redacted JSON before terminating non-zero.
+- Kept the migration operational surface isolated from provider transport, checkout, Store API, frontend and cron paths.
+- Verified preflight PR #11 merge `8cca32819dd165e35efa0fcc5a48bdd551757d8c` with tree `c0af8a2ab1fbd2494f961ee9f924c00aaf519ab0`.
+- Verified executor PR #12 merge `708253bd9d0daf217735fbb087b360e8b848136c` with tree `e222a18c9808229fdde79efb42268d8c3fbd33ae`.
+- Verified operations PR #13 exact reviewed head `2989862683754f8a8eda8e9d4239ada4a61b23f4`, squash merge `db1c4ea4dab45bc1ffaf4529e0ccb940153cd999`, tree `5bec24ad26c66a504cd0dd609f4311f9e70add76`, VERIFIED GitHub signature and post-merge branch deletion.
+- Final implementation-head regression evidence: Phase 0 **35 PASS / 0 FAIL**; Phase 9I preflight **123 PASS / 0 FAIL**; executor **59 PASS / 0 FAIL**; operations **81 PASS / 0 FAIL**; H12 PHP **1927 PASS / 0 FAIL**; H12 Blocks **144 PASS / 0 FAIL**; Governance, tracked PHP syntax and Blocks syntax **SUCCESS**.
+- Phase 9I completion certifies the migration system/safety contract, not automatic migration of every merchant installation. Site-specific classification/migration remains an explicit bounded operational action.
+
+### Current program gate
+
+**Provider Contract & Payment Lifecycle — DISCOVERY** is now the active gate.
+
+The next work must compare current exact runtime behavior against current official UPayments documentation and freeze evidence-backed contracts for charge, webhook/status/browser-return truth hierarchy, payment state transitions, reconciliation/idempotency/retry semantics, refund behavior and multi-merchant boundaries before payment-critical refactoring.
+
 ### Phase 0 — release identity and updater ownership — DONE / VERIFIED
 
 - Established the active public plugin identity as **SimplixPay for UPayments** by **Simplix Innovations**.
@@ -31,14 +57,6 @@ The project is still in pre-release engineering hardening. Entries below are eng
 - Added GitHub Actions quality gates for governance, tracked PHP syntax, H12 PHP regression and H12 Blocks regression.
 - Normalized repository licensing so GitHub recognizes SPDX `MIT`.
 - Completed whole-repository readiness auditing, Simplix-led public presentation, protected-branch policy, security controls and contributor/history cleanup.
-
-### Current implementation gate
-
-**Phase 9I — Historical token-identity migration** is next.
-
-It must provide a read-only deterministic preflight that classifies historical evidence as `CLEAN`, `MIGRATABLE`, `BLOCKED` or `INDETERMINATE`; perform zero provider calls/writes during preflight; execute only explicit `MIGRATABLE` cases; never fabricate canonical/Create-201 provenance; and provide bounded, idempotent, resumable operational behavior.
-
-The 13 open Phase 9I blocker classes are tracked in `docs/project/PROJECT-STATUS.md`.
 
 ## Historical engineering record
 
