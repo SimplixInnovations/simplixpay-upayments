@@ -13,9 +13,10 @@ Before substantive work, read in this order:
 5. `docs/project/PHASE-9I-MIGRATION.md`
 6. `docs/project/PROVIDER-PAYMENT-LIFECYCLE.md`
 7. `docs/project/SECURITY-THREAT-MODEL.md`
-8. relevant living sections of `docs/project/MASTER-ENGINEERING-PLAYBOOK.md`
-9. `docs/project/BASELINE-H12.md` when token/saved-card/subscription identity is relevant
-10. `docs/project/REPOSITORY-READINESS.md` for historical repository-foundation evidence when relevant
+8. `docs/project/ARCHITECTURE-CODE-QUALITY.md`
+9. relevant living sections of `docs/project/MASTER-ENGINEERING-PLAYBOOK.md`
+10. `docs/project/BASELINE-H12.md` when token/saved-card/subscription identity is relevant
+11. `docs/project/REPOSITORY-READINESS.md` for historical repository-foundation evidence when relevant
 
 ## Canonical identity
 
@@ -50,6 +51,8 @@ Live evidence beats stale project text. Do not rewrite historical facts merely t
 If `PROJECT-STATUS.md` says **pre-Phase-0 repository readiness** is open, finish `REPOSITORY-READINESS.md` before changing plugin/runtime identity, updater behavior, main plugin file, text domain or protected payment identifiers.
 
 Do not start a later phase because code has been drafted. Phase progression requires independent verification and an explicit current-state update.
+
+When **Architecture & Code-Quality Foundation** is current, `ARCHITECTURE-CODE-QUALITY.md` is mandatory. Characterize a responsibility before extracting it, keep legacy public entry points as compatibility wrappers where required, and follow the frozen extraction order unless new evidence justifies a separately reviewed change.
 
 ## Protected compatibility identities
 
@@ -95,6 +98,8 @@ Changing one requires an explicitly approved migration contract, old/new precede
 - Keep changes phase-scoped; avoid drive-by cleanup in payment-critical files.
 - Add regression evidence for defects.
 - Do not mechanically rename/refactor payment code without characterization tests.
+- During architecture work, prefer strangler/delegation seams over moving large blocks wholesale.
+- Do not grow `UPayments.php` with new responsibilities; new responsibilities require an explicit module boundary.
 - Update project status/docs when a verified milestone changes project truth.
 - Do not claim compatibility/security/performance/production readiness without evidence.
 
@@ -124,6 +129,7 @@ After merge, independently verify `main`, expected topology for the chosen merge
 Until the standard quality platform replaces them:
 
 ```bash
+php tests/harness/architecture-foundation-harness.php
 php tests/harness/security-threat-model-harness.php
 php tests/harness/phase-9g-h12-php-harness.php
 node --check tests/harness/phase-9g-h12-blocks-harness.js
