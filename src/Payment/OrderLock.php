@@ -7,10 +7,9 @@ defined('ABSPATH') || exit;
 /**
  * Database-atomic, self-expiring per-order lifecycle lock.
  *
- * It prevents browser return, webhook and reconciliation workers from racing
- * the same WooCommerce payment state transition. The unique option name makes
- * acquisition atomic across PHP workers without requiring optional DB advisory
- * lock support.
+ * Acquisition first uses add_option(), whose unique option_name is atomic. Stale
+ * recovery and release use SQL compare-and-swap/delete against the exact stored
+ * scalar record so one worker can never delete or replace another worker's lock.
  */
 final class OrderLock {
     private const PREFIX = 'simplixpay_upay_order_lock_v1_';
@@ -28,29 +27,21 @@ final class OrderLock {
 
         $name = self::PREFIX . $order_id;
         $token = self::token();
-        $record = array(
-            'token' => $token,
-            'expires' => time() + self::TTL,
-        );
+        $record = self::encode_record($token, time() + self::TTL);
 
         if (add_option($name, $record, '', 'no')) {
             return $token;
         }
 
         $existing = get_option($name, null);
-        if (!is_array($existing)
-            || !isset($existing['expires'])
-            || !is_numeric($existing['expires'])
-            || (int) $existing['expires'] >= time()
-        ) {
+        $parsed = self::decode_record($existing);
+        if ($parsed === null || $parsed['expires'] >= time()) {
             return null;
         }
 
-        // Stale lock recovery. Concurrent workers may all delete the stale row,
-        // but the following add_option() uniqueness constraint still permits
-        // exactly one new owner.
-        delete_option($name);
-        if (add_option($name, $record, '', 'no')) {
+        // Compare-and-swap is essential here. A read + delete_option() + add_option()
+        // sequence can delete a newer owner's lock after another worker wins recovery.
+        if (self::replace_if_current($name, $existing, $record)) {
             return $token;
         }
 
@@ -58,6 +49,8 @@ final class OrderLock {
     }
 
     /**
+     * Release only the exact record owned by this token.
+     *
      * @param int    $order_id
      * @param string $token Token returned by acquire().
      * @return void
@@ -70,12 +63,88 @@ final class OrderLock {
 
         $name = self::PREFIX . $order_id;
         $existing = get_option($name, null);
-        if (is_array($existing)
-            && isset($existing['token'])
-            && is_string($existing['token'])
-            && hash_equals($existing['token'], $token)
+        $parsed = self::decode_record($existing);
+        if ($parsed === null || !hash_equals($parsed['token'], $token)) {
+            return;
+        }
+
+        self::delete_if_current($name, $existing);
+    }
+
+    private static function encode_record($token, $expires) {
+        return (string) ((int) $expires) . ':' . (string) $token;
+    }
+
+    private static function decode_record($record) {
+        if (!is_string($record)
+            || !preg_match('/^([1-9][0-9]{0,11}):([a-f0-9]{32}|[a-f0-9]{64})$/', $record, $matches)
         ) {
-            delete_option($name);
+            return null;
+        }
+        $expires = (int) $matches[1];
+        if ($expires <= 0) {
+            return null;
+        }
+        return array('expires' => $expires, 'token' => $matches[2]);
+    }
+
+    private static function replace_if_current($name, $expected, $replacement) {
+        global $wpdb;
+        if (!is_object($wpdb)
+            || !isset($wpdb->options)
+            || !is_string($wpdb->options)
+            || $wpdb->options === ''
+            || !method_exists($wpdb, 'prepare')
+            || !method_exists($wpdb, 'query')
+            || !is_string($expected)
+            || !is_string($replacement)
+        ) {
+            return false;
+        }
+
+        $sql = $wpdb->prepare(
+            "UPDATE {$wpdb->options} SET option_value = %s WHERE option_name = %s AND option_value = %s",
+            $replacement,
+            $name,
+            $expected
+        );
+        $changed = $wpdb->query($sql);
+        if ((int) $changed !== 1) {
+            return false;
+        }
+        self::flush_option_cache($name);
+        return true;
+    }
+
+    private static function delete_if_current($name, $expected) {
+        global $wpdb;
+        if (!is_object($wpdb)
+            || !isset($wpdb->options)
+            || !is_string($wpdb->options)
+            || $wpdb->options === ''
+            || !method_exists($wpdb, 'prepare')
+            || !method_exists($wpdb, 'query')
+            || !is_string($expected)
+        ) {
+            return false;
+        }
+
+        $sql = $wpdb->prepare(
+            "DELETE FROM {$wpdb->options} WHERE option_name = %s AND option_value = %s",
+            $name,
+            $expected
+        );
+        $changed = $wpdb->query($sql);
+        if ((int) $changed !== 1) {
+            return false;
+        }
+        self::flush_option_cache($name);
+        return true;
+    }
+
+    private static function flush_option_cache($name) {
+        if (function_exists('wp_cache_delete')) {
+            wp_cache_delete($name, 'options');
         }
     }
 
@@ -87,6 +156,5 @@ final class OrderLock {
         }
     }
 
-    private function __construct() {
-    }
+    private function __construct() {}
 }
