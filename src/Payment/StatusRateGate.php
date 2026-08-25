@@ -31,7 +31,10 @@ final class StatusRateGate {
         }
 
         $mode = $gateway->getMode() ? 'test' : 'live';
-        $salt = function_exists('wp_salt') ? (string) wp_salt('auth') : '';
+        // This class is reachable only after the WordPress hook API is live.
+        // Call the canonical WP salt function directly; an empty result still
+        // fails closed and never creates a credential-derived option name.
+        $salt = (string) wp_salt('auth');
         if ($salt === '') {
             return false;
         }
