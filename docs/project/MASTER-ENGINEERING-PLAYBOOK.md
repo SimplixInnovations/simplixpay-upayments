@@ -4,7 +4,7 @@
 **Upstream:** `upaymentskwt/woocommerce`  
 **Document purpose:** authoritative project plan, engineering standard, status ledger, clean-chat handoff, and Agent execution guide  
 **Baseline date:** 2026-08-24  
-**Last independently verified implementation `main`:** `db1c4ea4dab45bc1ffaf4529e0ccb940153cd999`  
+**Last independently verified implementation `main`:** `db1c4ea4dab45bc1ffaf4529e0ccb940153cd999`
 **Current project posture:** engineering hardening; **not yet a generally certified public production release**
 
 ---
@@ -522,7 +522,7 @@ This order is not an excuse to defer a critical security defect discovered later
 
 # PHASE 0 — RELEASE & REPOSITORY SAFETY
 
-**Status:** DONE / VERIFIED  
+**Status:** DONE / VERIFIED
 **Priority:** P0  
 **Dependency:** H12 DONE / VERIFIED
 
@@ -651,7 +651,7 @@ Physical basename/folder/text-domain migration remains a later separately tested
 
 # PHASE 9I — HISTORICAL TOKEN-IDENTITY MIGRATION
 
-**Status:** DONE / VERIFIED  
+**Status:** DONE / VERIFIED
 **Priority:** P0  
 **Dependency:** H12 DONE / VERIFIED; Phase 0 DONE / VERIFIED
 
