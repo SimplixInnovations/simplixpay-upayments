@@ -33,6 +33,7 @@ final class MigrationAdmin {
             'offset' => '0',
             'limit' => (string) MigrationBatch::DEFAULT_LIMIT,
             'migration_action' => 'preflight',
+            'resume' => 'no',
         );
 
         if (isset($_SERVER['REQUEST_METHOD']) && strtoupper((string) $_SERVER['REQUEST_METHOD']) === 'POST') {
@@ -43,6 +44,7 @@ final class MigrationAdmin {
             $form['migration_action'] = isset($_POST['migration_action']) && is_string($_POST['migration_action'])
                 ? sanitize_key(wp_unslash($_POST['migration_action']))
                 : 'preflight';
+            $form['resume'] = isset($_POST['resume']) && $_POST['resume'] === 'yes' ? 'yes' : 'no';
 
             $request = self::parseForm($form);
             if (!$request['ok']) {
@@ -56,17 +58,37 @@ final class MigrationAdmin {
                 if (empty($settings['ok'])) {
                     $error = isset($settings['reason']) ? $settings['reason'] : 'settings_unavailable';
                 } else {
-                    $result = array(
-                        'settings' => MigrationSettings::redact($settings),
-                        'batch' => MigrationBatch::run(
+                    $dry_run = ($form['migration_action'] !== 'execute');
+                    $offset = $request['offset'];
+                    $resume_info = null;
+                    if (!empty($request['resume'])) {
+                        $resume_info = MigrationBatch::resumeOffset(
                             $request['user_ids'],
                             $settings['api_key'],
                             $settings['is_test_mode'],
-                            ($form['migration_action'] !== 'execute'),
-                            $request['offset'],
-                            $request['limit']
-                        ),
-                    );
+                            $dry_run
+                        );
+                        if (empty($resume_info['ok'])) {
+                            $error = isset($resume_info['reason']) ? $resume_info['reason'] : 'resume_unavailable';
+                        } else {
+                            $offset = $resume_info['offset'];
+                        }
+                    }
+
+                    if ($error === null) {
+                        $result = array(
+                            'settings' => MigrationSettings::redact($settings),
+                            'resume' => $resume_info,
+                            'batch' => MigrationBatch::run(
+                                $request['user_ids'],
+                                $settings['api_key'],
+                                $settings['is_test_mode'],
+                                $dry_run,
+                                $offset,
+                                $request['limit']
+                            ),
+                        );
+                    }
                 }
             }
         }
@@ -93,8 +115,12 @@ final class MigrationAdmin {
         echo '<tr><th scope="row"><label for="simplixpay-user-ids">' . esc_html__('User IDs', 'upayments') . '</label></th><td>';
         echo '<textarea id="simplixpay-user-ids" name="user_ids" rows="5" cols="60" class="large-text code" required>' . esc_textarea($form['user_ids']) . '</textarea>';
         echo '<p class="description">' . esc_html__('Comma or whitespace separated positive customer IDs. Maximum 500 IDs per submitted list.', 'upayments') . '</p></td></tr>';
-        echo '<tr><th scope="row"><label for="simplixpay-offset">' . esc_html__('Resume offset', 'upayments') . '</label></th><td>';
-        echo '<input id="simplixpay-offset" name="offset" type="number" min="0" step="1" value="' . esc_attr($form['offset']) . '"></td></tr>';
+        echo '<tr><th scope="row"><label for="simplixpay-offset">' . esc_html__('Explicit offset', 'upayments') . '</label></th><td>';
+        echo '<input id="simplixpay-offset" name="offset" type="number" min="0" step="1" value="' . esc_attr($form['offset']) . '">';
+        echo '<p class="description">' . esc_html__('Use an explicit offset to deliberately re-evaluate a known position. Leave at 0 when using durable resume.', 'upayments') . '</p></td></tr>';
+        echo '<tr><th scope="row">' . esc_html__('Durable resume', 'upayments') . '</th><td>';
+        echo '<label><input type="checkbox" name="resume" value="yes" ' . checked($form['resume'], 'yes', false) . '> ' . esc_html__('Resume from the first user without a matching durable operations-result checkpoint.', 'upayments') . '</label>';
+        echo '<p class="description">' . esc_html__('Resume is credential/mode/list scoped and cannot be combined with a nonzero explicit offset.', 'upayments') . '</p></td></tr>';
         echo '<tr><th scope="row"><label for="simplixpay-limit">' . esc_html__('Batch limit', 'upayments') . '</label></th><td>';
         echo '<input id="simplixpay-limit" name="limit" type="number" min="1" max="' . esc_attr((string) MigrationBatch::MAX_LIMIT) . '" step="1" value="' . esc_attr($form['limit']) . '"></td></tr>';
         echo '<tr><th scope="row">' . esc_html__('Mode', 'upayments') . '</th><td>';
@@ -122,6 +148,10 @@ final class MigrationAdmin {
         if ($offset === null) {
             return array('ok' => false, 'reason' => 'invalid_offset');
         }
+        $resume = isset($form['resume']) && $form['resume'] === 'yes';
+        if ($resume && $offset !== 0) {
+            return array('ok' => false, 'reason' => 'resume_with_offset_invalid');
+        }
         $limit = self::strictInt(isset($form['limit']) ? $form['limit'] : null, false);
         if ($limit === null || $limit > MigrationBatch::MAX_LIMIT) {
             return array('ok' => false, 'reason' => 'invalid_limit');
@@ -132,6 +162,7 @@ final class MigrationAdmin {
             'user_ids' => $parsed['user_ids'],
             'offset' => $offset,
             'limit' => $limit,
+            'resume' => $resume,
         );
     }
 
