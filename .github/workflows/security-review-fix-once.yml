@@ -34,10 +34,14 @@ jobs:
 
           doc_path = Path('docs/project/SECURITY-THREAT-MODEL.md')
           doc = doc_path.read_text(encoding='utf-8')
-          for value in ('P1', 'P2', 'P2 defense in depth'):
+          expected_counts = {
+              'P1': 2,
+              'P2': 2,
+              'P2 defense in depth': 1,
+          }
+          for value, expected in expected_counts.items():
               old_line = f'**Severity:** {value}  \n'
               new_line = f'**Severity:** {value}\n'
-              expected = 2 if value == 'P1' else 1
               if doc.count(old_line) != expected:
                   raise SystemExit(f'severity whitespace contract changed for {value}: {doc.count(old_line)}')
               doc = doc.replace(old_line, new_line)
