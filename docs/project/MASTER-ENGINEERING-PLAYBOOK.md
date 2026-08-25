@@ -477,8 +477,8 @@ Requirements:
 | Phase 9I — Historical migration | **DONE / VERIFIED** | Critical for upgrades/existing customers |
 | Provider contract audit | **DONE / VERIFIED** | Critical |
 | Payment lifecycle/state machine | **DONE / VERIFIED** | Critical |
-| Security threat-model audit | **DISCOVERY — CURRENT GATE** | Critical |
-| Architecture/code quality | **PARTIAL** | High |
+| Security threat-model audit | **DONE / VERIFIED** | Critical |
+| Architecture/code quality | **DISCOVERY — CURRENT GATE** | High |
 | Full automated quality platform | **NOT STARTED** | Critical before public stable |
 | WooCommerce/WordPress/PHP certification | **PENDING** | Critical |
 | WPML/multilingual/multicurrency certification | **FIXES PARTIAL; CERTIFICATION PENDING** | High/product objective |
@@ -492,7 +492,7 @@ Requirements:
 | WordPress.org publication | **DEFERRED UNTIL READY** | Strategic |
 | Continuous maintenance | **ONGOING AFTER FIRST STABLE** | Critical long-term |
 
-Provider Contract & Payment Lifecycle is **DONE / VERIFIED**. The current unified gate is **Security Threat-Model Closure — DISCOVERY**. Provider contract and lifecycle rows remain separated because they retain distinct closed contracts and regression evidence.
+Provider Contract & Payment Lifecycle and the bounded Security Threat-Model Closure are **DONE / VERIFIED**. The current unified gate is **Architecture & Code-Quality Foundation — DISCOVERY**. Provider contract and lifecycle rows remain separated because they retain distinct closed contracts and regression evidence.
 
 ## 18. Phase ordering
 
@@ -501,8 +501,8 @@ Recommended execution order:
 1. Phase 0 — Release & Repository Safety — **DONE / VERIFIED**.
 2. Phase 9I — Historical Token-Identity Migration — **DONE / VERIFIED**.
 3. Provider Contract & Payment Lifecycle — **DONE / VERIFIED**.
-4. Security Threat-Model Closure — **CURRENT / DISCOVERY**.
-5. Architecture & Code Quality Foundation.
+4. Security Threat-Model Closure — **DONE / VERIFIED**.
+5. Architecture & Code Quality Foundation — **CURRENT / DISCOVERY**.
 6. Full Test-Driven Quality Platform.
 7. WooCommerce / WordPress / PHP Certification.
 8. WPML / i18n / multilingual / multicurrency / RTL.
@@ -809,7 +809,7 @@ Model events such as:
 
 # SECURITY THREAT-MODEL AUDIT
 
-**Current program status:** DISCOVERY / CURRENT GATE.
+**Program status:** DONE / VERIFIED. This section retains the security phase scope as a historical engineering standard; the current program gate is **Architecture & Code-Quality Foundation — DISCOVERY**.
 
 ## 30. Scope
 
