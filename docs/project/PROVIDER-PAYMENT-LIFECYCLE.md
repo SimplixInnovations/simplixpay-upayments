@@ -1,20 +1,38 @@
 # Provider Contract & Payment Lifecycle
 
-**Status:** READY FOR IMPLEMENTATION
+**Status:** DONE / VERIFIED
 
 **Repository:** `SimplixInnovations/simplixpay-upayments`
 
 **Discovery base:** `8e5a93ceb4f133663fdf433cc1a10b8b36c13d97`
 
-**Discovery date:** 2026-08-25
+**Implementation PR:** #15
 
-**Purpose:** freeze the evidence-backed UPayments/WooCommerce payment-lifecycle contract before changing payment-critical runtime behavior.
+**Final reviewed head:** `d2b08ebe1e65ad4ea8f4e06b41423e7bd9904fc3`
+
+**Verified squash merge:** `9569e39973a9e94926087738eae06c3846361943`
+
+**Merge tree:** `40ec562674361624c2764263ba55cfba84594955`
+
+**Verified parent:** `8e5a93ceb4f133663fdf433cc1a10b8b36c13d97`
+
+**Discovery / verification date:** 2026-08-25
+
+## Closure decision
+
+Provider Contract & Payment Lifecycle is **DONE / VERIFIED** for the ordinary WooCommerce checkout lifecycle scope defined below.
+
+The gate is closed because the provider/WooCommerce contract was researched against current official documentation, frozen before runtime implementation, implemented behind an isolated `Simplix\Pay\UPayments\Payment` strangler, independently challenged by automated review, fully regression-tested on the exact PR merge-ref, squash-merged, post-merge verified on `main`, and cleaned up.
+
+This closure certifies the reviewed local lifecycle contract. It does **not** certify automatic refunds, arbitrary multi-merchant marketplace splitting, provider webhook HMAC verification that UPayments has not fully documented, subscription auto-deduction redesign, broad security closure, or broad WooCommerce/WordPress/PHP/WPML/performance compatibility.
+
+The next program gate is **Security Threat-Model Closure — DISCOVERY**.
 
 ## Scope
 
-This gate covers the ordinary checkout payment lifecycle only:
+This gate covers the ordinary checkout payment lifecycle:
 
-- Charge request/response behavior already exercised by the H12 baseline;
+- existing Charge request/response behavior already characterized by H12;
 - browser return and server-to-server notification handling;
 - authenticated Get Payment Status reconciliation;
 - deterministic provider-result classification;
@@ -23,11 +41,11 @@ This gate covers the ordinary checkout payment lifecycle only:
 - status-query rate limiting;
 - current refund and multi-merchant capability boundaries.
 
-Historical token migration remains governed by the closed H12/Phase 9I contracts. Subscription auto-deduction retains its separately characterized scheduler/attempt-journal path and is not silently rewritten by this tranche.
+Historical token migration remains governed by the closed H12/Phase 9I contracts. Subscription auto-deduction retains its separately characterized scheduler/attempt-journal path and was not silently rewritten by this tranche.
 
 ## Evidence registry
 
-Reviewed current official UPayments documentation on 2026-08-25:
+Official UPayments documentation reviewed on 2026-08-25:
 
 - Make Charge: `https://developers.upayments.com/reference/addcharge`
 - Webhook: `https://developers.upayments.com/reference/webhook`
@@ -38,192 +56,264 @@ Reviewed current official UPayments documentation on 2026-08-25:
 - FAQ: `https://developers.upayments.com/reference/faqs`
 - Test Environment: `https://developers.upayments.com/reference/test-environment-details`
 
-Reviewed current WooCommerce documentation on 2026-08-25:
+Official/current WooCommerce documentation reviewed on 2026-08-25:
 
 - Payment Gateway API: `https://developer.woocommerce.com/docs/features/payments/payment-gateway-api`
 - Order statuses: `https://woocommerce.com/document/managing-orders/order-statuses/`
-- `WC_Order::payment_complete()` current code reference.
+- current `WC_Order::payment_complete()` implementation/reference.
 
-Live source base reviewed:
+Live source base characterized:
 
 - `UPayments.php` blob `0f9ee544afcd846e01ff0bee4072175b93e49c60`;
-- existing callback route `wc_upayments`;
-- existing Bearer-authenticated `get-payment-status/{track_id}` verifier;
-- existing H12/Phase 9I regression suites.
+- historical callback route `wc_upayments`;
+- inherited Bearer-authenticated `get-payment-status/{track_id}` behavior;
+- existing Phase 0, Phase 9I, H12 PHP and H12 Blocks regression suites.
 
-## Provider facts frozen for this gate
+## Frozen provider/lifecycle contract
 
 ### Charge
 
-- POST `/api/v1/charge`.
-- Bearer authentication.
+- POST `/api/v1/charge` with Bearer authentication.
 - `notificationUrl` is mandatory.
-- Current plugin requires HTTP `201`, boolean `status === true`, a structurally valid response and a valid external redirect URL.
-- A successful Charge response creates/initiates a payment session; it is **not** proof that funds were captured.
-- The plugin must not retry an indeterminate Charge automatically. No provider idempotency contract for Charge is assumed.
+- Charge success requires HTTP `201`, boolean `status === true`, structurally valid response data and a valid external redirect URL under the existing H12 contract.
+- Successful Charge initialization is **not** proof that funds were captured.
+- An indeterminate Charge is never blindly retried by lifecycle reconciliation because no provider idempotency contract for Charge is assumed.
 
-### Callback/webhook
+### Callback/webhook authority
 
-UPayments documents `track_id` on return/cancel/notification callbacks and directs integrators to use it with Get Payment Status. Callback fields such as `result`, `payment_id`, `ref` and `auth` are routing/diagnostic input only; they are not payment truth in this plugin.
+UPayments callback/browser fields are routing and diagnostic input only. They never authorize a financial state transition.
 
-The public Webhook documentation does not specify a stable request method/content type contract. The implementation therefore accepts query/form callback fields only through an explicit conflict-safe GET/POST merge and excludes cookies from payment routing.
+The new lifecycle controller:
+
+- preserves the historical `wc_upayments` route;
+- runs at priority 5 before the inherited priority-10 handler;
+- leaves the inherited `get_order_status` display poll untouched;
+- merges GET/POST callback values explicitly and rejects conflicting values;
+- excludes cookies and never uses `$_REQUEST`;
+- locally preflights Woo order ID and `UPayments_order_id` before provider lookup.
 
 ### Authoritative payment truth
 
-The local truth hierarchy is:
+Financial truth is established only through this chain:
 
 1. Bearer-authenticated Get Payment Status response;
-2. strict schema validation;
-3. strict binding to the WooCommerce order;
-4. deterministic provider-result classification;
-5. WooCommerce transition.
+2. exact HTTPS UPayments status-host/path allowlist;
+3. HTTP `201` and strict top-level success/schema validation;
+4. strict transaction binding to the WooCommerce order;
+5. deterministic provider-result classification;
+6. concurrency-locked WooCommerce state transition.
 
-Browser return parameters and webhook payload values never authorize paid state by themselves.
+Browser return parameters, webhook fields, provider result text and callback `payment_id` never authorize paid state by themselves.
 
-### Required transaction binding
+### Exact transaction binding
 
-Every authenticated status response used to mutate an order must bind:
+Every authenticated status response used to mutate an order must bind all of:
 
-- `track_id` exactly to the reconciliation cursor;
+- `track_id` exactly to the current reconciliation cursor;
 - `merchant_requested_order_id` exactly to local `UPayments_order_id`;
 - `reference` exactly to the WooCommerce order ID;
 - `currency_type` exactly to the order currency after the existing UPayments currency mapping;
-- `total_price` exactly to the order total using decimal-safe comparison.
+- `total_price` exactly to the local order total using canonical decimal-string equality;
+- for `CAPTURED`, a non-empty provider `payment_id`.
 
-For `CAPTURED`, a non-empty `payment_id` is additionally required before paid completion.
+Amount comparison does **not** round through WooCommerce display precision. Canonical decimal values may differ only by insignificant trailing fractional zeros. For example, `10.00` equals `10.0000`; `10.004` does not equal `10.00`.
 
 ### Provider-result classification
 
-Only exact documented values receive state-changing meaning:
+Only exact provider values receive state-changing meaning:
 
 | Provider result | Local class | Woo behavior |
 |---|---|---|
-| `CAPTURED` | `CAPTURED` | Canonical Woo payment completion |
-| `PENDING` | `PENDING` | Keep unpaid; reconcile |
-| `AUTHORIZED` | `PENDING` | Keep unpaid; reconcile |
-| `APPROVED` | `PENDING` | Keep unpaid; reconcile |
-| `NOT CAPTURED` | `FAILED` | Mark failed if capture was never verified |
-| `FAILED` | `FAILED` | Mark failed if capture was never verified |
-| `ERROR` | `FAILED` | Mark failed if capture was never verified |
-| `CANCELED` | `CANCELLED` | Mark cancelled if capture was never verified |
-| `REFUND` | `INDETERMINATE` for an unverified initial payment | Never infer an initial successful capture |
-| `VOIDED` | `INDETERMINATE` for an unverified initial payment | Never infer an initial successful capture |
-| empty/unknown/other | `INDETERMINATE` | Keep unpaid; bounded reconciliation |
+| `CAPTURED` | `CAPTURED` | canonical Woo payment completion |
+| `PENDING` | `PENDING` | remain unpaid; reconcile |
+| `AUTHORIZED` | `PENDING` | remain unpaid; reconcile |
+| `APPROVED` | `PENDING` | remain unpaid; reconcile |
+| `NOT CAPTURED` | `FAILED` | fail only an unverified/unpaid order |
+| `FAILED` | `FAILED` | fail only an unverified/unpaid order |
+| `ERROR` | `FAILED` | fail only an unverified/unpaid order |
+| `CANCELED` | `CANCELLED` | cancel only an unverified/unpaid order |
+| `NULL` provider result | `INDETERMINATE` | remain unpaid; reconcile |
+| `Processing` / unknown future value | `INDETERMINATE` | remain unpaid; reconcile |
+| `REFUND` / `VOIDED` for unverified initial payment | `INDETERMINATE` | never infer initial capture |
 
-UPayments explicitly says pending/processing/NULL-style outcomes must not be treated as failure. Unknown future values therefore fail closed as `INDETERMINATE` rather than being guessed into a terminal state.
+Unknown future values fail closed. Provider documentation indicating pending/processing/NULL-style outcomes are non-terminal is preserved rather than guessed into failure.
 
-### WooCommerce paid completion
+### Canonical WooCommerce payment completion
 
-For authenticated `CAPTURED` transactions the integration must call:
+Authenticated/bound `CAPTURED` uses:
 
 `$order->payment_complete($verified_payment_id)`
 
-not direct paid-state `update_status()`.
+The lifecycle no longer treats direct paid-state `update_status()` as the canonical success path.
 
-This preserves WooCommerce's canonical transaction-ID storage, paid-date/status decision path and `woocommerce_payment_complete` lifecycle hook. The existing merchant option “Show paid orders as Completed?” may still force the target status through WooCommerce's `woocommerce_payment_complete_order_status` filter for this exact order; otherwise WooCommerce chooses the normal paid status.
+This preserves WooCommerce's standard transaction ID, paid lifecycle and `woocommerce_payment_complete` behavior. The existing merchant “Show paid orders as Completed?” setting is applied through WooCommerce's payment-complete status filter for the exact order rather than bypassing Woo payment completion.
 
-The verified-capture flag remains a post-success idempotency barrier. A replay after `_upay_verified_capture = 1` must never re-drive lifecycle state.
+The `_upay_verified_capture` flag is written only after paid state and transaction-ID postconditions are verified. Duplicate/replayed callbacks after verified capture make zero additional provider calls and do not re-fire payment completion.
 
-### Non-captured WooCommerce state
-
-Unresolved authenticated states remain in their current unpaid state during bounded reconciliation. They are not automatically moved to `on-hold`, because WooCommerce documents `on-hold` as a stock-reducing status. Authoritative terminal states may move an unverified order to `failed` or `cancelled`.
-
-A refunded order is never resurrected by a later callback/reconciliation event.
+A pre-existing paid order is never downgraded by a later terminal provider response. A refunded order is never resurrected.
 
 ## Reconciliation contract
 
-A locally preflighted callback `track_id` may be stored only as an **unverified reconciliation cursor**. It is not provider proof until a successful authenticated/bound status response returns it exactly.
+### Two cursor trust levels
 
-For `PENDING`, `INDETERMINATE`, transport failure, HTTP failure, malformed response or rate-gate denial when a safe cursor exists:
+The implementation distinguishes:
 
-- schedule one bounded single-event reconciliation for the order;
-- deduplicate scheduled events;
-- use exponential delays `60, 120, 240, 480` seconds;
-- maximum four scheduled reconciliation attempts;
-- every attempt repeats the full authenticated status query and binding;
-- never create a new charge as a reconciliation action;
-- stop scheduling after CAPTURED, FAILED, CANCELLED, refund state, verified-capture flag, cursor conflict or attempt exhaustion.
+- an **unverified routing cursor**, stored only after local callback/order preflight so an initial transient provider lookup can be retried;
+- a **trusted cursor**, promoted only after an authenticated status response is fully rebound to the fresh Woo order.
 
-After exhaustion, leave the order unpaid with a sanitized merchant note/reason code. Do not guess the financial outcome.
+Both cursor states are paired with the current provider Charge identity (`UPayments_order_id`). If the same Woo order begins a later UPayments Charge attempt, stale cursor/reconciliation state from the prior attempt cannot pin or contaminate the new attempt.
 
-## Status-query rate limit
+### Bounded retries
 
-UPayments current documentation is contradictory:
+For authenticated unresolved states or retryable status-query failures with a safe current-attempt cursor:
 
-- dedicated Get Payment Status documentation: **30 requests/minute** with temporary blocking and exponential backoff;
-- FAQ: status-query/refund endpoints **800 requests/minute**.
+- one deduplicated single-event reconciliation is scheduled;
+- delays are `60, 120, 240, 480` seconds;
+- maximum four scheduled attempts;
+- every attempt repeats authenticated status verification and full order binding;
+- no lifecycle reconciliation path creates or retries a Charge;
+- terminal capture/failure/cancellation, refund state, verified capture, binding/cursor conflict or exhaustion stops scheduling;
+- exhaustion leaves the order unpaid and creates one sanitized merchant note requiring manual review.
 
-Until UPayments resolves the contradiction, this project uses the stricter **30 requests/minute** contract for its own automated reconciliation. Automated scheduling is far below that ceiling.
+A binding mismatch clears the unverified cursor and does not schedule blind retries.
 
-Inbound callback storms must not become blind provider mutation/retry loops. The callback itself remains fail closed and full payment truth always comes from the authenticated status API.
+## Concurrency contract
 
-## Webhook signature/HMAC boundary
+A database-backed per-order lock prevents browser return, webhook and reconciliation workers from concurrently driving the same Woo lifecycle.
 
-The UPayments FAQ states that server-to-server webhooks are signed and that HMAC signatures are being rolled out. The current public documentation reviewed for this gate does **not** define enough stable details to implement an exact verifier (header name, canonical payload, algorithm/key derivation/rotation contract).
+Stale-lock takeover uses compare-and-swap semantics against the exact stored lock value; it never blindly deletes a contested option. Release likewise conditionally deletes only the current owner's exact scalar lock record. The regression harness simulates a competing worker replacing a stale record and proves the newer owner's lock is not deleted.
+
+## Status-query transport/rate contract
+
+The verifier:
+
+- accepts only HTTPS UPayments status endpoints under the exact allowed hosts/path;
+- rejects query-bearing/foreign endpoints before sending credentials;
+- disables redirects;
+- keeps TLS verification enabled;
+- uses a finite 15-second timeout;
+- consumes rate-limit capacity only after URL validation.
+
+UPayments documentation reviewed for this gate is contradictory:
+
+- dedicated Get Payment Status page: **30 requests/minute**;
+- FAQ: status/refund endpoints **800 requests/minute**.
+
+The plugin deliberately uses the stricter **30 requests/minute** credential/mode-scoped atomic rate gate until UPayments resolves the contradiction.
+
+## Webhook signature/HMAC unresolved boundary
+
+UPayments states that server-to-server webhooks are signed / HMAC support is being rolled out, but the public documentation reviewed on 2026-08-25 did not provide a complete stable verification contract covering header name, canonical payload, algorithm/key derivation and rotation.
 
 Therefore:
 
-- no signature verifier is fabricated;
-- webhook payload values remain non-authoritative;
-- the handler requires local order/requested-order preflight before a provider query;
-- every financial transition still requires Bearer-authenticated status lookup + strict binding;
-- exact webhook HMAC verification remains **PROVIDER-DOC-UNRESOLVED** until UPayments publishes or supplies the full contract.
+- no signature verifier was fabricated;
+- callback payload fields remain non-authoritative;
+- every financial transition still requires authenticated status lookup and strict binding;
+- exact webhook HMAC verification remains **PROVIDER-DOC-UNRESOLVED** and becomes explicit input to Security Threat-Model Closure.
 
 ## Refund boundary
 
-Current plugin behavior: automatic WooCommerce refunds are not implemented or advertised.
+Automatic WooCommerce gateway refunds remain intentionally **UNSUPPORTED** and are not advertised.
 
-UPayments documents:
-
-- full and multiple partial refunds;
-- asynchronous refund completion;
-- no refund webhook after creation;
-- final state must be polled;
-- no current idempotency-key support; merchants are responsible for preventing duplicate requests.
-
-This gate therefore deliberately keeps automatic gateway refunds **UNSUPPORTED**. Implementing `process_refund()` without a durable local refund-intent/idempotency/reconciliation journal would create duplicate-refund risk. A later refund-certification tranche must design that durable contract first.
+UPayments documents asynchronous full/multiple-partial refunds, status polling, no refund webhook and no current idempotency-key support. Adding `process_refund()` without a durable local refund-intent/idempotency/reconciliation journal would create duplicate-refund risk. Refund automation remains a later dedicated certification tranche.
 
 ## Multi-merchant boundary
 
-UPayments supports `extraMerchantData` as a multi-entry allocation array. Current SimplixPay source implements exactly one entry whose amount equals the full order amount.
+UPayments can accept a multi-entry `extraMerchantData` allocation array. Current SimplixPay behavior remains exactly one additional merchant allocation whose amount equals the order amount.
 
 Frozen current support claim:
 
 > **Single additional merchant allocation only. Arbitrary multi-split marketplace routing is not certified.**
 
-This gate preserves the existing validated single-entry behavior. Expansion to multiple merchant allocations requires a separate routing/allocation/refund characterization.
+Expansion requires a separate routing/allocation/refund characterization.
 
 ## Implementation shape
 
-Use a strangler architecture rather than refactoring the inherited gateway bootstrap:
+The verified runtime uses an incremental strangler instead of a broad `UPayments.php` rewrite:
 
-- new code under `Simplix\Pay\UPayments\Payment`;
-- retain callback route `wc_upayments` for compatibility;
-- register the new callback controller before the inherited priority-10 handler;
-- leave the legacy `get_order_status` display-poll request to its existing handler;
-- handle provider browser/webhook lifecycle through the new controller;
-- keep protected H12 token/subscription identifiers untouched.
+- `src/Payment/ProviderResult.php`
+- `src/Payment/StatusRateGate.php`
+- `src/Payment/OrderLock.php`
+- `src/Payment/StatusVerifier.php`
+- `src/Payment/PaymentLifecycle.php`
 
-## Acceptance gate
+`src/Release/Identity.php` conditionally loads/registers the lifecycle only when the WordPress hook API exists, preserving the Phase 0 isolated identity harness.
 
-Implementation is not approved until all are independently verified on the exact PR head:
+Protected H12 token/subscription identifiers remain untouched.
 
-- deterministic result classifier coverage;
-- strict status-response schema and B1-B5 binding coverage;
-- CAPTURED calls Woo `payment_complete()` with verified payment ID;
-- standard Woo transaction ID is persisted;
-- duplicate CAPTURED callbacks do not re-complete payment;
-- pending/authorized/approved/unknown do not become paid or failed;
-- documented terminal failure/cancel states transition only unverified orders;
-- refunded/verified-paid orders cannot be resurrected;
-- reconciliation is bounded, deduplicated and never creates a Charge;
-- callback routing excludes cookies and rejects GET/POST conflicts;
-- provider payload/result/payment ID cannot directly authorize payment;
-- status lookup keeps TLS verification, no redirects and finite timeout;
-- automatic refunds remain unsupported;
-- current single-entry multi-merchant restriction is documented;
-- Phase 0, all Phase 9I, H12 PHP, H12 Blocks, PHP syntax, Blocks syntax and Governance remain green.
+## Review findings closed before merge
+
+Automated review raised four valid findings, all corrected before final merge:
+
+1. **P1 — rate-gate test/runtime seam:** removed the incorrect global-string `function_exists('wp_salt')` pre-check while retaining fail-closed salt handling.
+2. **P1 — first-query transient failure:** added explicitly unverified, attempt-scoped retry cursor semantics so a first callback 5xx/network/rate-limit failure can reconcile safely.
+3. **P1 — stale lock race:** replaced blind stale-lock deletion with exact database compare-and-swap takeover/release semantics.
+4. **P2 — amount rounding mismatch:** replaced Woo display-precision rounding with exact canonical decimal comparison and added a focused permanent harness.
+
+All four PR review threads were resolved only after the fixes were present and tested.
+
+## Exact final regression evidence
+
+Exact final reviewed PR #15 head:
+
+`d2b08ebe1e65ad4ea8f4e06b41423e7bd9904fc3`
+
+GitHub Quality Gates run #70 passed the actual PR merge ref and reported:
+
+- Governance: **SUCCESS**
+- tracked PHP syntax: **SUCCESS**
+- Phase 0 release identity: **35 PASS / 0 FAIL**
+- Phase 9I preflight: **123 PASS / 0 FAIL**
+- Phase 9I executor: **59 PASS / 0 FAIL**
+- Phase 9I operations: **81 PASS / 0 FAIL**
+- Provider Payment Lifecycle: **141 PASS / 0 FAIL**
+- Provider Exact Amount Binding: **4 PASS / 0 FAIL**
+- H12 PHP: **1927 PASS / 0 FAIL**
+- Blocks syntax: **SUCCESS**
+- H12 Blocks: **144 PASS / 0 FAIL**
+
+## Merge and post-merge verification
+
+PR #15 was squash-merged as:
+
+- merge commit: `9569e39973a9e94926087738eae06c3846361943`;
+- tree: `40ec562674361624c2764263ba55cfba84594955`;
+- sole parent: `8e5a93ceb4f133663fdf433cc1a10b8b36c13d97`;
+- GitHub signature: **VERIFIED**.
+
+Post-merge verification established:
+
+- `main` exactly equals the merge commit above;
+- implementation branch `provider-lifecycle/discovery` is deleted;
+- push-triggered Quality Gates run #71 on merged `main` completed **SUCCESS** with Governance and the complete H12 Regression Harness job green, including both provider lifecycle harnesses.
+
+## Closed acceptance gate
+
+The acceptance conditions are satisfied:
+
+- deterministic provider-result classification — **YES**;
+- strict status schema + order/currency/reference/amount binding — **YES**;
+- exact decimal amount equality without display rounding — **YES**;
+- CAPTURED uses Woo `payment_complete()` + verified provider payment ID — **YES**;
+- standard Woo transaction ID persisted — **YES**;
+- duplicate/replayed capture idempotency — **YES**;
+- pending/authorized/approved/NULL/unknown remain unpaid — **YES**;
+- terminal failure/cancel only affects unverified/unpaid orders — **YES**;
+- refunded/verified-paid orders cannot be resurrected — **YES**;
+- first-query transient failure can reconcile without treating callback data as payment proof — **YES**;
+- reconciliation bounded/deduplicated/no Charge retry — **YES**;
+- same-Woo-order later Charge attempt isolated from stale cursor state — **YES**;
+- callback routing excludes cookies/`$_REQUEST` and rejects conflicts — **YES**;
+- status transport host/TLS/redirect/timeout/rate boundaries — **YES**;
+- concurrency stale-lock race characterized and fixed — **YES**;
+- automatic refunds remain unsupported — **YES**;
+- single-entry multi-merchant restriction documented — **YES**;
+- Phase 0, Phase 9I, H12 PHP, H12 Blocks and Governance regressions green — **YES**;
+- merge/post-merge `main`/branch cleanup verified — **YES**.
 
 ## Non-claims
 
-Closing this gate will certify the reviewed local provider/lifecycle contract and its executable regression evidence. It will not by itself constitute broad WordPress/WooCommerce/PHP/WPML/security/performance/feature certification or a stable public release.
+This closure does not mean the plugin is broadly production-certified. Security threat-model closure, architecture quality, full integration/static/browser platforms, WordPress/WooCommerce/PHP/HPOS/Blocks/WPML certification, feature certification, performance/UX/operations and release engineering remain later gates.
+
+The next permitted program gate is **Security Threat-Model Closure — DISCOVERY**.

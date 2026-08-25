@@ -6,8 +6,9 @@ Use:
 
 - [`project/PROJECT-STATUS.md`](project/PROJECT-STATUS.md) for current verified state and the next permitted action;
 - [`project/PHASE-0-RELEASE-IDENTITY.md`](project/PHASE-0-RELEASE-IDENTITY.md) for the closed Phase 0 evidence record;
-- [`project/PHASE-9I-MIGRATION.md`](project/PHASE-9I-MIGRATION.md) for the closed historical token-identity migration evidence record;
-- [`project/REPOSITORY-READINESS.md`](project/REPOSITORY-READINESS.md) for the closed repository-foundation evidence record;
+- [`project/PHASE-9I-MIGRATION.md`](project/PHASE-9I-MIGRATION.md) for the closed historical token-identity migration record;
+- [`project/PROVIDER-PAYMENT-LIFECYCLE.md`](project/PROVIDER-PAYMENT-LIFECYCLE.md) for the closed provider/payment lifecycle record;
+- [`project/REPOSITORY-READINESS.md`](project/REPOSITORY-READINESS.md) for the closed repository-foundation record;
 - [`project/MASTER-ENGINEERING-PLAYBOOK.md`](project/MASTER-ENGINEERING-PLAYBOOK.md) for detailed phases and release criteria;
 - [`project/NAMING-IDENTITY-STANDARD.md`](project/NAMING-IDENTITY-STANDARD.md) for product/slug/namespace and compatibility identity rules.
 
@@ -24,48 +25,55 @@ Use:
 1. **Phase 0 — SimplixPay release identity and updater ownership — DONE / VERIFIED**
    - active plugin identity **SimplixPay for UPayments** / Simplix Innovations;
    - independent development version **0.1.0**;
-   - inherited upstream update authority removed;
-   - bundled Plugin Update Checker removed;
-   - external self-update channel disabled pending a tested distribution/basename contract;
+   - inherited upstream update authority and bundled Plugin Update Checker removed;
+   - external self-update channel disabled pending tested distribution/basename migration;
    - non-destructive uninstall by default;
    - transitional `UPayments.php` and `upayments` text-domain choices explicitly frozen as future migrations;
    - protected historical payment identities preserved;
    - Phase 0 characterization **35 PASS / 0 FAIL** with H12 **1927/0 PHP** and **144/0 Blocks**.
 
 2. **Phase 9I — Historical token-identity migration — DONE / VERIFIED**
-   - deterministic read-only preflight with exact `CLEAN` / `MIGRATABLE` / `BLOCKED` / `INDETERMINATE` classification;
-   - zero provider calls and zero identity writes in the core preflight;
-   - all 13 historical blocker families explicitly characterized and fail closed;
+   - deterministic read-only `CLEAN` / `MIGRATABLE` / `BLOCKED` / `INDETERMINATE` preflight;
+   - all 13 historical blocker families fail closed;
    - locked executor acts only on fresh `MIGRATABLE` evidence;
-   - historical identity can become only `legacy_compat` / `legacy_verified_capture`; no fabricated canonical/Create-201 provenance;
+   - historical identity can become only `legacy_compat` / `legacy_verified_capture`;
    - historical order evidence remains immutable;
-   - bounded/idempotent admin/CLI workflow with dry-run, confirmed execute, explicit offsets and durable resume;
-   - redacted per-user operations-result checkpoints for every processed outcome;
-   - credential/mode/list-scoped HMAC resume identity without persisting credentials;
-   - checkpoint-persistence failure stops progress and keeps the current user as the retry point;
-   - no provider, checkout, Store API, frontend or cron migration hooks;
-   - verified implementation sequence: PR #11 preflight, PR #12 executor, PR #13 operations;
-   - final implementation-head evidence: Phase 0 **35/0**, preflight **123/0**, executor **59/0**, operations **81/0**, H12 PHP **1927/0**, H12 Blocks **144/0**, plus Governance/PHP/Blocks syntax success.
+   - bounded admin/CLI workflow with durable redacted per-user checkpoints and credential/mode/list-scoped resume;
+   - verified sequence: PR #11 preflight, PR #12 executor, PR #13 operations;
+   - final implementation evidence: preflight **123/0**, executor **59/0**, operations **81/0**, H12 PHP **1927/0**, H12 Blocks **144/0**.
 
-   Phase completion certifies the migration system and safety contract. It does not mean every merchant installation has already been migrated; site-specific classification/migration remains an explicit operational action.
+3. **Provider Contract & Payment Lifecycle — DONE / VERIFIED**
+   - compared exact source against current official UPayments and WooCommerce documentation;
+   - froze Charge/session-vs-capture semantics and server-status truth hierarchy;
+   - moved ordinary browser/webhook financial truth to an isolated `Simplix\Pay\UPayments\Payment` lifecycle layer while preserving the historical callback route;
+   - strict authenticated Get Payment Status host/schema/order/reference/currency/amount binding;
+   - canonical decimal amount equality without Woo display rounding;
+   - deterministic CAPTURED / PENDING / FAILED / CANCELLED / INDETERMINATE classification including provider `NULL`/Processing-style uncertainty;
+   - CAPTURED uses WooCommerce `payment_complete($verified_payment_id)` and standard transaction-ID semantics;
+   - duplicate/replay protection and paid/refunded no-resurrection rules;
+   - separate unverified/trusted reconciliation cursors scoped to the current `UPayments_order_id`;
+   - bounded reconciliation at 60/120/240/480 seconds, maximum four attempts, never retries Charge;
+   - compare-and-swap per-order lifecycle locking;
+   - exact callback GET/POST conflict handling with cookies/`$_REQUEST` excluded;
+   - stricter 30/min status-query gate while provider documentation remains contradictory;
+   - automatic refunds intentionally unsupported pending durable refund idempotency/reconciliation design;
+   - current multi-merchant claim frozen to one additional merchant allocation only;
+   - provider webhook HMAC details retained as provider-document unresolved rather than guessed;
+   - final PR #15 evidence: Provider Lifecycle **141/0**, Exact Amount **4/0**, Phase 0 **35/0**, Phase 9I **123/0 + 59/0 + 81/0**, H12 PHP **1927/0**, H12 Blocks **144/0**;
+   - squash merge `9569e39973a9e94926087738eae06c3846361943`, tree `40ec562674361624c2764263ba55cfba84594955`, VERIFIED signature, deleted implementation branch, green post-merge run #71.
 
-3. **Provider Contract & Payment Lifecycle — CURRENT GATE / DISCOVERY**
-   - compare exact current source against current official UPayments documentation before implementation;
-   - freeze charge request/response and success/failure contracts;
-   - freeze authoritative truth hierarchy across validated server webhook, status reconciliation and browser return;
-   - characterize callback authentication, replay/idempotency and duplicate-event behavior;
-   - characterize current WooCommerce order/payment state transitions and ambiguity paths;
-   - freeze reconciliation, retry, transient-failure and rate-limit rules without blindly retrying non-idempotent financial operations;
-   - freeze refund contracts including full/partial refund, idempotency and failure recovery;
-   - characterize multi-merchant routing and identity boundaries;
-   - define redacted logging/evidence requirements for reconciliation and support;
-   - centralize into a deterministic payment lifecycle/state-machine architecture only after characterization and contract review.
-
-4. **Security Threat-Model Closure**
-   - authorization/CSRF/replay/IDOR/SSRF/input/output/secrets/logging;
-   - callback/webhook trust boundaries;
-   - dependency and supply-chain review;
-   - fail-closed payment/security behavior.
+4. **Security Threat-Model Closure — CURRENT GATE / DISCOVERY**
+   - map assets, trust boundaries, actors, financial/security state and data flows;
+   - audit authorization/capability boundaries and CSRF/nonces;
+   - audit callback/webhook abuse, replay, IDOR and order-object reference boundaries;
+   - audit SSRF, redirect and URL/host allowlists;
+   - audit API credentials, saved-card/customer-token identity, secret roots and migration security material;
+   - audit input parsing/type confusion/injection and output escaping;
+   - audit logs/order notes/diagnostics for secret and PII redaction;
+   - audit concurrency, race and idempotency properties as security controls;
+   - audit dependency/supply-chain and GitHub Actions trust boundaries;
+   - retain fail-closed behavior where provider security documentation is incomplete;
+   - add executable security characterization before broad refactoring.
 
 5. **Architecture & Code-Quality Foundation**
    - incremental `Simplix\Pay\UPayments` architecture extraction;

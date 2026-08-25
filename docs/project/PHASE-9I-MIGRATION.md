@@ -259,7 +259,7 @@ Exact reviewed PR #13 head `2989862683754f8a8eda8e9d4239ada4a61b23f4` passed:
 - Blocks syntax: **SUCCESS**
 - H12 Blocks: **144 PASS / 0 FAIL**
 
-The separate Phase 9I closure documentation PR must rerun this complete stack before its own merge. Targeted harness success remains regression evidence, not broad production/platform certification.
+Phase 9I closure PR #14 subsequently reran the complete stack and was independently merge-verified. Targeted harness success remains regression evidence, not broad production/platform certification.
 
 ## Closed exit condition
 
@@ -270,7 +270,7 @@ The original exit conditions are satisfied:
 3. bounded dry-run/execute admin + CLI operational surface independently verified — **YES**;
 4. all 13 blocker classes retain explicit fail-closed test evidence — **YES**;
 5. Phase 0 + H12 regressions remained green — **YES**;
-6. project status/changelog/README/roadmap/handoff reconciled by the closure tranche — **YES, subject to closure-PR merge verification**;
+6. project status/changelog/README/roadmap/handoff reconciled and Phase 9I closure PR #14 merge-verified — **YES**;
 7. implementation branches merged/cleaned under protected-branch rules — **YES**.
 
-The next program gate is **Provider Contract & Payment Lifecycle — DISCOVERY**.
+The program gate immediately after Phase 9I was **Provider Contract & Payment Lifecycle**; that gate is now **DONE / VERIFIED**. The current program gate is **Security Threat-Model Closure — DISCOVERY**.

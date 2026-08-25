@@ -1,6 +1,6 @@
 # SimplixPay for UPayments — Clean Chat Handoff
 
-Use this file with root `AGENTS.md`, `PROJECT-STATUS.md`, the naming standard, the closed Phase 0/Phase 9I records and the Master Engineering Playbook.
+Use this file with root `AGENTS.md`, `PROJECT-STATUS.md`, the naming standard, the closed Phase 0 / Phase 9I / Provider Lifecycle records and the Master Engineering Playbook.
 
 ## Project identity
 
@@ -15,34 +15,34 @@ Use this file with root `AGENTS.md`, `PROJECT-STATUS.md`, the naming standard, t
 - Provider: **UPayments**
 - Current development version: **0.1.0**
 
-`SimplixPay` alone is reserved for the broader future/multi-provider payment product.
-
 ## Current program position
 
 - Repository Foundation / Readiness: **DONE / VERIFIED**
 - Phase 0 — release identity/updater ownership: **DONE / VERIFIED**
 - Phase 9I — historical token-identity migration: **DONE / VERIFIED**
-- Current program gate: **Provider Contract & Payment Lifecycle — DISCOVERY**
+- Provider Contract & Payment Lifecycle: **DONE / VERIFIED**
+- Current program gate: **Security Threat-Model Closure — DISCOVERY**
 - Stable production release: **NO**
 - WordPress.org release: **NO**
 
-Always verify live GitHub before acting; recorded SHAs below are milestone evidence, not substitutes for a fresh check.
+Always verify live GitHub before acting. Recorded SHAs are milestone evidence, not substitutes for fresh source/check/review verification.
 
-## Latest verified implementation milestone — Phase 9I operations
+## Latest verified implementation milestone — Provider Contract & Payment Lifecycle
 
-PR #13 final reviewed head:
+PR #15 final reviewed head:
 
-- `2989862683754f8a8eda8e9d4239ada4a61b23f4`
+- `d2b08ebe1e65ad4ea8f4e06b41423e7bd9904fc3`
 
 Verified squash merge on `main`:
 
-- merge: `db1c4ea4dab45bc1ffaf4529e0ccb940153cd999`
-- tree: `5bec24ad26c66a504cd0dd609f4311f9e70add76`
-- parent: `708253bd9d0daf217735fbb087b360e8b848136c`
+- merge: `9569e39973a9e94926087738eae06c3846361943`
+- tree: `40ec562674361624c2764263ba55cfba84594955`
+- parent: `8e5a93ceb4f133663fdf433cc1a10b8b36c13d97`
 - GitHub signature: **VERIFIED**
-- `phase-9i/operations` branch: **deleted after verified merge**
+- `provider-lifecycle/discovery` branch: **deleted after verified merge**
+- post-merge Quality Gates run #71 on `main`: **SUCCESS**
 
-Exact final implementation-head regression evidence:
+Exact final implementation-head evidence:
 
 - Governance: **SUCCESS**
 - tracked PHP syntax: **SUCCESS**
@@ -50,87 +50,115 @@ Exact final implementation-head regression evidence:
 - Phase 9I preflight: **123 PASS / 0 FAIL**
 - Phase 9I executor: **59 PASS / 0 FAIL**
 - Phase 9I operations: **81 PASS / 0 FAIL**
+- Provider Payment Lifecycle: **141 PASS / 0 FAIL**
+- Provider Exact Amount Binding: **4 PASS / 0 FAIL**
 - H12 PHP: **1927 PASS / 0 FAIL**
 - Blocks syntax: **SUCCESS**
 - H12 Blocks: **144 PASS / 0 FAIL**
 
+The exact PR merge-ref passed Quality Gates run #70 before merge; the full workflow passed again on merged `main` in run #71.
+
+## Closed provider/payment lifecycle architecture
+
+### Financial truth hierarchy
+
+Only the authenticated status API can authorize payment state:
+
+1. Bearer-authenticated Get Payment Status;
+2. exact UPayments HTTPS status host/path allowlist;
+3. HTTP 201 + strict top-level response shape;
+4. full transaction binding;
+5. exact provider-result classification;
+6. locked WooCommerce state mutation.
+
+Browser return and webhook payload fields are never financial truth by themselves.
+
+### Binding contract
+
+Before any financial transition, require exact:
+
+- `track_id`;
+- `merchant_requested_order_id` == local `UPayments_order_id`;
+- provider `reference` == Woo order ID;
+- mapped currency;
+- canonical decimal amount equality;
+- non-empty provider payment ID for CAPTURED.
+
+Amount comparison never rounds through Woo display precision. `10.00` and `10.0000` are equivalent; `10.004` is not `10.00`.
+
+### Result/state contract
+
+- `CAPTURED` → canonical Woo `payment_complete($payment_id)`.
+- `PENDING`, `AUTHORIZED`, `APPROVED` → remain unpaid + bounded reconciliation.
+- provider `NULL`, Processing-style, unknown future values → INDETERMINATE, remain unpaid + bounded reconciliation.
+- `FAILED`, `ERROR`, `NOT CAPTURED` → failed only if the order is not already paid/verified/refunded.
+- `CANCELED` → cancelled only if the order is not already paid/verified/refunded.
+- `REFUND` / `VOIDED` never prove an initial capture.
+
+Verified capture is idempotent: replay does not re-query/re-complete after `_upay_verified_capture = 1`.
+
+### Reconciliation contract
+
+- callback routing may persist an **unverified** cursor only after local order/provider-order preflight;
+- the cursor becomes **trusted** only after authenticated rebinding;
+- cursor state is paired with current `UPayments_order_id` so a later Charge attempt on the same Woo order does not inherit stale attempt state;
+- schedule at 60/120/240/480 seconds, maximum four attempts;
+- deduplicate events;
+- every attempt repeats full authenticated verification/binding;
+- never retry/create Charge from reconciliation;
+- binding conflicts and terminal/refund/verified states stop retries;
+- exhaustion leaves the order unpaid and adds one sanitized manual-review note.
+
+### Concurrency/transport contract
+
+- per-order lifecycle lock uses exact database compare-and-swap stale takeover/release, not blind option deletion;
+- callback GET/POST conflicts fail closed;
+- cookies are excluded and new lifecycle code never uses `$_REQUEST`;
+- status lookup rejects foreign/query-bearing URLs before credentials are sent;
+- redirects disabled, TLS verification enabled, timeout finite;
+- automated status lookup uses the stricter documented **30/minute** ceiling until provider documentation resolves its contradictory limit.
+
+### Review findings fixed before merge
+
+1. P1 rate-gate/wp_salt seam;
+2. P1 first-query transient reconciliation gap;
+3. P1 stale-lock takeover race;
+4. P2 amount-rounding mismatch.
+
+All review threads were resolved only after the fixes and regressions existed.
+
+### Explicit unresolved boundaries
+
+Do **not** silently claim these are solved:
+
+- webhook HMAC/signature: provider public docs reviewed on 2026-08-25 did not provide a complete stable header/canonicalization/key contract;
+- automatic refunds: unsupported pending a durable refund-intent/idempotency/reconciliation journal;
+- arbitrary marketplace multi-split: not certified; current support remains one additional merchant allocation;
+- subscription auto-deduction: retains its separate characterized path.
+
+See `docs/project/PROVIDER-PAYMENT-LIFECYCLE.md` for the complete closed record.
+
 ## Phase 9I closed architecture
 
-### Preflight — PR #11
-
-Verified merge:
-
-- `8cca32819dd165e35efa0fcc5a48bdd551757d8c`
-- tree `c0af8a2ab1fbd2494f961ee9f924c00aaf519ab0`
+Phase 9I remains DONE / VERIFIED through PRs #11/#12/#13.
 
 Contract:
 
-- read-only core classifier;
-- zero provider calls and zero identity writes;
-- exact `CLEAN`, `MIGRATABLE`, `BLOCKED`, `INDETERMINATE` outcomes;
-- bounded history/collision analysis;
-- all 13 historical blocker families explicitly fail closed.
+- exact read-only `CLEAN`, `MIGRATABLE`, `BLOCKED`, `INDETERMINATE` classification;
+- all 13 historical blocker families fail closed;
+- executor acts only on fresh `MIGRATABLE` evidence under lock;
+- only `legacy_compat` / `legacy_verified_capture` historical provenance;
+- never fabricate `canonical` / `create_201` provenance;
+- historical order metadata remains immutable;
+- bounded admin/CLI dry-run + confirmed execute;
+- redacted `_simplixpay_upayments_migration_result_v1` decision/result ledger;
+- credential/mode/list-scoped durable resume without persisting API credentials.
 
-### Executor — PR #12
-
-Verified merge:
-
-- `708253bd9d0daf217735fbb087b360e8b848136c`
-- tree `e222a18c9808229fdde79efb42268d8c3fbd33ae`
-- GitHub signature: **VERIFIED**
-
-Contract:
-
-- acts only on fresh `MIGRATABLE` evidence;
-- locked re-preflight before mutation;
-- creates a missing H12 secret only through the verified bootstrap-lock transition;
-- creates only `legacy_compat` / `legacy_verified_capture` provenance;
-- never fabricates `canonical` / `create_201` provenance;
-- verifies exact provenance readback and final CLEAN state;
-- idempotent/retry-safe under characterized concurrency;
-- zero provider calls and zero historical order-meta writes.
-
-### Operations — PR #13
-
-Contract:
-
-- explicit user lists only;
-- maximum 500 submitted users;
-- default 20 / maximum 50 processed per invocation;
-- admin + `wp simplixpay-upayments migration` CLI;
-- dry-run is identity/provider non-mutating but intentionally persists only redacted operations-result checkpoints;
-- execute requires explicit confirmation;
-- separate `_simplixpay_upayments_migration_result_v1` ledger records every processed decision/result, not only successful migrations;
-- durable resume is credential/mode/list scoped by HMAC without persisting the API key;
-- explicit offset remains available for deliberate re-evaluation;
-- if operations checkpoint persistence is uncertain, stop and leave that user as the retry point;
-- failed CLI batch emits redacted JSON before non-zero termination;
-- no provider transport, checkout, Store API, frontend or cron migration hook;
-- historical order metadata remains immutable.
-
-**Important:** Phase 9I being DONE / VERIFIED does not mean every merchant installation was automatically migrated. A site may still contain users classified `BLOCKED` or `INDETERMINATE`; those states must remain fail closed until explicit evidence/policy resolves them.
-
-## Thirteen historical blocker classes — implemented disposition
-
-1. Unscoped legacy tokens
-2. Current-scope orphan histories
-3. Cross-user token conflicts
-4. Malformed scoped histories
-5. Secret generation mismatches
-6. Card-token-only historical identity
-7. Prior-scope same-generation histories
-8. Non-scalar evidence
-9. Orphan metadata
-10. >200/incomplete history
-11. Unloadable orders
-12. Force-refresh failures
-13. Malformed-vs-missing secret distinction
-
-These are no longer unimplemented Phase 9I gaps; they have explicit verified classification/fail-closed semantics. Do not weaken them casually in later phases.
+A merchant site may still legitimately contain BLOCKED/INDETERMINATE users.
 
 ## Transitional install/i18n identities
 
-Do **not** treat these as unfinished cosmetic branding:
+Do not treat these as cosmetic unfinished branding:
 
 - active main file remains `UPayments.php`;
 - runtime/header text domain remains `upayments`.
@@ -140,11 +168,11 @@ Frozen eventual targets:
 - `simplixpay-upayments.php`;
 - text domain `simplixpay-upayments`.
 
-Those changes are explicit package/upgrade and i18n/WPML migrations requiring their own evidence.
+Those require explicit package/upgrade and i18n/WPML migrations.
 
 ## Protected compatibility identities
 
-Do not globally rename historical `upayments` / `_upay_*` identities. Protected by default include:
+Do not globally rename:
 
 - gateway/payment method ID `upayments`;
 - `woocommerce_upayments_settings`;
@@ -158,8 +186,6 @@ Do not globally rename historical `upayments` / `_upay_*` identities. Protected 
 - historical order payment-method values;
 - existing UPayments classes/namespaces unless separately characterized.
 
-Any change requires an explicit tested migration contract.
-
 ## H12 non-negotiable token/provider rules
 
 - Customer token is separate from phone/mobile.
@@ -172,33 +198,36 @@ Any change requires an explicit tested migration contract.
 - Guests are never promoted to persistent identity.
 - Phone changes do not rotate canonical identity.
 - Provenance v3: `canonical` ↔ `create_201`; `legacy_compat` ↔ `legacy_verified_capture`.
-- Secret option `upayments_token_identity_secret_v2` is protected; malformed is distinct from missing and fails closed.
-- Selected saved card requires current valid provenance + exact scope/generation + fresh provider Retrieve + exact membership.
+- malformed H12 secret is distinct from missing and fails closed.
+- selected saved card requires current valid provenance + exact scope/generation + fresh provider Retrieve + exact membership.
 
-## Next gate — Provider Contract & Payment Lifecycle
+## Next gate — Security Threat-Model Closure
 
-**Status: DISCOVERY. Do not start with a broad refactor.**
+**Status: DISCOVERY. Do not start with broad cleanup/refactoring.**
 
 Required first sequence:
 
-1. Freshly verify live `main`, open PRs/branches and current payment-critical source.
-2. Research the current official UPayments provider documentation for charge, status/reconciliation, notification/webhook, return/callback, refund and multi-merchant behavior.
-3. Characterize the exact current runtime behavior in `UPayments.php` and related payment/refund/callback/subscription paths.
-4. Build a provider-contract matrix: request fields, response success/failure, authoritative truth source, idempotency/retry semantics, state transitions and ambiguity handling.
-5. Identify contradictions between provider docs, current code, H12 contracts and WooCommerce order-state semantics.
-6. Freeze a narrow implementation contract and characterization tests before changing payment-critical runtime behavior.
+1. Freshly verify live `main`, PRs/branches/checks and current security-sensitive source.
+2. Build an asset/trust-boundary/data-flow map across checkout, callback/status lifecycle, saved-card/customer-token identity, Phase 9I operations, subscriptions, admin settings, CLI, logging and CI/supply chain.
+3. Enumerate threat scenarios and existing controls before implementation.
+4. Characterize security-critical behavior with executable tests/static guards.
+5. Prioritize P0/P1 exploitability paths and freeze narrow remediation contracts before edits.
+6. Preserve closed payment-lifecycle/H12/Phase 9I contracts unless a security fix explicitly replaces one with stronger reviewed evidence.
 
 Minimum audit scope:
 
-- charge request/response contract;
-- webhook/status/browser-return truth hierarchy;
-- webhook/callback authentication, replay and duplicate delivery;
-- status reconciliation and ambiguous settlement states;
-- deterministic WooCommerce payment/order transitions;
-- transient errors/rate limits/retries without blindly retrying non-idempotent financial operations;
-- refunds including full/partial/idempotency/failure recovery;
-- multi-merchant routing/identity boundaries;
-- redacted logging and reconciliation/support evidence.
+- authorization/capabilities;
+- CSRF/nonces;
+- callback/webhook abuse and replay;
+- IDOR/order-object references;
+- SSRF/redirect/host allowlists;
+- provider credentials, saved-card/customer-token secrets and migration roots;
+- input parsing/type confusion/injection;
+- output escaping/XSS;
+- log/order-note/diagnostic redaction;
+- concurrency/race/idempotency security;
+- dependency/supply-chain/GitHub Actions trust;
+- fail-closed behavior for undocumented provider security contracts.
 
 ## Permanent control plane
 
@@ -208,33 +237,34 @@ Read in this order:
 2. `docs/project/PROJECT-STATUS.md`
 3. `docs/project/NAMING-IDENTITY-STANDARD.md`
 4. `docs/project/NEW-CHAT-HANDOFF.md`
-5. `docs/project/PHASE-0-RELEASE-IDENTITY.md` — closed Phase 0 evidence
-6. `docs/project/PHASE-9I-MIGRATION.md` — closed Phase 9I evidence
-7. relevant sections of `docs/project/MASTER-ENGINEERING-PLAYBOOK.md`
-8. `docs/project/REPOSITORY-AUDIT.md`
-9. `docs/project/REPOSITORY-READINESS.md` — closed foundation evidence
-10. `docs/project/BASELINE-H12.md`
+5. `docs/project/PHASE-0-RELEASE-IDENTITY.md`
+6. `docs/project/PHASE-9I-MIGRATION.md`
+7. `docs/project/PROVIDER-PAYMENT-LIFECYCLE.md`
+8. relevant sections of `docs/project/MASTER-ENGINEERING-PLAYBOOK.md`
+9. `docs/project/REPOSITORY-AUDIT.md`
+10. `docs/project/REPOSITORY-READINESS.md`
+11. `docs/project/BASELINE-H12.md`
 
 ## Required working method
 
-1. Verify live `main`, branches, PRs, source and checks before implementation.
-2. Reconcile documented state with live GitHub; report drift.
-3. Prefer direct GitHub operations; delegate only genuinely inaccessible actions.
+1. Verify live source/checks/review state before implementation.
+2. Reconcile documentation drift first.
+3. Prefer direct GitHub work wherever tools permit.
 4. Preserve protected historical identities unless a separately approved/tested migration changes them.
 5. Characterize before payment/security-critical refactors.
-6. Never trust Agent/bot implementation claims without exact independent verification.
+6. Never trust implementation/bot reports without exact independent verification.
 7. Pin review/merge decisions to exact base/head SHAs.
-8. Do not merge with unresolved valid review findings or failing/missing required checks.
-9. After merge, verify resulting `main`, critical source/evidence and branch cleanup before marking DONE.
-10. Update `PROJECT-STATUS.md` after every verified milestone/state change.
+8. Do not merge with unresolved valid findings or failing/missing required checks.
+9. After merge, verify `main`, critical source/evidence, post-merge CI and branch cleanup before marking DONE.
+10. Update `PROJECT-STATUS.md` after verified milestone/state changes.
 
 ## Program sequence
 
 0. Repository Foundation / Readiness — **DONE / VERIFIED**
-1. Phase 0 — SimplixPay release identity/updater ownership — **DONE / VERIFIED**
+1. Phase 0 — release identity/updater ownership — **DONE / VERIFIED**
 2. Phase 9I — Historical token-identity migration — **DONE / VERIFIED**
-3. Provider Contract & Payment Lifecycle — **CURRENT / DISCOVERY**
-4. Security threat-model closure
+3. Provider Contract & Payment Lifecycle — **DONE / VERIFIED**
+4. Security Threat-Model Closure — **CURRENT / DISCOVERY**
 5. Architecture/code-quality foundation
 6. Full automated quality platform
 7. Platform certification: Woo/WP/PHP/HPOS/Blocks/WPML
@@ -248,13 +278,13 @@ Read in this order:
 ```text
 Continue the SimplixPay for UPayments engineering program in SimplixInnovations/simplixpay-upayments.
 
-Read AGENTS.md first, then docs/project/PROJECT-STATUS.md, docs/project/NAMING-IDENTITY-STANDARD.md, docs/project/NEW-CHAT-HANDOFF.md, docs/project/PHASE-0-RELEASE-IDENTITY.md, docs/project/PHASE-9I-MIGRATION.md and relevant sections of docs/project/MASTER-ENGINEERING-PLAYBOOK.md.
+Read AGENTS.md first, then docs/project/PROJECT-STATUS.md, docs/project/NAMING-IDENTITY-STANDARD.md, docs/project/NEW-CHAT-HANDOFF.md, docs/project/PHASE-0-RELEASE-IDENTITY.md, docs/project/PHASE-9I-MIGRATION.md, docs/project/PROVIDER-PAYMENT-LIFECYCLE.md and relevant sections of docs/project/MASTER-ENGINEERING-PLAYBOOK.md.
 
-Treat recorded SHAs/status as milestone evidence until you independently verify live GitHub main, branches, open PRs, current source and checks. Reconcile any drift before work.
+Treat recorded SHAs/status as milestone evidence until live GitHub is independently verified. Reconcile drift before work.
 
-Repository readiness, Phase 0 and Phase 9I are DONE / VERIFIED. The current gate is Provider Contract & Payment Lifecycle — DISCOVERY.
+Repository readiness, Phase 0, Phase 9I and Provider Contract & Payment Lifecycle are DONE / VERIFIED. The current gate is Security Threat-Model Closure — DISCOVERY.
 
-Start by verifying current payment-critical source and current official UPayments documentation. Characterize charge, webhook/status/browser-return truth, order-state transitions, reconciliation, retries/idempotency, refunds and multi-merchant boundaries before proposing runtime changes. Freeze a narrow contract and tests before refactoring.
+Start with a fresh security asset/trust-boundary/data-flow map and current exact source. Characterize authorization, CSRF, callback/replay/IDOR/SSRF, credentials/secrets, input/output, logging/redaction, concurrency/idempotency and supply-chain boundaries before proposing runtime changes. Preserve the closed payment-lifecycle, H12 and Phase 9I contracts unless a stronger security contract explicitly replaces them.
 
-Work directly in GitHub wherever tools permit. Preserve protected historical upayments/upay identities unless an approved tested migration changes them. Never approve or merge without independent exact-SHA source/diff/check/review verification.
+Work directly in GitHub wherever tools permit. Never approve or merge without independent exact-SHA source/diff/check/review verification and post-merge verification.
 ```
