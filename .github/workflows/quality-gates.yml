@@ -72,13 +72,60 @@ jobs:
           grep -Fq '| Provider Contract & Payment Lifecycle | **DONE / VERIFIED** |' docs/project/PROJECT-STATUS.md
           grep -Fq '| Security Threat-Model Closure | **DONE / VERIFIED** |' docs/project/PROJECT-STATUS.md
           grep -Fq '| Current program gate | **Architecture & Code-Quality Foundation — DISCOVERY** |' docs/project/PROJECT-STATUS.md
+          grep -Fq 'The current program gate is **Architecture & Code-Quality Foundation — DISCOVERY**.' README.md
+          grep -Fq '**Architecture & Code-Quality Foundation — DISCOVERY** is now the active gate.' CHANGELOG.md
+          grep -Fq '5. **Architecture & Code-Quality Foundation — CURRENT GATE / DISCOVERY**' docs/ENGINEERING-ROADMAP.md
           grep -Fq '| Security threat-model audit | **DONE / VERIFIED** | Critical |' docs/project/MASTER-ENGINEERING-PLAYBOOK.md
           grep -Fq '| Architecture/code quality | **DISCOVERY — CURRENT GATE** | High |' docs/project/MASTER-ENGINEERING-PLAYBOOK.md
+          grep -Fq 'the current owner/gate is **Architecture & Code-Quality Foundation — DISCOVERY**' docs/project/REPOSITORY-AUDIT.md
           grep -Fq 'the current permitted program gate is **Architecture & Code-Quality Foundation — DISCOVERY**' docs/project/REPOSITORY-READINESS.md
           grep -Fq 'the current permitted gate is **Architecture & Code-Quality Foundation — DISCOVERY**' docs/project/PHASE-0-RELEASE-IDENTITY.md
           grep -Fq 'The current program gate is **Architecture & Code-Quality Foundation — DISCOVERY**' docs/project/PHASE-9I-MIGRATION.md
           grep -Fq 'The current permitted program gate is **Architecture & Code-Quality Foundation — DISCOVERY**' docs/project/PROVIDER-PAYMENT-LIFECYCLE.md
           grep -Fq -- '- Current program gate: **Architecture & Code-Quality Foundation — DISCOVERY**' docs/project/NEW-CHAT-HANDOFF.md
+
+      - name: Reject stale gate ownership markers
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          reject_marker() {
+            local file="$1"
+            local marker="$2"
+            if grep -Fq -- "$marker" "$file"; then
+              echo "Stale gate marker found in ${file}: ${marker}"
+              exit 1
+            fi
+          }
+
+          reject_marker docs/project/PROJECT-STATUS.md '| Current program gate | **Security Threat-Model Closure — DISCOVERY** |'
+          reject_marker README.md 'The current program gate is **Security Threat-Model Closure — DISCOVERY**.'
+          reject_marker CHANGELOG.md '**Security Threat-Model Closure — DISCOVERY** is now the active gate.'
+          reject_marker docs/ENGINEERING-ROADMAP.md '4. **Security Threat-Model Closure — CURRENT GATE / DISCOVERY**'
+
+          reject_marker docs/project/MASTER-ENGINEERING-PLAYBOOK.md '| Security threat-model audit | **DISCOVERY — CURRENT GATE** | Critical |'
+          reject_marker docs/project/MASTER-ENGINEERING-PLAYBOOK.md 'The current unified gate is **Security Threat-Model Closure — DISCOVERY**.'
+          reject_marker docs/project/MASTER-ENGINEERING-PLAYBOOK.md '4. Security Threat-Model Closure — **CURRENT / DISCOVERY**.'
+          reject_marker docs/project/MASTER-ENGINEERING-PLAYBOOK.md '**Current program status:** DISCOVERY / CURRENT GATE.'
+          reject_marker docs/project/MASTER-ENGINEERING-PLAYBOOK.md 'Current program gate: Security Threat-Model Closure — DISCOVERY'
+          reject_marker docs/project/MASTER-ENGINEERING-PLAYBOOK.md '- [ ] Security Threat-Model Closure — **DISCOVERY / CURRENT GATE**.'
+
+          reject_marker docs/project/NEW-CHAT-HANDOFF.md '- Current program gate: **Security Threat-Model Closure — DISCOVERY**'
+          reject_marker docs/project/NEW-CHAT-HANDOFF.md '## Next gate — Security Threat-Model Closure'
+          reject_marker docs/project/NEW-CHAT-HANDOFF.md '4. Security Threat-Model Closure — **CURRENT / DISCOVERY**'
+          reject_marker docs/project/NEW-CHAT-HANDOFF.md 'The current gate is Security Threat-Model Closure — DISCOVERY.'
+
+          reject_marker docs/project/PHASE-9I-MIGRATION.md 'The current program gate is **Security Threat-Model Closure — DISCOVERY**.'
+          reject_marker docs/project/PROVIDER-PAYMENT-LIFECYCLE.md 'The next program gate is **Security Threat-Model Closure — DISCOVERY**.'
+          reject_marker docs/project/PROVIDER-PAYMENT-LIFECYCLE.md 'The next permitted program gate is **Security Threat-Model Closure — DISCOVERY**.'
+          reject_marker docs/project/REPOSITORY-AUDIT.md 'The current owner/gate is **Security Threat-Model Closure — DISCOVERY**.'
+          reject_marker docs/project/REPOSITORY-AUDIT.md '**Security Threat-Model Closure — DISCOVERY**.'
+          reject_marker docs/project/SECURITY-THREAT-MODEL.md '**Status:** IMPLEMENTATION / REVIEW'
+          reject_marker docs/project/SECURITY-THREAT-MODEL.md '**Current branch:** `security/threat-model-discovery`'
+
+          reject_marker docs/project/PHASE-0-RELEASE-IDENTITY.md 'The next permitted implementation gate is **Phase 9I — Historical token-identity migration**'
+          reject_marker docs/project/REPOSITORY-READINESS.md "Phase 0 is now permitted under the repository's normal PR/CI/review controls."
+          reject_marker docs/project/REPOSITORY-READINESS.md 'The next permitted runtime-changing work is **Phase 0 — SimplixPay release identity and updater ownership**.'
 
       - name: Whitespace errors
         shell: bash
