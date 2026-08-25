@@ -11,16 +11,14 @@ require_once __DIR__ . '/StatusVerifier.php';
 
 /**
  * Payment callback + reconciliation strangler for the historical wc_upayments route.
- *
- * The legacy gateway remains the Charge/configuration surface. This controller
- * owns ordinary browser/webhook payment truth before the inherited priority-10
- * callback handler can run. The legacy get_order_status display poll is left to
- * the inherited handler for compatibility.
  */
 final class PaymentLifecycle {
     private const CALLBACK_HOOK = 'woocommerce_api_wc_upayments';
     private const RECONCILE_HOOK = 'simplixpay_upayments_reconcile_order';
     private const TRUSTED_TRACK_META = '_simplixpay_upayments_status_track_v1';
+    private const TRUSTED_REQUESTED_META = '_simplixpay_upayments_status_requested_v1';
+    private const UNVERIFIED_TRACK_META = '_simplixpay_upayments_unverified_track_v1';
+    private const UNVERIFIED_REQUESTED_META = '_simplixpay_upayments_unverified_requested_v1';
     private const PROVIDER_RESULT_META = '_simplixpay_upayments_provider_result_v1';
     private const RECONCILE_ATTEMPT_META = '_simplixpay_upayments_reconcile_attempt_v1';
     private const RECONCILE_REASON_META = '_simplixpay_upayments_reconcile_reason_v1';
@@ -36,22 +34,17 @@ final class PaymentLifecycle {
         }
         self::$bootstrapped = true;
 
-        // Historical WC-API route is preserved. Priority 5 intentionally runs
-        // before WC_Upayments registers its inherited callback at priority 10.
         add_action(self::CALLBACK_HOOK, array(__CLASS__, 'handle_callback'), 5);
         add_action(self::RECONCILE_HOOK, array(__CLASS__, 'reconcile_order'), 10, 1);
     }
 
     /**
-     * WC-API entrypoint. Does not return for payment callbacks it owns.
-     * The legacy display poll remains intentionally delegated.
+     * WC-API entrypoint. The inherited get_order_status display poll remains delegated.
      */
     public static function handle_callback() {
         $get = isset($_GET) && is_array($_GET) ? $_GET : array();
         $post = isset($_POST) && is_array($_POST) ? $_POST : array();
 
-        // Existing frontend display polling remains owned by the inherited
-        // get_payment_staus() handler. Do not change that public behavior here.
         if (array_key_exists('get_order_status', $get)) {
             return;
         }
@@ -81,16 +74,23 @@ final class PaymentLifecycle {
             self::finish_callback($is_browser, false, $gateway, $order);
         }
 
+        // The callback cursor is routing evidence, never payment truth. Persisting
+        // it separately lets a bounded reconciliation survive a transient failure
+        // of the first authenticated status lookup. A provider-bound cursor, once
+        // established, cannot be replaced by unverified callback input.
+        if (!self::remember_unverified_cursor($order, $track_id, $requested_order_id)) {
+            self::log('callback_cursor_conflict', 'warning');
+            self::finish_callback($is_browser, false, $gateway, $order);
+        }
+
         $outcome = self::process_order_status($gateway, $order, $track_id, $is_browser ? 'browser' : 'webhook');
         $captured = isset($outcome['state']) && $outcome['state'] === 'captured';
         self::finish_callback($is_browser, $captured, $gateway, $order);
     }
 
     /**
-     * Bounded WP-Cron reconciliation entrypoint. The raw provider cursor is not
-     * stored in cron args; it is read from trusted, provider-bound order meta.
-     *
-     * @param mixed $order_id
+     * Bounded WP-Cron reconciliation entrypoint. Cron args contain only order ID;
+     * the cursor is read from order meta and never grants payment authority itself.
      */
     public static function reconcile_order($order_id) {
         $order_id = is_numeric($order_id) ? (int) $order_id : 0;
@@ -109,10 +109,32 @@ final class PaymentLifecycle {
             return;
         }
 
-        $track_id = self::parse_track_id($order->get_meta(self::TRUSTED_TRACK_META));
-        if ($track_id === null) {
-            self::log('reconcile_missing_trusted_cursor', 'warning');
+        $current_requested = self::parse_generic_identifier($order->get_meta('UPayments_order_id'), 255);
+        if ($current_requested === null) {
             return;
+        }
+
+        $track_id = self::parse_track_id($order->get_meta(self::TRUSTED_TRACK_META));
+        if ($track_id !== null) {
+            $trusted_requested = self::parse_generic_identifier($order->get_meta(self::TRUSTED_REQUESTED_META), 255);
+            if ($trusted_requested === null || !hash_equals($current_requested, $trusted_requested)) {
+                self::reset_attempt_cursor_state($order);
+                self::log('reconcile_stale_trusted_attempt', 'warning');
+                return;
+            }
+        } else {
+            $track_id = self::parse_track_id($order->get_meta(self::UNVERIFIED_TRACK_META));
+            $unverified_requested = self::parse_generic_identifier($order->get_meta(self::UNVERIFIED_REQUESTED_META), 255);
+            if ($track_id === null
+                || $unverified_requested === null
+                || !hash_equals($current_requested, $unverified_requested)
+            ) {
+                if ($track_id !== null || $unverified_requested !== null) {
+                    self::reset_attempt_cursor_state($order);
+                }
+                self::log('reconcile_missing_cursor', 'warning');
+                return;
+            }
         }
 
         self::process_order_status($gateway, $order, $track_id, 'reconcile');
@@ -120,12 +142,6 @@ final class PaymentLifecycle {
 
     /**
      * Provider-query + lock + deterministic state application seam.
-     *
-     * @param object $gateway
-     * @param object $order
-     * @param string $track_id
-     * @param string $source browser|webhook|reconcile
-     * @return array{state:string,reason:string}
      */
     public static function process_order_status($gateway, $order, $track_id, $source = 'reconcile') {
         if (!self::basic_order_preflight($order, $gateway)) {
@@ -146,11 +162,20 @@ final class PaymentLifecycle {
         $verification = StatusVerifier::verify($gateway, $order, $track_id);
         if (empty($verification['bound']) || !is_array($verification['transaction'])) {
             $reason = isset($verification['reason']) ? (string) $verification['reason'] : 'verification_failed';
+
             if (self::is_retryable_verification_reason($reason)
-                && self::trusted_cursor_matches($order, $track_id)
+                && self::retry_cursor_matches($order, $track_id)
             ) {
-                self::schedule_reconciliation($order, $reason);
+                self::schedule_reconciliation($order, $reason, $track_id);
+            } elseif (!empty($verification['authenticated'])
+                && self::unverified_cursor_matches($order, $track_id)
+                && !self::trusted_cursor_present($order)
+            ) {
+                // An authenticated provider response that cannot bind this cursor
+                // is definitive negative evidence for using that unverified cursor.
+                self::clear_reconciliation($order);
             }
+
             self::log('status_' . self::safe_code($reason), 'warning');
             return self::outcome('unchanged', $reason);
         }
@@ -158,15 +183,15 @@ final class PaymentLifecycle {
         $order_id = (int) $order->get_id();
         $lock_token = OrderLock::acquire($order_id);
         if ($lock_token === null) {
-            if (self::trusted_cursor_matches($order, $track_id)) {
-                self::schedule_reconciliation($order, 'order_lock_contention');
+            if (self::retry_cursor_matches($order, $track_id)) {
+                self::schedule_reconciliation($order, 'order_lock_contention', $track_id);
             }
             return self::outcome('unchanged', 'order_lock_contention');
         }
 
         try {
-            // Re-read under the mutation lock. An admin/checkout worker could
-            // have changed order identity/total/state during the provider call.
+            // Re-read under the mutation lock to prevent a TOCTOU change between
+            // provider verification and local state mutation.
             $fresh_order = wc_get_order($order_id);
             if (!self::basic_order_preflight($fresh_order, $gateway)) {
                 return self::outcome('unchanged', 'fresh_order_preflight_failed');
@@ -190,19 +215,43 @@ final class PaymentLifecycle {
                 return self::outcome('unchanged', 'binding_changed_under_lock');
             }
 
+            $current_requested = self::parse_generic_identifier($fresh_order->get_meta('UPayments_order_id'), 255);
+            if ($current_requested === null) {
+                return self::outcome('unchanged', 'fresh_requested_order_invalid');
+            }
             $existing_track = $fresh_order->get_meta(self::TRUSTED_TRACK_META);
-            if (is_string($existing_track) && $existing_track !== '' && $existing_track !== $track_id) {
-                self::log('trusted_cursor_conflict', 'warning');
-                return self::outcome('unchanged', 'trusted_cursor_conflict');
+            $existing_requested = $fresh_order->get_meta(self::TRUSTED_REQUESTED_META);
+            if (is_string($existing_track) && $existing_track !== '') {
+                if (!is_string($existing_requested) || $existing_requested === '') {
+                    self::log('trusted_cursor_requested_missing', 'warning');
+                    return self::outcome('unchanged', 'trusted_cursor_requested_missing');
+                }
+                if (!hash_equals($existing_requested, $current_requested)) {
+                    // process_payment() creates a new provider order identity for every
+                    // successful Charge attempt on the same Woo order. Old unpaid
+                    // reconciliation state must not pin the new attempt to its track.
+                    self::reset_attempt_cursor_state($fresh_order);
+                    $existing_track = '';
+                } elseif ($existing_track !== $track_id) {
+                    self::log('trusted_cursor_conflict', 'warning');
+                    return self::outcome('unchanged', 'trusted_cursor_conflict');
+                }
             }
 
             $transaction = $rebound['transaction'];
             $classification = (string) $rebound['classification'];
 
-            // This cursor becomes durable only after an authenticated status
-            // response has been fully rebound to the fresh order.
+            // Promotion to trusted occurs only after authenticated status response
+            // + exact fresh-order rebound. Pair the track with provider order identity
+            // so a later Charge attempt on the same Woo order can be distinguished.
             $fresh_order->update_meta_data(self::TRUSTED_TRACK_META, $track_id);
-            $fresh_order->update_meta_data(self::PROVIDER_RESULT_META, (string) $transaction['result']);
+            $fresh_order->update_meta_data(self::TRUSTED_REQUESTED_META, $current_requested);
+            $fresh_order->delete_meta_data(self::UNVERIFIED_TRACK_META);
+            $fresh_order->delete_meta_data(self::UNVERIFIED_REQUESTED_META);
+            $fresh_order->update_meta_data(
+                self::PROVIDER_RESULT_META,
+                $transaction['result'] === null ? 'NULL' : (string) $transaction['result']
+            );
 
             if ($classification === ProviderResult::CAPTURED) {
                 $captured = self::apply_captured($gateway, $fresh_order, $transaction);
@@ -226,10 +275,9 @@ final class PaymentLifecycle {
                 return self::outcome($state ? 'cancelled' : 'unchanged', $state ? 'provider_cancelled' : 'terminal_transition_blocked');
             }
 
-            // PENDING and INDETERMINATE remain unpaid. Persist only authenticated
-            // operational evidence, then schedule bounded reconciliation.
+            // PENDING and INDETERMINATE remain unpaid.
             $fresh_order->save();
-            self::schedule_reconciliation($fresh_order, strtolower($classification));
+            self::schedule_reconciliation($fresh_order, strtolower($classification), $track_id);
             return self::outcome('pending', strtolower($classification));
         } catch (\Throwable $e) {
             self::log('lifecycle_exception', 'warning');
@@ -241,11 +289,6 @@ final class PaymentLifecycle {
 
     /**
      * Conflict-safe GET/POST merge. Cookies are deliberately excluded.
-     *
-     * @param array  $get
-     * @param array  $post
-     * @param string $key
-     * @return array{valid:bool,present:bool,value:string|null}
      */
     public static function merge_request_value(array $get, array $post, $key) {
         $has_get = array_key_exists($key, $get);
@@ -315,6 +358,63 @@ final class PaymentLifecycle {
         return is_string($local_requested) && $local_requested !== '';
     }
 
+    private static function remember_unverified_cursor($order, $track_id, $requested_order_id) {
+        if (!is_object($order)
+            || !method_exists($order, 'get_meta')
+            || !method_exists($order, 'update_meta_data')
+            || !method_exists($order, 'delete_meta_data')
+            || !method_exists($order, 'save')
+        ) {
+            return false;
+        }
+        $track_id = self::parse_track_id($track_id);
+        $requested_order_id = self::parse_generic_identifier($requested_order_id, 255);
+        $current_requested = self::parse_generic_identifier($order->get_meta('UPayments_order_id'), 255);
+        if ($track_id === null || $requested_order_id === null || $current_requested === null
+            || !hash_equals($current_requested, $requested_order_id)
+        ) {
+            return false;
+        }
+
+        $trusted = $order->get_meta(self::TRUSTED_TRACK_META);
+        if (is_string($trusted) && $trusted !== '') {
+            $trusted_requested = $order->get_meta(self::TRUSTED_REQUESTED_META);
+            if (!is_string($trusted_requested) || $trusted_requested === '') {
+                return false;
+            }
+            if (hash_equals($trusted_requested, $current_requested)) {
+                return hash_equals($trusted, $track_id);
+            }
+
+            // A new successful Charge attempt rewrote UPayments_order_id. The old
+            // trusted cursor was authoritative only for that prior unpaid attempt.
+            self::reset_attempt_cursor_state($order);
+        } else {
+            $unverified_requested = $order->get_meta(self::UNVERIFIED_REQUESTED_META);
+            if (is_string($unverified_requested) && $unverified_requested !== ''
+                && !hash_equals($unverified_requested, $current_requested)
+            ) {
+                self::reset_attempt_cursor_state($order);
+            }
+        }
+
+        // Unverified callback routing evidence is replaceable by a later locally
+        // preflighted callback for the same current provider order identity. It can
+        // never overwrite a trusted cursor for that same attempt.
+        $order->update_meta_data(self::UNVERIFIED_TRACK_META, $track_id);
+        $order->update_meta_data(self::UNVERIFIED_REQUESTED_META, $current_requested);
+        $saved = $order->save();
+        if ($saved === false || $saved === null || $saved === 0) {
+            return false;
+        }
+        $readback_track = $order->get_meta(self::UNVERIFIED_TRACK_META);
+        $readback_requested = $order->get_meta(self::UNVERIFIED_REQUESTED_META);
+        return is_string($readback_track)
+            && is_string($readback_requested)
+            && hash_equals($readback_track, $track_id)
+            && hash_equals($readback_requested, $current_requested);
+    }
+
     private static function apply_captured($gateway, $order, array $transaction) {
         $payment_id = isset($transaction['payment_id']) && is_scalar($transaction['payment_id'])
             ? (string) $transaction['payment_id']
@@ -335,8 +435,6 @@ final class PaymentLifecycle {
             return false;
         }
 
-        // Preserve the verified legacy metadata contract, but only from the
-        // authenticated/bound status response.
         $order->update_meta_data('UPayments_Result', 'CAPTURED');
         $order->update_meta_data('UPayments_PaymentID', $payment_id);
         $order->update_meta_data('UPayments_TrackID', (string) $transaction['track_id']);
@@ -348,9 +446,6 @@ final class PaymentLifecycle {
 
         $already_paid = method_exists($order, 'is_paid') && $order->is_paid();
         if ($already_paid) {
-            // Do not re-fire Woo payment-complete hooks on an order a merchant or
-            // prior trusted path already placed in a paid state. Fill the standard
-            // transaction ID only when it was previously absent.
             if ($existing_transaction_id === '' && method_exists($order, 'set_transaction_id')) {
                 $order->set_transaction_id($payment_id);
             }
@@ -387,8 +482,6 @@ final class PaymentLifecycle {
             return false;
         }
 
-        // Idempotency barrier is written only after canonical Woo paid state and
-        // transaction-ID postconditions are satisfied.
         $order->update_meta_data('_upay_verified_capture', 1);
         $order->update_meta_data('UPayments_webhook_triggered', 1);
         $order->save();
@@ -420,7 +513,7 @@ final class PaymentLifecycle {
         return (string) $order->get_status() === $target_status;
     }
 
-    private static function schedule_reconciliation($order, $reason) {
+    private static function schedule_reconciliation($order, $reason, $track_id) {
         if (!is_object($order) || !method_exists($order, 'get_id') || !method_exists($order, 'get_meta')) {
             return false;
         }
@@ -428,8 +521,9 @@ final class PaymentLifecycle {
             return false;
         }
 
+        $track_id = self::parse_track_id($track_id);
         $order_id = (int) $order->get_id();
-        if ($order_id <= 0 || !self::trusted_cursor_matches($order, $order->get_meta(self::TRUSTED_TRACK_META))) {
+        if ($order_id <= 0 || $track_id === null || !self::retry_cursor_matches($order, $track_id)) {
             return false;
         }
 
@@ -478,6 +572,34 @@ final class PaymentLifecycle {
         if (!is_object($order) || !method_exists($order, 'get_id')) {
             return;
         }
+        self::unschedule_reconciliation($order);
+        if (method_exists($order, 'delete_meta_data')) {
+            $order->delete_meta_data(self::UNVERIFIED_TRACK_META);
+            $order->delete_meta_data(self::UNVERIFIED_REQUESTED_META);
+            $order->delete_meta_data(self::RECONCILE_ATTEMPT_META);
+            $order->delete_meta_data(self::RECONCILE_REASON_META);
+            $order->delete_meta_data(self::RECONCILE_EXHAUSTED_META);
+            $order->save();
+        }
+    }
+
+    private static function reset_attempt_cursor_state($order) {
+        if (!is_object($order) || !method_exists($order, 'get_id') || !method_exists($order, 'delete_meta_data')) {
+            return;
+        }
+        self::unschedule_reconciliation($order);
+        $order->delete_meta_data(self::TRUSTED_TRACK_META);
+        $order->delete_meta_data(self::TRUSTED_REQUESTED_META);
+        $order->delete_meta_data(self::UNVERIFIED_TRACK_META);
+        $order->delete_meta_data(self::UNVERIFIED_REQUESTED_META);
+        $order->delete_meta_data(self::PROVIDER_RESULT_META);
+        $order->delete_meta_data(self::RECONCILE_ATTEMPT_META);
+        $order->delete_meta_data(self::RECONCILE_REASON_META);
+        $order->delete_meta_data(self::RECONCILE_EXHAUSTED_META);
+        $order->save();
+    }
+
+    private static function unschedule_reconciliation($order) {
         $args = array((int) $order->get_id());
         for ($i = 0; $i < self::MAX_RECONCILE_ATTEMPTS + 2; $i++) {
             $timestamp = wp_next_scheduled(self::RECONCILE_HOOK, $args);
@@ -486,12 +608,14 @@ final class PaymentLifecycle {
             }
             wp_unschedule_event($timestamp, self::RECONCILE_HOOK, $args);
         }
-        if (method_exists($order, 'delete_meta_data')) {
-            $order->delete_meta_data(self::RECONCILE_ATTEMPT_META);
-            $order->delete_meta_data(self::RECONCILE_REASON_META);
-            $order->delete_meta_data(self::RECONCILE_EXHAUSTED_META);
-            $order->save();
+    }
+
+    private static function trusted_cursor_present($order) {
+        if (!is_object($order) || !method_exists($order, 'get_meta')) {
+            return false;
         }
+        $trusted = $order->get_meta(self::TRUSTED_TRACK_META);
+        return is_string($trusted) && self::parse_track_id($trusted) !== null;
     }
 
     private static function trusted_cursor_matches($order, $track_id) {
@@ -500,7 +624,37 @@ final class PaymentLifecycle {
             return false;
         }
         $trusted = $order->get_meta(self::TRUSTED_TRACK_META);
-        return is_string($trusted) && $trusted !== '' && hash_equals($trusted, $track_id);
+        $trusted_requested = self::parse_generic_identifier($order->get_meta(self::TRUSTED_REQUESTED_META), 255);
+        $current_requested = self::parse_generic_identifier($order->get_meta('UPayments_order_id'), 255);
+        return is_string($trusted)
+            && $trusted !== ''
+            && $trusted_requested !== null
+            && $current_requested !== null
+            && hash_equals($trusted, $track_id)
+            && hash_equals($trusted_requested, $current_requested);
+    }
+
+    private static function unverified_cursor_matches($order, $track_id) {
+        $track_id = self::parse_track_id($track_id);
+        if ($track_id === null || !is_object($order) || !method_exists($order, 'get_meta')) {
+            return false;
+        }
+        $unverified = $order->get_meta(self::UNVERIFIED_TRACK_META);
+        $unverified_requested = self::parse_generic_identifier($order->get_meta(self::UNVERIFIED_REQUESTED_META), 255);
+        $current_requested = self::parse_generic_identifier($order->get_meta('UPayments_order_id'), 255);
+        return is_string($unverified)
+            && $unverified !== ''
+            && $unverified_requested !== null
+            && $current_requested !== null
+            && hash_equals($unverified, $track_id)
+            && hash_equals($unverified_requested, $current_requested);
+    }
+
+    private static function retry_cursor_matches($order, $track_id) {
+        if (self::trusted_cursor_present($order)) {
+            return self::trusted_cursor_matches($order, $track_id);
+        }
+        return self::unverified_cursor_matches($order, $track_id);
     }
 
     private static function is_retryable_verification_reason($reason) {
@@ -517,7 +671,7 @@ final class PaymentLifecycle {
         }
         if (preg_match('/^unexpected_http_([0-9]{3})$/', $reason, $matches)) {
             $status = (int) $matches[1];
-            return $status === 408 || $status === 425 || $status === 429 || $status >= 500;
+            return $status === 404 || $status === 408 || $status === 425 || $status === 429 || $status >= 500;
         }
         return false;
     }
@@ -623,6 +777,5 @@ final class PaymentLifecycle {
         );
     }
 
-    private function __construct() {
-    }
+    private function __construct() {}
 }
