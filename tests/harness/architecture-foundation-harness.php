@@ -49,11 +49,34 @@ $scheduler = arch_read($root, 'includes/Subscription/Cron/Scheduler.php');
 arch_assert($architecture !== '', 'architecture control record exists');
 arch_assert(arch_contains($architecture, '**Status:** DISCOVERY / CHARACTERIZATION'), 'architecture record is discovery/characterization');
 arch_assert(arch_contains($architecture, 'Architecture & Code-Quality Foundation'), 'architecture gate is named explicitly');
-arch_assert(arch_contains($architecture, 'A1 — provider endpoint/mode resolution'), 'first extraction seam is frozen');
-arch_assert(arch_contains($architecture, 'A2 — payment-method availability client/cache'), 'second extraction seam is frozen');
-arch_assert(arch_contains($architecture, 'A5 — checkout payload/orchestration core'), 'high-risk checkout core is explicitly late');
+
+$stageHeadings = array(
+    'A1' => '### A1 — provider endpoint/mode resolution — first safe runtime seam',
+    'A2' => '### A2 — payment-method availability client/cache',
+    'A3' => '### A3 — gateway settings/admin/multi-merchant presentation',
+    'A4' => '### A4 — subscription product/account presentation',
+    'A5' => '### A5 — checkout payload/orchestration core',
+);
+$stagePositions = array();
+foreach ($stageHeadings as $stage => $heading) {
+    $position = strpos($architecture, $heading);
+    $stagePositions[$stage] = $position;
+    arch_assert($position !== false, "{$stage} extraction stage is present");
+}
+$ordered = true;
+$previous = -1;
+foreach ($stagePositions as $position) {
+    if ($position === false || $position <= $previous) {
+        $ordered = false;
+        break;
+    }
+    $previous = $position;
+}
+arch_assert($ordered, 'A1-A5 extraction stages remain in frozen order');
+
 arch_assert(arch_contains($architecture, 'no production runtime behavior changes in the discovery PR'), 'discovery tranche forbids runtime behavior changes');
 arch_assert(arch_contains($architecture, 'This is not permission for a big-bang rewrite'), 'big-bang rewrite is prohibited');
+arch_assert(arch_contains($architecture, 'exact accepted `UPayments.php` byte size for the current architecture milestone'), 'monolith ratchet update contract is explicit');
 arch_assert(arch_contains($architecture, 'Composer only with an explicit distribution rule'), 'Composer introduction is gated by distribution contract');
 arch_assert(arch_contains($architecture, 'PHPCS/WPCS and PHPStan incrementally'), 'static-analysis rollout is incremental');
 
@@ -62,7 +85,8 @@ arch_assert(arch_contains($naming, '**Canonical slug:** `simplixpay-upayments`')
 
 $gatewayPath = $root . '/UPayments.php';
 $gatewaySize = is_file($gatewayPath) ? filesize($gatewayPath) : false;
-arch_assert(is_int($gatewaySize) && $gatewaySize <= 257832, 'UPayments.php does not grow beyond architecture-entry baseline');
+$acceptedGatewayBytes = 257832;
+arch_assert(is_int($gatewaySize) && $gatewaySize === $acceptedGatewayBytes, 'UPayments.php matches current exact architecture ratchet');
 arch_assert(arch_contains($gateway, 'class WC_Upayments extends WC_Payment_Gateway'), 'legacy WC_Upayments gateway compatibility class remains');
 arch_assert(arch_contains($gateway, "add_filter(\"woocommerce_payment_gateways\", \"addUpaymentsGatewayClass\")"), 'WooCommerce gateway registration remains characterized');
 arch_assert(arch_contains($gateway, 'public function process_payment'), 'process_payment compatibility entry point remains');
@@ -101,14 +125,14 @@ arch_assert(is_file($root . '/includes/Subscription/Cron/CycleClaim.php'), 'prot
 arch_assert(arch_contains($scheduler, 'class Scheduler'), 'subscription Scheduler class remains characterized');
 arch_assert(is_file($root . '/includes/class-wc-gateway-upayments-blocks.php'), 'Checkout Blocks gateway integration exists');
 
-$protectedStrings = array(
+$runtimeProtectedStrings = array(
     "'upayments'",
     'woocommerce_upayments_settings',
     'wc_upayments',
     'UPayments_order_id',
 );
-foreach ($protectedStrings as $protected) {
-    arch_assert(arch_contains($gateway . $naming, $protected), "protected compatibility marker remains: {$protected}");
+foreach ($runtimeProtectedStrings as $protected) {
+    arch_assert(arch_contains($gateway, $protected), "runtime compatibility marker remains in UPayments.php: {$protected}");
 }
 
 arch_assert(!is_dir($root . '/src/Provider'), 'discovery tranche has not prematurely created Provider runtime module');
