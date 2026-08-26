@@ -107,6 +107,41 @@ function arch_executable_tokens($source)
     return $normalized;
 }
 
+function arch_class_body_tokens(array $tokens, $className)
+{
+    $tokenCount = count($tokens);
+    $nameToken = 'name:' . $className;
+
+    for ($i = 0; $i < $tokenCount - 1; $i++) {
+        if ($tokens[$i] !== 'class' || $tokens[$i + 1] !== $nameToken) {
+            continue;
+        }
+
+        for ($j = $i + 2; $j < $tokenCount; $j++) {
+            if ($tokens[$j] !== '{') {
+                continue;
+            }
+
+            $depth = 1;
+            $body = array();
+            for ($k = $j + 1; $k < $tokenCount; $k++) {
+                if ($tokens[$k] === '{') {
+                    $depth++;
+                } elseif ($tokens[$k] === '}') {
+                    $depth--;
+                    if ($depth === 0) {
+                        return $body;
+                    }
+                }
+                $body[] = $tokens[$k];
+            }
+            return array();
+        }
+    }
+
+    return array();
+}
+
 function arch_function_body_tokens(array $tokens, $functionName)
 {
     $tokenCount = count($tokens);
@@ -196,9 +231,10 @@ $securityStatus = arch_read($root, 'src/Security/PublicOrderStatus.php');
 $tokenIdentity = arch_read($root, 'includes/Token/CustomerTokenIdentity.php');
 $scheduler = arch_read($root, 'includes/Subscription/Cron/Scheduler.php');
 $gatewayTokens = arch_executable_tokens($gateway);
-$constructorTokens = arch_function_body_tokens($gatewayTokens, '__construct');
+$gatewayClassTokens = arch_class_body_tokens($gatewayTokens, 'WC_Upayments');
+$constructorTokens = arch_function_body_tokens($gatewayClassTokens, '__construct');
 $availabilityTokens = arch_function_body_tokens($gatewayTokens, 'enableUpaymentsGateway');
-$processPaymentTokens = arch_function_body_tokens($gatewayTokens, 'process_payment');
+$processPaymentTokens = arch_function_body_tokens($gatewayClassTokens, 'process_payment');
 
 arch_assert($architecture !== '', 'architecture control record exists');
 arch_assert(arch_contains($architecture, '**Status:** DISCOVERY / CHARACTERIZATION'), 'architecture record is discovery/characterization');
@@ -281,12 +317,12 @@ arch_assert(is_file($root . '/includes/class-wc-gateway-upayments-blocks.php'), 
 
 arch_assert(
     arch_has_token_sequence($constructorTokens, $gatewayIdSequence),
-    'gateway ID remains executable in __construct and bound to upayments'
+    'gateway ID remains executable in WC_Upayments::__construct and bound to upayments'
 );
 arch_assert(
     arch_has_token_sequence($constructorTokens, $callbackWithTrailingComma)
         || arch_has_token_sequence($constructorTokens, $callbackWithoutTrailingComma),
-    'wc_upayments callback hook remains executable in __construct and bound to check_ipn_response'
+    'wc_upayments callback hook remains executable in WC_Upayments::__construct and bound to check_ipn_response'
 );
 arch_assert(
     arch_has_token_sequence($availabilityTokens, $settingsReadSequence),
@@ -294,26 +330,33 @@ arch_assert(
 );
 arch_assert(
     arch_has_token_sequence($processPaymentTokens, $orderIdWriteSequence),
-    'UPayments_order_id remains executable process_payment persistence from the local provider-order identity'
+    'UPayments_order_id remains executable WC_Upayments::process_payment persistence from the local provider-order identity'
 );
 
 $inertFixture = <<<'PHP'
 <?php
+class OtherArchitectureFixture {
+    public function __construct() {
+        $this->id = 'upayments';
+        add_action("woocommerce_api_" . strtolower("WC_UPayments"), [$this, "check_ipn_response"]);
+    }
+    public function process_payment() {
+        $order->add_meta_data("UPayments_order_id", $unique_order_id);
+    }
+}
 class ArchitectureFixture {
     public function __construct() {
         // $this->id = 'upayments';
         $dead_id = '$this->id = \'upayments\';';
         $dead_callback = 'add_action("woocommerce_api_" . strtolower("WC_UPayments"), [$this, "check_ipn_response"]);';
     }
-    public function unrelated() {
-        $this->id = 'upayments';
-        add_action("woocommerce_api_" . strtolower("WC_UPayments"), [$this, "check_ipn_response"]);
-        $settings = get_option("woocommerce_upayments_settings");
-        $order->add_meta_data("UPayments_order_id", $unique_order_id);
-    }
     public function process_payment() {
         $dead_write = '$order->add_meta_data("UPayments_order_id", $unique_order_id);';
     }
+}
+function unrelatedAvailabilityFixture($available_gateways) {
+    $settings = get_option("woocommerce_upayments_settings");
+    return $available_gateways;
 }
 function enableUpaymentsGateway($available_gateways) {
     $dead_settings = '$settings = get_option("woocommerce_upayments_settings");';
@@ -321,17 +364,18 @@ function enableUpaymentsGateway($available_gateways) {
 }
 PHP;
 $inertTokens = arch_executable_tokens($inertFixture);
-$inertConstructor = arch_function_body_tokens($inertTokens, '__construct');
+$inertGatewayClass = arch_class_body_tokens($inertTokens, 'ArchitectureFixture');
+$inertConstructor = arch_function_body_tokens($inertGatewayClass, '__construct');
 $inertAvailability = arch_function_body_tokens($inertTokens, 'enableUpaymentsGateway');
-$inertProcessPayment = arch_function_body_tokens($inertTokens, 'process_payment');
-arch_assert(!arch_has_token_sequence($inertConstructor, $gatewayIdSequence), 'role matcher ignores commented/string gateway ID and unrelated executable copy');
+$inertProcessPayment = arch_function_body_tokens($inertGatewayClass, 'process_payment');
+arch_assert(!arch_has_token_sequence($inertConstructor, $gatewayIdSequence), 'role matcher ignores commented/string gateway ID and executable copy in another class');
 arch_assert(
     !arch_has_token_sequence($inertConstructor, $callbackWithTrailingComma)
         && !arch_has_token_sequence($inertConstructor, $callbackWithoutTrailingComma),
-    'role matcher ignores string callback and unrelated executable copy'
+    'role matcher ignores string callback and executable copy in another class'
 );
-arch_assert(!arch_has_token_sequence($inertAvailability, $settingsReadSequence), 'role matcher ignores string settings read and unrelated executable copy');
-arch_assert(!arch_has_token_sequence($inertProcessPayment, $orderIdWriteSequence), 'role matcher ignores string order-id write and unrelated executable copy');
+arch_assert(!arch_has_token_sequence($inertAvailability, $settingsReadSequence), 'role matcher ignores string settings read and executable copy in another function');
+arch_assert(!arch_has_token_sequence($inertProcessPayment, $orderIdWriteSequence), 'role matcher ignores string order-id write and executable copy in another class');
 
 arch_assert(!is_dir($root . '/src/Provider'), 'discovery tranche has not prematurely created Provider runtime module');
 
