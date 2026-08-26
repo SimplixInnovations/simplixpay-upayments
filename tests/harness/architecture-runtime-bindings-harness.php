@@ -169,29 +169,68 @@ function arch2_without_nested_functions(array $tokens)
     $result = array();
     $count = count($tokens);
     for ($i = 0; $i < $count; $i++) {
-        if ($tokens[$i]['id'] !== T_FUNCTION) {
-            $result[] = $tokens[$i];
+        if ($tokens[$i]['id'] === T_FUNCTION) {
+            $j = $i + 1;
+            while ($j < $count && $tokens[$j]['text'] !== '{' && $tokens[$j]['text'] !== ';') {
+                $j++;
+            }
+            if ($j < $count && $tokens[$j]['text'] === '{') {
+                $depth = 1;
+                $j++;
+                while ($j < $count && $depth > 0) {
+                    if ($tokens[$j]['text'] === '{') {
+                        $depth++;
+                    } elseif ($tokens[$j]['text'] === '}') {
+                        $depth--;
+                    }
+                    $j++;
+                }
+            } elseif ($j < $count) {
+                $j++;
+            }
+            $i = $j - 1;
             continue;
         }
-        $j = $i + 1;
-        while ($j < $count && $tokens[$j]['text'] !== '{' && $tokens[$j]['text'] !== ';') {
-            $j++;
-        }
-        if ($j < $count && $tokens[$j]['text'] === '{') {
-            $depth = 1;
-            $j++;
-            while ($j < $count && $depth > 0) {
-                if ($tokens[$j]['text'] === '{') {
-                    $depth++;
-                } elseif ($tokens[$j]['text'] === '}') {
-                    $depth--;
+
+        // T_FN exists only on runtimes that understand arrow functions.
+        // Use defined()/constant() so this harness remains parseable/runnable on
+        // the project's PHP 7.2 compatibility floor while still stripping arrow
+        // expressions when tokenizing on PHP 7.4+ / CI PHP 8.x.
+        if (defined('T_FN') && $tokens[$i]['id'] === constant('T_FN')) {
+            $j = $i + 1;
+            $paren = 0;
+            $bracket = 0;
+            $brace = 0;
+            while ($j < $count) {
+                $text = $tokens[$j]['text'];
+                if ($text === '(') {
+                    $paren++;
+                } elseif ($text === ')') {
+                    if ($paren > 0) {
+                        $paren--;
+                    }
+                } elseif ($text === '[') {
+                    $bracket++;
+                } elseif ($text === ']') {
+                    if ($bracket > 0) {
+                        $bracket--;
+                    }
+                } elseif ($text === '{') {
+                    $brace++;
+                } elseif ($text === '}') {
+                    if ($brace > 0) {
+                        $brace--;
+                    }
+                } elseif (($text === ';' || $text === ',') && $paren === 0 && $bracket === 0 && $brace === 0) {
+                    break;
                 }
                 $j++;
             }
-        } elseif ($j < $count) {
-            $j++;
+            $i = $j;
+            continue;
         }
-        $i = $j - 1;
+
+        $result[] = $tokens[$i];
     }
     return $result;
 }
@@ -286,6 +325,11 @@ function arch2_has_sequence(array $tokens, array $sequence)
     return false;
 }
 
+$gatewayAppendSequence = array(
+    array(T_VARIABLE, '$methods'), array(null, '['), array(null, ']'), array(null, '='),
+    array(T_CONSTANT_ENCAPSED_STRING, 'WC_UPayments'), array(null, ';'),
+);
+
 $gateway = arch2_read($root, 'UPayments.php');
 $gatewayTokens = arch2_tokens($gateway);
 $gatewayRegistration = arch2_direct_top_level_hook_callback(
@@ -310,10 +354,7 @@ $productMetaRegistration = arch2_direct_top_level_hook_callback(
 arch2_assert($gateway !== '', 'UPayments.php is readable');
 arch2_assert($gatewayRegistration['found'], 'WooCommerce gateway registration is a direct executable global hook/callback pair');
 arch2_assert(
-    arch2_has_sequence($gatewayRegistration['body'], array(
-        array(T_VARIABLE, '$methods'), array(null, '['), array(null, ']'), array(null, '='),
-        array(T_CONSTANT_ENCAPSED_STRING, 'WC_UPayments'), array(null, ';'),
-    )),
+    arch2_has_sequence($gatewayRegistration['body'], $gatewayAppendSequence),
     'gateway registration callback directly appends WC_UPayments'
 );
 arch2_assert($availabilityRegistration['found'], 'availability registration is a direct executable global hook/callback pair');
@@ -378,6 +419,25 @@ PHP;
 arch2_assert(
     !arch2_direct_top_level_hook_callback(arch2_tokens($inertFixture), 'add_filter', 'woocommerce_payment_gateways', 'addUpaymentsGatewayClass')['found'],
     'matcher ignores inert hook text'
+);
+
+$arrowFixture = <<<'PHP'
+<?php
+add_filter("woocommerce_payment_gateways", "addUpaymentsGatewayClass");
+function addUpaymentsGatewayClass($methods) {
+    $unused = fn() => $methods[] = "WC_UPayments";
+    return $methods;
+}
+PHP;
+$arrowGateway = arch2_direct_top_level_hook_callback(
+    arch2_tokens($arrowFixture),
+    'add_filter',
+    'woocommerce_payment_gateways',
+    'addUpaymentsGatewayClass'
+);
+arch2_assert(
+    $arrowGateway['found'] && !arch2_has_sequence($arrowGateway['body'], $gatewayAppendSequence),
+    'matcher strips arrow-function gateway append from callback body'
 );
 
 $validFixture = <<<'PHP'
