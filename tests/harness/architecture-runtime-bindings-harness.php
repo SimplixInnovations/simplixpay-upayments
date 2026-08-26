@@ -159,6 +159,7 @@ function arch2_is_label_colon(array $tokens, $index)
 
     $beforeLabel = $tokens[$labelIndex - 1]['text'];
     return $beforeLabel === ';'
+        || $beforeLabel === '{'
         || $beforeLabel === '}'
         || ($beforeLabel === ':' && arch2_is_label_colon($tokens, $labelIndex - 1));
 }
@@ -171,6 +172,7 @@ function arch2_is_direct_statement_start(array $tokens, $index)
 
     $previous = $tokens[$index - 1]['text'];
     return $previous === ';'
+        || $previous === '{'
         || $previous === '}'
         || ($previous === ':' && arch2_is_label_colon($tokens, $index - 1));
 }
@@ -330,6 +332,10 @@ function arch2_direct_top_level_hook_callback(array $tokens, $hookFunction, $hoo
             continue;
         }
         if ($text === '{') {
+            if ($braceDepth === 0 && $altDepth === 0
+                && arch2_is_direct_statement_start($tokens, $i)) {
+                continue;
+            }
             $braceDepth++;
             continue;
         }
@@ -353,8 +359,7 @@ function arch2_direct_top_level_hook_callback(array $tokens, $hookFunction, $hoo
             continue;
         }
 
-        $previous = $i > 0 ? $tokens[$i - 1]['text'] : null;
-        if ($previous !== null && $previous !== ';' && $previous !== '}') {
+        if (!arch2_is_direct_statement_start($tokens, $i)) {
             continue;
         }
 
@@ -825,24 +830,52 @@ $protectedRegistrations = array(
 
 foreach ($terminatorFixtures as $terminatorName => $fixture) {
     foreach ($protectedRegistrations as $stageName => $registration) {
-        $terminatedSource = "<?php\n"
-            . $fixture['statement'] . "\n"
-            . $registration['hook_function'] . "('" . $registration['hook_name'] . "', '"
+        $registrationSource = $registration['hook_function'] . "('" . $registration['hook_name'] . "', '"
             . $registration['callback_name'] . "');\n"
             . 'function ' . $registration['callback_name'] . '($value) {'
-            . $registration['callback_body'] . "}\n"
-            . $fixture['label'] . "\n";
-        arch2_assert(
-            !arch2_direct_top_level_hook_callback(
-                arch2_tokens($terminatedSource),
-                $registration['hook_function'],
-                $registration['hook_name'],
-                $registration['callback_name']
-            )['found'],
-            "matcher rejects {$stageName} registration after direct {$terminatorName} terminator"
+            . $registration['callback_body'] . "}\n";
+        $paths = array(
+            'direct' => $fixture['statement'] . "\n",
+            'unconditional-block' => "{\n" . $fixture['statement'] . "\n}\n",
         );
+
+        foreach ($paths as $pathName => $path) {
+            $terminatedSource = "<?php\n"
+                . $path
+                . $registrationSource
+                . $fixture['label'] . "\n";
+            arch2_assert(
+                !arch2_direct_top_level_hook_callback(
+                    arch2_tokens($terminatedSource),
+                    $registration['hook_function'],
+                    $registration['hook_name'],
+                    $registration['callback_name']
+                )['found'],
+                "matcher rejects {$stageName} registration after {$pathName} {$terminatorName} terminator"
+            );
+        }
     }
 }
+
+$nestedBareBlockFixture = <<<'PHP'
+<?php
+{
+    {
+        return;
+    }
+}
+add_filter("woocommerce_payment_gateways", "addUpaymentsGatewayClass");
+function addUpaymentsGatewayClass($methods) { $methods[] = "WC_UPayments"; return $methods; }
+PHP;
+arch2_assert(
+    !arch2_direct_top_level_hook_callback(
+        arch2_tokens($nestedBareBlockFixture),
+        'add_filter',
+        'woocommerce_payment_gateways',
+        'addUpaymentsGatewayClass'
+    )['found'],
+    'matcher rejects gateway registration after nested unconditional-block terminator'
+);
 
 $conditionalTerminatorFixture = <<<'PHP'
 <?php
@@ -870,6 +903,25 @@ foreach ($protectedRegistrations as $stageName => $registration) {
         "matcher accepts {$stageName} registration after conditional terminator"
     );
 }
+
+$reachableBareBlockFixture = <<<'PHP'
+<?php
+{
+    add_filter("woocommerce_payment_gateways", "addUpaymentsGatewayClass");
+    function addUpaymentsGatewayClass($methods) { $methods[] = "WC_UPayments"; return $methods; }
+}
+PHP;
+$reachableBareBlock = arch2_direct_top_level_hook_callback(
+    arch2_tokens($reachableBareBlockFixture),
+    'add_filter',
+    'woocommerce_payment_gateways',
+    'addUpaymentsGatewayClass'
+);
+arch2_assert(
+    $reachableBareBlock['found']
+        && arch2_gateway_callback_returns_registered_methods($reachableBareBlock['body']),
+    'matcher accepts reachable gateway registration inside unconditional block'
+);
 
 $validFixture = <<<'PHP'
 <?php
