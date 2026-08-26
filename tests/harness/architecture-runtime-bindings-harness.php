@@ -2,9 +2,9 @@
 /**
  * Supplemental executable-binding guard for Architecture & Code-Quality.
  *
- * This intentionally focuses on global hook/callback pairs that must remain
- * direct file-scope runtime statements. It closes control-flow and inert-text
- * false-positive paths without bootstrapping WordPress/WooCommerce.
+ * Static-only by design. This guard validates compatibility-critical global
+ * hook/callback bindings and thin public wrappers without bootstrapping
+ * WordPress or WooCommerce.
  */
 
 $root = dirname(__DIR__, 2);
@@ -54,25 +54,40 @@ function arch2_tokens($source)
     if (!is_string($source) || $source === '') {
         return array();
     }
+
     $result = array();
     foreach (token_get_all($source) as $token) {
         if (!is_array($token)) {
             $result[] = array('id' => null, 'text' => $token);
             continue;
         }
+
         $id = $token[0];
         if ($id === T_WHITESPACE || $id === T_COMMENT || $id === T_DOC_COMMENT
             || $id === T_OPEN_TAG || $id === T_CLOSE_TAG) {
             continue;
         }
+
         $text = $token[1];
         if ($id === T_CONSTANT_ENCAPSED_STRING) {
             $decoded = arch2_string_value($text);
             $text = $decoded === null ? '__INVALID_STRING__' : $decoded;
         }
+
         $result[] = array('id' => $id, 'text' => $text);
     }
+
     return $result;
+}
+
+function arch2_has_namespace_declaration(array $tokens)
+{
+    foreach ($tokens as $token) {
+        if ($token['id'] === T_NAMESPACE) {
+            return true;
+        }
+    }
+    return false;
 }
 
 function arch2_alt_start_indexes(array $tokens)
@@ -80,10 +95,12 @@ function arch2_alt_start_indexes(array $tokens)
     $starts = array();
     $controlIds = array(T_IF, T_FOR, T_FOREACH, T_WHILE, T_SWITCH, T_DECLARE);
     $count = count($tokens);
+
     for ($i = 0; $i < $count; $i++) {
         if (!in_array($tokens[$i]['id'], $controlIds, true)) {
             continue;
         }
+
         $paren = 0;
         $sawParen = false;
         for ($j = $i + 1; $j < $count; $j++) {
@@ -113,12 +130,17 @@ function arch2_alt_start_indexes(array $tokens)
             }
         }
     }
+
     return $starts;
 }
 
 function arch2_is_alt_end($id)
 {
-    return in_array($id, array(T_ENDIF, T_ENDFOR, T_ENDFOREACH, T_ENDWHILE, T_ENDSWITCH, T_ENDDECLARE), true);
+    return in_array(
+        $id,
+        array(T_ENDIF, T_ENDFOR, T_ENDFOREACH, T_ENDWHILE, T_ENDSWITCH, T_ENDDECLARE),
+        true
+    );
 }
 
 function arch2_hook_call_matches(array $tokens, $index, $hookFunction, $hookName, $callbackName)
@@ -132,15 +154,18 @@ function arch2_hook_call_matches(array $tokens, $index, $hookFunction, $hookName
         array(null, ')'),
         array(null, ';'),
     );
+
     if ($index + count($expected) > count($tokens)) {
         return false;
     }
+
     foreach ($expected as $offset => $want) {
         $actual = $tokens[$index + $offset];
         if ($actual['id'] !== $want[0] || $actual['text'] !== $want[1]) {
             return false;
         }
     }
+
     return true;
 }
 
@@ -149,6 +174,7 @@ function arch2_extract_body(array $tokens, $openBraceIndex)
     $depth = 1;
     $body = array();
     $count = count($tokens);
+
     for ($i = $openBraceIndex + 1; $i < $count; $i++) {
         $text = $tokens[$i]['text'];
         if ($text === '{') {
@@ -161,6 +187,7 @@ function arch2_extract_body(array $tokens, $openBraceIndex)
         }
         $body[] = $tokens[$i];
     }
+
     return array();
 }
 
@@ -168,6 +195,7 @@ function arch2_without_nested_functions(array $tokens)
 {
     $result = array();
     $count = count($tokens);
+
     for ($i = 0; $i < $count; $i++) {
         if ($tokens[$i]['id'] === T_FUNCTION) {
             $j = $i + 1;
@@ -192,15 +220,12 @@ function arch2_without_nested_functions(array $tokens)
             continue;
         }
 
-        // T_FN exists only on runtimes that understand arrow functions.
-        // Use defined()/constant() so this harness remains parseable/runnable on
-        // the project's PHP 7.2 compatibility floor while still stripping arrow
-        // expressions when tokenizing on PHP 7.4+ / CI PHP 8.x.
         if (defined('T_FN') && $tokens[$i]['id'] === constant('T_FN')) {
             $j = $i + 1;
             $paren = 0;
             $bracket = 0;
             $brace = 0;
+
             while ($j < $count) {
                 $text = $tokens[$j]['text'];
                 if ($text === '(') {
@@ -221,22 +246,29 @@ function arch2_without_nested_functions(array $tokens)
                     if ($brace > 0) {
                         $brace--;
                     }
-                } elseif (($text === ';' || $text === ',') && $paren === 0 && $bracket === 0 && $brace === 0) {
+                } elseif (($text === ';' || $text === ',')
+                    && $paren === 0 && $bracket === 0 && $brace === 0) {
                     break;
                 }
                 $j++;
             }
+
             $i = $j;
             continue;
         }
 
         $result[] = $tokens[$i];
     }
+
     return $result;
 }
 
 function arch2_direct_top_level_hook_callback(array $tokens, $hookFunction, $hookName, $callbackName)
 {
+    if (arch2_has_namespace_declaration($tokens)) {
+        return array('found' => false, 'body' => array());
+    }
+
     $altStarts = arch2_alt_start_indexes($tokens);
     $braceDepth = 0;
     $altDepth = 0;
@@ -302,13 +334,15 @@ function arch2_direct_top_level_hook_callback(array $tokens, $hookFunction, $hoo
     return array('found' => false, 'body' => array());
 }
 
-function arch2_has_sequence(array $tokens, array $sequence)
+function arch2_sequence_index(array $tokens, array $sequence)
 {
     $count = count($tokens);
     $need = count($sequence);
+
     if ($need === 0 || $count < $need) {
         return false;
     }
+
     for ($i = 0; $i <= $count - $need; $i++) {
         $ok = true;
         for ($j = 0; $j < $need; $j++) {
@@ -319,19 +353,163 @@ function arch2_has_sequence(array $tokens, array $sequence)
             }
         }
         if ($ok) {
-            return true;
+            return $i;
         }
     }
+
     return false;
 }
 
-$gatewayAppendSequence = array(
-    array(T_VARIABLE, '$methods'), array(null, '['), array(null, ']'), array(null, '='),
-    array(T_CONSTANT_ENCAPSED_STRING, 'WC_UPayments'), array(null, ';'),
-);
+function arch2_has_sequence(array $tokens, array $sequence)
+{
+    return arch2_sequence_index($tokens, $sequence) !== false;
+}
+
+function arch2_gateway_callback_returns_registered_methods(array $body)
+{
+    $append = array(
+        array(T_VARIABLE, '$methods'), array(null, '['), array(null, ']'), array(null, '='),
+        array(T_CONSTANT_ENCAPSED_STRING, 'WC_UPayments'), array(null, ';'),
+    );
+
+    $appendIndex = arch2_sequence_index($body, $append);
+    if ($appendIndex === false) {
+        return false;
+    }
+
+    $count = count($body);
+    $returnIndex = false;
+    for ($i = 0; $i < $count; $i++) {
+        if ($body[$i]['id'] === T_RETURN) {
+            $returnIndex = $i;
+            break;
+        }
+    }
+
+    if ($returnIndex === false || $returnIndex <= $appendIndex + count($append) - 1) {
+        return false;
+    }
+
+    if (!isset($body[$returnIndex + 1], $body[$returnIndex + 2])
+        || $body[$returnIndex + 1]['id'] !== T_VARIABLE
+        || $body[$returnIndex + 1]['text'] !== '$methods'
+        || $body[$returnIndex + 2]['text'] !== ';') {
+        return false;
+    }
+
+    for ($i = $appendIndex + count($append); $i < $returnIndex; $i++) {
+        if ($body[$i]['id'] === T_VARIABLE
+            && $body[$i]['text'] === '$methods'
+            && isset($body[$i + 1])
+            && $body[$i + 1]['text'] === '=') {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+function arch2_class_body_tokens(array $tokens, $className)
+{
+    $count = count($tokens);
+
+    for ($i = 0; $i < $count; $i++) {
+        if ($tokens[$i]['id'] !== T_CLASS) {
+            continue;
+        }
+
+        $nameIndex = $i + 1;
+        if (!isset($tokens[$nameIndex])
+            || $tokens[$nameIndex]['id'] !== T_STRING
+            || $tokens[$nameIndex]['text'] !== $className) {
+            continue;
+        }
+
+        for ($j = $nameIndex + 1; $j < $count; $j++) {
+            if ($tokens[$j]['text'] === ';') {
+                break;
+            }
+            if ($tokens[$j]['text'] === '{') {
+                return arch2_extract_body($tokens, $j);
+            }
+        }
+    }
+
+    return array();
+}
+
+function arch2_direct_public_method(array $classTokens, $methodName)
+{
+    $depth = 0;
+    $count = count($classTokens);
+
+    for ($i = 0; $i < $count; $i++) {
+        $text = $classTokens[$i]['text'];
+
+        if ($text === '{') {
+            $depth++;
+            continue;
+        }
+        if ($text === '}') {
+            if ($depth > 0) {
+                $depth--;
+            }
+            continue;
+        }
+        if ($depth !== 0 || $classTokens[$i]['id'] !== T_PUBLIC) {
+            continue;
+        }
+
+        $functionIndex = null;
+        for ($j = $i + 1; $j < $count; $j++) {
+            if ($classTokens[$j]['text'] === ';' || $classTokens[$j]['text'] === '{') {
+                break;
+            }
+            if ($classTokens[$j]['id'] === T_FUNCTION) {
+                $functionIndex = $j;
+                break;
+            }
+        }
+
+        if ($functionIndex === null
+            || !isset($classTokens[$functionIndex + 1])
+            || $classTokens[$functionIndex + 1]['id'] !== T_STRING
+            || $classTokens[$functionIndex + 1]['text'] !== $methodName) {
+            continue;
+        }
+
+        for ($j = $functionIndex + 2; $j < $count; $j++) {
+            if ($classTokens[$j]['text'] === ';') {
+                return array('found' => false, 'body' => array());
+            }
+            if ($classTokens[$j]['text'] === '{') {
+                return array(
+                    'found' => true,
+                    'body' => arch2_without_nested_functions(arch2_extract_body($classTokens, $j)),
+                );
+            }
+        }
+    }
+
+    return array('found' => false, 'body' => array());
+}
+
+function arch2_code_without_strings(array $tokens)
+{
+    $code = '';
+    foreach ($tokens as $token) {
+        if ($token['id'] === T_CONSTANT_ENCAPSED_STRING) {
+            $code .= '__STRING__';
+        } else {
+            $code .= $token['text'];
+        }
+    }
+    return $code;
+}
 
 $gateway = arch2_read($root, 'UPayments.php');
 $gatewayTokens = arch2_tokens($gateway);
+
 $gatewayRegistration = arch2_direct_top_level_hook_callback(
     $gatewayTokens,
     'add_filter',
@@ -352,13 +530,23 @@ $productMetaRegistration = arch2_direct_top_level_hook_callback(
 );
 
 arch2_assert($gateway !== '', 'UPayments.php is readable');
+arch2_assert(!arch2_has_namespace_declaration($gatewayTokens), 'legacy main file remains in the global namespace');
 arch2_assert($gatewayRegistration['found'], 'WooCommerce gateway registration is a direct executable global hook/callback pair');
 arch2_assert(
-    arch2_has_sequence($gatewayRegistration['body'], $gatewayAppendSequence),
-    'gateway registration callback directly appends WC_UPayments'
+    arch2_gateway_callback_returns_registered_methods($gatewayRegistration['body']),
+    'gateway registration callback appends WC_UPayments before returning the same methods array'
 );
 arch2_assert($availabilityRegistration['found'], 'availability registration is a direct executable global hook/callback pair');
 arch2_assert($productMetaRegistration['found'], 'subscription product-meta registration is a direct executable global hook/callback pair');
+
+$gatewayClass = arch2_class_body_tokens($gatewayTokens, 'WC_Upayments');
+$statusMethod = arch2_direct_public_method($gatewayClass, 'get_payment_staus');
+$statusDelegation = '\\Simplix\\Pay\\UPayments\\Security\\PublicOrderStatus::handle();';
+arch2_assert($statusMethod['found'], 'historical public status-poll wrapper remains executable');
+arch2_assert(
+    $statusMethod['found'] && arch2_code_without_strings($statusMethod['body']) === $statusDelegation,
+    'historical public status-poll wrapper directly delegates only to PublicOrderStatus'
+);
 
 $alternativeIfFixture = <<<'PHP'
 <?php
@@ -369,7 +557,12 @@ if (false):
 endif;
 PHP;
 arch2_assert(
-    !arch2_direct_top_level_hook_callback(arch2_tokens($alternativeIfFixture), 'add_filter', 'woocommerce_available_payment_gateways', 'enableUpaymentsGateway')['found'],
+    !arch2_direct_top_level_hook_callback(
+        arch2_tokens($alternativeIfFixture),
+        'add_filter',
+        'woocommerce_available_payment_gateways',
+        'enableUpaymentsGateway'
+    )['found'],
     'matcher rejects alternative-syntax if callback pair'
 );
 
@@ -382,7 +575,12 @@ foreach (array() as $x):
 endforeach;
 PHP;
 arch2_assert(
-    !arch2_direct_top_level_hook_callback(arch2_tokens($alternativeForeachFixture), 'add_filter', 'woocommerce_payment_gateways', 'addUpaymentsGatewayClass')['found'],
+    !arch2_direct_top_level_hook_callback(
+        arch2_tokens($alternativeForeachFixture),
+        'add_filter',
+        'woocommerce_payment_gateways',
+        'addUpaymentsGatewayClass'
+    )['found'],
     'matcher rejects alternative-syntax foreach callback pair'
 );
 
@@ -394,7 +592,12 @@ if (false) {
 }
 PHP;
 arch2_assert(
-    !arch2_direct_top_level_hook_callback(arch2_tokens($bracedFixture), 'add_action', 'woocommerce_process_product_meta', 'saveCustomFieldData')['found'],
+    !arch2_direct_top_level_hook_callback(
+        arch2_tokens($bracedFixture),
+        'add_action',
+        'woocommerce_process_product_meta',
+        'saveCustomFieldData'
+    )['found'],
     'matcher rejects braced conditional callback pair'
 );
 
@@ -405,8 +608,31 @@ if (false)
 function addUpaymentsGatewayClass($methods) { $methods[] = "WC_UPayments"; return $methods; }
 PHP;
 arch2_assert(
-    !arch2_direct_top_level_hook_callback(arch2_tokens($bracelessFixture), 'add_filter', 'woocommerce_payment_gateways', 'addUpaymentsGatewayClass')['found'],
+    !arch2_direct_top_level_hook_callback(
+        arch2_tokens($bracelessFixture),
+        'add_filter',
+        'woocommerce_payment_gateways',
+        'addUpaymentsGatewayClass'
+    )['found'],
     'matcher rejects brace-less conditional registration'
+);
+
+$namespaceFixture = <<<'PHP'
+<?php
+namespace Simplix\Pay\UPayments;
+add_filter("woocommerce_payment_gateways", "addUpaymentsGatewayClass");
+function addUpaymentsGatewayClass($methods) { $methods[] = "WC_UPayments"; return $methods; }
+PHP;
+$namespaceTokens = arch2_tokens($namespaceFixture);
+arch2_assert(arch2_has_namespace_declaration($namespaceTokens), 'namespace fixture is recognized as namespaced');
+arch2_assert(
+    !arch2_direct_top_level_hook_callback(
+        $namespaceTokens,
+        'add_filter',
+        'woocommerce_payment_gateways',
+        'addUpaymentsGatewayClass'
+    )['found'],
+    'matcher rejects string callbacks moved into an unbracketed namespace'
 );
 
 $inertFixture = <<<'PHP'
@@ -417,7 +643,12 @@ function addUpaymentsGatewayClass($methods) { return $methods; }
 function saveCustomFieldData($post_id) {}
 PHP;
 arch2_assert(
-    !arch2_direct_top_level_hook_callback(arch2_tokens($inertFixture), 'add_filter', 'woocommerce_payment_gateways', 'addUpaymentsGatewayClass')['found'],
+    !arch2_direct_top_level_hook_callback(
+        arch2_tokens($inertFixture),
+        'add_filter',
+        'woocommerce_payment_gateways',
+        'addUpaymentsGatewayClass'
+    )['found'],
     'matcher ignores inert hook text'
 );
 
@@ -436,8 +667,70 @@ $arrowGateway = arch2_direct_top_level_hook_callback(
     'addUpaymentsGatewayClass'
 );
 arch2_assert(
-    $arrowGateway['found'] && !arch2_has_sequence($arrowGateway['body'], $gatewayAppendSequence),
+    $arrowGateway['found'] && !arch2_gateway_callback_returns_registered_methods($arrowGateway['body']),
     'matcher strips arrow-function gateway append from callback body'
+);
+
+$returnBeforeAppendFixture = <<<'PHP'
+<?php
+add_filter("woocommerce_payment_gateways", "addUpaymentsGatewayClass");
+function addUpaymentsGatewayClass($methods) {
+    return $methods;
+    $methods[] = "WC_UPayments";
+}
+PHP;
+$returnBeforeAppend = arch2_direct_top_level_hook_callback(
+    arch2_tokens($returnBeforeAppendFixture),
+    'add_filter',
+    'woocommerce_payment_gateways',
+    'addUpaymentsGatewayClass'
+);
+arch2_assert(
+    $returnBeforeAppend['found']
+        && !arch2_gateway_callback_returns_registered_methods($returnBeforeAppend['body']),
+    'gateway semantic guard rejects append after return'
+);
+
+$overwriteFixture = <<<'PHP'
+<?php
+add_filter("woocommerce_payment_gateways", "addUpaymentsGatewayClass");
+function addUpaymentsGatewayClass($methods) {
+    $methods[] = "WC_UPayments";
+    $methods = array();
+    return $methods;
+}
+PHP;
+$overwriteGateway = arch2_direct_top_level_hook_callback(
+    arch2_tokens($overwriteFixture),
+    'add_filter',
+    'woocommerce_payment_gateways',
+    'addUpaymentsGatewayClass'
+);
+arch2_assert(
+    $overwriteGateway['found']
+        && !arch2_gateway_callback_returns_registered_methods($overwriteGateway['body']),
+    'gateway semantic guard rejects overwritten methods array before return'
+);
+
+$statusInertFixture = <<<'PHP'
+<?php
+class WC_Upayments {
+    public function get_payment_staus() {
+        // \Simplix\Pay\UPayments\Security\PublicOrderStatus::handle();
+        $dead = '\Simplix\Pay\UPayments\Security\PublicOrderStatus::handle();';
+        $nested = function () {
+            \Simplix\Pay\UPayments\Security\PublicOrderStatus::handle();
+        };
+    }
+}
+PHP;
+$statusInertTokens = arch2_tokens($statusInertFixture);
+$statusInertClass = arch2_class_body_tokens($statusInertTokens, 'WC_Upayments');
+$statusInertMethod = arch2_direct_public_method($statusInertClass, 'get_payment_staus');
+arch2_assert(
+    $statusInertMethod['found']
+        && arch2_code_without_strings($statusInertMethod['body']) !== $statusDelegation,
+    'status delegation guard ignores comment, string and nested-callable copies'
 );
 
 $validFixture = <<<'PHP'
@@ -448,9 +741,23 @@ add_action('woocommerce_process_product_meta', 'saveCustomFieldData');
 function saveCustomFieldData($post_id) { return $post_id; }
 PHP;
 $validTokens = arch2_tokens($validFixture);
-$validGateway = arch2_direct_top_level_hook_callback($validTokens, 'add_filter', 'woocommerce_payment_gateways', 'addUpaymentsGatewayClass');
-$validProduct = arch2_direct_top_level_hook_callback($validTokens, 'add_action', 'woocommerce_process_product_meta', 'saveCustomFieldData');
+$validGateway = arch2_direct_top_level_hook_callback(
+    $validTokens,
+    'add_filter',
+    'woocommerce_payment_gateways',
+    'addUpaymentsGatewayClass'
+);
+$validProduct = arch2_direct_top_level_hook_callback(
+    $validTokens,
+    'add_action',
+    'woocommerce_process_product_meta',
+    'saveCustomFieldData'
+);
 arch2_assert($validGateway['found'], 'matcher accepts direct top-level gateway registration/callback');
+arch2_assert(
+    $validGateway['found'] && arch2_gateway_callback_returns_registered_methods($validGateway['body']),
+    'gateway semantic guard accepts append-before-return callback'
+);
 arch2_assert($validProduct['found'], 'matcher accepts direct top-level product-meta registration/callback');
 
 printf("\nArchitecture Runtime Bindings: %d PASS / %d FAIL\n", $pass, $fail);
