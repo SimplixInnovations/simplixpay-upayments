@@ -107,6 +107,44 @@ function arch_executable_tokens($source)
     return $normalized;
 }
 
+function arch_function_body_tokens(array $tokens, $functionName)
+{
+    $tokenCount = count($tokens);
+    $nameToken = 'name:' . $functionName;
+
+    for ($i = 0; $i < $tokenCount - 1; $i++) {
+        if ($tokens[$i] !== 'function' || $tokens[$i + 1] !== $nameToken) {
+            continue;
+        }
+
+        for ($j = $i + 2; $j < $tokenCount; $j++) {
+            if ($tokens[$j] === ';') {
+                break;
+            }
+            if ($tokens[$j] !== '{') {
+                continue;
+            }
+
+            $depth = 1;
+            $body = array();
+            for ($k = $j + 1; $k < $tokenCount; $k++) {
+                if ($tokens[$k] === '{') {
+                    $depth++;
+                } elseif ($tokens[$k] === '}') {
+                    $depth--;
+                    if ($depth === 0) {
+                        return $body;
+                    }
+                }
+                $body[] = $tokens[$k];
+            }
+            return array();
+        }
+    }
+
+    return array();
+}
+
 function arch_has_token_sequence(array $tokens, array $sequence)
 {
     $sequenceCount = count($sequence);
@@ -132,6 +170,23 @@ function arch_has_token_sequence(array $tokens, array $sequence)
     return false;
 }
 
+$gatewayIdSequence = array('variable:$this', '->', 'name:id', '=', 'string:upayments', ';');
+$callbackWithTrailingComma = array(
+    'name:add_action', '(', 'string:woocommerce_api_', '.', 'name:strtolower', '(', 'string:WC_UPayments', ')', ',',
+    '[', 'variable:$this', ',', 'string:check_ipn_response', ',', ']', ')', ';',
+);
+$callbackWithoutTrailingComma = array(
+    'name:add_action', '(', 'string:woocommerce_api_', '.', 'name:strtolower', '(', 'string:WC_UPayments', ')', ',',
+    '[', 'variable:$this', ',', 'string:check_ipn_response', ']', ')', ';',
+);
+$settingsReadSequence = array(
+    'variable:$settings', '=', 'name:get_option', '(', 'string:woocommerce_upayments_settings', ')', ';',
+);
+$orderIdWriteSequence = array(
+    'variable:$order', '->', 'name:add_meta_data', '(', 'string:UPayments_order_id', ',',
+    'variable:$unique_order_id', ')', ';',
+);
+
 $architecture = arch_read($root, 'docs/project/ARCHITECTURE-CODE-QUALITY.md');
 $gateway = arch_read($root, 'UPayments.php');
 $status = arch_read($root, 'docs/project/PROJECT-STATUS.md');
@@ -141,6 +196,9 @@ $securityStatus = arch_read($root, 'src/Security/PublicOrderStatus.php');
 $tokenIdentity = arch_read($root, 'includes/Token/CustomerTokenIdentity.php');
 $scheduler = arch_read($root, 'includes/Subscription/Cron/Scheduler.php');
 $gatewayTokens = arch_executable_tokens($gateway);
+$constructorTokens = arch_function_body_tokens($gatewayTokens, '__construct');
+$availabilityTokens = arch_function_body_tokens($gatewayTokens, 'enableUpaymentsGateway');
+$processPaymentTokens = arch_function_body_tokens($gatewayTokens, 'process_payment');
 
 arch_assert($architecture !== '', 'architecture control record exists');
 arch_assert(arch_contains($architecture, '**Status:** DISCOVERY / CHARACTERIZATION'), 'architecture record is discovery/characterization');
@@ -222,39 +280,58 @@ arch_assert(arch_contains($scheduler, 'class Scheduler'), 'subscription Schedule
 arch_assert(is_file($root . '/includes/class-wc-gateway-upayments-blocks.php'), 'Checkout Blocks gateway integration exists');
 
 arch_assert(
-    arch_has_token_sequence($gatewayTokens, array('variable:$this', '->', 'name:id', '=', 'string:upayments', ';')),
-    'gateway ID remains executable and bound to upayments'
-);
-$callbackWithTrailingComma = array(
-    'name:add_action', '(', 'string:woocommerce_api_', '.', 'name:strtolower', '(', 'string:WC_UPayments', ')', ',',
-    '[', 'variable:$this', ',', 'string:check_ipn_response', ',', ']', ')', ';',
-);
-$callbackWithoutTrailingComma = array(
-    'name:add_action', '(', 'string:woocommerce_api_', '.', 'name:strtolower', '(', 'string:WC_UPayments', ')', ',',
-    '[', 'variable:$this', ',', 'string:check_ipn_response', ']', ')', ';',
+    arch_has_token_sequence($constructorTokens, $gatewayIdSequence),
+    'gateway ID remains executable in __construct and bound to upayments'
 );
 arch_assert(
-    arch_has_token_sequence($gatewayTokens, $callbackWithTrailingComma)
-        || arch_has_token_sequence($gatewayTokens, $callbackWithoutTrailingComma),
-    'wc_upayments callback hook remains executable and bound to check_ipn_response'
+    arch_has_token_sequence($constructorTokens, $callbackWithTrailingComma)
+        || arch_has_token_sequence($constructorTokens, $callbackWithoutTrailingComma),
+    'wc_upayments callback hook remains executable in __construct and bound to check_ipn_response'
 );
 arch_assert(
-    arch_has_token_sequence(
-        $gatewayTokens,
-        array('variable:$settings', '=', 'name:get_option', '(', 'string:woocommerce_upayments_settings', ')', ';')
-    ),
-    'legacy WooCommerce settings option remains an executable runtime read'
+    arch_has_token_sequence($availabilityTokens, $settingsReadSequence),
+    'legacy WooCommerce settings option remains an executable enableUpaymentsGateway runtime read'
 );
 arch_assert(
-    arch_has_token_sequence(
-        $gatewayTokens,
-        array(
-            'variable:$order', '->', 'name:add_meta_data', '(', 'string:UPayments_order_id', ',',
-            'variable:$unique_order_id', ')', ';',
-        )
-    ),
-    'UPayments_order_id remains executable persistence from the local provider-order identity'
+    arch_has_token_sequence($processPaymentTokens, $orderIdWriteSequence),
+    'UPayments_order_id remains executable process_payment persistence from the local provider-order identity'
 );
+
+$inertFixture = <<<'PHP'
+<?php
+class ArchitectureFixture {
+    public function __construct() {
+        // $this->id = 'upayments';
+        $dead_id = '$this->id = \'upayments\';';
+        $dead_callback = 'add_action("woocommerce_api_" . strtolower("WC_UPayments"), [$this, "check_ipn_response"]);';
+    }
+    public function unrelated() {
+        $this->id = 'upayments';
+        add_action("woocommerce_api_" . strtolower("WC_UPayments"), [$this, "check_ipn_response"]);
+        $settings = get_option("woocommerce_upayments_settings");
+        $order->add_meta_data("UPayments_order_id", $unique_order_id);
+    }
+    public function process_payment() {
+        $dead_write = '$order->add_meta_data("UPayments_order_id", $unique_order_id);';
+    }
+}
+function enableUpaymentsGateway($available_gateways) {
+    $dead_settings = '$settings = get_option("woocommerce_upayments_settings");';
+    return $available_gateways;
+}
+PHP;
+$inertTokens = arch_executable_tokens($inertFixture);
+$inertConstructor = arch_function_body_tokens($inertTokens, '__construct');
+$inertAvailability = arch_function_body_tokens($inertTokens, 'enableUpaymentsGateway');
+$inertProcessPayment = arch_function_body_tokens($inertTokens, 'process_payment');
+arch_assert(!arch_has_token_sequence($inertConstructor, $gatewayIdSequence), 'role matcher ignores commented/string gateway ID and unrelated executable copy');
+arch_assert(
+    !arch_has_token_sequence($inertConstructor, $callbackWithTrailingComma)
+        && !arch_has_token_sequence($inertConstructor, $callbackWithoutTrailingComma),
+    'role matcher ignores string callback and unrelated executable copy'
+);
+arch_assert(!arch_has_token_sequence($inertAvailability, $settingsReadSequence), 'role matcher ignores string settings read and unrelated executable copy');
+arch_assert(!arch_has_token_sequence($inertProcessPayment, $orderIdWriteSequence), 'role matcher ignores string order-id write and unrelated executable copy');
 
 arch_assert(!is_dir($root . '/src/Provider'), 'discovery tranche has not prematurely created Provider runtime module');
 
