@@ -57,9 +57,9 @@ function arch_php_string_literal_value($literal)
 }
 
 /**
- * Normalize only executable PHP tokens. Comments/docblocks/whitespace/open tags
- * are discarded; quoted strings stay atomic normalized values, so dead source
- * text copied into a comment or string literal cannot satisfy a role binding.
+ * Normalize executable PHP tokens only. Comments/docblocks/whitespace/open tags
+ * are discarded and quoted strings remain atomic values. This prevents inert
+ * source text from satisfying protected runtime-role assertions.
  */
 function arch_executable_tokens($source)
 {
@@ -107,6 +107,27 @@ function arch_executable_tokens($source)
     return $normalized;
 }
 
+function arch_extract_braced_body(array $tokens, $openBraceIndex)
+{
+    $depth = 1;
+    $body = array();
+    $tokenCount = count($tokens);
+
+    for ($i = $openBraceIndex + 1; $i < $tokenCount; $i++) {
+        if ($tokens[$i] === '{') {
+            $depth++;
+        } elseif ($tokens[$i] === '}') {
+            $depth--;
+            if ($depth === 0) {
+                return $body;
+            }
+        }
+        $body[] = $tokens[$i];
+    }
+
+    return array();
+}
+
 function arch_class_body_tokens(array $tokens, $className)
 {
     $tokenCount = count($tokens);
@@ -118,37 +139,105 @@ function arch_class_body_tokens(array $tokens, $className)
         }
 
         for ($j = $i + 2; $j < $tokenCount; $j++) {
-            if ($tokens[$j] !== '{') {
-                continue;
+            if ($tokens[$j] === '{') {
+                return arch_extract_braced_body($tokens, $j);
             }
-
-            $depth = 1;
-            $body = array();
-            for ($k = $j + 1; $k < $tokenCount; $k++) {
-                if ($tokens[$k] === '{') {
-                    $depth++;
-                } elseif ($tokens[$k] === '}') {
-                    $depth--;
-                    if ($depth === 0) {
-                        return $body;
-                    }
-                }
-                $body[] = $tokens[$k];
-            }
-            return array();
         }
     }
 
     return array();
 }
 
-function arch_function_body_tokens(array $tokens, $functionName)
+/**
+ * Remove nested callable bodies from an owning function/method body while
+ * retaining ordinary control-flow blocks. A protected statement moved into an
+ * uninvoked closure/nested function/arrow function must not satisfy the gate.
+ */
+function arch_without_nested_callables(array $tokens)
+{
+    $result = array();
+    $tokenCount = count($tokens);
+
+    for ($i = 0; $i < $tokenCount; $i++) {
+        if ($tokens[$i] === 'function') {
+            $j = $i + 1;
+            while ($j < $tokenCount && $tokens[$j] !== '{' && $tokens[$j] !== ';') {
+                $j++;
+            }
+            if ($j < $tokenCount && $tokens[$j] === '{') {
+                $depth = 1;
+                $j++;
+                while ($j < $tokenCount && $depth > 0) {
+                    if ($tokens[$j] === '{') {
+                        $depth++;
+                    } elseif ($tokens[$j] === '}') {
+                        $depth--;
+                    }
+                    $j++;
+                }
+            } elseif ($j < $tokenCount) {
+                $j++;
+            }
+            $i = $j - 1;
+            continue;
+        }
+
+        if ($tokens[$i] === 'fn') {
+            $j = $i + 1;
+            $paren = 0;
+            $bracket = 0;
+            while ($j < $tokenCount) {
+                if ($tokens[$j] === '(') {
+                    $paren++;
+                } elseif ($tokens[$j] === ')') {
+                    if ($paren > 0) {
+                        $paren--;
+                    }
+                } elseif ($tokens[$j] === '[') {
+                    $bracket++;
+                } elseif ($tokens[$j] === ']') {
+                    if ($bracket > 0) {
+                        $bracket--;
+                    }
+                } elseif (($tokens[$j] === ';' || $tokens[$j] === ',') && $paren === 0 && $bracket === 0) {
+                    break;
+                }
+                $j++;
+            }
+            $i = $j;
+            continue;
+        }
+
+        $result[] = $tokens[$i];
+    }
+
+    return $result;
+}
+
+/**
+ * Resolve a named function/method declared directly in the supplied scope.
+ * For a class-body token list, direct members are depth 0. For the whole file,
+ * depth 0 selects the real global callback and excludes same-named class methods.
+ */
+function arch_direct_function_body_tokens(array $tokens, $functionName)
 {
     $tokenCount = count($tokens);
     $nameToken = 'name:' . $functionName;
+    $depth = 0;
 
     for ($i = 0; $i < $tokenCount - 1; $i++) {
-        if ($tokens[$i] !== 'function' || $tokens[$i + 1] !== $nameToken) {
+        if ($tokens[$i] === '{') {
+            $depth++;
+            continue;
+        }
+        if ($tokens[$i] === '}') {
+            if ($depth > 0) {
+                $depth--;
+            }
+            continue;
+        }
+
+        if ($depth !== 0 || $tokens[$i] !== 'function' || $tokens[$i + 1] !== $nameToken) {
             continue;
         }
 
@@ -156,28 +245,42 @@ function arch_function_body_tokens(array $tokens, $functionName)
             if ($tokens[$j] === ';') {
                 break;
             }
-            if ($tokens[$j] !== '{') {
-                continue;
+            if ($tokens[$j] === '{') {
+                return arch_without_nested_callables(arch_extract_braced_body($tokens, $j));
             }
-
-            $depth = 1;
-            $body = array();
-            for ($k = $j + 1; $k < $tokenCount; $k++) {
-                if ($tokens[$k] === '{') {
-                    $depth++;
-                } elseif ($tokens[$k] === '}') {
-                    $depth--;
-                    if ($depth === 0) {
-                        return $body;
-                    }
-                }
-                $body[] = $tokens[$k];
-            }
-            return array();
         }
     }
 
     return array();
+}
+
+/**
+ * Return only file-level executable tokens. Braced bodies are omitted, so a
+ * registration copied into a class/function/closure cannot masquerade as the
+ * global WordPress hook registration.
+ */
+function arch_file_level_tokens(array $tokens)
+{
+    $result = array();
+    $depth = 0;
+
+    foreach ($tokens as $token) {
+        if ($token === '{') {
+            $depth++;
+            continue;
+        }
+        if ($token === '}') {
+            if ($depth > 0) {
+                $depth--;
+            }
+            continue;
+        }
+        if ($depth === 0) {
+            $result[] = $token;
+        }
+    }
+
+    return $result;
 }
 
 function arch_has_token_sequence(array $tokens, array $sequence)
@@ -221,6 +324,10 @@ $orderIdWriteSequence = array(
     'variable:$order', '->', 'name:add_meta_data', '(', 'string:UPayments_order_id', ',',
     'variable:$unique_order_id', ')', ';',
 );
+$availabilityFilterSequence = array(
+    'name:add_filter', '(', 'string:woocommerce_available_payment_gateways', ',',
+    'string:enableUpaymentsGateway', ')', ';',
+);
 
 $architecture = arch_read($root, 'docs/project/ARCHITECTURE-CODE-QUALITY.md');
 $gateway = arch_read($root, 'UPayments.php');
@@ -231,10 +338,11 @@ $securityStatus = arch_read($root, 'src/Security/PublicOrderStatus.php');
 $tokenIdentity = arch_read($root, 'includes/Token/CustomerTokenIdentity.php');
 $scheduler = arch_read($root, 'includes/Subscription/Cron/Scheduler.php');
 $gatewayTokens = arch_executable_tokens($gateway);
+$gatewayFileLevelTokens = arch_file_level_tokens($gatewayTokens);
 $gatewayClassTokens = arch_class_body_tokens($gatewayTokens, 'WC_Upayments');
-$constructorTokens = arch_function_body_tokens($gatewayClassTokens, '__construct');
-$availabilityTokens = arch_function_body_tokens($gatewayTokens, 'enableUpaymentsGateway');
-$processPaymentTokens = arch_function_body_tokens($gatewayClassTokens, 'process_payment');
+$constructorTokens = arch_direct_function_body_tokens($gatewayClassTokens, '__construct');
+$availabilityTokens = arch_direct_function_body_tokens($gatewayTokens, 'enableUpaymentsGateway');
+$processPaymentTokens = arch_direct_function_body_tokens($gatewayClassTokens, 'process_payment');
 
 arch_assert($architecture !== '', 'architecture control record exists');
 arch_assert(arch_contains($architecture, '**Status:** DISCOVERY / CHARACTERIZATION'), 'architecture record is discovery/characterization');
@@ -325,8 +433,12 @@ arch_assert(
     'wc_upayments callback hook remains executable in WC_Upayments::__construct and bound to check_ipn_response'
 );
 arch_assert(
+    arch_has_token_sequence($gatewayFileLevelTokens, $availabilityFilterSequence),
+    'enableUpaymentsGateway remains the file-level woocommerce_available_payment_gateways callback'
+);
+arch_assert(
     arch_has_token_sequence($availabilityTokens, $settingsReadSequence),
-    'legacy WooCommerce settings option remains an executable enableUpaymentsGateway runtime read'
+    'legacy WooCommerce settings option remains an executable global enableUpaymentsGateway runtime read'
 );
 arch_assert(
     arch_has_token_sequence($processPaymentTokens, $orderIdWriteSequence),
@@ -343,39 +455,52 @@ class OtherArchitectureFixture {
     public function process_payment() {
         $order->add_meta_data("UPayments_order_id", $unique_order_id);
     }
+    public function enableUpaymentsGateway($available_gateways) {
+        $settings = get_option("woocommerce_upayments_settings");
+        return $available_gateways;
+    }
 }
 class ArchitectureFixture {
     public function __construct() {
         // $this->id = 'upayments';
         $dead_id = '$this->id = \'upayments\';';
         $dead_callback = 'add_action("woocommerce_api_" . strtolower("WC_UPayments"), [$this, "check_ipn_response"]);';
+        $nested = function () {
+            $this->id = 'upayments';
+            add_action("woocommerce_api_" . strtolower("WC_UPayments"), [$this, "check_ipn_response"]);
+        };
     }
     public function process_payment() {
         $dead_write = '$order->add_meta_data("UPayments_order_id", $unique_order_id);';
+        $nested = function () use ($order, $unique_order_id) {
+            $order->add_meta_data("UPayments_order_id", $unique_order_id);
+        };
     }
 }
-function unrelatedAvailabilityFixture($available_gateways) {
-    $settings = get_option("woocommerce_upayments_settings");
-    return $available_gateways;
-}
+add_filter("woocommerce_available_payment_gateways", "enableUpaymentsGateway");
 function enableUpaymentsGateway($available_gateways) {
     $dead_settings = '$settings = get_option("woocommerce_upayments_settings");';
+    $nested = function () {
+        $settings = get_option("woocommerce_upayments_settings");
+    };
     return $available_gateways;
 }
 PHP;
 $inertTokens = arch_executable_tokens($inertFixture);
+$inertFileLevel = arch_file_level_tokens($inertTokens);
 $inertGatewayClass = arch_class_body_tokens($inertTokens, 'ArchitectureFixture');
-$inertConstructor = arch_function_body_tokens($inertGatewayClass, '__construct');
-$inertAvailability = arch_function_body_tokens($inertTokens, 'enableUpaymentsGateway');
-$inertProcessPayment = arch_function_body_tokens($inertGatewayClass, 'process_payment');
-arch_assert(!arch_has_token_sequence($inertConstructor, $gatewayIdSequence), 'role matcher ignores commented/string gateway ID and executable copy in another class');
+$inertConstructor = arch_direct_function_body_tokens($inertGatewayClass, '__construct');
+$inertAvailability = arch_direct_function_body_tokens($inertTokens, 'enableUpaymentsGateway');
+$inertProcessPayment = arch_direct_function_body_tokens($inertGatewayClass, 'process_payment');
+arch_assert(!arch_has_token_sequence($inertConstructor, $gatewayIdSequence), 'role matcher ignores commented/string/nested gateway ID and executable copy in another class');
 arch_assert(
     !arch_has_token_sequence($inertConstructor, $callbackWithTrailingComma)
         && !arch_has_token_sequence($inertConstructor, $callbackWithoutTrailingComma),
-    'role matcher ignores string callback and executable copy in another class'
+    'role matcher ignores string/nested callback and executable copy in another class'
 );
-arch_assert(!arch_has_token_sequence($inertAvailability, $settingsReadSequence), 'role matcher ignores string settings read and executable copy in another function');
-arch_assert(!arch_has_token_sequence($inertProcessPayment, $orderIdWriteSequence), 'role matcher ignores string order-id write and executable copy in another class');
+arch_assert(arch_has_token_sequence($inertFileLevel, $availabilityFilterSequence), 'fixture proves the global availability callback registration is independently detectable');
+arch_assert(!arch_has_token_sequence($inertAvailability, $settingsReadSequence), 'role matcher ignores nested settings read and same-named executable class method');
+arch_assert(!arch_has_token_sequence($inertProcessPayment, $orderIdWriteSequence), 'role matcher ignores string/nested order-id write and executable copy in another class');
 
 arch_assert(!is_dir($root . '/src/Provider'), 'discovery tranche has not prematurely created Provider runtime module');
 
