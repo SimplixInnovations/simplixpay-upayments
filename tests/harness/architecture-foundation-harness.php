@@ -58,8 +58,7 @@ function arch_php_string_literal_value($literal)
 
 /**
  * Normalize executable PHP tokens only. Comments/docblocks/whitespace/open tags
- * are discarded and quoted strings remain atomic values. This prevents inert
- * source text from satisfying protected runtime-role assertions.
+ * are discarded and quoted strings remain atomic values.
  */
 function arch_executable_tokens($source)
 {
@@ -150,8 +149,7 @@ function arch_class_body_tokens(array $tokens, $className)
 
 /**
  * Remove nested callable bodies from an owning function/method body while
- * retaining ordinary control-flow blocks. A protected statement moved into an
- * uninvoked closure/nested function/arrow function must not satisfy the gate.
+ * retaining ordinary control-flow blocks.
  */
 function arch_without_nested_callables(array $tokens)
 {
@@ -189,16 +187,12 @@ function arch_without_nested_callables(array $tokens)
             while ($j < $tokenCount) {
                 if ($tokens[$j] === '(') {
                     $paren++;
-                } elseif ($tokens[$j] === ')') {
-                    if ($paren > 0) {
-                        $paren--;
-                    }
+                } elseif ($tokens[$j] === ')' && $paren > 0) {
+                    $paren--;
                 } elseif ($tokens[$j] === '[') {
                     $bracket++;
-                } elseif ($tokens[$j] === ']') {
-                    if ($bracket > 0) {
-                        $bracket--;
-                    }
+                } elseif ($tokens[$j] === ']' && $bracket > 0) {
+                    $bracket--;
                 } elseif (($tokens[$j] === ';' || $tokens[$j] === ',') && $paren === 0 && $bracket === 0) {
                     break;
                 }
@@ -215,72 +209,60 @@ function arch_without_nested_callables(array $tokens)
 }
 
 /**
- * Resolve a named function/method declared directly in the supplied scope.
- * For a class-body token list, direct members are depth 0. For the whole file,
- * depth 0 selects the real global callback and excludes same-named class methods.
+ * Resolve an actual direct public method of a class body.
  */
-function arch_direct_function_body_tokens(array $tokens, $functionName)
+function arch_direct_public_method(array $classTokens, $methodName)
 {
-    $tokenCount = count($tokens);
-    $nameToken = 'name:' . $functionName;
+    $tokenCount = count($classTokens);
+    $nameToken = 'name:' . $methodName;
     $depth = 0;
 
     for ($i = 0; $i < $tokenCount - 1; $i++) {
-        if ($tokens[$i] === '{') {
+        if ($classTokens[$i] === '{') {
             $depth++;
             continue;
         }
-        if ($tokens[$i] === '}') {
+        if ($classTokens[$i] === '}') {
             if ($depth > 0) {
                 $depth--;
             }
             continue;
         }
-
-        if ($depth !== 0 || $tokens[$i] !== 'function' || $tokens[$i + 1] !== $nameToken) {
+        if ($depth !== 0 || $classTokens[$i] !== 'function' || $classTokens[$i + 1] !== $nameToken) {
             continue;
+        }
+
+        $isPublic = false;
+        for ($p = $i - 1; $p >= 0; $p--) {
+            if ($classTokens[$p] === ';' || $classTokens[$p] === '{' || $classTokens[$p] === '}') {
+                break;
+            }
+            if ($classTokens[$p] === 'public') {
+                $isPublic = true;
+            }
+            if ($classTokens[$p] === 'private' || $classTokens[$p] === 'protected') {
+                $isPublic = false;
+                break;
+            }
+        }
+        if (!$isPublic) {
+            return array('found' => false, 'body' => array());
         }
 
         for ($j = $i + 2; $j < $tokenCount; $j++) {
-            if ($tokens[$j] === ';') {
-                break;
+            if ($classTokens[$j] === ';') {
+                return array('found' => true, 'body' => array());
             }
-            if ($tokens[$j] === '{') {
-                return arch_without_nested_callables(arch_extract_braced_body($tokens, $j));
+            if ($classTokens[$j] === '{') {
+                return array(
+                    'found' => true,
+                    'body' => arch_without_nested_callables(arch_extract_braced_body($classTokens, $j)),
+                );
             }
         }
     }
 
-    return array();
-}
-
-/**
- * Return only file-level executable tokens. Braced bodies are omitted, so a
- * registration copied into a class/function/closure cannot masquerade as the
- * global WordPress hook registration.
- */
-function arch_file_level_tokens(array $tokens)
-{
-    $result = array();
-    $depth = 0;
-
-    foreach ($tokens as $token) {
-        if ($token === '{') {
-            $depth++;
-            continue;
-        }
-        if ($token === '}') {
-            if ($depth > 0) {
-                $depth--;
-            }
-            continue;
-        }
-        if ($depth === 0) {
-            $result[] = $token;
-        }
-    }
-
-    return $result;
+    return array('found' => false, 'body' => array());
 }
 
 function arch_has_token_sequence(array $tokens, array $sequence)
@@ -306,6 +288,65 @@ function arch_has_token_sequence(array $tokens, array $sequence)
     }
 
     return false;
+}
+
+/**
+ * Resolve a filter registration and callback as one direct top-level pair.
+ * The pair cannot be hidden behind braced, alternative-syntax, or brace-less
+ * conditional/control-flow statements.
+ */
+function arch_direct_top_level_filter_callback(array $tokens, array $filterSequence, $functionName)
+{
+    $tokenCount = count($tokens);
+    $sequenceCount = count($filterSequence);
+    $nameToken = 'name:' . $functionName;
+    $depth = 0;
+
+    for ($i = 0; $i < $tokenCount; $i++) {
+        if ($tokens[$i] === '{') {
+            $depth++;
+            continue;
+        }
+        if ($tokens[$i] === '}') {
+            if ($depth > 0) {
+                $depth--;
+            }
+            continue;
+        }
+        if ($depth !== 0 || $i + $sequenceCount > $tokenCount) {
+            continue;
+        }
+        if (array_slice($tokens, $i, $sequenceCount) !== $filterSequence) {
+            continue;
+        }
+
+        $previous = $i > 0 ? $tokens[$i - 1] : null;
+        if ($previous !== null && $previous !== ';' && $previous !== '}') {
+            continue;
+        }
+
+        $functionIndex = $i + $sequenceCount;
+        if (!isset($tokens[$functionIndex], $tokens[$functionIndex + 1])
+            || $tokens[$functionIndex] !== 'function'
+            || $tokens[$functionIndex + 1] !== $nameToken
+        ) {
+            continue;
+        }
+
+        for ($j = $functionIndex + 2; $j < $tokenCount; $j++) {
+            if ($tokens[$j] === ';') {
+                return array('found' => false, 'body' => array());
+            }
+            if ($tokens[$j] === '{') {
+                return array(
+                    'found' => true,
+                    'body' => arch_without_nested_callables(arch_extract_braced_body($tokens, $j)),
+                );
+            }
+        }
+    }
+
+    return array('found' => false, 'body' => array());
 }
 
 $gatewayIdSequence = array('variable:$this', '->', 'name:id', '=', 'string:upayments', ';');
@@ -338,11 +379,12 @@ $securityStatus = arch_read($root, 'src/Security/PublicOrderStatus.php');
 $tokenIdentity = arch_read($root, 'includes/Token/CustomerTokenIdentity.php');
 $scheduler = arch_read($root, 'includes/Subscription/Cron/Scheduler.php');
 $gatewayTokens = arch_executable_tokens($gateway);
-$gatewayFileLevelTokens = arch_file_level_tokens($gatewayTokens);
 $gatewayClassTokens = arch_class_body_tokens($gatewayTokens, 'WC_Upayments');
-$constructorTokens = arch_direct_function_body_tokens($gatewayClassTokens, '__construct');
-$availabilityTokens = arch_direct_function_body_tokens($gatewayTokens, 'enableUpaymentsGateway');
-$processPaymentTokens = arch_direct_function_body_tokens($gatewayClassTokens, 'process_payment');
+$availabilityBinding = arch_direct_top_level_filter_callback(
+    $gatewayTokens,
+    $availabilityFilterSequence,
+    'enableUpaymentsGateway'
+);
 
 arch_assert($architecture !== '', 'architecture control record exists');
 arch_assert(arch_contains($architecture, '**Status:** DISCOVERY / CHARACTERIZATION'), 'architecture record is discovery/characterization');
@@ -377,7 +419,6 @@ arch_assert(arch_contains($architecture, 'This is not permission for a big-bang 
 arch_assert(arch_contains($architecture, 'exact accepted `UPayments.php` byte size for the current architecture milestone'), 'monolith ratchet update contract is explicit');
 arch_assert(arch_contains($architecture, 'Composer only with an explicit distribution rule'), 'Composer introduction is gated by distribution contract');
 arch_assert(arch_contains($architecture, 'PHPCS/WPCS and PHPStan incrementally'), 'static-analysis rollout is incremental');
-
 arch_assert(arch_contains($status, '| Current program gate | **Architecture & Code-Quality Foundation — DISCOVERY** |'), 'project status keeps Architecture as current gate');
 arch_assert(arch_contains($naming, '**Canonical slug:** `simplixpay-upayments`'), 'canonical slug remains protected');
 
@@ -385,26 +426,34 @@ $gatewayPath = $root . '/UPayments.php';
 $gatewaySize = is_file($gatewayPath) ? filesize($gatewayPath) : false;
 $acceptedGatewayBytes = 257832;
 arch_assert(is_int($gatewaySize) && $gatewaySize === $acceptedGatewayBytes, 'UPayments.php matches current exact architecture ratchet');
-arch_assert(arch_contains($gateway, 'class WC_Upayments extends WC_Payment_Gateway'), 'legacy WC_Upayments gateway compatibility class remains');
+arch_assert($gatewayClassTokens !== array(), 'legacy WC_Upayments gateway compatibility class remains executable');
 arch_assert(arch_contains($gateway, "add_filter(\"woocommerce_payment_gateways\", \"addUpaymentsGatewayClass\")"), 'WooCommerce gateway registration remains characterized');
-arch_assert(arch_contains($gateway, 'public function process_payment'), 'process_payment compatibility entry point remains');
-arch_assert(arch_contains($gateway, 'public function process_admin_options'), 'gateway settings save entry point remains');
-arch_assert(arch_contains($gateway, 'public function payment_fields'), 'classic checkout payment_fields entry point remains');
-arch_assert(arch_contains($gateway, 'public function return_from_upayments'), 'browser return compatibility entry point remains');
-arch_assert(arch_contains($gateway, 'public function web_hook_handler'), 'legacy webhook compatibility entry point remains');
-arch_assert(arch_contains($gateway, 'public function check_ipn_response'), 'wc_upayments callback dispatcher remains');
-arch_assert(arch_contains($gateway, 'public function get_payment_staus'), 'historical public status-poll method remains as compatibility wrapper');
-arch_assert(arch_contains($gateway, '\\Simplix\\Pay\\UPayments\\Security\\PublicOrderStatus::handle();'), 'public status polling delegates to Security boundary');
-arch_assert(arch_contains($gateway, 'public function getAPIUrl('), 'public generic provider URL helper remains');
-arch_assert(arch_contains($gateway, 'public function getAPIUrlForCreateToken'), 'public token endpoint helper remains');
-arch_assert(arch_contains($gateway, 'public function getAPIUrlForCheckPaymentButtonStatus'), 'public payment-button endpoint helper remains');
-arch_assert(arch_contains($gateway, 'public function getAPIUrlForRetreiveCards'), 'public saved-card endpoint helper remains');
-arch_assert(arch_contains($gateway, 'public function getUpayPaymentMethods'), 'payment-method discovery responsibility remains characterized');
-arch_assert(arch_contains($gateway, 'public function getSavedCards('), 'saved-card discovery responsibility remains characterized');
-arch_assert(arch_contains($gateway, 'public function initializeSubscriptionModule'), 'subscription composition entry remains characterized');
-arch_assert(arch_contains($gateway, 'public function generate_multimerchant_repeater_html'), 'multi-merchant admin responsibility remains characterized');
-arch_assert(arch_contains($gateway, "add_action( 'woocommerce_process_product_meta', 'saveCustomFieldData' )"), 'subscription product-meta hook remains characterized');
 
+$publicMethods = array(
+    'process_payment' => 'process_payment compatibility entry point remains public',
+    'process_admin_options' => 'gateway settings save entry point remains public',
+    'payment_fields' => 'classic checkout payment_fields entry point remains public',
+    'return_from_upayments' => 'browser return compatibility entry point remains public',
+    'web_hook_handler' => 'legacy webhook compatibility entry point remains public',
+    'check_ipn_response' => 'wc_upayments callback dispatcher remains public',
+    'get_payment_staus' => 'historical public status-poll method remains as compatibility wrapper',
+    'getAPIUrl' => 'public generic provider URL helper remains callable',
+    'getAPIUrlForCreateToken' => 'public token endpoint helper remains callable',
+    'getAPIUrlForCheckPaymentButtonStatus' => 'public payment-button endpoint helper remains callable',
+    'getAPIUrlForRetreiveCards' => 'public saved-card endpoint helper remains callable',
+    'getUpayPaymentMethods' => 'payment-method discovery responsibility remains public',
+    'getSavedCards' => 'saved-card discovery responsibility remains public',
+    'initializeSubscriptionModule' => 'subscription composition entry remains public',
+    'generate_multimerchant_repeater_html' => 'multi-merchant admin responsibility remains public',
+);
+$resolvedPublicMethods = array();
+foreach ($publicMethods as $methodName => $message) {
+    $resolvedPublicMethods[$methodName] = arch_direct_public_method($gatewayClassTokens, $methodName);
+    arch_assert($resolvedPublicMethods[$methodName]['found'], $message);
+}
+
+arch_assert(arch_contains($gateway, '\\Simplix\\Pay\\UPayments\\Security\\PublicOrderStatus::handle();'), 'public status polling delegates to Security boundary');
+arch_assert(arch_contains($gateway, "add_action( 'woocommerce_process_product_meta', 'saveCustomFieldData' )"), 'subscription product-meta hook remains characterized');
 arch_assert(is_file($root . '/src/Release/Identity.php'), 'Release module exists');
 arch_assert(is_dir($root . '/src/Migration'), 'Migration module exists');
 arch_assert(is_dir($root . '/src/Payment'), 'Payment module exists');
@@ -415,7 +464,6 @@ arch_assert(is_file($root . '/src/Payment/StatusRateGate.php'), 'Payment StatusR
 arch_assert(is_file($root . '/src/Payment/StatusVerifier.php'), 'Payment StatusVerifier boundary exists');
 arch_assert(arch_contains($paymentLifecycle, 'namespace Simplix\\Pay\\UPayments\\Payment;'), 'Payment lifecycle uses Simplix namespace');
 arch_assert(arch_contains($securityStatus, 'namespace Simplix\\Pay\\UPayments\\Security;'), 'Security boundary uses Simplix namespace');
-
 arch_assert(is_file($root . '/includes/Token/CustomerTokenIdentity.php'), 'protected H12 token identity module exists');
 arch_assert(arch_contains($tokenIdentity, 'CustomerTokenIdentity'), 'H12 token identity implementation remains readable');
 arch_assert(is_file($root . '/includes/Subscription/Cron/Scheduler.php'), 'protected subscription scheduler exists');
@@ -423,53 +471,43 @@ arch_assert(is_file($root . '/includes/Subscription/Cron/CycleClaim.php'), 'prot
 arch_assert(arch_contains($scheduler, 'class Scheduler'), 'subscription Scheduler class remains characterized');
 arch_assert(is_file($root . '/includes/class-wc-gateway-upayments-blocks.php'), 'Checkout Blocks gateway integration exists');
 
+$constructor = arch_direct_public_method($gatewayClassTokens, '__construct');
+arch_assert($constructor['found'], 'WC_Upayments constructor remains public and executable');
 arch_assert(
-    arch_has_token_sequence($constructorTokens, $gatewayIdSequence),
+    arch_has_token_sequence($constructor['body'], $gatewayIdSequence),
     'gateway ID remains executable in WC_Upayments::__construct and bound to upayments'
 );
 arch_assert(
-    arch_has_token_sequence($constructorTokens, $callbackWithTrailingComma)
-        || arch_has_token_sequence($constructorTokens, $callbackWithoutTrailingComma),
+    arch_has_token_sequence($constructor['body'], $callbackWithTrailingComma)
+        || arch_has_token_sequence($constructor['body'], $callbackWithoutTrailingComma),
     'wc_upayments callback hook remains executable in WC_Upayments::__construct and bound to check_ipn_response'
 );
+arch_assert($availabilityBinding['found'], 'enableUpaymentsGateway remains a direct top-level registered availability callback');
 arch_assert(
-    arch_has_token_sequence($gatewayFileLevelTokens, $availabilityFilterSequence),
-    'enableUpaymentsGateway remains the file-level woocommerce_available_payment_gateways callback'
+    arch_has_token_sequence($availabilityBinding['body'], $settingsReadSequence),
+    'legacy WooCommerce settings option remains an executable direct global availability-callback read'
 );
 arch_assert(
-    arch_has_token_sequence($availabilityTokens, $settingsReadSequence),
-    'legacy WooCommerce settings option remains an executable global enableUpaymentsGateway runtime read'
-);
-arch_assert(
-    arch_has_token_sequence($processPaymentTokens, $orderIdWriteSequence),
+    arch_has_token_sequence($resolvedPublicMethods['process_payment']['body'], $orderIdWriteSequence),
     'UPayments_order_id remains executable WC_Upayments::process_payment persistence from the local provider-order identity'
 );
 
 $inertFixture = <<<'PHP'
 <?php
-class OtherArchitectureFixture {
-    public function __construct() {
-        $this->id = 'upayments';
-        add_action("woocommerce_api_" . strtolower("WC_UPayments"), [$this, "check_ipn_response"]);
-    }
-    public function process_payment() {
-        $order->add_meta_data("UPayments_order_id", $unique_order_id);
-    }
-    public function enableUpaymentsGateway($available_gateways) {
-        $settings = get_option("woocommerce_upayments_settings");
-        return $available_gateways;
-    }
+class WrongGateway {
+    public function getAPIUrl() { return 'dead'; }
+    public function process_payment() { $order->add_meta_data("UPayments_order_id", $unique_order_id); }
 }
-class ArchitectureFixture {
+class WC_Upayments {
+    // public function getAPIUrl() {}
     public function __construct() {
-        // $this->id = 'upayments';
         $dead_id = '$this->id = \'upayments\';';
-        $dead_callback = 'add_action("woocommerce_api_" . strtolower("WC_UPayments"), [$this, "check_ipn_response"]);';
         $nested = function () {
             $this->id = 'upayments';
             add_action("woocommerce_api_" . strtolower("WC_UPayments"), [$this, "check_ipn_response"]);
         };
     }
+    protected function getAPIUrl() { return 'not-public'; }
     public function process_payment() {
         $dead_write = '$order->add_meta_data("UPayments_order_id", $unique_order_id);';
         $nested = function () use ($order, $unique_order_id) {
@@ -477,7 +515,8 @@ class ArchitectureFixture {
         };
     }
 }
-add_filter("woocommerce_available_payment_gateways", "enableUpaymentsGateway");
+if (false)
+    add_filter("woocommerce_available_payment_gateways", "enableUpaymentsGateway");
 function enableUpaymentsGateway($available_gateways) {
     $dead_settings = '$settings = get_option("woocommerce_upayments_settings");';
     $nested = function () {
@@ -487,20 +526,53 @@ function enableUpaymentsGateway($available_gateways) {
 }
 PHP;
 $inertTokens = arch_executable_tokens($inertFixture);
-$inertFileLevel = arch_file_level_tokens($inertTokens);
-$inertGatewayClass = arch_class_body_tokens($inertTokens, 'ArchitectureFixture');
-$inertConstructor = arch_direct_function_body_tokens($inertGatewayClass, '__construct');
-$inertAvailability = arch_direct_function_body_tokens($inertTokens, 'enableUpaymentsGateway');
-$inertProcessPayment = arch_direct_function_body_tokens($inertGatewayClass, 'process_payment');
-arch_assert(!arch_has_token_sequence($inertConstructor, $gatewayIdSequence), 'role matcher ignores commented/string/nested gateway ID and executable copy in another class');
+$inertClass = arch_class_body_tokens($inertTokens, 'WC_Upayments');
+$inertConstructor = arch_direct_public_method($inertClass, '__construct');
+$inertGetApiUrl = arch_direct_public_method($inertClass, 'getAPIUrl');
+$inertProcessPayment = arch_direct_public_method($inertClass, 'process_payment');
+$inertAvailability = arch_direct_top_level_filter_callback($inertTokens, $availabilityFilterSequence, 'enableUpaymentsGateway');
+arch_assert(!$inertGetApiUrl['found'], 'public-method matcher ignores comment/string, wrong class and protected same-class copy');
+arch_assert(!arch_has_token_sequence($inertConstructor['body'], $gatewayIdSequence), 'role matcher ignores string/nested gateway ID');
 arch_assert(
-    !arch_has_token_sequence($inertConstructor, $callbackWithTrailingComma)
-        && !arch_has_token_sequence($inertConstructor, $callbackWithoutTrailingComma),
-    'role matcher ignores string/nested callback and executable copy in another class'
+    !arch_has_token_sequence($inertConstructor['body'], $callbackWithTrailingComma)
+        && !arch_has_token_sequence($inertConstructor['body'], $callbackWithoutTrailingComma),
+    'role matcher ignores nested callback registration'
 );
-arch_assert(arch_has_token_sequence($inertFileLevel, $availabilityFilterSequence), 'fixture proves the global availability callback registration is independently detectable');
-arch_assert(!arch_has_token_sequence($inertAvailability, $settingsReadSequence), 'role matcher ignores nested settings read and same-named executable class method');
-arch_assert(!arch_has_token_sequence($inertProcessPayment, $orderIdWriteSequence), 'role matcher ignores string/nested order-id write and executable copy in another class');
+arch_assert(!arch_has_token_sequence($inertProcessPayment['body'], $orderIdWriteSequence), 'role matcher ignores string/nested order-id write and wrong-class executable copy');
+arch_assert(!$inertAvailability['found'], 'top-level callback matcher rejects brace-less conditional registration');
+
+$bracedConditionalFixture = <<<'PHP'
+<?php
+if (false) {
+    add_filter("woocommerce_available_payment_gateways", "enableUpaymentsGateway");
+    function enableUpaymentsGateway($available_gateways) {
+        $settings = get_option("woocommerce_upayments_settings");
+        return $available_gateways;
+    }
+}
+PHP;
+$bracedConditional = arch_direct_top_level_filter_callback(
+    arch_executable_tokens($bracedConditionalFixture),
+    $availabilityFilterSequence,
+    'enableUpaymentsGateway'
+);
+arch_assert(!$bracedConditional['found'], 'top-level callback matcher rejects braced conditional registration/declaration');
+
+$validAvailabilityFixture = <<<'PHP'
+<?php
+add_filter("woocommerce_available_payment_gateways", "enableUpaymentsGateway");
+function enableUpaymentsGateway($available_gateways) {
+    $settings = get_option("woocommerce_upayments_settings");
+    return $available_gateways;
+}
+PHP;
+$validAvailability = arch_direct_top_level_filter_callback(
+    arch_executable_tokens($validAvailabilityFixture),
+    $availabilityFilterSequence,
+    'enableUpaymentsGateway'
+);
+arch_assert($validAvailability['found'], 'top-level callback matcher recognizes direct registered global callback');
+arch_assert(arch_has_token_sequence($validAvailability['body'], $settingsReadSequence), 'top-level callback matcher exposes direct executable settings read');
 
 arch_assert(!is_dir($root . '/src/Provider'), 'discovery tranche has not prematurely created Provider runtime module');
 
