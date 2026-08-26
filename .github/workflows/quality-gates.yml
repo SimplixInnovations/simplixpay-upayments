@@ -212,6 +212,9 @@ jobs:
       - name: Architecture foundation harness
         run: php tests/harness/architecture-foundation-harness.php
 
+      - name: Architecture runtime bindings harness
+        run: php tests/harness/architecture-runtime-bindings-harness.php
+
       - name: H12 PHP harness
         run: php tests/harness/phase-9g-h12-php-harness.php
 
