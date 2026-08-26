@@ -367,41 +367,24 @@ function arch2_has_sequence(array $tokens, array $sequence)
 
 function arch2_gateway_callback_returns_registered_methods(array $body)
 {
-    $append = array(
-        array(T_VARIABLE, '$methods'), array(null, '['), array(null, ']'), array(null, '='),
-        array(T_CONSTANT_ENCAPSED_STRING, 'WC_UPayments'), array(null, ';'),
+    $expected = array(
+        array(T_VARIABLE, '$methods'),
+        array(null, '['),
+        array(null, ']'),
+        array(null, '='),
+        array(T_CONSTANT_ENCAPSED_STRING, 'WC_UPayments'),
+        array(null, ';'),
+        array(T_RETURN, 'return'),
+        array(T_VARIABLE, '$methods'),
+        array(null, ';'),
     );
 
-    $appendIndex = arch2_sequence_index($body, $append);
-    if ($appendIndex === false) {
+    if (count($body) !== count($expected)) {
         return false;
     }
 
-    $count = count($body);
-    $returnIndex = false;
-    for ($i = 0; $i < $count; $i++) {
-        if ($body[$i]['id'] === T_RETURN) {
-            $returnIndex = $i;
-            break;
-        }
-    }
-
-    if ($returnIndex === false || $returnIndex <= $appendIndex + count($append) - 1) {
-        return false;
-    }
-
-    if (!isset($body[$returnIndex + 1], $body[$returnIndex + 2])
-        || $body[$returnIndex + 1]['id'] !== T_VARIABLE
-        || $body[$returnIndex + 1]['text'] !== '$methods'
-        || $body[$returnIndex + 2]['text'] !== ';') {
-        return false;
-    }
-
-    for ($i = $appendIndex + count($append); $i < $returnIndex; $i++) {
-        if ($body[$i]['id'] === T_VARIABLE
-            && $body[$i]['text'] === '$methods'
-            && isset($body[$i + 1])
-            && $body[$i + 1]['text'] === '=') {
+    foreach ($expected as $index => $want) {
+        if ($body[$index]['id'] !== $want[0] || $body[$index]['text'] !== $want[1]) {
             return false;
         }
     }
@@ -534,7 +517,7 @@ arch2_assert(!arch2_has_namespace_declaration($gatewayTokens), 'legacy main file
 arch2_assert($gatewayRegistration['found'], 'WooCommerce gateway registration is a direct executable global hook/callback pair');
 arch2_assert(
     arch2_gateway_callback_returns_registered_methods($gatewayRegistration['body']),
-    'gateway registration callback appends WC_UPayments before returning the same methods array'
+    'gateway registration callback is exactly WC_UPayments append then methods return'
 );
 arch2_assert($availabilityRegistration['found'], 'availability registration is a direct executable global hook/callback pair');
 arch2_assert($productMetaRegistration['found'], 'subscription product-meta registration is a direct executable global hook/callback pair');
@@ -671,6 +654,28 @@ arch2_assert(
     'matcher strips arrow-function gateway append from callback body'
 );
 
+$conditionalAppendFixture = <<<'PHP'
+<?php
+add_filter("woocommerce_payment_gateways", "addUpaymentsGatewayClass");
+function addUpaymentsGatewayClass($methods) {
+    if (false) {
+        $methods[] = "WC_UPayments";
+    }
+    return $methods;
+}
+PHP;
+$conditionalAppend = arch2_direct_top_level_hook_callback(
+    arch2_tokens($conditionalAppendFixture),
+    'add_filter',
+    'woocommerce_payment_gateways',
+    'addUpaymentsGatewayClass'
+);
+arch2_assert(
+    $conditionalAppend['found']
+        && !arch2_gateway_callback_returns_registered_methods($conditionalAppend['body']),
+    'gateway semantic guard rejects conditional or unreachable append path'
+);
+
 $returnBeforeAppendFixture = <<<'PHP'
 <?php
 add_filter("woocommerce_payment_gateways", "addUpaymentsGatewayClass");
@@ -756,7 +761,7 @@ $validProduct = arch2_direct_top_level_hook_callback(
 arch2_assert($validGateway['found'], 'matcher accepts direct top-level gateway registration/callback');
 arch2_assert(
     $validGateway['found'] && arch2_gateway_callback_returns_registered_methods($validGateway['body']),
-    'gateway semantic guard accepts append-before-return callback'
+    'gateway semantic guard accepts exact append-then-return callback'
 );
 arch2_assert($validProduct['found'], 'matcher accepts direct top-level product-meta registration/callback');
 
