@@ -190,6 +190,21 @@ function arch2_is_direct_terminator(array $tokens, $index)
     );
 }
 
+function arch2_is_direct_unconditional_block_open(array $tokens, $index)
+{
+    if (!isset($tokens[$index]) || $tokens[$index]['text'] !== '{') {
+        return false;
+    }
+    if (arch2_is_direct_statement_start($tokens, $index)) {
+        return true;
+    }
+
+    $ownerIndex = $index - 1;
+    return $ownerIndex >= 0
+        && $tokens[$ownerIndex]['id'] === T_DO
+        && arch2_is_direct_statement_start($tokens, $ownerIndex);
+}
+
 function arch2_hook_call_matches(array $tokens, $index, $hookFunction, $hookName, $callbackName)
 {
     $expected = array(
@@ -333,7 +348,7 @@ function arch2_direct_top_level_hook_callback(array $tokens, $hookFunction, $hoo
         }
         if ($text === '{') {
             if ($braceDepth === 0 && $altDepth === 0
-                && arch2_is_direct_statement_start($tokens, $i)) {
+                && arch2_is_direct_unconditional_block_open($tokens, $i)) {
                 continue;
             }
             $braceDepth++;
@@ -837,6 +852,7 @@ foreach ($terminatorFixtures as $terminatorName => $fixture) {
         $paths = array(
             'direct' => $fixture['statement'] . "\n",
             'unconditional-block' => "{\n" . $fixture['statement'] . "\n}\n",
+            'mandatory-do-block' => "do {\n" . $fixture['statement'] . "\n} while (false);\n",
         );
 
         foreach ($paths as $pathName => $path) {
@@ -921,6 +937,25 @@ arch2_assert(
     $reachableBareBlock['found']
         && arch2_gateway_callback_returns_registered_methods($reachableBareBlock['body']),
     'matcher accepts reachable gateway registration inside unconditional block'
+);
+
+$reachableDoBlockFixture = <<<'PHP'
+<?php
+do {
+    add_filter("woocommerce_payment_gateways", "addUpaymentsGatewayClass");
+    function addUpaymentsGatewayClass($methods) { $methods[] = "WC_UPayments"; return $methods; }
+} while (false);
+PHP;
+$reachableDoBlock = arch2_direct_top_level_hook_callback(
+    arch2_tokens($reachableDoBlockFixture),
+    'add_filter',
+    'woocommerce_payment_gateways',
+    'addUpaymentsGatewayClass'
+);
+arch2_assert(
+    $reachableDoBlock['found']
+        && arch2_gateway_callback_returns_registered_methods($reachableDoBlock['body']),
+    'matcher accepts reachable gateway registration inside mandatory do block'
 );
 
 $validFixture = <<<'PHP'

@@ -191,6 +191,21 @@ function arch3_is_direct_terminator(array $tokens, $index)
     );
 }
 
+function arch3_is_direct_unconditional_block_open(array $tokens, $index)
+{
+    if (!isset($tokens[$index]) || $tokens[$index]['text'] !== '{') {
+        return false;
+    }
+    if (arch3_is_direct_statement_start($tokens, $index)) {
+        return true;
+    }
+
+    $ownerIndex = $index - 1;
+    return $ownerIndex >= 0
+        && $tokens[$ownerIndex]['id'] === T_DO
+        && arch3_is_direct_statement_start($tokens, $ownerIndex);
+}
+
 function arch3_extract_body(array $tokens, $openBraceIndex)
 {
     $depth = 1;
@@ -262,7 +277,7 @@ function arch3_direct_top_level_hook_callback(array $tokens, $hookFunction, $hoo
         }
         if ($text === '{') {
             if ($braceDepth === 0 && $altDepth === 0
-                && arch3_is_direct_statement_start($tokens, $i)) {
+                && arch3_is_direct_unconditional_block_open($tokens, $i)) {
                 continue;
             }
             $braceDepth++;
@@ -335,7 +350,7 @@ function arch3_direct_class(array $ownerBody, $className)
         }
         if ($text === '{') {
             if ($braceDepth === 0 && $altDepth === 0
-                && arch3_is_direct_statement_start($ownerBody, $i)) {
+                && arch3_is_direct_unconditional_block_open($ownerBody, $i)) {
                 continue;
             }
             $braceDepth++;
@@ -468,7 +483,7 @@ function arch3_has_direct_gateway_id_assignment(array $body)
         }
         if ($text === '{') {
             if ($braceDepth === 0 && $altDepth === 0
-                && arch3_is_direct_statement_start($body, $i)) {
+                && arch3_is_direct_unconditional_block_open($body, $i)) {
                 continue;
             }
             $braceDepth++;
@@ -737,7 +752,12 @@ foreach ($terminatorFixtures as $name => $fixture) {
 }
 
 foreach ($terminatorFixtures as $name => $fixture) {
-    $wrappedStatement = "{\n" . $fixture['statement'] . "\n}\n";
+    $wrappedPaths = array(
+        'unconditional-block' => "{\n" . $fixture['statement'] . "\n}\n",
+        'mandatory-do-block' => "do {\n" . $fixture['statement'] . "\n} while (false);\n",
+    );
+
+    foreach ($wrappedPaths as $pathName => $wrappedStatement) {
 
     $topLevelSource = "<?php\n"
         . $wrappedStatement
@@ -755,7 +775,7 @@ foreach ($terminatorFixtures as $name => $fixture) {
             'plugins_loaded',
             'woocommerceUpaymentsInit'
         )['found'],
-        "bootstrap guard rejects unconditional-block {$name}-terminated registration path"
+        "bootstrap guard rejects {$pathName} {$name}-terminated registration path"
     );
 
     $classSource = "<?php\n"
@@ -776,7 +796,7 @@ foreach ($terminatorFixtures as $name => $fixture) {
     arch3_assert(
         $classBootstrap['found']
             && !arch3_direct_class($classBootstrap['body'], 'WC_Upayments')['found'],
-        "bootstrap guard rejects unconditional-block {$name}-terminated gateway-class path"
+        "bootstrap guard rejects {$pathName} {$name}-terminated gateway-class path"
     );
 
     $constructorSource = "<?php\n"
@@ -801,8 +821,9 @@ foreach ($terminatorFixtures as $name => $fixture) {
     arch3_assert(
         $wrappedConstructor['found']
             && !arch3_has_direct_gateway_id_assignment($wrappedConstructor['body']),
-        "constructor guard rejects gateway ID after unconditional-block {$name} terminator"
+        "constructor guard rejects gateway ID after {$pathName} {$name} terminator"
     );
+    }
 }
 
 $nestedBareBlockFixture = <<<'PHP'
@@ -862,6 +883,41 @@ arch3_assert(
     $reachableBareConstructor['found']
         && arch3_has_direct_gateway_id_assignment($reachableBareConstructor['body']),
     'bootstrap guard accepts reachable protected path inside unconditional blocks'
+);
+
+$reachableDoBlockFixture = <<<'PHP'
+<?php
+do {
+    add_action('plugins_loaded', 'woocommerceUpaymentsInit');
+    function woocommerceUpaymentsInit() {
+        do {
+            class WC_Upayments {
+                public function __construct() {
+                    do {
+                        $this->id = 'upayments';
+                    } while (false);
+                }
+            }
+        } while (false);
+    }
+} while (false);
+PHP;
+$reachableDoBootstrap = arch3_direct_top_level_hook_callback(
+    arch3_tokens($reachableDoBlockFixture),
+    'add_action',
+    'plugins_loaded',
+    'woocommerceUpaymentsInit'
+);
+$reachableDoClass = $reachableDoBootstrap['found']
+    ? arch3_direct_class($reachableDoBootstrap['body'], 'WC_Upayments')
+    : array('found' => false, 'body' => array());
+$reachableDoConstructor = $reachableDoClass['found']
+    ? arch3_direct_public_method($reachableDoClass['body'], '__construct')
+    : array('found' => false, 'body' => array());
+arch3_assert(
+    $reachableDoConstructor['found']
+        && arch3_has_direct_gateway_id_assignment($reachableDoConstructor['body']),
+    'bootstrap guard accepts reachable protected path inside mandatory do blocks'
 );
 
 $conditionalTerminatorFixture = <<<'PHP'
