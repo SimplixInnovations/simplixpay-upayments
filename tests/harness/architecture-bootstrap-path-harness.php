@@ -144,6 +144,29 @@ function arch3_is_alt_end($id)
     );
 }
 
+function arch3_is_direct_statement_start(array $tokens, $index)
+{
+    if ($index === 0) {
+        return true;
+    }
+
+    $previous = $tokens[$index - 1]['text'];
+    return $previous === ';' || $previous === '}';
+}
+
+function arch3_is_direct_terminator(array $tokens, $index)
+{
+    if (!isset($tokens[$index]) || !arch3_is_direct_statement_start($tokens, $index)) {
+        return false;
+    }
+
+    return in_array(
+        $tokens[$index]['id'],
+        array(T_RETURN, T_EXIT, T_THROW, T_GOTO),
+        true
+    );
+}
+
 function arch3_extract_body(array $tokens, $openBraceIndex)
 {
     $depth = 1;
@@ -230,6 +253,9 @@ function arch3_direct_top_level_hook_callback(array $tokens, $hookFunction, $hoo
         if ($braceDepth !== 0 || $altDepth !== 0) {
             continue;
         }
+        if (arch3_is_direct_terminator($tokens, $i)) {
+            return array('found' => false, 'body' => array());
+        }
         if (!arch3_hook_call_matches($tokens, $i, $hookFunction, $hookName, $callbackName)) {
             continue;
         }
@@ -293,6 +319,9 @@ function arch3_direct_class(array $ownerBody, $className)
         if (isset($altStarts[$i])) {
             $altDepth++;
             continue;
+        }
+        if ($braceDepth === 0 && $altDepth === 0 && arch3_is_direct_terminator($ownerBody, $i)) {
+            return array('found' => false, 'body' => array());
         }
         if ($braceDepth !== 0 || $altDepth !== 0 || $id !== T_CLASS) {
             continue;
@@ -423,6 +452,9 @@ function arch3_has_direct_gateway_id_assignment(array $body)
         }
         if ($braceDepth !== 0 || $altDepth !== 0) {
             continue;
+        }
+        if (arch3_is_direct_terminator($body, $i)) {
+            return false;
         }
 
         $previous = $i > 0 ? $body[$i - 1]['text'] : null;
@@ -588,6 +620,116 @@ $alternativeConstructor = arch3_direct_public_method($alternativeClass['body'], 
 arch3_assert(
     $alternativeConstructor['found'] && !arch3_has_direct_gateway_id_assignment($alternativeConstructor['body']),
     'constructor guard rejects gateway ID hidden in alternative-syntax conditional'
+);
+
+$terminatorFixtures = array(
+    'return' => array('statement' => 'return;', 'label' => ''),
+    'exit' => array('statement' => 'exit;', 'label' => ''),
+    'throw' => array('statement' => 'throw new RuntimeException("halt");', 'label' => ''),
+    'goto' => array('statement' => 'goto arch3_after;', 'label' => 'arch3_after: ;'),
+);
+
+foreach ($terminatorFixtures as $name => $fixture) {
+    $topLevelSource = "<?php\n"
+        . $fixture['statement'] . "\n"
+        . "add_action('plugins_loaded', 'woocommerceUpaymentsInit');\n"
+        . "function woocommerceUpaymentsInit() {\n"
+        . "    class WC_Upayments {\n"
+        . "        public function __construct() { \$this->id = 'upayments'; }\n"
+        . "    }\n"
+        . "}\n"
+        . $fixture['label'] . "\n";
+    arch3_assert(
+        !arch3_direct_top_level_hook_callback(
+            arch3_tokens($topLevelSource),
+            'add_action',
+            'plugins_loaded',
+            'woocommerceUpaymentsInit'
+        )['found'],
+        "bootstrap guard rejects {$name}-terminated registration path"
+    );
+
+    $classSource = "<?php\n"
+        . "add_action('plugins_loaded', 'woocommerceUpaymentsInit');\n"
+        . "function woocommerceUpaymentsInit() {\n"
+        . "    " . $fixture['statement'] . "\n"
+        . "    class WC_Upayments {\n"
+        . "        public function __construct() { \$this->id = 'upayments'; }\n"
+        . "    }\n"
+        . "    " . $fixture['label'] . "\n"
+        . "}\n";
+    $classBootstrap = arch3_direct_top_level_hook_callback(
+        arch3_tokens($classSource),
+        'add_action',
+        'plugins_loaded',
+        'woocommerceUpaymentsInit'
+    );
+    arch3_assert(
+        $classBootstrap['found']
+            && !arch3_direct_class($classBootstrap['body'], 'WC_Upayments')['found'],
+        "bootstrap guard rejects {$name}-terminated gateway-class path"
+    );
+
+    $constructorSource = "<?php\n"
+        . "add_action('plugins_loaded', 'woocommerceUpaymentsInit');\n"
+        . "function woocommerceUpaymentsInit() {\n"
+        . "    class WC_Upayments {\n"
+        . "        public function __construct() {\n"
+        . "            " . $fixture['statement'] . "\n"
+        . "            \$this->id = 'upayments';\n"
+        . "            " . $fixture['label'] . "\n"
+        . "        }\n"
+        . "    }\n"
+        . "}\n";
+    $constructorBootstrap = arch3_direct_top_level_hook_callback(
+        arch3_tokens($constructorSource),
+        'add_action',
+        'plugins_loaded',
+        'woocommerceUpaymentsInit'
+    );
+    $terminatedClass = arch3_direct_class($constructorBootstrap['body'], 'WC_Upayments');
+    $terminatedConstructor = arch3_direct_public_method($terminatedClass['body'], '__construct');
+    arch3_assert(
+        $terminatedConstructor['found']
+            && !arch3_has_direct_gateway_id_assignment($terminatedConstructor['body']),
+        "constructor guard rejects gateway ID after direct {$name} terminator"
+    );
+}
+
+$conditionalTerminatorFixture = <<<'PHP'
+<?php
+if (false) { return; }
+add_action('plugins_loaded', 'woocommerceUpaymentsInit');
+function woocommerceUpaymentsInit() {
+    if (false) return;
+    class WC_Upayments {
+        public function __construct() {
+            if (false):
+                return;
+            endif;
+            $this->id = 'upayments';
+        }
+    }
+}
+PHP;
+$conditionalBootstrap = arch3_direct_top_level_hook_callback(
+    arch3_tokens($conditionalTerminatorFixture),
+    'add_action',
+    'plugins_loaded',
+    'woocommerceUpaymentsInit'
+);
+$conditionalClass = $conditionalBootstrap['found']
+    ? arch3_direct_class($conditionalBootstrap['body'], 'WC_Upayments')
+    : array('found' => false, 'body' => array());
+$conditionalConstructor = $conditionalClass['found']
+    ? arch3_direct_public_method($conditionalClass['body'], '__construct')
+    : array('found' => false, 'body' => array());
+arch3_assert($conditionalBootstrap['found'], 'bootstrap guard accepts registration after conditional return');
+arch3_assert($conditionalClass['found'], 'bootstrap guard accepts gateway class after conditional return');
+arch3_assert(
+    $conditionalConstructor['found']
+        && arch3_has_direct_gateway_id_assignment($conditionalConstructor['body']),
+    'constructor guard accepts direct gateway ID after conditional return'
 );
 
 $validFixture = <<<'PHP'
