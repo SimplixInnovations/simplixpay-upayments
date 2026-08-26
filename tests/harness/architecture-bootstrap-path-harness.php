@@ -144,6 +144,26 @@ function arch3_is_alt_end($id)
     );
 }
 
+function arch3_is_label_colon(array $tokens, $index)
+{
+    if ($index < 1
+        || !isset($tokens[$index], $tokens[$index - 1])
+        || $tokens[$index]['text'] !== ':'
+        || $tokens[$index - 1]['id'] !== T_STRING) {
+        return false;
+    }
+
+    $labelIndex = $index - 1;
+    if ($labelIndex === 0) {
+        return true;
+    }
+
+    $beforeLabel = $tokens[$labelIndex - 1]['text'];
+    return $beforeLabel === ';'
+        || $beforeLabel === '}'
+        || ($beforeLabel === ':' && arch3_is_label_colon($tokens, $labelIndex - 1));
+}
+
 function arch3_is_direct_statement_start(array $tokens, $index)
 {
     if ($index === 0) {
@@ -151,7 +171,9 @@ function arch3_is_direct_statement_start(array $tokens, $index)
     }
 
     $previous = $tokens[$index - 1]['text'];
-    return $previous === ';' || $previous === '}';
+    return $previous === ';'
+        || $previous === '}'
+        || ($previous === ':' && arch3_is_label_colon($tokens, $index - 1));
 }
 
 function arch3_is_direct_terminator(array $tokens, $index)
@@ -627,6 +649,13 @@ $terminatorFixtures = array(
     'exit' => array('statement' => 'exit;', 'label' => ''),
     'throw' => array('statement' => 'throw new RuntimeException("halt");', 'label' => ''),
     'goto' => array('statement' => 'goto arch3_after;', 'label' => 'arch3_after: ;'),
+    'label-prefixed return' => array('statement' => 'arch3_stage: return;', 'label' => ''),
+    'label-prefixed exit' => array('statement' => 'arch3_stage: exit;', 'label' => ''),
+    'label-prefixed throw' => array('statement' => 'arch3_stage: throw new RuntimeException("halt");', 'label' => ''),
+    'label-prefixed goto' => array(
+        'statement' => 'arch3_stage: goto arch3_after;',
+        'label' => 'arch3_after: ;',
+    ),
 );
 
 foreach ($terminatorFixtures as $name => $fixture) {
