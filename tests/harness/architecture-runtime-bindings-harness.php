@@ -143,6 +143,51 @@ function arch2_is_alt_end($id)
     );
 }
 
+function arch2_is_label_colon(array $tokens, $index)
+{
+    if ($index < 1
+        || !isset($tokens[$index], $tokens[$index - 1])
+        || $tokens[$index]['text'] !== ':'
+        || $tokens[$index - 1]['id'] !== T_STRING) {
+        return false;
+    }
+
+    $labelIndex = $index - 1;
+    if ($labelIndex === 0) {
+        return true;
+    }
+
+    $beforeLabel = $tokens[$labelIndex - 1]['text'];
+    return $beforeLabel === ';'
+        || $beforeLabel === '}'
+        || ($beforeLabel === ':' && arch2_is_label_colon($tokens, $labelIndex - 1));
+}
+
+function arch2_is_direct_statement_start(array $tokens, $index)
+{
+    if ($index === 0) {
+        return true;
+    }
+
+    $previous = $tokens[$index - 1]['text'];
+    return $previous === ';'
+        || $previous === '}'
+        || ($previous === ':' && arch2_is_label_colon($tokens, $index - 1));
+}
+
+function arch2_is_direct_terminator(array $tokens, $index)
+{
+    if (!isset($tokens[$index]) || !arch2_is_direct_statement_start($tokens, $index)) {
+        return false;
+    }
+
+    return in_array(
+        $tokens[$index]['id'],
+        array(T_RETURN, T_EXIT, T_THROW, T_GOTO),
+        true
+    );
+}
+
 function arch2_hook_call_matches(array $tokens, $index, $hookFunction, $hookName, $callbackName)
 {
     $expected = array(
@@ -300,6 +345,9 @@ function arch2_direct_top_level_hook_callback(array $tokens, $hookFunction, $hoo
         }
         if ($braceDepth !== 0 || $altDepth !== 0) {
             continue;
+        }
+        if (arch2_is_direct_terminator($tokens, $i)) {
+            return array('found' => false, 'body' => array());
         }
         if (!arch2_hook_call_matches($tokens, $i, $hookFunction, $hookName, $callbackName)) {
             continue;
@@ -737,6 +785,91 @@ arch2_assert(
         && arch2_code_without_strings($statusInertMethod['body']) !== $statusDelegation,
     'status delegation guard ignores comment, string and nested-callable copies'
 );
+
+$terminatorFixtures = array(
+    'return' => array('statement' => 'return;', 'label' => ''),
+    'exit' => array('statement' => 'exit;', 'label' => ''),
+    'throw' => array('statement' => 'throw new RuntimeException("halt");', 'label' => ''),
+    'goto' => array('statement' => 'goto arch2_after;', 'label' => 'arch2_after: ;'),
+    'label-prefixed return' => array('statement' => 'arch2_stage: return;', 'label' => ''),
+    'label-prefixed exit' => array('statement' => 'arch2_stage: exit;', 'label' => ''),
+    'label-prefixed throw' => array(
+        'statement' => 'arch2_stage: throw new RuntimeException("halt");',
+        'label' => '',
+    ),
+    'label-prefixed goto' => array(
+        'statement' => 'arch2_stage: goto arch2_after;',
+        'label' => 'arch2_after: ;',
+    ),
+);
+$protectedRegistrations = array(
+    'gateway' => array(
+        'hook_function' => 'add_filter',
+        'hook_name' => 'woocommerce_payment_gateways',
+        'callback_name' => 'addUpaymentsGatewayClass',
+        'callback_body' => '$methods[] = "WC_UPayments"; return $methods;',
+    ),
+    'availability' => array(
+        'hook_function' => 'add_filter',
+        'hook_name' => 'woocommerce_available_payment_gateways',
+        'callback_name' => 'enableUpaymentsGateway',
+        'callback_body' => 'return $available_gateways;',
+    ),
+    'product-meta' => array(
+        'hook_function' => 'add_action',
+        'hook_name' => 'woocommerce_process_product_meta',
+        'callback_name' => 'saveCustomFieldData',
+        'callback_body' => 'return $post_id;',
+    ),
+);
+
+foreach ($terminatorFixtures as $terminatorName => $fixture) {
+    foreach ($protectedRegistrations as $stageName => $registration) {
+        $terminatedSource = "<?php\n"
+            . $fixture['statement'] . "\n"
+            . $registration['hook_function'] . "('" . $registration['hook_name'] . "', '"
+            . $registration['callback_name'] . "');\n"
+            . 'function ' . $registration['callback_name'] . '($value) {'
+            . $registration['callback_body'] . "}\n"
+            . $fixture['label'] . "\n";
+        arch2_assert(
+            !arch2_direct_top_level_hook_callback(
+                arch2_tokens($terminatedSource),
+                $registration['hook_function'],
+                $registration['hook_name'],
+                $registration['callback_name']
+            )['found'],
+            "matcher rejects {$stageName} registration after direct {$terminatorName} terminator"
+        );
+    }
+}
+
+$conditionalTerminatorFixture = <<<'PHP'
+<?php
+if (false) { return; }
+add_filter("woocommerce_payment_gateways", "addUpaymentsGatewayClass");
+function addUpaymentsGatewayClass($methods) { $methods[] = "WC_UPayments"; return $methods; }
+if (false) exit;
+add_filter("woocommerce_available_payment_gateways", "enableUpaymentsGateway");
+function enableUpaymentsGateway($available_gateways) { return $available_gateways; }
+if (false):
+    throw new RuntimeException("halt");
+endif;
+add_action('woocommerce_process_product_meta', 'saveCustomFieldData');
+function saveCustomFieldData($post_id) { return $post_id; }
+PHP;
+$conditionalTokens = arch2_tokens($conditionalTerminatorFixture);
+foreach ($protectedRegistrations as $stageName => $registration) {
+    arch2_assert(
+        arch2_direct_top_level_hook_callback(
+            $conditionalTokens,
+            $registration['hook_function'],
+            $registration['hook_name'],
+            $registration['callback_name']
+        )['found'],
+        "matcher accepts {$stageName} registration after conditional terminator"
+    );
+}
 
 $validFixture = <<<'PHP'
 <?php
