@@ -37,9 +37,99 @@ function arch_contains($haystack, $needle)
     return is_string($haystack) && strpos($haystack, $needle) !== false;
 }
 
-function arch_matches($haystack, $pattern)
+function arch_php_string_literal_value($literal)
 {
-    return is_string($haystack) && preg_match($pattern, $haystack) === 1;
+    if (!is_string($literal) || strlen($literal) < 2) {
+        return null;
+    }
+
+    $quote = $literal[0];
+    if (($quote !== "'" && $quote !== '"') || substr($literal, -1) !== $quote) {
+        return null;
+    }
+
+    $body = substr($literal, 1, -1);
+    if ($quote === "'") {
+        return str_replace(array('\\\\', "\\'"), array('\\', "'"), $body);
+    }
+
+    return stripcslashes($body);
+}
+
+/**
+ * Normalize only executable PHP tokens. Comments/docblocks/whitespace/open tags
+ * are discarded; quoted strings stay atomic normalized values, so dead source
+ * text copied into a comment or string literal cannot satisfy a role binding.
+ */
+function arch_executable_tokens($source)
+{
+    if (!is_string($source) || $source === '') {
+        return array();
+    }
+
+    $normalized = array();
+    foreach (token_get_all($source) as $token) {
+        if (!is_array($token)) {
+            $normalized[] = $token;
+            continue;
+        }
+
+        $id = $token[0];
+        $text = $token[1];
+        if ($id === T_WHITESPACE
+            || $id === T_COMMENT
+            || $id === T_DOC_COMMENT
+            || $id === T_OPEN_TAG
+            || $id === T_CLOSE_TAG
+        ) {
+            continue;
+        }
+
+        if ($id === T_CONSTANT_ENCAPSED_STRING) {
+            $value = arch_php_string_literal_value($text);
+            $normalized[] = $value === null ? 'string:INVALID' : 'string:' . $value;
+            continue;
+        }
+
+        if ($id === T_VARIABLE) {
+            $normalized[] = 'variable:' . $text;
+            continue;
+        }
+
+        if ($id === T_STRING) {
+            $normalized[] = 'name:' . $text;
+            continue;
+        }
+
+        $normalized[] = $text;
+    }
+
+    return $normalized;
+}
+
+function arch_has_token_sequence(array $tokens, array $sequence)
+{
+    $sequenceCount = count($sequence);
+    $tokenCount = count($tokens);
+    if ($sequenceCount === 0 || $tokenCount < $sequenceCount) {
+        return false;
+    }
+
+    $limit = $tokenCount - $sequenceCount;
+    for ($i = 0; $i <= $limit; $i++) {
+        $matched = true;
+        for ($j = 0; $j < $sequenceCount; $j++) {
+            if ($tokens[$i + $j] !== $sequence[$j]) {
+                $matched = false;
+                break;
+            }
+        }
+        if ($matched) {
+            return true;
+        }
+    }
+
+    return false;
 }
 
 $architecture = arch_read($root, 'docs/project/ARCHITECTURE-CODE-QUALITY.md');
@@ -50,6 +140,7 @@ $paymentLifecycle = arch_read($root, 'src/Payment/PaymentLifecycle.php');
 $securityStatus = arch_read($root, 'src/Security/PublicOrderStatus.php');
 $tokenIdentity = arch_read($root, 'includes/Token/CustomerTokenIdentity.php');
 $scheduler = arch_read($root, 'includes/Subscription/Cron/Scheduler.php');
+$gatewayTokens = arch_executable_tokens($gateway);
 
 arch_assert($architecture !== '', 'architecture control record exists');
 arch_assert(arch_contains($architecture, '**Status:** DISCOVERY / CHARACTERIZATION'), 'architecture record is discovery/characterization');
@@ -130,10 +221,40 @@ arch_assert(is_file($root . '/includes/Subscription/Cron/CycleClaim.php'), 'prot
 arch_assert(arch_contains($scheduler, 'class Scheduler'), 'subscription Scheduler class remains characterized');
 arch_assert(is_file($root . '/includes/class-wc-gateway-upayments-blocks.php'), 'Checkout Blocks gateway integration exists');
 
-arch_assert(arch_matches($gateway, '~\$this->id\s*=\s*\'upayments\'\s*;~'), 'gateway ID remains bound to upayments');
-arch_assert(arch_matches($gateway, '~add_action\s*\(\s*"woocommerce_api_"\s*\.\s*strtolower\s*\(\s*"WC_UPayments"\s*\)\s*,\s*\[\s*\$this\s*,\s*"check_ipn_response"\s*,?\s*\]\s*\)\s*;~'), 'wc_upayments callback hook remains bound to check_ipn_response');
-arch_assert(arch_matches($gateway, '~\$settings\s*=\s*get_option\s*\(\s*"woocommerce_upayments_settings"\s*\)\s*;~'), 'legacy WooCommerce settings option remains a concrete runtime read');
-arch_assert(arch_matches($gateway, '~\$order->add_meta_data\s*\(\s*"UPayments_order_id"\s*,\s*\$unique_order_id\s*\)\s*;~'), 'UPayments_order_id remains persisted from the local provider-order identity');
+arch_assert(
+    arch_has_token_sequence($gatewayTokens, array('variable:$this', '->', 'name:id', '=', 'string:upayments', ';')),
+    'gateway ID remains executable and bound to upayments'
+);
+$callbackWithTrailingComma = array(
+    'name:add_action', '(', 'string:woocommerce_api_', '.', 'name:strtolower', '(', 'string:WC_UPayments', ')', ',',
+    '[', 'variable:$this', ',', 'string:check_ipn_response', ',', ']', ')', ';',
+);
+$callbackWithoutTrailingComma = array(
+    'name:add_action', '(', 'string:woocommerce_api_', '.', 'name:strtolower', '(', 'string:WC_UPayments', ')', ',',
+    '[', 'variable:$this', ',', 'string:check_ipn_response', ']', ')', ';',
+);
+arch_assert(
+    arch_has_token_sequence($gatewayTokens, $callbackWithTrailingComma)
+        || arch_has_token_sequence($gatewayTokens, $callbackWithoutTrailingComma),
+    'wc_upayments callback hook remains executable and bound to check_ipn_response'
+);
+arch_assert(
+    arch_has_token_sequence(
+        $gatewayTokens,
+        array('variable:$settings', '=', 'name:get_option', '(', 'string:woocommerce_upayments_settings', ')', ';')
+    ),
+    'legacy WooCommerce settings option remains an executable runtime read'
+);
+arch_assert(
+    arch_has_token_sequence(
+        $gatewayTokens,
+        array(
+            'variable:$order', '->', 'name:add_meta_data', '(', 'string:UPayments_order_id', ',',
+            'variable:$unique_order_id', ')', ';',
+        )
+    ),
+    'UPayments_order_id remains executable persistence from the local provider-order identity'
+);
 
 arch_assert(!is_dir($root . '/src/Provider'), 'discovery tranche has not prematurely created Provider runtime module');
 
