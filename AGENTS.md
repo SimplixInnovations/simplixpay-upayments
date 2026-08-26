@@ -130,6 +130,8 @@ Until the standard quality platform replaces them:
 
 ```bash
 php tests/harness/architecture-foundation-harness.php
+php tests/harness/architecture-runtime-bindings-harness.php
+php tests/harness/architecture-bootstrap-path-harness.php
 php tests/harness/security-threat-model-harness.php
 php tests/harness/phase-9g-h12-php-harness.php
 node --check tests/harness/phase-9g-h12-blocks-harness.js
