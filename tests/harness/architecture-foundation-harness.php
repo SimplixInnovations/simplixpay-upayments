@@ -37,6 +37,11 @@ function arch_contains($haystack, $needle)
     return is_string($haystack) && strpos($haystack, $needle) !== false;
 }
 
+function arch_matches($haystack, $pattern)
+{
+    return is_string($haystack) && preg_match($pattern, $haystack) === 1;
+}
+
 $architecture = arch_read($root, 'docs/project/ARCHITECTURE-CODE-QUALITY.md');
 $gateway = arch_read($root, 'UPayments.php');
 $status = arch_read($root, 'docs/project/PROJECT-STATUS.md');
@@ -125,10 +130,10 @@ arch_assert(is_file($root . '/includes/Subscription/Cron/CycleClaim.php'), 'prot
 arch_assert(arch_contains($scheduler, 'class Scheduler'), 'subscription Scheduler class remains characterized');
 arch_assert(is_file($root . '/includes/class-wc-gateway-upayments-blocks.php'), 'Checkout Blocks gateway integration exists');
 
-arch_assert(arch_contains($gateway, "\$this->id                 = 'upayments';"), 'gateway ID remains bound to upayments');
-arch_assert(arch_contains($gateway, 'add_action("woocommerce_api_" . strtolower("WC_UPayments") , [$this, "check_ipn_response", ]);'), 'wc_upayments callback hook remains bound to check_ipn_response');
-arch_assert(arch_contains($gateway, '$settings = get_option("woocommerce_upayments_settings");'), 'legacy WooCommerce settings option remains a concrete runtime read');
-arch_assert(arch_contains($gateway, '$order->add_meta_data("UPayments_order_id", $unique_order_id);'), 'UPayments_order_id remains persisted from the local provider-order identity');
+arch_assert(arch_matches($gateway, '~\$this->id\s*=\s*\'upayments\'\s*;~'), 'gateway ID remains bound to upayments');
+arch_assert(arch_matches($gateway, '~add_action\s*\(\s*"woocommerce_api_"\s*\.\s*strtolower\s*\(\s*"WC_UPayments"\s*\)\s*,\s*\[\s*\$this\s*,\s*"check_ipn_response"\s*,?\s*\]\s*\)\s*;~'), 'wc_upayments callback hook remains bound to check_ipn_response');
+arch_assert(arch_matches($gateway, '~\$settings\s*=\s*get_option\s*\(\s*"woocommerce_upayments_settings"\s*\)\s*;~'), 'legacy WooCommerce settings option remains a concrete runtime read');
+arch_assert(arch_matches($gateway, '~\$order->add_meta_data\s*\(\s*"UPayments_order_id"\s*,\s*\$unique_order_id\s*\)\s*;~'), 'UPayments_order_id remains persisted from the local provider-order identity');
 
 arch_assert(!is_dir($root . '/src/Provider'), 'discovery tranche has not prematurely created Provider runtime module');
 
