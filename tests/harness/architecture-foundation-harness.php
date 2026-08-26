@@ -125,15 +125,10 @@ arch_assert(is_file($root . '/includes/Subscription/Cron/CycleClaim.php'), 'prot
 arch_assert(arch_contains($scheduler, 'class Scheduler'), 'subscription Scheduler class remains characterized');
 arch_assert(is_file($root . '/includes/class-wc-gateway-upayments-blocks.php'), 'Checkout Blocks gateway integration exists');
 
-$runtimeProtectedStrings = array(
-    "'upayments'",
-    'woocommerce_upayments_settings',
-    'wc_upayments',
-    'UPayments_order_id',
-);
-foreach ($runtimeProtectedStrings as $protected) {
-    arch_assert(arch_contains($gateway, $protected), "runtime compatibility marker remains in UPayments.php: {$protected}");
-}
+arch_assert(arch_contains($gateway, "$this->id                 = 'upayments';"), 'gateway ID remains bound to upayments');
+arch_assert(arch_contains($gateway, 'add_action("woocommerce_api_" . strtolower("WC_UPayments") , [$this, "check_ipn_response", ]);'), 'wc_upayments callback hook remains bound to check_ipn_response');
+arch_assert(arch_contains($gateway, '$settings = get_option("woocommerce_upayments_settings");'), 'legacy WooCommerce settings option remains a concrete runtime read');
+arch_assert(arch_contains($gateway, '$order->add_meta_data("UPayments_order_id", $unique_order_id);'), 'UPayments_order_id remains persisted from the local provider-order identity');
 
 arch_assert(!is_dir($root . '/src/Provider'), 'discovery tranche has not prematurely created Provider runtime module');
 
