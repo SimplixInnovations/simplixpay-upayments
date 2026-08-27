@@ -22,13 +22,18 @@ Use this file with root `AGENTS.md`, `PROJECT-STATUS.md`, the naming standard, t
 - Phase 9I — historical token-identity migration: **DONE / VERIFIED**
 - Provider Contract & Payment Lifecycle: **DONE / VERIFIED**
 - Security Threat-Model Closure: **DONE / VERIFIED**
-- Current program gate: **Architecture & Code-Quality Foundation — DISCOVERY**
+- Architecture discovery: **DONE / VERIFIED**
+- Current program gate: **Architecture & Code-Quality Foundation — A1**
 - Stable production release: **NO**
 - WordPress.org release: **NO**
 
 Always verify live GitHub before acting. Recorded SHAs are milestone evidence, not substitutes for fresh source/check/review verification.
 
-## Latest verified implementation milestone — Security Threat-Model Closure
+## Latest verified milestone — Architecture discovery
+
+PR #19 final reviewed head `6e51b1c1c5649313acf86943e30793c38bc71f14` was squash-merged as verified commit `596ffb433813cdc06e81d67162617b3019af686b`, tree `3fcaed35546a6b1407d2a46797630e46301e65ef`, on parent `ddb3fc901c5dc949c634f745c4c3a7ec2a72414c`. Exact-head Quality Gates run #147 and post-merge run #148 passed; the implementation branch was deleted. Final architecture counters were Foundation **67/0**, Runtime Bindings **138/0** and Bootstrap Paths **153/0**.
+
+## Previous verified implementation milestone — Security Threat-Model Closure
 
 PR #17 final reviewed head:
 
@@ -251,19 +256,19 @@ Do not globally rename:
 - malformed H12 secret is distinct from missing and fails closed.
 - selected saved card requires current valid provenance + exact scope/generation + fresh provider Retrieve + exact membership.
 
-## Next gate — Architecture & Code-Quality Foundation
+## Current tranche — Architecture & Code-Quality Foundation A1
 
-**Status: DISCOVERY. Do not start with a big-bang refactor.**
+**Status: A1 — PROVIDER ENDPOINT/MODE RESOLUTION / IMPLEMENTATION.**
 
-Required first sequence:
+Required bounded sequence:
 
-1. Freshly verify live `main`, PRs/branches/checks and the current control-plane documents.
-2. Build a responsibility/dependency map for the inherited `UPayments.php`, current `src/Payment`, `src/Security`, H12 token, Phase 9I migration, subscription and Blocks seams.
-3. Characterize behavior before moving payment/security-critical code.
-4. Freeze incremental target module boundaries and compatibility adapters before extraction.
-5. Establish standard static-analysis/coding-quality baselines without turning baseline debt into drive-by runtime edits.
-6. Preserve gateway IDs, callback routes, persisted metadata, token/provenance, migration and subscription identities unless a separately approved migration changes them.
-7. Keep all closed Phase 0, Phase 9I, Provider, Security and H12 regression suites mandatory through every extraction.
+1. Work only from verified discovery merge `596ffb433813cdc06e81d67162617b3019af686b` on `architecture/a1-provider-endpoints`.
+2. Extract only deterministic live/test base and route resolution to `src/Provider/EndpointResolver.php`.
+3. Keep `getAPIUrl()` and the three fixed-route public helpers as byte-equivalent compatibility wrappers.
+4. Preserve the inherited live `https://apiv2api.upayments.com/api/v1/` and sandbox `https://sandboxapi.upayments.com/api/v1/` values. Current official documentation's `uapi.upayments.com` live host is a separately reviewed future migration, not A1 cleanup.
+5. Change no network, credential, payload, persistence, payment-truth or order-state behavior.
+6. Keep every closed regression plus Architecture Foundation, Runtime Bindings, Bootstrap Paths and Provider Endpoints mandatory.
+7. Do not begin A2 until the exact A1 head is independently reviewed, green, merged, post-merge verified and its branch deleted.
 
 The architecture gate may improve structure; it may not reinterpret provider truth, weaken authorization, or silently broaden certified feature/platform claims.
 
@@ -304,7 +309,7 @@ Read in this order:
 2. Phase 9I — Historical token-identity migration — **DONE / VERIFIED**
 3. Provider Contract & Payment Lifecycle — **DONE / VERIFIED**
 4. Security Threat-Model Closure — **DONE / VERIFIED**
-5. Architecture & Code-Quality Foundation — **CURRENT / DISCOVERY**
+5. Architecture & Code-Quality Foundation — **CURRENT / A1**
 6. Full automated quality platform
 7. Platform certification: Woo/WP/PHP/HPOS/Blocks/WPML
 8. Feature certification
@@ -321,9 +326,9 @@ Read AGENTS.md first, then docs/project/PROJECT-STATUS.md, docs/project/NAMING-I
 
 Treat recorded SHAs/status as verified milestone anchors, not substitutes for live GitHub. Freshly verify current main, open PRs/branches, checks, review state and current source before acting; reconcile any drift first.
 
-Repository readiness, Phase 0, Phase 9I, Provider Contract & Payment Lifecycle, and Security Threat-Model Closure are DONE / VERIFIED. The verified security implementation milestone is main 01f3fc59eed8641b3e5372558f61a7a0f0cdfac9, tree e0027005f059fad03d8c08273b7aac6553c45f53, from PR #17; its final security harness is 81 PASS / 0 FAIL and post-merge Quality Gates run #89 passed. The current permitted gate is Architecture & Code-Quality Foundation — DISCOVERY.
+Repository readiness, Phase 0, Phase 9I, Provider Contract & Payment Lifecycle, Security Threat-Model Closure and Architecture discovery are DONE / VERIFIED. Architecture discovery was squash-merged from PR #19 as verified main 596ffb433813cdc06e81d67162617b3019af686b, tree 3fcaed35546a6b1407d2a46797630e46301e65ef; exact-head run #147 and post-merge run #148 passed. The current permitted gate is Architecture & Code-Quality Foundation — A1.
 
-Start architecture work with a responsibility/dependency map and characterization of current exact source. Use incremental strangler/extraction seams, not a big-bang rewrite. Preserve the closed payment lifecycle, security, H12 and Phase 9I contracts and protected persisted/runtime identities unless a separately reviewed migration explicitly changes them. Keep all existing regression suites mandatory.
+Implement only the A1 pure Provider endpoint/mode resolver behind byte-equivalent public gateway wrappers. Preserve the inherited live and sandbox URL bytes; current official documentation's different production hostname is a separately reviewed provider migration. Change no transport, credential, payload, persistence, payment-truth or order-state behavior. Keep all existing regression suites and the four architecture harnesses mandatory.
 
 Do not claim broad security, PCI/compliance, platform, feature, performance or production certification from the bounded security closure. UPayments webhook signature details remain provider-document unresolved, automatic refunds remain unsupported pending durable idempotency/reconciliation design, and subscription auto-deduction remains separately characterized rather than broadly certified.
 

@@ -8,7 +8,7 @@
 
 **Runtime-change scope of this gate:** **NONE**
 
-> **Gate status: PRE-PHASE-0 READY / VERIFIED.** At this gate's closure, Phase 0 became permitted under the repository's normal PR/CI/review controls. Phase 0, Phase 9I, Provider Contract & Payment Lifecycle, and the bounded Security Threat-Model Closure are now **DONE / VERIFIED**; **Architecture & Code-Quality Foundation — DISCOVERY** is the current program gate.
+> **Gate status: PRE-PHASE-0 READY / VERIFIED.** At this gate's closure, Phase 0 became permitted under the repository's normal PR/CI/review controls. Phase 0, Phase 9I, Provider Contract & Payment Lifecycle, the bounded Security Threat-Model Closure and Architecture discovery are now **DONE / VERIFIED**; **Architecture & Code-Quality Foundation — A1** is the current program gate.
 
 ## Closure summary
 
@@ -173,6 +173,6 @@ It merged as `7e530c2c6881c04a3170e110b23289d90185da14` with tree `64973fa491806
 
 **PRE-PHASE-0 READY / VERIFIED.**
 
-The runtime-changing gate immediately following repository readiness was **Phase 0 — SimplixPay release identity and updater ownership**. Phase 0, Phase 9I, Provider Contract & Payment Lifecycle, and the bounded Security Threat-Model Closure are now **DONE / VERIFIED**; the current permitted program gate is **Architecture & Code-Quality Foundation — DISCOVERY**.
+The runtime-changing gate immediately following repository readiness was **Phase 0 — SimplixPay release identity and updater ownership**. Phase 0, Phase 9I, Provider Contract & Payment Lifecycle, the bounded Security Threat-Model Closure and Architecture discovery are now **DONE / VERIFIED**; the current permitted program gate is **Architecture & Code-Quality Foundation — A1**.
 
 Do not reinterpret this closed repository gate as a claim of stable plugin release readiness, broad compatibility certification, provider certification or WordPress.org readiness.

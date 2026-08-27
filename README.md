@@ -37,7 +37,7 @@ The following engineering gates are **DONE / VERIFIED**:
 - Provider Contract & Payment Lifecycle;
 - Security Threat-Model Closure.
 
-The current program gate is **Architecture & Code-Quality Foundation — DISCOVERY**.
+The current program gate is **Architecture & Code-Quality Foundation — A1**.
 
 The project remains in **pre-release engineering hardening**. It is not yet a broadly certified stable production release and has not yet been published to WordPress.org.
 
@@ -53,7 +53,7 @@ The project remains in **pre-release engineering hardening**. It is not yet a br
 | Phase 9I historical token-identity migration | **DONE / VERIFIED** |
 | Provider Contract & Payment Lifecycle | **DONE / VERIFIED** |
 | Security Threat-Model Closure | **DONE / VERIFIED** |
-| Current engineering gate | **Architecture & Code-Quality Foundation — DISCOVERY** |
+| Current engineering gate | **Architecture & Code-Quality Foundation — A1** |
 | Stable SimplixPay release | **Not yet published** |
 | WordPress.org release | **Not yet published** |
 | Phase 0 release-identity harness | **35 PASS / 0 FAIL** |
@@ -157,7 +157,7 @@ Phase 9I system completion does not mean every merchant installation was automat
 
 ## Current engineering gate — Architecture & Code-Quality Foundation
 
-The next gate starts with exact-source responsibility/dependency mapping and characterization before extraction. It may incrementally decompose inherited mixed responsibilities and introduce standard code-quality/static-analysis baselines, but it must preserve the closed payment lifecycle, Security Threat-Model, H12 and Phase 9I contracts and protected persisted/runtime identities.
+Architecture discovery is DONE / VERIFIED. A1 now extracts only deterministic provider endpoint/mode resolution behind byte-equivalent legacy gateway wrappers. It must preserve the closed payment lifecycle, Security Threat-Model, H12 and Phase 9I contracts and protected persisted/runtime identities.
 
 No big-bang rewrite, runtime branding rename or broad compatibility claim is authorized by this gate.
 

@@ -23,7 +23,7 @@ The project is still in pre-release engineering hardening. Entries below are eng
 
 ### Current program gate
 
-**Architecture & Code-Quality Foundation — DISCOVERY** is now the active gate. It begins with responsibility/dependency mapping and characterization before incremental extraction; it must not weaken closed Security, Provider, H12 or Phase 9I contracts or protected persisted/runtime identities.
+**Architecture & Code-Quality Foundation — A1** is now the active gate. Discovery is DONE / VERIFIED; A1 is limited to pure provider endpoint/mode resolution behind byte-equivalent compatibility wrappers and must not weaken closed Security, Provider, H12 or Phase 9I contracts or protected persisted/runtime identities.
 
 ### Provider Contract & Payment Lifecycle — DONE / VERIFIED
 

@@ -1,12 +1,12 @@
 # Architecture & Code-Quality Foundation
 
-**Status:** DISCOVERY / CHARACTERIZATION
+**Status:** A1 / IMPLEMENTATION
 
-**Current branch:** `architecture/discovery`
+**Current branch:** `architecture/a1-provider-endpoints`
 
-**Verified base `main`:** `ddb3fc901c5dc949c634f745c4c3a7ec2a72414c`
+**Verified base `main`:** `596ffb433813cdc06e81d67162617b3019af686b`
 
-**Verified base tree:** `ee8fe7d5de114c920facba23ecbb40aeda4ece01`
+**Verified base tree:** `3fcaed35546a6b1407d2a46797630e46301e65ef`
 
 **Gate purpose:** replace inherited mixed-responsibility structure incrementally with explicit Simplix-owned boundaries while preserving every closed payment, security, H12, Phase 9I and compatibility contract.
 
@@ -37,11 +37,24 @@ The permanent regression platform entering this gate is:
 
 Every architecture tranche must keep those suites mandatory.
 
+## Discovery closure evidence
+
+The discovery/characterization tranche is **DONE / VERIFIED**:
+
+- PR #19 final reviewed head: `6e51b1c1c5649313acf86943e30793c38bc71f14`;
+- exact PR merge tree: `3fcaed35546a6b1407d2a46797630e46301e65ef`;
+- squash merge on `main`: `596ffb433813cdc06e81d67162617b3019af686b`, with a valid verified GitHub signature;
+- exact-head Quality Gates run #147: **SUCCESS**;
+- push-triggered post-merge Quality Gates run #148: **SUCCESS**;
+- implementation branch `architecture/discovery`: **deleted after verified merge**.
+
+Discovery froze the responsibility map, dependency direction, compatibility surfaces, A1-A5 order, monolith ratchet and permanent architecture harnesses. A1 is the first permitted runtime extraction under that reviewed contract.
+
 ## Current structural baseline
 
 ### Primary monolith
 
-`UPayments.php` is currently **257,832 bytes** and remains the main plugin bootstrap plus the `WC_Upayments` gateway implementation. Source characterization identifies at least these responsibility families inside the same file:
+At the verified discovery closure, `UPayments.php` was **257,832 bytes**. A1 reduces it to the current accepted ratchet of **257,298 bytes** while preserving the main plugin bootstrap and `WC_Upayments` gateway implementation. Source characterization identifies at least these responsibility families inside the same file:
 
 1. plugin bootstrap, constants, WooCommerce availability checks and gateway registration;
 2. gateway constructor/hook registration and runtime composition;
@@ -151,6 +164,15 @@ A directory is created only when a real responsibility is extracted; empty archi
 
 Create a small pure `Provider` service for test/live API base and endpoint resolution. Existing public gateway helpers remain compatibility wrappers and must return byte-equivalent URLs. No network behavior, credentials, payment truth or payload semantics change.
 
+**A1 implementation contract:**
+
+- `src/Provider/EndpointResolver.php` owns only deterministic mode-to-base and route resolution;
+- `getAPIUrl()`, `getAPIUrlForCreateToken()`, `getAPIUrlForCheckPaymentButtonStatus()` and the historically misspelled `getAPIUrlForRetreiveCards()` remain public compatibility wrappers;
+- live mode remains byte-equivalent to the inherited `https://apiv2api.upayments.com/api/v1/` base and test mode remains byte-equivalent to `https://sandboxapi.upayments.com/api/v1/`;
+- the current official UPayments V2 documentation names `https://uapi.upayments.com/api/v1/` for production. A1 deliberately does **not** adopt that provider-host change because it would be a runtime migration, not a structure-only extraction; any host migration requires separate provider-contract research, compatibility analysis, review and executable evidence;
+- the resolver has no WordPress/WooCommerce/global-option dependency and performs no transport, authentication, payment-truth or payload work;
+- `tests/harness/architecture-provider-endpoints-harness.php` freezes both modes, arbitrary route byte-equivalence, fixed endpoint routes, compatibility-wrapper behavior and dependency purity.
+
 Why first:
 
 - narrow and deterministic;
@@ -198,7 +220,7 @@ Current evidence already shows:
 - payment truth is already better isolated in `src/Payment/` and should be treated as a model for strangler migration, not reopened;
 - architecture modernization must distinguish genuinely dead code from public compatibility surfaces such as legacy gateway helper methods.
 
-## Acceptance contract for this discovery tranche
+## Verified acceptance contract for the discovery tranche
 
 This tranche is complete only when:
 
@@ -213,3 +235,5 @@ This tranche is complete only when:
 ## Non-claims
 
 Architecture discovery does not certify code quality, eliminate technical debt, establish full static-analysis cleanliness, certify platform/features/performance, or authorize physical plugin/text-domain renames. It only freezes the decomposition contract and the safe order of work.
+
+A1 likewise does not certify or change provider hosts, connectivity, credentials, request payloads, payment state, platform compatibility or production readiness. It extracts one deterministic endpoint-resolution seam behind the existing public API.

@@ -478,7 +478,7 @@ Requirements:
 | Provider contract audit | **DONE / VERIFIED** | Critical |
 | Payment lifecycle/state machine | **DONE / VERIFIED** | Critical |
 | Security threat-model audit | **DONE / VERIFIED** | Critical |
-| Architecture/code quality | **DISCOVERY — CURRENT GATE** | High |
+| Architecture/code quality | **A1 — CURRENT GATE** | High |
 | Full automated quality platform | **NOT STARTED** | Critical before public stable |
 | WooCommerce/WordPress/PHP certification | **PENDING** | Critical |
 | WPML/multilingual/multicurrency certification | **FIXES PARTIAL; CERTIFICATION PENDING** | High/product objective |
@@ -492,7 +492,7 @@ Requirements:
 | WordPress.org publication | **DEFERRED UNTIL READY** | Strategic |
 | Continuous maintenance | **ONGOING AFTER FIRST STABLE** | Critical long-term |
 
-Provider Contract & Payment Lifecycle and the bounded Security Threat-Model Closure are **DONE / VERIFIED**. The current unified gate is **Architecture & Code-Quality Foundation — DISCOVERY**. Provider contract and lifecycle rows remain separated because they retain distinct closed contracts and regression evidence.
+Provider Contract & Payment Lifecycle, the bounded Security Threat-Model Closure and Architecture discovery are **DONE / VERIFIED**. The current unified gate is **Architecture & Code-Quality Foundation — A1**. Provider contract and lifecycle rows remain separated because they retain distinct closed contracts and regression evidence.
 
 ## 18. Phase ordering
 
@@ -502,7 +502,7 @@ Recommended execution order:
 2. Phase 9I — Historical Token-Identity Migration — **DONE / VERIFIED**.
 3. Provider Contract & Payment Lifecycle — **DONE / VERIFIED**.
 4. Security Threat-Model Closure — **DONE / VERIFIED**.
-5. Architecture & Code Quality Foundation — **CURRENT / DISCOVERY**.
+5. Architecture & Code Quality Foundation — **CURRENT / A1**.
 6. Full Test-Driven Quality Platform.
 7. WooCommerce / WordPress / PHP Certification.
 8. WPML / i18n / multilingual / multicurrency / RTL.
@@ -809,7 +809,7 @@ Model events such as:
 
 # SECURITY THREAT-MODEL AUDIT
 
-**Program status:** DONE / VERIFIED. This section retains the security phase scope as a historical engineering standard; the current program gate is **Architecture & Code-Quality Foundation — DISCOVERY**.
+**Program status:** DONE / VERIFIED. This section retains the security phase scope as a historical engineering standard; the current program gate is **Architecture & Code-Quality Foundation — A1**.
 
 ## 30. Scope
 
@@ -1523,7 +1523,7 @@ Phase 9I historical token-identity migration: DONE / VERIFIED
 Provider Contract & Payment Lifecycle: DONE / VERIFIED
 Security Threat-Model Closure: DONE / VERIFIED
 Security Threat-Model implementation: PR #17; 81 PASS / 0 FAIL; post-merge Quality Gates #89 SUCCESS
-Current program gate: Architecture & Code-Quality Foundation — DISCOVERY
+Current program gate: Architecture & Code-Quality Foundation — A1
 Production readiness: R0 — engineering hardening
 Public stable release: NO
 WordPress.org release: NO
@@ -1566,7 +1566,7 @@ The security implementation anchor above is post-merge verified. `PROJECT-STATUS
 
 ### Remaining P0/P1 work
 
-- [ ] Architecture & Code-Quality Foundation — **DISCOVERY / CURRENT GATE**.
+- [ ] Architecture & Code-Quality Foundation — **A1 / CURRENT GATE**.
 - [ ] Standard Composer/PHPUnit/static-analysis platform.
 - [ ] WordPress/WooCommerce/PHP compatibility certification.
 - [ ] WPML/WCML certification.

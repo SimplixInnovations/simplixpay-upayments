@@ -23,10 +23,12 @@ define("UP_PLUGIN_PATH", plugin_dir_path(__FILE__));
 define('UPAYMENTS_PLUGIN_FILE', __FILE__ );
 
 require_once __DIR__ . '/src/Release/Identity.php';
+require_once __DIR__ . '/src/Provider/EndpointResolver.php';
 require_once __DIR__ . '/includes/Token/CustomerTokenIdentity.php';
 require_once __DIR__ . '/src/Migration/MigrationBootstrap.php';
 
 use Simplix\Pay\UPayments\Release\Identity;
+use Simplix\Pay\UPayments\Provider\EndpointResolver;
 use UPayments\Subscription\Cron\Scheduler;
 use UPayments\Subscription\Checkout\Fields;
 use UPayments\Subscription\Manager;
@@ -3963,37 +3965,21 @@ function woocommerceUpaymentsInit() {
         }
         
         public function getAPIUrl($apiRoute = "")
-        {   
-            $url = "https://apiv2api.upayments.com/api/v1/" . $apiRoute;
-            if ($this->getMode()) {
-                $url = "https://sandboxapi.upayments.com/api/v1/" . $apiRoute;
-            }
-            return $url;
+        {
+            return (new EndpointResolver($this->getMode()))->resolve($apiRoute);
         }
 
         public function getAPIUrlForCreateToken()
         {
-            $url = "https://apiv2api.upayments.com/api/v1/create-customer-unique-token";
-            if ($this->getMode()) {
-                $url = "https://sandboxapi.upayments.com/api/v1/create-customer-unique-token";
-            }
-            return $url;
+            return (new EndpointResolver($this->getMode()))->create_customer_token();
         }
 
         public function getAPIUrlForCheckPaymentButtonStatus() {
-            $url = "https://apiv2api.upayments.com/api/v1/check-payment-button-status";
-            if ($this->getMode()) {
-                $url = "https://sandboxapi.upayments.com/api/v1/check-payment-button-status";
-            }
-            return $url;
+            return (new EndpointResolver($this->getMode()))->check_payment_button_status();
         }
 
         public function getAPIUrlForRetreiveCards() {
-            $url = "https://apiv2api.upayments.com/api/v1/retrieve-customer-cards";
-            if ($this->getMode()) {
-                $url = "https://sandboxapi.upayments.com/api/v1/retrieve-customer-cards";
-            }
-            return $url;
+            return (new EndpointResolver($this->getMode()))->retrieve_customer_cards();
         }
 
         public function getUserAgent(){
