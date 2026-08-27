@@ -400,11 +400,18 @@ function arch2_forward_goto_label(array $tokens, $index, $closeIndex)
 
 function arch2_direct_range_transfer(array $tokens, $openIndex, $closeIndex)
 {
+    $tokens = array_values(array_slice($tokens, $openIndex + 1, $closeIndex - $openIndex - 1));
     $altStarts = arch2_alt_start_indexes($tokens);
+    $deferredTerminators = arch2_try_terminator_defer_map($tokens);
+    $terminationBoundaries = array();
     $braceDepth = 0;
     $altDepth = 0;
+    $count = count($tokens);
 
-    for ($i = $openIndex + 1; $i < $closeIndex; $i++) {
+    for ($i = 0; $i < $count; $i++) {
+        if (isset($terminationBoundaries[$i])) {
+            return $terminationBoundaries[$i]['transfer'];
+        }
         $id = $tokens[$i]['id'];
         $text = $tokens[$i]['text'];
         if (arch2_is_alt_end($id)) {
@@ -432,8 +439,45 @@ function arch2_direct_range_transfer(array $tokens, $openIndex, $closeIndex)
             continue;
         }
         if ($braceDepth === 0 && $altDepth === 0 && arch2_is_direct_terminator($tokens, $i)) {
+            if (array_key_exists($i, $deferredTerminators)) {
+                $deferred = $deferredTerminators[$i];
+                if ($deferred['kind'] === 'goto') {
+                    $i = $deferred['skip_to'] - 1;
+                    continue;
+                }
+                if ($deferred['kind'] === 'caught') {
+                    foreach ($terminationBoundaries as $boundary => $pending) {
+                        if (array_intersect(
+                            $pending['finally_scopes'],
+                            $deferred['override_finally_scopes']
+                        )) {
+                            unset($terminationBoundaries[$boundary]);
+                        }
+                    }
+                    continue;
+                }
+                if ($deferred['kind'] === 'terminal') {
+                    return array('kind' => $deferred['transfer_kind']);
+                }
+                $transfer = array('kind' => $deferred['transfer_kind']);
+                if ($deferred['transfer_kind'] === 'throw') {
+                    $transfer['throw_class'] = $deferred['throw_class'];
+                }
+                $boundary = $deferred['boundary'];
+                $existingScopes = isset($terminationBoundaries[$boundary])
+                    ? $terminationBoundaries[$boundary]['finally_scopes']
+                    : array();
+                $terminationBoundaries[$boundary] = array(
+                    'finally_scopes' => array_values(array_unique(array_merge(
+                        $existingScopes,
+                        $deferred['finally_scopes']
+                    ))),
+                    'transfer' => $transfer,
+                );
+                continue;
+            }
             if ($id === T_GOTO) {
-                $labelIndex = arch2_forward_goto_label($tokens, $i, $closeIndex);
+                $labelIndex = arch2_forward_goto_label($tokens, $i, $count);
                 if ($labelIndex !== false) {
                     $i = $labelIndex - 1;
                     continue;
@@ -449,6 +493,10 @@ function arch2_direct_range_transfer(array $tokens, $openIndex, $closeIndex)
             }
             return $transfer;
         }
+    }
+
+    if (isset($terminationBoundaries[$count])) {
+        return $terminationBoundaries[$count]['transfer'];
     }
 
     return array('kind' => 'fallthrough');
@@ -546,7 +594,10 @@ function arch2_try_terminator_defer_map(array $tokens)
                         continue 2;
                     }
                     if ($catchTransfer['kind'] === 'exit' || $catchTransfer['kind'] === 'goto') {
-                        $deferred[$i] = array('kind' => 'terminal');
+                        $deferred[$i] = array(
+                            'kind' => 'terminal',
+                            'transfer_kind' => $catchTransfer['kind'],
+                        );
                         continue 2;
                     }
                     $finallyScopes = $group['finally_close'] !== false
@@ -1610,6 +1661,54 @@ arch2_assert(
         'addUpaymentsGatewayClass'
     )['found'],
     'matcher propagates return selected by inner catch past matching outer catch'
+);
+
+$nestedTerminatingCatchFixture = <<<'PHP'
+<?php
+try {
+    try { throw new RuntimeException('caught outside'); }
+    catch (RuntimeException $outerError) {
+        try { throw new RuntimeException('caught inside'); }
+        catch (RuntimeException $innerError) { return; }
+    }
+}
+catch (RuntimeException $error) {}
+add_filter("woocommerce_payment_gateways", "addUpaymentsGatewayClass");
+function addUpaymentsGatewayClass($methods) { $methods[] = "WC_UPayments"; return $methods; }
+PHP;
+arch2_assert(
+    !arch2_direct_top_level_hook_callback(
+        arch2_tokens($nestedTerminatingCatchFixture),
+        'add_filter',
+        'woocommerce_payment_gateways',
+        'addUpaymentsGatewayClass'
+    )['found'],
+    'matcher resolves nested catch return before matching enclosing catch'
+);
+
+$nestedReplacementThrowFixture = <<<'PHP'
+<?php
+try {
+    try { throw new RuntimeException('caught outside'); }
+    catch (RuntimeException $outerError) {
+        try { throw new RuntimeException('caught inside'); }
+        catch (RuntimeException $innerError) { throw new InvalidArgumentException('replacement'); }
+    }
+}
+catch (InvalidArgumentException $error) {}
+add_filter("woocommerce_payment_gateways", "addUpaymentsGatewayClass");
+function addUpaymentsGatewayClass($methods) { $methods[] = "WC_UPayments"; return $methods; }
+PHP;
+$nestedReplacementThrow = arch2_direct_top_level_hook_callback(
+    arch2_tokens($nestedReplacementThrowFixture),
+    'add_filter',
+    'woocommerce_payment_gateways',
+    'addUpaymentsGatewayClass'
+);
+arch2_assert(
+    $nestedReplacementThrow['found']
+        && arch2_gateway_callback_returns_registered_methods($nestedReplacementThrow['body']),
+    'matcher resolves nested replacement throw before compatible enclosing catch'
 );
 
 $compatibleRethrowFixture = <<<'PHP'
