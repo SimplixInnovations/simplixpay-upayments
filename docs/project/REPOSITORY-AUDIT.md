@@ -28,7 +28,7 @@ The repository remains a pre-release engineering codebase. It is not the intende
 
 Phase 0 took ownership of public release identity and removed inherited update authority. Phase 9I added isolated historical-identity migration tooling. The provider lifecycle gate then added an isolated `Simplix\Pay\UPayments\Payment` strangler for ordinary browser/webhook/status truth and WooCommerce payment-state transitions without broadly rewriting the inherited gateway bootstrap.
 
-The current owner/gate is **Architecture & Code-Quality Foundation — DISCOVERY**. This gate may characterize and incrementally extract mixed responsibilities and establish code-quality baselines, but it does not authorize a big-bang rewrite, protected-identity renames, or weakening closed Security/Payment/H12/Phase 9I contracts.
+The current owner/gate is **Architecture & Code-Quality Foundation — A1**. Discovery is DONE / VERIFIED; A1 may extract only deterministic provider endpoint/mode resolution behind byte-equivalent compatibility wrappers and does not authorize a big-bang rewrite, protected-identity renames, provider-host migration, or weakening closed Security/Payment/H12/Phase 9I contracts.
 
 ## Top-level inventory after Security Threat-Model closure
 
@@ -209,7 +209,7 @@ The required custom harness stack now includes Phase 0, all Phase 9I suites, Pro
 
 ## Current next owner/gate
 
-**Architecture & Code-Quality Foundation — DISCOVERY**.
+**Architecture & Code-Quality Foundation — A1**.
 
 The gate must first characterize responsibility/dependency seams and freeze incremental extraction contracts for:
 

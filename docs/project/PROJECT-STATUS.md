@@ -2,7 +2,7 @@
 
 **Status document:** canonical living engineering state
 
-**Last updated:** 2026-08-25
+**Last updated:** 2026-08-27
 
 **Canonical repository:** `SimplixInnovations/simplixpay-upayments`
 
@@ -28,11 +28,29 @@
 | Phase 9I — historical token-identity migration | **DONE / VERIFIED** |
 | Provider Contract & Payment Lifecycle | **DONE / VERIFIED** |
 | Security Threat-Model Closure | **DONE / VERIFIED** |
-| Current program gate | **Architecture & Code-Quality Foundation — DISCOVERY** |
+| Current program gate | **Architecture & Code-Quality Foundation — A1** |
 
-The plugin remains a pre-release engineering project. Security Threat-Model Closure is now DONE / VERIFIED for the bounded findings and executable controls recorded in `SECURITY-THREAT-MODEL.md`; it does not constitute broad penetration-test, PCI/compliance, platform, feature, performance or release certification.
+The plugin remains a pre-release engineering project. Architecture discovery is now DONE / VERIFIED and A1 provider endpoint/mode resolution is the current bounded implementation tranche. Neither milestone constitutes broad code-quality, provider-host, penetration-test, PCI/compliance, platform, feature, performance or release certification.
 
-## Latest verified implementation milestone — Security Threat-Model Closure
+## Latest verified milestone — Architecture discovery
+
+PR #19 final reviewed head:
+
+- `6e51b1c1c5649313acf86943e30793c38bc71f14`
+
+Verified squash merge on `main`:
+
+- merge: `596ffb433813cdc06e81d67162617b3019af686b`
+- tree: `3fcaed35546a6b1407d2a46797630e46301e65ef`
+- parent: `ddb3fc901c5dc949c634f745c4c3a7ec2a72414c`
+- GitHub signature: **VERIFIED**
+- implementation branch `architecture/discovery`: **deleted after verified merge**
+- exact PR merge-ref Quality Gates run #147: **SUCCESS**
+- push-triggered post-merge Quality Gates run #148: **SUCCESS**
+
+The verified discovery milestone froze the exact responsibility/dependency map, public compatibility surfaces, A1-A5 extraction order, monolith size ratchet, bootstrap reachability checks and mandatory architecture regression platform. Its final counters were Architecture Foundation **67/0**, Runtime Bindings **138/0** and Bootstrap Paths **153/0**, alongside the complete historical stack.
+
+## Previous verified implementation milestone — Security Threat-Model Closure
 
 PR #17 final reviewed head:
 
@@ -240,20 +258,18 @@ Repository readiness remains DONE / VERIFIED:
 
 ## Current program gate — Architecture & Code-Quality Foundation
 
-**Status: DISCOVERY.**
+**Status: A1 — PROVIDER ENDPOINT/MODE RESOLUTION / IMPLEMENTATION.**
 
-Security Threat-Model Closure is complete. The next gate may now characterize and incrementally decompose the inherited architecture without weakening the closed security/payment/H12/Phase 9I contracts. Minimum first scope:
+Architecture discovery is complete. A1 is the first permitted runtime extraction and is limited to deterministic provider endpoint/mode resolution behind byte-equivalent legacy gateway wrappers. Current scope:
 
-- map mixed responsibilities in `UPayments.php` and current `Simplix\Pay\UPayments` strangler boundaries;
-- establish characterization around any runtime surface before extraction;
-- define target module boundaries, dependency direction and compatibility seams;
-- introduce standard static-analysis/coding-quality baselines incrementally;
-- identify dead/duplicate code only after dependency/runtime characterization;
-- preserve protected gateway IDs, callback routes, metadata, token/provenance, migration and subscription identities;
-- no big-bang runtime rename or cosmetic decomposition of payment-critical code;
-- keep Security Threat-Model **81/0**, Provider Lifecycle **141/0 + 4/0**, all Phase 9I suites, Phase 0 and H12 regressions green throughout.
+- add a pure `Simplix\Pay\UPayments\Provider\EndpointResolver` with no WordPress/WooCommerce dependency;
+- keep all four public gateway URL helpers, including the historical `getAPIUrlForRetreiveCards()` spelling, as compatibility wrappers;
+- preserve exact live/test URL bytes and every fixed route;
+- retain the inherited live `apiv2api.upayments.com` base for A1 even though current official provider documentation names `uapi.upayments.com`; any provider-host migration is a separate, researched runtime change;
+- make the provider endpoint harness mandatory in Quality Gates;
+- preserve protected identities and keep Security **81/0**, Provider **141/0 + 4/0**, Phase 9I, Phase 0, H12 and all architecture regressions green.
 
-The gate starts with architecture characterization and a frozen extraction contract before broad refactoring.
+No transport, credentials, payload, payment-truth, persistence or order-state behavior is authorized to change in A1. A2 remains prohibited until A1 is independently reviewed, exact-head green, merged, post-merge verified and cleaned up.
 
 ## Later program blockers
 

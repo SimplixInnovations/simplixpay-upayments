@@ -277,6 +277,6 @@ This record is a required clean-chat source after implementation merges. A new c
 - security harness counts;
 - fixed findings and frozen invariants;
 - unresolved provider/feature boundaries;
-- current next gate: **Architecture & Code-Quality Foundation — DISCOVERY**, and what work is prohibited before it.
+- current next gate: **Architecture & Code-Quality Foundation — A1**, and the bounded work it permits.
 
 `PROJECT-STATUS.md` remains the first current-state authority, with `NEW-CHAT-HANDOFF.md` as the concise operational restart. The Master Engineering Playbook living state must agree with both while dated historical sections remain historical.
