@@ -3,9 +3,10 @@
  * A1 provider endpoint/mode resolver characterization harness.
  */
 
-require_once __DIR__ . '/_bootstrap.php';
-
 use Simplix\Pay\UPayments\Provider\EndpointResolver;
+
+// Exercise the pure service before the shared bootstrap defines any WP/Woo stubs.
+require_once dirname(__DIR__, 2) . '/src/Provider/EndpointResolver.php';
 
 $pass = 0;
 $fail = 0;
@@ -57,6 +58,8 @@ foreach (array(false => $liveBase, true => $sandboxBase) as $mode => $base) {
     );
 }
 
+require_once __DIR__ . '/_bootstrap.php';
+
 $gateway = new WC_Upayments();
 foreach (array('no' => $liveBase, 'yes' => $sandboxBase, '' => $sandboxBase) as $setting => $base) {
     $gateway->testMode = $setting;
@@ -86,9 +89,14 @@ arch4_assert(
 );
 arch4_assert(
     strpos($resolverSource, 'get_option(') === false
+        && strpos($resolverSource, 'apply_filters(') === false
+        && strpos($resolverSource, 'do_action(') === false
+        && strpos($resolverSource, 'add_action(') === false
+        && strpos($resolverSource, 'add_filter(') === false
         && strpos($resolverSource, 'wp_') === false
-        && strpos($resolverSource, 'WC_') === false,
-    'resolver has no WordPress or WooCommerce dependency'
+        && strpos($resolverSource, 'WC_') === false
+        && strpos($resolverSource, '$GLOBALS') === false,
+    'resolver has no WordPress, WooCommerce, hook or global-state dependency'
 );
 arch4_assert(
     substr_count($gatewaySource, 'apiv2api.upayments.com/api/v1/') === 0
