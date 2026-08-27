@@ -399,7 +399,7 @@ function arch3_forward_goto_label(array $tokens, $index, $closeIndex)
     return false;
 }
 
-function arch3_direct_range_falls_through(array $tokens, $openIndex, $closeIndex)
+function arch3_direct_range_transfer(array $tokens, $openIndex, $closeIndex)
 {
     $altStarts = arch3_alt_start_indexes($tokens);
     $braceDepth = 0;
@@ -440,11 +440,19 @@ function arch3_direct_range_falls_through(array $tokens, $openIndex, $closeIndex
                     continue;
                 }
             }
-            return false;
+            $transfer = array(
+                'kind' => $id === T_RETURN
+                    ? 'return'
+                    : ($id === T_EXIT ? 'exit' : ($id === T_THROW ? 'throw' : 'goto')),
+            );
+            if ($id === T_THROW) {
+                $transfer['throw_class'] = arch3_thrown_class($tokens, $i);
+            }
+            return $transfer;
         }
     }
 
-    return true;
+    return array('kind' => 'fallthrough');
 }
 
 function arch3_try_terminator_defer_map(array $tokens)
@@ -501,8 +509,15 @@ function arch3_try_terminator_defer_map(array $tokens)
                 }
                 continue;
             }
-            if ($id === T_THROW && $group['has_catch']) {
-                $thrownClass = arch3_thrown_class($tokens, $i);
+            $pendingThrow = array_key_exists($i, $deferred)
+                && is_array($deferred[$i])
+                && $deferred[$i]['kind'] === 'pending'
+                && $deferred[$i]['transfer_kind'] === 'throw';
+            if ($id === T_THROW && $group['has_catch']
+                && (!array_key_exists($i, $deferred) || $pendingThrow)) {
+                $thrownClass = $pendingThrow
+                    ? $deferred[$i]['throw_class']
+                    : arch3_thrown_class($tokens, $i);
                 foreach ($group['catches'] as $catch) {
                     $compatible = false;
                     foreach ($catch['types'] as $catchType) {
@@ -514,7 +529,8 @@ function arch3_try_terminator_defer_map(array $tokens)
                     if (!$compatible) {
                         continue;
                     }
-                    if (arch3_direct_range_falls_through($tokens, $catch['open'], $catch['close'])) {
+                    $catchTransfer = arch3_direct_range_transfer($tokens, $catch['open'], $catch['close']);
+                    if ($catchTransfer['kind'] === 'fallthrough') {
                         $overrideFinallyScopes = array();
                         foreach ($groups as $finallyGroup) {
                             if ($finallyGroup['finally_open'] !== false
@@ -530,17 +546,39 @@ function arch3_try_terminator_defer_map(array $tokens)
                         );
                         continue 2;
                     }
-                    break;
+                    if ($catchTransfer['kind'] === 'exit' || $catchTransfer['kind'] === 'goto') {
+                        $deferred[$i] = array('kind' => 'terminal');
+                        continue 2;
+                    }
+                    $finallyScopes = $group['finally_close'] !== false
+                        ? array($group['finally_close'])
+                        : array();
+                    $deferred[$i] = array(
+                        'kind' => 'pending',
+                        'boundary' => $group['end'] + 1,
+                        'finally_scopes' => $finallyScopes,
+                        'transfer_kind' => $catchTransfer['kind'],
+                    );
+                    if ($catchTransfer['kind'] === 'throw') {
+                        $deferred[$i]['throw_class'] = $catchTransfer['throw_class'];
+                    }
+                    continue 2;
                 }
             }
 
             $boundary = $group['end'] + 1;
             $finallyScopes = array();
+            $transferKind = $id === T_THROW ? 'throw' : 'return';
+            $throwClass = $id === T_THROW ? arch3_thrown_class($tokens, $i) : false;
             if (array_key_exists($i, $deferred)
                 && is_array($deferred[$i])
                 && $deferred[$i]['kind'] === 'pending') {
                 $boundary = max($boundary, $deferred[$i]['boundary']);
                 $finallyScopes = $deferred[$i]['finally_scopes'];
+                $transferKind = $deferred[$i]['transfer_kind'];
+                if ($transferKind === 'throw') {
+                    $throwClass = $deferred[$i]['throw_class'];
+                }
             }
             if ($group['finally_close'] !== false) {
                 $finallyScopes[] = $group['finally_close'];
@@ -549,7 +587,11 @@ function arch3_try_terminator_defer_map(array $tokens)
                 'kind' => 'pending',
                 'boundary' => $boundary,
                 'finally_scopes' => array_values(array_unique($finallyScopes)),
+                'transfer_kind' => $transferKind,
             );
+            if ($transferKind === 'throw') {
+                $deferred[$i]['throw_class'] = $throwClass;
+            }
         }
     }
 
@@ -665,6 +707,8 @@ function arch3_direct_top_level_hook_callback(array $tokens, $hookFunction, $hoo
                                 unset($terminationBoundaries[$boundary]);
                             }
                         }
+                    } elseif ($deferredTerminators[$i]['kind'] === 'terminal') {
+                        return array('found' => false, 'body' => array());
                     } else {
                         $boundary = $deferredTerminators[$i]['boundary'];
                         $existingScopes = isset($terminationBoundaries[$boundary])
@@ -770,6 +814,8 @@ function arch3_direct_class(array $ownerBody, $className)
                                 unset($terminationBoundaries[$boundary]);
                             }
                         }
+                    } elseif ($deferredTerminators[$i]['kind'] === 'terminal') {
+                        return array('found' => false, 'body' => array());
                     } else {
                         $boundary = $deferredTerminators[$i]['boundary'];
                         $existingScopes = isset($terminationBoundaries[$boundary])
@@ -941,6 +987,8 @@ function arch3_has_direct_gateway_id_assignment(array $body)
                                 unset($terminationBoundaries[$boundary]);
                             }
                         }
+                    } elseif ($deferredTerminators[$i]['kind'] === 'terminal') {
+                        return false;
                     } else {
                         $boundary = $deferredTerminators[$i]['boundary'];
                         $existingScopes = isset($terminationBoundaries[$boundary])
@@ -1657,6 +1705,42 @@ $orderedCatchResults = $arch3StageResults(
 arch3_assert(!$orderedCatchResults['registration'], 'bootstrap guard honors first compatible catch for registration');
 arch3_assert(!$orderedCatchResults['class'], 'bootstrap guard honors first compatible catch for gateway class');
 arch3_assert(!$orderedCatchResults['id'], 'constructor guard honors first compatible catch for gateway ID');
+
+$terminatingInnerCatchResults = $arch3StageResults(
+    "try {\n"
+        . "    try { throw new RuntimeException('caught inside'); }\n"
+        . "    catch (RuntimeException \$error) { return; }\n"
+        . "}\n"
+        . "catch (RuntimeException \$error) {}\n",
+    ''
+);
+arch3_assert(!$terminatingInnerCatchResults['registration'], 'bootstrap guard propagates inner catch return past outer catch');
+arch3_assert(!$terminatingInnerCatchResults['class'], 'bootstrap guard propagates inner class catch return past outer catch');
+arch3_assert(!$terminatingInnerCatchResults['id'], 'constructor guard propagates inner catch return past outer catch');
+
+$compatibleRethrowResults = $arch3StageResults(
+    "try {\n"
+        . "    try { throw new RuntimeException('caught inside'); }\n"
+        . "    catch (RuntimeException \$error) { throw new InvalidArgumentException('replacement'); }\n"
+        . "}\n"
+        . "catch (InvalidArgumentException \$error) {}\n",
+    ''
+);
+arch3_assert($compatibleRethrowResults['registration'], 'bootstrap guard accepts replacement throw caught before registration');
+arch3_assert($compatibleRethrowResults['class'], 'bootstrap guard accepts replacement throw caught before gateway class');
+arch3_assert($compatibleRethrowResults['id'], 'constructor guard accepts replacement throw caught before gateway ID');
+
+$incompatibleRethrowResults = $arch3StageResults(
+    "try {\n"
+        . "    try { throw new RuntimeException('caught inside'); }\n"
+        . "    catch (RuntimeException \$error) { throw new InvalidArgumentException('replacement'); }\n"
+        . "}\n"
+        . "catch (RuntimeException \$error) {}\n",
+    ''
+);
+arch3_assert(!$incompatibleRethrowResults['registration'], 'bootstrap guard rejects replacement throw at incompatible registration catch');
+arch3_assert(!$incompatibleRethrowResults['class'], 'bootstrap guard rejects replacement throw at incompatible class catch');
+arch3_assert(!$incompatibleRethrowResults['id'], 'constructor guard rejects replacement throw at incompatible ID catch');
 
 $forwardGotoCatchResults = $arch3StageResults(
     "try { throw new RuntimeException('caught'); }\n"
