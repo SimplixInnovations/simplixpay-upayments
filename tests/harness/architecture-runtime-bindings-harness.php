@@ -265,6 +265,189 @@ function arch2_is_direct_unconditional_block_open(array $tokens, $index)
         && arch2_is_direct_statement_start($tokens, $ownerIndex);
 }
 
+function arch2_matching_brace(array $tokens, $openIndex)
+{
+    $depth = 1;
+    $count = count($tokens);
+    for ($i = $openIndex + 1; $i < $count; $i++) {
+        if ($tokens[$i]['text'] === '{') {
+            $depth++;
+        } elseif ($tokens[$i]['text'] === '}') {
+            $depth--;
+            if ($depth === 0) {
+                return $i;
+            }
+        }
+    }
+
+    return false;
+}
+
+function arch2_direct_try_groups(array $tokens)
+{
+    $groups = array();
+    $count = count($tokens);
+
+    for ($i = 0; $i < $count; $i++) {
+        if ($tokens[$i]['id'] !== T_TRY
+            || !isset($tokens[$i + 1])
+            || $tokens[$i + 1]['text'] !== '{') {
+            continue;
+        }
+
+        $tryClose = arch2_matching_brace($tokens, $i + 1);
+        if ($tryClose === false) {
+            continue;
+        }
+
+        $cursor = $tryClose + 1;
+        $groupEnd = $tryClose;
+        $hasCatch = false;
+        $catches = array();
+        while ($cursor < $count && $tokens[$cursor]['id'] === T_CATCH) {
+            $hasCatch = true;
+            while ($cursor < $count && $tokens[$cursor]['text'] !== '{') {
+                $cursor++;
+            }
+            if ($cursor >= $count) {
+                break;
+            }
+            $catchClose = arch2_matching_brace($tokens, $cursor);
+            if ($catchClose === false) {
+                break;
+            }
+            $catches[] = array('open' => $cursor, 'close' => $catchClose);
+            $groupEnd = $catchClose;
+            $cursor = $catchClose + 1;
+        }
+
+        if ($cursor < $count && $tokens[$cursor]['id'] === T_FINALLY
+            && isset($tokens[$cursor + 1]) && $tokens[$cursor + 1]['text'] === '{') {
+            $finallyClose = arch2_matching_brace($tokens, $cursor + 1);
+            if ($finallyClose !== false) {
+                $groupEnd = $finallyClose;
+            }
+        }
+
+        $groups[] = array(
+            'open' => $i + 1,
+            'close' => $tryClose,
+            'end' => $groupEnd,
+            'has_catch' => $hasCatch,
+            'catches' => $catches,
+        );
+    }
+
+    usort($groups, function ($left, $right) {
+        return ($left['close'] - $left['open']) <=> ($right['close'] - $right['open']);
+    });
+    return $groups;
+}
+
+function arch2_direct_range_falls_through(array $tokens, $openIndex, $closeIndex)
+{
+    $altStarts = arch2_alt_start_indexes($tokens);
+    $braceDepth = 0;
+    $altDepth = 0;
+
+    for ($i = $openIndex + 1; $i < $closeIndex; $i++) {
+        $id = $tokens[$i]['id'];
+        $text = $tokens[$i]['text'];
+        if (arch2_is_alt_end($id)) {
+            if ($altDepth > 0) {
+                $altDepth--;
+            }
+            continue;
+        }
+        if ($text === '{') {
+            if ($braceDepth === 0 && $altDepth === 0
+                && arch2_is_direct_unconditional_block_open($tokens, $i)) {
+                continue;
+            }
+            $braceDepth++;
+            continue;
+        }
+        if ($text === '}') {
+            if ($braceDepth > 0) {
+                $braceDepth--;
+            }
+            continue;
+        }
+        if (isset($altStarts[$i])) {
+            $altDepth++;
+            continue;
+        }
+        if ($braceDepth === 0 && $altDepth === 0 && arch2_is_direct_terminator($tokens, $i)) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+function arch2_try_terminator_defer_map(array $tokens)
+{
+    $deferred = array();
+    $altStarts = arch2_alt_start_indexes($tokens);
+
+    foreach (arch2_direct_try_groups($tokens) as $group) {
+        $braceDepth = 0;
+        $altDepth = 0;
+        for ($i = $group['open'] + 1; $i < $group['close']; $i++) {
+            $id = $tokens[$i]['id'];
+            $text = $tokens[$i]['text'];
+            if (arch2_is_alt_end($id)) {
+                if ($altDepth > 0) {
+                    $altDepth--;
+                }
+                continue;
+            }
+            if ($text === '{') {
+                if ($braceDepth === 0 && $altDepth === 0
+                    && arch2_is_direct_unconditional_block_open($tokens, $i)) {
+                    continue;
+                }
+                $braceDepth++;
+                continue;
+            }
+            if ($text === '}') {
+                if ($braceDepth > 0) {
+                    $braceDepth--;
+                }
+                continue;
+            }
+            if (isset($altStarts[$i])) {
+                $altDepth++;
+                continue;
+            }
+            if ($braceDepth !== 0 || $altDepth !== 0
+                || !arch2_is_direct_terminator($tokens, $i)
+                || $id === T_EXIT) {
+                continue;
+            }
+
+            if (array_key_exists($i, $deferred) && $deferred[$i] === false) {
+                continue;
+            }
+            if ($id === T_THROW && $group['has_catch']) {
+                foreach ($group['catches'] as $catch) {
+                    if (arch2_direct_range_falls_through($tokens, $catch['open'], $catch['close'])) {
+                        $deferred[$i] = false;
+                        continue 2;
+                    }
+                }
+            }
+
+            $boundary = $group['end'] + 1;
+            if (!array_key_exists($i, $deferred) || $boundary > $deferred[$i]) {
+                $deferred[$i] = $boundary;
+            }
+        }
+    }
+
+    return $deferred;
+}
+
 function arch2_hook_call_matches(array $tokens, $index, $hookFunction, $hookName, $callbackName)
 {
     $expected = array(
@@ -392,11 +575,16 @@ function arch2_direct_top_level_hook_callback(array $tokens, $hookFunction, $hoo
     }
 
     $altStarts = arch2_alt_start_indexes($tokens);
+    $deferredTerminators = arch2_try_terminator_defer_map($tokens);
+    $terminationBoundaries = array();
     $braceDepth = 0;
     $altDepth = 0;
     $count = count($tokens);
 
     for ($i = 0; $i < $count; $i++) {
+        if (isset($terminationBoundaries[$i])) {
+            return array('found' => false, 'body' => array());
+        }
         $id = $tokens[$i]['id'];
         $text = $tokens[$i]['text'];
 
@@ -428,6 +616,12 @@ function arch2_direct_top_level_hook_callback(array $tokens, $hookFunction, $hoo
             continue;
         }
         if (arch2_is_direct_terminator($tokens, $i)) {
+            if (array_key_exists($i, $deferredTerminators)) {
+                if ($deferredTerminators[$i] !== false) {
+                    $terminationBoundaries[$deferredTerminators[$i]] = true;
+                }
+                continue;
+            }
             return array('found' => false, 'body' => array());
         }
         if (!arch2_hook_call_matches($tokens, $i, $hookFunction, $hookName, $callbackName)) {
@@ -1066,6 +1260,122 @@ arch2_assert(
     $reachableCompound['found']
         && arch2_gateway_callback_returns_registered_methods($reachableCompound['body']),
     'matcher accepts reachable gateway registration inside mandatory try and declare paths'
+);
+
+$caughtThrowFixture = <<<'PHP'
+<?php
+try { throw new RuntimeException('caught'); }
+catch (RuntimeException $error) {}
+add_filter("woocommerce_payment_gateways", "addUpaymentsGatewayClass");
+function addUpaymentsGatewayClass($methods) { $methods[] = "WC_UPayments"; return $methods; }
+PHP;
+$caughtThrow = arch2_direct_top_level_hook_callback(
+    arch2_tokens($caughtThrowFixture),
+    'add_filter',
+    'woocommerce_payment_gateways',
+    'addUpaymentsGatewayClass'
+);
+arch2_assert(
+    $caughtThrow['found'] && arch2_gateway_callback_returns_registered_methods($caughtThrow['body']),
+    'matcher accepts gateway registration after a caught direct throw'
+);
+
+$enclosingCatchFixture = <<<'PHP'
+<?php
+try {
+    try { throw new RuntimeException('caught'); }
+    finally {}
+}
+catch (RuntimeException $error) {}
+add_filter("woocommerce_payment_gateways", "addUpaymentsGatewayClass");
+function addUpaymentsGatewayClass($methods) { $methods[] = "WC_UPayments"; return $methods; }
+PHP;
+$enclosingCatch = arch2_direct_top_level_hook_callback(
+    arch2_tokens($enclosingCatchFixture),
+    'add_filter',
+    'woocommerce_payment_gateways',
+    'addUpaymentsGatewayClass'
+);
+arch2_assert(
+    $enclosingCatch['found'] && arch2_gateway_callback_returns_registered_methods($enclosingCatch['body']),
+    'matcher accepts gateway registration after throw caught by enclosing try group'
+);
+
+$terminatingCatchFixture = <<<'PHP'
+<?php
+try { throw new RuntimeException('caught'); }
+catch (RuntimeException $error) { return; }
+add_filter("woocommerce_payment_gateways", "addUpaymentsGatewayClass");
+function addUpaymentsGatewayClass($methods) { $methods[] = "WC_UPayments"; return $methods; }
+PHP;
+arch2_assert(
+    !arch2_direct_top_level_hook_callback(
+        arch2_tokens($terminatingCatchFixture),
+        'add_filter',
+        'woocommerce_payment_gateways',
+        'addUpaymentsGatewayClass'
+    )['found'],
+    'matcher rejects gateway registration after caught throw with terminating catch'
+);
+
+$finallyRegistrationFixture = <<<'PHP'
+<?php
+try { return; }
+finally {
+    add_filter("woocommerce_payment_gateways", "addUpaymentsGatewayClass");
+    function addUpaymentsGatewayClass($methods) { $methods[] = "WC_UPayments"; return $methods; }
+}
+PHP;
+$finallyRegistration = arch2_direct_top_level_hook_callback(
+    arch2_tokens($finallyRegistrationFixture),
+    'add_filter',
+    'woocommerce_payment_gateways',
+    'addUpaymentsGatewayClass'
+);
+arch2_assert(
+    $finallyRegistration['found']
+        && arch2_gateway_callback_returns_registered_methods($finallyRegistration['body']),
+    'matcher accepts gateway registration reached through finally after return'
+);
+
+$nestedFinallyFixture = <<<'PHP'
+<?php
+try {
+    try { return; }
+    finally {}
+}
+finally {
+    add_filter("woocommerce_payment_gateways", "addUpaymentsGatewayClass");
+    function addUpaymentsGatewayClass($methods) { $methods[] = "WC_UPayments"; return $methods; }
+}
+PHP;
+$nestedFinally = arch2_direct_top_level_hook_callback(
+    arch2_tokens($nestedFinallyFixture),
+    'add_filter',
+    'woocommerce_payment_gateways',
+    'addUpaymentsGatewayClass'
+);
+arch2_assert(
+    $nestedFinally['found'] && arch2_gateway_callback_returns_registered_methods($nestedFinally['body']),
+    'matcher accepts gateway registration through enclosing finally after nested return'
+);
+
+$exitFinallyFixture = <<<'PHP'
+<?php
+try { exit; }
+finally {
+    add_filter("woocommerce_payment_gateways", "addUpaymentsGatewayClass");
+    function addUpaymentsGatewayClass($methods) { $methods[] = "WC_UPayments"; return $methods; }
+}
+PHP;
+arch2_assert(
+    !arch2_direct_top_level_hook_callback(
+        arch2_tokens($exitFinallyFixture),
+        'add_filter',
+        'woocommerce_payment_gateways',
+        'addUpaymentsGatewayClass'
+    )['found'],
+    'matcher rejects finally registration bypassed by direct exit'
 );
 
 $validFixture = <<<'PHP'
