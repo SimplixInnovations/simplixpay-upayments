@@ -305,6 +305,8 @@ function arch3_direct_try_groups(array $tokens)
         $groupEnd = $tryClose;
         $hasCatch = false;
         $catches = array();
+        $finallyOpen = false;
+        $finallyClose = false;
         while ($cursor < $count && $tokens[$cursor]['id'] === T_CATCH) {
             $catchIndex = $cursor;
             $hasCatch = true;
@@ -331,7 +333,8 @@ function arch3_direct_try_groups(array $tokens)
 
         if ($cursor < $count && $tokens[$cursor]['id'] === T_FINALLY
             && isset($tokens[$cursor + 1]) && $tokens[$cursor + 1]['text'] === '{') {
-            $finallyClose = arch3_matching_brace($tokens, $cursor + 1);
+            $finallyOpen = $cursor + 1;
+            $finallyClose = arch3_matching_brace($tokens, $finallyOpen);
             if ($finallyClose !== false) {
                 $groupEnd = $finallyClose;
             }
@@ -343,6 +346,8 @@ function arch3_direct_try_groups(array $tokens)
             'end' => $groupEnd,
             'has_catch' => $hasCatch,
             'catches' => $catches,
+            'finally_open' => $finallyOpen,
+            'finally_close' => $finallyClose,
         );
     }
 
@@ -439,8 +444,9 @@ function arch3_try_terminator_defer_map(array $tokens)
 {
     $deferred = array();
     $altStarts = arch3_alt_start_indexes($tokens);
+    $groups = arch3_direct_try_groups($tokens);
 
-    foreach (arch3_direct_try_groups($tokens) as $group) {
+    foreach ($groups as $group) {
         $braceDepth = 0;
         $altDepth = 0;
         for ($i = $group['open'] + 1; $i < $group['close']; $i++) {
@@ -476,16 +482,13 @@ function arch3_try_terminator_defer_map(array $tokens)
                 continue;
             }
 
-            if (array_key_exists($i, $deferred) && $deferred[$i] === false) {
-                continue;
-            }
             if (array_key_exists($i, $deferred) && is_array($deferred[$i])) {
                 continue;
             }
             if ($id === T_GOTO) {
                 $labelIndex = arch3_forward_goto_label($tokens, $i, $group['close']);
                 if ($labelIndex !== false) {
-                    $deferred[$i] = array('skip_to' => $labelIndex);
+                    $deferred[$i] = array('kind' => 'goto', 'skip_to' => $labelIndex);
                 }
                 continue;
             }
@@ -499,11 +502,24 @@ function arch3_try_terminator_defer_map(array $tokens)
                             break;
                         }
                     }
-                    if ($compatible
-                        && arch3_direct_range_falls_through($tokens, $catch['open'], $catch['close'])) {
-                        $deferred[$i] = false;
+                    if (!$compatible) {
+                        continue;
+                    }
+                    if (arch3_direct_range_falls_through($tokens, $catch['open'], $catch['close'])) {
+                        $overrides = false;
+                        foreach ($groups as $finallyGroup) {
+                            if ($finallyGroup['finally_open'] !== false
+                                && $finallyGroup['finally_open'] < $i
+                                && $i < $finallyGroup['finally_close']
+                                && $group['open'] < $finallyGroup['open']) {
+                                $overrides = true;
+                                break;
+                            }
+                        }
+                        $deferred[$i] = array('kind' => 'caught', 'overrides' => $overrides);
                         continue 2;
                     }
+                    break;
                 }
             }
 
@@ -615,13 +631,15 @@ function arch3_direct_top_level_hook_callback(array $tokens, $hookFunction, $hoo
         if (arch3_is_direct_terminator($tokens, $i)) {
             if (array_key_exists($i, $deferredTerminators)) {
                 if (is_array($deferredTerminators[$i])) {
-                    $i = $deferredTerminators[$i]['skip_to'] - 1;
+                    if ($deferredTerminators[$i]['kind'] === 'goto') {
+                        $i = $deferredTerminators[$i]['skip_to'] - 1;
+                    } elseif ($deferredTerminators[$i]['overrides']) {
+                        $terminationBoundaries = array();
+                    }
                     continue;
                 }
                 if ($deferredTerminators[$i] !== false) {
                     $terminationBoundaries[$deferredTerminators[$i]] = true;
-                } else {
-                    $terminationBoundaries = array();
                 }
                 continue;
             }
@@ -702,13 +720,15 @@ function arch3_direct_class(array $ownerBody, $className)
         if ($braceDepth === 0 && $altDepth === 0 && arch3_is_direct_terminator($ownerBody, $i)) {
             if (array_key_exists($i, $deferredTerminators)) {
                 if (is_array($deferredTerminators[$i])) {
-                    $i = $deferredTerminators[$i]['skip_to'] - 1;
+                    if ($deferredTerminators[$i]['kind'] === 'goto') {
+                        $i = $deferredTerminators[$i]['skip_to'] - 1;
+                    } elseif ($deferredTerminators[$i]['overrides']) {
+                        $terminationBoundaries = array();
+                    }
                     continue;
                 }
                 if ($deferredTerminators[$i] !== false) {
                     $terminationBoundaries[$deferredTerminators[$i]] = true;
-                } else {
-                    $terminationBoundaries = array();
                 }
                 continue;
             }
@@ -855,13 +875,15 @@ function arch3_has_direct_gateway_id_assignment(array $body)
         if (arch3_is_direct_terminator($body, $i)) {
             if (array_key_exists($i, $deferredTerminators)) {
                 if (is_array($deferredTerminators[$i])) {
-                    $i = $deferredTerminators[$i]['skip_to'] - 1;
+                    if ($deferredTerminators[$i]['kind'] === 'goto') {
+                        $i = $deferredTerminators[$i]['skip_to'] - 1;
+                    } elseif ($deferredTerminators[$i]['overrides']) {
+                        $terminationBoundaries = array();
+                    }
                     continue;
                 }
                 if ($deferredTerminators[$i] !== false) {
                     $terminationBoundaries[$deferredTerminators[$i]] = true;
-                } else {
-                    $terminationBoundaries = array();
                 }
                 continue;
             }
@@ -1554,6 +1576,28 @@ $finallyOverrideResults = $arch3StageResults(
 arch3_assert($finallyOverrideResults['registration'], 'bootstrap guard accepts registration after caught finally override');
 arch3_assert($finallyOverrideResults['class'], 'bootstrap guard accepts gateway class after caught finally override');
 arch3_assert($finallyOverrideResults['id'], 'constructor guard accepts gateway ID after caught finally override');
+
+$orderedCatchResults = $arch3StageResults(
+    "try { throw new RuntimeException('caught first'); }\n"
+        . "catch (Exception \$error) { return; }\n"
+        . "catch (RuntimeException \$error) {}\n",
+    ''
+);
+arch3_assert(!$orderedCatchResults['registration'], 'bootstrap guard honors first compatible catch for registration');
+arch3_assert(!$orderedCatchResults['class'], 'bootstrap guard honors first compatible catch for gateway class');
+arch3_assert(!$orderedCatchResults['id'], 'constructor guard honors first compatible catch for gateway ID');
+
+$localCatchFinallyResults = $arch3StageResults(
+    "try { return; }\n"
+        . "finally {\n"
+        . "    try { throw new RuntimeException('caught locally'); }\n"
+        . "    catch (RuntimeException \$error) {}\n"
+        . "}\n",
+    ''
+);
+arch3_assert(!$localCatchFinallyResults['registration'], 'bootstrap guard preserves return across local finally catch');
+arch3_assert(!$localCatchFinallyResults['class'], 'bootstrap guard preserves class return across local finally catch');
+arch3_assert(!$localCatchFinallyResults['id'], 'constructor guard preserves return across local finally catch');
 
 $conditionalTerminatorFixture = <<<'PHP'
 <?php

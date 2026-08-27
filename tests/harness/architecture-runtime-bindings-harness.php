@@ -304,6 +304,8 @@ function arch2_direct_try_groups(array $tokens)
         $groupEnd = $tryClose;
         $hasCatch = false;
         $catches = array();
+        $finallyOpen = false;
+        $finallyClose = false;
         while ($cursor < $count && $tokens[$cursor]['id'] === T_CATCH) {
             $catchIndex = $cursor;
             $hasCatch = true;
@@ -330,7 +332,8 @@ function arch2_direct_try_groups(array $tokens)
 
         if ($cursor < $count && $tokens[$cursor]['id'] === T_FINALLY
             && isset($tokens[$cursor + 1]) && $tokens[$cursor + 1]['text'] === '{') {
-            $finallyClose = arch2_matching_brace($tokens, $cursor + 1);
+            $finallyOpen = $cursor + 1;
+            $finallyClose = arch2_matching_brace($tokens, $finallyOpen);
             if ($finallyClose !== false) {
                 $groupEnd = $finallyClose;
             }
@@ -342,6 +345,8 @@ function arch2_direct_try_groups(array $tokens)
             'end' => $groupEnd,
             'has_catch' => $hasCatch,
             'catches' => $catches,
+            'finally_open' => $finallyOpen,
+            'finally_close' => $finallyClose,
         );
     }
 
@@ -438,8 +443,9 @@ function arch2_try_terminator_defer_map(array $tokens)
 {
     $deferred = array();
     $altStarts = arch2_alt_start_indexes($tokens);
+    $groups = arch2_direct_try_groups($tokens);
 
-    foreach (arch2_direct_try_groups($tokens) as $group) {
+    foreach ($groups as $group) {
         $braceDepth = 0;
         $altDepth = 0;
         for ($i = $group['open'] + 1; $i < $group['close']; $i++) {
@@ -475,16 +481,13 @@ function arch2_try_terminator_defer_map(array $tokens)
                 continue;
             }
 
-            if (array_key_exists($i, $deferred) && $deferred[$i] === false) {
-                continue;
-            }
             if (array_key_exists($i, $deferred) && is_array($deferred[$i])) {
                 continue;
             }
             if ($id === T_GOTO) {
                 $labelIndex = arch2_forward_goto_label($tokens, $i, $group['close']);
                 if ($labelIndex !== false) {
-                    $deferred[$i] = array('skip_to' => $labelIndex);
+                    $deferred[$i] = array('kind' => 'goto', 'skip_to' => $labelIndex);
                 }
                 continue;
             }
@@ -498,11 +501,24 @@ function arch2_try_terminator_defer_map(array $tokens)
                             break;
                         }
                     }
-                    if ($compatible
-                        && arch2_direct_range_falls_through($tokens, $catch['open'], $catch['close'])) {
-                        $deferred[$i] = false;
+                    if (!$compatible) {
+                        continue;
+                    }
+                    if (arch2_direct_range_falls_through($tokens, $catch['open'], $catch['close'])) {
+                        $overrides = false;
+                        foreach ($groups as $finallyGroup) {
+                            if ($finallyGroup['finally_open'] !== false
+                                && $finallyGroup['finally_open'] < $i
+                                && $i < $finallyGroup['finally_close']
+                                && $group['open'] < $finallyGroup['open']) {
+                                $overrides = true;
+                                break;
+                            }
+                        }
+                        $deferred[$i] = array('kind' => 'caught', 'overrides' => $overrides);
                         continue 2;
                     }
+                    break;
                 }
             }
 
@@ -686,13 +702,15 @@ function arch2_direct_top_level_hook_callback(array $tokens, $hookFunction, $hoo
         if (arch2_is_direct_terminator($tokens, $i)) {
             if (array_key_exists($i, $deferredTerminators)) {
                 if (is_array($deferredTerminators[$i])) {
-                    $i = $deferredTerminators[$i]['skip_to'] - 1;
+                    if ($deferredTerminators[$i]['kind'] === 'goto') {
+                        $i = $deferredTerminators[$i]['skip_to'] - 1;
+                    } elseif ($deferredTerminators[$i]['overrides']) {
+                        $terminationBoundaries = array();
+                    }
                     continue;
                 }
                 if ($deferredTerminators[$i] !== false) {
                     $terminationBoundaries[$deferredTerminators[$i]] = true;
-                } else {
-                    $terminationBoundaries = array();
                 }
                 continue;
             }
@@ -1448,6 +1466,44 @@ $finallyOverride = arch2_direct_top_level_hook_callback(
 arch2_assert(
     $finallyOverride['found'] && arch2_gateway_callback_returns_registered_methods($finallyOverride['body']),
     'matcher accepts gateway registration after caught finally override'
+);
+
+$orderedCatchFixture = <<<'PHP'
+<?php
+try { throw new RuntimeException('caught first'); }
+catch (Exception $error) { return; }
+catch (RuntimeException $error) {}
+add_filter("woocommerce_payment_gateways", "addUpaymentsGatewayClass");
+function addUpaymentsGatewayClass($methods) { $methods[] = "WC_UPayments"; return $methods; }
+PHP;
+arch2_assert(
+    !arch2_direct_top_level_hook_callback(
+        arch2_tokens($orderedCatchFixture),
+        'add_filter',
+        'woocommerce_payment_gateways',
+        'addUpaymentsGatewayClass'
+    )['found'],
+    'matcher uses only the first compatible catch in runtime order'
+);
+
+$localCatchFinallyFixture = <<<'PHP'
+<?php
+try { return; }
+finally {
+    try { throw new RuntimeException('caught locally'); }
+    catch (RuntimeException $error) {}
+}
+add_filter("woocommerce_payment_gateways", "addUpaymentsGatewayClass");
+function addUpaymentsGatewayClass($methods) { $methods[] = "WC_UPayments"; return $methods; }
+PHP;
+arch2_assert(
+    !arch2_direct_top_level_hook_callback(
+        arch2_tokens($localCatchFinallyFixture),
+        'add_filter',
+        'woocommerce_payment_gateways',
+        'addUpaymentsGatewayClass'
+    )['found'],
+    'matcher preserves pending return across locally caught throw in finally'
 );
 
 $finallyRegistrationFixture = <<<'PHP'
