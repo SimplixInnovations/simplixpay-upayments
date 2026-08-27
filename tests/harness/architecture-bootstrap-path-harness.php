@@ -433,6 +433,13 @@ function arch3_direct_range_falls_through(array $tokens, $openIndex, $closeIndex
             continue;
         }
         if ($braceDepth === 0 && $altDepth === 0 && arch3_is_direct_terminator($tokens, $i)) {
+            if ($id === T_GOTO) {
+                $labelIndex = arch3_forward_goto_label($tokens, $i, $closeIndex);
+                if ($labelIndex !== false) {
+                    $i = $labelIndex - 1;
+                    continue;
+                }
+            }
             return false;
         }
     }
@@ -482,7 +489,9 @@ function arch3_try_terminator_defer_map(array $tokens)
                 continue;
             }
 
-            if (array_key_exists($i, $deferred) && is_array($deferred[$i])) {
+            if (array_key_exists($i, $deferred)
+                && is_array($deferred[$i])
+                && $deferred[$i]['kind'] !== 'pending') {
                 continue;
             }
             if ($id === T_GOTO) {
@@ -506,17 +515,19 @@ function arch3_try_terminator_defer_map(array $tokens)
                         continue;
                     }
                     if (arch3_direct_range_falls_through($tokens, $catch['open'], $catch['close'])) {
-                        $overrides = false;
+                        $overrideFinallyScopes = array();
                         foreach ($groups as $finallyGroup) {
                             if ($finallyGroup['finally_open'] !== false
                                 && $finallyGroup['finally_open'] < $i
                                 && $i < $finallyGroup['finally_close']
                                 && $group['open'] < $finallyGroup['open']) {
-                                $overrides = true;
-                                break;
+                                $overrideFinallyScopes[] = $finallyGroup['finally_close'];
                             }
                         }
-                        $deferred[$i] = array('kind' => 'caught', 'overrides' => $overrides);
+                        $deferred[$i] = array(
+                            'kind' => 'caught',
+                            'override_finally_scopes' => array_values(array_unique($overrideFinallyScopes)),
+                        );
                         continue 2;
                     }
                     break;
@@ -524,9 +535,21 @@ function arch3_try_terminator_defer_map(array $tokens)
             }
 
             $boundary = $group['end'] + 1;
-            if (!array_key_exists($i, $deferred) || $boundary > $deferred[$i]) {
-                $deferred[$i] = $boundary;
+            $finallyScopes = array();
+            if (array_key_exists($i, $deferred)
+                && is_array($deferred[$i])
+                && $deferred[$i]['kind'] === 'pending') {
+                $boundary = max($boundary, $deferred[$i]['boundary']);
+                $finallyScopes = $deferred[$i]['finally_scopes'];
             }
+            if ($group['finally_close'] !== false) {
+                $finallyScopes[] = $group['finally_close'];
+            }
+            $deferred[$i] = array(
+                'kind' => 'pending',
+                'boundary' => $boundary,
+                'finally_scopes' => array_values(array_unique($finallyScopes)),
+            );
         }
     }
 
@@ -633,8 +656,24 @@ function arch3_direct_top_level_hook_callback(array $tokens, $hookFunction, $hoo
                 if (is_array($deferredTerminators[$i])) {
                     if ($deferredTerminators[$i]['kind'] === 'goto') {
                         $i = $deferredTerminators[$i]['skip_to'] - 1;
-                    } elseif ($deferredTerminators[$i]['overrides']) {
-                        $terminationBoundaries = array();
+                    } elseif ($deferredTerminators[$i]['kind'] === 'caught') {
+                        foreach ($terminationBoundaries as $boundary => $finallyScopes) {
+                            if (array_intersect(
+                                $finallyScopes,
+                                $deferredTerminators[$i]['override_finally_scopes']
+                            )) {
+                                unset($terminationBoundaries[$boundary]);
+                            }
+                        }
+                    } else {
+                        $boundary = $deferredTerminators[$i]['boundary'];
+                        $existingScopes = isset($terminationBoundaries[$boundary])
+                            ? $terminationBoundaries[$boundary]
+                            : array();
+                        $terminationBoundaries[$boundary] = array_values(array_unique(array_merge(
+                            $existingScopes,
+                            $deferredTerminators[$i]['finally_scopes']
+                        )));
                     }
                     continue;
                 }
@@ -722,8 +761,24 @@ function arch3_direct_class(array $ownerBody, $className)
                 if (is_array($deferredTerminators[$i])) {
                     if ($deferredTerminators[$i]['kind'] === 'goto') {
                         $i = $deferredTerminators[$i]['skip_to'] - 1;
-                    } elseif ($deferredTerminators[$i]['overrides']) {
-                        $terminationBoundaries = array();
+                    } elseif ($deferredTerminators[$i]['kind'] === 'caught') {
+                        foreach ($terminationBoundaries as $boundary => $finallyScopes) {
+                            if (array_intersect(
+                                $finallyScopes,
+                                $deferredTerminators[$i]['override_finally_scopes']
+                            )) {
+                                unset($terminationBoundaries[$boundary]);
+                            }
+                        }
+                    } else {
+                        $boundary = $deferredTerminators[$i]['boundary'];
+                        $existingScopes = isset($terminationBoundaries[$boundary])
+                            ? $terminationBoundaries[$boundary]
+                            : array();
+                        $terminationBoundaries[$boundary] = array_values(array_unique(array_merge(
+                            $existingScopes,
+                            $deferredTerminators[$i]['finally_scopes']
+                        )));
                     }
                     continue;
                 }
@@ -877,8 +932,24 @@ function arch3_has_direct_gateway_id_assignment(array $body)
                 if (is_array($deferredTerminators[$i])) {
                     if ($deferredTerminators[$i]['kind'] === 'goto') {
                         $i = $deferredTerminators[$i]['skip_to'] - 1;
-                    } elseif ($deferredTerminators[$i]['overrides']) {
-                        $terminationBoundaries = array();
+                    } elseif ($deferredTerminators[$i]['kind'] === 'caught') {
+                        foreach ($terminationBoundaries as $boundary => $finallyScopes) {
+                            if (array_intersect(
+                                $finallyScopes,
+                                $deferredTerminators[$i]['override_finally_scopes']
+                            )) {
+                                unset($terminationBoundaries[$boundary]);
+                            }
+                        }
+                    } else {
+                        $boundary = $deferredTerminators[$i]['boundary'];
+                        $existingScopes = isset($terminationBoundaries[$boundary])
+                            ? $terminationBoundaries[$boundary]
+                            : array();
+                        $terminationBoundaries[$boundary] = array_values(array_unique(array_merge(
+                            $existingScopes,
+                            $deferredTerminators[$i]['finally_scopes']
+                        )));
                     }
                     continue;
                 }
@@ -1587,6 +1658,19 @@ arch3_assert(!$orderedCatchResults['registration'], 'bootstrap guard honors firs
 arch3_assert(!$orderedCatchResults['class'], 'bootstrap guard honors first compatible catch for gateway class');
 arch3_assert(!$orderedCatchResults['id'], 'constructor guard honors first compatible catch for gateway ID');
 
+$forwardGotoCatchResults = $arch3StageResults(
+    "try { throw new RuntimeException('caught'); }\n"
+        . "catch (RuntimeException \$error) {\n"
+        . "    goto arch3_resume_catch;\n"
+        . "    return;\n"
+        . "    arch3_resume_catch: ;\n"
+        . "}\n",
+    ''
+);
+arch3_assert($forwardGotoCatchResults['registration'], 'bootstrap guard accepts forward catch goto before registration');
+arch3_assert($forwardGotoCatchResults['class'], 'bootstrap guard accepts forward catch goto before gateway class');
+arch3_assert($forwardGotoCatchResults['id'], 'constructor guard accepts forward catch goto before gateway ID');
+
 $localCatchFinallyResults = $arch3StageResults(
     "try { return; }\n"
         . "finally {\n"
@@ -1598,6 +1682,21 @@ $localCatchFinallyResults = $arch3StageResults(
 arch3_assert(!$localCatchFinallyResults['registration'], 'bootstrap guard preserves return across local finally catch');
 arch3_assert(!$localCatchFinallyResults['class'], 'bootstrap guard preserves class return across local finally catch');
 arch3_assert(!$localCatchFinallyResults['id'], 'constructor guard preserves return across local finally catch');
+
+$nestedLocalCatchFinallyResults = $arch3StageResults(
+    "try { return; }\n"
+        . "finally {\n"
+        . "    try {\n"
+        . "        try {}\n"
+        . "        finally { throw new RuntimeException('caught locally'); }\n"
+        . "    }\n"
+        . "    catch (RuntimeException \$error) {}\n"
+        . "}\n",
+    ''
+);
+arch3_assert(!$nestedLocalCatchFinallyResults['registration'], 'bootstrap guard preserves return across nested local finally catch');
+arch3_assert(!$nestedLocalCatchFinallyResults['class'], 'bootstrap guard preserves class return across nested local finally catch');
+arch3_assert(!$nestedLocalCatchFinallyResults['id'], 'constructor guard preserves return across nested local finally catch');
 
 $conditionalTerminatorFixture = <<<'PHP'
 <?php

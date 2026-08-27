@@ -432,6 +432,13 @@ function arch2_direct_range_falls_through(array $tokens, $openIndex, $closeIndex
             continue;
         }
         if ($braceDepth === 0 && $altDepth === 0 && arch2_is_direct_terminator($tokens, $i)) {
+            if ($id === T_GOTO) {
+                $labelIndex = arch2_forward_goto_label($tokens, $i, $closeIndex);
+                if ($labelIndex !== false) {
+                    $i = $labelIndex - 1;
+                    continue;
+                }
+            }
             return false;
         }
     }
@@ -481,7 +488,9 @@ function arch2_try_terminator_defer_map(array $tokens)
                 continue;
             }
 
-            if (array_key_exists($i, $deferred) && is_array($deferred[$i])) {
+            if (array_key_exists($i, $deferred)
+                && is_array($deferred[$i])
+                && $deferred[$i]['kind'] !== 'pending') {
                 continue;
             }
             if ($id === T_GOTO) {
@@ -505,17 +514,19 @@ function arch2_try_terminator_defer_map(array $tokens)
                         continue;
                     }
                     if (arch2_direct_range_falls_through($tokens, $catch['open'], $catch['close'])) {
-                        $overrides = false;
+                        $overrideFinallyScopes = array();
                         foreach ($groups as $finallyGroup) {
                             if ($finallyGroup['finally_open'] !== false
                                 && $finallyGroup['finally_open'] < $i
                                 && $i < $finallyGroup['finally_close']
                                 && $group['open'] < $finallyGroup['open']) {
-                                $overrides = true;
-                                break;
+                                $overrideFinallyScopes[] = $finallyGroup['finally_close'];
                             }
                         }
-                        $deferred[$i] = array('kind' => 'caught', 'overrides' => $overrides);
+                        $deferred[$i] = array(
+                            'kind' => 'caught',
+                            'override_finally_scopes' => array_values(array_unique($overrideFinallyScopes)),
+                        );
                         continue 2;
                     }
                     break;
@@ -523,9 +534,21 @@ function arch2_try_terminator_defer_map(array $tokens)
             }
 
             $boundary = $group['end'] + 1;
-            if (!array_key_exists($i, $deferred) || $boundary > $deferred[$i]) {
-                $deferred[$i] = $boundary;
+            $finallyScopes = array();
+            if (array_key_exists($i, $deferred)
+                && is_array($deferred[$i])
+                && $deferred[$i]['kind'] === 'pending') {
+                $boundary = max($boundary, $deferred[$i]['boundary']);
+                $finallyScopes = $deferred[$i]['finally_scopes'];
             }
+            if ($group['finally_close'] !== false) {
+                $finallyScopes[] = $group['finally_close'];
+            }
+            $deferred[$i] = array(
+                'kind' => 'pending',
+                'boundary' => $boundary,
+                'finally_scopes' => array_values(array_unique($finallyScopes)),
+            );
         }
     }
 
@@ -704,8 +727,24 @@ function arch2_direct_top_level_hook_callback(array $tokens, $hookFunction, $hoo
                 if (is_array($deferredTerminators[$i])) {
                     if ($deferredTerminators[$i]['kind'] === 'goto') {
                         $i = $deferredTerminators[$i]['skip_to'] - 1;
-                    } elseif ($deferredTerminators[$i]['overrides']) {
-                        $terminationBoundaries = array();
+                    } elseif ($deferredTerminators[$i]['kind'] === 'caught') {
+                        foreach ($terminationBoundaries as $boundary => $finallyScopes) {
+                            if (array_intersect(
+                                $finallyScopes,
+                                $deferredTerminators[$i]['override_finally_scopes']
+                            )) {
+                                unset($terminationBoundaries[$boundary]);
+                            }
+                        }
+                    } else {
+                        $boundary = $deferredTerminators[$i]['boundary'];
+                        $existingScopes = isset($terminationBoundaries[$boundary])
+                            ? $terminationBoundaries[$boundary]
+                            : array();
+                        $terminationBoundaries[$boundary] = array_values(array_unique(array_merge(
+                            $existingScopes,
+                            $deferredTerminators[$i]['finally_scopes']
+                        )));
                     }
                     continue;
                 }
@@ -1410,6 +1449,29 @@ arch2_assert(
     'matcher rejects gateway registration after caught throw with terminating catch'
 );
 
+$forwardGotoCatchFixture = <<<'PHP'
+<?php
+try { throw new RuntimeException('caught'); }
+catch (RuntimeException $error) {
+    goto arch2_resume_catch;
+    return;
+    arch2_resume_catch: ;
+}
+add_filter("woocommerce_payment_gateways", "addUpaymentsGatewayClass");
+function addUpaymentsGatewayClass($methods) { $methods[] = "WC_UPayments"; return $methods; }
+PHP;
+$forwardGotoCatch = arch2_direct_top_level_hook_callback(
+    arch2_tokens($forwardGotoCatchFixture),
+    'add_filter',
+    'woocommerce_payment_gateways',
+    'addUpaymentsGatewayClass'
+);
+arch2_assert(
+    $forwardGotoCatch['found']
+        && arch2_gateway_callback_returns_registered_methods($forwardGotoCatch['body']),
+    'matcher accepts gateway registration after caught throw with forward catch goto'
+);
+
 $mismatchedCatchFixture = <<<'PHP'
 <?php
 try { throw new RuntimeException('uncaught'); }
@@ -1504,6 +1566,29 @@ arch2_assert(
         'addUpaymentsGatewayClass'
     )['found'],
     'matcher preserves pending return across locally caught throw in finally'
+);
+
+$nestedLocalCatchFinallyFixture = <<<'PHP'
+<?php
+try { return; }
+finally {
+    try {
+        try {}
+        finally { throw new RuntimeException('caught locally'); }
+    }
+    catch (RuntimeException $error) {}
+}
+add_filter("woocommerce_payment_gateways", "addUpaymentsGatewayClass");
+function addUpaymentsGatewayClass($methods) { $methods[] = "WC_UPayments"; return $methods; }
+PHP;
+arch2_assert(
+    !arch2_direct_top_level_hook_callback(
+        arch2_tokens($nestedLocalCatchFinallyFixture),
+        'add_filter',
+        'woocommerce_payment_gateways',
+        'addUpaymentsGatewayClass'
+    )['found'],
+    'matcher preserves pending return across nested locally caught finally throw'
 );
 
 $finallyRegistrationFixture = <<<'PHP'
