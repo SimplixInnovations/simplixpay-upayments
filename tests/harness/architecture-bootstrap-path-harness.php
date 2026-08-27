@@ -306,6 +306,7 @@ function arch3_direct_try_groups(array $tokens)
         $hasCatch = false;
         $catches = array();
         while ($cursor < $count && $tokens[$cursor]['id'] === T_CATCH) {
+            $catchIndex = $cursor;
             $hasCatch = true;
             while ($cursor < $count && $tokens[$cursor]['text'] !== '{') {
                 $cursor++;
@@ -317,7 +318,13 @@ function arch3_direct_try_groups(array $tokens)
             if ($catchClose === false) {
                 break;
             }
-            $catches[] = array('open' => $cursor, 'close' => $catchClose);
+            $types = array();
+            for ($j = $catchIndex + 1; $j < $cursor; $j++) {
+                if (in_array($tokens[$j]['id'], array(T_STRING, T_NAME_QUALIFIED, T_NAME_FULLY_QUALIFIED), true)) {
+                    $types[] = strtolower(ltrim($tokens[$j]['text'], '\\'));
+                }
+            }
+            $catches[] = array('open' => $cursor, 'close' => $catchClose, 'types' => $types);
             $groupEnd = $catchClose;
             $cursor = $catchClose + 1;
         }
@@ -343,6 +350,48 @@ function arch3_direct_try_groups(array $tokens)
         return ($left['close'] - $left['open']) <=> ($right['close'] - $right['open']);
     });
     return $groups;
+}
+
+function arch3_thrown_class(array $tokens, $index)
+{
+    if (!isset($tokens[$index + 2]) || $tokens[$index + 1]['id'] !== T_NEW) {
+        return false;
+    }
+    $id = $tokens[$index + 2]['id'];
+    if (!in_array($id, array(T_STRING, T_NAME_QUALIFIED, T_NAME_FULLY_QUALIFIED), true)) {
+        return false;
+    }
+    return strtolower(ltrim($tokens[$index + 2]['text'], '\\'));
+}
+
+function arch3_catch_type_matches($thrownClass, $catchType)
+{
+    if ($thrownClass === false || $catchType === '') {
+        return false;
+    }
+    if ($thrownClass === $catchType) {
+        return true;
+    }
+    return (class_exists($thrownClass, false) || interface_exists($thrownClass, false))
+        && (class_exists($catchType, false) || interface_exists($catchType, false))
+        && is_a($thrownClass, $catchType, true);
+}
+
+function arch3_forward_goto_label(array $tokens, $index, $closeIndex)
+{
+    if (!isset($tokens[$index + 1]) || $tokens[$index + 1]['id'] !== T_STRING) {
+        return false;
+    }
+    $target = $tokens[$index + 1]['text'];
+    for ($i = $index + 2; $i < $closeIndex; $i++) {
+        if ($tokens[$i]['id'] === T_STRING
+            && $tokens[$i]['text'] === $target
+            && isset($tokens[$i + 1])
+            && arch3_is_label_colon($tokens, $i + 1)) {
+            return $i;
+        }
+    }
+    return false;
 }
 
 function arch3_direct_range_falls_through(array $tokens, $openIndex, $closeIndex)
@@ -430,9 +479,28 @@ function arch3_try_terminator_defer_map(array $tokens)
             if (array_key_exists($i, $deferred) && $deferred[$i] === false) {
                 continue;
             }
+            if (array_key_exists($i, $deferred) && is_array($deferred[$i])) {
+                continue;
+            }
+            if ($id === T_GOTO) {
+                $labelIndex = arch3_forward_goto_label($tokens, $i, $group['close']);
+                if ($labelIndex !== false) {
+                    $deferred[$i] = array('skip_to' => $labelIndex);
+                }
+                continue;
+            }
             if ($id === T_THROW && $group['has_catch']) {
+                $thrownClass = arch3_thrown_class($tokens, $i);
                 foreach ($group['catches'] as $catch) {
-                    if (arch3_direct_range_falls_through($tokens, $catch['open'], $catch['close'])) {
+                    $compatible = false;
+                    foreach ($catch['types'] as $catchType) {
+                        if (arch3_catch_type_matches($thrownClass, $catchType)) {
+                            $compatible = true;
+                            break;
+                        }
+                    }
+                    if ($compatible
+                        && arch3_direct_range_falls_through($tokens, $catch['open'], $catch['close'])) {
                         $deferred[$i] = false;
                         continue 2;
                     }
@@ -546,8 +614,14 @@ function arch3_direct_top_level_hook_callback(array $tokens, $hookFunction, $hoo
         }
         if (arch3_is_direct_terminator($tokens, $i)) {
             if (array_key_exists($i, $deferredTerminators)) {
+                if (is_array($deferredTerminators[$i])) {
+                    $i = $deferredTerminators[$i]['skip_to'] - 1;
+                    continue;
+                }
                 if ($deferredTerminators[$i] !== false) {
                     $terminationBoundaries[$deferredTerminators[$i]] = true;
+                } else {
+                    $terminationBoundaries = array();
                 }
                 continue;
             }
@@ -627,8 +701,14 @@ function arch3_direct_class(array $ownerBody, $className)
         }
         if ($braceDepth === 0 && $altDepth === 0 && arch3_is_direct_terminator($ownerBody, $i)) {
             if (array_key_exists($i, $deferredTerminators)) {
+                if (is_array($deferredTerminators[$i])) {
+                    $i = $deferredTerminators[$i]['skip_to'] - 1;
+                    continue;
+                }
                 if ($deferredTerminators[$i] !== false) {
                     $terminationBoundaries[$deferredTerminators[$i]] = true;
+                } else {
+                    $terminationBoundaries = array();
                 }
                 continue;
             }
@@ -774,8 +854,14 @@ function arch3_has_direct_gateway_id_assignment(array $body)
         }
         if (arch3_is_direct_terminator($body, $i)) {
             if (array_key_exists($i, $deferredTerminators)) {
+                if (is_array($deferredTerminators[$i])) {
+                    $i = $deferredTerminators[$i]['skip_to'] - 1;
+                    continue;
+                }
                 if ($deferredTerminators[$i] !== false) {
                     $terminationBoundaries[$deferredTerminators[$i]] = true;
+                } else {
+                    $terminationBoundaries = array();
                 }
                 continue;
             }
@@ -1377,6 +1463,97 @@ arch3_assert(
     $finallyConstructor['found'] && arch3_has_direct_gateway_id_assignment($finallyConstructor['body']),
     'constructor guard accepts gateway ID reached through finally'
 );
+
+$arch3StageResults = function ($before, $after) {
+    $topLevelSource = "<?php\n"
+        . $before
+        . "add_action('plugins_loaded', 'woocommerceUpaymentsInit');\n"
+        . "function woocommerceUpaymentsInit() {\n"
+        . "    class WC_Upayments {\n"
+        . "        public function __construct() { \$this->id = 'upayments'; }\n"
+        . "    }\n"
+        . "}\n"
+        . $after;
+    $topLevel = arch3_direct_top_level_hook_callback(
+        arch3_tokens($topLevelSource),
+        'add_action',
+        'plugins_loaded',
+        'woocommerceUpaymentsInit'
+    );
+
+    $classSource = "<?php\n"
+        . "add_action('plugins_loaded', 'woocommerceUpaymentsInit');\n"
+        . "function woocommerceUpaymentsInit() {\n"
+        . "    " . str_replace("\n", "\n    ", $before)
+        . "class WC_Upayments {\n"
+        . "        public function __construct() { \$this->id = 'upayments'; }\n"
+        . "    }\n"
+        . "    " . str_replace("\n", "\n    ", $after)
+        . "}\n";
+    $classBootstrap = arch3_direct_top_level_hook_callback(
+        arch3_tokens($classSource),
+        'add_action',
+        'plugins_loaded',
+        'woocommerceUpaymentsInit'
+    );
+    $class = $classBootstrap['found']
+        ? arch3_direct_class($classBootstrap['body'], 'WC_Upayments')
+        : array('found' => false, 'body' => array());
+
+    $constructorSource = "<?php\n"
+        . "add_action('plugins_loaded', 'woocommerceUpaymentsInit');\n"
+        . "function woocommerceUpaymentsInit() {\n"
+        . "    class WC_Upayments {\n"
+        . "        public function __construct() {\n"
+        . "            " . str_replace("\n", "\n            ", $before)
+        . "\$this->id = 'upayments';\n"
+        . "            " . str_replace("\n", "\n            ", $after)
+        . "        }\n"
+        . "    }\n"
+        . "}\n";
+    $constructorBootstrap = arch3_direct_top_level_hook_callback(
+        arch3_tokens($constructorSource),
+        'add_action',
+        'plugins_loaded',
+        'woocommerceUpaymentsInit'
+    );
+    $constructorClass = $constructorBootstrap['found']
+        ? arch3_direct_class($constructorBootstrap['body'], 'WC_Upayments')
+        : array('found' => false, 'body' => array());
+    $constructor = $constructorClass['found']
+        ? arch3_direct_public_method($constructorClass['body'], '__construct')
+        : array('found' => false, 'body' => array());
+
+    return array(
+        'registration' => $topLevel['found'],
+        'class' => $class['found'],
+        'id' => $constructor['found'] && arch3_has_direct_gateway_id_assignment($constructor['body']),
+    );
+};
+
+$mismatchedCatchResults = $arch3StageResults(
+    "try { throw new RuntimeException('uncaught'); }\ncatch (InvalidArgumentException \$error) {}\n",
+    ''
+);
+arch3_assert(!$mismatchedCatchResults['registration'], 'bootstrap guard rejects type-incompatible caught registration');
+arch3_assert(!$mismatchedCatchResults['class'], 'bootstrap guard rejects type-incompatible caught gateway class');
+arch3_assert(!$mismatchedCatchResults['id'], 'constructor guard rejects type-incompatible caught gateway ID');
+
+$gotoSkipResults = $arch3StageResults(
+    "try {\n    goto arch3_skip_stage;\n",
+    "    arch3_skip_stage: ;\n}\nfinally {}\n"
+);
+arch3_assert(!$gotoSkipResults['registration'], 'bootstrap guard rejects registration skipped by try goto');
+arch3_assert(!$gotoSkipResults['class'], 'bootstrap guard rejects gateway class skipped by try goto');
+arch3_assert(!$gotoSkipResults['id'], 'constructor guard rejects gateway ID skipped by try goto');
+
+$finallyOverrideResults = $arch3StageResults(
+    "try {\n    try { return; }\n    finally { throw new RuntimeException('override'); }\n}\ncatch (RuntimeException \$error) {}\n",
+    ''
+);
+arch3_assert($finallyOverrideResults['registration'], 'bootstrap guard accepts registration after caught finally override');
+arch3_assert($finallyOverrideResults['class'], 'bootstrap guard accepts gateway class after caught finally override');
+arch3_assert($finallyOverrideResults['id'], 'constructor guard accepts gateway ID after caught finally override');
 
 $conditionalTerminatorFixture = <<<'PHP'
 <?php

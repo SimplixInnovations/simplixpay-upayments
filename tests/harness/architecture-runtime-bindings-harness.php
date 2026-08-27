@@ -305,6 +305,7 @@ function arch2_direct_try_groups(array $tokens)
         $hasCatch = false;
         $catches = array();
         while ($cursor < $count && $tokens[$cursor]['id'] === T_CATCH) {
+            $catchIndex = $cursor;
             $hasCatch = true;
             while ($cursor < $count && $tokens[$cursor]['text'] !== '{') {
                 $cursor++;
@@ -316,7 +317,13 @@ function arch2_direct_try_groups(array $tokens)
             if ($catchClose === false) {
                 break;
             }
-            $catches[] = array('open' => $cursor, 'close' => $catchClose);
+            $types = array();
+            for ($j = $catchIndex + 1; $j < $cursor; $j++) {
+                if (in_array($tokens[$j]['id'], array(T_STRING, T_NAME_QUALIFIED, T_NAME_FULLY_QUALIFIED), true)) {
+                    $types[] = strtolower(ltrim($tokens[$j]['text'], '\\'));
+                }
+            }
+            $catches[] = array('open' => $cursor, 'close' => $catchClose, 'types' => $types);
             $groupEnd = $catchClose;
             $cursor = $catchClose + 1;
         }
@@ -342,6 +349,48 @@ function arch2_direct_try_groups(array $tokens)
         return ($left['close'] - $left['open']) <=> ($right['close'] - $right['open']);
     });
     return $groups;
+}
+
+function arch2_thrown_class(array $tokens, $index)
+{
+    if (!isset($tokens[$index + 2]) || $tokens[$index + 1]['id'] !== T_NEW) {
+        return false;
+    }
+    $id = $tokens[$index + 2]['id'];
+    if (!in_array($id, array(T_STRING, T_NAME_QUALIFIED, T_NAME_FULLY_QUALIFIED), true)) {
+        return false;
+    }
+    return strtolower(ltrim($tokens[$index + 2]['text'], '\\'));
+}
+
+function arch2_catch_type_matches($thrownClass, $catchType)
+{
+    if ($thrownClass === false || $catchType === '') {
+        return false;
+    }
+    if ($thrownClass === $catchType) {
+        return true;
+    }
+    return (class_exists($thrownClass, false) || interface_exists($thrownClass, false))
+        && (class_exists($catchType, false) || interface_exists($catchType, false))
+        && is_a($thrownClass, $catchType, true);
+}
+
+function arch2_forward_goto_label(array $tokens, $index, $closeIndex)
+{
+    if (!isset($tokens[$index + 1]) || $tokens[$index + 1]['id'] !== T_STRING) {
+        return false;
+    }
+    $target = $tokens[$index + 1]['text'];
+    for ($i = $index + 2; $i < $closeIndex; $i++) {
+        if ($tokens[$i]['id'] === T_STRING
+            && $tokens[$i]['text'] === $target
+            && isset($tokens[$i + 1])
+            && arch2_is_label_colon($tokens, $i + 1)) {
+            return $i;
+        }
+    }
+    return false;
 }
 
 function arch2_direct_range_falls_through(array $tokens, $openIndex, $closeIndex)
@@ -429,9 +478,28 @@ function arch2_try_terminator_defer_map(array $tokens)
             if (array_key_exists($i, $deferred) && $deferred[$i] === false) {
                 continue;
             }
+            if (array_key_exists($i, $deferred) && is_array($deferred[$i])) {
+                continue;
+            }
+            if ($id === T_GOTO) {
+                $labelIndex = arch2_forward_goto_label($tokens, $i, $group['close']);
+                if ($labelIndex !== false) {
+                    $deferred[$i] = array('skip_to' => $labelIndex);
+                }
+                continue;
+            }
             if ($id === T_THROW && $group['has_catch']) {
+                $thrownClass = arch2_thrown_class($tokens, $i);
                 foreach ($group['catches'] as $catch) {
-                    if (arch2_direct_range_falls_through($tokens, $catch['open'], $catch['close'])) {
+                    $compatible = false;
+                    foreach ($catch['types'] as $catchType) {
+                        if (arch2_catch_type_matches($thrownClass, $catchType)) {
+                            $compatible = true;
+                            break;
+                        }
+                    }
+                    if ($compatible
+                        && arch2_direct_range_falls_through($tokens, $catch['open'], $catch['close'])) {
                         $deferred[$i] = false;
                         continue 2;
                     }
@@ -617,8 +685,14 @@ function arch2_direct_top_level_hook_callback(array $tokens, $hookFunction, $hoo
         }
         if (arch2_is_direct_terminator($tokens, $i)) {
             if (array_key_exists($i, $deferredTerminators)) {
+                if (is_array($deferredTerminators[$i])) {
+                    $i = $deferredTerminators[$i]['skip_to'] - 1;
+                    continue;
+                }
                 if ($deferredTerminators[$i] !== false) {
                     $terminationBoundaries[$deferredTerminators[$i]] = true;
+                } else {
+                    $terminationBoundaries = array();
                 }
                 continue;
             }
@@ -1316,6 +1390,64 @@ arch2_assert(
         'addUpaymentsGatewayClass'
     )['found'],
     'matcher rejects gateway registration after caught throw with terminating catch'
+);
+
+$mismatchedCatchFixture = <<<'PHP'
+<?php
+try { throw new RuntimeException('uncaught'); }
+catch (InvalidArgumentException $error) {}
+add_filter("woocommerce_payment_gateways", "addUpaymentsGatewayClass");
+function addUpaymentsGatewayClass($methods) { $methods[] = "WC_UPayments"; return $methods; }
+PHP;
+arch2_assert(
+    !arch2_direct_top_level_hook_callback(
+        arch2_tokens($mismatchedCatchFixture),
+        'add_filter',
+        'woocommerce_payment_gateways',
+        'addUpaymentsGatewayClass'
+    )['found'],
+    'matcher rejects gateway registration after type-incompatible catch'
+);
+
+$gotoSkipFixture = <<<'PHP'
+<?php
+try {
+    goto arch2_skip_registration;
+    add_filter("woocommerce_payment_gateways", "addUpaymentsGatewayClass");
+    function addUpaymentsGatewayClass($methods) { $methods[] = "WC_UPayments"; return $methods; }
+    arch2_skip_registration: ;
+}
+finally {}
+PHP;
+arch2_assert(
+    !arch2_direct_top_level_hook_callback(
+        arch2_tokens($gotoSkipFixture),
+        'add_filter',
+        'woocommerce_payment_gateways',
+        'addUpaymentsGatewayClass'
+    )['found'],
+    'matcher rejects gateway registration skipped by forward goto in try body'
+);
+
+$finallyOverrideFixture = <<<'PHP'
+<?php
+try {
+    try { return; }
+    finally { throw new RuntimeException('override'); }
+}
+catch (RuntimeException $error) {}
+add_filter("woocommerce_payment_gateways", "addUpaymentsGatewayClass");
+function addUpaymentsGatewayClass($methods) { $methods[] = "WC_UPayments"; return $methods; }
+PHP;
+$finallyOverride = arch2_direct_top_level_hook_callback(
+    arch2_tokens($finallyOverrideFixture),
+    'add_filter',
+    'woocommerce_payment_gateways',
+    'addUpaymentsGatewayClass'
+);
+arch2_assert(
+    $finallyOverride['found'] && arch2_gateway_callback_returns_registered_methods($finallyOverride['body']),
+    'matcher accepts gateway registration after caught finally override'
 );
 
 $finallyRegistrationFixture = <<<'PHP'
