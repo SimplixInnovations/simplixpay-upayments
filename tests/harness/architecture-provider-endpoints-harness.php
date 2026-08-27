@@ -23,6 +23,70 @@ function arch4_assert($condition, $message)
     echo "FAIL: {$message}\n";
 }
 
+function arch4_purity_violations($source)
+{
+    $tokens = token_get_all($source);
+    $superglobals = array(
+        '$GLOBALS',
+        '$_SERVER',
+        '$_GET',
+        '$_POST',
+        '$_FILES',
+        '$_COOKIE',
+        '$_SESSION',
+        '$_REQUEST',
+        '$_ENV',
+    );
+    $callTokenIds = array(T_STRING);
+    foreach (array('T_NAME_FULLY_QUALIFIED', 'T_NAME_QUALIFIED', 'T_NAME_RELATIVE') as $tokenName) {
+        if (defined($tokenName)) {
+            $callTokenIds[] = constant($tokenName);
+        }
+    }
+
+    $violations = array();
+    $count = count($tokens);
+    for ($i = 0; $i < $count; $i++) {
+        $token = $tokens[$i];
+        if (!is_array($token)) {
+            continue;
+        }
+
+        if ($token[0] === T_GLOBAL) {
+            $violations[] = 'global-import';
+            continue;
+        }
+        if ($token[0] === T_VARIABLE && in_array($token[1], $superglobals, true)) {
+            $violations[] = 'superglobal:' . $token[1];
+            continue;
+        }
+        if (!in_array($token[0], $callTokenIds, true)) {
+            continue;
+        }
+
+        $next = $i + 1;
+        while ($next < $count && is_array($tokens[$next]) && in_array($tokens[$next][0], array(T_WHITESPACE, T_COMMENT, T_DOC_COMMENT), true)) {
+            $next++;
+        }
+        if ($next >= $count || $tokens[$next] !== '(') {
+            continue;
+        }
+
+        $previous = $i - 1;
+        while ($previous >= 0 && is_array($tokens[$previous]) && in_array($tokens[$previous][0], array(T_WHITESPACE, T_COMMENT, T_DOC_COMMENT), true)) {
+            $previous--;
+        }
+        $previousId = $previous >= 0 && is_array($tokens[$previous]) ? $tokens[$previous][0] : null;
+        if (in_array($previousId, array(T_FUNCTION, T_OBJECT_OPERATOR, T_DOUBLE_COLON, T_NEW), true)) {
+            continue;
+        }
+
+        $violations[] = 'global-call:' . ltrim($token[1], '\\');
+    }
+
+    return array_values(array_unique($violations));
+}
+
 $liveBase = 'https://apiv2api.upayments.com/api/v1/';
 $sandboxBase = 'https://sandboxapi.upayments.com/api/v1/';
 $routes = array(
@@ -87,16 +151,18 @@ arch4_assert(
     strpos($resolverSource, 'namespace Simplix\\Pay\\UPayments\\Provider;') !== false,
     'resolver uses the Simplix Provider namespace'
 );
+arch4_assert(arch4_purity_violations($resolverSource) === array(), 'resolver token stream has no global calls, superglobals or global imports');
 arch4_assert(
-    strpos($resolverSource, 'get_option(') === false
-        && strpos($resolverSource, 'apply_filters(') === false
-        && strpos($resolverSource, 'do_action(') === false
-        && strpos($resolverSource, 'add_action(') === false
-        && strpos($resolverSource, 'add_filter(') === false
-        && strpos($resolverSource, 'wp_') === false
-        && strpos($resolverSource, 'WC_') === false
-        && strpos($resolverSource, '$GLOBALS') === false,
-    'resolver has no WordPress, WooCommerce, hook or global-state dependency'
+    in_array('superglobal:$_SERVER', arch4_purity_violations('<?php $mode = $_SERVER["HTTP_HOST"];'), true),
+    'purity guard rejects superglobal-dependent mode selection'
+);
+arch4_assert(
+    in_array('global-import', arch4_purity_violations('<?php function endpoint_mode() { global $mode; }'), true),
+    'purity guard rejects imported global state'
+);
+arch4_assert(
+    in_array('global-call:apply_filters', arch4_purity_violations('<?php $mode = apply_filters("endpoint_mode", false);'), true),
+    'purity guard rejects platform hook calls'
 );
 arch4_assert(
     substr_count($gatewaySource, 'apiv2api.upayments.com/api/v1/') === 0
