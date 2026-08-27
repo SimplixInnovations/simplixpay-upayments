@@ -93,7 +93,7 @@ function arch2_has_namespace_declaration(array $tokens)
 function arch2_alt_start_indexes(array $tokens)
 {
     $starts = array();
-    $controlIds = array(T_IF, T_FOR, T_FOREACH, T_WHILE, T_SWITCH, T_DECLARE);
+    $controlIds = array(T_IF, T_FOR, T_FOREACH, T_WHILE, T_SWITCH);
     $count = count($tokens);
 
     for ($i = 0; $i < $count; $i++) {
@@ -143,6 +143,42 @@ function arch2_is_alt_end($id)
     );
 }
 
+function arch2_control_before_parentheses(array $tokens, $closeIndex)
+{
+    if ($closeIndex < 1 || !isset($tokens[$closeIndex]) || $tokens[$closeIndex]['text'] !== ')') {
+        return false;
+    }
+
+    $depth = 1;
+    for ($i = $closeIndex - 1; $i >= 0; $i--) {
+        if ($tokens[$i]['text'] === ')') {
+            $depth++;
+            continue;
+        }
+        if ($tokens[$i]['text'] !== '(') {
+            continue;
+        }
+        $depth--;
+        if ($depth === 0) {
+            return $i - 1 >= 0 ? $i - 1 : false;
+        }
+    }
+
+    return false;
+}
+
+function arch2_is_direct_alt_declare_colon(array $tokens, $index)
+{
+    if ($index < 1 || !isset($tokens[$index]) || $tokens[$index]['text'] !== ':') {
+        return false;
+    }
+
+    $ownerIndex = arch2_control_before_parentheses($tokens, $index - 1);
+    return $ownerIndex !== false
+        && $tokens[$ownerIndex]['id'] === T_DECLARE
+        && arch2_is_direct_statement_start($tokens, $ownerIndex);
+}
+
 function arch2_is_label_colon(array $tokens, $index)
 {
     if ($index < 1
@@ -157,11 +193,16 @@ function arch2_is_label_colon(array $tokens, $index)
         return true;
     }
 
-    $beforeLabel = $tokens[$labelIndex - 1]['text'];
+    $beforeLabelIndex = $labelIndex - 1;
+    $beforeLabel = $tokens[$beforeLabelIndex]['text'];
     return $beforeLabel === ';'
         || $beforeLabel === '{'
         || $beforeLabel === '}'
-        || ($beforeLabel === ':' && arch2_is_label_colon($tokens, $labelIndex - 1));
+        || ($tokens[$beforeLabelIndex]['id'] === T_DO
+            && arch2_is_direct_statement_start($tokens, $beforeLabelIndex))
+        || ($beforeLabel === ':'
+            && (arch2_is_label_colon($tokens, $beforeLabelIndex)
+                || arch2_is_direct_alt_declare_colon($tokens, $beforeLabelIndex)));
 }
 
 function arch2_is_direct_statement_start(array $tokens, $index)
@@ -170,11 +211,23 @@ function arch2_is_direct_statement_start(array $tokens, $index)
         return true;
     }
 
-    $previous = $tokens[$index - 1]['text'];
-    return $previous === ';'
+    $previousIndex = $index - 1;
+    $previous = $tokens[$previousIndex]['text'];
+    if ($previous === ';'
         || $previous === '{'
         || $previous === '}'
-        || ($previous === ':' && arch2_is_label_colon($tokens, $index - 1));
+        || ($tokens[$previousIndex]['id'] === T_DO
+            && arch2_is_direct_statement_start($tokens, $previousIndex))
+        || ($previous === ':'
+            && (arch2_is_label_colon($tokens, $previousIndex)
+                || arch2_is_direct_alt_declare_colon($tokens, $previousIndex)))) {
+        return true;
+    }
+
+    $ownerIndex = arch2_control_before_parentheses($tokens, $previousIndex);
+    return $ownerIndex !== false
+        && $tokens[$ownerIndex]['id'] === T_DECLARE
+        && arch2_is_direct_statement_start($tokens, $ownerIndex);
 }
 
 function arch2_is_direct_terminator(array $tokens, $index)
@@ -200,8 +253,15 @@ function arch2_is_direct_unconditional_block_open(array $tokens, $index)
     }
 
     $ownerIndex = $index - 1;
-    return $ownerIndex >= 0
-        && $tokens[$ownerIndex]['id'] === T_DO
+    if ($ownerIndex >= 0
+        && in_array($tokens[$ownerIndex]['id'], array(T_DO, T_TRY, T_FINALLY), true)
+        && arch2_is_direct_statement_start($tokens, $ownerIndex)) {
+        return true;
+    }
+
+    $ownerIndex = arch2_control_before_parentheses($tokens, $index - 1);
+    return $ownerIndex !== false
+        && $tokens[$ownerIndex]['id'] === T_DECLARE
         && arch2_is_direct_statement_start($tokens, $ownerIndex);
 }
 
@@ -873,6 +933,35 @@ foreach ($terminatorFixtures as $terminatorName => $fixture) {
     }
 }
 
+$mandatoryCompoundTerminators = array(
+    'brace-less do body' => "do return; while (false);\n",
+    'try body' => "try { return; } finally {}\n",
+    'finally body' => "try {} finally { return; }\n",
+    'braced declare body' => "declare(ticks=1) { return; }\n",
+    'alternative-syntax declare body' => "declare(ticks=1): return; enddeclare;\n",
+    'brace-less declare body' => "declare(ticks=1) return;\n",
+);
+
+foreach ($mandatoryCompoundTerminators as $pathName => $path) {
+    foreach ($protectedRegistrations as $stageName => $registration) {
+        $terminatedSource = "<?php\n"
+            . $path
+            . $registration['hook_function'] . "('" . $registration['hook_name'] . "', '"
+            . $registration['callback_name'] . "');\n"
+            . 'function ' . $registration['callback_name'] . '($value) {'
+            . $registration['callback_body'] . "}\n";
+        arch2_assert(
+            !arch2_direct_top_level_hook_callback(
+                arch2_tokens($terminatedSource),
+                $registration['hook_function'],
+                $registration['hook_name'],
+                $registration['callback_name']
+            )['found'],
+            "matcher rejects {$stageName} registration after terminator in {$pathName}"
+        );
+    }
+}
+
 $nestedBareBlockFixture = <<<'PHP'
 <?php
 {
@@ -956,6 +1045,27 @@ arch2_assert(
     $reachableDoBlock['found']
         && arch2_gateway_callback_returns_registered_methods($reachableDoBlock['body']),
     'matcher accepts reachable gateway registration inside mandatory do block'
+);
+
+$reachableCompoundFixture = <<<'PHP'
+<?php
+try {
+    declare(ticks=1):
+        add_filter("woocommerce_payment_gateways", "addUpaymentsGatewayClass");
+        function addUpaymentsGatewayClass($methods) { $methods[] = "WC_UPayments"; return $methods; }
+    enddeclare;
+} finally {}
+PHP;
+$reachableCompound = arch2_direct_top_level_hook_callback(
+    arch2_tokens($reachableCompoundFixture),
+    'add_filter',
+    'woocommerce_payment_gateways',
+    'addUpaymentsGatewayClass'
+);
+arch2_assert(
+    $reachableCompound['found']
+        && arch2_gateway_callback_returns_registered_methods($reachableCompound['body']),
+    'matcher accepts reachable gateway registration inside mandatory try and declare paths'
 );
 
 $validFixture = <<<'PHP'
