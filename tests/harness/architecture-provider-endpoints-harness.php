@@ -43,21 +43,101 @@ function arch4_purity_violations($source)
             $callTokenIds[] = constant($tokenName);
         }
     }
+    $allowedObjectMembers = array('base', 'resolve');
+    $allowedSelfConstants = array(
+        'LIVE_BASE',
+        'SANDBOX_BASE',
+        'CREATE_CUSTOMER_TOKEN',
+        'CHECK_PAYMENT_BUTTON_STATUS',
+        'RETRIEVE_CUSTOMER_CARDS',
+    );
+    $forbiddenDependencyTokens = array(
+        T_NEW,
+        T_EXTENDS,
+        T_IMPLEMENTS,
+        T_USE,
+        T_INCLUDE,
+        T_INCLUDE_ONCE,
+        T_REQUIRE,
+        T_REQUIRE_ONCE,
+        T_CLONE,
+        T_INSTANCEOF,
+        T_STATIC,
+    );
 
     $violations = array();
     $count = count($tokens);
+    $inNamespaceDeclaration = false;
     for ($i = 0; $i < $count; $i++) {
         $token = $tokens[$i];
         if (!is_array($token)) {
+            if ($inNamespaceDeclaration && ($token === ';' || $token === '{')) {
+                $inNamespaceDeclaration = false;
+            }
             continue;
         }
 
+        if ($token[0] === T_NAMESPACE) {
+            $inNamespaceDeclaration = true;
+            continue;
+        }
+        if ($inNamespaceDeclaration) {
+            continue;
+        }
         if ($token[0] === T_GLOBAL) {
             $violations[] = 'global-import';
             continue;
         }
         if ($token[0] === T_VARIABLE && in_array($token[1], $superglobals, true)) {
             $violations[] = 'superglobal:' . $token[1];
+            continue;
+        }
+        if (in_array($token[0], $forbiddenDependencyTokens, true)) {
+            $violations[] = 'dependency-token:' . token_name($token[0]);
+            continue;
+        }
+        if ($token[0] === T_OBJECT_OPERATOR) {
+            $previous = $i - 1;
+            while ($previous >= 0 && is_array($tokens[$previous]) && in_array($tokens[$previous][0], array(T_WHITESPACE, T_COMMENT, T_DOC_COMMENT), true)) {
+                $previous--;
+            }
+            $next = $i + 1;
+            while ($next < $count && is_array($tokens[$next]) && in_array($tokens[$next][0], array(T_WHITESPACE, T_COMMENT, T_DOC_COMMENT), true)) {
+                $next++;
+            }
+            $validInternalObjectAccess = $previous >= 0
+                && is_array($tokens[$previous])
+                && $tokens[$previous][0] === T_VARIABLE
+                && $tokens[$previous][1] === '$this'
+                && $next < $count
+                && is_array($tokens[$next])
+                && $tokens[$next][0] === T_STRING
+                && in_array($tokens[$next][1], $allowedObjectMembers, true);
+            if (!$validInternalObjectAccess) {
+                $violations[] = 'object-dependency';
+            }
+            continue;
+        }
+        if ($token[0] === T_DOUBLE_COLON) {
+            $previous = $i - 1;
+            while ($previous >= 0 && is_array($tokens[$previous]) && in_array($tokens[$previous][0], array(T_WHITESPACE, T_COMMENT, T_DOC_COMMENT), true)) {
+                $previous--;
+            }
+            $next = $i + 1;
+            while ($next < $count && is_array($tokens[$next]) && in_array($tokens[$next][0], array(T_WHITESPACE, T_COMMENT, T_DOC_COMMENT), true)) {
+                $next++;
+            }
+            $validInternalConstant = $previous >= 0
+                && is_array($tokens[$previous])
+                && $tokens[$previous][0] === T_STRING
+                && strtolower($tokens[$previous][1]) === 'self'
+                && $next < $count
+                && is_array($tokens[$next])
+                && $tokens[$next][0] === T_STRING
+                && in_array($tokens[$next][1], $allowedSelfConstants, true);
+            if (!$validInternalConstant) {
+                $violations[] = 'static-dependency';
+            }
             continue;
         }
         if (!in_array($token[0], $callTokenIds, true)) {
@@ -68,20 +148,25 @@ function arch4_purity_violations($source)
         while ($next < $count && is_array($tokens[$next]) && in_array($tokens[$next][0], array(T_WHITESPACE, T_COMMENT, T_DOC_COMMENT), true)) {
             $next++;
         }
-        if ($next >= $count || $tokens[$next] !== '(') {
-            continue;
-        }
 
         $previous = $i - 1;
         while ($previous >= 0 && is_array($tokens[$previous]) && in_array($tokens[$previous][0], array(T_WHITESPACE, T_COMMENT, T_DOC_COMMENT), true)) {
             $previous--;
         }
         $previousId = $previous >= 0 && is_array($tokens[$previous]) ? $tokens[$previous][0] : null;
-        if (in_array($previousId, array(T_FUNCTION, T_OBJECT_OPERATOR, T_DOUBLE_COLON, T_NEW), true)) {
+        if ($next < $count && $tokens[$next] === '(') {
+            if (in_array($previousId, array(T_FUNCTION, T_OBJECT_OPERATOR, T_DOUBLE_COLON, T_NEW), true)) {
+                continue;
+            }
+            $violations[] = 'global-call:' . ltrim($token[1], '\\');
             continue;
         }
 
-        $violations[] = 'global-call:' . ltrim($token[1], '\\');
+        $nextId = $next < $count && is_array($tokens[$next]) ? $tokens[$next][0] : null;
+        if (!in_array($previousId, array(T_CLASS, T_FUNCTION, T_CONST, T_OBJECT_OPERATOR, T_DOUBLE_COLON, T_NEW), true)
+            && $nextId !== T_DOUBLE_COLON) {
+            $violations[] = 'external-symbol:' . $token[1];
+        }
     }
 
     return array_values(array_unique($violations));
@@ -163,6 +248,22 @@ arch4_assert(
 arch4_assert(
     in_array('global-call:apply_filters', arch4_purity_violations('<?php $mode = apply_filters("endpoint_mode", false);'), true),
     'purity guard rejects platform hook calls'
+);
+arch4_assert(
+    in_array('static-dependency', arch4_purity_violations('<?php $mode = WC_Admin_Settings::get_option("test_mode");'), true),
+    'purity guard rejects static platform dependencies'
+);
+arch4_assert(
+    in_array('object-dependency', arch4_purity_violations('<?php $mode = $settings->get_option("test_mode");'), true),
+    'purity guard rejects injected object dependencies'
+);
+arch4_assert(
+    in_array('dependency-token:T_NEW', arch4_purity_violations('<?php $settings = new WC_Admin_Settings();'), true),
+    'purity guard rejects platform object construction'
+);
+arch4_assert(
+    in_array('external-symbol:WP_DEBUG', arch4_purity_violations('<?php $mode = WP_DEBUG;'), true),
+    'purity guard rejects external constants'
 );
 arch4_assert(
     substr_count($gatewaySource, 'apiv2api.upayments.com/api/v1/') === 0
