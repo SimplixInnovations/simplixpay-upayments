@@ -1063,8 +1063,8 @@ arch2_assert(
 );
 arch2_assert($availabilityRegistration['found'], 'availability registration is a direct executable global hook/callback pair');
 arch2_assert(
-    strpos($subscriptionComposition, "add_action('woocommerce_process_product_meta', array(Presentation::class, 'save_custom_field_data'))") !== false,
-    'subscription product-meta registration is owned by the A4 composition boundary'
+    strpos($subscriptionComposition, "add_action('woocommerce_process_product_meta', 'saveCustomFieldData')") !== false,
+    'subscription product-meta registration retains its legacy callback identity in the A4 composition boundary'
 );
 
 $gatewayClass = arch2_class_body_tokens($gatewayTokens, 'WC_Upayments');

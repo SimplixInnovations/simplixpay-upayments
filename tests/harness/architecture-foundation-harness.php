@@ -455,7 +455,7 @@ foreach ($publicMethods as $methodName => $message) {
 }
 
 arch_assert(arch_contains($gateway, '\\Simplix\\Pay\\UPayments\\Security\\PublicOrderStatus::handle();'), 'public status polling delegates to Security boundary');
-arch_assert(arch_contains($subscriptionComposition, "add_action('woocommerce_process_product_meta', array(Presentation::class, 'save_custom_field_data'))"), 'subscription product-meta hook delegates through A4 composition');
+arch_assert(arch_contains($subscriptionComposition, "add_action('woocommerce_process_product_meta', 'saveCustomFieldData')"), 'subscription product-meta hook retains legacy callback identity through A4 composition');
 arch_assert(is_file($root . '/src/Release/Identity.php'), 'Release module exists');
 arch_assert(is_dir($root . '/src/Migration'), 'Migration module exists');
 arch_assert(is_dir($root . '/src/Payment'), 'Payment module exists');

@@ -19,16 +19,16 @@ final class Composition {
      */
     public static function register_presentation_hooks() {
         add_action('init', array(Presentation::class, 'register_product_class'));
-        add_filter('product_type_selector', array(Presentation::class, 'add_custom_product_type'));
-        add_filter('woocommerce_product_class', array(Presentation::class, 'map_custom_product_class'), 10, 2);
+        add_filter('product_type_selector', 'addCustomProductType');
+        add_filter('woocommerce_product_class', 'mapCustomProductClass', 10, 2);
         add_action('woocommerce_custom_type_add_to_cart', 'woocommerce_simple_add_to_cart', 30);
-        add_action('admin_footer', array(Presentation::class, 'custom_product_types'));
-        add_filter('woocommerce_product_data_tabs', array(Presentation::class, 'add_custom_data_tab'));
-        add_action('woocommerce_product_data_panels', array(Presentation::class, 'add_custom_data_panel'));
-        add_action('woocommerce_process_product_meta', array(Presentation::class, 'save_custom_field_data'));
-        add_action('woocommerce_single_product_summary', array(Presentation::class, 'display_custom_field_on_frontend'), 10);
-        add_filter('woocommerce_get_item_data', array(Presentation::class, 'display_custom_data_in_cart'), 10, 2);
-        add_action('woocommerce_checkout_create_order_line_item', array(Presentation::class, 'save_custom_data_to_order_items'), 10, 4);
+        add_action('admin_footer', 'customProductTypes');
+        add_filter('woocommerce_product_data_tabs', 'addCustomDataTab');
+        add_action('woocommerce_product_data_panels', 'addCustomDataPanel');
+        add_action('woocommerce_process_product_meta', 'saveCustomFieldData');
+        add_action('woocommerce_single_product_summary', 'displayCustomFieldOnFrontend', 10);
+        add_filter('woocommerce_get_item_data', 'displayCustomDataInCart', 10, 2);
+        add_action('woocommerce_checkout_create_order_line_item', 'saveCustomDataToOrderItems', 10, 4);
         add_action('woocommerce_order_details_after_order_table', array(Presentation::class, 'render_account_order_details'));
         add_action('woocommerce_before_account_orders', array(Presentation::class, 'render_account_orders_filter'));
         add_filter('woocommerce_my_account_my_orders_query', array(Presentation::class, 'filter_account_orders_query'));
