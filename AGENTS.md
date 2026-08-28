@@ -54,7 +54,7 @@ Do not start a later phase because code has been drafted. Phase progression requ
 
 When **Architecture & Code-Quality Foundation** is current, `ARCHITECTURE-CODE-QUALITY.md` is mandatory. Characterize a responsibility before extracting it, keep legacy public entry points as compatibility wrappers where required, and follow the frozen extraction order unless new evidence justifies a separately reviewed change.
 
-For A2 and every later architecture tranche, keep `tests/harness/architecture-foundation-harness.php`, `tests/harness/architecture-runtime-bindings-harness.php`, `tests/harness/architecture-bootstrap-path-harness.php`, `tests/harness/architecture-provider-endpoints-harness.php` and `tests/harness/architecture-payment-method-availability-harness.php` mandatory in Quality Gates.
+For A3 and every later architecture tranche, keep `tests/harness/architecture-foundation-harness.php`, `tests/harness/architecture-runtime-bindings-harness.php`, `tests/harness/architecture-bootstrap-path-harness.php`, `tests/harness/architecture-provider-endpoints-harness.php`, `tests/harness/architecture-payment-method-availability-harness.php` and `tests/harness/architecture-gateway-settings-harness.php` mandatory in Quality Gates.
 
 ## Protected compatibility identities
 
@@ -136,6 +136,7 @@ php tests/harness/architecture-runtime-bindings-harness.php
 php tests/harness/architecture-bootstrap-path-harness.php
 php tests/harness/architecture-provider-endpoints-harness.php
 php tests/harness/architecture-payment-method-availability-harness.php
+php tests/harness/architecture-gateway-settings-harness.php
 php tests/harness/security-threat-model-harness.php
 php tests/harness/phase-9g-h12-php-harness.php
 node --check tests/harness/phase-9g-h12-blocks-harness.js

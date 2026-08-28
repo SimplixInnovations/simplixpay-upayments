@@ -24,13 +24,18 @@ Use this file with root `AGENTS.md`, `PROJECT-STATUS.md`, the naming standard, t
 - Security Threat-Model Closure: **DONE / VERIFIED**
 - Architecture discovery: **DONE / VERIFIED**
 - Architecture A1 — provider endpoint/mode resolution: **DONE / VERIFIED**
-- Current program gate: **Architecture & Code-Quality Foundation — A2**
+- Architecture A2 — payment-method availability client/cache: **DONE / VERIFIED**
+- Current program gate: **Architecture & Code-Quality Foundation — A3**
 - Stable production release: **NO**
 - WordPress.org release: **NO**
 
 Always verify live GitHub before acting. Recorded SHAs are milestone evidence, not substitutes for fresh source/check/review verification.
 
-## Latest verified milestone — Architecture A1
+## Latest verified milestone — Architecture A2
+
+PR #22 final reviewed head `bdb627520aa28e71b69a91f8ef71d04d257a3ad8` was squash-merged as verified commit `f85894271e8f991e77a8e6a2b306f4d191483bbd`, tree `1addbcc02e0d30f57a948cafd8111fb94e60c4da`, on parent `d43d175a1443709d42efabfbe78519a5a84f4dc9`. Exact-head Quality Gates run #155 and post-merge run #156 passed; Payment-Method Availability was **102/0** and the implementation branch was deleted.
+
+## Previous verified milestone — Architecture A1
 
 PR #21 final reviewed head `baed693964556120dc7ad07dbc740d3acc1af20f` was squash-merged as verified commit `d43d175a1443709d42efabfbe78519a5a84f4dc9`, tree `ddb2ac7cd8b2d4f454867e10bc361fee94dbcf4b`, on parent `596ffb433813cdc06e81d67162617b3019af686b`. Exact-head Quality Gates run #152 and post-merge run #153 passed; Provider Endpoints was **49/0** and the implementation branch was deleted.
 
@@ -261,19 +266,19 @@ Do not globally rename:
 - malformed H12 secret is distinct from missing and fails closed.
 - selected saved card requires current valid provenance + exact scope/generation + fresh provider Retrieve + exact membership.
 
-## Current tranche — Architecture & Code-Quality Foundation A2
+## Current tranche — Architecture & Code-Quality Foundation A3
 
-**Status: A2 — PAYMENT-METHOD AVAILABILITY CLIENT/CACHE / IMPLEMENTATION.**
+**Status: A3 — GATEWAY SETTINGS/ADMIN/SINGLE-ADDITIONAL-MERCHANT PRESENTATION / IMPLEMENTATION.**
 
 Required bounded sequence:
 
-1. Work only from verified A1 merge `d43d175a1443709d42efabfbe78519a5a84f4dc9` on `architecture/a2-payment-method-availability`.
-2. Extract only payment-method availability client/cache coordination to `src/Provider/PaymentMethodAvailability.php` behind public `getUpayPaymentMethods()`.
-3. Preserve exact cache fingerprint/prefix, mode isolation, site/mode advisory lock, 65-second durable gate, lock/gate/HTTP ordering and schema-3 cache shapes.
-4. Preserve strict HTTP 201 and provider-response normalization, fresh-response versus cache-hit shapes, fail-closed behavior, notice text and checkout redirect.
-5. Leave hardened authenticated transport, provider endpoints, credentials, payment truth and order state unchanged.
-6. Keep every closed regression plus all five architecture harnesses mandatory.
-7. Do not begin A3 until the exact A2 head is independently reviewed, green, merged, post-merge verified and its branch deleted.
+1. Work only from verified A2 merge `f85894271e8f991e77a8e6a2b306f4d191483bbd` on `architecture/a3-gateway-settings-admin-multimerchant`.
+2. Extract only gateway settings schema/validation, one-row allocation presentation and admin-asset scoping to `src/Admin/GatewaySettings.php` behind the existing public gateway methods.
+3. Preserve `woocommerce_upayments_settings`, all 21 field keys/order/defaults and the five legacy allocation scalar keys.
+4. Preserve save-card/subscription normalization, settings errors, disabled-allocation clearing, escaped stored presentation and exact admin asset handles/paths/scopes.
+5. Preserve exactly one additional `extraMerchantData` entry and leave `process_payment()`, provider payload construction, authenticated transport, credentials, payment truth and order state unchanged.
+6. Keep every closed regression plus all six architecture harnesses mandatory.
+7. Do not begin A4 until the exact A3 head is independently reviewed, green, merged, post-merge verified and its branch deleted.
 
 The architecture gate may improve structure; it may not reinterpret provider truth, weaken authorization, or silently broaden certified feature/platform claims.
 
@@ -314,7 +319,7 @@ Read in this order:
 2. Phase 9I — Historical token-identity migration — **DONE / VERIFIED**
 3. Provider Contract & Payment Lifecycle — **DONE / VERIFIED**
 4. Security Threat-Model Closure — **DONE / VERIFIED**
-5. Architecture & Code-Quality Foundation — **CURRENT / A2**
+5. Architecture & Code-Quality Foundation — **CURRENT / A3**
 6. Full automated quality platform
 7. Platform certification: Woo/WP/PHP/HPOS/Blocks/WPML
 8. Feature certification
@@ -331,9 +336,9 @@ Read AGENTS.md first, then docs/project/PROJECT-STATUS.md, docs/project/NAMING-I
 
 Treat recorded SHAs/status as verified milestone anchors, not substitutes for live GitHub. Freshly verify current main, open PRs/branches, checks, review state and current source before acting; reconcile any drift first.
 
-Repository readiness, Phase 0, Phase 9I, Provider Contract & Payment Lifecycle, Security Threat-Model Closure, Architecture discovery and A1 are DONE / VERIFIED. A1 was squash-merged from PR #21 as verified main d43d175a1443709d42efabfbe78519a5a84f4dc9, tree ddb2ac7cd8b2d4f454867e10bc361fee94dbcf4b; exact-head run #152 and post-merge run #153 passed. The current permitted gate is Architecture & Code-Quality Foundation — A2.
+Repository readiness, Phase 0, Phase 9I, Provider Contract & Payment Lifecycle, Security Threat-Model Closure, Architecture discovery, A1 and A2 are DONE / VERIFIED. A2 was squash-merged from PR #22 as verified main f85894271e8f991e77a8e6a2b306f4d191483bbd, tree 1addbcc02e0d30f57a948cafd8111fb94e60c4da; exact-head run #155 and post-merge run #156 passed. The current permitted gate is Architecture & Code-Quality Foundation — A3.
 
-Implement only the A2 payment-method availability client/cache behind public getUpayPaymentMethods(). Preserve exact credential/mode cache identity, site/mode advisory locking, the 65-second durable gate and ordering, schema-3 cache behavior, strict provider normalization, fail-closed behavior and gateway notice/redirect presentation. Change no endpoint, authenticated transport, credential, payment-truth or order-state behavior. Keep all existing regression suites and the five architecture harnesses mandatory.
+Implement only the A3 gateway settings/admin/single-additional-merchant presentation boundary behind the existing public compatibility methods. Preserve every existing option key and field default, save-card/subscription normalization, settings errors, five allocation scalar keys, attribute escaping, admin asset scopes and exactly one runtime extraMerchantData entry. Change no endpoint, authenticated transport, credential, provider payload, payment-truth or order-state behavior. Keep all existing regression suites and the six architecture harnesses mandatory.
 
 Do not claim broad security, PCI/compliance, platform, feature, performance or production certification from the bounded security closure. UPayments webhook signature details remain provider-document unresolved, automatic refunds remain unsupported pending durable idempotency/reconciliation design, and subscription auto-deduction remains separately characterized rather than broadly certified.
 

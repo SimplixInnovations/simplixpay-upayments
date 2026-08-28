@@ -16,6 +16,10 @@
 
 **Security Threat-Model tree:** `e0027005f059fad03d8c08273b7aac6553c45f53`
 
+**Architecture A2 verified implementation:** `f85894271e8f991e77a8e6a2b306f4d191483bbd`
+
+**Architecture A2 tree:** `1addbcc02e0d30f57a948cafd8111fb94e60c4da`
+
 **Last reconciled:** 2026-08-25
 
 **Purpose:** maintain tracked-tree debt classification and current gate ownership without authorizing drive-by runtime cleanup.
@@ -28,7 +32,7 @@ The repository remains a pre-release engineering codebase. It is not the intende
 
 Phase 0 took ownership of public release identity and removed inherited update authority. Phase 9I added isolated historical-identity migration tooling. The provider lifecycle gate then added an isolated `Simplix\Pay\UPayments\Payment` strangler for ordinary browser/webhook/status truth and WooCommerce payment-state transitions without broadly rewriting the inherited gateway bootstrap.
 
-The current owner/gate is **Architecture & Code-Quality Foundation — A2**. A1 is DONE / VERIFIED; A2 may extract only the characterized payment-method availability client/cache behind the existing gateway entry point and does not authorize a big-bang rewrite, protected-identity renames, provider-host migration, or weakening closed Security/Payment/H12/Phase 9I contracts.
+The current owner/gate is **Architecture & Code-Quality Foundation — A3**. A1 and A2 are DONE / VERIFIED; A3 may extract only the characterized gateway settings/admin/single-additional-merchant presentation boundary behind existing public entry points and does not authorize a big-bang rewrite, protected-option renames, arbitrary multi-split routing, Charge payload changes, provider-host migration, or weakening closed Security/Payment/H12/Phase 9I contracts.
 
 ## Top-level inventory after Security Threat-Model closure
 
@@ -209,16 +213,14 @@ The required custom harness stack now includes Phase 0, all Phase 9I suites, Pro
 
 ## Current next owner/gate
 
-**Architecture & Code-Quality Foundation — A2**.
+**Architecture & Code-Quality Foundation — A3**.
 
-The gate must first characterize responsibility/dependency seams and freeze incremental extraction contracts for:
+The current tranche must preserve the verified architecture map while separating:
 
-- the large `UPayments.php` bootstrap/gateway surface;
-- current `src/Payment/` and `src/Security/` strangler boundaries;
-- H12 token identity and Phase 9I migration dependencies;
-- subscription and Blocks integration seams;
-- global/hook/static side effects and compatibility-sensitive runtime identities;
-- baseline static-analysis/coding-standard debt versus runtime behavior.
+- exact WooCommerce gateway field keys/defaults and `woocommerce_upayments_settings` identity;
+- save-card/subscription dependency and settings-save validation/persistence wrappers;
+- single-additional-merchant settings rendering/sanitization and admin asset scope;
+- runtime Charge allocation/payload orchestration, which remains in the legacy gateway and must not change in A3.
 
 Do not start with a big-bang refactor or mechanical rename. Closed Security/Provider/H12/Phase 9I contracts remain required regressions throughout architecture work.
 

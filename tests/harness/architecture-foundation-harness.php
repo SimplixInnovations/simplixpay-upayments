@@ -387,7 +387,7 @@ $availabilityBinding = arch_direct_top_level_filter_callback(
 );
 
 arch_assert($architecture !== '', 'architecture control record exists');
-arch_assert(arch_contains($architecture, '**Status:** A2 / IMPLEMENTATION'), 'architecture record is A2 implementation');
+arch_assert(arch_contains($architecture, '**Status:** A3 / IMPLEMENTATION'), 'architecture record is A3 implementation');
 arch_assert(arch_contains($architecture, 'Architecture & Code-Quality Foundation'), 'architecture gate is named explicitly');
 
 $stageHeadings = array(
@@ -419,12 +419,12 @@ arch_assert(arch_contains($architecture, 'This is not permission for a big-bang 
 arch_assert(arch_contains($architecture, 'exact accepted `UPayments.php` byte size for the current architecture milestone'), 'monolith ratchet update contract is explicit');
 arch_assert(arch_contains($architecture, 'Composer only with an explicit distribution rule'), 'Composer introduction is gated by distribution contract');
 arch_assert(arch_contains($architecture, 'PHPCS/WPCS and PHPStan incrementally'), 'static-analysis rollout is incremental');
-arch_assert(arch_contains($status, '| Current program gate | **Architecture & Code-Quality Foundation — A2** |'), 'project status keeps Architecture A2 as current gate');
+arch_assert(arch_contains($status, '| Current program gate | **Architecture & Code-Quality Foundation — A3** |'), 'project status keeps Architecture A3 as current gate');
 arch_assert(arch_contains($naming, '**Canonical slug:** `simplixpay-upayments`'), 'canonical slug remains protected');
 
 $gatewayPath = $root . '/UPayments.php';
 $gatewaySize = is_file($gatewayPath) ? filesize($gatewayPath) : false;
-$acceptedGatewayBytes = 238714;
+$acceptedGatewayBytes = 223942;
 arch_assert(is_int($gatewaySize) && $gatewaySize === $acceptedGatewayBytes, 'UPayments.php matches current exact architecture ratchet');
 arch_assert($gatewayClassTokens !== array(), 'legacy WC_Upayments gateway compatibility class remains executable');
 arch_assert(arch_contains($gateway, "add_filter(\"woocommerce_payment_gateways\", \"addUpaymentsGatewayClass\")"), 'WooCommerce gateway registration remains characterized');
@@ -458,6 +458,9 @@ arch_assert(is_file($root . '/src/Release/Identity.php'), 'Release module exists
 arch_assert(is_dir($root . '/src/Migration'), 'Migration module exists');
 arch_assert(is_dir($root . '/src/Payment'), 'Payment module exists');
 arch_assert(is_dir($root . '/src/Security'), 'Security module exists');
+arch_assert(is_file($root . '/src/Admin/GatewaySettings.php'), 'Admin GatewaySettings boundary exists');
+arch_assert(arch_contains($gateway, 'GatewaySettings::fields('), 'gateway settings schema delegates to Admin boundary');
+arch_assert(arch_contains($gateway, 'GatewaySettings::render_multimerchant('), 'multi-merchant presentation delegates to Admin boundary');
 arch_assert(is_file($root . '/src/Payment/OrderLock.php'), 'Payment OrderLock boundary exists');
 arch_assert(is_file($root . '/src/Payment/ProviderResult.php'), 'Payment ProviderResult boundary exists');
 arch_assert(is_file($root . '/src/Payment/StatusRateGate.php'), 'Payment StatusRateGate boundary exists');
@@ -582,6 +585,11 @@ $availabilityService = arch_read($root, 'src/Provider/PaymentMethodAvailability.
 arch_assert($availabilityService !== '', 'A2 payment-method availability service exists');
 arch_assert(arch_contains($availabilityService, 'namespace Simplix\\Pay\\UPayments\\Provider;'), 'A2 availability service uses the Simplix Provider namespace');
 arch_assert(is_file($root . '/tests/harness/architecture-payment-method-availability-harness.php'), 'A2 availability harness exists');
+
+$gatewaySettings = arch_read($root, 'src/Admin/GatewaySettings.php');
+arch_assert($gatewaySettings !== '', 'A3 gateway settings service exists');
+arch_assert(arch_contains($gatewaySettings, 'namespace Simplix\Pay\UPayments\Admin;'), 'A3 settings service uses the Simplix Admin namespace');
+arch_assert(is_file($root . '/tests/harness/architecture-gateway-settings-harness.php'), 'A3 gateway settings harness exists');
 
 printf("\nArchitecture Foundation: %d PASS / %d FAIL\n", $pass, $fail);
 exit($fail === 0 ? 0 : 1);

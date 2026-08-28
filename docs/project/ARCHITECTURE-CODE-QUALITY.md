@@ -1,12 +1,12 @@
 # Architecture & Code-Quality Foundation
 
-**Status:** A2 / IMPLEMENTATION
+**Status:** A3 / IMPLEMENTATION
 
-**Current branch:** `architecture/a2-payment-method-availability`
+**Current branch:** `architecture/a3-gateway-settings-admin-multimerchant`
 
-**Verified base `main`:** `d43d175a1443709d42efabfbe78519a5a84f4dc9`
+**Verified base `main`:** `f85894271e8f991e77a8e6a2b306f4d191483bbd`
 
-**Verified base tree:** `ddb2ac7cd8b2d4f454867e10bc361fee94dbcf4b`
+**Verified base tree:** `1addbcc02e0d30f57a948cafd8111fb94e60c4da`
 
 **Gate purpose:** replace inherited mixed-responsibility structure incrementally with explicit Simplix-owned boundaries while preserving every closed payment, security, H12, Phase 9I and compatibility contract.
 
@@ -64,11 +64,25 @@ The provider endpoint/mode tranche is **DONE / VERIFIED**:
 
 A1 moved deterministic mode/endpoint resolution to `src/Provider/EndpointResolver.php`, retained all four public compatibility wrappers and preserved the inherited live and sandbox URL bytes. The current official provider production-host difference remains explicitly out of scope for A2.
 
+## A2 closure evidence
+
+The payment-method availability tranche is **DONE / VERIFIED**:
+
+- PR #22 final reviewed head: `bdb627520aa28e71b69a91f8ef71d04d257a3ad8`;
+- exact head/merge tree: `1addbcc02e0d30f57a948cafd8111fb94e60c4da`;
+- squash merge on `main`: `f85894271e8f991e77a8e6a2b306f4d191483bbd`, with a valid verified GitHub signature;
+- exact-head Quality Gates run #155: **SUCCESS**;
+- push-triggered post-merge Quality Gates run #156: **SUCCESS**;
+- Payment-Method Availability: **102/0** on exact head and post-merge `main`;
+- implementation branch `architecture/a2-payment-method-availability`: **deleted after verified merge**.
+
+A2 moved cache identity, site/mode advisory locking, the durable 65-second gate and strict provider normalization to `src/Provider/PaymentMethodAvailability.php` while retaining authenticated transport and presentation in the gateway compatibility seam.
+
 ## Current structural baseline
 
 ### Primary monolith
 
-At the verified discovery closure, `UPayments.php` was **257,832 bytes**. A1 reduced it to **257,298 bytes**. A2 reduces the current accepted ratchet to **238,714 bytes** while preserving the main plugin bootstrap, `WC_Upayments` gateway implementation and public availability entry point. Source characterization identifies at least these responsibility families inside the same file:
+At the verified discovery closure, `UPayments.php` was **257,832 bytes**. A1 reduced it to **257,298 bytes** and A2 to **238,714 bytes**. A3 reduces the current accepted ratchet to **223,942 bytes** while preserving the main plugin bootstrap, `WC_Upayments` gateway implementation and public settings/admin compatibility entry points. Source characterization identifies at least these responsibility families inside the same file:
 
 1. plugin bootstrap, constants, WooCommerce availability checks and gateway registration;
 2. gateway constructor/hook registration and runtime composition;
@@ -216,7 +230,20 @@ A1 is verified. A2 extracts the characterized availability client/cache coordina
 
 ### A3 — gateway settings/admin/multi-merchant presentation
 
-Separate settings definition/validation/presentation from runtime payment orchestration while preserving all option keys and the current one-additional-merchant capability claim.
+A2 is verified. A3 separates the characterized gateway settings/admin/single-additional-merchant presentation boundary to `src/Admin/GatewaySettings.php` behind the existing public gateway entry points.
+
+**A3 implementation contract:**
+
+- `init_form_fields()`, `process_admin_options()`, `generate_multimerchant_repeater_html()`, `validate_multimerchant_repeater_field()` and `admin_enqueue_scripts()` remain public compatibility wrappers;
+- protected option identity remains `woocommerce_upayments_settings`, and the exact 21 field keys/order/defaults remain unchanged;
+- the five runtime allocation settings remain `iban_number`, `knet_charge`, `knet_charge_type`, `cc_charge` and `cc_charge_type`;
+- subscription/save-card dependency normalization, missing API-key error, enabled-allocation completeness error and disabled-allocation null clearing remain byte-equivalent;
+- stored allocation presentation values remain escaped in attribute context and the historical JSON-backed field sanitizer may retain only the five non-secret allocation fields;
+- admin assets retain their current settings-page scopes, handles, paths, dependency/version/footer values and local inline disabled-row styling;
+- the renderer presents one allocation row and does not expose merchant/API credentials or advertise arbitrary multi-split routing;
+- runtime `process_payment()` remains in the gateway and retains exactly one additional `extraMerchantData` entry whose amount equals the order amount; provider payload, decimal validation, credential and payment-truth semantics do not move in A3;
+- unused/historical routing helpers remain compatibility surfaces rather than authority to broaden the current feature claim;
+- `tests/harness/architecture-gateway-settings-harness.php` freezes schema identity, validation, sanitation, escaping, admin-asset scope, delegation and the single-allocation boundary, and is mandatory in Quality Gates.
 
 ### A4 — subscription product/account presentation
 

@@ -2,7 +2,7 @@
 
 **Status document:** canonical living engineering state
 
-**Last updated:** 2026-08-27
+**Last updated:** 2026-08-28
 
 **Canonical repository:** `SimplixInnovations/simplixpay-upayments`
 
@@ -28,11 +28,29 @@
 | Phase 9I — historical token-identity migration | **DONE / VERIFIED** |
 | Provider Contract & Payment Lifecycle | **DONE / VERIFIED** |
 | Security Threat-Model Closure | **DONE / VERIFIED** |
-| Current program gate | **Architecture & Code-Quality Foundation — A2** |
+| Current program gate | **Architecture & Code-Quality Foundation — A3** |
 
-The plugin remains a pre-release engineering project. Architecture discovery and A1 provider endpoint/mode resolution are DONE / VERIFIED; A2 payment-method availability client/cache extraction is the current bounded implementation tranche. None of these milestones constitutes broad code-quality, provider-host, penetration-test, PCI/compliance, platform, feature, performance or release certification.
+The plugin remains a pre-release engineering project. Architecture discovery, A1 provider endpoint/mode resolution and A2 payment-method availability client/cache extraction are DONE / VERIFIED; A3 gateway settings/admin/single-additional-merchant presentation is the current bounded implementation tranche. None of these milestones constitutes broad code-quality, provider-host, penetration-test, PCI/compliance, platform, feature, performance or release certification.
 
-## Latest verified milestone — Architecture A1 provider endpoint/mode resolution
+## Latest verified milestone — Architecture A2 payment-method availability
+
+PR #22 final reviewed head:
+
+- `bdb627520aa28e71b69a91f8ef71d04d257a3ad8`
+
+Verified squash merge on `main`:
+
+- merge: `f85894271e8f991e77a8e6a2b306f4d191483bbd`
+- tree: `1addbcc02e0d30f57a948cafd8111fb94e60c4da`
+- parent: `d43d175a1443709d42efabfbe78519a5a84f4dc9`
+- GitHub signature: **VERIFIED**
+- implementation branch `architecture/a2-payment-method-availability`: **deleted after verified merge**
+- exact-head Quality Gates run #155: **SUCCESS**
+- push-triggered post-merge Quality Gates run #156: **SUCCESS**
+
+A2 moved availability cache/lock/gate/provider normalization to `src/Provider/PaymentMethodAvailability.php` behind public `getUpayPaymentMethods()`, reduced the exact `UPayments.php` ratchet to **238,714 bytes**, and made Payment-Method Availability **102/0** mandatory alongside the complete historical and architecture stack.
+
+## Previous verified milestone — Architecture A1 provider endpoint/mode resolution
 
 PR #21 final reviewed head:
 
@@ -276,18 +294,19 @@ Repository readiness remains DONE / VERIFIED:
 
 ## Current program gate — Architecture & Code-Quality Foundation
 
-**Status: A2 — PAYMENT-METHOD AVAILABILITY CLIENT/CACHE / IMPLEMENTATION.**
+**Status: A3 — GATEWAY SETTINGS/ADMIN/SINGLE-ADDITIONAL-MERCHANT PRESENTATION / IMPLEMENTATION.**
 
-Architecture A1 is complete. A2 is limited to extracting the already-characterized payment-method availability client/cache behind the existing `getUpayPaymentMethods()` gateway entry point. Current scope:
+Architecture A1 and A2 are complete. A3 is limited to separating the already-characterized gateway settings/admin/single-additional-merchant presentation boundary from runtime payment orchestration. Current scope:
 
-- add `Simplix\Pay\UPayments\Provider\PaymentMethodAvailability` as the explicit client/cache coordinator while leaving hardened authenticated HTTP in the gateway transport seam;
-- preserve exact `upay_pm_v3_` credential fingerprinting, test/live transient isolation, site/mode advisory-lock identity and mode-specific durable option names;
-- preserve the 65-second gate, gate-before-HTTP ordering, lock release before outbound HTTP, strict HTTP-201/provider status/schema normalization and schema-3 cache shapes;
-- preserve fresh-response versus canonical-cache return behavior and the gateway's exact failure notice/checkout redirect presentation;
-- keep the A1 provider endpoint harness and make the A2 availability harness mandatory in Quality Gates;
+- add `Simplix\Pay\UPayments\Admin\GatewaySettings` as the explicit settings schema, validation, one-row allocation renderer and admin-asset boundary;
+- preserve `woocommerce_upayments_settings`, every existing field key/default and all five scalar allocation keys (`iban_number`, KNET/card charges and charge types);
+- preserve the existing public gateway settings, save, custom-field validation, renderer and enqueue entry points as compatibility wrappers;
+- preserve the save-card/subscription dependency, API-key/multi-merchant settings errors and disabled-allocation clearing behavior;
+- preserve exactly one additional `extraMerchantData` allocation in runtime Charge payloads; do not broaden to arbitrary marketplace routing;
+- keep all A1/A2 architecture harnesses and make the A3 Gateway Settings harness mandatory in Quality Gates;
 - preserve protected identities and keep Security **81/0**, Provider **141/0 + 4/0**, Phase 9I, Phase 0, H12 and all architecture regressions green.
 
-No provider route, authenticated HTTP behavior, credential value, provider payload, payment truth, protected persistence identity or order-state behavior is authorized to change in A2. A3 remains prohibited until A2 is independently reviewed, exact-head green, merged, post-merge verified and cleaned up.
+No provider route, authenticated HTTP behavior, credential value, Charge payload, payment truth, protected persistence identity or order-state behavior is authorized to change in A3. A4 remains prohibited until A3 is independently reviewed, exact-head green, merged, post-merge verified and cleaned up.
 
 ## Later program blockers
 

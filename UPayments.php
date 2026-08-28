@@ -23,12 +23,14 @@ define("UP_PLUGIN_PATH", plugin_dir_path(__FILE__));
 define('UPAYMENTS_PLUGIN_FILE', __FILE__ );
 
 require_once __DIR__ . '/src/Release/Identity.php';
+require_once __DIR__ . '/src/Admin/GatewaySettings.php';
 require_once __DIR__ . '/src/Provider/EndpointResolver.php';
 require_once __DIR__ . '/src/Provider/PaymentMethodAvailability.php';
 require_once __DIR__ . '/includes/Token/CustomerTokenIdentity.php';
 require_once __DIR__ . '/src/Migration/MigrationBootstrap.php';
 
 use Simplix\Pay\UPayments\Release\Identity;
+use Simplix\Pay\UPayments\Admin\GatewaySettings;
 use Simplix\Pay\UPayments\Provider\EndpointResolver;
 use Simplix\Pay\UPayments\Provider\PaymentMethodAvailability;
 use UPayments\Subscription\Cron\Scheduler;
@@ -1113,17 +1115,15 @@ function woocommerceUpaymentsInit() {
             }, 5);
             // Save Card & Subscriptions validation
             add_filter('woocommerce_settings_api_sanitized_fields_upayments', function ($settings) {
-                $save_card      = isset($settings['enable_save_card']) && !empty($settings['enable_save_card']);
-                $subscriptions  = isset($settings['enable_subscriptions']) && !empty($settings['enable_subscriptions']);
-                if ($subscriptions && !$save_card) {
+                $normalized = GatewaySettings::normalize_dependencies($settings);
+                if ($normalized['forced_save_card']) {
                     wc_add_notice(
                         __('Save Card must be enabled when Subscriptions are enabled.', 'woocommerce'),
                         'error'
                     );
-                    $settings['enable_save_card'] = 'yes';
                 }
 
-                return $settings;
+                return $normalized['settings'];
             });
 
             add_filter('woocommerce_default_gateway', function ($default) {
@@ -1145,139 +1145,10 @@ function woocommerceUpaymentsInit() {
         }
 
         public function init_form_fields() {
-            $this->form_fields = array(
-                "enabled" => array(
-                    "title" => __("Active", $this->domain) , 
-                    "type" => "checkbox", 
-                    "label" => __(" ", $this->domain) , 
-                    "default" => "yes"
-                ), 
-                'make_default_gateway' => [
-                    'title'       => __('Default Gateway', $this->domain),
-                    'type'        => 'checkbox',
-                    'label'       => __('Make UPayments the default payment method at checkout', $this->domain),
-                    'default'     => 'no',
-                    'description' => __('If enabled, UPayments will be preselected at checkout. Merchants can still reorder gateways.', $this->domain),
-                ],
-                "title" => array(
-                    "title" => __("Title", $this->domain) , 
-                    "type" => "text", 
-                    "description" => __("This controls the title which the user sees during checkout.", $this->domain) , 
-                    "default" => $this->method_title, 
-                    "desc_tip" => true
-                ), 
-                "description" => array(
-                    "title" => __("Description", $this->domain) , 
-                    "type" => "textarea", 
-                    "description" => __("Instructions that the customer will see on your checkout.", $this->domain),
-                    "default" => $this->method_description, 
-                    "desc_tip" => true
-                ),
-                "api_key" => array(
-                    "title" => __("Api Key", $this->domain) , 
-                    "type" => "text", 
-                    "description" => __("Copy/paste values from UPayments dashboard", $this->domain), 
-                    "default" => "", 
-                    "desc_tip" => true
-                ),
-                "debug" => array(
-                    "title" => __("Debug logging", $this->domain),
-                    "type" => "checkbox",
-                    "label" => __("Log non-sensitive UPayments diagnostic events to WooCommerce logs.", $this->domain),
-                    "default" => "no"
-                ),
-                "test_mode" => array(
-                    "title" => __("Test Mode", $this->domain),
-                    "type" => "checkbox",
-                    "label" => __(" ", $this->domain),
-                    "default" => "no"
-                ), 
-                "is_order_complete" => array(   
-                    "title" => __('Show paid orders as "Completed"?', $this->domain),   
-                    "type" => "checkbox",   
-                    "label" => __(" ", $this->domain),  
-                    "default" => "yes"  
-                ),
-                'save_card_section_title' => array(
-                    'title' => __( 'Card Tokenization & Design', $this->domain ),
-                    'type'  => 'title',
-                    'description' => '',
-                ),
-                'use_new_design' => array(
-                    'title'   => __( 'Use New Design', $this->domain ),
-                    'type'    => 'checkbox',
-                    'label'   => __( 'Use the modern design (if unchecked uses classic design)', $this->domain ),
-                    'default' => 'yes', // Default to New Design
-                ),
-                'enable_save_card' => array(
-                    'title'   => __( 'Enable Save Card', $this->domain ),
-                    'type'    => 'checkbox',
-                    'label'   => __( 'Allow customers to save card details (Tokenization)', $this->domain ),
-                    'default' => 'yes', // Default to Enabled (per V2.2.1)
-                ),
-                // 'checkout_blocks_title' => array(
-                //     'title' => __( 'WooCommerce Block Checkout', $this->domain ),
-                //     'type'  => 'title',
-                // ),
-                // 'enable_block_checkout' => array(
-                //     'title'   => __( 'Enable Block Checkout', $this->domain ),
-                //     'type'    => 'text',
-                //     'description'   => __( 'Enable compatibility with the new WooCommerce Checkout Block', $this->domain ),
-                // ),
-                //disabled block setting for now.
-                // 'enable_block_checkout' => array(
-                //     'title'   => __( 'Enable Block Checkout', $this->domain ),
-                //     'type'    => 'checkbox',
-                //     'label'   => __( 'Enable compatibility with the new WooCommerce Checkout Block', $this->domain ),
-                //     'default' => 'yes',
-                // ),
-                'multimerchant_section_title' => array(
-                    'title' => __( 'Multimerchant Configuration', $this->domain ),
-                    'type'  => 'title',
-                ),
-                'enable_multimerchant' => array(
-                    'title'   => __( 'Enable Multimerchant', $this->domain ),
-                    'type'    => 'checkbox',
-                    'label'   => __( 'Handle Merchant Account & Charges', $this->domain ),
-                    'default' => 'no',
-                ),
-                'iban_number' => array(
-                    'type' => 'text',
-                    'css'  => 'display:none;',
-                ),
-                'cc_charge' => array(
-                    'type' => 'text',
-                    'css'  => 'display:none;',
-                ),
-                'cc_charge_type' => array(
-                    'type' => 'text',
-                    'css'  => 'display:none;',
-                ),
-                'knet_charge' => array(
-                    'type' => 'text',
-                    'css'  => 'display:none;',
-                ),
-                'knet_charge_type' => array(
-                    'type' => 'text',
-                    'css'  => 'display:none;',
-                ),
-                'multimerchant_accounts' => array(
-                    'title'       => __( 'Multimerchant Accounts', $this->domain ),
-                    'type'        => 'multimerchant_repeater',
-                    'description' => __( 'Manage IBAN and charges for Main-Merchant.', $this->domain ),
-                ),
-                'autodeduction_section_title' => array(
-                    'title' => __( 'Subscription Configuration', $this->domain ),
-                    'type'  => 'title',
-                ),
-                'enable_subscriptions' => array(
-                    'title'   => __( 'Enable Subscriptions', $this->domain ),
-                    'type'    => 'checkbox',
-                    'label'   => __( 'Enable subscription payments', $this->domain ),
-                    'default' => 'no',
-                    "desc_tip" => true,
-                    "description" => __( "Only Subscription Products are allowed at checkout If Subscription is enabled.", $this->domain ),
-                ),
+            $this->form_fields = GatewaySettings::fields(
+                $this->domain,
+                $this->method_title,
+                $this->method_description
             );
         }
 
@@ -3456,30 +3327,13 @@ function woocommerceUpaymentsInit() {
          * Enqueue admin scripts for the custom repeater.
          */
         public function admin_enqueue_scripts() {
-            $plugin_url = plugin_dir_url( __FILE__ );
-            
-            // Check if we are on the correct gateway settings page
-            if ( isset( $_GET['page'] ) && $_GET['page'] == 'wc-settings' && isset( $_GET['tab'] ) && $_GET['tab'] == 'checkout' && isset( $_GET['section'] ) && $_GET['section'] == $this->id ) {    
-                
-                wp_enqueue_style('upayments-multimerchant-style',$plugin_url.'assets/css/admin-style.css', [], '3.0.0' );
-                wp_enqueue_script('upayments-multimerchant-repeater',$plugin_url.'assets/js/multimerchant-repeater.js',array('jquery'), '3.0.0',true);
-            }
-
-            // Check to ensure we are only loading this script on *our* settings page.
             $screen = get_current_screen();
-
-            // The screen ID for WooCommerce payment settings pages often looks like 'woocommerce_page_wc-settings'
-            if ( $screen && $screen->id === 'woocommerce_page_wc-settings' && isset( $_GET['tab'] ) && $_GET['tab'] === 'checkout' ) {
-                // Enqueue the custom admin logic script
-                wp_enqueue_script(
-                    'upayments-admin-logic',$plugin_url.'assets/js/admin-settings.js',array( 'jquery' ),'3.0.0',true
-                );
-                
-                // Also enqueue a small style block to make the disabled row visually distinct
-                wp_add_inline_style(
-                    'woocommerce_admin_styles', '.upayments-disabled-setting { opacity: 0.5; pointer-events: none; }'
-                );
-            }
+            GatewaySettings::enqueue_admin_assets(
+                plugin_dir_url(__FILE__),
+                $this->id,
+                $_GET,
+                $screen ? $screen->id : ''
+            );
         }
 
         public function admin_order_details($order)
@@ -3541,21 +3395,14 @@ function woocommerceUpaymentsInit() {
         public function process_admin_options()
         {
             $this->init_settings();
-            $post_data = $this->get_post_data();
+            $prepared = GatewaySettings::prepare_post_data($this->get_post_data());
+            $post_data = $prepared['post_data'];
 
-            if (empty($post_data["woocommerce_upayments_api_key"])){
+            if ($prepared['api_key_missing']){
                 WC_Admin_Settings::add_error(__("Please enter UPayments API Key", $this->domain));
             }else{
-                if(isset($post_data['woocommerce_upayments_enable_multimerchant']) && $post_data['woocommerce_upayments_enable_multimerchant'] == 1) {
-                    if(empty($post_data['woocommerce_upayments_iban_number']) || empty($post_data['woocommerce_upayments_cc_charge']) || empty($post_data['woocommerce_upayments_cc_charge_type']) || empty($post_data['woocommerce_upayments_knet_charge']) || empty($post_data['woocommerce_upayments_knet_charge_type'])) {
-                        WC_Admin_Settings::add_error(__("Please enter Multimerchant Configuration", $this->domain));
-                    }
-                } else {
-                    $post_data['woocommerce_upayments_iban_number'] = null;
-                    $post_data['woocommerce_upayments_cc_charge'] = null;
-                    $post_data['woocommerce_upayments_cc_charge_type'] = null;
-                    $post_data['woocommerce_upayments_knet_charge'] = null;
-                    $post_data['woocommerce_upayments_knet_charge_type'] = null;
+                if ($prepared['multimerchant_missing']) {
+                    WC_Admin_Settings::add_error(__("Please enter Multimerchant Configuration", $this->domain));
                 }
                 foreach ($this->get_form_fields() as $key => $field)
                 {
@@ -3636,112 +3483,33 @@ function woocommerceUpaymentsInit() {
         }
 
         /**
-         * Generate the HTML for the Multimerchant Repeater field.
-         * This is where the table structure for the rules is defined.
-         * * @param string $key The field key (multimerchant_accounts).
-         * @param array $data Field data from init_form_fields().
-         * @return string HTML output for the field.
+         * Generate the inherited single additional-merchant settings row.
+         *
+         * @param string $key Field key.
+         * @param array  $data WooCommerce field data.
+         * @return string
          */
-        public function generate_multimerchant_repeater_html( $key, $data ) {
-            // Get stored rules (value is a JSON string, must be decoded)
-            $settings = $this->get_option( $key, $data['default'] );
-            $rules = json_decode( $settings, true );
-            if ( ! is_array( $rules ) ) {
-                $rules = [];
-            }
-
-            $conditions = [
-                'fixed'      => __( 'Fixed', $this->domain ),
-                'percentage'       => __( 'Percentage', $this->domain ),
-            ];
-
-            // Pass the repeater HTML to a dedicated function for cleanliness
-            ob_start();
-            ?>
-            <tr valign="top" class="upayments-multimerchant-repeater">
-                <th scope="row" class="titledesc"><?php echo esc_html( $data['title'] ); ?></th>
-                <td class="forminp forminp-<?php echo esc_attr( sanitize_title( $data['type'] ) ); ?>">
-                    <p class="description"><?php echo wp_kses_post( $data['description'] ); ?></p>
-                    <div id="multimerchant_repeater_container">
-                        <table class="widefat wc_input_multimerchant_repeater" cellspacing="0">
-                            <thead>
-                                <tr>
-                                    <th><?php esc_html_e( 'IBAN Number', $this->domain ); ?></th>
-                                    <th><?php esc_html_e( 'Knet Charge', $this->domain ); ?></th>
-                                    <th><?php esc_html_e( 'Knet Charge Type', $this->domain ); ?></th>
-                                    <th><?php esc_html_e( 'CC Charge', $this->domain ); ?></th>
-                                    <th><?php esc_html_e( 'CC Charge Type', $this->domain ); ?></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr class="">
-                                    <td>
-                                        <input type="text" name="woocommerce_upayments_iban_number" data-field="iban_number" value="<?php echo esc_attr( $this->get_option('iban_number') ); ?>" placeholder="<?php esc_html_e('KWK00445...', $this->domain); ?>" style="width: 400px;"/>
-                                    </td>
-                                    <td>
-                                        <input type="number" name="woocommerce_upayments_knet_charge" data-field="knet_charge" value="<?php echo esc_attr( $this->get_option('knet_charge') ); ?>" placeholder="<?php esc_html_e('0.000', $this->domain);?>" min="0.000" max="10.000" step="0.010"/>
-                                    </td>
-                                    <td>
-                                        <select data-field="knet_charge_type" name="woocommerce_upayments_knet_charge_type">
-                                            <option value=""><?php esc_html_e( 'Select', $this->domain ); ?></option>
-                                            <?php foreach ( $conditions as $val => $label ) : ?>
-                                                <option value="<?php echo esc_attr( $val ); ?>" <?php selected( $val, $this->get_option('knet_charge_type') ); ?>>
-                                                    <?php echo esc_html( $label ); ?>
-                                                </option>
-                                            <?php endforeach; ?>
-                                        </select>
-                                    </td>
-                                    <td>
-                                        <input type="number" name="woocommerce_upayments_cc_charge" data-field="cc_charge" value="<?php echo esc_attr( $this->get_option('cc_charge') ); ?>" placeholder="<?php esc_html_e('0.000', $this->domain); ?>" min="0.000" max="10.000" step="0.010"/>
-                                    </td>
-                                    <td>
-                                        <select data-field="cc_charge_type" name="woocommerce_upayments_cc_charge_type">
-                                            <option value=""><?php esc_html_e( 'Select', $this->domain ); ?></option>
-                                            <?php foreach ( $conditions as $val => $label ) : ?>
-                                                <option value="<?php echo esc_attr( $val ); ?>" <?php selected( $val, $this->get_option('cc_charge_type') ); ?>>
-                                                    <?php echo esc_html( $label ); ?>
-                                                </option>
-                                            <?php endforeach; ?>
-                                        </select>
-                                    </td>
-                                </tr>
-                            </tbody>                           
-                        </table>
-                    </div>
-                    <input type="hidden" name="woocommerce_<?php echo esc_attr( $this->id ); ?>_<?php echo esc_attr( $key ); ?>"  id="<?php echo esc_attr( $key ); ?>" value="<?php echo esc_attr( $settings ); ?>" />
-                </td>
-            </tr>
-            <?php
-            return ob_get_clean();
+        public function generate_multimerchant_repeater_html($key, $data) {
+            return GatewaySettings::render_multimerchant(
+                $key,
+                $data,
+                function ($option_key, $default = false) {
+                    return $this->get_option($option_key, $default);
+                },
+                $this->id,
+                $this->domain
+            );
         }
 
         /**
-         * Custom logic to sanitize and save the JSON data from the repeater field.
-         * * @param string $value The raw POST value for the field.
-         * @return string The sanitized and JSON-encoded string.
+         * Preserve the public WooCommerce custom-field validation seam.
+         *
+         * @param string $key Field key.
+         * @param mixed  $value Raw field value.
+         * @return string
          */
-        public function validate_multimerchant_repeater_field( $key, $value ) {
-            // Decode the JSON string
-            $rules = json_decode( stripslashes( $value ), true );
-            
-            if ( ! is_array( $rules ) ) {
-                return '[]';
-            }
-
-            // Basic sanitation loop
-            $sanitized_rules = [];
-            foreach ( $rules as $rule ) {
-                $sanitized_rules[] = array(
-                    'iban_number'      => sanitize_text_field( $rule['iban_number'] ?? '' ),
-                    'knet_charge'       => sanitize_text_field( $rule['knet_charge'] ?? '' ),
-                    'knet_charge_type'           => wc_clean( $rule['knet_charge_type'] ?? '' ), 
-                    'cc_charge'    => sanitize_text_field( $rule['cc_charge'] ?? '' ),
-                    'cc_charge_type'    => wc_clean( $rule['cc_charge_type'] ?? '' ),
-                );
-            }
-
-            // Re-encode the sanitized array back into a JSON string for storage
-            return json_encode( $sanitized_rules );
+        public function validate_multimerchant_repeater_field($key, $value) {
+            return GatewaySettings::sanitize_multimerchant_accounts($value);
         }
 
         public function getSiteName()
