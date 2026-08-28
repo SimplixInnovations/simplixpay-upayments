@@ -1213,8 +1213,8 @@ upay_assert_eq(\UPayments\Token\CustomerTokenIdentity::SECRET_OPTION, 'upayments
 // ---------------------------------------------------------------------------
 
 $upay_source = file_get_contents($PLUGIN_FILE);
-$checkout_payload_source = file_get_contents($root . '/src/Payment/CheckoutPayload.php');
-$checkout_orchestrator_source = file_get_contents($root . '/src/Payment/CheckoutOrchestrator.php');
+$checkout_payload_source = file_get_contents($ROOT . '/src/Payment/CheckoutPayload.php');
+$checkout_orchestrator_source = file_get_contents($ROOT . '/src/Payment/CheckoutOrchestrator.php');
 $checkout_source = $upay_source . "\n" . $checkout_payload_source . "\n" . $checkout_orchestrator_source;
 $ident_source = file_get_contents($IDENTITY_FILE);
 
