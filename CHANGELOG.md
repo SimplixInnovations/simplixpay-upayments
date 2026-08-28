@@ -6,6 +6,14 @@ The project is still in pre-release engineering hardening. Entries below are eng
 
 ## [Unreleased]
 
+### Architecture A1 — Provider Endpoint/Mode Resolution — DONE / VERIFIED
+
+- Extracted deterministic live/test endpoint resolution to `src/Provider/EndpointResolver.php` while preserving all four public gateway compatibility wrappers and the inherited URL bytes.
+- Added the mandatory Provider Endpoints harness; the final exact-head and post-merge result was **49 PASS / 0 FAIL** alongside the complete historical and architecture stack.
+- Kept the official provider production-host difference out of this structure-only tranche as a separately researched future runtime migration.
+- Exact final PR #21 head `baed693964556120dc7ad07dbc740d3acc1af20f` passed Quality Gates run #152 and clean independent review.
+- Squash-merged PR #21 as signed commit `d43d175a1443709d42efabfbe78519a5a84f4dc9`, tree `ddb2ac7cd8b2d4f454867e10bc361fee94dbcf4b`; post-merge run #153 passed and the implementation branch was deleted.
+
 ### Security Threat-Model Closure — DONE / VERIFIED
 
 - Closed the public historical order-status IDOR by requiring an UPayments order plus exact logged-in ownership or exact WooCommerce order key; numeric order ID alone is no longer authority and returned state is allowlisted.
@@ -23,7 +31,7 @@ The project is still in pre-release engineering hardening. Entries below are eng
 
 ### Current program gate
 
-**Architecture & Code-Quality Foundation — A1** is now the active gate. Discovery is DONE / VERIFIED; A1 is limited to pure provider endpoint/mode resolution behind byte-equivalent compatibility wrappers and must not weaken closed Security, Provider, H12 or Phase 9I contracts or protected persisted/runtime identities.
+**Architecture & Code-Quality Foundation — A2** is now the active gate. A1 provider endpoint/mode resolution is DONE / VERIFIED; A2 is limited to the characterized payment-method availability client/cache behind the existing gateway entry point and must not weaken cache isolation, lock/cooldown, provider-schema, fail-closed, Security, Provider, H12 or Phase 9I contracts.
 
 ### Provider Contract & Payment Lifecycle — DONE / VERIFIED
 

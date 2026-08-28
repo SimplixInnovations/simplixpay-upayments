@@ -24,11 +24,13 @@ define('UPAYMENTS_PLUGIN_FILE', __FILE__ );
 
 require_once __DIR__ . '/src/Release/Identity.php';
 require_once __DIR__ . '/src/Provider/EndpointResolver.php';
+require_once __DIR__ . '/src/Provider/PaymentMethodAvailability.php';
 require_once __DIR__ . '/includes/Token/CustomerTokenIdentity.php';
 require_once __DIR__ . '/src/Migration/MigrationBootstrap.php';
 
 use Simplix\Pay\UPayments\Release\Identity;
 use Simplix\Pay\UPayments\Provider\EndpointResolver;
+use Simplix\Pay\UPayments\Provider\PaymentMethodAvailability;
 use UPayments\Subscription\Cron\Scheduler;
 use UPayments\Subscription\Checkout\Fields;
 use UPayments\Subscription\Manager;
@@ -1010,11 +1012,6 @@ function woocommerceUpaymentsInit() {
         }
 
         /**
-         * Payment-method availability rate-gate constants.
-         */
-        private static $RATE_GATE_COOLDOWN = 65;
-
-        /**
          * Maximum fractional digits tolerated for an exact provider unit
          * price. Provider product prices are bounded to a small number of
          * fractional digits; anything beyond this boundary is treated as a
@@ -1024,209 +1021,13 @@ function woocommerceUpaymentsInit() {
         private static $UNIT_PRICE_MAX_FRACTIONAL_DIGITS = 7;
 
         /**
-         * Get the mode-specific durable rate-gate option name.
+         * Legacy private compatibility seam for the H12 cache validator.
          *
-         * Uses separate options per mode to prevent cross-mode lost-update races.
-         * Live and test workers acquire different advisory locks and write to
-         * different options, so they cannot overwrite each other's cooldown.
-         *
-         * @return string Option name.
-         */
-        private function get_payment_methods_rate_gate_option_name() {
-            $mode = $this->getMode() ? 'test' : 'live';
-            return 'upayments_payment_methods_rate_gate_' . $mode;
-        }
-
-        /**
-         * Generate a credential-scoped transient name for payment-method results.
-         *
-         * The fingerprint is derived from test/live mode + API key + WordPress salt.
-         * A credential change therefore invalidates old cached results.
-         *
-         * @return string Transient name (within WordPress 172-char limit).
-         */
-        private function get_payment_methods_transient_name() {
-            $mode = $this->getMode() ? 'test' : 'live';
-            $fingerprint = hash_hmac('sha256', $mode . '|' . $this->apiKey, wp_salt('auth'));
-            $short_hash = substr($fingerprint, 0, 16);
-            return 'upay_pm_v3_' . $short_hash;
-        }
-
-        /**
-         * Deterministic MySQL advisory lock name for site + mode.
-         *
-         * Contains no credentials. Max 64 chars.
-         *
-         * @return string Lock name.
-         */
-        private function get_payment_methods_lock_name() {
-            global $wpdb;
-            $mode = $this->getMode() ? 'test' : 'live';
-            $db_name = defined('DB_NAME') ? DB_NAME : '';
-            $prefix = $wpdb->prefix;
-            $blog_id = (string) get_current_blog_id();
-            $lock_input = $db_name . '|' . $prefix . '|' . $blog_id . '|' . $mode;
-            $lock_hash = substr(hash('sha256', $lock_input), 0, 16);
-            return 'upay_pm_' . $lock_hash;
-        }
-
-        /**
-         * Acquire a MySQL named advisory lock with timeout 0.
-         *
-         * @return int 1 = acquired, 0 = contention, -1 = error/unsupported.
-         */
-        private function acquire_payment_methods_lock() {
-            global $wpdb;
-            $lock_name = $this->get_payment_methods_lock_name();
-            $result = $wpdb->get_var(
-                $wpdb->prepare('SELECT GET_LOCK(%s, 0)', $lock_name)
-            );
-            if ($result === '1' || $result === 1) {
-                return 1;
-            }
-            if ($result === '0' || $result === 0) {
-                return 0;
-            }
-            return -1;
-        }
-
-        /**
-         * Release a MySQL named advisory lock.
-         *
-         * @return bool True if released or not owned.
-         */
-        private function release_payment_methods_lock() {
-            global $wpdb;
-            $lock_name = $this->get_payment_methods_lock_name();
-            $wpdb->get_var(
-                $wpdb->prepare('SELECT RELEASE_LOCK(%s)', $lock_name)
-            );
-            return true;
-        }
-
-        /**
-         * Read the durable rate-gate not_before for current mode.
-         *
-         * Uses a mode-specific option (no shared mutable array).
-         *
-         * @return array{not_before: int}
-         */
-        private function get_payment_methods_rate_gate() {
-            $option_name = $this->get_payment_methods_rate_gate_option_name();
-            $not_before = (int) get_option($option_name, 0);
-            return array('not_before' => $not_before);
-        }
-
-        /**
-         * Persist the durable rate-gate not_before for current mode.
-         *
-         * Uses a mode-specific option (no shared mutable array).
-         *
-         * @param int $not_before Unix timestamp.
-         * @return bool True on success.
-         */
-        private function set_payment_methods_rate_gate($not_before) {
-            $option_name = $this->get_payment_methods_rate_gate_option_name();
-            return update_option($option_name, (int) $not_before, false);
-        }
-
-        /**
-         * Read cached payment-method result from transient.
-         *
-         * Returns the cached array on fresh hit, or null on miss/expiry.
-         *
-         * @return array|null
-         */
-        private function get_cached_payment_methods() {
-            $transient_name = $this->get_payment_methods_transient_name();
-            $cached = get_transient($transient_name);
-            if (is_array($cached)) {
-                return $cached;
-            }
-            return null;
-        }
-
-        /**
-         * Section Z: Canonical availability cache schema validator.
-         *
-         * Strict canonical schema3 success/failure shapes only. Rejects any
-         * additional top-level keys, additional payButtons keys, or
-         * incorrectly-shaped values. Fresh provider responses may include
-         * unknown provider buttons, but cached data MUST be the canonical
-         * normalized representation only.
-         *
-         * @param mixed $cached Cached value.
-         * @return string|bool 'success' | 'failure' | false (malformed)
+         * @param mixed $cached Cached availability value.
+         * @return string|bool
          */
         private function is_valid_cached_availability($cached) {
-            if (!is_array($cached)) {
-                return false;
-            }
-            // Failure sentinel: exactly { schema: 3, state: 'failure' }
-            if (count($cached) === 2
-                && array_key_exists('schema', $cached) && $cached['schema'] === 3
-                && array_key_exists('state', $cached) && $cached['state'] === 'failure'
-            ) {
-                return 'failure';
-            }
-            // Success: exactly four top-level keys.
-            $success_top_keys = array('schema', 'result', 'isWhiteLabel', 'payButtons');
-            $cached_keys = array_keys($cached);
-            sort($cached_keys);
-            $expected_keys = $success_top_keys;
-            sort($expected_keys);
-            if ($cached_keys !== $expected_keys) {
-                return false;
-            }
-            if (!isset($cached['schema']) || $cached['schema'] !== 3) {
-                return false;
-            }
-            if (!isset($cached['result']) || $cached['result'] !== 'success') {
-                return false;
-            }
-            if (!isset($cached['isWhiteLabel']) || !is_bool($cached['isWhiteLabel'])) {
-                return false;
-            }
-            if (!isset($cached['payButtons']) || !is_array($cached['payButtons'])) {
-                return false;
-            }
-            $known = array('knet', 'credit_card', 'apple_pay_knet', 'apple_pay', 'samsung_pay', 'google_pay');
-            // payButtons must contain EXACTLY the six known keys (no extras).
-            $pb_keys = array_keys($cached['payButtons']);
-            sort($pb_keys);
-            $expected_pb_keys = $known;
-            sort($expected_pb_keys);
-            if ($pb_keys !== $expected_pb_keys) {
-                return false;
-            }
-            foreach ($known as $btn) {
-                if (!array_key_exists($btn, $cached['payButtons'])
-                    || !is_int($cached['payButtons'][$btn])
-                ) {
-                    return false;
-                }
-                $v = $cached['payButtons'][$btn];
-                if ($v !== 0 && $v !== 1) {
-                    return false;
-                }
-            }
-            return 'success';
-        }
-
-        private function get_failure_sentinel() {
-            return array('schema' => 3, 'state' => 'failure');
-        }
-
-        /**
-         * Write payment-method result to transient cache.
-         *
-         * @param array $result   Result to cache.
-         * @param int   $not_before Gate expiry timestamp (TTL = remaining window).
-         */
-        private function set_cached_payment_methods($result, $not_before) {
-            $transient_name = $this->get_payment_methods_transient_name();
-            $ttl = max(1, $not_before - time());
-            set_transient($transient_name, $result, $ttl);
+            return PaymentMethodAvailability::classify_cached($cached);
         }
 
         public function __construct() {
@@ -4026,222 +3827,25 @@ function woocommerceUpaymentsInit() {
 
         public function getUpayPaymentMethods()
         {
-            $api_key = $this->apiKey;
-            if (empty($api_key)) {
-                return null;
-            }
-
-            // --- FAILURE SENTINEL (used for cached failures) ---
-            $failure_sentinel = $this->get_failure_sentinel();
-
-            // -------------------------------------------------------
-            // STEP 1: Check credential-scoped result cache.
-            // -------------------------------------------------------
-            $cached = $this->get_cached_payment_methods();
-            if ($cached !== null) {
-                $cache_status = $this->is_valid_cached_availability($cached);
-                if ($cache_status === 'success') {
-                    return $cached;
+            $availability = new PaymentMethodAvailability(
+                $this->getMode(),
+                $this->apiKey,
+                function () {
+                    return $this->execute_upayments_request('check-payment-button-status', 'GET');
                 }
-                if ($cache_status === 'failure') {
-                    wc_clear_notices();
-                    wc_add_notice(__("Payment methods could not be loaded. Please try again.", $this->domain), "error");
-                    return array('result' => 'failure', 'redirect' => wc_get_checkout_url());
-                }
-                // Malformed cache: treat as miss and fall through.
-            }
-
-            // -------------------------------------------------------
-            // STEP 2: Cache miss — attempt to acquire advisory lock.
-            // -------------------------------------------------------
-            $lock_result = $this->acquire_payment_methods_lock();
-
-            if ($lock_result !== 1) {
-                // Lock NOT acquired (contention or error).
-                // Re-check cache ONCE — another worker may have populated it.
-                $cached = $this->get_cached_payment_methods();
-                if ($cached !== null) {
-                    $cache_status = $this->is_valid_cached_availability($cached);
-                    if ($cache_status === 'success') {
-                        return $cached;
-                    }
-                    if ($cache_status === 'failure') {
-                        wc_clear_notices();
-                        wc_add_notice(__("Payment methods could not be loaded. Please try again.", $this->domain), "error");
-                        return array('result' => 'failure', 'redirect' => wc_get_checkout_url());
-                    }
-                }
-                // No cache available and lock not acquired: fail closed.
-                wc_clear_notices();
-                wc_add_notice(__("Payment methods could not be loaded. Please try again.", $this->domain), "error");
-                return array('result' => 'failure', 'redirect' => wc_get_checkout_url());
-            }
-
-            // -------------------------------------------------------
-            // STEP 3: Lock acquired — check durable rate gate.
-            // -------------------------------------------------------
-            $gate = $this->get_payment_methods_rate_gate();
-            $now = time();
-
-            // Re-check cache under lock (another worker may have refreshed).
-            $cached = $this->get_cached_payment_methods();
-            if ($cached !== null) {
-                $cache_status = $this->is_valid_cached_availability($cached);
-                if ($cache_status === 'success') {
-                    $this->release_payment_methods_lock();
-                    return $cached;
-                }
-                if ($cache_status === 'failure') {
-                    $this->release_payment_methods_lock();
-                    wc_clear_notices();
-                    wc_add_notice(__("Payment methods could not be loaded. Please try again.", $this->domain), "error");
-                    return array('result' => 'failure', 'redirect' => wc_get_checkout_url());
-                }
-                // Malformed cache: DO NOT RELEASE lock.
-                // Treat as cache miss while retaining ownership.
-                // The durable gate check below will determine next action.
-            }
-
-            // Check if cooldown is still active.
-            if ($now < $gate['not_before']) {
-                // Gate still active: release lock, fail closed.
-                $this->release_payment_methods_lock();
-                wc_clear_notices();
-                wc_add_notice(__("Payment methods could not be loaded. Please try again.", $this->domain), "error");
-                return array('result' => 'failure', 'redirect' => wc_get_checkout_url());
-            }
-
-            // -------------------------------------------------------
-            // STEP 4: Refresh authorized — persist gate BEFORE HTTP.
-            // -------------------------------------------------------
-            $new_not_before = $now + self::$RATE_GATE_COOLDOWN;
-            $persisted = $this->set_payment_methods_rate_gate($new_not_before);
-
-            if (!$persisted) {
-                // Cannot persist durable gate: fail closed (do not risk double-call).
-                $this->release_payment_methods_lock();
-                wc_clear_notices();
-                wc_add_notice(__("Payment methods could not be loaded. Please try again.", $this->domain), "error");
-                return array('result' => 'failure', 'redirect' => wc_get_checkout_url());
-            }
-
-            // Verify persistence.
-            $verify_gate = $this->get_payment_methods_rate_gate();
-            if ($verify_gate['not_before'] < $new_not_before) {
-                // Persistence did not stick: fail closed.
-                $this->release_payment_methods_lock();
-                wc_clear_notices();
-                wc_add_notice(__("Payment methods could not be loaded. Please try again.", $this->domain), "error");
-                return array('result' => 'failure', 'redirect' => wc_get_checkout_url());
-            }
-
-            // Release lock BEFORE outbound HTTP.
-            $this->release_payment_methods_lock();
-
-            // -------------------------------------------------------
-            // STEP 5: Execute hardened provider request.
-            // -------------------------------------------------------
-            $transport = $this->execute_upayments_request('check-payment-button-status', 'GET');
-
-            // Section AH: Consolidated transport guard (no unsafe first dereference).
-            if (!is_array($transport)
-                || !isset($transport['transport_ok']) || $transport['transport_ok'] !== true
-                || !isset($transport['http_status']) || (int) $transport['http_status'] !== 201
-                || !isset($transport['curl_errno']) || (int) $transport['curl_errno'] !== 0
-                || !isset($transport['body']) || !is_scalar($transport['body'])
-                || (string) $transport['body'] === ''
-            ) {
-                $this->set_cached_payment_methods($failure_sentinel, $new_not_before);
-                wc_clear_notices();
-                wc_add_notice(__("Payment methods could not be loaded. Please try again.", $this->domain), "error");
-                return array('result' => 'failure', 'redirect' => wc_get_checkout_url());
-            }
-
-            $result = json_decode((string) $transport['body'], true);
-            if (!is_array($result)) {
-                $this->set_cached_payment_methods($failure_sentinel, $new_not_before);
-                wc_clear_notices();
-                wc_add_notice(__("Payment methods could not be loaded. Please try again.", $this->domain), "error");
-                return array('result' => 'failure', 'redirect' => wc_get_checkout_url());
-            }
-
-            // Section O: Strict status === true check. Do NOT accept '1', 1, 'true', etc.
-            if (!array_key_exists('status', $result) || $result['status'] !== true) {
-                $this->set_cached_payment_methods($failure_sentinel, $new_not_before);
-                wc_clear_notices();
-                wc_add_notice(__("Payment methods could not be loaded. Please try again.", $this->domain), "error");
-                return array('result' => 'failure', 'redirect' => wc_get_checkout_url());
-            }
-
-            if (!isset($result['data']) || !is_array($result['data'])) {
-                $this->set_cached_payment_methods($failure_sentinel, $new_not_before);
-                wc_clear_notices();
-                wc_add_notice(__("Payment methods could not be loaded. Please try again.", $this->domain), "error");
-                return array('result' => 'failure', 'redirect' => wc_get_checkout_url());
-            }
-
-            // Section AC: Normalize availability payload to canonical schema.
-            $payment_methods = $result['data'];
-
-            if (!array_key_exists('isWhiteLabel', $payment_methods)) {
-                $this->set_cached_payment_methods($failure_sentinel, $new_not_before);
-                wc_clear_notices();
-                wc_add_notice(__("Payment methods could not be loaded. Please try again.", $this->domain), "error");
-                return array('result' => 'failure', 'redirect' => wc_get_checkout_url());
-            }
-
-            $wl = $payment_methods['isWhiteLabel'];
-            if ($wl === true || $wl === 1 || $wl === '1') {
-                $normalized_wl = true;
-            } elseif ($wl === false || $wl === 0 || $wl === '0') {
-                $normalized_wl = false;
-            } else {
-                $this->set_cached_payment_methods($failure_sentinel, $new_not_before);
-                wc_clear_notices();
-                wc_add_notice(__("Payment methods could not be loaded. Please try again.", $this->domain), "error");
-                return array('result' => 'failure', 'redirect' => wc_get_checkout_url());
-            }
-
-            // Section Y: Build canonical payButtons with all six known keys.
-            $known_buttons = array('knet', 'credit_card', 'apple_pay_knet', 'apple_pay', 'samsung_pay', 'google_pay');
-            $normalized_buttons = array();
-            $raw_buttons = isset($payment_methods['payButtons']) && is_array($payment_methods['payButtons'])
-                ? $payment_methods['payButtons']
-                : array();
-
-            foreach ($known_buttons as $btn) {
-                if (array_key_exists($btn, $raw_buttons)) {
-                    $bv = $raw_buttons[$btn];
-                    if ($bv === true || $bv === 1 || $bv === '1') {
-                        $normalized_buttons[$btn] = 1;
-                    } elseif ($bv === false || $bv === 0 || $bv === '0') {
-                        $normalized_buttons[$btn] = 0;
-                    } else {
-                        $this->set_cached_payment_methods($failure_sentinel, $new_not_before);
-                        wc_clear_notices();
-                        wc_add_notice(__("Payment methods could not be loaded. Please try again.", $this->domain), "error");
-                        return array('result' => 'failure', 'redirect' => wc_get_checkout_url());
-                    }
-                } else {
-                    $normalized_buttons[$btn] = 0;
-                }
-            }
-
-            // Cache only canonical schema (Section Y).
-            $canonical_cache = array(
-                'schema'       => 3,
-                'result'       => 'success',
-                'isWhiteLabel' => $normalized_wl,
-                'payButtons'   => $normalized_buttons,
             );
+            $result = $availability->fetch();
 
-            // Expose to getPaymentIcons with full structure.
-            $payment_methods['result'] = 'success';
-            $payment_methods['isWhiteLabel'] = $normalized_wl;
-            $payment_methods['payButtons'] = $normalized_buttons;
-            // Cache canonical schema (Section Y).
-            $this->set_cached_payment_methods($canonical_cache, $new_not_before);
-            return $payment_methods;
+            if (is_array($result)
+                && isset($result['result'])
+                && $result['result'] === 'failure'
+            ) {
+                wc_clear_notices();
+                wc_add_notice(__("Payment methods could not be loaded. Please try again.", $this->domain), "error");
+                return array('result' => 'failure', 'redirect' => wc_get_checkout_url());
+            }
+
+            return $result;
         }
 
         public function getSavedCards($customer_token)

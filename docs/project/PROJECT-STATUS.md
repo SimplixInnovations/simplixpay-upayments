@@ -28,11 +28,29 @@
 | Phase 9I — historical token-identity migration | **DONE / VERIFIED** |
 | Provider Contract & Payment Lifecycle | **DONE / VERIFIED** |
 | Security Threat-Model Closure | **DONE / VERIFIED** |
-| Current program gate | **Architecture & Code-Quality Foundation — A1** |
+| Current program gate | **Architecture & Code-Quality Foundation — A2** |
 
-The plugin remains a pre-release engineering project. Architecture discovery is now DONE / VERIFIED and A1 provider endpoint/mode resolution is the current bounded implementation tranche. Neither milestone constitutes broad code-quality, provider-host, penetration-test, PCI/compliance, platform, feature, performance or release certification.
+The plugin remains a pre-release engineering project. Architecture discovery and A1 provider endpoint/mode resolution are DONE / VERIFIED; A2 payment-method availability client/cache extraction is the current bounded implementation tranche. None of these milestones constitutes broad code-quality, provider-host, penetration-test, PCI/compliance, platform, feature, performance or release certification.
 
-## Latest verified milestone — Architecture discovery
+## Latest verified milestone — Architecture A1 provider endpoint/mode resolution
+
+PR #21 final reviewed head:
+
+- `baed693964556120dc7ad07dbc740d3acc1af20f`
+
+Verified squash merge on `main`:
+
+- merge: `d43d175a1443709d42efabfbe78519a5a84f4dc9`
+- tree: `ddb2ac7cd8b2d4f454867e10bc361fee94dbcf4b`
+- parent: `596ffb433813cdc06e81d67162617b3019af686b`
+- GitHub signature: **VERIFIED**
+- implementation branch `architecture/a1-provider-endpoints`: **deleted after verified merge**
+- exact-head Quality Gates run #152: **SUCCESS**
+- push-triggered post-merge Quality Gates run #153: **SUCCESS**
+
+A1 preserved the inherited live/sandbox URL bytes behind all four public gateway wrappers, reduced the exact `UPayments.php` ratchet to **257,298 bytes**, and made Provider Endpoints **49/0** mandatory alongside the complete historical and architecture stack. The official provider production-host difference remains a separately reviewed future migration.
+
+## Previous verified milestone — Architecture discovery
 
 PR #19 final reviewed head:
 
@@ -258,18 +276,18 @@ Repository readiness remains DONE / VERIFIED:
 
 ## Current program gate — Architecture & Code-Quality Foundation
 
-**Status: A1 — PROVIDER ENDPOINT/MODE RESOLUTION / IMPLEMENTATION.**
+**Status: A2 — PAYMENT-METHOD AVAILABILITY CLIENT/CACHE / IMPLEMENTATION.**
 
-Architecture discovery is complete. A1 is the first permitted runtime extraction and is limited to deterministic provider endpoint/mode resolution behind byte-equivalent legacy gateway wrappers. Current scope:
+Architecture A1 is complete. A2 is limited to extracting the already-characterized payment-method availability client/cache behind the existing `getUpayPaymentMethods()` gateway entry point. Current scope:
 
-- add a pure `Simplix\Pay\UPayments\Provider\EndpointResolver` with no WordPress/WooCommerce dependency;
-- keep all four public gateway URL helpers, including the historical `getAPIUrlForRetreiveCards()` spelling, as compatibility wrappers;
-- preserve exact live/test URL bytes and every fixed route;
-- retain the inherited live `apiv2api.upayments.com` base for A1 even though current official provider documentation names `uapi.upayments.com`; any provider-host migration is a separate, researched runtime change;
-- make the provider endpoint harness mandatory in Quality Gates;
+- add `Simplix\Pay\UPayments\Provider\PaymentMethodAvailability` as the explicit client/cache coordinator while leaving hardened authenticated HTTP in the gateway transport seam;
+- preserve exact `upay_pm_v3_` credential fingerprinting, test/live transient isolation, site/mode advisory-lock identity and mode-specific durable option names;
+- preserve the 65-second gate, gate-before-HTTP ordering, lock release before outbound HTTP, strict HTTP-201/provider status/schema normalization and schema-3 cache shapes;
+- preserve fresh-response versus canonical-cache return behavior and the gateway's exact failure notice/checkout redirect presentation;
+- keep the A1 provider endpoint harness and make the A2 availability harness mandatory in Quality Gates;
 - preserve protected identities and keep Security **81/0**, Provider **141/0 + 4/0**, Phase 9I, Phase 0, H12 and all architecture regressions green.
 
-No transport, credentials, payload, payment-truth, persistence or order-state behavior is authorized to change in A1. A2 remains prohibited until A1 is independently reviewed, exact-head green, merged, post-merge verified and cleaned up.
+No provider route, authenticated HTTP behavior, credential value, provider payload, payment truth, protected persistence identity or order-state behavior is authorized to change in A2. A3 remains prohibited until A2 is independently reviewed, exact-head green, merged, post-merge verified and cleaned up.
 
 ## Later program blockers
 

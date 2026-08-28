@@ -1,0 +1,294 @@
+<?php
+
+namespace Simplix\Pay\UPayments\Provider;
+
+/**
+ * UPayments payment-method availability client and cache coordinator.
+ *
+ * WordPress persistence and the MySQL advisory lock remain the durability
+ * adapters for the inherited contract. Provider transport is injected so
+ * this service does not own gateway authentication or HTTP implementation.
+ */
+final class PaymentMethodAvailability {
+    private const CACHE_SCHEMA = 3;
+    private const RATE_GATE_COOLDOWN = 65;
+
+    private const KNOWN_BUTTONS = array(
+        'knet',
+        'credit_card',
+        'apple_pay_knet',
+        'apple_pay',
+        'samsung_pay',
+        'google_pay',
+    );
+
+    private $test_mode;
+    private $api_key;
+    private $transport;
+
+    /**
+     * @param mixed    $test_mode Truthy selects the sandbox cache/lock scope.
+     * @param mixed    $api_key Current gateway API credential.
+     * @param callable $transport Zero-argument hardened provider transport.
+     */
+    public function __construct($test_mode, $api_key, callable $transport) {
+        $this->test_mode = (bool) $test_mode;
+        $this->api_key = $api_key;
+        $this->transport = $transport;
+    }
+
+    private function rate_gate_option_name() {
+        return 'upayments_payment_methods_rate_gate_' . ($this->test_mode ? 'test' : 'live');
+    }
+
+    private function transient_name() {
+        $mode = $this->test_mode ? 'test' : 'live';
+        $fingerprint = hash_hmac('sha256', $mode . '|' . $this->api_key, wp_salt('auth'));
+        return 'upay_pm_v3_' . substr($fingerprint, 0, 16);
+    }
+
+    private function lock_name() {
+        global $wpdb;
+
+        $mode = $this->test_mode ? 'test' : 'live';
+        $db_name = defined('DB_NAME') ? DB_NAME : '';
+        $lock_input = $db_name . '|' . $wpdb->prefix . '|' . (string) get_current_blog_id() . '|' . $mode;
+        return 'upay_pm_' . substr(hash('sha256', $lock_input), 0, 16);
+    }
+
+    private function acquire_lock() {
+        global $wpdb;
+
+        $result = $wpdb->get_var(
+            $wpdb->prepare('SELECT GET_LOCK(%s, 0)', $this->lock_name())
+        );
+        if ($result === '1' || $result === 1) {
+            return 1;
+        }
+        if ($result === '0' || $result === 0) {
+            return 0;
+        }
+        return -1;
+    }
+
+    private function release_lock() {
+        global $wpdb;
+
+        $wpdb->get_var(
+            $wpdb->prepare('SELECT RELEASE_LOCK(%s)', $this->lock_name())
+        );
+        return true;
+    }
+
+    private function rate_gate() {
+        return array('not_before' => (int) get_option($this->rate_gate_option_name(), 0));
+    }
+
+    private function set_rate_gate($not_before) {
+        return update_option($this->rate_gate_option_name(), (int) $not_before, false);
+    }
+
+    private function cached() {
+        $cached = get_transient($this->transient_name());
+        return is_array($cached) ? $cached : null;
+    }
+
+    /**
+     * Classify only the strict canonical schema-3 cache shapes.
+     *
+     * @param mixed $cached Cached value.
+     * @return string|bool 'success', 'failure', or false when malformed.
+     */
+    public static function classify_cached($cached) {
+        if (!is_array($cached)) {
+            return false;
+        }
+        if (count($cached) === 2
+            && array_key_exists('schema', $cached) && $cached['schema'] === self::CACHE_SCHEMA
+            && array_key_exists('state', $cached) && $cached['state'] === 'failure'
+        ) {
+            return 'failure';
+        }
+
+        $cached_keys = array_keys($cached);
+        sort($cached_keys);
+        $expected_keys = array('schema', 'result', 'isWhiteLabel', 'payButtons');
+        sort($expected_keys);
+        if ($cached_keys !== $expected_keys
+            || !isset($cached['schema']) || $cached['schema'] !== self::CACHE_SCHEMA
+            || !isset($cached['result']) || $cached['result'] !== 'success'
+            || !isset($cached['isWhiteLabel']) || !is_bool($cached['isWhiteLabel'])
+            || !isset($cached['payButtons']) || !is_array($cached['payButtons'])
+        ) {
+            return false;
+        }
+
+        $button_keys = array_keys($cached['payButtons']);
+        sort($button_keys);
+        $expected_button_keys = self::KNOWN_BUTTONS;
+        sort($expected_button_keys);
+        if ($button_keys !== $expected_button_keys) {
+            return false;
+        }
+        foreach (self::KNOWN_BUTTONS as $button) {
+            if (!array_key_exists($button, $cached['payButtons'])
+                || !is_int($cached['payButtons'][$button])
+                || ($cached['payButtons'][$button] !== 0 && $cached['payButtons'][$button] !== 1)
+            ) {
+                return false;
+            }
+        }
+        return 'success';
+    }
+
+    private static function failure_sentinel() {
+        return array('schema' => self::CACHE_SCHEMA, 'state' => 'failure');
+    }
+
+    private function cache($result, $not_before) {
+        $ttl = max(1, $not_before - time());
+        return set_transient($this->transient_name(), $result, $ttl);
+    }
+
+    /**
+     * Resolve the current payment-method availability.
+     *
+     * @return array|null Success/provider data, failure result, or null when
+     *                    the credential is empty.
+     */
+    public function fetch() {
+        if (empty($this->api_key)) {
+            return null;
+        }
+
+        $cached = $this->cached();
+        if ($cached !== null) {
+            $status = self::classify_cached($cached);
+            if ($status === 'success') {
+                return $cached;
+            }
+            if ($status === 'failure') {
+                return array('result' => 'failure');
+            }
+        }
+
+        if ($this->acquire_lock() !== 1) {
+            $cached = $this->cached();
+            if ($cached !== null) {
+                $status = self::classify_cached($cached);
+                if ($status === 'success') {
+                    return $cached;
+                }
+                if ($status === 'failure') {
+                    return array('result' => 'failure');
+                }
+            }
+            return array('result' => 'failure');
+        }
+
+        $gate = $this->rate_gate();
+        $now = time();
+
+        $cached = $this->cached();
+        if ($cached !== null) {
+            $status = self::classify_cached($cached);
+            if ($status === 'success') {
+                $this->release_lock();
+                return $cached;
+            }
+            if ($status === 'failure') {
+                $this->release_lock();
+                return array('result' => 'failure');
+            }
+        }
+
+        if ($now < $gate['not_before']) {
+            $this->release_lock();
+            return array('result' => 'failure');
+        }
+
+        $new_not_before = $now + self::RATE_GATE_COOLDOWN;
+        if (!$this->set_rate_gate($new_not_before)) {
+            $this->release_lock();
+            return array('result' => 'failure');
+        }
+        $verify_gate = $this->rate_gate();
+        if ($verify_gate['not_before'] < $new_not_before) {
+            $this->release_lock();
+            return array('result' => 'failure');
+        }
+
+        // The inherited contract releases the advisory lock before HTTP.
+        $this->release_lock();
+        $transport = call_user_func($this->transport);
+        $failure = self::failure_sentinel();
+
+        if (!is_array($transport)
+            || !isset($transport['transport_ok']) || $transport['transport_ok'] !== true
+            || !isset($transport['http_status']) || (int) $transport['http_status'] !== 201
+            || !isset($transport['curl_errno']) || (int) $transport['curl_errno'] !== 0
+            || !isset($transport['body']) || !is_scalar($transport['body'])
+            || (string) $transport['body'] === ''
+        ) {
+            $this->cache($failure, $new_not_before);
+            return array('result' => 'failure');
+        }
+
+        $result = json_decode((string) $transport['body'], true);
+        if (!is_array($result)
+            || !array_key_exists('status', $result) || $result['status'] !== true
+            || !isset($result['data']) || !is_array($result['data'])
+        ) {
+            $this->cache($failure, $new_not_before);
+            return array('result' => 'failure');
+        }
+
+        $payment_methods = $result['data'];
+        if (!array_key_exists('isWhiteLabel', $payment_methods)) {
+            $this->cache($failure, $new_not_before);
+            return array('result' => 'failure');
+        }
+
+        $white_label = $payment_methods['isWhiteLabel'];
+        if ($white_label === true || $white_label === 1 || $white_label === '1') {
+            $normalized_white_label = true;
+        } elseif ($white_label === false || $white_label === 0 || $white_label === '0') {
+            $normalized_white_label = false;
+        } else {
+            $this->cache($failure, $new_not_before);
+            return array('result' => 'failure');
+        }
+
+        $raw_buttons = isset($payment_methods['payButtons']) && is_array($payment_methods['payButtons'])
+            ? $payment_methods['payButtons']
+            : array();
+        $normalized_buttons = array();
+        foreach (self::KNOWN_BUTTONS as $button) {
+            if (!array_key_exists($button, $raw_buttons)) {
+                $normalized_buttons[$button] = 0;
+                continue;
+            }
+            $value = $raw_buttons[$button];
+            if ($value === true || $value === 1 || $value === '1') {
+                $normalized_buttons[$button] = 1;
+            } elseif ($value === false || $value === 0 || $value === '0') {
+                $normalized_buttons[$button] = 0;
+            } else {
+                $this->cache($failure, $new_not_before);
+                return array('result' => 'failure');
+            }
+        }
+
+        $canonical = array(
+            'schema'       => self::CACHE_SCHEMA,
+            'result'       => 'success',
+            'isWhiteLabel' => $normalized_white_label,
+            'payButtons'   => $normalized_buttons,
+        );
+        $payment_methods['result'] = 'success';
+        $payment_methods['isWhiteLabel'] = $normalized_white_label;
+        $payment_methods['payButtons'] = $normalized_buttons;
+        $this->cache($canonical, $new_not_before);
+        return $payment_methods;
+    }
+}

@@ -1,12 +1,12 @@
 # Architecture & Code-Quality Foundation
 
-**Status:** A1 / IMPLEMENTATION
+**Status:** A2 / IMPLEMENTATION
 
-**Current branch:** `architecture/a1-provider-endpoints`
+**Current branch:** `architecture/a2-payment-method-availability`
 
-**Verified base `main`:** `596ffb433813cdc06e81d67162617b3019af686b`
+**Verified base `main`:** `d43d175a1443709d42efabfbe78519a5a84f4dc9`
 
-**Verified base tree:** `3fcaed35546a6b1407d2a46797630e46301e65ef`
+**Verified base tree:** `ddb2ac7cd8b2d4f454867e10bc361fee94dbcf4b`
 
 **Gate purpose:** replace inherited mixed-responsibility structure incrementally with explicit Simplix-owned boundaries while preserving every closed payment, security, H12, Phase 9I and compatibility contract.
 
@@ -48,13 +48,27 @@ The discovery/characterization tranche is **DONE / VERIFIED**:
 - push-triggered post-merge Quality Gates run #148: **SUCCESS**;
 - implementation branch `architecture/discovery`: **deleted after verified merge**.
 
-Discovery froze the responsibility map, dependency direction, compatibility surfaces, A1-A5 order, monolith ratchet and permanent architecture harnesses. A1 is the first permitted runtime extraction under that reviewed contract.
+Discovery froze the responsibility map, dependency direction, compatibility surfaces, A1-A5 order, monolith ratchet and permanent architecture harnesses.
+
+## A1 closure evidence
+
+The provider endpoint/mode tranche is **DONE / VERIFIED**:
+
+- PR #21 final reviewed head: `baed693964556120dc7ad07dbc740d3acc1af20f`;
+- exact head tree: `ddb2ac7cd8b2d4f454867e10bc361fee94dbcf4b`;
+- squash merge on `main`: `d43d175a1443709d42efabfbe78519a5a84f4dc9`, with a valid verified GitHub signature;
+- exact-head Quality Gates run #152: **SUCCESS**;
+- push-triggered post-merge Quality Gates run #153: **SUCCESS**;
+- Provider Endpoints: **49/0** on exact head and post-merge `main`;
+- implementation branch `architecture/a1-provider-endpoints`: **deleted after verified merge**.
+
+A1 moved deterministic mode/endpoint resolution to `src/Provider/EndpointResolver.php`, retained all four public compatibility wrappers and preserved the inherited live and sandbox URL bytes. The current official provider production-host difference remains explicitly out of scope for A2.
 
 ## Current structural baseline
 
 ### Primary monolith
 
-At the verified discovery closure, `UPayments.php` was **257,832 bytes**. A1 reduces it to the current accepted ratchet of **257,298 bytes** while preserving the main plugin bootstrap and `WC_Upayments` gateway implementation. Source characterization identifies at least these responsibility families inside the same file:
+At the verified discovery closure, `UPayments.php` was **257,832 bytes**. A1 reduced it to **257,298 bytes**. A2 reduces the current accepted ratchet to **238,714 bytes** while preserving the main plugin bootstrap, `WC_Upayments` gateway implementation and public availability entry point. Source characterization identifies at least these responsibility families inside the same file:
 
 1. plugin bootstrap, constants, WooCommerce availability checks and gateway registration;
 2. gateway constructor/hook registration and runtime composition;
@@ -183,7 +197,22 @@ Why first:
 
 ### A2 — payment-method availability client/cache
 
-Only after A1 is verified. Characterize current cache-key, credential fingerprint, advisory-lock, cooldown and provider-schema behavior first. Preserve test/live isolation and fail-closed behavior.
+A1 is verified. A2 extracts the characterized availability client/cache coordination to `src/Provider/PaymentMethodAvailability.php` behind the existing public gateway entry point.
+
+**A2 implementation contract:**
+
+- `getUpayPaymentMethods()` remains public and preserves `null` for an empty API credential, existing success shapes, and the exact failure notice plus checkout redirect presentation;
+- provider transport remains injected from the gateway's hardened `execute_upayments_request('check-payment-button-status', 'GET')` seam; the new service does not own Bearer authentication or generic HTTP;
+- transient identity remains `upay_pm_v3_` plus the first 16 hexadecimal characters of `HMAC-SHA256(mode + "|" + API key, wp_salt('auth'))`;
+- test/live result caches, advisory locks and durable cooldown options remain isolated exactly as characterized;
+- advisory lock identity remains site + database prefix + blog ID + mode and contains no credential;
+- the durable **65-second** gate is persisted and verified while the lock is held, before HTTP; the lock is released before outbound HTTP;
+- lock contention/error, active cooldown, failed gate persistence and every malformed transport/provider shape fail closed without an unauthorized provider call;
+- availability transport still requires `transport_ok === true`, HTTP **201**, cURL errno **0**, non-empty scalar JSON body, strict provider `status === true`, array `data`, and a normalizable `isWhiteLabel` value;
+- the six known payment buttons retain strict boolean/0/1/string-0/string-1 normalization, missing known buttons default to zero, and malformed values fail closed;
+- cached success remains exact canonical schema 3 with only `schema`, `result`, `isWhiteLabel` and the six known `payButtons`; cached failure remains exactly `{schema: 3, state: failure}`;
+- fresh success continues to retain unknown top-level provider fields while replacing `payButtons` with only the normalized known set; cache hits return the canonical cache shape;
+- `tests/harness/architecture-payment-method-availability-harness.php` freezes identity, locking, gate timing, cache schema, transport/provider mutation failures and gateway delegation, and is mandatory in Quality Gates.
 
 ### A3 — gateway settings/admin/multi-merchant presentation
 
