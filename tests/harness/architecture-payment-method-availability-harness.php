@@ -21,6 +21,7 @@ function a2_reset() {
         'option_writes' => 0,
         'transport_calls' => 0,
         'lock_held_during_transport' => null,
+        'gate_during_transport' => null,
         'populate_on_lock_failure' => null,
         'populate_on_lock_acquire' => null,
         'gate_verify_shortfall' => false,
@@ -165,6 +166,10 @@ function a2_transport($response) {
         global $a2_state;
         $a2_state['transport_calls']++;
         $a2_state['lock_held_during_transport'] = !empty($a2_state['locks']);
+        $gate_name = 'upayments_payment_methods_rate_gate_live';
+        $a2_state['gate_during_transport'] = isset($a2_state['options'][$gate_name])
+            ? $a2_state['options'][$gate_name]
+            : null;
         return $response;
     };
 }
@@ -244,6 +249,7 @@ a2_assert_same(1, $state['lock_releases'], 'fresh miss releases the acquired adv
 a2_assert_same(1, $state['option_writes'], 'fresh miss persists durable gate exactly once');
 $gate = $state['options']['upayments_payment_methods_rate_gate_live'];
 a2_assert($gate >= $before + 65 && $gate <= $after + 65, 'durable gate preserves the 65-second cooldown');
+a2_assert_same($gate, $state['gate_during_transport'], 'durable gate is persisted before outbound HTTP begins');
 a2_assert_same('retained-on-fresh-result', $fresh['providerTrace'], 'fresh success preserves unknown top-level provider data');
 a2_assert_same(true, $fresh['isWhiteLabel'], 'fresh success normalizes white-label flag to boolean');
 a2_assert_same(1, $fresh['payButtons']['knet'], 'fresh success normalizes true button to integer one');
