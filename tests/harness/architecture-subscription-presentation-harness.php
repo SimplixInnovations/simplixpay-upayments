@@ -30,6 +30,7 @@ $a4_can_edit = false;
 $a4_current_user = 7;
 $a4_product = null;
 $a4_wc = (object) array('cart' => (object) array());
+$a4_field_args = null;
 
 class WooCommerce {}
 class WC_Product {
@@ -41,6 +42,17 @@ class WC_Product {
 }
 class WC_Product_Simple extends WC_Product {}
 class WC_Order {}
+class A4Order extends WC_Order {
+    public $meta = array();
+    public $user_id = 7;
+    public $id = 44;
+    public function get_meta($key) { return isset($this->meta[$key]) ? $this->meta[$key] : ''; }
+    public function get_user_id() { return $this->user_id; }
+    public function get_id() { return $this->id; }
+    public function get_date_created() { return new DateTime('2029-01-02 03:04:05', new DateTimeZone('UTC')); }
+    public function get_date_paid() { return null; }
+    public function get_date_completed() { return null; }
+}
 
 function __($text, $domain = null) { return $text; }
 function esc_html($value) { return htmlspecialchars((string) $value, ENT_QUOTES, 'UTF-8'); }
@@ -57,7 +69,7 @@ function current_user_can($capability, $post_id = null) { global $a4_can_edit; r
 function update_post_meta($post_id, $key, $value) { global $a4_meta; $a4_meta[] = array($post_id, $key, $value); }
 function get_post_meta($post_id, $key, $single = false) { global $a4_meta_values; return isset($a4_meta_values[$post_id][$key]) ? $a4_meta_values[$post_id][$key] : ''; }
 function get_post_type() { return 'product'; }
-function woocommerce_wp_text_input($args) { echo 'FIELD:' . esc_attr(json_encode($args)); }
+function woocommerce_wp_text_input($args) { global $a4_field_args; $a4_field_args = $args; echo 'FIELD:' . esc_attr(json_encode($args)); }
 function add_action($hook, $callback, $priority = 10, $accepted_args = 1) { global $a4_hooks; $a4_hooks[] = array('action', $hook, $callback, $priority, $accepted_args); }
 function add_filter($hook, $callback, $priority = 10, $accepted_args = 1) { global $a4_hooks; $a4_hooks[] = array('filter', $hook, $callback, $priority, $accepted_args); }
 function WC() { global $a4_wc; return $a4_wc; }
@@ -117,6 +129,14 @@ a4_same(array(
     'label' => 'Custom Settings', 'target' => 'custom_product_data_panel',
     'class' => array('show_if_custom_type'), 'priority' => 25,
 ), Presentation::add_custom_data_tab(array())['custom_settings'], 'complete custom product tab schema is preserved');
+$a4_field_args = null;
+a4_output(array(Presentation::class, 'add_custom_data_panel'));
+a4_same(array(
+    'id' => '_custom_field_id', 'label' => 'Custom Field', 'placeholder' => 'Enter value here',
+    'desc_tip' => 'true', 'description' => 'This is a description of the field.',
+), $a4_field_args, 'complete custom product field schema is preserved');
+$product_js = a4_output(array(Presentation::class, 'custom_product_types'));
+a4_assert(strpos($product_js, '.options_group.pricing') !== false && strpos($product_js, '.show_if_simple') !== false, 'custom product admin visibility selectors are preserved');
 
 // Product-meta authorization stays fail-closed and retains the exact identity.
 $_POST = array('woocommerce_meta_nonce' => 'n', 'post_ID' => '12', '_custom_field_id' => ' <b>value</b> ');
@@ -140,6 +160,20 @@ $html = a4_output(array(Presentation::class, 'display_custom_field_on_frontend')
 a4_assert(strpos($html, '&lt;b&gt;Gold&lt;/b&gt;') !== false && strpos($html, '<b>Gold</b>') === false, 'product custom value remains HTML-escaped');
 $item_data = Presentation::display_custom_data_in_cart(array(), array('product_id' => 12));
 a4_same(array(array('key' => 'Special Feature', 'value' => '<b>Gold</b>', 'display' => '')), $item_data, 'cart presentation retains exact label/value shape');
+$line_item = new class { public $writes = array(); public function add_meta_data($key, $value) { $this->writes[] = array($key, $value); } };
+Presentation::save_custom_data_to_order_items($line_item, 'cart-key', array('product_id' => 12), null);
+a4_same(array(array('Special Feature', '<b>Gold</b>')), $line_item->writes, 'order-item copy retains exact label and product-meta bytes');
+
+// Mixed-cart validation remains equivalent at both rejection boundaries.
+$a4_product = new WC_Product();
+Utils::$custom = true; Utils::$normal = false; $a4_notices = array();
+a4_same(false, Presentation::restrict_mixed_cart_products(true, 12, 1, 'upayments'), 'normal product is rejected from a subscription cart');
+a4_same(array(array('You can only add subscription products to the cart when a subscription item is present.', 'error')), $a4_notices, 'subscription-cart rejection message remains exact');
+$a4_product->type = 'custom_type'; Utils::$custom = false; Utils::$normal = true; $a4_notices = array();
+a4_same(false, Presentation::restrict_mixed_cart_products(true, 12, 1, 'upayments'), 'subscription product is rejected from a normal cart');
+a4_same(array(array('Subscription products cannot be added together with normal products. Please complete your current purchase first.', 'error')), $a4_notices, 'normal-cart rejection message remains exact');
+Utils::$normal = false;
+a4_same(true, Presentation::restrict_mixed_cart_products(true, 12, 1, 'upayments'), 'compatible cart addition remains allowed');
 
 // My Account filters/columns and outputs retain their established identities.
 $_GET = array();
@@ -157,6 +191,27 @@ $hostile = new class extends WC_Order { public function get_meta($key) { return 
 $status_html = a4_output(function () use ($hostile) { Presentation::render_account_subscription_status($hostile); });
 a4_assert(strpos($status_html, '<script>') === false && strpos($status_html, '&lt;script&gt;') !== false, 'account subscription status remains escaped in class and text contexts');
 
+$_GET = array('subscription_filter' => 'paused');
+$filter_html = a4_output(array(Presentation::class, 'render_account_orders_filter'));
+a4_assert(strpos($filter_html, 'name="subscription_filter"') !== false && strpos($filter_html, 'value="paused"  selected="selected"') !== false, 'account filter retains field identity and selected paused state');
+
+$manual_order = new A4Order();
+$manual_order->meta = array('_upay_subscription_plan' => 'monthly', '_upay_subscription_interval' => 2, '_upay_subscription_status' => 'paused', 'UPayments_AutoDeduction' => 'no');
+$account_html = a4_output(function () use ($manual_order) { Presentation::render_account_order_details($manual_order); });
+a4_assert(strpos($account_html, 'woocommerce-subscription-details') !== false, 'owned manual subscription renders account details');
+a4_assert(strpos($account_html, 'name="upay_action" value="unsubscribe"') !== false && strpos($account_html, 'name="upay_action" value="resume"') !== false, 'manual paused subscription retains unsubscribe and resume POST actions');
+a4_assert(strpos($account_html, 'NONCE:upay_unsubscribe_44:_wpnonce') !== false && strpos($account_html, 'NONCE:upay_resume_44:_wpnonce') !== false, 'manual actions retain exact action-specific nonce identities');
+$other_order = clone $manual_order; $other_order->user_id = 8;
+a4_same('', a4_output(function () use ($other_order) { Presentation::render_account_order_details($other_order); }), 'another customer subscription renders nothing');
+$cancelled_order = clone $manual_order; $cancelled_order->meta['_upay_subscription_status'] = 'cancelled';
+a4_same('', a4_output(function () use ($cancelled_order) { Presentation::render_account_order_details($cancelled_order); }), 'cancelled subscription account details remain suppressed');
+$auto_order = clone $manual_order; $auto_order->meta['UPayments_AutoDeduction'] = 'yes';
+$auto_html = a4_output(function () use ($auto_order) { Presentation::render_account_order_details($auto_order); });
+a4_assert(strpos($auto_html, 'woocommerce-subscription-details') !== false && strpos($auto_html, 'name="upay_action"') === false, 'auto-deduction order keeps details but exposes no manual mutation forms');
+
+$admin_html = a4_output(function () use ($manual_order) { Presentation::render_admin_summary($manual_order); });
+a4_assert(strpos($admin_html, 'upay-subscription-summary') !== false && strpos($admin_html, 'Every 2 Month(s)') !== false, 'admin subscription summary retains plan/interval presentation');
+
 // Gateway compatibility wrappers and high-risk boundaries remain in place.
 $root = dirname(__DIR__, 2);
 $gateway = file_get_contents($root . '/UPayments.php');
@@ -167,6 +222,25 @@ foreach (array('initializeSubscriptionModule', 'render_subscription_summary', 'r
 }
 foreach (array('addCustomProductType', 'mapCustomProductClass', 'customProductTypes', 'addCustomDataTab', 'addCustomDataPanel', 'saveCustomFieldData', 'displayCustomFieldOnFrontend', 'displayCustomDataInCart', 'saveCustomDataToOrderItems') as $function) {
     a4_assert((bool) preg_match('/function\s+' . preg_quote($function, '/') . '\s*\(/', $gateway), "legacy global {$function} compatibility seam remains callable");
+}
+$compact_gateway = preg_replace('/\s+/', '', $gateway);
+$thin_wrappers = array(
+    'functionaddCustomProductType($types){returnSubscriptionPresentation::add_custom_product_type($types);}',
+    'functionmapCustomProductClass($classname,$product_type){returnSubscriptionPresentation::map_custom_product_class($classname,$product_type);}',
+    'functioncustomProductTypes(){SubscriptionPresentation::custom_product_types();}',
+    'functionaddCustomDataTab($tabs){returnSubscriptionPresentation::add_custom_data_tab($tabs);}',
+    'functionaddCustomDataPanel(){SubscriptionPresentation::add_custom_data_panel();}',
+    'functionsaveCustomFieldData($post_id){SubscriptionPresentation::save_custom_field_data($post_id);}',
+    'functiondisplayCustomFieldOnFrontend(){SubscriptionPresentation::display_custom_field_on_frontend();}',
+    'functiondisplayCustomDataInCart($item_data,$cart_item){returnSubscriptionPresentation::display_custom_data_in_cart($item_data,$cart_item);}',
+    'functionsaveCustomDataToOrderItems($item,$cart_item_key,$values,$order){SubscriptionPresentation::save_custom_data_to_order_items($item,$cart_item_key,$values,$order);}',
+    'publicfunctioninitializeSubscriptionModule(){SubscriptionComposition::initialize_legacy_modules();}',
+    'publicfunctionrender_subscription_summary($order){SubscriptionPresentation::render_admin_summary($order);}',
+    'publicfunctionrestrictMixedCartProducts($passed,$product_id,$quantity){returnSubscriptionPresentation::restrict_mixed_cart_products($passed,$product_id,$quantity,$this->domain);}',
+    'publicfunctionrenderSubscriptionBadgeInProductList(){SubscriptionPresentation::render_subscription_badge();}',
+);
+foreach ($thin_wrappers as $wrapper) {
+    a4_assert(strpos($compact_gateway, $wrapper) !== false, 'compatibility wrapper remains an exact one-call delegate: ' . substr($wrapper, 0, strpos($wrapper, '(')));
 }
 a4_assert(strpos($gateway, 'SubscriptionComposition::register_presentation_hooks();') !== false, 'main bootstrap activates the subscription composition boundary');
 a4_assert(strpos($gateway, 'SubscriptionComposition::initialize_legacy_modules();') !== false, 'public subscription initializer delegates legacy checkout/storage composition');
