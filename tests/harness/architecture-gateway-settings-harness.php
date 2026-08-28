@@ -93,6 +93,7 @@ function a3_asset_handles($type) {
 
 // Exact gateway settings identity/schema.
 $fields = GatewaySettings::fields('upayments', 'UPayments', 'Gateway description');
+$expected_fields = require dirname(__DIR__) . '/fixtures/architecture-a3-gateway-settings-schema.php';
 $expected_keys = array(
     'enabled',
     'make_default_gateway',
@@ -118,6 +119,7 @@ $expected_keys = array(
 );
 a3_assert_same($expected_keys, array_keys($fields), 'gateway field keys and order are preserved exactly');
 a3_assert_same(21, count($fields), 'gateway schema contains exactly the inherited 21 fields');
+a3_assert_same($expected_fields, $fields, 'complete nested gateway field schema matches frozen characterization');
 a3_assert_same('yes', $fields['enabled']['default'], 'gateway remains enabled by default');
 a3_assert_same('no', $fields['make_default_gateway']['default'], 'default-gateway opt-in remains disabled');
 a3_assert_same('UPayments', $fields['title']['default'], 'checkout title default remains method title');
@@ -239,6 +241,24 @@ a3_assert_same(array('upayments-multimerchant-style'), a3_asset_handles('styles'
 a3_assert_same(array('upayments-multimerchant-repeater', 'upayments-admin-logic'), a3_asset_handles('scripts'), 'exact inherited admin scripts load on gateway settings page');
 a3_assert_same('https://example.test/plugin/assets/js/admin-settings.js', $a3_assets['scripts'][1][1], 'admin settings script path is preserved');
 a3_assert_same(1, count($a3_assets['inline']), 'disabled-row style remains registered once');
+a3_assert_same(
+    array(array('upayments-multimerchant-style', 'https://example.test/plugin/assets/css/admin-style.css', array(), '3.0.0')),
+    $a3_assets['styles'],
+    'complete allocation stylesheet registration is preserved'
+);
+a3_assert_same(
+    array(
+        array('upayments-multimerchant-repeater', 'https://example.test/plugin/assets/js/multimerchant-repeater.js', array('jquery'), '3.0.0', true),
+        array('upayments-admin-logic', 'https://example.test/plugin/assets/js/admin-settings.js', array('jquery'), '3.0.0', true),
+    ),
+    $a3_assets['scripts'],
+    'complete gateway settings script registrations are preserved'
+);
+a3_assert_same(
+    array(array('woocommerce_admin_styles', '.upayments-disabled-setting { opacity: 0.5; pointer-events: none; }')),
+    $a3_assets['inline'],
+    'complete disabled-row inline style registration is preserved'
+);
 
 a3_reset_assets();
 GatewaySettings::enqueue_admin_assets(
@@ -249,6 +269,16 @@ GatewaySettings::enqueue_admin_assets(
 );
 a3_assert_same(array(), a3_asset_handles('styles'), 'allocation assets do not load for another gateway');
 a3_assert_same(array('upayments-admin-logic'), a3_asset_handles('scripts'), 'general inherited checkout-settings logic retains its broader tab scope');
+a3_assert_same(
+    array(array('upayments-admin-logic', 'https://example.test/plugin/assets/js/admin-settings.js', array('jquery'), '3.0.0', true)),
+    $a3_assets['scripts'],
+    'broader checkout-tab script retains its complete registration tuple'
+);
+a3_assert_same(
+    array(array('woocommerce_admin_styles', '.upayments-disabled-setting { opacity: 0.5; pointer-events: none; }')),
+    $a3_assets['inline'],
+    'broader checkout-tab inline style retains its exact handle and bytes'
+);
 
 a3_reset_assets();
 GatewaySettings::enqueue_admin_assets('https://example.test/plugin/', 'upayments', array(), 'dashboard');
