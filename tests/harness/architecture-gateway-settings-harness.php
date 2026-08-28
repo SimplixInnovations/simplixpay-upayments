@@ -285,10 +285,12 @@ GatewaySettings::enqueue_admin_assets('https://example.test/plugin/', 'upayments
 a3_assert_same(array(), a3_asset_handles('styles'), 'admin styles do not load outside settings');
 a3_assert_same(array(), a3_asset_handles('scripts'), 'admin scripts do not load outside settings');
 
-// Source/delegation boundary keeps runtime payment orchestration in the gateway.
+// Source/delegation boundary keeps runtime payment orchestration outside Admin settings.
 $root = dirname(__DIR__, 2);
 $module_source = file_get_contents($root . '/src/Admin/GatewaySettings.php');
 $gateway_source = file_get_contents($root . '/UPayments.php');
+$checkout_orchestrator_source = file_get_contents($root . '/src/Payment/CheckoutOrchestrator.php');
+$checkout_runtime_source = $gateway_source . "\n" . $checkout_orchestrator_source;
 a3_assert(is_string($module_source), 'gateway settings module source is readable');
 a3_assert(is_string($gateway_source), 'gateway source is readable');
 a3_assert(strpos($module_source, 'namespace Simplix\\Pay\\UPayments\\Admin;') !== false, 'settings module uses canonical Simplix Admin namespace');
@@ -306,10 +308,10 @@ a3_assert(strpos($gateway_source, "'enabled' => array(") === false, 'gateway mon
 foreach (array('init_form_fields', 'process_admin_options', 'generate_multimerchant_repeater_html', 'validate_multimerchant_repeater_field', 'admin_enqueue_scripts') as $method) {
     a3_assert((bool) preg_match('/public\s+function\s+' . preg_quote($method, '/') . '\s*\(/', $gateway_source), "legacy public {$method} seam remains callable");
 }
-a3_assert(strpos($gateway_source, "'extraMerchantData' => \$extraMerchantData") !== false, 'runtime Charge payload still owns extraMerchantData');
-a3_assert(strpos($gateway_source, "'ibanNumber'     => \$iban") !== false, 'runtime allocation still uses legacy IBAN property');
-a3_assert(strpos($gateway_source, "'amount'         => '__UPAY_MM_AMOUNT_SENTINEL__'") !== false, 'single allocation remains exact order-amount sentinel');
-a3_assert(strpos($gateway_source, "array(\n                    array(\n                        'amount'         => '__UPAY_MM_AMOUNT_SENTINEL__'") !== false, 'runtime payload retains exactly one nested allocation entry');
+a3_assert(strpos($checkout_runtime_source, "'extraMerchantData' => \$extraMerchantData") !== false, 'runtime Charge payload still owns extraMerchantData');
+a3_assert(strpos($checkout_runtime_source, "'ibanNumber'     => \$iban") !== false, 'runtime allocation still uses legacy IBAN property');
+a3_assert(strpos($checkout_runtime_source, "'amount'         => '__UPAY_MM_AMOUNT_SENTINEL__'") !== false, 'single allocation remains exact order-amount sentinel');
+a3_assert(strpos($checkout_runtime_source, "array(\n                    array(\n                        'amount'         => '__UPAY_MM_AMOUNT_SENTINEL__'") !== false, 'runtime payload retains exactly one nested allocation entry');
 
 echo "\nArchitecture Gateway Settings: {$pass} PASS / {$fail} FAIL\n";
 exit($fail === 0 ? 0 : 1);
