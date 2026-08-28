@@ -91,6 +91,7 @@ $gateway = sec_source('UPayments.php');
 $gateway_settings_path = dirname(__DIR__, 2) . '/src/Admin/GatewaySettings.php';
 $gateway_settings = @file_get_contents($gateway_settings_path);
 $gateway_settings = is_string($gateway_settings) ? $gateway_settings : '';
+$subscription_presentation = sec_source('src/Subscription/Presentation.php');
 $lifecycle = sec_source('src/Payment/PaymentLifecycle.php');
 $status_verifier = sec_source('src/Payment/StatusVerifier.php');
 $migration_admin = sec_source('src/Migration/MigrationAdmin.php');
@@ -111,8 +112,8 @@ sec_assert(strpos($gateway, "\$method = isset(\$_SERVER['REQUEST_METHOD'])") !==
 sec_assert(strpos($gateway, "\$method !== 'POST'") !== false, 'subscription mutation rejects non-POST requests');
 sec_assert(strpos($gateway, "isset(\$_POST['upay_action'])") !== false, 'subscription mutation reads action from POST');
 sec_assert(strpos($gateway, "isset(\$_POST['order_id'])") !== false, 'subscription mutation reads order id from POST');
-sec_assert(strpos($gateway, "wp_nonce_field('upay_unsubscribe_' . \$order->get_id(), '_wpnonce', false)") !== false, 'unsubscribe form emits POST nonce field');
-sec_assert(strpos($gateway, "wp_nonce_field('upay_' . \$action . '_' . \$order->get_id(), '_wpnonce', false)") !== false, 'pause/resume form emits POST nonce field');
+sec_assert(strpos($subscription_presentation, "wp_nonce_field('upay_unsubscribe_' . \$order->get_id(), '_wpnonce', false)") !== false, 'unsubscribe form emits POST nonce field');
+sec_assert(strpos($subscription_presentation, "wp_nonce_field('upay_' . \$action . '_' . \$order->get_id(), '_wpnonce', false)") !== false, 'pause/resume form emits POST nonce field');
 sec_assert(strpos($gateway, "(string) \$order->get_payment_method() !== 'upayments'") !== false, 'subscription mutation requires UPayments order');
 sec_assert(strpos($gateway, "\$order->get_meta('UPayments_AutoDeduction') === 'yes'") !== false, 'manual subscription mutation distinguishes auto-deduction orders');
 sec_assert(strpos($gateway, "get_current_user_id() !== (int) \$order->get_user_id()") !== false, 'subscription mutation enforces exact owner');
@@ -136,10 +137,10 @@ sec_assert(strpos($new_template, '$_REQUEST') === false, 'new checkout template 
 sec_assert(strpos($old_template, '$_REQUEST') === false, 'old checkout template excludes $_REQUEST');
 
 // SEC-05: plugin product-meta write mirrors WooCommerce save authorization.
-sec_assert(strpos($gateway, "empty( \$_POST['woocommerce_meta_nonce'] )") !== false, 'custom product meta save requires WooCommerce nonce');
-sec_assert(strpos($gateway, "wp_verify_nonce( wp_unslash( \$_POST['woocommerce_meta_nonce'] ), 'woocommerce_save_data' )") !== false, 'custom product meta save verifies WooCommerce nonce action');
-sec_assert(strpos($gateway, "empty( \$_POST['post_ID'] ) || absint( \$_POST['post_ID'] ) !== \$post_id") !== false, 'custom product meta save binds posted product id');
-sec_assert(strpos($gateway, "current_user_can( 'edit_post', \$post_id )") !== false, 'custom product meta save requires edit_post capability');
+sec_assert(strpos($subscription_presentation, "empty(\$_POST['woocommerce_meta_nonce'])") !== false, 'custom product meta save requires WooCommerce nonce');
+sec_assert(strpos($subscription_presentation, "wp_verify_nonce(wp_unslash(\$_POST['woocommerce_meta_nonce']), 'woocommerce_save_data')") !== false, 'custom product meta save verifies WooCommerce nonce action');
+sec_assert(strpos($subscription_presentation, "empty(\$_POST['post_ID']) || absint(\$_POST['post_ID']) !== \$post_id") !== false, 'custom product meta save binds posted product id');
+sec_assert(strpos($subscription_presentation, "current_user_can('edit_post', \$post_id)") !== false, 'custom product meta save requires edit_post capability');
 
 // Existing verified trust boundaries must remain intact.
 sec_assert(strpos($lifecycle, '$_REQUEST') === false, 'payment lifecycle continues to exclude $_REQUEST');

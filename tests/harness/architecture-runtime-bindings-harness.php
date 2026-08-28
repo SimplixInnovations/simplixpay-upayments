@@ -1040,6 +1040,7 @@ function arch2_code_without_strings(array $tokens)
 
 $gateway = arch2_read($root, 'UPayments.php');
 $gatewayTokens = arch2_tokens($gateway);
+$subscriptionComposition = arch2_read($root, 'src/Subscription/Composition.php');
 
 $gatewayRegistration = arch2_direct_top_level_hook_callback(
     $gatewayTokens,
@@ -1053,13 +1054,6 @@ $availabilityRegistration = arch2_direct_top_level_hook_callback(
     'woocommerce_available_payment_gateways',
     'enableUpaymentsGateway'
 );
-$productMetaRegistration = arch2_direct_top_level_hook_callback(
-    $gatewayTokens,
-    'add_action',
-    'woocommerce_process_product_meta',
-    'saveCustomFieldData'
-);
-
 arch2_assert($gateway !== '', 'UPayments.php is readable');
 arch2_assert(!arch2_has_namespace_declaration($gatewayTokens), 'legacy main file remains in the global namespace');
 arch2_assert($gatewayRegistration['found'], 'WooCommerce gateway registration is a direct executable global hook/callback pair');
@@ -1068,7 +1062,10 @@ arch2_assert(
     'gateway registration callback is exactly WC_UPayments append then methods return'
 );
 arch2_assert($availabilityRegistration['found'], 'availability registration is a direct executable global hook/callback pair');
-arch2_assert($productMetaRegistration['found'], 'subscription product-meta registration is a direct executable global hook/callback pair');
+arch2_assert(
+    strpos($subscriptionComposition, "add_action('woocommerce_process_product_meta', array(Presentation::class, 'save_custom_field_data'))") !== false,
+    'subscription product-meta registration is owned by the A4 composition boundary'
+);
 
 $gatewayClass = arch2_class_body_tokens($gatewayTokens, 'WC_Upayments');
 $statusMethod = arch2_direct_public_method($gatewayClass, 'get_payment_staus');

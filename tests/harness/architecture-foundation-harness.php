@@ -378,6 +378,8 @@ $paymentLifecycle = arch_read($root, 'src/Payment/PaymentLifecycle.php');
 $securityStatus = arch_read($root, 'src/Security/PublicOrderStatus.php');
 $tokenIdentity = arch_read($root, 'includes/Token/CustomerTokenIdentity.php');
 $scheduler = arch_read($root, 'includes/Subscription/Cron/Scheduler.php');
+$subscriptionComposition = arch_read($root, 'src/Subscription/Composition.php');
+$subscriptionPresentation = arch_read($root, 'src/Subscription/Presentation.php');
 $gatewayTokens = arch_executable_tokens($gateway);
 $gatewayClassTokens = arch_class_body_tokens($gatewayTokens, 'WC_Upayments');
 $availabilityBinding = arch_direct_top_level_filter_callback(
@@ -387,7 +389,7 @@ $availabilityBinding = arch_direct_top_level_filter_callback(
 );
 
 arch_assert($architecture !== '', 'architecture control record exists');
-arch_assert(arch_contains($architecture, '**Status:** A3 / IMPLEMENTATION'), 'architecture record is A3 implementation');
+arch_assert(arch_contains($architecture, '**Status:** A4 / IMPLEMENTATION'), 'architecture record is A4 implementation');
 arch_assert(arch_contains($architecture, 'Architecture & Code-Quality Foundation'), 'architecture gate is named explicitly');
 
 $stageHeadings = array(
@@ -419,12 +421,12 @@ arch_assert(arch_contains($architecture, 'This is not permission for a big-bang 
 arch_assert(arch_contains($architecture, 'exact accepted `UPayments.php` byte size for the current architecture milestone'), 'monolith ratchet update contract is explicit');
 arch_assert(arch_contains($architecture, 'Composer only with an explicit distribution rule'), 'Composer introduction is gated by distribution contract');
 arch_assert(arch_contains($architecture, 'PHPCS/WPCS and PHPStan incrementally'), 'static-analysis rollout is incremental');
-arch_assert(arch_contains($status, '| Current program gate | **Architecture & Code-Quality Foundation — A3** |'), 'project status keeps Architecture A3 as current gate');
+arch_assert(arch_contains($status, '| Current program gate | **Architecture & Code-Quality Foundation — A4** |'), 'project status keeps Architecture A4 as current gate');
 arch_assert(arch_contains($naming, '**Canonical slug:** `simplixpay-upayments`'), 'canonical slug remains protected');
 
 $gatewayPath = $root . '/UPayments.php';
 $gatewaySize = is_file($gatewayPath) ? filesize($gatewayPath) : false;
-$acceptedGatewayBytes = 223942;
+$acceptedGatewayBytes = 205702;
 arch_assert(is_int($gatewaySize) && $gatewaySize === $acceptedGatewayBytes, 'UPayments.php matches current exact architecture ratchet');
 arch_assert($gatewayClassTokens !== array(), 'legacy WC_Upayments gateway compatibility class remains executable');
 arch_assert(arch_contains($gateway, "add_filter(\"woocommerce_payment_gateways\", \"addUpaymentsGatewayClass\")"), 'WooCommerce gateway registration remains characterized');
@@ -453,12 +455,15 @@ foreach ($publicMethods as $methodName => $message) {
 }
 
 arch_assert(arch_contains($gateway, '\\Simplix\\Pay\\UPayments\\Security\\PublicOrderStatus::handle();'), 'public status polling delegates to Security boundary');
-arch_assert(arch_contains($gateway, "add_action( 'woocommerce_process_product_meta', 'saveCustomFieldData' )"), 'subscription product-meta hook remains characterized');
+arch_assert(arch_contains($subscriptionComposition, "add_action('woocommerce_process_product_meta', array(Presentation::class, 'save_custom_field_data'))"), 'subscription product-meta hook delegates through A4 composition');
 arch_assert(is_file($root . '/src/Release/Identity.php'), 'Release module exists');
 arch_assert(is_dir($root . '/src/Migration'), 'Migration module exists');
 arch_assert(is_dir($root . '/src/Payment'), 'Payment module exists');
 arch_assert(is_dir($root . '/src/Security'), 'Security module exists');
 arch_assert(is_file($root . '/src/Admin/GatewaySettings.php'), 'Admin GatewaySettings boundary exists');
+arch_assert(is_file($root . '/src/Subscription/Composition.php'), 'Subscription Composition boundary exists');
+arch_assert(is_file($root . '/src/Subscription/Presentation.php'), 'Subscription Presentation boundary exists');
+arch_assert(arch_contains($subscriptionPresentation, 'namespace Simplix\\Pay\\UPayments\\Subscription;'), 'Subscription presentation uses Simplix namespace');
 arch_assert(arch_contains($gateway, 'GatewaySettings::fields('), 'gateway settings schema delegates to Admin boundary');
 arch_assert(arch_contains($gateway, 'GatewaySettings::render_multimerchant('), 'multi-merchant presentation delegates to Admin boundary');
 arch_assert(is_file($root . '/src/Payment/OrderLock.php'), 'Payment OrderLock boundary exists');

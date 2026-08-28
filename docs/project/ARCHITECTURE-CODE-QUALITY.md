@@ -1,12 +1,12 @@
 # Architecture & Code-Quality Foundation
 
-**Status:** A3 / IMPLEMENTATION
+**Status:** A4 / IMPLEMENTATION
 
-**Current branch:** `architecture/a3-gateway-settings-admin-multimerchant`
+**Current branch:** `architecture/a4-subscription-presentation`
 
-**Verified base `main`:** `f85894271e8f991e77a8e6a2b306f4d191483bbd`
+**Verified base `main`:** `6291196b35a952ea974549d1aa6d6ae9bbcc64dc`
 
-**Verified base tree:** `1addbcc02e0d30f57a948cafd8111fb94e60c4da`
+**Verified base tree:** `a7f66ee6cf8c9d5324a0ae77b8c61e69e87bdff7`
 
 **Gate purpose:** replace inherited mixed-responsibility structure incrementally with explicit Simplix-owned boundaries while preserving every closed payment, security, H12, Phase 9I and compatibility contract.
 
@@ -78,11 +78,26 @@ The payment-method availability tranche is **DONE / VERIFIED**:
 
 A2 moved cache identity, site/mode advisory locking, the durable 65-second gate and strict provider normalization to `src/Provider/PaymentMethodAvailability.php` while retaining authenticated transport and presentation in the gateway compatibility seam.
 
+## A3 closure evidence
+
+The gateway settings/admin/single-additional-merchant presentation tranche is **DONE / VERIFIED**:
+
+- PR #23 final reviewed head: `85028cfb4431cc29820eaca4e254bf6c87daa378`;
+- exact head/merge tree: `a7f66ee6cf8c9d5324a0ae77b8c61e69e87bdff7`;
+- squash merge on `main`: `6291196b35a952ea974549d1aa6d6ae9bbcc64dc`, with a valid verified GitHub signature;
+- exact-head Quality Gates run #158: **SUCCESS**;
+- push-triggered post-merge Quality Gates run #159: **SUCCESS**;
+- Gateway Settings: **90/0** on exact head and post-merge `main`;
+- final independent review: clean on `85028cfb44`, with zero unresolved threads;
+- implementation branch `architecture/a3-gateway-settings-admin-multimerchant`: **deleted after verified merge**.
+
+A3 moved the complete characterized 21-field schema, settings validation, one-row allocation renderer and admin assets to `src/Admin/GatewaySettings.php`. The final review strengthened the permanent gate with an independent frozen full-schema fixture and exact complete asset-registration tuples. Runtime Charge behavior and exactly one `extraMerchantData` allocation remained in the gateway.
+
 ## Current structural baseline
 
 ### Primary monolith
 
-At the verified discovery closure, `UPayments.php` was **257,832 bytes**. A1 reduced it to **257,298 bytes** and A2 to **238,714 bytes**. A3 reduces the current accepted ratchet to **223,942 bytes** while preserving the main plugin bootstrap, `WC_Upayments` gateway implementation and public settings/admin compatibility entry points. Source characterization identifies at least these responsibility families inside the same file:
+At the verified discovery closure, `UPayments.php` was **257,832 bytes**. A1 reduced it to **257,298 bytes**, A2 to **238,714 bytes** and verified A3 to **223,942 bytes**. A4 reduces the current accepted ratchet to **205,702 bytes** while preserving the main plugin bootstrap, `WC_Upayments` gateway implementation and public subscription compatibility entry points. Source characterization identifies at least these responsibility families inside the same file:
 
 1. plugin bootstrap, constants, WooCommerce availability checks and gateway registration;
 2. gateway constructor/hook registration and runtime composition;
@@ -247,7 +262,21 @@ A2 is verified. A3 separates the characterized gateway settings/admin/single-add
 
 ### A4 — subscription product/account presentation
 
-Move hook-heavy product-type/account/presentation behavior behind a subscription composition boundary only after characterization. Preserve scheduler/table/meta identities and no-blind-retry contract.
+Verified A3 permits A4. A4 moves only the characterized hook-heavy subscription product/admin/My Account presentation surface behind `src/Subscription/Composition.php` and `src/Subscription/Presentation.php`.
+
+**A4 implementation contract:**
+
+- `initializeSubscriptionModule()`, `render_subscription_summary()`, `restrictMixedCartProducts()` and `renderSubscriptionBadgeInProductList()` remain public gateway compatibility wrappers;
+- named global product compatibility functions (`addCustomProductType`, `mapCustomProductClass`, `customProductTypes`, `addCustomDataTab`, `addCustomDataPanel`, `saveCustomFieldData`, `displayCustomFieldOnFrontend`, `displayCustomDataInCart`, `saveCustomDataToOrderItems`) remain callable wrappers;
+- product identity remains `custom_type`, global class compatibility remains `WCProductCustomType`, and product metadata remains `_custom_field_id` with the existing nonce, posted-ID and `edit_post` authorization boundary;
+- product/cart/order-item labels, account filter/columns/status output, subscription detail tables, manual pause/resume/unsubscribe POST forms and action-specific nonce identities remain characterized;
+- the hardened customer subscription mutation handler remains outside the presentation module and retains exact ownership, UPayments-order, manual-subscription, transition and nonce preconditions;
+- `includes/Subscription/Cron/Scheduler.php` and `CycleClaim.php` remain byte-identical; `upay_process_subscriptions`, `{$wpdb->prefix}upayments_billing_attempts`, `_upay_*`/`UPayments_*` metadata and no-blind-retry/dispatching semantics remain untouched;
+- checkout Fields/Manager modules retain their existing public hooks/storage behavior and are initialized behind the public gateway composition seam;
+- `process_payment()`, saved-card/token identity, Charge/auto-deduct provider transport, billing payloads and order/payment truth do not move in A4;
+- `tests/harness/architecture-subscription-presentation-harness.php` freezes the full hook topology, product/admin schema, authorization, escaped presentation, compatibility delegation and protected scheduler blobs, and is mandatory in Quality Gates.
+
+A5 remains prohibited until A4 is independently reviewed, exact-head green, merged, post-merge verified and cleaned up.
 
 ### A5 — checkout payload/orchestration core
 

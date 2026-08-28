@@ -6,6 +6,19 @@ The project is still in pre-release engineering hardening. Entries below are eng
 
 ## [Unreleased]
 
+### Architecture A3 — Gateway Settings/Admin Presentation — DONE / VERIFIED
+
+- Extracted the complete characterized settings schema, validation, one-row allocation renderer and admin assets to `src/Admin/GatewaySettings.php` behind all legacy public gateway wrappers.
+- Strengthened the permanent Gateway Settings gate with a frozen complete 21-field schema fixture and exact asset-registration tuples; final result **90 PASS / 0 FAIL**.
+- Exact final PR #23 head `85028cfb4431cc29820eaca4e254bf6c87daa378` passed Quality Gates #158 and clean independent review.
+- Squash-merged PR #23 as signed commit `6291196b35a952ea974549d1aa6d6ae9bbcc64dc`, tree `a7f66ee6cf8c9d5324a0ae77b8c61e69e87bdff7`; post-merge run #159 passed and the implementation branch was deleted.
+
+### Architecture A4 — Subscription Presentation Boundary
+
+- Added `Simplix\Pay\UPayments\Subscription\Composition` and `Presentation` for the characterized product/admin/My Account hook and rendering surface while retaining all named global and public gateway compatibility wrappers.
+- Kept the customer mutation handler, scheduler, cycle-claim journal, billing table, Charge/auto-deduct dispatch and protected metadata outside the presentation module.
+- Added the mandatory Architecture Subscription Presentation regression gate and reduced the exact `UPayments.php` ratchet to **205,702 bytes**.
+
 ### Architecture A2 — Payment-Method Availability Client/Cache — DONE / VERIFIED
 
 - Extracted the characterized availability client/cache to `src/Provider/PaymentMethodAvailability.php` behind public `getUpayPaymentMethods()` while preserving cache identity, site/mode locking, the 65-second durable gate, strict provider normalization and fail-closed presentation.
@@ -38,7 +51,7 @@ The project is still in pre-release engineering hardening. Entries below are eng
 
 ### Current program gate
 
-**Architecture & Code-Quality Foundation — A3** is now the active gate. A1 and A2 are DONE / VERIFIED; A3 is limited to the characterized gateway settings/admin/single-additional-merchant presentation boundary and must not change protected option keys, Charge payload semantics, Security, Provider, H12 or Phase 9I contracts.
+**Architecture & Code-Quality Foundation — A4** is now the active gate. A1-A3 are DONE / VERIFIED; A4 is limited to the characterized subscription product/admin/My Account presentation boundary and must not change scheduler/attempt, Charge/auto-deduct, payment truth, Security, Provider, H12 or Phase 9I contracts.
 
 ### Provider Contract & Payment Lifecycle — DONE / VERIFIED
 
