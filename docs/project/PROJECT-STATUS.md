@@ -28,28 +28,28 @@
 | Phase 9I — historical token-identity migration | **DONE / VERIFIED** |
 | Provider Contract & Payment Lifecycle | **DONE / VERIFIED** |
 | Security Threat-Model Closure | **DONE / VERIFIED** |
-| Current program gate | **Architecture & Code-Quality Foundation — A4** |
+| Current program gate | **Architecture & Code-Quality Foundation — A5** |
 
-The plugin remains a pre-release engineering project. Architecture discovery and A1-A3 are DONE / VERIFIED; A4 subscription product/admin/My Account presentation is the current bounded implementation tranche. None of these milestones constitutes broad code-quality, provider-host, penetration-test, PCI/compliance, platform, feature, performance or release certification.
+The plugin remains a pre-release engineering project. Architecture discovery and A1-A4 are DONE / VERIFIED; A5 checkout payload/orchestration is the current bounded implementation tranche. None of these milestones constitutes broad code-quality, provider-host, penetration-test, PCI/compliance, platform, feature, performance or release certification.
 
-## Latest verified milestone — Architecture A3 gateway settings/admin presentation
+## Latest verified milestone — Architecture A4 subscription presentation
 
-PR #23 final reviewed head:
+PR #24 final reviewed head:
 
-- `85028cfb4431cc29820eaca4e254bf6c87daa378`
+- `2a2c6a4c67775b6614297d2c0150f3ca61220498`
 
 Verified squash merge on `main`:
 
-- merge: `6291196b35a952ea974549d1aa6d6ae9bbcc64dc`
-- tree: `a7f66ee6cf8c9d5324a0ae77b8c61e69e87bdff7`
-- parent: `f85894271e8f991e77a8e6a2b306f4d191483bbd`
+- merge: `d24b83356cc766f82c3ad9e529d3ec3f4194e887`
+- tree: `f74899b93f493be872e0ce993e30079d0223dc7b`
+- parent: `6291196b35a952ea974549d1aa6d6ae9bbcc64dc`
 - GitHub signature: **VERIFIED**
-- implementation branch `architecture/a3-gateway-settings-admin-multimerchant`: **deleted after verified merge**
-- exact-head Quality Gates run #158: **SUCCESS**
-- push-triggered post-merge Quality Gates run #159: **SUCCESS**
-- Gateway Settings harness: **90/0**
+- implementation branch `architecture/a4-subscription-presentation`: **deleted after verified merge**
+- exact-head Quality Gates run #164: **SUCCESS**
+- push-triggered post-merge Quality Gates run #165: **SUCCESS**
+- Subscription Presentation harness: **75/0**
 
-A3 moved the complete settings schema, validation, one-row allocation renderer and admin assets to `src/Admin/GatewaySettings.php`, reduced the exact `UPayments.php` ratchet to **223,942 bytes**, retained every public gateway wrapper and left runtime Charge behavior unchanged. Final review findings strengthened the permanent gate with a frozen complete schema fixture and exact asset-registration tuples.
+A4 moved subscription hook composition, product/admin fields and My Account presentation to `src/Subscription/Composition.php` and `src/Subscription/Presentation.php`, reduced the exact `UPayments.php` ratchet to **205,702 bytes**, retained every named global/public compatibility wrapper and left customer mutation, scheduler, cycle claims, billing attempts, checkout and provider dispatch unchanged.
 
 ## Previous verified milestone — Architecture A2 payment-method availability
 
@@ -313,19 +313,19 @@ Repository readiness remains DONE / VERIFIED:
 
 ## Current program gate — Architecture & Code-Quality Foundation
 
-**Status: A4 — SUBSCRIPTION PRODUCT/ADMIN/MY ACCOUNT PRESENTATION / IMPLEMENTATION.**
+**Status: A5 — CHECKOUT PAYLOAD/ORCHESTRATION CORE / IMPLEMENTATION.**
 
-Architecture A1-A3 are complete. A4 is limited to separating the characterized subscription product/admin/My Account presentation boundary from scheduler/dispatch/payment orchestration. Current scope:
+Architecture A1-A4 are complete. A5 is limited to separating the characterized checkout payload and Charge orchestration core behind existing compatibility seams. Current scope:
 
-- add `Simplix\Pay\UPayments\Subscription\Composition` and `Presentation` as the explicit hook-registration and product/account presentation boundaries;
-- preserve `custom_type`, `WCProductCustomType`, `_custom_field_id`, every named global product function and the four public gateway subscription/presentation entry points;
-- preserve product-meta nonce/product-ID/capability authorization, account filters/columns/output, detail tables and manual action forms/nonces;
-- leave the hardened customer mutation handler, scheduler, cycle-claim journal, billing table, checkout payload and provider dispatch outside the presentation boundary;
-- preserve `upay_process_subscriptions`, `upayments_billing_attempts`, `_upay_*`/`UPayments_*` metadata and no-blind-retry semantics exactly;
-- keep all seven prior architecture harnesses and make the A4 Subscription Presentation harness mandatory in Quality Gates;
+- add `Simplix\Pay\UPayments\Payment\CheckoutPayload` and `CheckoutOrchestrator` as the explicit pure-construction and checkout workflow boundaries;
+- preserve public `WC_Upayments::process_payment()` and protected request-body/provider-transport virtual dispatch through a thin adapter;
+- preserve strict Classic/Blocks parsing, exact decimal and unquoted JSON-number payload construction, saved-card identity/provenance and single Charge dispatch;
+- preserve provider response/redirect handling, order metadata, no-blind-retry semantics and every protected payment/runtime identity;
+- leave scheduler, CycleClaim, billing-attempt storage and auto-deduct dispatch outside A5;
+- keep all eight prior architecture harnesses and make the A5 Checkout Orchestration harness mandatory in Quality Gates;
 - preserve protected identities and keep Security **81/0**, Provider **141/0 + 4/0**, Phase 9I, Phase 0, H12 and all architecture regressions green.
 
-No provider route, authenticated HTTP behavior, credential value, Charge/auto-deduct payload, payment truth, scheduler/attempt state, protected persistence identity or order-state mutation is authorized to change in A4. A5 remains prohibited until A4 is independently reviewed, exact-head green, merged, post-merge verified and cleaned up.
+No provider route, authenticated HTTP behavior, credential value, payload field/value, payment truth, scheduler/attempt state, protected persistence identity or order-state mutation is authorized to change in A5. The full automated quality platform remains prohibited until A5 is independently reviewed, exact-head green, merged, post-merge verified and cleaned up.
 
 ## Later program blockers
 

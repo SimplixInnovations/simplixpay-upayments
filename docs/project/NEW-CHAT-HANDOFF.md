@@ -26,7 +26,8 @@ Use this file with root `AGENTS.md`, `PROJECT-STATUS.md`, the naming standard, t
 - Architecture A1 — provider endpoint/mode resolution: **DONE / VERIFIED**
 - Architecture A2 — payment-method availability client/cache: **DONE / VERIFIED**
 - Architecture A3 — gateway settings/admin presentation: **DONE / VERIFIED**
-- Current program gate: **Architecture & Code-Quality Foundation — A4**
+- Architecture A4 — subscription product/account presentation: **DONE / VERIFIED**
+- Current program gate: **Architecture & Code-Quality Foundation — A5**
 - Stable production release: **NO**
 - WordPress.org release: **NO**
 
@@ -271,19 +272,19 @@ Do not globally rename:
 - malformed H12 secret is distinct from missing and fails closed.
 - selected saved card requires current valid provenance + exact scope/generation + fresh provider Retrieve + exact membership.
 
-## Current tranche — Architecture & Code-Quality Foundation A4
+## Current tranche — Architecture & Code-Quality Foundation A5
 
-**Status: A4 — SUBSCRIPTION PRODUCT/ADMIN/MY ACCOUNT PRESENTATION / IMPLEMENTATION.**
+**Status: A5 — CHECKOUT PAYLOAD/ORCHESTRATION CORE / IMPLEMENTATION.**
 
 Required bounded sequence:
 
-1. Work only from verified A3 merge `6291196b35a952ea974549d1aa6d6ae9bbcc64dc` on `architecture/a4-subscription-presentation`.
-2. Extract only the characterized subscription product/admin/My Account hook and rendering surface to `src/Subscription/Composition.php` and `Presentation.php`.
-3. Preserve `custom_type`, `WCProductCustomType`, `_custom_field_id`, named global functions and public gateway subscription wrappers.
-4. Preserve product-meta authorization, account filters/columns/output, detail tables and manual action forms/nonces.
-5. Leave customer state mutation, scheduler/cycle claims, billing table, checkout Fields/Manager behavior, Charge/auto-deduct transport, payment truth and order state outside the presentation boundary.
-6. Keep scheduler and CycleClaim blobs exact, and keep every closed regression plus all seven prior architecture harnesses and the new A4 harness mandatory.
-7. Do not begin A5 until the exact A4 head is independently reviewed, green, merged, post-merge verified and its branch deleted.
+1. Work only from verified A4 merge `d24b83356cc766f82c3ad9e529d3ec3f4194e887` on `architecture/a5-checkout-orchestration`.
+2. Extract strict request/decimal/payload helpers to `CheckoutPayload` and exact checkout-to-Charge workflow ordering to `CheckoutOrchestrator`.
+3. Preserve public `WC_Upayments::process_payment()` plus protected request-body and provider-transport override seams as the compatibility adapter.
+4. Preserve exact Classic/Blocks parsing, order-line economics, subscription data, saved-card identity/provenance, single Charge dispatch, response/redirect behavior and metadata writes.
+5. Leave scheduler, CycleClaim, billing-attempt storage and auto-deduct dispatch outside A5.
+6. Keep every closed regression plus all eight prior architecture harnesses and the new A5 harness mandatory.
+7. Do not begin the full automated quality platform until the exact A5 head is independently reviewed, green, merged, post-merge verified and its branch deleted.
 
 The architecture gate may improve structure; it may not reinterpret provider truth, weaken authorization, or silently broaden certified feature/platform claims.
 
@@ -324,7 +325,7 @@ Read in this order:
 2. Phase 9I — Historical token-identity migration — **DONE / VERIFIED**
 3. Provider Contract & Payment Lifecycle — **DONE / VERIFIED**
 4. Security Threat-Model Closure — **DONE / VERIFIED**
-5. Architecture & Code-Quality Foundation — **CURRENT / A4**
+5. Architecture & Code-Quality Foundation — **CURRENT / A5**
 6. Full automated quality platform
 7. Platform certification: Woo/WP/PHP/HPOS/Blocks/WPML
 8. Feature certification
@@ -341,9 +342,9 @@ Read AGENTS.md first, then docs/project/PROJECT-STATUS.md, docs/project/NAMING-I
 
 Treat recorded SHAs/status as verified milestone anchors, not substitutes for live GitHub. Freshly verify current main, open PRs/branches, checks, review state and current source before acting; reconcile any drift first.
 
-Repository readiness, Phase 0, Phase 9I, Provider Contract & Payment Lifecycle, Security Threat-Model Closure, Architecture discovery and A1-A3 are DONE / VERIFIED. A3 was squash-merged from PR #23 as verified main `6291196b35a952ea974549d1aa6d6ae9bbcc64dc`, tree `a7f66ee6cf8c9d5324a0ae77b8c61e69e87bdff7`; exact-head run #158 and post-merge run #159 passed. The current permitted gate is Architecture & Code-Quality Foundation — A4.
+Repository readiness, Phase 0, Phase 9I, Provider Contract & Payment Lifecycle, Security Threat-Model Closure, Architecture discovery and A1-A4 are DONE / VERIFIED. A4 was squash-merged from PR #24 as verified main `d24b83356cc766f82c3ad9e529d3ec3f4194e887`, tree `f74899b93f493be872e0ce993e30079d0223dc7b`; exact-head run #164 and post-merge run #165 passed. The current permitted gate is Architecture & Code-Quality Foundation — A5.
 
-Implement only the A4 subscription product/admin/My Account presentation boundary behind the existing public compatibility methods. Preserve `custom_type`, `WCProductCustomType`, `_custom_field_id`, product-meta authorization, account filters/columns/output, detail tables and manual action forms/nonces. Change no scheduler/cycle-claim/billing-attempt identity, Charge/auto-deduct transport, credential, payment truth or order-state mutation. Keep all existing regression suites, all seven prior architecture harnesses and the A4 Subscription Presentation harness mandatory.
+Implement only the A5 checkout payload/orchestration boundary behind the existing public `process_payment()` and protected request/transport compatibility seams. Preserve strict Classic/Blocks parsing, exact decimal and payload bytes, saved-card identity/provenance, single Charge dispatch, redirects, metadata and no-blind-retry behavior. Change no scheduler/cycle-claim/billing-attempt identity, auto-deduct transport, credential, provider route, payment truth or order-state contract. Keep all existing regression suites, all eight prior architecture harnesses and the A5 Checkout Orchestration harness mandatory.
 
 Do not claim broad security, PCI/compliance, platform, feature, performance or production certification from the bounded security closure. UPayments webhook signature details remain provider-document unresolved, automatic refunds remain unsupported pending durable idempotency/reconciliation design, and subscription auto-deduction remains separately characterized rather than broadly certified.
 

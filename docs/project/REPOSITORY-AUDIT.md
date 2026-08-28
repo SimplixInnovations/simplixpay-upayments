@@ -32,7 +32,7 @@ The repository remains a pre-release engineering codebase. It is not the intende
 
 Phase 0 took ownership of public release identity and removed inherited update authority. Phase 9I added isolated historical-identity migration tooling. The provider lifecycle gate then added an isolated `Simplix\Pay\UPayments\Payment` strangler for ordinary browser/webhook/status truth and WooCommerce payment-state transitions without broadly rewriting the inherited gateway bootstrap.
 
-The current owner/gate is **Architecture & Code-Quality Foundation — A4**. A1-A3 are DONE / VERIFIED; A4 may extract only the characterized subscription product/admin/My Account presentation boundary behind existing public entry points and does not authorize a big-bang rewrite, scheduler/attempt changes, protected-meta renames, Charge/auto-deduct payload changes, provider-host migration, or weakening closed Security/Payment/H12/Phase 9I contracts.
+The current owner/gate is **Architecture & Code-Quality Foundation — A5**. A1-A4 are DONE / VERIFIED; A5 may extract only the characterized checkout payload and Charge orchestration core behind the existing `process_payment()` and protected transport/request seams. It does not authorize a big-bang rewrite, scheduler/attempt changes, protected-meta renames, provider-host migration, payment-truth reinterpretation, or weakening closed Security/Payment/H12/Phase 9I contracts.
 
 ## Top-level inventory after Security Threat-Model closure
 
@@ -213,14 +213,14 @@ The required custom harness stack now includes Phase 0, all Phase 9I suites, Pro
 
 ## Current next owner/gate
 
-**Architecture & Code-Quality Foundation — A4**.
+**Architecture & Code-Quality Foundation — A5**.
 
 The current tranche must preserve the verified architecture map while separating:
 
-- exact WooCommerce gateway field keys/defaults and `woocommerce_upayments_settings` identity;
-- save-card/subscription dependency and settings-save validation/persistence wrappers;
-- single-additional-merchant settings rendering/sanitization and admin asset scope;
-- runtime Charge allocation/payload orchestration, which remains in the legacy gateway and must not change in A3.
+- strict request/source/subscription parsing and exact decimal/JSON-number payload construction;
+- saved-card identity/provenance and provider Charge orchestration behind a bounded service;
+- the legacy public `process_payment()` and protected request/transport override seams;
+- exact order metadata, redirect, no-blind-retry and payment-truth behavior.
 
 Do not start with a big-bang refactor or mechanical rename. Closed Security/Provider/H12/Phase 9I contracts remain required regressions throughout architecture work.
 
