@@ -37,7 +37,7 @@ The following engineering gates are **DONE / VERIFIED**:
 - Provider Contract & Payment Lifecycle;
 - Security Threat-Model Closure.
 
-The current program gate is **Architecture & Code-Quality Foundation — A1**.
+The current program gate is **Architecture & Code-Quality Foundation — A2**.
 
 The project remains in **pre-release engineering hardening**. It is not yet a broadly certified stable production release and has not yet been published to WordPress.org.
 
@@ -53,7 +53,7 @@ The project remains in **pre-release engineering hardening**. It is not yet a br
 | Phase 9I historical token-identity migration | **DONE / VERIFIED** |
 | Provider Contract & Payment Lifecycle | **DONE / VERIFIED** |
 | Security Threat-Model Closure | **DONE / VERIFIED** |
-| Current engineering gate | **Architecture & Code-Quality Foundation — A1** |
+| Current engineering gate | **Architecture & Code-Quality Foundation — A2** |
 | Stable SimplixPay release | **Not yet published** |
 | WordPress.org release | **Not yet published** |
 | Phase 0 release-identity harness | **35 PASS / 0 FAIL** |
@@ -157,7 +157,7 @@ Phase 9I system completion does not mean every merchant installation was automat
 
 ## Current engineering gate — Architecture & Code-Quality Foundation
 
-Architecture discovery is DONE / VERIFIED. A1 now extracts only deterministic provider endpoint/mode resolution behind byte-equivalent legacy gateway wrappers. It must preserve the closed payment lifecycle, Security Threat-Model, H12 and Phase 9I contracts and protected persisted/runtime identities.
+Architecture A1 is DONE / VERIFIED. A2 now extracts the characterized payment-method availability client/cache behind the legacy gateway entry point while preserving cache identity, lock/cooldown, provider-schema, fail-closed and presentation contracts. It must preserve the closed payment lifecycle, Security Threat-Model, H12 and Phase 9I contracts and protected persisted/runtime identities.
 
 No big-bang rewrite, runtime branding rename or broad compatibility claim is authorized by this gate.
 

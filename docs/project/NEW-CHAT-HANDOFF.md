@@ -23,13 +23,18 @@ Use this file with root `AGENTS.md`, `PROJECT-STATUS.md`, the naming standard, t
 - Provider Contract & Payment Lifecycle: **DONE / VERIFIED**
 - Security Threat-Model Closure: **DONE / VERIFIED**
 - Architecture discovery: **DONE / VERIFIED**
-- Current program gate: **Architecture & Code-Quality Foundation — A1**
+- Architecture A1 — provider endpoint/mode resolution: **DONE / VERIFIED**
+- Current program gate: **Architecture & Code-Quality Foundation — A2**
 - Stable production release: **NO**
 - WordPress.org release: **NO**
 
 Always verify live GitHub before acting. Recorded SHAs are milestone evidence, not substitutes for fresh source/check/review verification.
 
-## Latest verified milestone — Architecture discovery
+## Latest verified milestone — Architecture A1
+
+PR #21 final reviewed head `baed693964556120dc7ad07dbc740d3acc1af20f` was squash-merged as verified commit `d43d175a1443709d42efabfbe78519a5a84f4dc9`, tree `ddb2ac7cd8b2d4f454867e10bc361fee94dbcf4b`, on parent `596ffb433813cdc06e81d67162617b3019af686b`. Exact-head Quality Gates run #152 and post-merge run #153 passed; Provider Endpoints was **49/0** and the implementation branch was deleted.
+
+## Previous verified milestone — Architecture discovery
 
 PR #19 final reviewed head `6e51b1c1c5649313acf86943e30793c38bc71f14` was squash-merged as verified commit `596ffb433813cdc06e81d67162617b3019af686b`, tree `3fcaed35546a6b1407d2a46797630e46301e65ef`, on parent `ddb3fc901c5dc949c634f745c4c3a7ec2a72414c`. Exact-head Quality Gates run #147 and post-merge run #148 passed; the implementation branch was deleted. Final architecture counters were Foundation **67/0**, Runtime Bindings **138/0** and Bootstrap Paths **153/0**.
 
@@ -256,19 +261,19 @@ Do not globally rename:
 - malformed H12 secret is distinct from missing and fails closed.
 - selected saved card requires current valid provenance + exact scope/generation + fresh provider Retrieve + exact membership.
 
-## Current tranche — Architecture & Code-Quality Foundation A1
+## Current tranche — Architecture & Code-Quality Foundation A2
 
-**Status: A1 — PROVIDER ENDPOINT/MODE RESOLUTION / IMPLEMENTATION.**
+**Status: A2 — PAYMENT-METHOD AVAILABILITY CLIENT/CACHE / IMPLEMENTATION.**
 
 Required bounded sequence:
 
-1. Work only from verified discovery merge `596ffb433813cdc06e81d67162617b3019af686b` on `architecture/a1-provider-endpoints`.
-2. Extract only deterministic live/test base and route resolution to `src/Provider/EndpointResolver.php`.
-3. Keep `getAPIUrl()` and the three fixed-route public helpers as byte-equivalent compatibility wrappers.
-4. Preserve the inherited live `https://apiv2api.upayments.com/api/v1/` and sandbox `https://sandboxapi.upayments.com/api/v1/` values. Current official documentation's `uapi.upayments.com` live host is a separately reviewed future migration, not A1 cleanup.
-5. Change no network, credential, payload, persistence, payment-truth or order-state behavior.
-6. Keep every closed regression plus Architecture Foundation, Runtime Bindings, Bootstrap Paths and Provider Endpoints mandatory.
-7. Do not begin A2 until the exact A1 head is independently reviewed, green, merged, post-merge verified and its branch deleted.
+1. Work only from verified A1 merge `d43d175a1443709d42efabfbe78519a5a84f4dc9` on `architecture/a2-payment-method-availability`.
+2. Extract only payment-method availability client/cache coordination to `src/Provider/PaymentMethodAvailability.php` behind public `getUpayPaymentMethods()`.
+3. Preserve exact cache fingerprint/prefix, mode isolation, site/mode advisory lock, 65-second durable gate, lock/gate/HTTP ordering and schema-3 cache shapes.
+4. Preserve strict HTTP 201 and provider-response normalization, fresh-response versus cache-hit shapes, fail-closed behavior, notice text and checkout redirect.
+5. Leave hardened authenticated transport, provider endpoints, credentials, payment truth and order state unchanged.
+6. Keep every closed regression plus all five architecture harnesses mandatory.
+7. Do not begin A3 until the exact A2 head is independently reviewed, green, merged, post-merge verified and its branch deleted.
 
 The architecture gate may improve structure; it may not reinterpret provider truth, weaken authorization, or silently broaden certified feature/platform claims.
 
@@ -309,7 +314,7 @@ Read in this order:
 2. Phase 9I — Historical token-identity migration — **DONE / VERIFIED**
 3. Provider Contract & Payment Lifecycle — **DONE / VERIFIED**
 4. Security Threat-Model Closure — **DONE / VERIFIED**
-5. Architecture & Code-Quality Foundation — **CURRENT / A1**
+5. Architecture & Code-Quality Foundation — **CURRENT / A2**
 6. Full automated quality platform
 7. Platform certification: Woo/WP/PHP/HPOS/Blocks/WPML
 8. Feature certification
@@ -326,9 +331,9 @@ Read AGENTS.md first, then docs/project/PROJECT-STATUS.md, docs/project/NAMING-I
 
 Treat recorded SHAs/status as verified milestone anchors, not substitutes for live GitHub. Freshly verify current main, open PRs/branches, checks, review state and current source before acting; reconcile any drift first.
 
-Repository readiness, Phase 0, Phase 9I, Provider Contract & Payment Lifecycle, Security Threat-Model Closure and Architecture discovery are DONE / VERIFIED. Architecture discovery was squash-merged from PR #19 as verified main 596ffb433813cdc06e81d67162617b3019af686b, tree 3fcaed35546a6b1407d2a46797630e46301e65ef; exact-head run #147 and post-merge run #148 passed. The current permitted gate is Architecture & Code-Quality Foundation — A1.
+Repository readiness, Phase 0, Phase 9I, Provider Contract & Payment Lifecycle, Security Threat-Model Closure, Architecture discovery and A1 are DONE / VERIFIED. A1 was squash-merged from PR #21 as verified main d43d175a1443709d42efabfbe78519a5a84f4dc9, tree ddb2ac7cd8b2d4f454867e10bc361fee94dbcf4b; exact-head run #152 and post-merge run #153 passed. The current permitted gate is Architecture & Code-Quality Foundation — A2.
 
-Implement only the A1 pure Provider endpoint/mode resolver behind byte-equivalent public gateway wrappers. Preserve the inherited live and sandbox URL bytes; current official documentation's different production hostname is a separately reviewed provider migration. Change no transport, credential, payload, persistence, payment-truth or order-state behavior. Keep all existing regression suites and the four architecture harnesses mandatory.
+Implement only the A2 payment-method availability client/cache behind public getUpayPaymentMethods(). Preserve exact credential/mode cache identity, site/mode advisory locking, the 65-second durable gate and ordering, schema-3 cache behavior, strict provider normalization, fail-closed behavior and gateway notice/redirect presentation. Change no endpoint, authenticated transport, credential, payment-truth or order-state behavior. Keep all existing regression suites and the five architecture harnesses mandatory.
 
 Do not claim broad security, PCI/compliance, platform, feature, performance or production certification from the bounded security closure. UPayments webhook signature details remain provider-document unresolved, automatic refunds remain unsupported pending durable idempotency/reconciliation design, and subscription auto-deduction remains separately characterized rather than broadly certified.
 

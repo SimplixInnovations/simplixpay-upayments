@@ -387,7 +387,7 @@ $availabilityBinding = arch_direct_top_level_filter_callback(
 );
 
 arch_assert($architecture !== '', 'architecture control record exists');
-arch_assert(arch_contains($architecture, '**Status:** A1 / IMPLEMENTATION'), 'architecture record is A1 implementation');
+arch_assert(arch_contains($architecture, '**Status:** A2 / IMPLEMENTATION'), 'architecture record is A2 implementation');
 arch_assert(arch_contains($architecture, 'Architecture & Code-Quality Foundation'), 'architecture gate is named explicitly');
 
 $stageHeadings = array(
@@ -419,12 +419,12 @@ arch_assert(arch_contains($architecture, 'This is not permission for a big-bang 
 arch_assert(arch_contains($architecture, 'exact accepted `UPayments.php` byte size for the current architecture milestone'), 'monolith ratchet update contract is explicit');
 arch_assert(arch_contains($architecture, 'Composer only with an explicit distribution rule'), 'Composer introduction is gated by distribution contract');
 arch_assert(arch_contains($architecture, 'PHPCS/WPCS and PHPStan incrementally'), 'static-analysis rollout is incremental');
-arch_assert(arch_contains($status, '| Current program gate | **Architecture & Code-Quality Foundation — A1** |'), 'project status keeps Architecture A1 as current gate');
+arch_assert(arch_contains($status, '| Current program gate | **Architecture & Code-Quality Foundation — A2** |'), 'project status keeps Architecture A2 as current gate');
 arch_assert(arch_contains($naming, '**Canonical slug:** `simplixpay-upayments`'), 'canonical slug remains protected');
 
 $gatewayPath = $root . '/UPayments.php';
 $gatewaySize = is_file($gatewayPath) ? filesize($gatewayPath) : false;
-$acceptedGatewayBytes = 257298;
+$acceptedGatewayBytes = 238714;
 arch_assert(is_int($gatewaySize) && $gatewaySize === $acceptedGatewayBytes, 'UPayments.php matches current exact architecture ratchet');
 arch_assert($gatewayClassTokens !== array(), 'legacy WC_Upayments gateway compatibility class remains executable');
 arch_assert(arch_contains($gateway, "add_filter(\"woocommerce_payment_gateways\", \"addUpaymentsGatewayClass\")"), 'WooCommerce gateway registration remains characterized');
@@ -577,6 +577,11 @@ arch_assert(arch_has_token_sequence($validAvailability['body'], $settingsReadSeq
 $providerResolver = arch_read($root, 'src/Provider/EndpointResolver.php');
 arch_assert($providerResolver !== '', 'A1 Provider endpoint resolver exists');
 arch_assert(arch_contains($providerResolver, 'namespace Simplix\\Pay\\UPayments\\Provider;'), 'A1 Provider resolver uses the Simplix Provider namespace');
+
+$availabilityService = arch_read($root, 'src/Provider/PaymentMethodAvailability.php');
+arch_assert($availabilityService !== '', 'A2 payment-method availability service exists');
+arch_assert(arch_contains($availabilityService, 'namespace Simplix\\Pay\\UPayments\\Provider;'), 'A2 availability service uses the Simplix Provider namespace');
+arch_assert(is_file($root . '/tests/harness/architecture-payment-method-availability-harness.php'), 'A2 availability harness exists');
 
 printf("\nArchitecture Foundation: %d PASS / %d FAIL\n", $pass, $fail);
 exit($fail === 0 ? 0 : 1);
