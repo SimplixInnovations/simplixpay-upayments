@@ -56,6 +56,7 @@ class A4Order extends WC_Order {
 
 function __($text, $domain = null) { return $text; }
 function esc_html($value) { return htmlspecialchars((string) $value, ENT_QUOTES, 'UTF-8'); }
+function esc_html__($text, $domain = null) { return esc_html($text); }
 function esc_attr($value) { return htmlspecialchars((string) $value, ENT_QUOTES, 'UTF-8'); }
 function esc_url($value) { return esc_attr($value); }
 function esc_js($value) { return addslashes((string) $value); }
