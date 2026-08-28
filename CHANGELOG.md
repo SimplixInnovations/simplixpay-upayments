@@ -6,6 +6,13 @@ The project is still in pre-release engineering hardening. Entries below are eng
 
 ## [Unreleased]
 
+### Architecture A2 — Payment-Method Availability Client/Cache — DONE / VERIFIED
+
+- Extracted the characterized availability client/cache to `src/Provider/PaymentMethodAvailability.php` behind public `getUpayPaymentMethods()` while preserving cache identity, site/mode locking, the 65-second durable gate, strict provider normalization and fail-closed presentation.
+- Added the mandatory Payment-Method Availability harness; the final exact-head and post-merge result was **102 PASS / 0 FAIL** alongside the complete historical and architecture stack.
+- Exact final PR #22 head `bdb627520aa28e71b69a91f8ef71d04d257a3ad8` passed Quality Gates run #155 and clean independent review.
+- Squash-merged PR #22 as signed commit `f85894271e8f991e77a8e6a2b306f4d191483bbd`, tree `1addbcc02e0d30f57a948cafd8111fb94e60c4da`; post-merge run #156 passed and the implementation branch was deleted.
+
 ### Architecture A1 — Provider Endpoint/Mode Resolution — DONE / VERIFIED
 
 - Extracted deterministic live/test endpoint resolution to `src/Provider/EndpointResolver.php` while preserving all four public gateway compatibility wrappers and the inherited URL bytes.
@@ -31,7 +38,7 @@ The project is still in pre-release engineering hardening. Entries below are eng
 
 ### Current program gate
 
-**Architecture & Code-Quality Foundation — A2** is now the active gate. A1 provider endpoint/mode resolution is DONE / VERIFIED; A2 is limited to the characterized payment-method availability client/cache behind the existing gateway entry point and must not weaken cache isolation, lock/cooldown, provider-schema, fail-closed, Security, Provider, H12 or Phase 9I contracts.
+**Architecture & Code-Quality Foundation — A3** is now the active gate. A1 and A2 are DONE / VERIFIED; A3 is limited to the characterized gateway settings/admin/single-additional-merchant presentation boundary and must not change protected option keys, Charge payload semantics, Security, Provider, H12 or Phase 9I contracts.
 
 ### Provider Contract & Payment Lifecycle — DONE / VERIFIED
 

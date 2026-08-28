@@ -88,6 +88,9 @@ sec_assert(PublicOrderStatus::normalize_status('<script>') === 'wait', 'unknown 
 sec_assert(PublicOrderStatus::normalize_status(array('completed')) === 'wait', 'non-scalar persisted status fails closed');
 
 $gateway = sec_source('UPayments.php');
+$gateway_settings_path = dirname(__DIR__, 2) . '/src/Admin/GatewaySettings.php';
+$gateway_settings = @file_get_contents($gateway_settings_path);
+$gateway_settings = is_string($gateway_settings) ? $gateway_settings : '';
 $lifecycle = sec_source('src/Payment/PaymentLifecycle.php');
 $status_verifier = sec_source('src/Payment/StatusVerifier.php');
 $migration_admin = sec_source('src/Migration/MigrationAdmin.php');
@@ -126,9 +129,9 @@ sec_assert(substr_count($blocks_js, "className: 'upay-chevron'") >= 3, 'Blocks c
 // SEC-04: plain persisted/provider data is escaped as text, not trusted HTML.
 sec_assert(strpos($gateway, 'wp_kses_post($payment_status)') === false, 'thank-you payment status is not permitted arbitrary post HTML');
 sec_assert(strpos($gateway, 'wp_kses_post($upayment_id)') === false, 'thank-you provider payment id is not permitted arbitrary post HTML');
-sec_assert(substr_count($gateway, "esc_attr( \$this->get_option('iban_number') )") >= 1, 'multimerchant IBAN setting escaped in attribute context');
-sec_assert(substr_count($gateway, "esc_attr( \$this->get_option('knet_charge') )") >= 1, 'multimerchant KNET charge escaped in attribute context');
-sec_assert(substr_count($gateway, "esc_attr( \$this->get_option('cc_charge') )") >= 1, 'multimerchant card charge escaped in attribute context');
+sec_assert(strpos($gateway_settings, "esc_attr(call_user_func(\$get_option, 'iban_number'))") !== false, 'multimerchant IBAN setting escaped in attribute context');
+sec_assert(strpos($gateway_settings, "esc_attr(call_user_func(\$get_option, 'knet_charge'))") !== false, 'multimerchant KNET charge escaped in attribute context');
+sec_assert(strpos($gateway_settings, "esc_attr(call_user_func(\$get_option, 'cc_charge'))") !== false, 'multimerchant card charge escaped in attribute context');
 sec_assert(strpos($new_template, '$_REQUEST') === false, 'new checkout template excludes $_REQUEST');
 sec_assert(strpos($old_template, '$_REQUEST') === false, 'old checkout template excludes $_REQUEST');
 
