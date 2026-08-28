@@ -478,7 +478,7 @@ Requirements:
 | Provider contract audit | **DONE / VERIFIED** | Critical |
 | Payment lifecycle/state machine | **DONE / VERIFIED** | Critical |
 | Security threat-model audit | **DONE / VERIFIED** | Critical |
-| Architecture/code quality | **A3 — CURRENT GATE** | High |
+| Architecture/code quality | **A4 — CURRENT GATE** | High |
 | Full automated quality platform | **NOT STARTED** | Critical before public stable |
 | WooCommerce/WordPress/PHP certification | **PENDING** | Critical |
 | WPML/multilingual/multicurrency certification | **FIXES PARTIAL; CERTIFICATION PENDING** | High/product objective |
@@ -492,7 +492,7 @@ Requirements:
 | WordPress.org publication | **DEFERRED UNTIL READY** | Strategic |
 | Continuous maintenance | **ONGOING AFTER FIRST STABLE** | Critical long-term |
 
-Provider Contract & Payment Lifecycle, the bounded Security Threat-Model Closure, Architecture discovery, A1 and A2 are **DONE / VERIFIED**. The current unified gate is **Architecture & Code-Quality Foundation — A3**. Provider contract and lifecycle rows remain separated because they retain distinct closed contracts and regression evidence.
+Provider Contract & Payment Lifecycle, the bounded Security Threat-Model Closure, Architecture discovery and A1-A3 are **DONE / VERIFIED**. The current unified gate is **Architecture & Code-Quality Foundation — A4**. Provider contract and lifecycle rows remain separated because they retain distinct closed contracts and regression evidence.
 
 ## 18. Phase ordering
 
@@ -502,7 +502,7 @@ Recommended execution order:
 2. Phase 9I — Historical Token-Identity Migration — **DONE / VERIFIED**.
 3. Provider Contract & Payment Lifecycle — **DONE / VERIFIED**.
 4. Security Threat-Model Closure — **DONE / VERIFIED**.
-5. Architecture & Code Quality Foundation — **CURRENT / A3**.
+5. Architecture & Code Quality Foundation — **CURRENT / A4**.
 6. Full Test-Driven Quality Platform.
 7. WooCommerce / WordPress / PHP Certification.
 8. WPML / i18n / multilingual / multicurrency / RTL.
@@ -809,7 +809,7 @@ Model events such as:
 
 # SECURITY THREAT-MODEL AUDIT
 
-**Program status:** DONE / VERIFIED. This section retains the security phase scope as a historical engineering standard; the current program gate is **Architecture & Code-Quality Foundation — A3**.
+**Program status:** DONE / VERIFIED. This section retains the security phase scope as a historical engineering standard; the current program gate is **Architecture & Code-Quality Foundation — A4**.
 
 ## 30. Scope
 
@@ -1514,8 +1514,8 @@ Where security correctness requires a fresh read, verify or invalidate caches de
 LAST VERIFIED PROJECT STATE
 Date: 2026-08-28
 Repository: SimplixInnovations/simplixpay-upayments
-Last verified implementation main SHA: f85894271e8f991e77a8e6a2b306f4d191483bbd
-Canonical implementation tree: 1addbcc02e0d30f57a948cafd8111fb94e60c4da
+Last verified implementation main SHA: 6291196b35a952ea974549d1aa6d6ae9bbcc64dc
+Canonical implementation tree: a7f66ee6cf8c9d5324a0ae77b8c61e69e87bdff7
 Historical H12 merge: SimplixInnovations/upayments-woocommerce@93e9925247a8bfade626cb822136852fd96eaea2
 Repository foundation/readiness: DONE / VERIFIED
 Phase 0 release identity/updater ownership: DONE / VERIFIED
@@ -1525,7 +1525,8 @@ Security Threat-Model Closure: DONE / VERIFIED
 Security Threat-Model implementation: PR #17; 81 PASS / 0 FAIL; post-merge Quality Gates #89 SUCCESS
 Architecture A1: DONE / VERIFIED
 Architecture A2: DONE / VERIFIED; PR #22; Payment-Method Availability 102/0; post-merge Quality Gates #156 SUCCESS
-Current program gate: Architecture & Code-Quality Foundation — A3
+Architecture A3: DONE / VERIFIED; PR #23; Gateway Settings 90/0; post-merge Quality Gates #159 SUCCESS
+Current program gate: Architecture & Code-Quality Foundation — A4
 Production readiness: R0 — engineering hardening
 Public stable release: NO
 WordPress.org release: NO
@@ -1568,7 +1569,7 @@ The security implementation anchor above is post-merge verified. `PROJECT-STATUS
 
 ### Remaining P0/P1 work
 
-- [ ] Architecture & Code-Quality Foundation — **A3 / CURRENT GATE**.
+- [ ] Architecture & Code-Quality Foundation — **A4 / CURRENT GATE**.
 - [ ] Standard Composer/PHPUnit/static-analysis platform.
 - [ ] WordPress/WooCommerce/PHP compatibility certification.
 - [ ] WPML/WCML certification.

@@ -26,6 +26,8 @@ require_once __DIR__ . '/src/Release/Identity.php';
 require_once __DIR__ . '/src/Admin/GatewaySettings.php';
 require_once __DIR__ . '/src/Provider/EndpointResolver.php';
 require_once __DIR__ . '/src/Provider/PaymentMethodAvailability.php';
+require_once __DIR__ . '/src/Subscription/Presentation.php';
+require_once __DIR__ . '/src/Subscription/Composition.php';
 require_once __DIR__ . '/includes/Token/CustomerTokenIdentity.php';
 require_once __DIR__ . '/src/Migration/MigrationBootstrap.php';
 
@@ -33,9 +35,9 @@ use Simplix\Pay\UPayments\Release\Identity;
 use Simplix\Pay\UPayments\Admin\GatewaySettings;
 use Simplix\Pay\UPayments\Provider\EndpointResolver;
 use Simplix\Pay\UPayments\Provider\PaymentMethodAvailability;
+use Simplix\Pay\UPayments\Subscription\Composition as SubscriptionComposition;
+use Simplix\Pay\UPayments\Subscription\Presentation as SubscriptionPresentation;
 use UPayments\Subscription\Cron\Scheduler;
-use UPayments\Subscription\Checkout\Fields;
-use UPayments\Subscription\Manager;
 use UPayments\Token\CustomerTokenIdentity;
 
 define('SIMPLIXPAY_UPAYMENTS_VERSION', Identity::VERSION);
@@ -1140,8 +1142,7 @@ function woocommerceUpaymentsInit() {
                 return $default;
             });
 
-            add_filter('woocommerce_add_to_cart_validation', [$this, 'restrictMixedCartProducts'], 10, 3);
-            add_action('woocommerce_before_shop_loop_item_title', [$this, 'renderSubscriptionBadgeInProductList'], 9);
+            SubscriptionComposition::register_gateway_hooks($this);
         }
 
         public function init_form_fields() {
@@ -3874,12 +3875,7 @@ function woocommerceUpaymentsInit() {
          */
         public function initializeSubscriptionModule()
         {
-            // Always load classes (they self-check enable flag)
-            require_once __DIR__ . '/includes/Subscription/Checkout/Fields.php';
-            require_once __DIR__ . '/includes/Subscription/Manager.php';
-            require_once __DIR__ . '/includes/Subscription/Helpers/Utils.php';            
-            Fields::init();
-            Manager::init();
+            SubscriptionComposition::initialize_legacy_modules();
         }
 
         /**
@@ -3927,77 +3923,7 @@ function woocommerceUpaymentsInit() {
          */
         public function render_subscription_summary($order)
         {
-            $plan     = $order->get_meta('_upay_subscription_plan');
-            $interval = (int) $order->get_meta('_upay_subscription_interval');
-            $autoDeduction = $order->get_meta('UPayments_AutoDeduction');
-            $lastBilled = $order->get_meta('_upay_last_billed_at');
-            $order_date = $order->get_date_created();
-            $order_paid_date = $order->get_date_paid();
-            $order_completed_date = $order->get_date_completed();
-            
-            $started_at = $order_paid_date ?: $order_completed_date ?: $order_date;
-            if (!$started_at) {
-                return;
-            }
-            if (is_string($started_at)) {
-                $started_at = new DateTime($started_at);
-            }
-
-            // Dates
-            $timezone = wp_timezone();
-            
-            $last_billed_dt = !empty($lastBilled) ? new DateTime($lastBilled, $timezone) : null;
-            
-            // Calculate next billing
-            $next_billing_dt = Scheduler::getNextBillingDate($started_at, $plan, $interval);
-            if (!$next_billing_dt) {
-                return;
-            }
-
-            $SubscriptionStatus = $order->get_meta('_upay_subscription_status');
-            if($SubscriptionStatus === 'active') {
-                $SubscriptionStatus = '<span class="upay-status-active">'. ucfirst($SubscriptionStatus) .'</span>';
-            } elseif($SubscriptionStatus === 'paused') {
-                $SubscriptionStatus = '<span class="upay-status-paused">'. ucfirst($SubscriptionStatus) .'</span>';
-                } elseif($SubscriptionStatus === 'cancelled') {
-                $SubscriptionStatus = '<span class="upay-status-cancelled">'. ucfirst($SubscriptionStatus) .'</span>';
-            } else {
-                $SubscriptionStatus = ucfirst($SubscriptionStatus);
-            }
-
-            if (!$plan || $plan === 'one_time') {
-                return;
-            }
-
-            $period = '';
-            if ($plan === 'yearly') {
-                $period = 'Year';
-            } elseif($plan === 'monthly') {
-                $period = 'Month';
-            } elseif($plan === 'weekly') {
-                $period = 'Week';
-            } else {
-                $period = 'Day';
-            }
-
-            echo '<div class="upay-subscription-summary">';
-            echo '<h4>' . esc_html__('Subscription Details', 'upayments') . '</h4>';
-            if($autoDeduction === 'no'){
-                echo '<p><strong>Subscription Status:</strong> ' . wp_kses_post($SubscriptionStatus) . '</p>';
-            }
-            echo '<p><strong>Plan:</strong> ' . esc_html(ucfirst($plan)) . '</p>';
-            echo '<p><strong>Interval:</strong> Every ' . esc_html($interval) . ' ' . esc_html($period) . '(s)</p>';
-            if($autoDeduction === 'yes' && empty($last_billed_dt)) {
-                echo '<p><strong>Auto Deduction Order:</strong> Yes</p>';
-            } else {
-                if($SubscriptionStatus !== 'cancelled') {
-                    echo '<p><strong>Next Billing Date:</strong> ' . esc_html($next_billing_dt->format('Y-m-d H:i:s')) . '</p>';
-                }
-                if(!empty($last_billed_dt)){ 
-                    echo '<p><strong>Last Billed at:</strong> ' . esc_html($last_billed_dt->format('Y-m-d H:i:s')) . '</p>';
-                }
-            }
-            echo '</div>';
+            SubscriptionPresentation::render_admin_summary($order);
         }
 
         /**
@@ -4010,40 +3936,12 @@ function woocommerceUpaymentsInit() {
          */
         public function restrictMixedCartProducts($passed, $product_id, $quantity)
         {
-            if (!function_exists('WC') || !WC()->cart) {
-                return $passed;
-            }
-
-            $product = wc_get_product($product_id);
-            if (!$product) {
-                return $passed;
-            }
-
-            $is_subscription_product = ($product->get_type() === 'custom_type');
-
-            // Current cart state
-            $cart_has_subscription = \UPayments\Subscription\Helpers\Utils::cartHasCustomType();
-            $cart_has_normal       = \UPayments\Subscription\Helpers\Utils::cartHasNormalProduct();
-
-            // If cart already has subscription product, block adding normal products
-            if ($cart_has_subscription && !$is_subscription_product) {
-                wc_add_notice(
-                    __('You can only add subscription products to the cart when a subscription item is present.', $this->domain),
-                    'error'
-                );
-                return false;
-            }
-
-            // If cart already has normal products, block adding subscription products
-            if ($cart_has_normal && $is_subscription_product) {
-                wc_add_notice(
-                    __('Subscription products cannot be added together with normal products. Please complete your current purchase first.', $this->domain),
-                    'error'
-                );
-                return false;
-            }
-
-            return $passed;
+            return SubscriptionPresentation::restrict_mixed_cart_products(
+                $passed,
+                $product_id,
+                $quantity,
+                $this->domain
+            );
         }
         
         /**
@@ -4053,34 +3951,10 @@ function woocommerceUpaymentsInit() {
          */
         public function renderSubscriptionBadgeInProductList()
         {
-            global $product;
-
-            if (!$product instanceof WC_Product) {
-                return;
-            }
-
-            if ($product->get_type() !== 'custom_type') {
-                return;
-            }
-
-            echo '<span class="upay-subscription-badge"><strong>🔁 Subscription</strong></span>';
+            SubscriptionPresentation::render_subscription_badge();
         }
     }
 
-    add_action(
-        'woocommerce_admin_order_data_after_billing_address',
-        function($order) {
-            foreach ($order->get_items('line_item') as $item)
-            {
-                $product = $item->get_product();
-                if($product->get_type() === 'custom_type'){
-                    $gateway = new WC_Upayments();
-                    $gateway->render_subscription_summary($order);
-                }
-            }
-        },
-        10, 1
-    );
 }
 
 /**
@@ -4208,371 +4082,44 @@ function myPaymentPluginSetupCheckout() {
 }
 
 /* Subscription Product Data Handler from product Data Page - Start */
-add_action( 'init', function () {
-    if ( ! class_exists( 'WooCommerce' ) ) {
-        return;
-    }
-    if ( class_exists( 'WC_Product_Simple' ) ) {
-        class WCProductCustomType extends WC_Product_Simple {
-            public function get_type() {
-                return 'custom_type';
-            }
-        }
-    }
-});
+SubscriptionComposition::register_presentation_hooks();
 
-add_filter( 'product_type_selector', 'addCustomProductType' );
 function addCustomProductType( $types ){
-    $types[ 'custom_type' ] = __( 'Subscription Product', 'upayments' );
-    return $types;
+    return SubscriptionPresentation::add_custom_product_type($types);
 }
 
-add_filter( 'woocommerce_product_class', 'mapCustomProductClass', 10, 2 );
 function mapCustomProductClass( $classname, $product_type ) {
-    if ( $product_type === 'custom_type' ) { // Must match the key in your dropdown
-        $classname = 'WCProductCustomType';
-    }
-    return $classname;
+    return SubscriptionPresentation::map_custom_product_class($classname, $product_type);
 }
 
-add_action( 'woocommerce_custom_type_add_to_cart', 'woocommerce_simple_add_to_cart', 30 );
-
-add_action( 'admin_footer', 'customProductTypes' );
 function customProductTypes() {
-    if ( 'product' != get_post_type() ) { return ;}
-    ?>
-    <script type='text/javascript'>
-        jQuery( document ).ready( function() {
-            // Options like 'virtual' or 'downloadable' can be shown/hidden
-            // or specific tabs can be toggled.
-            jQuery( '.options_group.pricing' ).addClass( 'show_if_custom_type' );
-            jQuery( '.inventory_options' ).addClass( 'show_if_custom_type' );
-            
-            // Force WooCommerce to trigger the show/hide logic
-            jQuery( 'select#product-type' ).change();
-            jQuery('.show_if_simple').addClass('show_if_custom_type');
-        });
-    </script>
-    <?php
+    SubscriptionPresentation::custom_product_types();
 }
 
-add_filter( 'woocommerce_product_data_tabs', 'addCustomDataTab' );
 function addCustomDataTab( $tabs ) {
-    $tabs['custom_settings'] = array(
-        'label'    => __( 'Custom Settings', 'upayments' ),
-        'target'   => 'custom_product_data_panel', // This matches the ID in the next step
-        'class'    => array( 'show_if_custom_type' ), // Only show for your product type
-        'priority' => 25,
-    );
-    return $tabs;
+    return SubscriptionPresentation::add_custom_data_tab($tabs);
 }
 
-add_action( 'woocommerce_product_data_panels', 'addCustomDataPanel' );
 function addCustomDataPanel() {
-    ?>
-    <div id="custom_product_data_panel" class="panel woocommerce_options_panel hidden">
-        <div class="options_group">
-            <?php
-            // Create a custom text field
-            woocommerce_wp_text_input( array(
-                'id'          => '_custom_field_id',
-                'label'       => __( 'Custom Field', 'upayments' ),
-                'placeholder' => 'Enter value here',
-                'desc_tip'    => 'true',
-                'description' => __( 'This is a description of the field.', 'upayments' ),
-            ) );
-            ?>
-        </div>
-    </div>
-    <?php
+    SubscriptionPresentation::add_custom_data_panel();
 }
 
-add_action( 'woocommerce_process_product_meta', 'saveCustomFieldData' );
 function saveCustomFieldData( $post_id ) {
-    $post_id = absint( $post_id );
-    if ( $post_id <= 0 ) {
-        return;
-    }
-
-    if ( empty( $_POST['woocommerce_meta_nonce'] )
-        || ! wp_verify_nonce( wp_unslash( $_POST['woocommerce_meta_nonce'] ), 'woocommerce_save_data' )
-    ) {
-        return;
-    }
-
-    if ( empty( $_POST['post_ID'] ) || absint( $_POST['post_ID'] ) !== $post_id ) {
-        return;
-    }
-
-    if ( ! current_user_can( 'edit_post', $post_id ) ) {
-        return;
-    }
-
-    $custom_field_value = isset( $_POST['_custom_field_id'] )
-        && is_string( $_POST['_custom_field_id'] )
-        ? sanitize_text_field( wp_unslash( $_POST['_custom_field_id'] ) )
-        : '';
-
-    if ( $custom_field_value !== '' ) {
-        update_post_meta( $post_id, '_custom_field_id', $custom_field_value );
-    }
+    SubscriptionPresentation::save_custom_field_data($post_id);
 }
 
-add_action( 'woocommerce_single_product_summary', 'displayCustomFieldOnFrontend', 10 );
 function displayCustomFieldOnFrontend() {
-    global $product;
-
-    // 1. Check if the product exists and is your custom type
-    if ( ! is_object( $product ) || ! $product->is_type( 'custom_type' ) ) {
-        return;
-    }
-
-    if ( $product->is_type( 'custom_type' ) ) {
-        // 2. Fetch the data using the field ID we used during the save process
-        $custom_data = get_post_meta( $product->get_id(), '_custom_field_id', true );
-    
-        // 3. Output the data safely
-        if ( ! empty( $custom_data ) ) {
-            echo '<div class="custom-product-info">';
-            echo '<strong style="background: #ffcc00; padding: 5px 10px; border-radius: 3px;">' . esc_html( $custom_data ) . '</strong>';
-            echo '</div>';
-        }
-    }
-
+    SubscriptionPresentation::display_custom_field_on_frontend();
 }
 
-add_filter( 'woocommerce_get_item_data', 'displayCustomDataInCart', 10, 2 );
 function displayCustomDataInCart( $item_data, $cart_item ) {
-    // 1. Get the product ID from the cart item
-    $product_id = $cart_item['product_id'];
-    
-    // 2. Fetch the custom meta
-    $custom_value = get_post_meta( $product_id, '_custom_field_id', true );
-
-    // 3. Add it to the display array if it exists
-    if ( ! empty( $custom_value ) ) {
-        $item_data[] = array(
-            'key'     => __( 'Special Feature', 'upayments' ),
-            'value'   => $custom_value,
-            'display' => '', // Optional: format for display
-        );
-    }
-
-    return $item_data;
+    return SubscriptionPresentation::display_custom_data_in_cart($item_data, $cart_item);
 }
 
-add_action( 'woocommerce_checkout_create_order_line_item', 'saveCustomDataToOrderItems', 10, 4 );
 function saveCustomDataToOrderItems( $item, $cart_item_key, $values, $order ) {
-    // 1. Get the product ID
-    $product_id = $values['product_id'];
-    
-    // 2. Fetch the custom meta from the product
-    $custom_value = get_post_meta( $product_id, '_custom_field_id', true );
-
-    // 3. Add the meta to the order item
-    if ( ! empty( $custom_value ) ) {
-        $item->add_meta_data( __( 'Special Feature', 'upayments' ), $custom_value );
-    }
+    SubscriptionPresentation::save_custom_data_to_order_items($item, $cart_item_key, $values, $order);
 }
 
-add_action('woocommerce_order_details_after_order_table', function ($order) {
-
-    if (!$order instanceof WC_Order || !is_user_logged_in()) {
-        return;
-    }
-
-    if ((int) $order->get_user_id() !== get_current_user_id()) {
-        return;
-    }
-
-    if ($order->get_meta('_upay_subscription_status') === 'cancelled') {
-        return;
-    }
-
-    // Subscription meta
-    $plan       = $order->get_meta('_upay_subscription_plan');
-    $interval   = (int) $order->get_meta('_upay_subscription_interval');
-    if (!$plan) {return;}
-    
-    $order_date = $order->get_date_created();
-    $order_paid_date = $order->get_date_paid();
-    $order_completed_date = $order->get_date_completed();
-    $last_billed = $order->get_meta('_upay_last_billed_at');
-    $isAutoDeduction = $order->get_meta('UPayments_AutoDeduction') === 'yes' ? true : false;
-    $started_at = $order_paid_date ?: $order_completed_date ?: $order_date;
-    if (!$started_at) {
-        return;
-    }
-    if (is_string($started_at)) {
-        $started_at = new DateTime($started_at);
-    }
-    
-    // Dates
-    $timezone = wp_timezone();
-    
-    $last_billed_dt = !empty($last_billed) ? new DateTime($last_billed, $timezone) : null;
-        
-    // Calculate next billing
-    $next_billing_dt = Scheduler::getNextBillingDate($started_at, $plan, $interval);
-    if (!$next_billing_dt) {
-        return;
-    }
-
-    // Not a subscription order → don’t show anything
-    if (!$plan || !$interval) {
-        return;
-    }
-
-    // Format labels
-    $plan_labels = [
-        'daily'     => 'Daily',
-        'weekly'    => 'Weekly',
-        'monthly'   => 'Monthly',
-        'quarterly' => 'Quarterly',
-        'yearly'    => 'Yearly',
-    ];
-
-    $interval_labels = [
-        'daily' => [
-            1 => 'Every Day',
-        ],
-        'weekly' => [
-            1 => 'Every Week',
-            2 => 'Every 2 Weeks',
-            3 => 'Every 3 Weeks',
-        ],
-        'monthly' => [
-            1 => 'Every Month',
-            2 => 'Every 2 Months',
-        ],
-        'quarterly' => [
-            1 => 'Every Quarter',
-            2 => 'Every 2 Quarters',
-            3 => 'Every 3 Quarters',
-        ],
-        'yearly' => [
-            1 => 'Every Year',
-        ],
-    ];
-    ?>
-
-    <section class="woocommerce-subscription-details">
-        <h2><?php esc_html_e('Subscription Details', 'woocommerce'); ?></h2>
-
-        <table class="shop_table shop_table_responsive" style="border: 1px solid;">
-            <tbody>
-                <tr>
-                    <th style="border: 1px solid;"><?php esc_html_e('Plan', 'woocommerce'); ?></th>
-                    <td style="border: 1px solid;"><?php echo esc_html($plan_labels[$plan] ?? ucfirst($plan)); ?></td>
-                </tr>
-                <tr>
-                    <th style="border: 1px solid;"><?php esc_html_e('Interval', 'woocommerce'); ?></th>
-                    <td style="border: 1px solid;"><?php echo esc_html($interval_labels[$plan][$interval] ?? $interval); ?></td>
-                </tr>
-                <tr>
-                    <th style="border: 1px solid;"><?php esc_html_e('Started On', 'woocommerce'); ?></th>
-                    <td style="border: 1px solid;"><?php echo esc_html($started_at ? $started_at->format('Y-m-d H:i:s') : '-'); ?></td>
-                </tr>
-                <?php if(!$isAutoDeduction) { ?>
-                    <tr>
-                        <th style="border: 1px solid;"><?php esc_html_e('Last Billed On', 'woocommerce'); ?></th>
-                        <td style="border: 1px solid;"><?php echo esc_html($last_billed_dt ? $last_billed_dt->format('Y-m-d H:i:s') : '-'); ?></td>
-                    </tr>
-                    <tr>
-                        <th style="border: 1px solid;"><?php esc_html_e('Next Billing Date', 'woocommerce'); ?></th>
-                        <td style="border: 1px solid;"><?php echo esc_html($next_billing_dt ? $next_billing_dt->format('Y-m-d H:i:s') : '-'); ?></td>
-                    </tr>
-                <?php } ?>
-            </tbody>
-        </table>
-    </section>
-
-    <?php
-        $isAutoDeductionOrder = $order->get_meta('UPayments_AutoDeduction') === 'yes' ? true : false;
-        if (!$isAutoDeductionOrder) {
-            $status = $order->get_meta('_upay_subscription_status') ?: 'active';
-            $action = $status === 'paused' ? 'resume' : 'pause';
-            $label  = $status === 'paused' ? 'Resume Subscription' : 'Pause Subscription';
-            $form_action = wc_get_account_endpoint_url('view-order') . $order->get_id();
-    ?>
-    <form method="post" class="upay-subscription-actions" action="<?php echo esc_url($form_action); ?>">
-        <input type="hidden" name="upay_action" value="unsubscribe" />
-        <input type="hidden" name="order_id" value="<?php echo esc_attr($order->get_id()); ?>" />
-        <?php wp_nonce_field('upay_unsubscribe_' . $order->get_id(), '_wpnonce', false); ?>
-        <button type="submit" class="button upay-unsubscribe-button"
-            onclick="return confirm('<?php echo esc_js(__('Are you sure you want to unsubscribe?', 'woocommerce')); ?>');">
-            <?php esc_html_e('Unsubscribe', 'woocommerce'); ?>
-        </button>
-    </form>
-
-    <form method="post" class="upay-subscription-actions" action="<?php echo esc_url($form_action); ?>">
-        <input type="hidden" name="upay_action" value="<?php echo esc_attr($action); ?>" />
-        <input type="hidden" name="order_id" value="<?php echo esc_attr($order->get_id()); ?>" />
-        <?php wp_nonce_field('upay_' . $action . '_' . $order->get_id(), '_wpnonce', false); ?>
-        <button type="submit" class="button upay-pause-resume-button">
-            <?php echo esc_html($label); ?>
-        </button>
-    </form>
-    <?php
-    }
-});
-
-add_action('woocommerce_before_account_orders', function () {
-    $current = sanitize_text_field($_GET['subscription_filter'] ?? '');
-    ?>
-    <form method="get" class="upay-orders-filter" action="<?php echo esc_url( add_query_arg( null, null ) ); ?>">
-        <input type="hidden" name="page_id" value="<?php echo esc_attr($_GET['page_id'] ?? 12); ?>">
-        <input type="hidden" name="orders" value="">
-
-        <label for="subscription_filter">Select Order Type:</label>
-        <select id="subscription_filter" name="subscription_filter" onchange="this.form.submit()">
-            <option value="">All orders</option>
-            <option value="active" <?php selected($current, 'active'); ?>>Active subscriptions</option>
-            <option value="paused" <?php selected($current, 'paused'); ?>>Paused subscriptions</option>
-            <option value="cancelled" <?php selected($current, 'cancelled'); ?>>Cancelled subscriptions</option>
-        </select>
-    </form>
-    <?php
-});
-
-add_filter('woocommerce_my_account_my_orders_query', function ($args) {
-    if (empty($_GET['subscription_filter'])) {
-        return $args;
-    }
-    $filter = sanitize_text_field($_GET['subscription_filter']);
-    $args['meta_query'][] = [
-        'key'   => '_upay_subscription_status',
-        'value' => $filter,
-    ];
-    return $args;
-});
-
-add_filter('woocommerce_my_account_my_orders_columns', function ($columns) {
-    $new_columns = [];
-    foreach ($columns as $key => $label) {
-        $new_columns[$key] = $label;
-
-        if ($key === 'order-status') {
-            $new_columns['order_type'] = __('Type', 'woocommerce');
-            $new_columns['order_status'] = __('Status', 'woocommerce');
-        }
-    }
-    return $new_columns;
-});
-
-add_action('woocommerce_my_account_my_orders_column_order_type', function ($order) {
-    $isAutoDeduction = $order->get_meta('UPayments_AutoDeduction') === 'yes' ? true : false;
-    echo $isAutoDeduction ? __('Auto Deduction', 'woocommerce') : __('Regular', 'woocommerce');
-});
-
-add_action('woocommerce_my_account_my_orders_column_order_status', function ($order) {
-    $status = $order->get_meta('_upay_subscription_status');
-    if (!$status) {
-        echo '—';
-        return;
-    }
-    echo '<span class="upay-status upay-status-' . esc_attr($status) . '">' . esc_html(ucfirst($status)) . '</span>';
-});
 /* Subscription Product Data Handler from product Data Page - End */
 
 add_action('woocommerce_init', function () {

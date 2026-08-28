@@ -37,7 +37,7 @@ The following engineering gates are **DONE / VERIFIED**:
 - Provider Contract & Payment Lifecycle;
 - Security Threat-Model Closure.
 
-The current program gate is **Architecture & Code-Quality Foundation — A3**.
+The current program gate is **Architecture & Code-Quality Foundation — A4**.
 
 The project remains in **pre-release engineering hardening**. It is not yet a broadly certified stable production release and has not yet been published to WordPress.org.
 
@@ -53,7 +53,7 @@ The project remains in **pre-release engineering hardening**. It is not yet a br
 | Phase 9I historical token-identity migration | **DONE / VERIFIED** |
 | Provider Contract & Payment Lifecycle | **DONE / VERIFIED** |
 | Security Threat-Model Closure | **DONE / VERIFIED** |
-| Current engineering gate | **Architecture & Code-Quality Foundation — A3** |
+| Current engineering gate | **Architecture & Code-Quality Foundation — A4** |
 | Stable SimplixPay release | **Not yet published** |
 | WordPress.org release | **Not yet published** |
 | Phase 0 release-identity harness | **35 PASS / 0 FAIL** |
@@ -157,7 +157,7 @@ Phase 9I system completion does not mean every merchant installation was automat
 
 ## Current engineering gate — Architecture & Code-Quality Foundation
 
-Architecture A1 and A2 are DONE / VERIFIED. A3 now separates the characterized gateway settings, admin and single-additional-merchant presentation boundary from payment orchestration while preserving every existing option key and runtime allocation contract. It must preserve the closed payment lifecycle, Security Threat-Model, H12 and Phase 9I contracts and protected persisted/runtime identities.
+Architecture A1-A3 are DONE / VERIFIED. A4 now separates the characterized subscription product, admin and My Account presentation boundary behind explicit Simplix-owned composition/presentation classes while preserving every scheduler, billing-attempt, metadata and customer-action contract. It must preserve the closed payment lifecycle, Security Threat-Model, H12 and Phase 9I contracts and protected persisted/runtime identities.
 
 No big-bang rewrite, runtime branding rename or broad compatibility claim is authorized by this gate.
 

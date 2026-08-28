@@ -28,11 +28,30 @@
 | Phase 9I — historical token-identity migration | **DONE / VERIFIED** |
 | Provider Contract & Payment Lifecycle | **DONE / VERIFIED** |
 | Security Threat-Model Closure | **DONE / VERIFIED** |
-| Current program gate | **Architecture & Code-Quality Foundation — A3** |
+| Current program gate | **Architecture & Code-Quality Foundation — A4** |
 
-The plugin remains a pre-release engineering project. Architecture discovery, A1 provider endpoint/mode resolution and A2 payment-method availability client/cache extraction are DONE / VERIFIED; A3 gateway settings/admin/single-additional-merchant presentation is the current bounded implementation tranche. None of these milestones constitutes broad code-quality, provider-host, penetration-test, PCI/compliance, platform, feature, performance or release certification.
+The plugin remains a pre-release engineering project. Architecture discovery and A1-A3 are DONE / VERIFIED; A4 subscription product/admin/My Account presentation is the current bounded implementation tranche. None of these milestones constitutes broad code-quality, provider-host, penetration-test, PCI/compliance, platform, feature, performance or release certification.
 
-## Latest verified milestone — Architecture A2 payment-method availability
+## Latest verified milestone — Architecture A3 gateway settings/admin presentation
+
+PR #23 final reviewed head:
+
+- `85028cfb4431cc29820eaca4e254bf6c87daa378`
+
+Verified squash merge on `main`:
+
+- merge: `6291196b35a952ea974549d1aa6d6ae9bbcc64dc`
+- tree: `a7f66ee6cf8c9d5324a0ae77b8c61e69e87bdff7`
+- parent: `f85894271e8f991e77a8e6a2b306f4d191483bbd`
+- GitHub signature: **VERIFIED**
+- implementation branch `architecture/a3-gateway-settings-admin-multimerchant`: **deleted after verified merge**
+- exact-head Quality Gates run #158: **SUCCESS**
+- push-triggered post-merge Quality Gates run #159: **SUCCESS**
+- Gateway Settings harness: **90/0**
+
+A3 moved the complete settings schema, validation, one-row allocation renderer and admin assets to `src/Admin/GatewaySettings.php`, reduced the exact `UPayments.php` ratchet to **223,942 bytes**, retained every public gateway wrapper and left runtime Charge behavior unchanged. Final review findings strengthened the permanent gate with a frozen complete schema fixture and exact asset-registration tuples.
+
+## Previous verified milestone — Architecture A2 payment-method availability
 
 PR #22 final reviewed head:
 
@@ -294,19 +313,19 @@ Repository readiness remains DONE / VERIFIED:
 
 ## Current program gate — Architecture & Code-Quality Foundation
 
-**Status: A3 — GATEWAY SETTINGS/ADMIN/SINGLE-ADDITIONAL-MERCHANT PRESENTATION / IMPLEMENTATION.**
+**Status: A4 — SUBSCRIPTION PRODUCT/ADMIN/MY ACCOUNT PRESENTATION / IMPLEMENTATION.**
 
-Architecture A1 and A2 are complete. A3 is limited to separating the already-characterized gateway settings/admin/single-additional-merchant presentation boundary from runtime payment orchestration. Current scope:
+Architecture A1-A3 are complete. A4 is limited to separating the characterized subscription product/admin/My Account presentation boundary from scheduler/dispatch/payment orchestration. Current scope:
 
-- add `Simplix\Pay\UPayments\Admin\GatewaySettings` as the explicit settings schema, validation, one-row allocation renderer and admin-asset boundary;
-- preserve `woocommerce_upayments_settings`, every existing field key/default and all five scalar allocation keys (`iban_number`, KNET/card charges and charge types);
-- preserve the existing public gateway settings, save, custom-field validation, renderer and enqueue entry points as compatibility wrappers;
-- preserve the save-card/subscription dependency, API-key/multi-merchant settings errors and disabled-allocation clearing behavior;
-- preserve exactly one additional `extraMerchantData` allocation in runtime Charge payloads; do not broaden to arbitrary marketplace routing;
-- keep all A1/A2 architecture harnesses and make the A3 Gateway Settings harness mandatory in Quality Gates;
+- add `Simplix\Pay\UPayments\Subscription\Composition` and `Presentation` as the explicit hook-registration and product/account presentation boundaries;
+- preserve `custom_type`, `WCProductCustomType`, `_custom_field_id`, every named global product function and the four public gateway subscription/presentation entry points;
+- preserve product-meta nonce/product-ID/capability authorization, account filters/columns/output, detail tables and manual action forms/nonces;
+- leave the hardened customer mutation handler, scheduler, cycle-claim journal, billing table, checkout payload and provider dispatch outside the presentation boundary;
+- preserve `upay_process_subscriptions`, `upayments_billing_attempts`, `_upay_*`/`UPayments_*` metadata and no-blind-retry semantics exactly;
+- keep all seven prior architecture harnesses and make the A4 Subscription Presentation harness mandatory in Quality Gates;
 - preserve protected identities and keep Security **81/0**, Provider **141/0 + 4/0**, Phase 9I, Phase 0, H12 and all architecture regressions green.
 
-No provider route, authenticated HTTP behavior, credential value, Charge payload, payment truth, protected persistence identity or order-state behavior is authorized to change in A3. A4 remains prohibited until A3 is independently reviewed, exact-head green, merged, post-merge verified and cleaned up.
+No provider route, authenticated HTTP behavior, credential value, Charge/auto-deduct payload, payment truth, scheduler/attempt state, protected persistence identity or order-state mutation is authorized to change in A4. A5 remains prohibited until A4 is independently reviewed, exact-head green, merged, post-merge verified and cleaned up.
 
 ## Later program blockers
 
