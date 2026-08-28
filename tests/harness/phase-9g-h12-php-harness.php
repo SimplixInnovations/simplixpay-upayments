@@ -1213,19 +1213,22 @@ upay_assert_eq(\UPayments\Token\CustomerTokenIdentity::SECRET_OPTION, 'upayments
 // ---------------------------------------------------------------------------
 
 $upay_source = file_get_contents($PLUGIN_FILE);
+$checkout_payload_source = file_get_contents($ROOT . '/src/Payment/CheckoutPayload.php');
+$checkout_orchestrator_source = file_get_contents($ROOT . '/src/Payment/CheckoutOrchestrator.php');
+$checkout_source = $upay_source . "\n" . $checkout_payload_source . "\n" . $checkout_orchestrator_source;
 $ident_source = file_get_contents($IDENTITY_FILE);
 
-upay_assert_eq(strpos($upay_source, '$has_card_token_malformed'), false, 'PHP-SRC-1 no $has_card_token_malformed', 'static_source');
-upay_assert(strpos($upay_source, 'is_store_api_checkout_request') !== false, 'PHP-SRC-2 is_store_api_checkout_request defined', 'static_source');
-upay_assert(strpos($upay_source, 'classify_checkout_request_context') !== false, 'PHP-SRC-3 classify_checkout_request_context defined', 'static_source');
-upay_assert(strpos($upay_source, 'normalize_store_api_route') !== false, 'PHP-SRC-4 normalize_store_api_route defined', 'static_source');
-upay_assert(strpos($upay_source, "'__UPAY_ORDER_AMOUNT_SENTINEL__'") !== false, 'PHP-SRC-5 order amount sentinel present', 'static_source');
-upay_assert(strpos($upay_source, "'__UPAY_MM_AMOUNT_SENTINEL__'") !== false, 'PHP-SRC-6 MM amount sentinel present', 'static_source');
-upay_assert_eq(strpos($upay_source, '$amount_number'), false, 'PHP-SRC-7 no $amount_number', 'static_source');
-upay_assert_eq(strpos($upay_source, "(float) \$amount_str <= 0"), false, 'PHP-SRC-8 no float positivity', 'static_source');
-upay_assert(strpos($upay_source, 'parse_subscription_plan_strict') !== false, 'PHP-SRC-9 strict plan parser defined', 'static_source');
-upay_assert(strpos($upay_source, "if (\$raw === null)") !== false && strpos($upay_source, "cardToken = null") !== false, 'PHP-SRC-10 Blocks card_token null => safe clear', 'static_source');
-upay_assert_eq(strpos($upay_source, "\$extraMerchantData[0] = ["), false, 'PHP-SRC-11 no post-token MultiMerchant reconstruction', 'static_source');
+upay_assert_eq(strpos($checkout_source, '$has_card_token_malformed'), false, 'PHP-SRC-1 no $has_card_token_malformed', 'static_source');
+upay_assert(strpos($checkout_source, 'is_store_api_checkout_request') !== false, 'PHP-SRC-2 is_store_api_checkout_request defined', 'static_source');
+upay_assert(strpos($checkout_source, 'classify_checkout_request_context') !== false, 'PHP-SRC-3 classify_checkout_request_context defined', 'static_source');
+upay_assert(strpos($checkout_source, 'normalize_store_api_route') !== false, 'PHP-SRC-4 normalize_store_api_route defined', 'static_source');
+upay_assert(strpos($checkout_source, "'__UPAY_ORDER_AMOUNT_SENTINEL__'") !== false, 'PHP-SRC-5 order amount sentinel present', 'static_source');
+upay_assert(strpos($checkout_source, "'__UPAY_MM_AMOUNT_SENTINEL__'") !== false, 'PHP-SRC-6 MM amount sentinel present', 'static_source');
+upay_assert_eq(strpos($checkout_source, '$amount_number'), false, 'PHP-SRC-7 no $amount_number', 'static_source');
+upay_assert_eq(strpos($checkout_source, "(float) \$amount_str <= 0"), false, 'PHP-SRC-8 no float positivity', 'static_source');
+upay_assert(strpos($checkout_source, 'parse_subscription_plan_strict') !== false, 'PHP-SRC-9 strict plan parser defined', 'static_source');
+upay_assert(strpos($checkout_source, "if (\$raw === null)") !== false && strpos($checkout_source, "cardToken = null") !== false, 'PHP-SRC-10 Blocks card_token null => safe clear', 'static_source');
+upay_assert_eq(strpos($checkout_source, "\$extraMerchantData[0] = ["), false, 'PHP-SRC-11 no post-token MultiMerchant reconstruction', 'static_source');
 
 // ===========================================================================
 // RESIDUAL CORRECTION #13 — expanded H12 coverage matrix

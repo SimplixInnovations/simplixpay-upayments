@@ -13,11 +13,19 @@ The project is still in pre-release engineering hardening. Entries below are eng
 - Exact final PR #23 head `85028cfb4431cc29820eaca4e254bf6c87daa378` passed Quality Gates #158 and clean independent review.
 - Squash-merged PR #23 as signed commit `6291196b35a952ea974549d1aa6d6ae9bbcc64dc`, tree `a7f66ee6cf8c9d5324a0ae77b8c61e69e87bdff7`; post-merge run #159 passed and the implementation branch was deleted.
 
-### Architecture A4 — Subscription Presentation Boundary
+### Architecture A4 — Subscription Presentation Boundary — DONE / VERIFIED
 
 - Added `Simplix\Pay\UPayments\Subscription\Composition` and `Presentation` for the characterized product/admin/My Account hook and rendering surface while retaining all named global and public gateway compatibility wrappers.
 - Kept the customer mutation handler, scheduler, cycle-claim journal, billing table, Charge/auto-deduct dispatch and protected metadata outside the presentation module.
-- Added the mandatory Architecture Subscription Presentation regression gate and reduced the exact `UPayments.php` ratchet to **205,702 bytes**.
+- Added the mandatory Architecture Subscription Presentation regression gate, strengthened it to **75 PASS / 0 FAIL**, and reduced the exact `UPayments.php` ratchet to **205,702 bytes**.
+- Exact final PR #24 head `2a2c6a4c67775b6614297d2c0150f3ca61220498` passed Quality Gates #164 and clean independent review.
+- Squash-merged PR #24 as signed commit `d24b83356cc766f82c3ad9e529d3ec3f4194e887`, tree `f74899b93f493be872e0ce993e30079d0223dc7b`; post-merge run #165 passed and the implementation branch was deleted.
+
+### Architecture A5 — Checkout Payload/Orchestration Core
+
+- Added pure `Simplix\Pay\UPayments\Payment\CheckoutPayload` and bounded `CheckoutOrchestrator` services behind the public legacy `process_payment()` compatibility entry point.
+- Preserved protected request-body and provider-transport override seams via gateway-scoped closures, along with strict decimal/payload, H12 saved-card, single Charge dispatch, redirect and metadata behavior.
+- Added the mandatory Architecture Checkout Orchestration gate and reduced the exact `UPayments.php` ratchet to **88,839 bytes**.
 
 ### Architecture A2 — Payment-Method Availability Client/Cache — DONE / VERIFIED
 
@@ -51,7 +59,7 @@ The project is still in pre-release engineering hardening. Entries below are eng
 
 ### Current program gate
 
-**Architecture & Code-Quality Foundation — A4** is now the active gate. A1-A3 are DONE / VERIFIED; A4 is limited to the characterized subscription product/admin/My Account presentation boundary and must not change scheduler/attempt, Charge/auto-deduct, payment truth, Security, Provider, H12 or Phase 9I contracts.
+**Architecture & Code-Quality Foundation — A5** is now the active gate. A1-A4 are DONE / VERIFIED; A5 is limited to the characterized checkout payload/orchestration core and must not change scheduler/attempt, auto-deduct, payment truth, Security, Provider, H12 or Phase 9I contracts.
 
 ### Provider Contract & Payment Lifecycle — DONE / VERIFIED
 

@@ -380,8 +380,13 @@ $tokenIdentity = arch_read($root, 'includes/Token/CustomerTokenIdentity.php');
 $scheduler = arch_read($root, 'includes/Subscription/Cron/Scheduler.php');
 $subscriptionComposition = arch_read($root, 'src/Subscription/Composition.php');
 $subscriptionPresentation = arch_read($root, 'src/Subscription/Presentation.php');
+$checkoutPayload = arch_read($root, 'src/Payment/CheckoutPayload.php');
+$checkoutOrchestrator = arch_read($root, 'src/Payment/CheckoutOrchestrator.php');
 $gatewayTokens = arch_executable_tokens($gateway);
 $gatewayClassTokens = arch_class_body_tokens($gatewayTokens, 'WC_Upayments');
+$checkoutOrchestratorTokens = arch_executable_tokens($checkoutOrchestrator);
+$checkoutOrchestratorClassTokens = arch_class_body_tokens($checkoutOrchestratorTokens, 'CheckoutOrchestrator');
+$checkoutProcess = arch_direct_public_method($checkoutOrchestratorClassTokens, 'process');
 $availabilityBinding = arch_direct_top_level_filter_callback(
     $gatewayTokens,
     $availabilityFilterSequence,
@@ -389,7 +394,7 @@ $availabilityBinding = arch_direct_top_level_filter_callback(
 );
 
 arch_assert($architecture !== '', 'architecture control record exists');
-arch_assert(arch_contains($architecture, '**Status:** A4 / IMPLEMENTATION'), 'architecture record is A4 implementation');
+arch_assert(arch_contains($architecture, '**Status:** A5 / IMPLEMENTATION'), 'architecture record is A5 implementation');
 arch_assert(arch_contains($architecture, 'Architecture & Code-Quality Foundation'), 'architecture gate is named explicitly');
 
 $stageHeadings = array(
@@ -421,12 +426,12 @@ arch_assert(arch_contains($architecture, 'This is not permission for a big-bang 
 arch_assert(arch_contains($architecture, 'exact accepted `UPayments.php` byte size for the current architecture milestone'), 'monolith ratchet update contract is explicit');
 arch_assert(arch_contains($architecture, 'Composer only with an explicit distribution rule'), 'Composer introduction is gated by distribution contract');
 arch_assert(arch_contains($architecture, 'PHPCS/WPCS and PHPStan incrementally'), 'static-analysis rollout is incremental');
-arch_assert(arch_contains($status, '| Current program gate | **Architecture & Code-Quality Foundation — A4** |'), 'project status keeps Architecture A4 as current gate');
+arch_assert(arch_contains($status, '| Current program gate | **Architecture & Code-Quality Foundation — A5** |'), 'project status keeps Architecture A5 as current gate');
 arch_assert(arch_contains($naming, '**Canonical slug:** `simplixpay-upayments`'), 'canonical slug remains protected');
 
 $gatewayPath = $root . '/UPayments.php';
 $gatewaySize = is_file($gatewayPath) ? filesize($gatewayPath) : false;
-$acceptedGatewayBytes = 205702;
+$acceptedGatewayBytes = 88839;
 arch_assert(is_int($gatewaySize) && $gatewaySize === $acceptedGatewayBytes, 'UPayments.php matches current exact architecture ratchet');
 arch_assert($gatewayClassTokens !== array(), 'legacy WC_Upayments gateway compatibility class remains executable');
 arch_assert(arch_contains($gateway, "add_filter(\"woocommerce_payment_gateways\", \"addUpaymentsGatewayClass\")"), 'WooCommerce gateway registration remains characterized');
@@ -463,7 +468,11 @@ arch_assert(is_dir($root . '/src/Security'), 'Security module exists');
 arch_assert(is_file($root . '/src/Admin/GatewaySettings.php'), 'Admin GatewaySettings boundary exists');
 arch_assert(is_file($root . '/src/Subscription/Composition.php'), 'Subscription Composition boundary exists');
 arch_assert(is_file($root . '/src/Subscription/Presentation.php'), 'Subscription Presentation boundary exists');
+arch_assert(is_file($root . '/src/Payment/CheckoutPayload.php'), 'A5 CheckoutPayload boundary exists');
+arch_assert(is_file($root . '/src/Payment/CheckoutOrchestrator.php'), 'A5 CheckoutOrchestrator boundary exists');
 arch_assert(arch_contains($subscriptionPresentation, 'namespace Simplix\\Pay\\UPayments\\Subscription;'), 'Subscription presentation uses Simplix namespace');
+arch_assert(arch_contains($checkoutPayload, 'namespace Simplix\\Pay\\UPayments\\Payment;'), 'A5 checkout payload uses Simplix Payment namespace');
+arch_assert(arch_contains($checkoutOrchestrator, 'namespace Simplix\\Pay\\UPayments\\Payment;'), 'A5 checkout orchestrator uses Simplix Payment namespace');
 arch_assert(arch_contains($gateway, 'GatewaySettings::fields('), 'gateway settings schema delegates to Admin boundary');
 arch_assert(arch_contains($gateway, 'GatewaySettings::render_multimerchant('), 'multi-merchant presentation delegates to Admin boundary');
 arch_assert(is_file($root . '/src/Payment/OrderLock.php'), 'Payment OrderLock boundary exists');
@@ -496,8 +505,20 @@ arch_assert(
     'legacy WooCommerce settings option remains an executable direct global availability-callback read'
 );
 arch_assert(
-    arch_has_token_sequence($resolvedPublicMethods['process_payment']['body'], $orderIdWriteSequence),
-    'UPayments_order_id remains executable WC_Upayments::process_payment persistence from the local provider-order identity'
+    arch_has_token_sequence(
+        $resolvedPublicMethods['process_payment']['body'],
+        array(
+            'return', '(', 'new', 'name:CheckoutOrchestrator', '(',
+            'variable:$gateway', ',', 'variable:$request_body_reader', ',', 'variable:$request_executor',
+            ')', ')', '->', 'name:process', '(', 'variable:$order_id', ')', ';',
+        )
+    ),
+    'WC_Upayments::process_payment directly delegates to the A5 checkout orchestrator'
+);
+arch_assert($checkoutProcess['found'], 'A5 CheckoutOrchestrator process entry point is public and executable');
+arch_assert(
+    arch_has_token_sequence($checkoutProcess['body'], $orderIdWriteSequence),
+    'UPayments_order_id remains executable CheckoutOrchestrator::process persistence from the local provider-order identity'
 );
 
 $inertFixture = <<<'PHP'

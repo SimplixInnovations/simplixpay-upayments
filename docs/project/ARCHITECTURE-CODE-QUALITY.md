@@ -1,12 +1,12 @@
 # Architecture & Code-Quality Foundation
 
-**Status:** A4 / IMPLEMENTATION
+**Status:** A5 / IMPLEMENTATION
 
-**Current branch:** `architecture/a4-subscription-presentation`
+**Current branch:** `architecture/a5-checkout-orchestration`
 
-**Verified base `main`:** `6291196b35a952ea974549d1aa6d6ae9bbcc64dc`
+**Verified base `main`:** `d24b83356cc766f82c3ad9e529d3ec3f4194e887`
 
-**Verified base tree:** `a7f66ee6cf8c9d5324a0ae77b8c61e69e87bdff7`
+**Verified base tree:** `f74899b93f493be872e0ce993e30079d0223dc7b`
 
 **Gate purpose:** replace inherited mixed-responsibility structure incrementally with explicit Simplix-owned boundaries while preserving every closed payment, security, H12, Phase 9I and compatibility contract.
 
@@ -93,11 +93,26 @@ The gateway settings/admin/single-additional-merchant presentation tranche is **
 
 A3 moved the complete characterized 21-field schema, settings validation, one-row allocation renderer and admin assets to `src/Admin/GatewaySettings.php`. The final review strengthened the permanent gate with an independent frozen full-schema fixture and exact complete asset-registration tuples. Runtime Charge behavior and exactly one `extraMerchantData` allocation remained in the gateway.
 
+## A4 closure evidence
+
+The subscription product/admin/My Account presentation tranche is **DONE / VERIFIED**:
+
+- PR #24 final reviewed head: `2a2c6a4c67775b6614297d2c0150f3ca61220498`;
+- exact head/merge tree: `f74899b93f493be872e0ce993e30079d0223dc7b`;
+- squash merge on `main`: `d24b83356cc766f82c3ad9e529d3ec3f4194e887`, with a valid verified GitHub signature;
+- exact-head Quality Gates run #164: **SUCCESS**;
+- push-triggered post-merge Quality Gates run #165: **SUCCESS**;
+- Subscription Presentation: **75/0** on exact head and post-merge `main`;
+- final independent review: clean on `2a2c6a4c67`, with zero unresolved threads;
+- implementation branch `architecture/a4-subscription-presentation`: **deleted after verified merge**.
+
+A4 moved characterized subscription hook composition, product/admin fields and My Account presentation to `src/Subscription/Composition.php` and `src/Subscription/Presentation.php`. Customer mutation, scheduler, cycle-claim, billing-attempt, checkout and provider dispatch behavior remained outside the boundary.
+
 ## Current structural baseline
 
 ### Primary monolith
 
-At the verified discovery closure, `UPayments.php` was **257,832 bytes**. A1 reduced it to **257,298 bytes**, A2 to **238,714 bytes** and verified A3 to **223,942 bytes**. A4 reduces the current accepted ratchet to **205,702 bytes** while preserving the main plugin bootstrap, `WC_Upayments` gateway implementation and public subscription compatibility entry points. Source characterization identifies at least these responsibility families inside the same file:
+At the verified discovery closure, `UPayments.php` was **257,832 bytes**. A1 reduced it to **257,298 bytes**, A2 to **238,714 bytes**, A3 to **223,942 bytes** and verified A4 to **205,702 bytes**. A5 reduces the current accepted ratchet to **88,839 bytes** while preserving the main plugin bootstrap, `WC_Upayments` gateway implementation and public/protected checkout compatibility seams. Source characterization identifies at least these responsibility families inside the same file:
 
 1. plugin bootstrap, constants, WooCommerce availability checks and gateway registration;
 2. gateway constructor/hook registration and runtime composition;
@@ -280,7 +295,19 @@ A5 remains prohibited until A4 is independently reviewed, exact-head green, merg
 
 ### A5 — checkout payload/orchestration core
 
-`process_payment()`, strict decimal/payload construction, saved-card charge and provider Charge orchestration remain high-risk and late. They require dedicated characterization before any extraction.
+Verified A4 permits A5. A5 moves the characterized strict request/decimal/payload helpers to `src/Payment/CheckoutPayload.php` and the exact checkout-to-Charge workflow to `src/Payment/CheckoutOrchestrator.php`.
+
+**A5 implementation contract:**
+
+- public `WC_Upayments::process_payment()` remains the WooCommerce compatibility entry point and directly composes the checkout orchestrator;
+- protected `get_request_body_raw()` and `execute_upayments_request()` retain virtual dispatch through gateway-scoped closures, preserving H12 test and subclass seams without exposing new public transport methods;
+- strict Classic/Blocks source parsing, subscription validation, exact decimal arithmetic, unquoted JSON-number sentinel injection, route classification, redirect validation and provider-text normalization live in the pure payload service;
+- order/product validation, exact order-line economics, saved-card identity/provenance, single Charge dispatch, strict response handling and existing order metadata writes retain their original ordering in the orchestrator;
+- no provider host, API key, route, payload field, payment truth, redirect rule, metadata identity, customer-token rule or no-blind-retry behavior is reinterpreted;
+- scheduler, CycleClaim, billing-attempt storage and auto-deduct dispatch remain outside A5 and byte/behavior protected by the existing suites;
+- `tests/harness/architecture-checkout-orchestration-harness.php` freezes the boundary and pure contracts, remains mandatory beside all prior architecture gates, and the full H12 PHP runtime continues to drive the public compatibility path.
+
+The full automated quality platform remains prohibited until A5 is independently reviewed, exact-head green, merged, post-merge verified and cleaned up.
 
 ## Static/code-quality baseline sequence
 
