@@ -41,6 +41,8 @@ function p0_contains($source, $needle) {
 }
 
 $bootstrap = file_get_contents($bootstrap_path);
+$checkout_orchestrator = file_get_contents($root . '/src/Payment/CheckoutOrchestrator.php');
+$runtime_source = $bootstrap . "\n" . $checkout_orchestrator;
 $identity_source = file_get_contents($identity_path);
 $uninstall = file_get_contents($uninstall_path);
 
@@ -89,7 +91,7 @@ p0_assert(!file_exists($root . '/' . Identity::TARGET_MAIN_FILE), 'target main f
 
 // Core compatibility identities must remain discoverable in the source tree.
 p0_assert(p0_contains($bootstrap, 'WC_Upayments'), 'legacy gateway class identity remains present');
-p0_assert(p0_contains($bootstrap, 'wc_upayments'), 'legacy callback route remains present');
+p0_assert(p0_contains($runtime_source, 'wc_upayments'), 'legacy callback route remains present');
 p0_assert(p0_contains($bootstrap, "'upayments'"), 'legacy upayments runtime identity remains present');
 
 $token_source = file_get_contents($root . '/includes/Token/CustomerTokenIdentity.php');

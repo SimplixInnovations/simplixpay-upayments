@@ -981,4 +981,3 @@ class CheckoutPayload {
         return implode('', array_slice($chars, 0, $max_chars));
     }
 }
-
