@@ -478,8 +478,8 @@ Requirements:
 | Provider contract audit | **DONE / VERIFIED** | Critical |
 | Payment lifecycle/state machine | **DONE / VERIFIED** | Critical |
 | Security threat-model audit | **DONE / VERIFIED** | Critical |
-| Architecture/code quality | **A5 — CURRENT GATE** | High |
-| Full automated quality platform | **NOT STARTED** | Critical before public stable |
+| Architecture/code quality | **DONE / VERIFIED (A1-A5)** | High |
+| Full automated quality platform | **Q1 — CURRENT GATE** | Critical before public stable |
 | WooCommerce/WordPress/PHP certification | **PENDING** | Critical |
 | WPML/multilingual/multicurrency certification | **FIXES PARTIAL; CERTIFICATION PENDING** | High/product objective |
 | Saved cards/subscriptions/wallets/multi-merchant | **PARTIAL; MATRIX PENDING** | Critical per enabled feature |
@@ -492,7 +492,7 @@ Requirements:
 | WordPress.org publication | **DEFERRED UNTIL READY** | Strategic |
 | Continuous maintenance | **ONGOING AFTER FIRST STABLE** | Critical long-term |
 
-Provider Contract & Payment Lifecycle, the bounded Security Threat-Model Closure, Architecture discovery and A1-A4 are **DONE / VERIFIED**. The current unified gate is **Architecture & Code-Quality Foundation — A5**. Provider contract and lifecycle rows remain separated because they retain distinct closed contracts and regression evidence.
+Provider Contract & Payment Lifecycle, the bounded Security Threat-Model Closure and Architecture discovery/A1-A5 are **DONE / VERIFIED**. The current unified gate is **Full Automated Quality Platform — Q1**. Provider contract and lifecycle rows remain separated because they retain distinct closed contracts and regression evidence.
 
 ## 18. Phase ordering
 
@@ -502,8 +502,8 @@ Recommended execution order:
 2. Phase 9I — Historical Token-Identity Migration — **DONE / VERIFIED**.
 3. Provider Contract & Payment Lifecycle — **DONE / VERIFIED**.
 4. Security Threat-Model Closure — **DONE / VERIFIED**.
-5. Architecture & Code Quality Foundation — **CURRENT / A5**.
-6. Full Test-Driven Quality Platform.
+5. Architecture & Code Quality Foundation — **DONE / VERIFIED (A1-A5)**.
+6. Full Test-Driven Quality Platform — **CURRENT / Q1**.
 7. WooCommerce / WordPress / PHP Certification.
 8. WPML / i18n / multilingual / multicurrency / RTL.
 9. Feature-specific certification — saved cards, subscriptions, wallets, multi-merchant, refunds.
@@ -809,7 +809,7 @@ Model events such as:
 
 # SECURITY THREAT-MODEL AUDIT
 
-**Program status:** DONE / VERIFIED. This section retains the security phase scope as a historical engineering standard; the current program gate is **Architecture & Code-Quality Foundation — A5**.
+**Program status:** DONE / VERIFIED. This section retains the security phase scope as a historical engineering standard; the current program gate is **Full Automated Quality Platform — Q1**.
 
 ## 30. Scope
 
@@ -927,6 +927,8 @@ Do not mechanically “clean” payment-critical logic without regression charac
 ---
 
 # FULL TEST-DRIVEN QUALITY PLATFORM
+
+**Program status:** Q1 / CURRENT GATE. The locked Composer/PHPUnit/PHPStan/PHPCS foundation is the bounded first tranche; it is not platform certification.
 
 ## 35. Testing philosophy
 
@@ -1514,8 +1516,8 @@ Where security correctness requires a fresh read, verify or invalidate caches de
 LAST VERIFIED PROJECT STATE
 Date: 2026-08-28
 Repository: SimplixInnovations/simplixpay-upayments
-Last verified implementation main SHA: 6291196b35a952ea974549d1aa6d6ae9bbcc64dc
-Canonical implementation tree: a7f66ee6cf8c9d5324a0ae77b8c61e69e87bdff7
+Last verified implementation main SHA: 3223a882867634a2ba7588d7afbd2b2e4b4c21e4
+Canonical implementation tree: 392b73425fa3219b6414a0984136b92c8ef77576
 Historical H12 merge: SimplixInnovations/upayments-woocommerce@93e9925247a8bfade626cb822136852fd96eaea2
 Repository foundation/readiness: DONE / VERIFIED
 Phase 0 release identity/updater ownership: DONE / VERIFIED
@@ -1527,12 +1529,12 @@ Architecture A1: DONE / VERIFIED
 Architecture A2: DONE / VERIFIED; PR #22; Payment-Method Availability 102/0; post-merge Quality Gates #156 SUCCESS
 Architecture A3: DONE / VERIFIED; PR #23; Gateway Settings 90/0; post-merge Quality Gates #159 SUCCESS
 Architecture A4: DONE / VERIFIED; PR #24; Subscription Presentation 75/0; post-merge Quality Gates #165 SUCCESS
-Current program gate: Architecture & Code-Quality Foundation — A5
+Architecture A5: DONE / VERIFIED; PR #25; Checkout Orchestration 67/0; post-merge Quality Gates #174 SUCCESS
+Current program gate: Full Automated Quality Platform — Q1
 Production readiness: R0 — engineering hardening
 Public stable release: NO
 WordPress.org release: NO
 Known remaining P0/P1 program blockers:
-- architecture/code-quality foundation
 - broad compatibility/feature certification
 - full automated quality platform
 - release engineering/distribution
@@ -1567,11 +1569,13 @@ The security implementation anchor above is post-merge verified. `PROJECT-STATUS
 - [x] Security Threat-Model Closure implementation completed and independently verified (PR #17).
 - [x] Security evidence: Security Threat-Model **81/0**, with Phase 0 **35/0**, Phase 9I **123/0 + 59/0 + 81/0**, Provider **141/0 + 4/0**, H12 PHP **1927/0**, H12 Blocks **144/0**, Governance/syntax green.
 - [x] Security squash merge `01f3fc59eed8641b3e5372558f61a7a0f0cdfac9`, tree `e0027005f059fad03d8c08273b7aac6553c45f53`, VERIFIED signature, green post-merge Quality Gates #89 and implementation-branch cleanup.
+- [x] Architecture discovery and A1-A5 completed and independently verified through PR #25.
+- [x] Architecture A5 squash merge `3223a882867634a2ba7588d7afbd2b2e4b4c21e4`, tree `392b73425fa3219b6414a0984136b92c8ef77576`, VERIFIED signature, green post-merge Quality Gates #174 and implementation-branch cleanup.
 
 ### Remaining P0/P1 work
 
-- [ ] Architecture & Code-Quality Foundation — **A5 / CURRENT GATE**.
-- [ ] Standard Composer/PHPUnit/static-analysis platform.
+- [ ] Full Automated Quality Platform — **Q1 / CURRENT GATE**.
+- [ ] Complete standard Composer/PHPUnit/static-analysis platform beyond the Q1 foundation.
 - [ ] WordPress/WooCommerce/PHP compatibility certification.
 - [ ] WPML/WCML certification.
 - [ ] Feature-specific certification: saved cards/subscriptions/wallets/multi-merchant/refunds.

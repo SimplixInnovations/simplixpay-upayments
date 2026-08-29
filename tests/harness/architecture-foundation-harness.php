@@ -394,7 +394,7 @@ $availabilityBinding = arch_direct_top_level_filter_callback(
 );
 
 arch_assert($architecture !== '', 'architecture control record exists');
-arch_assert(arch_contains($architecture, '**Status:** A5 / IMPLEMENTATION'), 'architecture record is A5 implementation');
+arch_assert(arch_contains($architecture, '**Status:** DONE / VERIFIED (DISCOVERY + A1-A5)'), 'architecture record closes discovery and A1-A5');
 arch_assert(arch_contains($architecture, 'Architecture & Code-Quality Foundation'), 'architecture gate is named explicitly');
 
 $stageHeadings = array(
@@ -426,7 +426,7 @@ arch_assert(arch_contains($architecture, 'This is not permission for a big-bang 
 arch_assert(arch_contains($architecture, 'exact accepted `UPayments.php` byte size for the current architecture milestone'), 'monolith ratchet update contract is explicit');
 arch_assert(arch_contains($architecture, 'Composer only with an explicit distribution rule'), 'Composer introduction is gated by distribution contract');
 arch_assert(arch_contains($architecture, 'PHPCS/WPCS and PHPStan incrementally'), 'static-analysis rollout is incremental');
-arch_assert(arch_contains($status, '| Current program gate | **Architecture & Code-Quality Foundation — A5** |'), 'project status keeps Architecture A5 as current gate');
+arch_assert(arch_contains($status, '| Current program gate | **Full Automated Quality Platform — Q1** |'), 'project status advances to Quality Platform Q1');
 arch_assert(arch_contains($naming, '**Canonical slug:** `simplixpay-upayments`'), 'canonical slug remains protected');
 
 $gatewayPath = $root . '/UPayments.php';

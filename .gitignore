@@ -15,6 +15,7 @@ debug.log
 !.env.example
 
 # Test and analysis output
+/vendor/
 .phpunit.result.cache
 .phpunit.cache/
 coverage/

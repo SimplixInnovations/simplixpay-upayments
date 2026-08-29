@@ -918,6 +918,7 @@ class CheckoutPayload {
         if (!defined('REST_REQUEST') || !REST_REQUEST) {
             return false;
         }
+        // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.MissingUnslash,WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- The raw URI is parsed and exact-route allowlisted below; text sanitization would alter route bytes.
         $uri = isset($_SERVER['REQUEST_URI']) ? (string) $_SERVER['REQUEST_URI'] : '';
         if ($uri === '') {
             return false;
@@ -926,6 +927,7 @@ class CheckoutPayload {
         if ($route === null) {
             return false;
         }
+        // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.MissingUnslash,WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- The method is accepted only by the exact POST classifier below.
         $method = isset($_SERVER['REQUEST_METHOD']) ? strtoupper((string) $_SERVER['REQUEST_METHOD']) : '';
         return self::classify_checkout_request_context(true, $route, $method);
     }
