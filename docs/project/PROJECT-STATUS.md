@@ -342,6 +342,7 @@ Architecture discovery and A1-A5 are complete. Q1 is limited to the standard dev
 - establish baseline-free PHPStan on a recorded pure-module scope and risk-focused PHPCS/WPCS checks;
 - audit the locked dependency graph and disable Composer plugin execution;
 - add declared PHP 7.2 and PHP 8.2 syntax evidence for distributed PHP without claiming compatibility certification; development-only tests remain on the PHP 8.2 regression runtime;
+- make the protected H12 check run unconditionally and explicitly fail on every non-success Composer-quality or syntax prerequisite;
 - keep every historical and architecture harness mandatory and add the Quality Platform Foundation harness;
 - preserve protected identities and keep Security **82/0**, Provider **141/0 + 4/0**, Phase 9I, Phase 0, H12 and all architecture regressions green.
 

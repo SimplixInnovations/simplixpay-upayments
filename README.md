@@ -65,7 +65,7 @@ The project remains in **pre-release engineering hardening**. It is not yet a br
 | Provider lifecycle harness | **141 PASS / 0 FAIL** |
 | Provider exact-amount harness | **4 PASS / 0 FAIL** |
 | Security threat-model harness | **82 PASS / 0 FAIL** |
-| Quality-platform foundation harness | **69 PASS / 0 FAIL** |
+| Quality-platform foundation harness | **73 PASS / 0 FAIL** |
 | H12 regression baseline | **PHP 1927 PASS / 0 FAIL; Blocks 144 PASS / 0 FAIL** |
 | Bounded Security Threat-Model Closure | **DONE / VERIFIED** |
 | Broad penetration-test/PCI/platform/feature certification | **Pending** |
@@ -189,7 +189,7 @@ These are engineering targets unless [`docs/COMPATIBILITY.md`](docs/COMPATIBILIT
 
 The project uses protected `main` with squash-only merge policy, PR/review-thread workflow, required Governance and H12 Regression Harness checks, linear history, merged-branch cleanup, secret scanning/push protection, Dependabot security updates and private vulnerability reporting.
 
-Current CI validates all tracked PHP syntax, Phase 0, all Phase 9I suites, Provider Payment Lifecycle, Provider Exact Amount Binding, Security Threat-Model, H12 PHP and H12 Blocks behavior.
+Current CI validates all tracked PHP syntax, Phase 0, all Phase 9I suites, Provider Payment Lifecycle, Provider Exact Amount Binding, Security Threat-Model, H12 PHP and H12 Blocks behavior. The protected H12 job is also an always-running aggregator that fails when either the Composer quality job or distributed-PHP syntax matrix is not successful.
 
 ## Simplix Innovations and WooCommerce
 

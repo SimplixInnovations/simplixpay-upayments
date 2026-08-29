@@ -33,6 +33,7 @@ The project is still in pre-release engineering hardening. Entries below are eng
 
 - Added a canonical development-only Composer manifest and committed lockfile with plugin execution disabled and no production package dependencies.
 - Added PHPUnit pure-service tests, baseline-free PHPStan scope, risk-focused PHPCS/WPCS checks, locked dependency auditing and declared PHP-floor syntax CI for distributed PHP; development-only tests remain on the PHP 8.2 regression runtime.
+- Made the protected H12 check an always-running aggregator that explicitly rejects failed or skipped Composer-quality and syntax prerequisites.
 - Added the permanent Quality Platform Foundation regression gate while retaining every historical and architecture harness.
 
 ### Architecture A2 — Payment-Method Availability Client/Cache — DONE / VERIFIED

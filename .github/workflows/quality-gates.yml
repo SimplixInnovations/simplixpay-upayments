@@ -234,9 +234,22 @@ jobs:
     needs:
       - quality-platform
       - php-syntax-compatibility
+    if: ${{ always() }}
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
+      - name: Require upstream quality prerequisites
+        shell: bash
+        env:
+          QUALITY_PLATFORM_RESULT: ${{ needs.quality-platform.result }}
+          PHP_SYNTAX_RESULT: ${{ needs.php-syntax-compatibility.result }}
+        run: |
+          set -euo pipefail
+          if [[ "${QUALITY_PLATFORM_RESULT}" != "success" || "${PHP_SYNTAX_RESULT}" != "success" ]]; then
+            echo "Required quality prerequisite failed: quality-platform=${QUALITY_PLATFORM_RESULT}, php-syntax-compatibility=${PHP_SYNTAX_RESULT}"
+            exit 1
+          fi
+
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false

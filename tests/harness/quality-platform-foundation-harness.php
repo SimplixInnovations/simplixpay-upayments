@@ -109,6 +109,10 @@ q1_assert(q1_contains($workflow, 'composer quality'), 'CI runs unit, static-anal
 q1_assert(q1_contains($workflow, "php: ['7.2', '8.2']"), 'CI syntax-checks the declared floor and regression runtime');
 q1_assert(q1_contains($workflow, "git ls-files -z -- '*.php' ':(exclude)tests/**'"), 'declared-floor syntax scope matches distributed PHP and excludes development tests');
 q1_assert(q1_contains($workflow, "needs:\n      - quality-platform\n      - php-syntax-compatibility"), 'required historical regression is blocked on both new quality jobs');
+q1_assert(q1_contains($workflow, 'if: ${{ always() }}'), 'required H12 aggregator runs even when an upstream quality job fails');
+q1_assert(q1_contains($workflow, 'QUALITY_PLATFORM_RESULT: ${{ needs.quality-platform.result }}'), 'required H12 aggregator reads the quality-platform result');
+q1_assert(q1_contains($workflow, 'PHP_SYNTAX_RESULT: ${{ needs.php-syntax-compatibility.result }}'), 'required H12 aggregator reads the syntax-matrix result');
+q1_assert(q1_contains($workflow, 'Required quality prerequisite failed:'), 'required H12 aggregator explicitly rejects non-success prerequisites');
 q1_assert(q1_contains($workflow, 'quality-platform-foundation-harness.php'), 'quality foundation harness is mandatory in the historical regression job');
 
 foreach (array('/vendor/', '/tests/', '/composer.json', '/composer.lock', '/phpcs.xml.dist', '/phpstan.neon.dist', '/phpunit.xml.dist') as $entry) {

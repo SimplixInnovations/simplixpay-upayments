@@ -32,7 +32,7 @@ Q1 introduces:
 - risk-focused PHPCS/WPCS security checks on the initial pure-module scope;
 - locked dependency auditing;
 - declared PHP 7.2 and PHP 8.2 syntax checks across the distributed PHP surface, with development-only tests retained on the PHP 8.2 regression runtime;
-- dedicated CI jobs that gate the already-required H12 Regression check while every historical harness remains mandatory;
+- dedicated CI jobs plus an always-running H12 prerequisite aggregator that explicitly fails the already-required H12 Regression check on any non-success upstream result, while every historical harness remains mandatory;
 - a permanent executable foundation harness that prevents toolchain, scope and distribution drift.
 
 ## Composer and distribution rule
@@ -66,9 +66,10 @@ Q1 may be merged only when:
 4. PHPStan passes at the recorded level and scope with no baseline;
 5. PHPCS/WPCS passes the recorded named-risk scope;
 6. declared-floor and regression-runtime distributed-PHP syntax jobs pass, while the existing PHP 8.2 tracked-PHP gate continues to cover development tests;
-7. the complete historical and architecture regression stack remains green;
-8. exact-head independent review is clean with zero unresolved valid findings;
-9. merge, post-merge CI and branch cleanup are independently verified.
+7. the protected H12 check runs even after an upstream failure and explicitly rejects every non-success quality or syntax prerequisite;
+8. the complete historical and architecture regression stack remains green;
+9. exact-head independent review is clean with zero unresolved valid findings;
+10. merge, post-merge CI and branch cleanup are independently verified.
 
 ## Non-claims
 
