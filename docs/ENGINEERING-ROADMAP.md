@@ -76,13 +76,13 @@ Use:
    - webhook HMAC/signature remains provider-document unresolved; automatic refunds and broad recurring-billing certification remain outside this gate;
    - bounded closure is not broad penetration-test/PCI/platform/feature/performance/production certification.
 
-5. **Architecture & Code-Quality Foundation — CURRENT GATE / A5**
+5. **Architecture & Code-Quality Foundation — DONE / VERIFIED (A1-A5)**
    - incremental `Simplix\Pay\UPayments` architecture extraction;
    - characterization before refactoring;
    - static analysis/coding standards/dead-code/complexity cleanup;
    - no big-bang runtime rename.
 
-6. **Full Automated Quality Platform**
+6. **Full Automated Quality Platform — CURRENT GATE / Q1**
    - PHPUnit;
    - WordPress/WooCommerce integration tests;
    - PHPStan and PHPCS/WPCS/Woo standards;

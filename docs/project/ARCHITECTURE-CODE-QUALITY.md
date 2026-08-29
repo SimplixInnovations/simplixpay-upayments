@@ -1,12 +1,12 @@
 # Architecture & Code-Quality Foundation
 
-**Status:** A5 / IMPLEMENTATION
+**Status:** DONE / VERIFIED (DISCOVERY + A1-A5)
 
-**Current branch:** `architecture/a5-checkout-orchestration`
+**Final implementation PR:** #25
 
-**Verified base `main`:** `d24b83356cc766f82c3ad9e529d3ec3f4194e887`
+**Verified closure `main`:** `3223a882867634a2ba7588d7afbd2b2e4b4c21e4`
 
-**Verified base tree:** `f74899b93f493be872e0ce993e30079d0223dc7b`
+**Verified closure tree:** `392b73425fa3219b6414a0984136b92c8ef77576`
 
 **Gate purpose:** replace inherited mixed-responsibility structure incrementally with explicit Simplix-owned boundaries while preserving every closed payment, security, H12, Phase 9I and compatibility contract.
 
@@ -107,6 +107,21 @@ The subscription product/admin/My Account presentation tranche is **DONE / VERIF
 - implementation branch `architecture/a4-subscription-presentation`: **deleted after verified merge**.
 
 A4 moved characterized subscription hook composition, product/admin fields and My Account presentation to `src/Subscription/Composition.php` and `src/Subscription/Presentation.php`. Customer mutation, scheduler, cycle-claim, billing-attempt, checkout and provider dispatch behavior remained outside the boundary.
+
+## A5 closure evidence
+
+The checkout payload/orchestration tranche is **DONE / VERIFIED**:
+
+- PR #25 final reviewed head: `997e18d8eb6264a84c6a9a35158213d3d655e6b3`;
+- exact head/merge tree: `392b73425fa3219b6414a0984136b92c8ef77576`;
+- squash merge on `main`: `3223a882867634a2ba7588d7afbd2b2e4b4c21e4`, with a valid verified GitHub signature;
+- exact-head Quality Gates run #173: **SUCCESS**;
+- push-triggered post-merge Quality Gates run #174: **SUCCESS**;
+- Checkout Orchestration: **67/0** on exact head and post-merge `main`;
+- final independent review: clean on `997e18d8eb`, with zero unresolved threads;
+- implementation branch `architecture/a5-checkout-orchestration`: **deleted after verified merge**.
+
+A5 moved strict checkout request/decimal/payload construction and the checkout-to-Charge workflow to `src/Payment/CheckoutPayload.php` and `CheckoutOrchestrator.php`. The public gateway and protected request/transport seams remain compatibility adapters; scheduler, CycleClaim, billing-attempt storage and auto-deduct dispatch remained outside the boundary.
 
 ## Current structural baseline
 
@@ -307,7 +322,7 @@ Verified A4 permits A5. A5 moves the characterized strict request/decimal/payloa
 - scheduler, CycleClaim, billing-attempt storage and auto-deduct dispatch remain outside A5 and byte/behavior protected by the existing suites;
 - `tests/harness/architecture-checkout-orchestration-harness.php` freezes the boundary and pure contracts, remains mandatory beside all prior architecture gates, and the full H12 PHP runtime continues to drive the public compatibility path.
 
-The full automated quality platform remains prohibited until A5 is independently reviewed, exact-head green, merged, post-merge verified and cleaned up.
+The full automated quality platform became permitted only after the independently reviewed exact A5 head was green, merged, post-merge verified and cleaned up. That entry condition is now satisfied; `QUALITY-PLATFORM.md` owns the current gate.
 
 ## Static/code-quality baseline sequence
 

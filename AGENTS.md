@@ -14,9 +14,10 @@ Before substantive work, read in this order:
 6. `docs/project/PROVIDER-PAYMENT-LIFECYCLE.md`
 7. `docs/project/SECURITY-THREAT-MODEL.md`
 8. `docs/project/ARCHITECTURE-CODE-QUALITY.md`
-9. relevant living sections of `docs/project/MASTER-ENGINEERING-PLAYBOOK.md`
-10. `docs/project/BASELINE-H12.md` when token/saved-card/subscription identity is relevant
-11. `docs/project/REPOSITORY-READINESS.md` for historical repository-foundation evidence when relevant
+9. `docs/project/QUALITY-PLATFORM.md` when the Full Automated Quality Platform is current
+10. relevant living sections of `docs/project/MASTER-ENGINEERING-PLAYBOOK.md`
+11. `docs/project/BASELINE-H12.md` when token/saved-card/subscription identity is relevant
+12. `docs/project/REPOSITORY-READINESS.md` for historical repository-foundation evidence when relevant
 
 ## Canonical identity
 
@@ -55,6 +56,8 @@ Do not start a later phase because code has been drafted. Phase progression requ
 When **Architecture & Code-Quality Foundation** is current, `ARCHITECTURE-CODE-QUALITY.md` is mandatory. Characterize a responsibility before extracting it, keep legacy public entry points as compatibility wrappers where required, and follow the frozen extraction order unless new evidence justifies a separately reviewed change.
 
 For A5 and every later architecture tranche, keep `tests/harness/architecture-foundation-harness.php`, `tests/harness/architecture-runtime-bindings-harness.php`, `tests/harness/architecture-bootstrap-path-harness.php`, `tests/harness/architecture-provider-endpoints-harness.php`, `tests/harness/architecture-payment-method-availability-harness.php`, `tests/harness/architecture-gateway-settings-harness.php`, `tests/harness/architecture-subscription-presentation-harness.php` and `tests/harness/architecture-checkout-orchestration-harness.php` mandatory in Quality Gates.
+
+When **Full Automated Quality Platform** is current, `QUALITY-PLATFORM.md` is mandatory. Introduce tools progressively against named risks, commit dependency locks, keep Composer development-only until an explicit packaging migration exists, and do not convert green tooling into platform-certification claims. Keep every historical/architecture harness and `tests/harness/quality-platform-foundation-harness.php` mandatory. The protected H12 job must always run and explicitly fail when any prerequisite quality job is not successful; dependency-skipped required checks are not acceptable gates.
 
 ## Protected compatibility identities
 
@@ -139,10 +142,14 @@ php tests/harness/architecture-payment-method-availability-harness.php
 php tests/harness/architecture-gateway-settings-harness.php
 php tests/harness/architecture-subscription-presentation-harness.php
 php tests/harness/architecture-checkout-orchestration-harness.php
+php tests/harness/quality-platform-foundation-harness.php
 php tests/harness/security-threat-model-harness.php
 php tests/harness/phase-9g-h12-php-harness.php
 node --check tests/harness/phase-9g-h12-blocks-harness.js
 node tests/harness/phase-9g-h12-blocks-harness.js
+composer validate --strict
+composer audit --locked --no-interaction
+composer quality
 ```
 
 Also run repository CI and phase-specific tests.

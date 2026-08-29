@@ -28,11 +28,31 @@
 | Phase 9I — historical token-identity migration | **DONE / VERIFIED** |
 | Provider Contract & Payment Lifecycle | **DONE / VERIFIED** |
 | Security Threat-Model Closure | **DONE / VERIFIED** |
-| Current program gate | **Architecture & Code-Quality Foundation — A5** |
+| Architecture & Code-Quality Foundation | **DONE / VERIFIED (DISCOVERY + A1-A5)** |
+| Current program gate | **Full Automated Quality Platform — Q1** |
 
-The plugin remains a pre-release engineering project. Architecture discovery and A1-A4 are DONE / VERIFIED; A5 checkout payload/orchestration is the current bounded implementation tranche. None of these milestones constitutes broad code-quality, provider-host, penetration-test, PCI/compliance, platform, feature, performance or release certification.
+The plugin remains a pre-release engineering project. Architecture discovery and A1-A5 are DONE / VERIFIED; Q1 quality-platform foundation is the current bounded implementation tranche. None of these milestones constitutes broad code-quality, provider-host, penetration-test, PCI/compliance, platform, feature, performance or release certification.
 
-## Latest verified milestone — Architecture A4 subscription presentation
+## Latest verified milestone — Architecture A5 checkout orchestration
+
+PR #25 final reviewed head:
+
+- `997e18d8eb6264a84c6a9a35158213d3d655e6b3`
+
+Verified squash merge on `main`:
+
+- merge: `3223a882867634a2ba7588d7afbd2b2e4b4c21e4`
+- tree: `392b73425fa3219b6414a0984136b92c8ef77576`
+- parent: `d24b83356cc766f82c3ad9e529d3ec3f4194e887`
+- GitHub signature: **VERIFIED**
+- implementation branch `architecture/a5-checkout-orchestration`: **deleted after verified merge**
+- exact-head Quality Gates run #173: **SUCCESS**
+- push-triggered post-merge Quality Gates run #174: **SUCCESS**
+- Checkout Orchestration harness: **67/0**
+
+A5 moved strict checkout request/decimal/payload construction and the checkout-to-Charge workflow to `src/Payment/CheckoutPayload.php` and `CheckoutOrchestrator.php`, reduced the exact `UPayments.php` ratchet to **88,839 bytes**, preserved the public `process_payment()` and protected request/transport seams, and left scheduler/attempt/auto-deduct behavior unchanged.
+
+## Previous verified milestone — Architecture A4 subscription presentation
 
 PR #24 final reviewed head:
 
@@ -311,27 +331,27 @@ Repository readiness remains DONE / VERIFIED:
 - private vulnerability reporting;
 - MIT recognized.
 
-## Current program gate — Architecture & Code-Quality Foundation
+## Current program gate — Full Automated Quality Platform
 
-**Status: A5 — CHECKOUT PAYLOAD/ORCHESTRATION CORE / IMPLEMENTATION.**
+**Status: Q1 — FOUNDATION / IMPLEMENTATION.**
 
-Architecture A1-A4 are complete. A5 is limited to separating the characterized checkout payload and Charge orchestration core behind existing compatibility seams. Current scope:
+Architecture discovery and A1-A5 are complete. Q1 is limited to the standard development quality foundation. Current scope:
 
-- add `Simplix\Pay\UPayments\Payment\CheckoutPayload` and `CheckoutOrchestrator` as the explicit pure-construction and checkout workflow boundaries;
-- preserve public `WC_Upayments::process_payment()` and protected request-body/provider-transport virtual dispatch through a thin adapter;
-- preserve strict Classic/Blocks parsing, exact decimal and unquoted JSON-number payload construction, saved-card identity/provenance and single Charge dispatch;
-- preserve provider response/redirect handling, order metadata, no-blind-retry semantics and every protected payment/runtime identity;
-- leave scheduler, CycleClaim, billing-attempt storage and auto-deduct dispatch outside A5;
-- keep all eight prior architecture harnesses and make the A5 Checkout Orchestration harness mandatory in Quality Gates;
-- preserve protected identities and keep Security **81/0**, Provider **141/0 + 4/0**, Phase 9I, Phase 0, H12 and all architecture regressions green.
+- add a canonical development-only Composer manifest and committed lockfile with no production package dependencies;
+- add PHPUnit pure-service tests without replacing the permanent custom regression harnesses;
+- establish baseline-free PHPStan on a recorded pure-module scope and risk-focused PHPCS/WPCS checks;
+- audit the locked dependency graph and disable Composer plugin execution;
+- add declared PHP 7.2 and PHP 8.2 syntax evidence for distributed PHP without claiming compatibility certification; development-only tests remain on the PHP 8.2 regression runtime;
+- make the protected H12 check run unconditionally and explicitly fail on every non-success Composer-quality or syntax prerequisite;
+- keep every historical and architecture harness mandatory and add the Quality Platform Foundation harness;
+- preserve protected identities and keep Security **82/0**, Provider **141/0 + 4/0**, Phase 9I, Phase 0, H12 and all architecture regressions green.
 
-No provider route, authenticated HTTP behavior, credential value, payload field/value, payment truth, scheduler/attempt state, protected persistence identity or order-state mutation is authorized to change in A5. The full automated quality platform remains prohibited until A5 is independently reviewed, exact-head green, merged, post-merge verified and cleaned up.
+No provider route, authenticated HTTP behavior, credential value, payload field/value, payment truth, scheduler/attempt state, protected persistence identity or order-state mutation is authorized to change in Q1. `QUALITY-PLATFORM.md` is the current gate record.
 
 ## Later program blockers
 
-After Architecture & Code-Quality Foundation:
+After the Full Automated Quality Platform:
 
-- full automated quality platform;
 - platform and feature certification;
 - performance/UX/operations/diagnostics;
 - release packaging/distribution and eventual WordPress.org publication.

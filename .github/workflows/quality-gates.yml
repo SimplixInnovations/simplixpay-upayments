@@ -37,13 +37,21 @@ jobs:
             NOTICE.md
             SECURITY.md
             SUPPORT.md
+            .distignore
             .github/CODEOWNERS
+            composer.json
+            composer.lock
+            phpcs.xml.dist
+            phpstan.neon.dist
+            phpunit.xml.dist
+            tests/harness/quality-platform-foundation-harness.php
             docs/project/PROJECT-STATUS.md
             docs/project/PHASE-0-RELEASE-IDENTITY.md
             docs/project/PHASE-9I-MIGRATION.md
             docs/project/PROVIDER-PAYMENT-LIFECYCLE.md
             docs/project/SECURITY-THREAT-MODEL.md
             docs/project/ARCHITECTURE-CODE-QUALITY.md
+            docs/project/QUALITY-PLATFORM.md
             docs/project/REPOSITORY-READINESS.md
             docs/project/REPOSITORY-AUDIT.md
             docs/project/NAMING-IDENTITY-STANDARD.md
@@ -68,23 +76,25 @@ jobs:
           grep -Fq '**Status:** DONE / VERIFIED' docs/project/PHASE-9I-MIGRATION.md
           grep -Fq '**Status:** DONE / VERIFIED' docs/project/PROVIDER-PAYMENT-LIFECYCLE.md
           grep -Fq '**Status:** DONE / VERIFIED' docs/project/SECURITY-THREAT-MODEL.md
-          grep -Fq '**Status:** A5 / IMPLEMENTATION' docs/project/ARCHITECTURE-CODE-QUALITY.md
+          grep -Fq '**Status:** DONE / VERIFIED (DISCOVERY + A1-A5)' docs/project/ARCHITECTURE-CODE-QUALITY.md
+          grep -Fq '**Status:** Q1 / IMPLEMENTATION' docs/project/QUALITY-PLATFORM.md
           grep -Fq '| Phase 0 — release identity/updater ownership | **DONE / VERIFIED** |' docs/project/PROJECT-STATUS.md
           grep -Fq '| Phase 9I — historical token-identity migration | **DONE / VERIFIED** |' docs/project/PROJECT-STATUS.md
           grep -Fq '| Provider Contract & Payment Lifecycle | **DONE / VERIFIED** |' docs/project/PROJECT-STATUS.md
           grep -Fq '| Security Threat-Model Closure | **DONE / VERIFIED** |' docs/project/PROJECT-STATUS.md
-          grep -Fq '| Current program gate | **Architecture & Code-Quality Foundation — A5** |' docs/project/PROJECT-STATUS.md
-          grep -Fq 'The current program gate is **Architecture & Code-Quality Foundation — A5**.' README.md
-          grep -Fq '**Architecture & Code-Quality Foundation — A5** is now the active gate.' CHANGELOG.md
-          grep -Fq '5. **Architecture & Code-Quality Foundation — CURRENT GATE / A5**' docs/ENGINEERING-ROADMAP.md
+          grep -Fq '| Current program gate | **Full Automated Quality Platform — Q1** |' docs/project/PROJECT-STATUS.md
+          grep -Fq 'The current program gate is **Full Automated Quality Platform — Q1**.' README.md
+          grep -Fq '**Full Automated Quality Platform — Q1** is now the active gate.' CHANGELOG.md
+          grep -Fq '6. **Full Automated Quality Platform — CURRENT GATE / Q1**' docs/ENGINEERING-ROADMAP.md
           grep -Fq '| Security threat-model audit | **DONE / VERIFIED** | Critical |' docs/project/MASTER-ENGINEERING-PLAYBOOK.md
-          grep -Fq '| Architecture/code quality | **A5 — CURRENT GATE** | High |' docs/project/MASTER-ENGINEERING-PLAYBOOK.md
-          grep -Fq 'The current owner/gate is **Architecture & Code-Quality Foundation — A5**' docs/project/REPOSITORY-AUDIT.md
-          grep -Fq 'the current permitted program gate is **Architecture & Code-Quality Foundation — A5**' docs/project/REPOSITORY-READINESS.md
-          grep -Fq 'the current permitted gate is **Architecture & Code-Quality Foundation — A5**' docs/project/PHASE-0-RELEASE-IDENTITY.md
-          grep -Fq 'The current program gate is **Architecture & Code-Quality Foundation — A5**' docs/project/PHASE-9I-MIGRATION.md
-          grep -Fq 'The current permitted program gate is **Architecture & Code-Quality Foundation — A5**' docs/project/PROVIDER-PAYMENT-LIFECYCLE.md
-          grep -Fq -- '- Current program gate: **Architecture & Code-Quality Foundation — A5**' docs/project/NEW-CHAT-HANDOFF.md
+          grep -Fq '| Architecture/code quality | **DONE / VERIFIED (A1-A5)** | High |' docs/project/MASTER-ENGINEERING-PLAYBOOK.md
+          grep -Fq '| Full automated quality platform | **Q1 — CURRENT GATE** | Critical before public stable |' docs/project/MASTER-ENGINEERING-PLAYBOOK.md
+          grep -Fq 'The current owner/gate is **Full Automated Quality Platform — Q1**' docs/project/REPOSITORY-AUDIT.md
+          grep -Fq 'the current permitted program gate is **Full Automated Quality Platform — Q1**' docs/project/REPOSITORY-READINESS.md
+          grep -Fq 'the current permitted gate is **Full Automated Quality Platform — Q1**' docs/project/PHASE-0-RELEASE-IDENTITY.md
+          grep -Fq 'The current program gate is **Full Automated Quality Platform — Q1**' docs/project/PHASE-9I-MIGRATION.md
+          grep -Fq 'The current permitted program gate is **Full Automated Quality Platform — Q1**' docs/project/PROVIDER-PAYMENT-LIFECYCLE.md
+          grep -Fq -- '- Current program gate: **Full Automated Quality Platform — Q1**' docs/project/NEW-CHAT-HANDOFF.md
 
       - name: Reject stale gate ownership markers
         shell: bash
@@ -106,6 +116,7 @@ jobs:
             docs/project/REPOSITORY-READINESS.md
             docs/project/SECURITY-THREAT-MODEL.md
             docs/project/ARCHITECTURE-CODE-QUALITY.md
+            docs/project/QUALITY-PLATFORM.md
           )
 
           reject_across_live_records() {
@@ -124,6 +135,10 @@ jobs:
           reject_across_live_records '## Current program gate — Security Threat-Model Closure'
           reject_across_live_records '## Current engineering gate — Security Threat-Model Closure'
           reject_across_live_records '## Next gate — Security Threat-Model Closure'
+          reject_across_live_records '| Current program gate | **Architecture & Code-Quality Foundation — A5** |'
+          reject_across_live_records 'Architecture & Code-Quality Foundation — CURRENT GATE / A5'
+          reject_across_live_records 'Architecture/code quality | **A5 — CURRENT GATE**'
+          reject_across_live_records 'Current program gate: Architecture & Code-Quality Foundation — A5'
 
           if grep -FnH -F -- '**Current program status:** DISCOVERY / CURRENT GATE.' docs/project/MASTER-ENGINEERING-PLAYBOOK.md; then
             echo 'Obsolete Security program-status marker detected in Master Playbook.'
@@ -162,11 +177,79 @@ jobs:
             git diff-tree --check --no-commit-id -r HEAD
           fi
 
-  h12-regression:
-    name: H12 Regression Harness
+  quality-platform:
+    name: Quality Platform
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # v2.37.2
+        with:
+          php-version: '8.2'
+          coverage: none
+          tools: composer:2.10.3
+
+      - name: Validate Composer metadata
+        run: composer validate --strict
+
+      - name: Install locked development toolchain
+        run: composer install --no-interaction --prefer-dist --no-progress
+
+      - name: Audit locked dependencies
+        run: composer audit --locked --no-interaction
+
+      - name: Unit and static quality gates
+        run: composer quality
+
+  php-syntax-compatibility:
+    name: PHP ${{ matrix.php }} syntax (not certification)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        php: ['7.2', '8.2']
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # v2.37.2
+        with:
+          php-version: ${{ matrix.php }}
+          coverage: none
+          tools: none
+
+      - name: Distributed PHP syntax
+        shell: bash
+        run: |
+          set -euo pipefail
+          git ls-files -z -- '*.php' ':(exclude)tests/**' | xargs -0 -r -n1 php -l
+
+  h12-regression:
+    name: H12 Regression Harness
+    needs:
+      - quality-platform
+      - php-syntax-compatibility
+    if: ${{ always() }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Require upstream quality prerequisites
+        shell: bash
+        env:
+          QUALITY_PLATFORM_RESULT: ${{ needs.quality-platform.result }}
+          PHP_SYNTAX_RESULT: ${{ needs.php-syntax-compatibility.result }}
+        run: |
+          set -euo pipefail
+          if [[ "${QUALITY_PLATFORM_RESULT}" != "success" || "${PHP_SYNTAX_RESULT}" != "success" ]]; then
+            echo "Required quality prerequisite failed: quality-platform=${QUALITY_PLATFORM_RESULT}, php-syntax-compatibility=${PHP_SYNTAX_RESULT}"
+            exit 1
+          fi
+
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
@@ -232,6 +315,9 @@ jobs:
 
       - name: Architecture checkout orchestration harness
         run: php tests/harness/architecture-checkout-orchestration-harness.php
+
+      - name: Quality platform foundation harness
+        run: php tests/harness/quality-platform-foundation-harness.php
 
       - name: H12 PHP harness
         run: php tests/harness/phase-9g-h12-php-harness.php

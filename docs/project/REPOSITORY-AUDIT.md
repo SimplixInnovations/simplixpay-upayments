@@ -32,13 +32,13 @@ The repository remains a pre-release engineering codebase. It is not the intende
 
 Phase 0 took ownership of public release identity and removed inherited update authority. Phase 9I added isolated historical-identity migration tooling. The provider lifecycle gate then added an isolated `Simplix\Pay\UPayments\Payment` strangler for ordinary browser/webhook/status truth and WooCommerce payment-state transitions without broadly rewriting the inherited gateway bootstrap.
 
-The current owner/gate is **Architecture & Code-Quality Foundation — A5**. A1-A4 are DONE / VERIFIED; A5 may extract only the characterized checkout payload and Charge orchestration core behind the existing `process_payment()` and protected transport/request seams. It does not authorize a big-bang rewrite, scheduler/attempt changes, protected-meta renames, provider-host migration, payment-truth reinterpretation, or weakening closed Security/Payment/H12/Phase 9I contracts.
+Architecture discovery and A1-A5 are **DONE / VERIFIED**. The current owner/gate is **Full Automated Quality Platform — Q1**. Q1 may add only the locked development toolchain, pure unit/static-analysis scope, dependency audit and CI foundation. It does not authorize a big-bang rewrite, scheduler/attempt changes, protected-meta renames, provider-host migration, payment-truth reinterpretation, or weakening closed Security/Payment/H12/Phase 9I contracts.
 
 ## Top-level inventory after Security Threat-Model closure
 
 | Area | Current state | Classification | Next owner/gate |
 |---|---|---|---|
-| `.github/` | CODEOWNERS, templates, Dependabot, protected Quality Gates | **KEEP / CONTROL PLANE** | Architecture gate preserves CI/security controls; quality-platform gate may extend tooling later |
+| `.github/` | CODEOWNERS, templates, Dependabot, protected Quality Gates | **KEEP / CONTROL PLANE** | Q1 extends CI while preserving least privilege and immutable Actions pins |
 | `AGENTS.md` | Permanent execution/review rules | **KEEP / CONTROL PLANE** | Mandatory before substantive work |
 | `README.md`, `CHANGELOG.md` | Simplix-led public/project records | **KEEP CURRENT** | Update at verified milestones |
 | `LICENSE`, `NOTICE.md`, `UPSTREAM.md` | MIT + provenance/trademark boundaries | **KEEP** | Re-review at publication gates |
@@ -209,20 +209,21 @@ Known inherited empty/duplicate/legacy assets remain recorded debt. Do not delet
 
 ### Test platform
 
-The required custom harness stack now includes Phase 0, all Phase 9I suites, Provider Lifecycle, Exact Amount, Security Threat-Model, H12 PHP and H12 Blocks. It remains regression protection rather than a replacement for full PHPUnit/WordPress/WooCommerce integration, broad static analysis, browser E2E, accessibility and performance testing.
+The required custom harness stack now includes Phase 0, all Phase 9I suites, Provider Lifecycle, Exact Amount, Security Threat-Model, all architecture suites, H12 PHP and H12 Blocks. Q1 adds locked PHPUnit/PHPStan/PHPCS evidence and a foundation harness. This remains a progressive quality platform rather than WordPress/WooCommerce/browser/performance certification.
 
 ## Current next owner/gate
 
-**Architecture & Code-Quality Foundation — A5**.
+**Full Automated Quality Platform — Q1**.
 
-The current tranche must preserve the verified architecture map while separating:
+The current tranche must preserve the verified architecture map while establishing:
 
-- strict request/source/subscription parsing and exact decimal/JSON-number payload construction;
-- saved-card identity/provenance and provider Charge orchestration behind a bounded service;
-- the legacy public `process_payment()` and protected request/transport override seams;
-- exact order metadata, redirect, no-blind-retry and payment-truth behavior.
+- a locked Composer development toolchain with no production package dependency;
+- pure service-level PHPUnit tests;
+- explicit baseline-free PHPStan scope and risk-focused PHPCS/WPCS scope;
+- dependency audit and declared-PHP-floor syntax CI for distributed PHP, with development-only tests retained on the PHP 8.2 regression runtime;
+- permanent foundation and historical regression gates.
 
-Do not start with a big-bang refactor or mechanical rename. Closed Security/Provider/H12/Phase 9I contracts remain required regressions throughout architecture work.
+Do not reinterpret green tooling as platform certification or modify payment runtime to satisfy a tool. Closed Architecture/Security/Provider/H12/Phase 9I contracts remain required regressions throughout quality-platform work.
 
 See `PROJECT-STATUS.md` for live program state, `PHASE-9I-MIGRATION.md` for historical-identity migration, and `PROVIDER-PAYMENT-LIFECYCLE.md` for the closed ordinary-checkout lifecycle contract.
 

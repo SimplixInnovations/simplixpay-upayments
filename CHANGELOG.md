@@ -21,11 +21,20 @@ The project is still in pre-release engineering hardening. Entries below are eng
 - Exact final PR #24 head `2a2c6a4c67775b6614297d2c0150f3ca61220498` passed Quality Gates #164 and clean independent review.
 - Squash-merged PR #24 as signed commit `d24b83356cc766f82c3ad9e529d3ec3f4194e887`, tree `f74899b93f493be872e0ce993e30079d0223dc7b`; post-merge run #165 passed and the implementation branch was deleted.
 
-### Architecture A5 — Checkout Payload/Orchestration Core
+### Architecture A5 — Checkout Payload/Orchestration Core — DONE / VERIFIED
 
 - Added pure `Simplix\Pay\UPayments\Payment\CheckoutPayload` and bounded `CheckoutOrchestrator` services behind the public legacy `process_payment()` compatibility entry point.
 - Preserved protected request-body and provider-transport override seams via gateway-scoped closures, along with strict decimal/payload, H12 saved-card, single Charge dispatch, redirect and metadata behavior.
 - Added the mandatory Architecture Checkout Orchestration gate and reduced the exact `UPayments.php` ratchet to **88,839 bytes**.
+- Exact final PR #25 head `997e18d8eb6264a84c6a9a35158213d3d655e6b3` passed Quality Gates #173 and clean independent review.
+- Squash-merged PR #25 as signed commit `3223a882867634a2ba7588d7afbd2b2e4b4c21e4`, tree `392b73425fa3219b6414a0984136b92c8ef77576`; post-merge run #174 passed and the implementation branch was deleted.
+
+### Full Automated Quality Platform — Q1 Foundation
+
+- Added a canonical development-only Composer manifest and committed lockfile with plugin execution disabled and no production package dependencies.
+- Added PHPUnit pure-service tests, baseline-free PHPStan scope, risk-focused PHPCS/WPCS checks, locked dependency auditing and declared PHP-floor syntax CI for distributed PHP; development-only tests remain on the PHP 8.2 regression runtime.
+- Made the protected H12 check an always-running aggregator that explicitly rejects failed or skipped Composer-quality and syntax prerequisites.
+- Added the permanent Quality Platform Foundation regression gate while retaining every historical and architecture harness.
 
 ### Architecture A2 — Payment-Method Availability Client/Cache — DONE / VERIFIED
 
@@ -59,7 +68,7 @@ The project is still in pre-release engineering hardening. Entries below are eng
 
 ### Current program gate
 
-**Architecture & Code-Quality Foundation — A5** is now the active gate. A1-A4 are DONE / VERIFIED; A5 is limited to the characterized checkout payload/orchestration core and must not change scheduler/attempt, auto-deduct, payment truth, Security, Provider, H12 or Phase 9I contracts.
+**Full Automated Quality Platform — Q1** is now the active gate. Architecture A1-A5 are DONE / VERIFIED; Q1 is limited to the locked development toolchain, pure unit/static-analysis scope, dependency audit and CI foundation and does not certify platforms or alter payment runtime contracts.
 
 ### Provider Contract & Payment Lifecycle — DONE / VERIFIED
 

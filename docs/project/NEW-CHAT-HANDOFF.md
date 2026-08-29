@@ -27,13 +27,22 @@ Use this file with root `AGENTS.md`, `PROJECT-STATUS.md`, the naming standard, t
 - Architecture A2 — payment-method availability client/cache: **DONE / VERIFIED**
 - Architecture A3 — gateway settings/admin presentation: **DONE / VERIFIED**
 - Architecture A4 — subscription product/account presentation: **DONE / VERIFIED**
-- Current program gate: **Architecture & Code-Quality Foundation — A5**
+- Architecture A5 — checkout payload/orchestration core: **DONE / VERIFIED**
+- Current program gate: **Full Automated Quality Platform — Q1**
 - Stable production release: **NO**
 - WordPress.org release: **NO**
 
 Always verify live GitHub before acting. Recorded SHAs are milestone evidence, not substitutes for fresh source/check/review verification.
 
-## Latest verified milestone — Architecture A3
+## Latest verified milestone — Architecture A5
+
+PR #25 final reviewed head `997e18d8eb6264a84c6a9a35158213d3d655e6b3` was squash-merged as verified commit `3223a882867634a2ba7588d7afbd2b2e4b4c21e4`, tree `392b73425fa3219b6414a0984136b92c8ef77576`, on parent `d24b83356cc766f82c3ad9e529d3ec3f4194e887`. Exact-head Quality Gates run #173 and post-merge run #174 passed; Checkout Orchestration was **67/0**, final independent review was clean with zero unresolved threads, and the implementation branch was deleted.
+
+## Previous verified milestone — Architecture A4
+
+PR #24 final reviewed head `2a2c6a4c67775b6614297d2c0150f3ca61220498` was squash-merged as verified commit `d24b83356cc766f82c3ad9e529d3ec3f4194e887`, tree `f74899b93f493be872e0ce993e30079d0223dc7b`, on parent `6291196b35a952ea974549d1aa6d6ae9bbcc64dc`. Exact-head Quality Gates run #164 and post-merge run #165 passed; Subscription Presentation was **75/0**, final independent review was clean with zero unresolved threads, and the implementation branch was deleted.
+
+## Previous verified milestone — Architecture A3
 
 PR #23 final reviewed head `85028cfb4431cc29820eaca4e254bf6c87daa378` was squash-merged as verified commit `6291196b35a952ea974549d1aa6d6ae9bbcc64dc`, tree `a7f66ee6cf8c9d5324a0ae77b8c61e69e87bdff7`, on parent `f85894271e8f991e77a8e6a2b306f4d191483bbd`. Exact-head Quality Gates run #158 and post-merge run #159 passed; Gateway Settings was **90/0**, final independent review was clean with zero unresolved threads, and the implementation branch was deleted.
 
@@ -272,21 +281,21 @@ Do not globally rename:
 - malformed H12 secret is distinct from missing and fails closed.
 - selected saved card requires current valid provenance + exact scope/generation + fresh provider Retrieve + exact membership.
 
-## Current tranche — Architecture & Code-Quality Foundation A5
+## Current tranche — Full Automated Quality Platform Q1
 
-**Status: A5 — CHECKOUT PAYLOAD/ORCHESTRATION CORE / IMPLEMENTATION.**
+**Status: Q1 — FOUNDATION / IMPLEMENTATION.**
 
 Required bounded sequence:
 
-1. Work only from verified A4 merge `d24b83356cc766f82c3ad9e529d3ec3f4194e887` on `architecture/a5-checkout-orchestration`.
-2. Extract strict request/decimal/payload helpers to `CheckoutPayload` and exact checkout-to-Charge workflow ordering to `CheckoutOrchestrator`.
-3. Preserve public `WC_Upayments::process_payment()` plus protected request-body and provider-transport override seams as the compatibility adapter.
-4. Preserve exact Classic/Blocks parsing, order-line economics, subscription data, saved-card identity/provenance, single Charge dispatch, response/redirect behavior and metadata writes.
-5. Leave scheduler, CycleClaim, billing-attempt storage and auto-deduct dispatch outside A5.
-6. Keep every closed regression plus all eight prior architecture harnesses and the new A5 harness mandatory.
-7. Do not begin the full automated quality platform until the exact A5 head is independently reviewed, green, merged, post-merge verified and its branch deleted.
+1. Work only from verified A5 merge `3223a882867634a2ba7588d7afbd2b2e4b4c21e4` on `quality/platform-foundation`.
+2. Add the canonical development-only Composer manifest and committed lockfile with no production package dependencies or plugin execution.
+3. Add pure PHPUnit tests, baseline-free PHPStan scope and risk-focused PHPCS/WPCS scope without rewriting payment behavior to satisfy tools.
+4. Add locked dependency auditing and declared PHP 7.2/8.2 syntax CI for distributed PHP without claiming compatibility certification; keep development-only tests on the PHP 8.2 regression runtime.
+5. Keep every closed regression and all architecture harnesses mandatory, plus the new Quality Platform Foundation harness.
+6. Preserve exact provider, Security, H12, Phase 9I, scheduler/attempt, payment truth and compatibility identities.
+7. Require independent exact-head review, green CI, verified merge, post-merge CI and branch cleanup before Q1 is DONE / VERIFIED.
 
-The architecture gate may improve structure; it may not reinterpret provider truth, weaken authorization, or silently broaden certified feature/platform claims.
+The quality gate may improve evidence and tooling; it may not reinterpret provider truth, weaken authorization, or silently broaden certified feature/platform claims.
 
 ## Permanent control plane
 
@@ -300,10 +309,12 @@ Read in this order:
 6. `docs/project/PHASE-9I-MIGRATION.md`
 7. `docs/project/PROVIDER-PAYMENT-LIFECYCLE.md`
 8. `docs/project/SECURITY-THREAT-MODEL.md`
-9. relevant sections of `docs/project/MASTER-ENGINEERING-PLAYBOOK.md`
-10. `docs/project/REPOSITORY-AUDIT.md`
-11. `docs/project/REPOSITORY-READINESS.md`
-12. `docs/project/BASELINE-H12.md`
+9. `docs/project/ARCHITECTURE-CODE-QUALITY.md`
+10. `docs/project/QUALITY-PLATFORM.md`
+11. relevant sections of `docs/project/MASTER-ENGINEERING-PLAYBOOK.md`
+12. `docs/project/REPOSITORY-AUDIT.md`
+13. `docs/project/REPOSITORY-READINESS.md`
+14. `docs/project/BASELINE-H12.md`
 
 ## Required working method
 
@@ -325,8 +336,8 @@ Read in this order:
 2. Phase 9I — Historical token-identity migration — **DONE / VERIFIED**
 3. Provider Contract & Payment Lifecycle — **DONE / VERIFIED**
 4. Security Threat-Model Closure — **DONE / VERIFIED**
-5. Architecture & Code-Quality Foundation — **CURRENT / A5**
-6. Full automated quality platform
+5. Architecture & Code-Quality Foundation — **DONE / VERIFIED (A1-A5)**
+6. Full automated quality platform — **CURRENT / Q1**
 7. Platform certification: Woo/WP/PHP/HPOS/Blocks/WPML
 8. Feature certification
 9. Performance/UX/operations/diagnostics
@@ -338,13 +349,13 @@ Read in this order:
 ```text
 Continue the SimplixPay for UPayments engineering program in SimplixInnovations/simplixpay-upayments.
 
-Read AGENTS.md first, then docs/project/PROJECT-STATUS.md, docs/project/NAMING-IDENTITY-STANDARD.md, docs/project/NEW-CHAT-HANDOFF.md, docs/project/PHASE-0-RELEASE-IDENTITY.md, docs/project/PHASE-9I-MIGRATION.md, docs/project/PROVIDER-PAYMENT-LIFECYCLE.md, docs/project/SECURITY-THREAT-MODEL.md and the relevant living sections of docs/project/MASTER-ENGINEERING-PLAYBOOK.md.
+Read AGENTS.md first, then docs/project/PROJECT-STATUS.md, docs/project/NAMING-IDENTITY-STANDARD.md, docs/project/NEW-CHAT-HANDOFF.md, docs/project/PHASE-0-RELEASE-IDENTITY.md, docs/project/PHASE-9I-MIGRATION.md, docs/project/PROVIDER-PAYMENT-LIFECYCLE.md, docs/project/SECURITY-THREAT-MODEL.md, docs/project/ARCHITECTURE-CODE-QUALITY.md, docs/project/QUALITY-PLATFORM.md and the relevant living sections of docs/project/MASTER-ENGINEERING-PLAYBOOK.md.
 
 Treat recorded SHAs/status as verified milestone anchors, not substitutes for live GitHub. Freshly verify current main, open PRs/branches, checks, review state and current source before acting; reconcile any drift first.
 
-Repository readiness, Phase 0, Phase 9I, Provider Contract & Payment Lifecycle, Security Threat-Model Closure, Architecture discovery and A1-A4 are DONE / VERIFIED. A4 was squash-merged from PR #24 as verified main `d24b83356cc766f82c3ad9e529d3ec3f4194e887`, tree `f74899b93f493be872e0ce993e30079d0223dc7b`; exact-head run #164 and post-merge run #165 passed. The current permitted gate is Architecture & Code-Quality Foundation — A5.
+Repository readiness, Phase 0, Phase 9I, Provider Contract & Payment Lifecycle, Security Threat-Model Closure and Architecture discovery/A1-A5 are DONE / VERIFIED. A5 was squash-merged from PR #25 as verified main `3223a882867634a2ba7588d7afbd2b2e4b4c21e4`, tree `392b73425fa3219b6414a0984136b92c8ef77576`; exact-head run #173 and post-merge run #174 passed. The current permitted gate is Full Automated Quality Platform — Q1.
 
-Implement only the A5 checkout payload/orchestration boundary behind the existing public `process_payment()` and protected request/transport compatibility seams. Preserve strict Classic/Blocks parsing, exact decimal and payload bytes, saved-card identity/provenance, single Charge dispatch, redirects, metadata and no-blind-retry behavior. Change no scheduler/cycle-claim/billing-attempt identity, auto-deduct transport, credential, provider route, payment truth or order-state contract. Keep all existing regression suites, all eight prior architecture harnesses and the A5 Checkout Orchestration harness mandatory.
+Implement only the Q1 locked development-tooling and CI foundation: Composer/lockfile, pure PHPUnit tests, baseline-free scoped PHPStan, risk-focused scoped PHPCS/WPCS, dependency audit and declared-floor syntax evidence. Composer remains development-only; `vendor/` is not runtime or distribution code. Change no scheduler/cycle-claim/billing-attempt identity, auto-deduct transport, credential, provider route, payload, payment truth or order-state contract. Keep all existing regression suites, every architecture harness and the Quality Platform Foundation harness mandatory.
 
 Do not claim broad security, PCI/compliance, platform, feature, performance or production certification from the bounded security closure. UPayments webhook signature details remain provider-document unresolved, automatic refunds remain unsupported pending durable idempotency/reconciliation design, and subscription auto-deduction remains separately characterized rather than broadly certified.
 

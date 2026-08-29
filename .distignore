@@ -1,0 +1,10 @@
+/.cache/
+/.github/
+/.phpunit.cache/
+/tests/
+/vendor/
+/composer.json
+/composer.lock
+/phpcs.xml.dist
+/phpstan.neon.dist
+/phpunit.xml.dist

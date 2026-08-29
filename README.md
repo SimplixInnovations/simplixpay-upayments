@@ -35,9 +35,10 @@ The following engineering gates are **DONE / VERIFIED**:
 - Phase 0 — SimplixPay release identity/updater ownership;
 - Phase 9I — historical token-identity migration;
 - Provider Contract & Payment Lifecycle;
-- Security Threat-Model Closure.
+- Security Threat-Model Closure;
+- Architecture & Code-Quality Foundation A1-A5.
 
-The current program gate is **Architecture & Code-Quality Foundation — A5**.
+The current program gate is **Full Automated Quality Platform — Q1**.
 
 The project remains in **pre-release engineering hardening**. It is not yet a broadly certified stable production release and has not yet been published to WordPress.org.
 
@@ -53,7 +54,8 @@ The project remains in **pre-release engineering hardening**. It is not yet a br
 | Phase 9I historical token-identity migration | **DONE / VERIFIED** |
 | Provider Contract & Payment Lifecycle | **DONE / VERIFIED** |
 | Security Threat-Model Closure | **DONE / VERIFIED** |
-| Current engineering gate | **Architecture & Code-Quality Foundation — A5** |
+| Architecture & Code-Quality Foundation | **DONE / VERIFIED (A1-A5)** |
+| Current engineering gate | **Full Automated Quality Platform — Q1** |
 | Stable SimplixPay release | **Not yet published** |
 | WordPress.org release | **Not yet published** |
 | Phase 0 release-identity harness | **35 PASS / 0 FAIL** |
@@ -62,7 +64,8 @@ The project remains in **pre-release engineering hardening**. It is not yet a br
 | Phase 9I operations | **81 PASS / 0 FAIL** |
 | Provider lifecycle harness | **141 PASS / 0 FAIL** |
 | Provider exact-amount harness | **4 PASS / 0 FAIL** |
-| Security threat-model harness | **81 PASS / 0 FAIL** |
+| Security threat-model harness | **82 PASS / 0 FAIL** |
+| Quality-platform foundation harness | **73 PASS / 0 FAIL** |
 | H12 regression baseline | **PHP 1927 PASS / 0 FAIL; Blocks 144 PASS / 0 FAIL** |
 | Bounded Security Threat-Model Closure | **DONE / VERIFIED** |
 | Broad penetration-test/PCI/platform/feature certification | **Pending** |
@@ -77,6 +80,8 @@ Closed evidence records:
 - [`docs/project/PHASE-9I-MIGRATION.md`](docs/project/PHASE-9I-MIGRATION.md)
 - [`docs/project/PROVIDER-PAYMENT-LIFECYCLE.md`](docs/project/PROVIDER-PAYMENT-LIFECYCLE.md)
 - [`docs/project/SECURITY-THREAT-MODEL.md`](docs/project/SECURITY-THREAT-MODEL.md)
+- [`docs/project/ARCHITECTURE-CODE-QUALITY.md`](docs/project/ARCHITECTURE-CODE-QUALITY.md)
+- [`docs/project/QUALITY-PLATFORM.md`](docs/project/QUALITY-PLATFORM.md)
 
 ## Verified Security Threat-Model Closure outcome
 
@@ -155,11 +160,11 @@ Phase 9I remains DONE / VERIFIED through three independently reviewed tranches:
 
 Phase 9I system completion does not mean every merchant installation was automatically migrated. `BLOCKED` and `INDETERMINATE` site-specific outcomes remain valid fail-closed results.
 
-## Current engineering gate — Architecture & Code-Quality Foundation
+## Current engineering gate — Full Automated Quality Platform
 
-Architecture A1-A4 are DONE / VERIFIED. A5 now separates the characterized checkout payload and Charge orchestration core behind explicit Simplix-owned Payment services while retaining `WC_Upayments::process_payment()` and its protected transport/request seams as compatibility adapters. It must preserve the closed payment lifecycle, Security Threat-Model, H12 and Phase 9I contracts and protected persisted/runtime identities.
+Architecture discovery and A1-A5 are DONE / VERIFIED. Q1 now establishes a locked development-only Composer/PHPUnit/PHPStan/PHPCS foundation, dependency audit and declared-PHP-floor syntax evidence for distributed PHP while every historical and architecture regression remains mandatory on PHP 8.2. It must preserve the closed payment lifecycle, Security Threat-Model, H12 and Phase 9I contracts and protected persisted/runtime identities.
 
-No big-bang rewrite, runtime branding rename or broad compatibility claim is authorized by this gate.
+No big-bang rewrite, runtime branding rename, runtime Composer dependency or broad compatibility claim is authorized by this gate.
 
 ## Transitional identities — deliberate compatibility choices
 
@@ -184,7 +189,7 @@ These are engineering targets unless [`docs/COMPATIBILITY.md`](docs/COMPATIBILIT
 
 The project uses protected `main` with squash-only merge policy, PR/review-thread workflow, required Governance and H12 Regression Harness checks, linear history, merged-branch cleanup, secret scanning/push protection, Dependabot security updates and private vulnerability reporting.
 
-Current CI validates all tracked PHP syntax, Phase 0, all Phase 9I suites, Provider Payment Lifecycle, Provider Exact Amount Binding, Security Threat-Model, H12 PHP and H12 Blocks behavior.
+Current CI validates all tracked PHP syntax, Phase 0, all Phase 9I suites, Provider Payment Lifecycle, Provider Exact Amount Binding, Security Threat-Model, H12 PHP and H12 Blocks behavior. The protected H12 job is also an always-running aggregator that fails when either the Composer quality job or distributed-PHP syntax matrix is not successful.
 
 ## Simplix Innovations and WooCommerce
 

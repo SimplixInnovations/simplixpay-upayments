@@ -26,7 +26,7 @@ The gate is closed because the provider/WooCommerce contract was researched agai
 
 This closure certifies the reviewed local lifecycle contract. It does **not** certify automatic refunds, arbitrary multi-merchant marketplace splitting, provider webhook HMAC verification that UPayments has not fully documented, subscription auto-deduction redesign, broad security closure, or broad WooCommerce/WordPress/PHP/WPML/performance compatibility.
 
-The program gate immediately after this closure was **Security Threat-Model Closure**; that bounded gate, Architecture discovery and A1-A4 are now **DONE / VERIFIED**. The current program gate is **Architecture & Code-Quality Foundation — A5**.
+The program gate immediately after this closure was **Security Threat-Model Closure**; that bounded gate and Architecture discovery/A1-A5 are now **DONE / VERIFIED**. The current program gate is **Full Automated Quality Platform — Q1**.
 
 ## Scope
 
@@ -316,4 +316,4 @@ The acceptance conditions are satisfied:
 
 This closure does not mean the plugin is broadly production-certified. The bounded Security Threat-Model Closure is now independently **DONE / VERIFIED**; architecture quality, full integration/static/browser platforms, WordPress/WooCommerce/PHP/HPOS/Blocks/WPML certification, feature certification, performance/UX/operations and release engineering remain later gates.
 
-The current permitted program gate is **Architecture & Code-Quality Foundation — A5**.
+The current permitted program gate is **Full Automated Quality Platform — Q1**.

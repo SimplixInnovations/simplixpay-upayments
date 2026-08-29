@@ -13,7 +13,9 @@ For a new engineering session:
 5. [`NAMING-IDENTITY-STANDARD.md`](NAMING-IDENTITY-STANDARD.md) — frozen product/slug/namespace and protected compatibility identities.
 6. [`NEW-CHAT-HANDOFF.md`](NEW-CHAT-HANDOFF.md) — compact continuation context.
 7. [`MASTER-ENGINEERING-PLAYBOOK.md`](MASTER-ENGINEERING-PLAYBOOK.md) — full program, quality standards and release gates.
-8. [`BASELINE-H12.md`](BASELINE-H12.md) — canonical-root and H12 provenance/evidence anchors.
+8. [`ARCHITECTURE-CODE-QUALITY.md`](ARCHITECTURE-CODE-QUALITY.md) — verified architecture discovery/A1-A5 record.
+9. [`QUALITY-PLATFORM.md`](QUALITY-PLATFORM.md) — current progressive quality-tooling gate and distribution boundary.
+10. [`BASELINE-H12.md`](BASELINE-H12.md) — canonical-root and H12 provenance/evidence anchors.
 
 ## Document roles
 
@@ -23,6 +25,8 @@ For a new engineering session:
 - **NAMING-IDENTITY-STANDARD** answers: *what names/IDs are canonical and which historical IDs must remain compatible?*
 - **MASTER-ENGINEERING-PLAYBOOK** answers: *what is the complete engineering and release program?*
 - **NEW-CHAT-HANDOFF** answers: *what minimum context should a fresh session recover immediately?*
+- **ARCHITECTURE-CODE-QUALITY** answers: *what decomposition contracts and compatibility seams were verified?*
+- **QUALITY-PLATFORM** answers: *which development tools, scopes and non-certification boundaries are currently authorized?*
 - **BASELINE-H12** answers: *what historical payment/token baseline was independently verified?*
 
 ## Precedence
