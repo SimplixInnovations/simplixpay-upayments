@@ -107,6 +107,7 @@ q1_assert(q1_contains($workflow, 'composer install --no-interaction --prefer-dis
 q1_assert(q1_contains($workflow, 'composer audit --locked --no-interaction'), 'CI audits the locked dependency graph');
 q1_assert(q1_contains($workflow, 'composer quality'), 'CI runs unit, static-analysis and coding-standard gates');
 q1_assert(q1_contains($workflow, "php: ['7.2', '8.2']"), 'CI syntax-checks the declared floor and regression runtime');
+q1_assert(q1_contains($workflow, "git ls-files -z -- '*.php' ':(exclude)tests/**'"), 'declared-floor syntax scope matches distributed PHP and excludes development tests');
 q1_assert(q1_contains($workflow, "needs:\n      - quality-platform\n      - php-syntax-compatibility"), 'required historical regression is blocked on both new quality jobs');
 q1_assert(q1_contains($workflow, 'quality-platform-foundation-harness.php'), 'quality foundation harness is mandatory in the historical regression job');
 

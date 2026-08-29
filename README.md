@@ -65,7 +65,7 @@ The project remains in **pre-release engineering hardening**. It is not yet a br
 | Provider lifecycle harness | **141 PASS / 0 FAIL** |
 | Provider exact-amount harness | **4 PASS / 0 FAIL** |
 | Security threat-model harness | **82 PASS / 0 FAIL** |
-| Quality-platform foundation harness | **68 PASS / 0 FAIL** |
+| Quality-platform foundation harness | **69 PASS / 0 FAIL** |
 | H12 regression baseline | **PHP 1927 PASS / 0 FAIL; Blocks 144 PASS / 0 FAIL** |
 | Bounded Security Threat-Model Closure | **DONE / VERIFIED** |
 | Broad penetration-test/PCI/platform/feature certification | **Pending** |
@@ -162,7 +162,7 @@ Phase 9I system completion does not mean every merchant installation was automat
 
 ## Current engineering gate — Full Automated Quality Platform
 
-Architecture discovery and A1-A5 are DONE / VERIFIED. Q1 now establishes a locked development-only Composer/PHPUnit/PHPStan/PHPCS foundation, dependency audit and declared-PHP-floor syntax evidence while every historical and architecture regression remains mandatory. It must preserve the closed payment lifecycle, Security Threat-Model, H12 and Phase 9I contracts and protected persisted/runtime identities.
+Architecture discovery and A1-A5 are DONE / VERIFIED. Q1 now establishes a locked development-only Composer/PHPUnit/PHPStan/PHPCS foundation, dependency audit and declared-PHP-floor syntax evidence for distributed PHP while every historical and architecture regression remains mandatory on PHP 8.2. It must preserve the closed payment lifecycle, Security Threat-Model, H12 and Phase 9I contracts and protected persisted/runtime identities.
 
 No big-bang rewrite, runtime branding rename, runtime Composer dependency or broad compatibility claim is authorized by this gate.
 

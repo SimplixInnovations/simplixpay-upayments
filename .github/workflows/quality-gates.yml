@@ -223,11 +223,11 @@ jobs:
           coverage: none
           tools: none
 
-      - name: Tracked PHP syntax
+      - name: Distributed PHP syntax
         shell: bash
         run: |
           set -euo pipefail
-          git ls-files -z '*.php' | xargs -0 -r -n1 php -l
+          git ls-files -z -- '*.php' ':(exclude)tests/**' | xargs -0 -r -n1 php -l
 
   h12-regression:
     name: H12 Regression Harness

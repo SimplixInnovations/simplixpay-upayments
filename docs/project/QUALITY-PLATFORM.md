@@ -31,7 +31,7 @@ Q1 introduces:
 - PHPStan at an explicit level and explicit PHP 7.2 analysis target, initially limited to clean pure modules;
 - risk-focused PHPCS/WPCS security checks on the initial pure-module scope;
 - locked dependency auditing;
-- declared PHP 7.2 and PHP 8.2 syntax checks;
+- declared PHP 7.2 and PHP 8.2 syntax checks across the distributed PHP surface, with development-only tests retained on the PHP 8.2 regression runtime;
 - dedicated CI jobs that gate the already-required H12 Regression check while every historical harness remains mandatory;
 - a permanent executable foundation harness that prevents toolchain, scope and distribution drift.
 
@@ -65,7 +65,7 @@ Q1 may be merged only when:
 3. PHPUnit passes with no risky tests or warnings;
 4. PHPStan passes at the recorded level and scope with no baseline;
 5. PHPCS/WPCS passes the recorded named-risk scope;
-6. declared-floor and regression-runtime PHP syntax jobs pass;
+6. declared-floor and regression-runtime distributed-PHP syntax jobs pass, while the existing PHP 8.2 tracked-PHP gate continues to cover development tests;
 7. the complete historical and architecture regression stack remains green;
 8. exact-head independent review is clean with zero unresolved valid findings;
 9. merge, post-merge CI and branch cleanup are independently verified.

@@ -220,7 +220,7 @@ The current tranche must preserve the verified architecture map while establishi
 - a locked Composer development toolchain with no production package dependency;
 - pure service-level PHPUnit tests;
 - explicit baseline-free PHPStan scope and risk-focused PHPCS/WPCS scope;
-- dependency audit and declared-PHP-floor syntax CI;
+- dependency audit and declared-PHP-floor syntax CI for distributed PHP, with development-only tests retained on the PHP 8.2 regression runtime;
 - permanent foundation and historical regression gates.
 
 Do not reinterpret green tooling as platform certification or modify payment runtime to satisfy a tool. Closed Architecture/Security/Provider/H12/Phase 9I contracts remain required regressions throughout quality-platform work.

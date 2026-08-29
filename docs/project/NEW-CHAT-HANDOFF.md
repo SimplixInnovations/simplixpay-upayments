@@ -290,7 +290,7 @@ Required bounded sequence:
 1. Work only from verified A5 merge `3223a882867634a2ba7588d7afbd2b2e4b4c21e4` on `quality/platform-foundation`.
 2. Add the canonical development-only Composer manifest and committed lockfile with no production package dependencies or plugin execution.
 3. Add pure PHPUnit tests, baseline-free PHPStan scope and risk-focused PHPCS/WPCS scope without rewriting payment behavior to satisfy tools.
-4. Add locked dependency auditing and declared PHP 7.2/8.2 syntax CI without claiming compatibility certification.
+4. Add locked dependency auditing and declared PHP 7.2/8.2 syntax CI for distributed PHP without claiming compatibility certification; keep development-only tests on the PHP 8.2 regression runtime.
 5. Keep every closed regression and all architecture harnesses mandatory, plus the new Quality Platform Foundation harness.
 6. Preserve exact provider, Security, H12, Phase 9I, scheduler/attempt, payment truth and compatibility identities.
 7. Require independent exact-head review, green CI, verified merge, post-merge CI and branch cleanup before Q1 is DONE / VERIFIED.
