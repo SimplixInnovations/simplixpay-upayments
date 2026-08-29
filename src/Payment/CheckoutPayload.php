@@ -126,24 +126,6 @@ class CheckoutPayload {
     }
 
     /**
-     * Build a safe JSON number token for provider amount fields.
-     *
-     * Returns the validated plain decimal string when it is a valid JSON
-     * number token (digits + optional '.') that:
-     *  - contains no exponent
-     *  - contains no leading sign
-     *  - has at least one non-zero integer digit (rejects all-zero values)
-     *  - contains no whitespace
-     *  - fits in 22 characters
-     *
-     * No float conversion is performed. The validated string IS the JSON
-     * number token. Returns null when the input cannot be represented as a
-     * safe JSON number. The caller MUST fail closed on null.
-     *
-     * @param string $amount_str Validated plain decimal input.
-     * @return string|null JSON-safe number token or null.
-     */
-    /**
      * Pure-PHP comparison of canonical nonnegative-decimal strings.
      *
      * Both $a and $b are validated canonical plain-decimal strings
@@ -157,6 +139,10 @@ class CheckoutPayload {
      *   -1 if $a < $b
      *    0 if $a == $b
      *   +1 if $a > $b
+     *
+     * @param mixed $a First defensive boundary value.
+     * @param mixed $b Second defensive boundary value.
+     * @return int
      */
     public static function compare_nonnegative_decimal_strings($a, $b) {
         if (!is_string($a) || !is_string($b)) {
@@ -193,6 +179,16 @@ class CheckoutPayload {
         return $cmp > 0 ? 1 : -1;
     }
 
+    /**
+     * Build a safe JSON number token for provider amount fields.
+     *
+     * No float conversion is performed. The validated plain-decimal string
+     * is the JSON number token. Exponents, signs, leading-zero ambiguity,
+     * whitespace, all-zero values and values over 22 characters fail closed.
+     *
+     * @param mixed $amount_str Defensive boundary input; only a validated plain decimal string is accepted.
+     * @return string|null JSON-safe number token or null.
+     */
     public static function build_amount_json_token($amount_str) {
         if (!is_string($amount_str)) {
             return null;
@@ -206,7 +202,7 @@ class CheckoutPayload {
         if (preg_match('/\s/', $amount_str)) {
             return null;
         }
-        if (strlen($amount_str) === 0 || strlen($amount_str) > 22) {
+        if (strlen($amount_str) > 22) {
             return null;
         }
         // Reject all-zero numerics (must be strictly positive).
@@ -235,9 +231,9 @@ class CheckoutPayload {
      *
      * Returns null on any verification failure (no fallback, no silent coerce).
      *
-     * @param string $payload_json   Encoded payload with sentinels.
-     * @param array<string,string|null> $token_map  Map of sentinel → token (or null to skip).
-     * @param array $extra_sentinels Optional indexed sentinels for per-product prices.
+     * @param mixed $payload_json Encoded payload with sentinels.
+     * @param array<array-key,string|null> $token_map Map of sentinel → token (or null to skip).
+     * @param array<array-key,mixed> $extra_sentinels Optional indexed sentinels for per-product prices.
      *                                   Keys: 'product_price_sent_substring',
      *                                         'product_price_tokens' (array of strings).
      * @return string|null Final JSON or null on any verification failure.
@@ -332,9 +328,6 @@ class CheckoutPayload {
         // surrounded on both sides by JSON-syntax characters or whitespace, so
         // that no sub-fragment of a longer number could match.
         foreach ($all_tokens as $token) {
-            if (!is_string($token) || $token === '') {
-                continue;
-            }
             $literal = preg_quote($token, '/');
             $json_value_re = '/(?P<pre>[\\{\\,\\:])\\s*(?:' . $literal . ')\\s*(?P<post>[\\,\\}\\]]|\\z)/m';
             if (!preg_match($json_value_re, $result)) {
@@ -360,6 +353,9 @@ class CheckoutPayload {
     /**
      * Per-field max length for tokens substituted into the payload.
      * Provider contract varies per field. Returns 0 for "no ceiling".
+     *
+     * @param mixed $placeholder Sentinel candidate.
+     * @return int
      */
     public static function get_max_length_for_sentinel($placeholder) {
         switch ($placeholder) {
@@ -389,11 +385,10 @@ class CheckoutPayload {
     /**
      * Parse a subscription plan value strictly.
      *
-     * Only scalar string values matching the static allowlist are accepted.
-     * Booleans, ints, floats, arrays, objects, null, and whitespace strings
-     * are explicitly invalid (no silent default to 'one_time'). The string
-     * is NOT trimmed: any leading/trailing whitespace is treated as an
-     * explicit malformed value.
+     * This shape parser accepts only non-empty, whitespace-free strings.
+     * Allowlist membership is a separate mandatory caller step through
+     * is_valid_subscription_plan(). Booleans, ints, floats, arrays, objects
+     * and null are explicitly invalid. The string is not trimmed.
      *
      * @param mixed $value Raw plan value (only when present).
      * @return string|null Canonical plan name or null for invalid.
@@ -491,7 +486,7 @@ class CheckoutPayload {
      * plain-permalink rest_route form (?rest_route=/wc/store/v1/checkout),
      * and WordPress installed in a subdirectory (e.g. /shop/wp-json/wc/store/v1/checkout).
      *
-     * @param string $uri Raw REQUEST_URI.
+     * @param mixed $uri Raw REQUEST_URI boundary value.
      * @return string Canonical route (e.g. "/wc/store/v1/checkout") or empty string for invalid input.
      */
     public static function normalize_store_api_route($uri) {
@@ -538,9 +533,9 @@ class CheckoutPayload {
      * checkout request. The wrapper is_store_api_checkout_request() gathers
      * the runtime context and delegates here.
      *
-     * @param bool   $is_rest_request REST_REQUEST state.
-     * @param string $normalized_route Route normalized via normalize_store_api_route().
-     * @param string $method Uppercase HTTP method.
+     * @param mixed $is_rest_request REST_REQUEST state.
+     * @param mixed $normalized_route Route normalized via normalize_store_api_route().
+     * @param mixed $method Uppercase HTTP method.
      * @return bool
      */
     public static function classify_checkout_request_context($is_rest_request, $normalized_route, $method) {
@@ -627,7 +622,7 @@ class CheckoutPayload {
      *
      * @param mixed  $value Candidate decimal value.
      * @param string $field_name Field label for error context (not used in return).
-     * @return string|null Canonical nonnegative-decimal string, or null on rejection.
+     * @return string|null Lexically valid nonnegative-decimal string, or null on rejection.
      */
     public static function validate_provider_nonnegative_decimal($value, $field_name = '') {
         if (!is_string($value)) {
@@ -680,7 +675,7 @@ class CheckoutPayload {
      *      0.00 / 5  -> 0       (zero-price line preserved)
      *
      * @param mixed $line_total Canonical nonnegative-decimal string.
-     * @param int   $qty        Strict positive integer quantity.
+     * @param mixed $qty        Strict positive integer quantity boundary value.
      * @return string|null Decimal string unit price, or null on impossibility.
      */
     public static function compute_provider_unit_price_decimal($line_total, $qty) {
@@ -790,8 +785,8 @@ class CheckoutPayload {
      * not a valid positive integer digit string. Detects digit-string overflow
      * (length > PHP_INT_MAX decimal digits) and returns null deterministically.
      *
-     * @param string $numer_str Strict positive integer digit string.
-     * @param int    $denom     Strict positive int divisor.
+     * @param mixed $numer_str Strict positive integer digit-string boundary value.
+     * @param mixed $denom     Strict positive integer divisor boundary value.
      * @return string|null Quotient digit string, or null on invalid input.
      */
     public static function digit_long_divide($numer_str, $denom) {
@@ -831,8 +826,8 @@ class CheckoutPayload {
      * on invalid input. The remainder is guaranteed to be in [0, denom)
      * for valid input.
      *
-     * @param string $numer_str Strict positive integer digit string.
-     * @param int    $denom     Strict positive int divisor.
+     * @param mixed $numer_str Strict positive integer digit-string boundary value.
+     * @param mixed $denom     Strict positive integer divisor boundary value.
      * @return int|null Final remainder, or null on invalid input.
      */
     public static function digit_long_divide_remainder($numer_str, $denom) {
@@ -924,9 +919,6 @@ class CheckoutPayload {
             return false;
         }
         $route = self::normalize_store_api_route($uri);
-        if ($route === null) {
-            return false;
-        }
         // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.MissingUnslash,WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- The method is accepted only by the exact POST classifier below.
         $method = isset($_SERVER['REQUEST_METHOD']) ? strtoupper((string) $_SERVER['REQUEST_METHOD']) : '';
         return self::classify_checkout_request_context(true, $route, $method);
@@ -947,6 +939,10 @@ class CheckoutPayload {
     /**
      * UTF-8 safe provider text truncation.
      * PHP 7.2 compatible, no mandatory mbstring dependency.
+     *
+     * @param mixed $value Provider-bound text candidate.
+     * @param int $max_chars Maximum Unicode code points.
+     * @return string
      */
     public static function truncate_provider_text($value, $max_chars) {
         if (!is_scalar($value)) {

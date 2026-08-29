@@ -82,7 +82,9 @@ Use:
    - static analysis/coding standards/dead-code/complexity cleanup;
    - no big-bang runtime rename.
 
-6. **Full Automated Quality Platform — CURRENT GATE / Q1**
+6. **Full Automated Quality Platform — CURRENT GATE / Q2**
+   - Q1 locked development-toolchain foundation: **DONE / VERIFIED** through PR #26 and post-merge Quality Gates #178;
+   - Q2 CheckoutPayload boundary characterization and baseline-free static-analysis expansion: **CURRENT**;
    - PHPUnit;
    - WordPress/WooCommerce integration tests;
    - PHPStan and PHPCS/WPCS/Woo standards;

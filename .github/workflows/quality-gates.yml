@@ -45,6 +45,7 @@ jobs:
             phpstan.neon.dist
             phpunit.xml.dist
             tests/harness/quality-platform-foundation-harness.php
+            tests/harness/quality-platform-static-analysis-harness.php
             docs/project/PROJECT-STATUS.md
             docs/project/PHASE-0-RELEASE-IDENTITY.md
             docs/project/PHASE-9I-MIGRATION.md
@@ -77,24 +78,24 @@ jobs:
           grep -Fq '**Status:** DONE / VERIFIED' docs/project/PROVIDER-PAYMENT-LIFECYCLE.md
           grep -Fq '**Status:** DONE / VERIFIED' docs/project/SECURITY-THREAT-MODEL.md
           grep -Fq '**Status:** DONE / VERIFIED (DISCOVERY + A1-A5)' docs/project/ARCHITECTURE-CODE-QUALITY.md
-          grep -Fq '**Status:** Q1 / IMPLEMENTATION' docs/project/QUALITY-PLATFORM.md
+          grep -Fq '**Status:** Q2 / IMPLEMENTATION' docs/project/QUALITY-PLATFORM.md
           grep -Fq '| Phase 0 — release identity/updater ownership | **DONE / VERIFIED** |' docs/project/PROJECT-STATUS.md
           grep -Fq '| Phase 9I — historical token-identity migration | **DONE / VERIFIED** |' docs/project/PROJECT-STATUS.md
           grep -Fq '| Provider Contract & Payment Lifecycle | **DONE / VERIFIED** |' docs/project/PROJECT-STATUS.md
           grep -Fq '| Security Threat-Model Closure | **DONE / VERIFIED** |' docs/project/PROJECT-STATUS.md
-          grep -Fq '| Current program gate | **Full Automated Quality Platform — Q1** |' docs/project/PROJECT-STATUS.md
-          grep -Fq 'The current program gate is **Full Automated Quality Platform — Q1**.' README.md
-          grep -Fq '**Full Automated Quality Platform — Q1** is now the active gate.' CHANGELOG.md
-          grep -Fq '6. **Full Automated Quality Platform — CURRENT GATE / Q1**' docs/ENGINEERING-ROADMAP.md
+          grep -Fq '| Current program gate | **Full Automated Quality Platform — Q2** |' docs/project/PROJECT-STATUS.md
+          grep -Fq 'The current program gate is **Full Automated Quality Platform — Q2**.' README.md
+          grep -Fq '**Full Automated Quality Platform — Q2** is now the active gate.' CHANGELOG.md
+          grep -Fq '6. **Full Automated Quality Platform — CURRENT GATE / Q2**' docs/ENGINEERING-ROADMAP.md
           grep -Fq '| Security threat-model audit | **DONE / VERIFIED** | Critical |' docs/project/MASTER-ENGINEERING-PLAYBOOK.md
           grep -Fq '| Architecture/code quality | **DONE / VERIFIED (A1-A5)** | High |' docs/project/MASTER-ENGINEERING-PLAYBOOK.md
-          grep -Fq '| Full automated quality platform | **Q1 — CURRENT GATE** | Critical before public stable |' docs/project/MASTER-ENGINEERING-PLAYBOOK.md
-          grep -Fq 'The current owner/gate is **Full Automated Quality Platform — Q1**' docs/project/REPOSITORY-AUDIT.md
-          grep -Fq 'the current permitted program gate is **Full Automated Quality Platform — Q1**' docs/project/REPOSITORY-READINESS.md
-          grep -Fq 'the current permitted gate is **Full Automated Quality Platform — Q1**' docs/project/PHASE-0-RELEASE-IDENTITY.md
-          grep -Fq 'The current program gate is **Full Automated Quality Platform — Q1**' docs/project/PHASE-9I-MIGRATION.md
-          grep -Fq 'The current permitted program gate is **Full Automated Quality Platform — Q1**' docs/project/PROVIDER-PAYMENT-LIFECYCLE.md
-          grep -Fq -- '- Current program gate: **Full Automated Quality Platform — Q1**' docs/project/NEW-CHAT-HANDOFF.md
+          grep -Fq '| Full automated quality platform | **Q2 — CURRENT GATE; Q1 DONE / VERIFIED** | Critical before public stable |' docs/project/MASTER-ENGINEERING-PLAYBOOK.md
+          grep -Fq 'The current owner/gate is **Full Automated Quality Platform — Q2**' docs/project/REPOSITORY-AUDIT.md
+          grep -Fq 'the current permitted program gate is **Full Automated Quality Platform — Q2**' docs/project/REPOSITORY-READINESS.md
+          grep -Fq 'the current permitted gate is **Full Automated Quality Platform — Q2**' docs/project/PHASE-0-RELEASE-IDENTITY.md
+          grep -Fq 'The current program gate is **Full Automated Quality Platform — Q2**' docs/project/PHASE-9I-MIGRATION.md
+          grep -Fq 'The current permitted program gate is **Full Automated Quality Platform — Q2**' docs/project/PROVIDER-PAYMENT-LIFECYCLE.md
+          grep -Fq -- '- Current program gate: **Full Automated Quality Platform — Q2**' docs/project/NEW-CHAT-HANDOFF.md
 
       - name: Reject stale gate ownership markers
         shell: bash
@@ -139,6 +140,11 @@ jobs:
           reject_across_live_records 'Architecture & Code-Quality Foundation — CURRENT GATE / A5'
           reject_across_live_records 'Architecture/code quality | **A5 — CURRENT GATE**'
           reject_across_live_records 'Current program gate: Architecture & Code-Quality Foundation — A5'
+          reject_across_live_records '| Current program gate | **Full Automated Quality Platform — Q1** |'
+          reject_across_live_records 'Full Automated Quality Platform — CURRENT GATE / Q1'
+          reject_across_live_records 'Full automated quality platform | **Q1 — CURRENT GATE**'
+          reject_across_live_records 'Current program gate: **Full Automated Quality Platform — Q1**'
+          reject_across_live_records 'CURRENT / Q1'
 
           if grep -FnH -F -- '**Current program status:** DISCOVERY / CURRENT GATE.' docs/project/MASTER-ENGINEERING-PLAYBOOK.md; then
             echo 'Obsolete Security program-status marker detected in Master Playbook.'
@@ -318,6 +324,9 @@ jobs:
 
       - name: Quality platform foundation harness
         run: php tests/harness/quality-platform-foundation-harness.php
+
+      - name: Quality platform static-analysis harness
+        run: php tests/harness/quality-platform-static-analysis-harness.php
 
       - name: H12 PHP harness
         run: php tests/harness/phase-9g-h12-php-harness.php
