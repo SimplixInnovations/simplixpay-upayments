@@ -479,7 +479,7 @@ Requirements:
 | Payment lifecycle/state machine | **DONE / VERIFIED** | Critical |
 | Security threat-model audit | **DONE / VERIFIED** | Critical |
 | Architecture/code quality | **DONE / VERIFIED (A1-A5)** | High |
-| Full automated quality platform | **Q1 — CURRENT GATE** | Critical before public stable |
+| Full automated quality platform | **Q2 — CURRENT GATE; Q1 DONE / VERIFIED** | Critical before public stable |
 | WooCommerce/WordPress/PHP certification | **PENDING** | Critical |
 | WPML/multilingual/multicurrency certification | **FIXES PARTIAL; CERTIFICATION PENDING** | High/product objective |
 | Saved cards/subscriptions/wallets/multi-merchant | **PARTIAL; MATRIX PENDING** | Critical per enabled feature |
@@ -492,7 +492,7 @@ Requirements:
 | WordPress.org publication | **DEFERRED UNTIL READY** | Strategic |
 | Continuous maintenance | **ONGOING AFTER FIRST STABLE** | Critical long-term |
 
-Provider Contract & Payment Lifecycle, the bounded Security Threat-Model Closure and Architecture discovery/A1-A5 are **DONE / VERIFIED**. The current unified gate is **Full Automated Quality Platform — Q1**. Provider contract and lifecycle rows remain separated because they retain distinct closed contracts and regression evidence.
+Provider Contract & Payment Lifecycle, the bounded Security Threat-Model Closure, Architecture discovery/A1-A5 and Quality Platform Q1 are **DONE / VERIFIED**. The current unified gate is **Full Automated Quality Platform — Q2**. Provider contract and lifecycle rows remain separated because they retain distinct closed contracts and regression evidence.
 
 ## 18. Phase ordering
 
@@ -809,7 +809,7 @@ Model events such as:
 
 # SECURITY THREAT-MODEL AUDIT
 
-**Program status:** DONE / VERIFIED. This section retains the security phase scope as a historical engineering standard; the current program gate is **Full Automated Quality Platform — Q1**.
+**Program status:** DONE / VERIFIED. This section retains the security phase scope as a historical engineering standard; the current program gate is **Full Automated Quality Platform — Q2**.
 
 ## 30. Scope
 
@@ -928,7 +928,7 @@ Do not mechanically “clean” payment-critical logic without regression charac
 
 # FULL TEST-DRIVEN QUALITY PLATFORM
 
-**Program status:** Q1 / CURRENT GATE. The locked Composer/PHPUnit/PHPStan/PHPCS foundation is the bounded first tranche; it is not platform certification.
+**Program status:** Q2 / CURRENT GATE; Q1 DONE / VERIFIED. Q2 expands the locked, baseline-free foundation into the characterized CheckoutPayload decision boundary; it is not platform certification or whole-repository static-analysis coverage.
 
 ## 35. Testing philosophy
 
@@ -1516,8 +1516,8 @@ Where security correctness requires a fresh read, verify or invalidate caches de
 LAST VERIFIED PROJECT STATE
 Date: 2026-08-28
 Repository: SimplixInnovations/simplixpay-upayments
-Last verified implementation main SHA: 3223a882867634a2ba7588d7afbd2b2e4b4c21e4
-Canonical implementation tree: 392b73425fa3219b6414a0984136b92c8ef77576
+Last verified implementation main SHA: 9b3ead774a5a9bc2ac0f3b3ad754b2d99053f362
+Canonical implementation tree: 473543cd08515eedd764a4b1ef7b6581590d13a1
 Historical H12 merge: SimplixInnovations/upayments-woocommerce@93e9925247a8bfade626cb822136852fd96eaea2
 Repository foundation/readiness: DONE / VERIFIED
 Phase 0 release identity/updater ownership: DONE / VERIFIED
@@ -1530,7 +1530,8 @@ Architecture A2: DONE / VERIFIED; PR #22; Payment-Method Availability 102/0; pos
 Architecture A3: DONE / VERIFIED; PR #23; Gateway Settings 90/0; post-merge Quality Gates #159 SUCCESS
 Architecture A4: DONE / VERIFIED; PR #24; Subscription Presentation 75/0; post-merge Quality Gates #165 SUCCESS
 Architecture A5: DONE / VERIFIED; PR #25; Checkout Orchestration 67/0; post-merge Quality Gates #174 SUCCESS
-Current program gate: Full Automated Quality Platform — Q1
+Quality Platform Q1: DONE / VERIFIED; PR #26; merge 9b3ead774a5a9bc2ac0f3b3ad754b2d99053f362; post-merge Quality Gates #178 SUCCESS
+Current program gate: Full Automated Quality Platform — Q2
 Production readiness: R0 — engineering hardening
 Public stable release: NO
 WordPress.org release: NO
@@ -1574,8 +1575,9 @@ The security implementation anchor above is post-merge verified. `PROJECT-STATUS
 
 ### Remaining P0/P1 work
 
-- [ ] Full Automated Quality Platform — **Q1 / CURRENT GATE**.
-- [ ] Complete standard Composer/PHPUnit/static-analysis platform beyond the Q1 foundation.
+- [x] Full Automated Quality Platform Q1 foundation — **DONE / VERIFIED** through PR #26 and post-merge Quality Gates #178.
+- [ ] Full Automated Quality Platform — **Q2 / CURRENT GATE**.
+- [ ] Complete standard Composer/PHPUnit/static-analysis platform beyond the Q2 CheckoutPayload expansion.
 - [ ] WordPress/WooCommerce/PHP compatibility certification.
 - [ ] WPML/WCML certification.
 - [ ] Feature-specific certification: saved cards/subscriptions/wallets/multi-merchant/refunds.

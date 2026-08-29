@@ -2,7 +2,7 @@
 
 **Status document:** canonical living engineering state
 
-**Last updated:** 2026-08-28
+**Last updated:** 2026-08-29
 
 **Canonical repository:** `SimplixInnovations/simplixpay-upayments`
 
@@ -29,11 +29,31 @@
 | Provider Contract & Payment Lifecycle | **DONE / VERIFIED** |
 | Security Threat-Model Closure | **DONE / VERIFIED** |
 | Architecture & Code-Quality Foundation | **DONE / VERIFIED (DISCOVERY + A1-A5)** |
-| Current program gate | **Full Automated Quality Platform — Q1** |
+| Quality Platform Q1 foundation | **DONE / VERIFIED** |
+| Current program gate | **Full Automated Quality Platform — Q2** |
 
-The plugin remains a pre-release engineering project. Architecture discovery and A1-A5 are DONE / VERIFIED; Q1 quality-platform foundation is the current bounded implementation tranche. None of these milestones constitutes broad code-quality, provider-host, penetration-test, PCI/compliance, platform, feature, performance or release certification.
+The plugin remains a pre-release engineering project. Architecture discovery/A1-A5 and Quality Platform Q1 are DONE / VERIFIED; Q2 CheckoutPayload analysis expansion is the current bounded implementation tranche. None of these milestones constitutes broad code-quality, provider-host, penetration-test, PCI/compliance, platform, feature, performance or release certification.
 
-## Latest verified milestone — Architecture A5 checkout orchestration
+## Latest verified milestone — Quality Platform Q1 foundation
+
+PR #26 final reviewed head:
+
+- `936e4630c83f7a92cbc4c77f061626e2b0c0c800`
+
+Verified squash merge on `main`:
+
+- merge: `9b3ead774a5a9bc2ac0f3b3ad754b2d99053f362`
+- tree: `473543cd08515eedd764a4b1ef7b6581590d13a1`
+- parent: `3223a882867634a2ba7588d7afbd2b2e4b4c21e4`
+- implementation branch `quality/platform-foundation`: **deleted after verified merge**
+- exact-head Quality Gates run #177: **SUCCESS**
+- push-triggered post-merge Quality Gates run #178: **SUCCESS**
+- Quality Platform Foundation harness: **73/0**
+- PHPUnit: **8 tests / 30 assertions**
+
+Q1 established the locked development-only Composer/PHPUnit/PHPStan/PHPCS platform, dependency audit, PHP 7.2/8.2 distributed-source syntax evidence and a protected always-running H12 prerequisite aggregator. The final independent review was clean after its valid required-check P1 was fixed, and Q1 makes no platform or production-certification claim.
+
+## Previous verified milestone — Architecture A5 checkout orchestration
 
 PR #25 final reviewed head:
 
@@ -333,20 +353,18 @@ Repository readiness remains DONE / VERIFIED:
 
 ## Current program gate — Full Automated Quality Platform
 
-**Status: Q1 — FOUNDATION / IMPLEMENTATION.**
+**Status: Q2 — CHECKOUT PAYLOAD ANALYSIS / IMPLEMENTATION.**
 
-Architecture discovery and A1-A5 are complete. Q1 is limited to the standard development quality foundation. Current scope:
+Architecture discovery/A1-A5 and Quality Platform Q1 are complete. Q2 is limited to the characterized CheckoutPayload decision boundary. Current scope:
 
-- add a canonical development-only Composer manifest and committed lockfile with no production package dependencies;
-- add PHPUnit pure-service tests without replacing the permanent custom regression harnesses;
-- establish baseline-free PHPStan on a recorded pure-module scope and risk-focused PHPCS/WPCS checks;
-- audit the locked dependency graph and disable Composer plugin execution;
-- add declared PHP 7.2 and PHP 8.2 syntax evidence for distributed PHP without claiming compatibility certification; development-only tests remain on the PHP 8.2 regression runtime;
-- make the protected H12 check run unconditionally and explicitly fail on every non-success Composer-quality or syntax prerequisite;
-- keep every historical and architecture harness mandatory and add the Quality Platform Foundation harness;
+- add `CheckoutPayload.php` to the baseline-free PHPStan level 5 / PHP 7.2 scope;
+- reconcile PHPDoc with already-defensive mixed-input boundaries without changing native signatures or payment behavior;
+- expand PHPUnit characterization across strict request tokens, decimals/exact division, JSON-number injection, Store API routing, redirects and provider text;
+- keep the Q1 dependency lock, tool versions, analysis level, PHPCS scope and protected H12 aggregator unchanged;
+- keep every historical and architecture harness plus both permanent quality-platform harnesses mandatory;
 - preserve protected identities and keep Security **82/0**, Provider **141/0 + 4/0**, Phase 9I, Phase 0, H12 and all architecture regressions green.
 
-No provider route, authenticated HTTP behavior, credential value, payload field/value, payment truth, scheduler/attempt state, protected persistence identity or order-state mutation is authorized to change in Q1. `QUALITY-PLATFORM.md` is the current gate record.
+No provider route, authenticated HTTP behavior, credential value, payload field/value, payment truth, scheduler/attempt state, protected persistence identity or order-state mutation is authorized to change in Q2. `QUALITY-PLATFORM.md` is the current gate record.
 
 ## Later program blockers
 

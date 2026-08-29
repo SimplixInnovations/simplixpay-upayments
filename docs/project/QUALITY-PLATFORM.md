@@ -1,78 +1,77 @@
 # Full Automated Quality Platform
 
-**Status:** Q1 / IMPLEMENTATION
+**Status:** Q2 / IMPLEMENTATION
 
-**Current branch:** `quality/platform-foundation`
+**Current branch:** `quality/static-analysis-expansion`
 
-**Verified base `main`:** `3223a882867634a2ba7588d7afbd2b2e4b4c21e4`
+**Verified base `main`:** `9b3ead774a5a9bc2ac0f3b3ad754b2d99053f362`
 
-**Verified base tree:** `392b73425fa3219b6414a0984136b92c8ef77576`
+**Verified base tree:** `473543cd08515eedd764a4b1ef7b6581590d13a1`
 
 ## Entry evidence
 
-Architecture A5 is DONE / VERIFIED:
+Q1 is DONE / VERIFIED:
 
-- PR #25 final reviewed head `997e18d8eb6264a84c6a9a35158213d3d655e6b3`;
-- exact reviewed tree `392b73425fa3219b6414a0984136b92c8ef77576`;
-- exact-head Quality Gates run #173: SUCCESS;
-- final independent review: clean with zero unresolved threads;
-- squash merge `3223a882867634a2ba7588d7afbd2b2e4b4c21e4` on parent `d24b83356cc766f82c3ad9e529d3ec3f4194e887`;
-- push-triggered post-merge Quality Gates run #174: SUCCESS;
+- PR #26 final reviewed head `936e4630c83f7a92cbc4c77f061626e2b0c0c800`;
+- exact reviewed tree `473543cd08515eedd764a4b1ef7b6581590d13a1`;
+- exact-head Quality Gates run #177: SUCCESS;
+- final independent review: clean on the exact head with the valid required-check P1 fixed and zero unresolved threads;
+- squash merge `9b3ead774a5a9bc2ac0f3b3ad754b2d99053f362` on sole parent `3223a882867634a2ba7588d7afbd2b2e4b4c21e4` with the identical reviewed tree;
+- push-triggered post-merge Quality Gates run #178: SUCCESS;
 - implementation branch deleted after verified merge.
 
-## Q1 purpose
+## Closed Q1 contract
 
-Establish the standard, locked development quality toolchain without changing payment, provider, persistence or compatibility behavior.
+Q1 established:
 
-Q1 introduces:
+- a canonical development-only Composer manifest and committed lockfile with zero production package dependencies;
+- disabled Composer plugin execution and locked dependency auditing;
+- PHPUnit 11.5 pure-service tests;
+- baseline-free PHPStan level 5 against PHP 7.2 for the initial pure-module scope;
+- risk-focused PHPCS/WPCS security checks;
+- PHP 7.2 and PHP 8.2 distributed-source syntax evidence without compatibility-certification claims;
+- an always-running protected H12 aggregator that rejects every non-success quality or syntax prerequisite;
+- permanent Quality Platform Foundation **73/0**, historical and architecture regression gates.
 
-- a canonical Composer package manifest and committed lockfile;
-- PHPUnit for pure service-level unit tests;
-- PHPStan at an explicit level and explicit PHP 7.2 analysis target, initially limited to clean pure modules;
-- risk-focused PHPCS/WPCS security checks on the initial pure-module scope;
-- locked dependency auditing;
-- declared PHP 7.2 and PHP 8.2 syntax checks across the distributed PHP surface, with development-only tests retained on the PHP 8.2 regression runtime;
-- dedicated CI jobs plus an always-running H12 prerequisite aggregator that explicitly fails the already-required H12 Regression check on any non-success upstream result, while every historical harness remains mandatory;
-- a permanent executable foundation harness that prevents toolchain, scope and distribution drift.
+Q1 is a development quality foundation, not platform certification.
 
-## Composer and distribution rule
+Composer remains development-only. `vendor/`, tests, the lockfile and analysis configuration remain excluded through `.distignore`, and runtime does not load `vendor/autoload.php`.
 
-Composer is development tooling only in Q1.
+## Q2 purpose
 
-- Production `require` contains only the declared PHP floor.
-- Plugin runtime does not load `vendor/autoload.php`.
-- Composer plugin execution is disabled.
-- `vendor/`, tests, the lockfile and analysis configuration are excluded from a release package through `.distignore`.
-- No runtime behavior may depend on Composer until a later separately reviewed packaging/autoload migration defines install, upgrade and rollback semantics.
+Expand baseline-free static analysis into the characterized checkout-payload decision boundary, with deeper executable boundary coverage before the analyzer scope moves.
 
-## Initial static-analysis scope
+Q2 is deliberately limited to `src/Payment/CheckoutPayload.php` because it owns high-risk but transport-free decisions: strict request tokens, provider decimal lexing and exact division, JSON number injection, Store API request classification, redirect validation and provider-text truncation.
 
-PHPStan level 5 begins with:
+## Q2 scope
 
-- `src/Payment/ProviderResult.php`;
-- `src/Provider/EndpointResolver.php`.
+Q2 may:
 
-The scope has no baseline or ignored errors. `CheckoutPayload` is covered by PHPUnit and the permanent A5/H12 harnesses, but is not yet in PHPStan because its legacy PHPDoc narrows values before defensive runtime validation. That typing work requires a separately characterized expansion rather than suppressions or payment-critical rewrites performed only to satisfy a tool.
+- add `CheckoutPayload.php` to the existing PHPStan level 5 / PHP 7.2 scope;
+- correct PHPDoc parameter types to reflect already-defensive mixed-input runtime contracts;
+- remove only analyzer-proven unreachable checks when executable characterization proves no behavior change;
+- expand PHPUnit characterization across every named pure boundary above;
+- add a permanent Quality Platform Static-Analysis harness;
+- retain the exact Q1 Composer lock, tool versions, analysis level and no-baseline rule.
 
-PHPCS/WPCS initially applies named security rules to `CheckoutPayload`, `ProviderResult` and `EndpointResolver`. Two raw server-value reads retain narrow inline explanations because the route and method are validated by exact allowlists and generic text sanitization would alter route bytes.
+Q2 may not change provider routes, authenticated transport, credentials, payload fields or values, financial truth, order mutation, saved-card identity, scheduler/cycle-claim/billing-attempt state, subscription mutation, persisted compatibility identities, or runtime Composer behavior.
 
-## Q1 acceptance
+## Q2 acceptance
 
-Q1 may be merged only when:
+Q2 may be merged only when:
 
-1. Composer metadata validates strictly and the committed lockfile installs exactly;
-2. the locked dependency audit is clean;
-3. PHPUnit passes with no risky tests or warnings;
-4. PHPStan passes at the recorded level and scope with no baseline;
-5. PHPCS/WPCS passes the recorded named-risk scope;
-6. declared-floor and regression-runtime distributed-PHP syntax jobs pass, while the existing PHP 8.2 tracked-PHP gate continues to cover development tests;
-7. the protected H12 check runs even after an upstream failure and explicitly rejects every non-success quality or syntax prerequisite;
-8. the complete historical and architecture regression stack remains green;
-9. exact-head independent review is clean with zero unresolved valid findings;
-10. merge, post-merge CI and branch cleanup are independently verified.
+1. PHPUnit covers the characterized CheckoutPayload boundary groups and passes with no risky tests or warnings;
+2. PHPStan level 5 passes on CheckoutPayload, ProviderResult and EndpointResolver against PHP 7.2 with no baseline or ignored errors;
+3. PHPCS/WPCS, Composer validation, locked install and dependency audit remain clean;
+4. Quality Platform Foundation advances only for the Q1-closure/Q2-ownership assertion to **74/0**, and the Q2 **56/0** harness is green;
+5. PHP 7.2 and PHP 8.2 distributed-source syntax jobs remain green;
+6. the protected H12 prerequisite aggregator still rejects every non-success upstream result;
+7. every historical and architecture regression remains green with unchanged payment/security counts;
+8. exact-head independent review is clean with zero unresolved valid findings;
+9. merge, post-merge CI and branch cleanup are independently verified.
 
 ## Non-claims
 
-Q1 is a quality-platform foundation, not platform certification. It does not certify WordPress, WooCommerce, PHP, HPOS, Checkout Blocks, WPML/WCML, browser, accessibility, performance, PCI/compliance or production readiness. It also does not replace the existing provider, Security, Phase 9I, H12 or architecture regression contracts.
+Q2 is a static-analysis and boundary-test expansion, not WordPress, WooCommerce, PHP, HPOS, Checkout Blocks, WPML/WCML, browser, accessibility, performance, PCI/compliance or production certification. Analyzer success on three modules is not a whole-repository static-analysis claim.
 
-Later quality tranches expand WordPress/WooCommerce integration tests, static-analysis scope, compatibility matrices, mutation testing, CodeQL and browser tooling only when each protects a named risk.
+Later quality tranches expand WordPress/WooCommerce integration tests, further static-analysis scope, compatibility matrices, mutation testing, CodeQL and browser tooling only when each protects a named risk.

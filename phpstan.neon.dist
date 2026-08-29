@@ -2,6 +2,7 @@ parameters:
     level: 5
     phpVersion: 70200
     paths:
+        - src/Payment/CheckoutPayload.php
         - src/Payment/ProviderResult.php
         - src/Provider/EndpointResolver.php
     tmpDir: .cache/phpstan

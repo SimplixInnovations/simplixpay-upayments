@@ -35,6 +35,12 @@ The project is still in pre-release engineering hardening. Entries below are eng
 - Added PHPUnit pure-service tests, baseline-free PHPStan scope, risk-focused PHPCS/WPCS checks, locked dependency auditing and declared PHP-floor syntax CI for distributed PHP; development-only tests remain on the PHP 8.2 regression runtime.
 - Made the protected H12 check an always-running aggregator that explicitly rejects failed or skipped Composer-quality and syntax prerequisites.
 - Added the permanent Quality Platform Foundation regression gate while retaining every historical and architecture harness.
+- Exact final PR #26 head `936e4630c83f7a92cbc4c77f061626e2b0c0c800` passed Quality Gates #177 and clean independent review.
+- Squash-merged PR #26 as commit `9b3ead774a5a9bc2ac0f3b3ad754b2d99053f362`, tree `473543cd08515eedd764a4b1ef7b6581590d13a1`; post-merge run #178 passed and the implementation branch was deleted.
+
+### Full Automated Quality Platform — Q2 Checkout Payload Analysis
+
+- Expands PHPUnit boundary characterization and baseline-free PHPStan level 5 scope into `CheckoutPayload` without changing payment behavior or tool versions.
 
 ### Architecture A2 — Payment-Method Availability Client/Cache — DONE / VERIFIED
 
@@ -68,7 +74,7 @@ The project is still in pre-release engineering hardening. Entries below are eng
 
 ### Current program gate
 
-**Full Automated Quality Platform — Q1** is now the active gate. Architecture A1-A5 are DONE / VERIFIED; Q1 is limited to the locked development toolchain, pure unit/static-analysis scope, dependency audit and CI foundation and does not certify platforms or alter payment runtime contracts.
+**Full Automated Quality Platform — Q2** is now the active gate. Architecture A1-A5 and Quality Platform Q1 are DONE / VERIFIED; Q2 is limited to CheckoutPayload boundary characterization and baseline-free static-analysis expansion and does not certify platforms or alter payment runtime contracts.
 
 ### Provider Contract & Payment Lifecycle — DONE / VERIFIED
 

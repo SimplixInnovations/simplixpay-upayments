@@ -120,7 +120,8 @@ foreach (array('/vendor/', '/tests/', '/composer.json', '/composer.lock', '/phpc
 }
 q1_assert(q1_contains($gitignore, '/vendor/'), 'Composer vendor directory is ignored');
 q1_assert(!q1_contains(q1_read($q1_root, 'UPayments.php'), 'vendor/autoload.php'), 'plugin runtime does not load Composer vendor code');
-q1_assert(q1_contains($quality_record, '**Status:** Q1 / IMPLEMENTATION'), 'quality control record owns the Q1 gate');
+q1_assert(q1_contains($quality_record, 'Q1 is DONE / VERIFIED'), 'quality control record closes the Q1 foundation');
+q1_assert(q1_contains($quality_record, '**Status:** Q2 / IMPLEMENTATION'), 'quality control record advances beyond Q1');
 q1_assert(q1_contains($quality_record, 'not platform certification'), 'quality record rejects certification overclaim');
 
 echo "\nQ1 Quality Platform Foundation: {$q1_pass} PASS / {$q1_fail} FAIL\n";
