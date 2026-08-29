@@ -14,6 +14,7 @@ final class CheckoutPayloadTest extends TestCase {
 
     public function test_amount_token_rejects_ambiguous_or_nonpositive_values(): void {
         self::assertSame('0.125', CheckoutPayload::build_amount_json_token('0.125'));
+        self::assertNull(CheckoutPayload::build_amount_json_token(''));
         self::assertNull(CheckoutPayload::build_amount_json_token('0.00'));
         self::assertNull(CheckoutPayload::build_amount_json_token('01.00'));
         self::assertNull(CheckoutPayload::build_amount_json_token('1e3'));

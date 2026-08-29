@@ -202,7 +202,7 @@ class CheckoutPayload {
         if (preg_match('/\s/', $amount_str)) {
             return null;
         }
-        if (strlen($amount_str) === 0 || strlen($amount_str) > 22) {
+        if (strlen($amount_str) > 22) {
             return null;
         }
         // Reject all-zero numerics (must be strictly positive).
@@ -328,9 +328,6 @@ class CheckoutPayload {
         // surrounded on both sides by JSON-syntax characters or whitespace, so
         // that no sub-fragment of a longer number could match.
         foreach ($all_tokens as $token) {
-            if (!is_string($token) || $token === '') {
-                continue;
-            }
             $literal = preg_quote($token, '/');
             $json_value_re = '/(?P<pre>[\\{\\,\\:])\\s*(?:' . $literal . ')\\s*(?P<post>[\\,\\}\\]]|\\z)/m';
             if (!preg_match($json_value_re, $result)) {
@@ -922,9 +919,6 @@ class CheckoutPayload {
             return false;
         }
         $route = self::normalize_store_api_route($uri);
-        if ($route === null) {
-            return false;
-        }
         // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.MissingUnslash,WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- The method is accepted only by the exact POST classifier below.
         $method = isset($_SERVER['REQUEST_METHOD']) ? strtoupper((string) $_SERVER['REQUEST_METHOD']) : '';
         return self::classify_checkout_request_context(true, $route, $method);

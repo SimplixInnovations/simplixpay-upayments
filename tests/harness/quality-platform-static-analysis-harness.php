@@ -65,6 +65,9 @@ foreach (array(
 ) as $boundary_doc) {
     q2_assert(q2_contains($checkout, $boundary_doc), "defensive boundary typing is explicit: {$boundary_doc}");
 }
+q2_assert(!q2_contains($checkout, 'strlen($amount_str) === 0'), 'amount token has no analyzer-proven unreachable empty-length guard');
+q2_assert(!q2_contains($checkout, "if (!is_string(\$token) || \$token === '')"), 'verified token list has no analyzer-proven unreachable type guard');
+q2_assert(!q2_contains($checkout, '$route === null'), 'string-only route normalizer has no analyzer-proven unreachable null guard');
 
 q2_assert(substr_count($tests, 'public function test_') >= 16, 'CheckoutPayload PHPUnit characterization has at least sixteen focused tests');
 foreach (array(

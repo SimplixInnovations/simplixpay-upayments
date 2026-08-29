@@ -63,7 +63,7 @@ Q2 may be merged only when:
 1. PHPUnit covers the characterized CheckoutPayload boundary groups and passes with no risky tests or warnings;
 2. PHPStan level 5 passes on CheckoutPayload, ProviderResult and EndpointResolver against PHP 7.2 with no baseline or ignored errors;
 3. PHPCS/WPCS, Composer validation, locked install and dependency audit remain clean;
-4. Quality Platform Foundation advances only for the Q1-closure/Q2-ownership assertion to **74/0**, and the Q2 **56/0** harness is green;
+4. Quality Platform Foundation advances only for the Q1-closure/Q2-ownership assertion to **74/0**, and the Q2 **59/0** harness is green;
 5. PHP 7.2 and PHP 8.2 distributed-source syntax jobs remain green;
 6. the protected H12 prerequisite aggregator still rejects every non-success upstream result;
 7. every historical and architecture regression remains green with unchanged payment/security counts;
