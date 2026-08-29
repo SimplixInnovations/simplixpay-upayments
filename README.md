@@ -66,7 +66,7 @@ The project remains in **pre-release engineering hardening**. It is not yet a br
 | Provider exact-amount harness | **4 PASS / 0 FAIL** |
 | Security threat-model harness | **82 PASS / 0 FAIL** |
 | Quality-platform foundation harness | **74 PASS / 0 FAIL** |
-| Q2 CheckoutPayload analysis harness | **59 PASS / 0 FAIL** |
+| Q2 CheckoutPayload analysis harness | **64 PASS / 0 FAIL** |
 | H12 regression baseline | **PHP 1927 PASS / 0 FAIL; Blocks 144 PASS / 0 FAIL** |
 | Bounded Security Threat-Model Closure | **DONE / VERIFIED** |
 | Broad penetration-test/PCI/platform/feature certification | **Pending** |

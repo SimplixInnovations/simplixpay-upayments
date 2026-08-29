@@ -36,6 +36,8 @@ $workflow = q2_read($q2_root, '.github/workflows/quality-gates.yml');
 $quality_record = q2_read($q2_root, 'docs/project/QUALITY-PLATFORM.md');
 $status = q2_read($q2_root, 'docs/project/PROJECT-STATUS.md');
 $readme = q2_read($q2_root, 'README.md');
+$handoff = q2_read($q2_root, 'docs/project/NEW-CHAT-HANDOFF.md');
+$playbook = q2_read($q2_root, 'docs/project/MASTER-ENGINEERING-PLAYBOOK.md');
 
 q2_assert(is_array($composer), 'Composer manifest is valid JSON');
 q2_assert(isset($composer['require']) && $composer['require'] === array('php' => '>=7.2'), 'Composer still has no production package dependency');
@@ -108,6 +110,9 @@ foreach (array(
 }
 q2_assert(q2_contains($status, '| Current program gate | **Full Automated Quality Platform — Q2** |'), 'project status advances to Quality Platform Q2');
 q2_assert(q2_contains($readme, 'The current program gate is **Full Automated Quality Platform — Q2**.'), 'README advances to Quality Platform Q2');
+q2_assert(!q2_contains($handoff, 'CURRENT / Q1'), 'handoff program sequence rejects alternate stale Q1 gate marker');
+q2_assert(!q2_contains($playbook, 'CURRENT / Q1'), 'master playbook phase ordering rejects alternate stale Q1 gate marker');
+q2_assert(q2_contains($workflow, "reject_across_live_records 'CURRENT / Q1'"), 'Governance rejects alternate stale Q1 gate marker');
 
 echo "\nQ2 Checkout Payload Analysis: {$q2_pass} PASS / {$q2_fail} FAIL\n";
 exit($q2_fail === 0 ? 0 : 1);
