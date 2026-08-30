@@ -97,8 +97,11 @@ q2_assert(q2_contains($workflow, 'if: ${{ always() }}'), 'protected H12 aggregat
 q2_assert(q2_contains($workflow, 'QUALITY_PLATFORM_RESULT: ${{ needs.quality-platform.result }}'), 'protected H12 aggregator still reads quality result');
 q2_assert(q2_contains($workflow, 'PHP_SYNTAX_RESULT: ${{ needs.php-syntax-compatibility.result }}'), 'protected H12 aggregator still reads syntax result');
 
-q2_assert(q2_contains($quality_record, 'Q2 is DONE / VERIFIED'), 'quality record closes Q2');
-q2_assert(q2_contains($quality_record, '**Status:** Q3 / IMPLEMENTATION'), 'quality record advances beyond Q2');
+q2_assert(
+    q2_contains($quality_record, 'Q2 is DONE / VERIFIED') &&
+    q2_contains($quality_record, '**Status:** Q3 / IMPLEMENTATION'),
+    'quality record closes Q2 and advances beyond it'
+);
 foreach (array(
     'c2c30f90688747a523301cb776ed920ef39063f3',
     '3550fdbb0810af26808851e24e39a6130725e8db',
