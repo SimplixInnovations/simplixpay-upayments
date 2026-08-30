@@ -50,6 +50,11 @@ q4_assert(q4_contains($verifier, '@param mixed $order'), 'verifier documents its
 q4_assert(q4_contains($verifier, "'sandboxapi.upayments.com'"), 'sandbox status host remains exact');
 q4_assert(q4_contains($verifier, "'apiv2api.upayments.com'"), 'live status host remains exact');
 q4_assert(q4_contains($verifier, "'/api/v1/get-payment-status/'"), 'status path remains exact');
+q4_assert(
+    q4_contains($verifier, "strtolower((string) \$parts['scheme']) !== 'https'")
+        && q4_contains($tests, "\$gateway->scheme = 'http';"),
+    'HTTPS-only destination enforcement has executable characterization'
+);
 q4_assert(q4_contains($verifier, "'redirection' => 0"), 'status transport forbids redirects');
 q4_assert(q4_contains($verifier, "'sslverify'   => true"), 'status transport retains TLS verification');
 q4_assert(q4_contains($verifier, "'Authorization' => 'Bearer ' . \$gateway->apiKey"), 'Bearer credential remains status-only transport state');
@@ -78,6 +83,7 @@ q4_assert(q4_contains($verifier, "hash_equals(\$local_canonical, \$verified_cano
 q4_assert(q4_contains($verifier, "'captured_payment_id_missing'"), 'captured status still requires a provider payment ID');
 
 q4_assert(substr_count($tests, 'public function test_') >= 7, 'StatusVerifier has focused PHPUnit characterization');
+q4_assert(substr_count($tests, 'assert_unauthenticated_failure') === 6, 'every transport/envelope failure asserts unauthenticated and unbound state');
 foreach (array(
     'invalid_boundaries_fail_before_rate_or_http_mutation',
     'disallowed_destination_is_rejected_before_bearer_or_rate_slot',

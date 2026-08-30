@@ -9,6 +9,7 @@ use Simplix\Pay\UPayments\Payment\StatusVerifier;
 final class StatusVerifierGateway {
     public $apiKey = 'test-api-key-secret';
     public $test_mode = true;
+    public $scheme = 'https';
     public $host = 'sandboxapi.upayments.com';
     public $url_suffix = '';
 
@@ -17,7 +18,7 @@ final class StatusVerifierGateway {
     }
 
     public function getAPIUrl($route = '') {
-        return 'https://' . $this->host . '/api/v1/' . $route . $this->url_suffix;
+        return $this->scheme . '://' . $this->host . '/api/v1/' . $route . $this->url_suffix;
     }
 
     public function getCurrencyCode($currency) {
@@ -77,6 +78,10 @@ final class StatusVerifierTest extends TestCase {
         $gateway = new StatusVerifierGateway();
         $order = new StatusVerifierOrder(42, 'merchant-42');
 
+        $gateway->scheme = 'http';
+        self::assertSame('status_url_invalid', StatusVerifier::verify($gateway, $order, 'track-abc')['reason']);
+
+        $gateway->scheme = 'https';
         $gateway->host = 'attacker.example';
         self::assertSame('status_url_invalid', StatusVerifier::verify($gateway, $order, 'track-abc')['reason']);
 
@@ -114,29 +119,41 @@ final class StatusVerifierTest extends TestCase {
         $order = new StatusVerifierOrder(42, 'merchant-42');
 
         $GLOBALS['simplixpay_test_http_response'] = new \SimplixPay_Test_WP_Error();
-        self::assertSame('network_error', StatusVerifier::verify($gateway, $order, 'track-network')['reason']);
+        $this->assert_unauthenticated_failure(
+            'network_error',
+            StatusVerifier::verify($gateway, $order, 'track-network')
+        );
 
         $this->reset_fixtures();
         $GLOBALS['simplixpay_test_http_response'] = array('response' => array('code' => 200), 'body' => '{}');
-        self::assertSame('unexpected_http_200', StatusVerifier::verify($gateway, $order, 'track-http')['reason']);
+        $this->assert_unauthenticated_failure(
+            'unexpected_http_200',
+            StatusVerifier::verify($gateway, $order, 'track-http')
+        );
 
         $this->reset_fixtures();
         $GLOBALS['simplixpay_test_http_response'] = array('response' => array('code' => 201), 'body' => '');
-        self::assertSame('empty_response', StatusVerifier::verify($gateway, $order, 'track-empty')['reason']);
+        $this->assert_unauthenticated_failure(
+            'empty_response',
+            StatusVerifier::verify($gateway, $order, 'track-empty')
+        );
 
         $this->reset_fixtures();
         $GLOBALS['simplixpay_test_http_response'] = array('response' => array('code' => 201), 'body' => '{bad-json');
-        self::assertSame('invalid_status_response', StatusVerifier::verify($gateway, $order, 'track-json')['reason']);
+        $this->assert_unauthenticated_failure(
+            'invalid_status_response',
+            StatusVerifier::verify($gateway, $order, 'track-json')
+        );
 
         $this->reset_fixtures();
         $GLOBALS['simplixpay_test_http_response'] = array(
             'response' => array('code' => 201),
             'body'     => json_encode(array('status' => false, 'data' => array())),
         );
-        $result = StatusVerifier::verify($gateway, $order, 'track-status');
-        self::assertSame('invalid_status_response', $result['reason']);
-        self::assertFalse($result['authenticated']);
-        self::assertFalse($result['bound']);
+        $this->assert_unauthenticated_failure(
+            'invalid_status_response',
+            StatusVerifier::verify($gateway, $order, 'track-status')
+        );
     }
 
     public function test_binding_rejects_identity_currency_and_amount_mismatches(): void {
@@ -209,6 +226,12 @@ final class StatusVerifierTest extends TestCase {
     private function reset_fixtures(): void {
         \simplixpay_test_reset_wp_options();
         \simplixpay_test_reset_wp_http();
+    }
+
+    private function assert_unauthenticated_failure($reason, array $result): void {
+        self::assertSame($reason, $result['reason']);
+        self::assertFalse($result['authenticated']);
+        self::assertFalse($result['bound']);
     }
 
     private function transaction(StatusVerifierOrder $order, $result = 'CAPTURED'): array {
