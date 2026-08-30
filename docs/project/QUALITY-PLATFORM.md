@@ -43,6 +43,15 @@ Composer remains development-only. `vendor/`, tests, the lockfile and analysis c
 
 ## Closed Q2 contract
 
+Q2 is DONE / VERIFIED:
+
+- PR #28 final reviewed head `c2c30f90688747a523301cb776ed920ef39063f3`;
+- exact reviewed tree `3550fdbb0810af26808851e24e39a6130725e8db`;
+- exact-head Quality Gates run #182: SUCCESS;
+- squash merge `356680b9fe8a2724e778d40386ca182247715249` with the identical reviewed tree;
+- push-triggered post-merge Quality Gates run #183: SUCCESS;
+- implementation branch deleted after verified merge.
+
 Q2 added `src/Payment/CheckoutPayload.php` to the baseline-free PHPStan level 5/PHP 7.2 scope and expanded executable PHPUnit characterization across strict checkout tokens, exact provider-decimal handling, JSON-number injection, Store API classification, redirects and provider-text normalization. It removed only three analyzer-proven unreachable checks and changed no observable payment contract.
 
 ## Closed Q3 contract
