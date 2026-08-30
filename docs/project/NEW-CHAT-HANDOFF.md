@@ -30,13 +30,18 @@ Use this file with root `AGENTS.md`, `PROJECT-STATUS.md`, the naming standard, t
 - Architecture A5 — checkout payload/orchestration core: **DONE / VERIFIED**
 - Quality Platform Q1 foundation: **DONE / VERIFIED**
 - Quality Platform Q2 CheckoutPayload analysis: **DONE / VERIFIED**
-- Current program gate: **Full Automated Quality Platform — Q3**
+- Quality Platform Q3 payment-concurrency analysis: **DONE / VERIFIED**
+- Current program gate: **Full Automated Quality Platform — Q4**
 - Stable production release: **NO**
 - WordPress.org release: **NO**
 
 Always verify live GitHub before acting. Recorded SHAs are milestone evidence, not substitutes for fresh source/check/review verification.
 
-## Latest verified milestone — Quality Platform Q2
+## Latest verified milestone — Quality Platform Q3
+
+PR #29 final reviewed head `e08be468b5453524996c525860c12d5619081132` was squash-merged as commit `30e99a6a456b72709c87e442b8437301ba64e99b`, tree `703a56c03e95862b8b4807d9a1ea28e2e3e201dd`, on sole parent `356680b9fe8a2724e778d40386ca182247715249`. Exact-head Quality Gates run #188 and post-merge run #189 passed all five jobs; PHPUnit was **31 tests / 220 assertions**, Q1 was **74/0**, Q2 was **64/0**, Q3 was **69/0**, PHPStan/PHPCS/audit and every historical/architecture/H12 regression were green, final independent exact-head review found no major issues after every valid P1/P2 was fixed, and the implementation branch was deleted.
+
+## Previous verified milestone — Quality Platform Q2
 
 PR #28 final reviewed head `c2c30f90688747a523301cb776ed920ef39063f3` was squash-merged as commit `356680b9fe8a2724e778d40386ca182247715249`, tree `3550fdbb0810af26808851e24e39a6130725e8db`, on sole parent `9b3ead774a5a9bc2ac0f3b3ad754b2d99053f362`. Exact-head Quality Gates run #182 and post-merge run #183 passed all five jobs; PHPUnit was **21 tests / 126 assertions**, Q1 was **74/0**, Q2 was **64/0**, PHPStan/PHPCS/audit and every historical/architecture/H12 regression were green, final independent re-review found no major issues, and the implementation branch was deleted. PR #27 remains closed unmerged as evidence-only.
 
@@ -291,20 +296,20 @@ Do not globally rename:
 - malformed H12 secret is distinct from missing and fails closed.
 - selected saved card requires current valid provenance + exact scope/generation + fresh provider Retrieve + exact membership.
 
-## Current tranche — Full Automated Quality Platform Q3
+## Current tranche — Full Automated Quality Platform Q4
 
-**Status: Q3 — PAYMENT CONCURRENCY ANALYSIS / IMPLEMENTATION.**
+**Status: Q4 — AUTHENTICATED STATUS ANALYSIS / IMPLEMENTATION.**
 
 Required bounded sequence:
 
-1. Work only from verified Q2 merge `356680b9fe8a2724e778d40386ca182247715249`, tree `3550fdbb0810af26808851e24e39a6130725e8db`, on `quality/payment-concurrency-analysis`.
-2. Expand deterministic PHPUnit characterization across StatusRateGate capacity/scope/bucket cleanup and OrderLock acquire/release/stale-takeover/competing-worker/malformed-record boundaries.
-3. Add StatusRateGate and OrderLock to the existing baseline-free PHPStan level 5 / PHP 7.2 and risk-focused PHPCS scopes, using bounded development-only WordPress option/`wpdb` symbols.
-4. Reconcile only documentation-level input contracts, retaining positive-integer order identities; do not change executable rate/lock behavior.
+1. Work only from verified Q3 merge `30e99a6a456b72709c87e442b8437301ba64e99b`, tree `703a56c03e95862b8b4807d9a1ea28e2e3e201dd`, on `quality/authenticated-status-analysis`.
+2. Expand deterministic PHPUnit characterization across StatusVerifier destination-before-credential/rate validation, exact hardened HTTP, network/protocol failures and strict authenticated transaction/order binding.
+3. Add StatusVerifier to the existing baseline-free PHPStan level 5 / PHP 7.2 and risk-focused PHPCS scopes, using bounded development-only WordPress HTTP symbols.
+4. Reconcile only documentation-level mixed-input contracts; do not change executable status transport or binding behavior.
 5. Keep the Q1 lockfile, tool versions, analysis level, PHPStan no-baseline/no-`ignoreErrors` rule, distributed syntax matrix and protected H12 prerequisite aggregator unchanged; do not broadly disable PHPCS rules.
-6. Keep every closed regression and architecture harness mandatory, plus all three permanent Quality Platform harnesses.
+6. Keep every closed regression and architecture harness mandatory, plus all four permanent Quality Platform harnesses.
 7. Preserve exact provider, Security, H12, Phase 9I, scheduler/attempt, payment truth and compatibility identities.
-8. Require independent exact-head review, green CI, verified merge, post-merge CI and branch cleanup before Q3 is DONE / VERIFIED.
+8. Require independent exact-head review, green CI, verified merge, post-merge CI and branch cleanup before Q4 is DONE / VERIFIED.
 
 The quality gate may improve evidence and tooling; it may not reinterpret provider truth, weaken authorization, or silently broaden certified feature/platform claims.
 
@@ -348,7 +353,7 @@ Read in this order:
 3. Provider Contract & Payment Lifecycle — **DONE / VERIFIED**
 4. Security Threat-Model Closure — **DONE / VERIFIED**
 5. Architecture & Code-Quality Foundation — **DONE / VERIFIED (A1-A5)**
-6. Full automated quality platform — **CURRENT / Q3**
+6. Full automated quality platform — **CURRENT / Q4**
 7. Platform certification: Woo/WP/PHP/HPOS/Blocks/WPML
 8. Feature certification
 9. Performance/UX/operations/diagnostics
@@ -364,9 +369,9 @@ Read AGENTS.md first, then docs/project/PROJECT-STATUS.md, docs/project/NAMING-I
 
 Treat recorded SHAs/status as verified milestone anchors, not substitutes for live GitHub. Freshly verify current main, open PRs/branches, checks, review state and current source before acting; reconcile any drift first.
 
-Repository readiness, Phase 0, Phase 9I, Provider Contract & Payment Lifecycle, Security Threat-Model Closure, Architecture discovery/A1-A5 and Quality Platform Q1-Q2 are DONE / VERIFIED. Q2 was squash-merged from PR #28 as main `356680b9fe8a2724e778d40386ca182247715249`, tree `3550fdbb0810af26808851e24e39a6130725e8db`; exact-head run #182 and post-merge run #183 passed. The current permitted gate is Full Automated Quality Platform — Q3.
+Repository readiness, Phase 0, Phase 9I, Provider Contract & Payment Lifecycle, Security Threat-Model Closure, Architecture discovery/A1-A5 and Quality Platform Q1-Q3 are DONE / VERIFIED. Q3 was squash-merged from PR #29 as main `30e99a6a456b72709c87e442b8437301ba64e99b`, tree `703a56c03e95862b8b4807d9a1ea28e2e3e201dd`; exact-head run #188 and post-merge run #189 passed. The current permitted gate is Full Automated Quality Platform — Q4.
 
-Implement only Q3 payment-concurrency analysis expansion: deepen deterministic PHPUnit characterization for StatusRateGate and OrderLock, add both to baseline-free PHPStan level 5/PHP 7.2 and risk-focused PHPCS, and reconcile PHPDoc with existing runtime checks without widening the positive-integer order-identity caller contract or changing executable behavior. Keep Q1's Composer lock, tool versions, dependency audit, distributed syntax jobs and always-running protected H12 prerequisite aggregator unchanged. Composer and WordPress/`wpdb` fixtures remain development-only; `vendor/` and tests are not runtime or distribution code. Change no rate ceiling, option identity, lock TTL/format, scheduler/cycle-claim/billing-attempt identity, auto-deduct transport, credential, provider route, payload field/value, payment truth or order-state contract. Keep all existing regression suites, every architecture harness and all three Quality Platform harnesses mandatory.
+Implement only Q4 authenticated-status analysis expansion: deepen deterministic PHPUnit characterization for StatusVerifier, add it to baseline-free PHPStan level 5/PHP 7.2 and risk-focused PHPCS, and reconcile documentation-only mixed-input PHPDoc without changing executable behavior. Keep Q1's Composer lock, tool versions, dependency audit, distributed syntax jobs and always-running protected H12 prerequisite aggregator unchanged. Composer and WordPress HTTP fixtures remain development-only; `vendor/` and tests are not runtime or distribution code. Change no provider host/path, Bearer construction, HTTP status/TLS/redirect/timeout policy, rate ceiling, transaction binding, decimal equality, provider result classification, scheduler/cycle-claim/billing-attempt identity, credential, payment truth or order-state contract. Keep all existing regression suites, every architecture harness and all four Quality Platform harnesses mandatory.
 
 Do not claim broad security, PCI/compliance, platform, feature, performance or production certification from the bounded security closure. UPayments webhook signature details remain provider-document unresolved, automatic refunds remain unsupported pending durable idempotency/reconciliation design, and subscription auto-deduction remains separately characterized rather than broadly certified.
 

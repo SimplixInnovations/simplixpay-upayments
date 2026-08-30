@@ -116,9 +116,13 @@ foreach (array(
 ) as $closure_evidence) {
     q3_assert(q3_contains($quality_record, $closure_evidence), "Q2 closure evidence is pinned: {$closure_evidence}");
 }
-q3_assert(q3_contains($quality_record, '**Status:** Q3 / IMPLEMENTATION'), 'quality record advances to Q3');
-q3_assert(q3_contains($status, '| Current program gate | **Full Automated Quality Platform — Q3** |'), 'project status advances to Quality Platform Q3');
-q3_assert(q3_contains($readme, 'The current program gate is **Full Automated Quality Platform — Q3**.'), 'README advances to Quality Platform Q3');
+q3_assert(
+    q3_contains($quality_record, 'Q3 is DONE / VERIFIED') &&
+    q3_contains($quality_record, '**Status:** Q4 / IMPLEMENTATION'),
+    'quality record closes Q3 and advances beyond it'
+);
+q3_assert(q3_contains($status, '| Current program gate | **Full Automated Quality Platform — Q4** |'), 'project status advances beyond Quality Platform Q3');
+q3_assert(q3_contains($readme, 'The current program gate is **Full Automated Quality Platform — Q4**.'), 'README advances beyond Quality Platform Q3');
 q3_assert(!q3_contains($handoff, 'CURRENT / Q2'), 'handoff rejects the stale current-Q2 marker');
 q3_assert(!q3_contains($playbook, 'CURRENT / Q2'), 'master playbook rejects the stale current-Q2 marker');
 q3_assert(q3_contains($workflow, "reject_across_live_records 'CURRENT / Q2'"), 'Governance rejects stale current-Q2 markers');

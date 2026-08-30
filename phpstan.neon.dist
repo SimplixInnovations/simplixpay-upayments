@@ -8,5 +8,6 @@ parameters:
         - src/Payment/OrderLock.php
         - src/Payment/ProviderResult.php
         - src/Payment/StatusRateGate.php
+        - src/Payment/StatusVerifier.php
         - src/Provider/EndpointResolver.php
     tmpDir: .cache/phpstan
