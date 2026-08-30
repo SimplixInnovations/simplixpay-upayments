@@ -119,23 +119,26 @@ q4_assert(q4_contains($workflow, 'QUALITY_PLATFORM_RESULT: ${{ needs.quality-pla
 q4_assert(q4_contains($workflow, 'PHP_SYNTAX_RESULT: ${{ needs.php-syntax-compatibility.result }}'), 'protected H12 aggregator still reads syntax result');
 
 foreach (array(
-    'e08be468b5453524996c525860c12d5619081132',
-    '703a56c03e95862b8b4807d9a1ea28e2e3e201dd',
-    'Quality Gates run #188',
-    '30e99a6a456b72709c87e442b8437301ba64e99b',
-    'Quality Gates run #189',
+    '8543bdfce1a4e216200791dc5637b646f49bcb59',
+    'ad5ae98d5e935bb48d1441f94e130f5d3adb3ca9',
+    'Quality Gates run #194',
+    '4b3db92b0ded0c598bad0ab677babab9e6102811',
+    'Quality Gates run #195',
     'implementation branch deleted',
 ) as $closure_evidence) {
-    q4_assert(q4_contains($quality_record, $closure_evidence), "Q3 closure evidence is pinned: {$closure_evidence}");
+    q4_assert(q4_contains($quality_record, $closure_evidence), "Q4 closure evidence is pinned: {$closure_evidence}");
 }
-q4_assert(q4_contains($quality_record, '**Status:** Q4 / IMPLEMENTATION'), 'quality record advances to Q4');
-q4_assert(q4_contains($status, '| Current program gate | **Full Automated Quality Platform — Q4** |'), 'project status advances to Quality Platform Q4');
-q4_assert(q4_contains($readme, 'The current program gate is **Full Automated Quality Platform — Q4**.'), 'README advances to Quality Platform Q4');
 q4_assert(
-    q4_contains($audit, 'deterministic PHPUnit characterization of StatusVerifier destination-before-rate/Bearer validation')
-        && q4_contains($audit, 'PHPCS ownership of StatusVerifier beside the Q1-Q3 modules')
-        && !q4_contains($audit, 'characterization of the exact 30-slot rate gate'),
-    'repository audit assigns the exact Q4 authenticated-status scope'
+    q4_contains($quality_record, 'Q4 is DONE / VERIFIED')
+        && q4_contains($quality_record, '**Status:** Q5 / IMPLEMENTATION'),
+    'quality record closes Q4 and advances beyond it'
+);
+q4_assert(q4_contains($status, '| Current program gate | **Full Automated Quality Platform — Q5** |'), 'project status advances beyond Quality Platform Q4');
+q4_assert(q4_contains($readme, 'The current program gate is **Full Automated Quality Platform — Q5**.'), 'README advances beyond Quality Platform Q4');
+q4_assert(
+    q4_contains($audit, 'PaymentMethodAvailability cache/advisory-lock/durable-gate/provider-normalization surface')
+        && q4_contains($audit, 'Q1-Q4 modules'),
+    'repository audit advances beyond Q4 to the exact Q5 owner scope'
 );
 q4_assert(!q4_contains($handoff, 'CURRENT / Q3'), 'handoff rejects the stale current-Q3 marker');
 q4_assert(!q4_contains($playbook, 'CURRENT / Q3'), 'master playbook rejects the stale current-Q3 marker');

@@ -32,11 +32,34 @@
 | Quality Platform Q1 foundation | **DONE / VERIFIED** |
 | Quality Platform Q2 CheckoutPayload analysis | **DONE / VERIFIED** |
 | Quality Platform Q3 payment-concurrency analysis | **DONE / VERIFIED** |
-| Current program gate | **Full Automated Quality Platform — Q4** |
+| Quality Platform Q4 authenticated-status analysis | **DONE / VERIFIED** |
+| Current program gate | **Full Automated Quality Platform — Q5** |
 
-The plugin remains a pre-release engineering project. Architecture discovery/A1-A5 and Quality Platform Q1-Q3 are DONE / VERIFIED; Q4 authenticated-status analysis is the current bounded implementation tranche. None of these milestones constitutes broad code-quality, provider-host, penetration-test, PCI/compliance, platform, feature, performance or release certification.
+The plugin remains a pre-release engineering project. Architecture discovery/A1-A5 and Quality Platform Q1-Q4 are DONE / VERIFIED; Q5 payment-method availability analysis is the current bounded implementation tranche. None of these milestones constitutes broad code-quality, provider-host, penetration-test, PCI/compliance, platform, feature, performance or release certification.
 
-## Latest verified milestone — Quality Platform Q3 payment-concurrency analysis
+## Latest verified milestone — Quality Platform Q4 authenticated-status analysis
+
+PR #30 final reviewed head:
+
+- `8543bdfce1a4e216200791dc5637b646f49bcb59`
+
+Verified squash merge on `main`:
+
+- merge: `4b3db92b0ded0c598bad0ab677babab9e6102811`
+- tree: `ad5ae98d5e935bb48d1441f94e130f5d3adb3ca9`
+- parent: `30e99a6a456b72709c87e442b8437301ba64e99b`
+- implementation branch `quality/authenticated-status-analysis`: **deleted after verified merge**
+- exact-head Quality Gates run #194: **SUCCESS**
+- push-triggered post-merge Quality Gates run #195: **SUCCESS**
+- PHPUnit: **39 tests / 327 assertions**
+- Quality Platform Foundation: **74/0**
+- Q2 Checkout Payload Analysis: **64/0**
+- Q3 Payment Concurrency Analysis: **69/0**
+- Q4 Authenticated Status Analysis: **68/0**
+
+Q4 expanded baseline-free PHPStan level 5/PHP 7.2, PHPCS and PHPUnit into StatusVerifier without changing executable production statements. It characterizes exact sandbox/live destination allowlisting before Bearer/rate use, hardened HTTP failures and authenticated transaction/order binding. Every historical/architecture/H12 regression remained green; all valid P2 findings were resolved, and final independent exact-head review found no major issues. Q4 makes no live-provider, platform or production-certification claim.
+
+## Previous verified milestone — Quality Platform Q3 payment-concurrency analysis
 
 PR #29 final reviewed head:
 
@@ -396,19 +419,19 @@ Repository readiness remains DONE / VERIFIED:
 
 ## Current program gate — Full Automated Quality Platform
 
-**Status: Q4 — AUTHENTICATED STATUS ANALYSIS / IMPLEMENTATION.**
+**Status: Q5 — PAYMENT-METHOD AVAILABILITY ANALYSIS / IMPLEMENTATION.**
 
-Architecture discovery/A1-A5 and Quality Platform Q1-Q3 are complete. Q4 is limited to the authenticated status-query transport and transaction/order binding boundary. Current scope:
+Architecture discovery/A1-A5 and Quality Platform Q1-Q4 are complete. Q5 is limited to the extracted payment-method availability cache, advisory-lock, durable-gate and provider-normalization boundary. Current scope:
 
-- add `StatusVerifier.php` to the baseline-free PHPStan level 5 / PHP 7.2 and risk-focused PHPCS scopes;
-- add development-only WordPress HTTP symbols and deterministic outbound-call fixtures;
-- expand PHPUnit characterization across invalid input, destination rejection before credential/rate use, hardened Bearer transport, network/protocol failures, strict identity/currency/amount binding and fail-closed provider results;
-- reconcile documentation-only mixed-input PHPDoc with existing runtime guards and change no executable payment behavior;
+- add `PaymentMethodAvailability.php` to the baseline-free PHPStan level 5 / PHP 7.2 and risk-focused PHPCS scopes;
+- add development-only WordPress transient/advisory-lock symbols and deterministic fixtures;
+- expand PHPUnit characterization across exact cache/gate/lock identities, strict schema-3 cache shapes, lock contention, cooldown/write failure, provider transport/envelope failure and normalized known-button results;
+- reconcile documentation-only property/return PHPDoc with existing runtime behavior and change no executable payment behavior;
 - keep the Q1 dependency lock, tool versions, analysis level, PHPStan no-baseline/no-`ignoreErrors` rule and protected H12 aggregator unchanged;
-- keep every historical and architecture harness plus all four permanent quality-platform harnesses mandatory;
+- keep every historical and architecture harness plus all five permanent quality-platform harnesses mandatory;
 - preserve protected identities and keep Security **82/0**, Provider **141/0 + 4/0**, Phase 9I, Phase 0, H12 and all architecture regressions green.
 
-No provider host/path, HTTP 201/TLS/redirect/timeout policy, Bearer construction, rate ceiling, transaction binding, amount equality, provider result classification, payment truth, scheduler/attempt state, protected persistence identity or order-state mutation is authorized to change in Q4. `QUALITY-PLATFORM.md` is the current gate record.
+No cache schema/prefix/fingerprint width, known-button set, gate option identity, 65-second cooldown, advisory-lock formula/timing, provider route/transport, strict HTTP 201/status contract, normalization, payment truth, scheduler/attempt state, protected persistence identity or order-state mutation is authorized to change in Q5. `QUALITY-PLATFORM.md` is the current gate record.
 
 ## Later program blockers
 

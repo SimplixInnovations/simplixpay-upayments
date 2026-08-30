@@ -38,7 +38,7 @@ The following engineering gates are **DONE / VERIFIED**:
 - Security Threat-Model Closure;
 - Architecture & Code-Quality Foundation A1-A5.
 
-Quality Platform Q1-Q3 are **DONE / VERIFIED**. The current program gate is **Full Automated Quality Platform — Q4**.
+Quality Platform Q1-Q4 are **DONE / VERIFIED**. The current program gate is **Full Automated Quality Platform — Q5**.
 
 The project remains in **pre-release engineering hardening**. It is not yet a broadly certified stable production release and has not yet been published to WordPress.org.
 
@@ -55,8 +55,8 @@ The project remains in **pre-release engineering hardening**. It is not yet a br
 | Provider Contract & Payment Lifecycle | **DONE / VERIFIED** |
 | Security Threat-Model Closure | **DONE / VERIFIED** |
 | Architecture & Code-Quality Foundation | **DONE / VERIFIED (A1-A5)** |
-| Quality Platform Q1-Q3 | **DONE / VERIFIED** |
-| Current engineering gate | **Full Automated Quality Platform — Q4** |
+| Quality Platform Q1-Q4 | **DONE / VERIFIED** |
+| Current engineering gate | **Full Automated Quality Platform — Q5** |
 | Stable SimplixPay release | **Not yet published** |
 | WordPress.org release | **Not yet published** |
 | Phase 0 release-identity harness | **35 PASS / 0 FAIL** |
@@ -69,6 +69,7 @@ The project remains in **pre-release engineering hardening**. It is not yet a br
 | Quality-platform foundation harness | **74 PASS / 0 FAIL** |
 | Q2 CheckoutPayload analysis harness | **64 PASS / 0 FAIL** |
 | Q3 payment-concurrency analysis harness | **69 PASS / 0 FAIL** |
+| Q4 authenticated-status analysis harness | **68 PASS / 0 FAIL** |
 | H12 regression baseline | **PHP 1927 PASS / 0 FAIL; Blocks 144 PASS / 0 FAIL** |
 | Bounded Security Threat-Model Closure | **DONE / VERIFIED** |
 | Broad penetration-test/PCI/platform/feature certification | **Pending** |
@@ -165,7 +166,7 @@ Phase 9I system completion does not mean every merchant installation was automat
 
 ## Current engineering gate — Full Automated Quality Platform
 
-Architecture discovery/A1-A5 and Quality Platform Q1-Q3 are DONE / VERIFIED. Q3 closed on merge `30e99a6a456b72709c87e442b8437301ba64e99b` with StatusRateGate/OrderLock analysis and concurrency characterization green. Q4 expands the same baseline-free platform into `StatusVerifier`, characterizing exact provider destination validation, hardened Bearer transport and authenticated transaction/order binding while retaining the locked development-only toolchain, every historical/architecture regression and the protected H12 prerequisite aggregator. It must preserve the closed payment lifecycle, Security Threat-Model, H12 and Phase 9I contracts and protected persisted/runtime identities.
+Architecture discovery/A1-A5 and Quality Platform Q1-Q4 are DONE / VERIFIED. Q4 closed on merge `4b3db92b0ded0c598bad0ab677babab9e6102811` with StatusVerifier analysis and authenticated transport/binding characterization green. Q5 expands the same baseline-free platform into `PaymentMethodAvailability`, characterizing credential-scoped cache identity, advisory-lock coordination, the durable 65-second gate and strict provider availability normalization while retaining the locked development-only toolchain, every historical/architecture regression and the protected H12 prerequisite aggregator. It must preserve the closed payment lifecycle, Security Threat-Model, H12 and Phase 9I contracts and protected persisted/runtime identities.
 
 No big-bang rewrite, runtime branding rename, runtime Composer dependency or broad compatibility claim is authorized by this gate.
 

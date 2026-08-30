@@ -22,13 +22,18 @@ final class PaymentMethodAvailability {
         'google_pay',
     );
 
+    /** @var bool */
     private $test_mode;
+
+    /** @var string */
     private $api_key;
+
+    /** @var callable */
     private $transport;
 
     /**
      * @param mixed    $test_mode Truthy selects the sandbox cache/lock scope.
-     * @param mixed    $api_key Current gateway API credential.
+     * @param string   $api_key Current gateway API credential.
      * @param callable $transport Zero-argument hardened provider transport.
      */
     public function __construct($test_mode, $api_key, callable $transport) {
@@ -37,16 +42,19 @@ final class PaymentMethodAvailability {
         $this->transport = $transport;
     }
 
+    /** @return string */
     private function rate_gate_option_name() {
         return 'upayments_payment_methods_rate_gate_' . ($this->test_mode ? 'test' : 'live');
     }
 
+    /** @return string */
     private function transient_name() {
         $mode = $this->test_mode ? 'test' : 'live';
         $fingerprint = hash_hmac('sha256', $mode . '|' . $this->api_key, wp_salt('auth'));
         return 'upay_pm_v3_' . substr($fingerprint, 0, 16);
     }
 
+    /** @return string */
     private function lock_name() {
         global $wpdb;
 
@@ -56,6 +64,7 @@ final class PaymentMethodAvailability {
         return 'upay_pm_' . substr(hash('sha256', $lock_input), 0, 16);
     }
 
+    /** @return int */
     private function acquire_lock() {
         global $wpdb;
 
@@ -71,6 +80,7 @@ final class PaymentMethodAvailability {
         return -1;
     }
 
+    /** @return bool */
     private function release_lock() {
         global $wpdb;
 
@@ -80,14 +90,20 @@ final class PaymentMethodAvailability {
         return true;
     }
 
+    /** @return array */
     private function rate_gate() {
         return array('not_before' => (int) get_option($this->rate_gate_option_name(), 0));
     }
 
+    /**
+     * @param int $not_before Unix timestamp boundary value.
+     * @return bool
+     */
     private function set_rate_gate($not_before) {
         return update_option($this->rate_gate_option_name(), (int) $not_before, false);
     }
 
+    /** @return array|null */
     private function cached() {
         $cached = get_transient($this->transient_name());
         return is_array($cached) ? $cached : null;
@@ -141,10 +157,16 @@ final class PaymentMethodAvailability {
         return 'success';
     }
 
+    /** @return array */
     private static function failure_sentinel() {
         return array('schema' => self::CACHE_SCHEMA, 'state' => 'failure');
     }
 
+    /**
+     * @param array $result Provider availability cache value.
+     * @param int $not_before Durable cooldown boundary.
+     * @return bool
+     */
     private function cache($result, $not_before) {
         $ttl = max(1, $not_before - time());
         return set_transient($this->transient_name(), $result, $ttl);
