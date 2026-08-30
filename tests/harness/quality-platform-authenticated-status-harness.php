@@ -53,8 +53,18 @@ q4_assert(q4_contains($verifier, "'apiv2api.upayments.com'"), 'live status host 
 q4_assert(q4_contains($verifier, "'/api/v1/get-payment-status/'"), 'status path remains exact');
 q4_assert(
     q4_contains($verifier, "strtolower((string) \$parts['scheme']) !== 'https'")
-        && q4_contains($tests, "\$gateway->scheme = 'http';"),
+        && q4_contains($tests, "'plaintext scheme' => array('scheme', 'http')"),
     'HTTPS-only destination enforcement has executable characterization'
+);
+q4_assert(
+    q4_contains($tests, "\$gateway->host = 'apiv2api.upayments.com';")
+        && q4_contains($tests, 'https://apiv2api.upayments.com/api/v1/get-payment-status/track-abc')
+        && q4_contains($tests, "'user info'        => array('userinfo', 'user@')")
+        && q4_contains($tests, "'password info'    => array('userinfo', 'user:password@')")
+        && q4_contains($tests, "'explicit port'    => array('port', ':8443')")
+        && q4_contains($tests, "'fragment'         => array('url_suffix', '#fragment')")
+        && q4_contains($tests, "'wrong path'       => array('path_prefix', '/api/v2/')"),
+    'sandbox/live allowlist and every forbidden URL component have executable characterization'
 );
 q4_assert(q4_contains($verifier, "'redirection' => 0"), 'status transport forbids redirects');
 q4_assert(q4_contains($verifier, "'sslverify'   => true"), 'status transport retains TLS verification');
@@ -89,6 +99,7 @@ foreach (array(
     'invalid_boundaries_fail_before_rate_or_http_mutation',
     'disallowed_destination_is_rejected_before_bearer_or_rate_slot',
     'hardened_transport_binds_an_exact_captured_transaction',
+    'live_status_host_uses_the_same_exact_authenticated_contract',
     'network_and_protocol_failures_remain_unauthenticated',
     'binding_rejects_identity_currency_and_amount_mismatches',
     'capture_requires_payment_id_while_nonterminal_results_bind_fail_closed',

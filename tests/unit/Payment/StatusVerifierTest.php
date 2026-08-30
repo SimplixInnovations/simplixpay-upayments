@@ -10,7 +10,10 @@ final class StatusVerifierGateway {
     public $apiKey = 'test-api-key-secret';
     public $test_mode = true;
     public $scheme = 'https';
+    public $userinfo = '';
     public $host = 'sandboxapi.upayments.com';
+    public $port = '';
+    public $path_prefix = '/api/v1/';
     public $url_suffix = '';
 
     public function getMode() {
@@ -18,7 +21,8 @@ final class StatusVerifierGateway {
     }
 
     public function getAPIUrl($route = '') {
-        return $this->scheme . '://' . $this->host . '/api/v1/' . $route . $this->url_suffix;
+        return $this->scheme . '://' . $this->userinfo . $this->host . $this->port
+            . $this->path_prefix . $route . $this->url_suffix;
     }
 
     public function getCurrencyCode($currency) {
@@ -75,21 +79,23 @@ final class StatusVerifierTest extends TestCase {
     }
 
     public function test_disallowed_destination_is_rejected_before_bearer_or_rate_slot(): void {
-        $gateway = new StatusVerifierGateway();
         $order = new StatusVerifierOrder(42, 'merchant-42');
+        $invalid_destinations = array(
+            'plaintext scheme' => array('scheme', 'http'),
+            'user info'        => array('userinfo', 'user@'),
+            'password info'    => array('userinfo', 'user:password@'),
+            'explicit port'    => array('port', ':8443'),
+            'foreign host'     => array('host', 'attacker.example'),
+            'query string'     => array('url_suffix', '?redirect=attacker.example'),
+            'fragment'         => array('url_suffix', '#fragment'),
+            'wrong path'       => array('path_prefix', '/api/v2/'),
+        );
 
-        $gateway->scheme = 'http';
-        self::assertSame('status_url_invalid', StatusVerifier::verify($gateway, $order, 'track-abc')['reason']);
-
-        $gateway->scheme = 'https';
-        $gateway->host = 'attacker.example';
-        self::assertSame('status_url_invalid', StatusVerifier::verify($gateway, $order, 'track-abc')['reason']);
-
-        $gateway->host = 'sandboxapi.upayments.com';
-        $gateway->url_suffix = '?redirect=attacker.example';
-        self::assertSame('status_url_invalid', StatusVerifier::verify($gateway, $order, 'track-abc')['reason']);
-        self::assertSame(array(), $GLOBALS['simplixpay_test_http_calls']);
-        self::assertSame(array(), $GLOBALS['simplixpay_test_options']);
+        foreach ($invalid_destinations as $label => $case) {
+            $gateway = new StatusVerifierGateway();
+            $gateway->{$case[0]} = $case[1];
+            $this->assert_destination_rejected_before_mutation($gateway, $order, $label);
+        }
     }
 
     public function test_hardened_transport_binds_an_exact_captured_transaction(): void {
@@ -112,6 +118,29 @@ final class StatusVerifierTest extends TestCase {
         self::assertSame('application/json', $call['args']['headers']['Accept']);
         self::assertSame('Bearer test-api-key-secret', $call['args']['headers']['Authorization']);
         self::assertStringNotContainsString('test-api-key-secret', implode('|', array_keys($GLOBALS['simplixpay_test_options'])));
+    }
+
+    public function test_live_status_host_uses_the_same_exact_authenticated_contract(): void {
+        $gateway = new StatusVerifierGateway();
+        $gateway->test_mode = false;
+        $gateway->host = 'apiv2api.upayments.com';
+        $order = new StatusVerifierOrder(42, 'merchant-42');
+        $this->respond_with_transaction($this->transaction($order));
+
+        $result = StatusVerifier::verify($gateway, $order, 'track-abc');
+
+        self::assertTrue($result['authenticated']);
+        self::assertTrue($result['bound']);
+        self::assertSame(ProviderResult::CAPTURED, $result['classification']);
+        self::assertCount(1, $GLOBALS['simplixpay_test_http_calls']);
+        self::assertSame(
+            'https://apiv2api.upayments.com/api/v1/get-payment-status/track-abc',
+            $GLOBALS['simplixpay_test_http_calls'][0]['url']
+        );
+        self::assertSame(
+            'Bearer test-api-key-secret',
+            $GLOBALS['simplixpay_test_http_calls'][0]['args']['headers']['Authorization']
+        );
     }
 
     public function test_network_and_protocol_failures_remain_unauthenticated(): void {
@@ -232,6 +261,19 @@ final class StatusVerifierTest extends TestCase {
         self::assertSame($reason, $result['reason']);
         self::assertFalse($result['authenticated']);
         self::assertFalse($result['bound']);
+    }
+
+    private function assert_destination_rejected_before_mutation(
+        StatusVerifierGateway $gateway,
+        StatusVerifierOrder $order,
+        $label
+    ): void {
+        $result = StatusVerifier::verify($gateway, $order, 'track-abc');
+        self::assertSame('status_url_invalid', $result['reason'], $label);
+        self::assertFalse($result['authenticated'], $label);
+        self::assertFalse($result['bound'], $label);
+        self::assertSame(array(), $GLOBALS['simplixpay_test_http_calls'], $label);
+        self::assertSame(array(), $GLOBALS['simplixpay_test_options'], $label);
     }
 
     private function transaction(StatusVerifierOrder $order, $result = 'CAPTURED'): array {
