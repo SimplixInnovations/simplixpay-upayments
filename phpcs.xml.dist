@@ -10,6 +10,7 @@
     <file>src/Payment/OrderLock.php</file>
     <file>src/Payment/ProviderResult.php</file>
     <file>src/Payment/StatusRateGate.php</file>
+    <file>src/Payment/StatusVerifier.php</file>
     <file>src/Provider/EndpointResolver.php</file>
 
     <exclude-pattern>vendor/*</exclude-pattern>

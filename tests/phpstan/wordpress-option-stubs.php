@@ -21,3 +21,7 @@ function get_option($name, $default = false) {}
 function update_option($name, $value, $autoload = null) {}
 function delete_option($name) {}
 function wp_cache_delete($key, $group = '') {}
+function wp_remote_get($url, $args = array()) {}
+function is_wp_error($value) {}
+function wp_remote_retrieve_response_code($response) {}
+function wp_remote_retrieve_body($response) {}

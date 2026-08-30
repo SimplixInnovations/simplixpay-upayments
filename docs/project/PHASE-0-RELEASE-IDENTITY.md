@@ -16,7 +16,7 @@ Phase 0 took ownership of the public SimplixPay release identity without rewriti
 
 The plugin now publicly identifies as **SimplixPay for UPayments** by **Simplix Innovations**, uses an independent pre-1.0 version line, has no inherited external updater authority, and preserves the historical runtime identifiers required for existing stores/orders/tokens/subscriptions.
 
-This gate does **not** mean the plugin is broadly production-certified. It closes release-identity/updater ownership only. At Phase 0 closure, migration, payment-lifecycle, security, architecture, compatibility and release-certification phases still remained. Phase 9I, Provider Contract & Payment Lifecycle, the bounded Security Threat-Model Closure, Architecture discovery/A1-A5 and Quality Platform Q1-Q2 have since become **DONE / VERIFIED**; **Full Automated Quality Platform — Q3** is the current program gate.
+This gate does **not** mean the plugin is broadly production-certified. It closes release-identity/updater ownership only. At Phase 0 closure, migration, payment-lifecycle, security, architecture, compatibility and release-certification phases still remained. Phase 9I, Provider Contract & Payment Lifecycle, the bounded Security Threat-Model Closure, Architecture discovery/A1-A5 and Quality Platform Q1-Q3 have since become **DONE / VERIFIED**; **Full Automated Quality Platform — Q4** is the current program gate.
 
 ## Verified public plugin identity
 
@@ -192,4 +192,4 @@ Post-merge verification established:
 
 No tag or GitHub Release is created by this engineering milestone.
 
-The implementation gate immediately following Phase 0 was **Phase 9I — Historical token-identity migration**. Phase 9I, Provider Contract & Payment Lifecycle, the bounded Security Threat-Model Closure, Architecture discovery/A1-A5 and Quality Platform Q1-Q2 are now **DONE / VERIFIED**; the current permitted gate is **Full Automated Quality Platform — Q3**, under the same protected-branch review/CI discipline and frozen compatibility contracts.
+The implementation gate immediately following Phase 0 was **Phase 9I — Historical token-identity migration**. Phase 9I, Provider Contract & Payment Lifecycle, the bounded Security Threat-Model Closure, Architecture discovery/A1-A5 and Quality Platform Q1-Q3 are now **DONE / VERIFIED**; the current permitted gate is **Full Automated Quality Platform — Q4**, under the same protected-branch review/CI discipline and frozen compatibility contracts.

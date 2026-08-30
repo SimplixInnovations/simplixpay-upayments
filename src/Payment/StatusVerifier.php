@@ -8,6 +8,12 @@ defined('ABSPATH') || exit;
  * Bearer-authenticated Get Payment Status client + strict order binding.
  */
 final class StatusVerifier {
+    /**
+     * @param mixed $gateway  Defensive active-gateway boundary value.
+     * @param mixed $order    Defensive WooCommerce order boundary value.
+     * @param mixed $track_id Provider status cursor.
+     * @return array Authenticated status verification result.
+     */
     public static function verify($gateway, $order, $track_id) {
         $result = self::base_result('invalid_request');
 
@@ -87,6 +93,12 @@ final class StatusVerifier {
 
     /**
      * Pure binding/classification seam used by the executable harness.
+     *
+     * @param mixed $gateway     Defensive active-gateway boundary value.
+     * @param mixed $order       Defensive WooCommerce order boundary value.
+     * @param mixed $track_id    Provider status cursor.
+     * @param mixed $transaction Provider transaction payload.
+     * @return array Authenticated binding result.
      */
     public static function bind_transaction($gateway, $order, $track_id, $transaction) {
         $result = self::base_result('binding_invalid');
