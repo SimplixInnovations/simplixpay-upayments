@@ -301,7 +301,7 @@ Required bounded sequence:
 2. Expand deterministic PHPUnit characterization across StatusRateGate capacity/scope/bucket cleanup and OrderLock acquire/release/stale-takeover/competing-worker/malformed-record boundaries.
 3. Add StatusRateGate and OrderLock to the existing baseline-free PHPStan level 5 / PHP 7.2 and risk-focused PHPCS scopes, using bounded development-only WordPress option/`wpdb` symbols.
 4. Correct only documentation-level mixed-input contracts; do not change executable rate/lock behavior.
-5. Keep the Q1 lockfile, tool versions, analysis level, no-baseline/no-ignore rule, distributed syntax matrix and protected H12 prerequisite aggregator unchanged.
+5. Keep the Q1 lockfile, tool versions, analysis level, PHPStan no-baseline/no-`ignoreErrors` rule, distributed syntax matrix and protected H12 prerequisite aggregator unchanged; do not broadly disable PHPCS rules.
 6. Keep every closed regression and architecture harness mandatory, plus all three permanent Quality Platform harnesses.
 7. Preserve exact provider, Security, H12, Phase 9I, scheduler/attempt, payment truth and compatibility identities.
 8. Require independent exact-head review, green CI, verified merge, post-merge CI and branch cleanup before Q3 is DONE / VERIFIED.

@@ -382,7 +382,7 @@ Architecture discovery/A1-A5 and Quality Platform Q1-Q2 are complete. Q3 is limi
 - add development-only WordPress option/`wpdb` symbols and deterministic conditional-mutation fixtures;
 - expand PHPUnit characterization across exact 30-slot capacity, credential/mode isolation, bucket cleanup, atomic lock acquisition, exact-token release, stale compare-and-swap takeover, competing workers and malformed-record fail-closed behavior;
 - reconcile PHPDoc with already-defensive mixed-input boundaries without changing native signatures or executable payment behavior;
-- keep the Q1 dependency lock, tool versions, analysis level, no-baseline/no-ignore rule and protected H12 aggregator unchanged;
+- keep the Q1 dependency lock, tool versions, analysis level, PHPStan no-baseline/no-`ignoreErrors` rule and protected H12 aggregator unchanged;
 - keep every historical and architecture harness plus all three permanent quality-platform harnesses mandatory;
 - preserve protected identities and keep Security **82/0**, Provider **141/0 + 4/0**, Phase 9I, Phase 0, H12 and all architecture regressions green.
 

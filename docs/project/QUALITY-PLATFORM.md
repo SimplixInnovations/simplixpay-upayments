@@ -74,7 +74,7 @@ Q3 may:
 - add PHPUnit characterization for invalid input, exact capacity, scope isolation/redaction, bucket cleanup, live-owner exclusion, exact-token release, stale takeover, competing-worker races and malformed-record fail-closed behavior;
 - correct PHPDoc parameter types to reflect already-defensive mixed-input runtime contracts;
 - add a permanent Quality Platform Payment-Concurrency harness;
-- retain the exact Q1 Composer lock, tool versions, analysis level, PHPCS rules and no-baseline/no-ignore rule.
+- retain the exact Q1 Composer lock, tool versions, analysis level, PHPCS rules and PHPStan no-baseline/no-`ignoreErrors` rule; exact-line PHPCS annotations are permitted only for immediately prepared conditional SQL that the sniff cannot follow through a local variable.
 
 Q3 may not change the 30/minute rate contract, option prefixes, lock TTL, lock record format, provider routes, authenticated transport, credentials, payload fields/values, financial truth, order mutation, saved-card identity, scheduler/cycle-claim/billing-attempt state, subscription mutation, protected compatibility identities or runtime Composer behavior.
 
@@ -83,7 +83,7 @@ Q3 may not change the 30/minute rate contract, option prefixes, lock TTL, lock r
 Q3 may be merged only when:
 
 1. PHPUnit covers every named rate-gate/order-lock boundary and passes with no risky tests or warnings;
-2. PHPStan level 5 passes on all Q1-Q3 modules against PHP 7.2 with no baseline or ignored errors;
+2. PHPStan level 5 passes on all Q1-Q3 modules against PHP 7.2 with no baseline or `ignoreErrors` entries;
 3. PHPCS/WPCS, Composer validation, locked install and dependency audit remain clean;
 4. the Q1 **74/0**, Q2 **64/0** and new Q3 permanent harnesses are green;
 5. PHP 7.2 and PHP 8.2 distributed-source syntax jobs remain green;

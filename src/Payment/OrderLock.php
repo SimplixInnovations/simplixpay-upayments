@@ -108,6 +108,7 @@ final class OrderLock {
             $name,
             $expected
         );
+        // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- Prepared immediately above with fixed SQL and placeholders.
         $changed = $wpdb->query($sql);
         if ((int) $changed !== 1) {
             return false;
@@ -134,6 +135,7 @@ final class OrderLock {
             $name,
             $expected
         );
+        // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- Prepared immediately above with fixed SQL and placeholders.
         $changed = $wpdb->query($sql);
         if ((int) $changed !== 1) {
             return false;

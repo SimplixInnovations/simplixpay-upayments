@@ -68,6 +68,8 @@ q3_assert(q3_contains($order_lock, "add_option(\$name, \$record, '', 'no')"), 'f
 q3_assert(q3_contains($order_lock, 'AND option_value = %s'), 'takeover/release SQL remains exact-record compare-and-swap');
 q3_assert(!q3_contains($order_lock, 'delete_option($name)'), 'order lock never blindly deletes a contested lock');
 q3_assert(q3_contains($order_lock, "wp_cache_delete(\$name, 'options')"), 'successful SQL mutation flushes the option cache');
+q3_assert(substr_count($order_lock, 'phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- Prepared immediately above with fixed SQL and placeholders.') === 2, 'only the two immediately prepared conditional queries carry exact-line PHPCS annotations');
+q3_assert(!q3_contains($phpcs, '<exclude name="WordPress.DB.PreparedSQL'), 'PHPCS configuration does not disable prepared-SQL enforcement');
 
 q3_assert(substr_count($rate_tests, 'public function test_') >= 4, 'StatusRateGate has focused PHPUnit characterization');
 foreach (array(
