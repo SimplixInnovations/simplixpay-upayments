@@ -16,7 +16,7 @@ final class OrderLock {
     private const TTL = 45;
 
     /**
-     * @param int $order_id
+     * @param int $order_id Positive WooCommerce order identity.
      * @return string|null Opaque owner token on success.
      */
     public static function acquire($order_id) {
@@ -51,8 +51,8 @@ final class OrderLock {
     /**
      * Release only the exact record owned by this token.
      *
-     * @param int    $order_id
-     * @param string $token Token returned by acquire().
+     * @param int   $order_id Positive WooCommerce order identity.
+     * @param mixed $token    Token returned by acquire().
      * @return void
      */
     public static function release($order_id, $token) {
@@ -108,6 +108,7 @@ final class OrderLock {
             $name,
             $expected
         );
+        // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- Prepared immediately above with fixed SQL and placeholders.
         $changed = $wpdb->query($sql);
         if ((int) $changed !== 1) {
             return false;
@@ -134,6 +135,7 @@ final class OrderLock {
             $name,
             $expected
         );
+        // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- Prepared immediately above with fixed SQL and placeholders.
         $changed = $wpdb->query($sql);
         if ((int) $changed !== 1) {
             return false;

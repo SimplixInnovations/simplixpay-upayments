@@ -426,7 +426,7 @@ arch_assert(arch_contains($architecture, 'This is not permission for a big-bang 
 arch_assert(arch_contains($architecture, 'exact accepted `UPayments.php` byte size for the current architecture milestone'), 'monolith ratchet update contract is explicit');
 arch_assert(arch_contains($architecture, 'Composer only with an explicit distribution rule'), 'Composer introduction is gated by distribution contract');
 arch_assert(arch_contains($architecture, 'PHPCS/WPCS and PHPStan incrementally'), 'static-analysis rollout is incremental');
-arch_assert(arch_contains($status, '| Current program gate | **Full Automated Quality Platform — Q2** |'), 'project status advances to Quality Platform Q2');
+arch_assert(arch_contains($status, '| Current program gate | **Full Automated Quality Platform — Q3** |'), 'project status advances to Quality Platform Q3');
 arch_assert(arch_contains($naming, '**Canonical slug:** `simplixpay-upayments`'), 'canonical slug remains protected');
 
 $gatewayPath = $root . '/UPayments.php';

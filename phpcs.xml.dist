@@ -7,7 +7,9 @@
     <config name="installed_paths" value="vendor/wp-coding-standards/wpcs"/>
 
     <file>src/Payment/CheckoutPayload.php</file>
+    <file>src/Payment/OrderLock.php</file>
     <file>src/Payment/ProviderResult.php</file>
+    <file>src/Payment/StatusRateGate.php</file>
     <file>src/Provider/EndpointResolver.php</file>
 
     <exclude-pattern>vendor/*</exclude-pattern>

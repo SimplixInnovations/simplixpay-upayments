@@ -97,19 +97,23 @@ q2_assert(q2_contains($workflow, 'if: ${{ always() }}'), 'protected H12 aggregat
 q2_assert(q2_contains($workflow, 'QUALITY_PLATFORM_RESULT: ${{ needs.quality-platform.result }}'), 'protected H12 aggregator still reads quality result');
 q2_assert(q2_contains($workflow, 'PHP_SYNTAX_RESULT: ${{ needs.php-syntax-compatibility.result }}'), 'protected H12 aggregator still reads syntax result');
 
-q2_assert(q2_contains($quality_record, '**Status:** Q2 / IMPLEMENTATION'), 'quality record owns Q2');
+q2_assert(
+    q2_contains($quality_record, 'Q2 is DONE / VERIFIED') &&
+    q2_contains($quality_record, '**Status:** Q3 / IMPLEMENTATION'),
+    'quality record closes Q2 and advances beyond it'
+);
 foreach (array(
-    '936e4630c83f7a92cbc4c77f061626e2b0c0c800',
-    '473543cd08515eedd764a4b1ef7b6581590d13a1',
-    'Quality Gates run #177',
-    '9b3ead774a5a9bc2ac0f3b3ad754b2d99053f362',
-    'Quality Gates run #178',
+    'c2c30f90688747a523301cb776ed920ef39063f3',
+    '3550fdbb0810af26808851e24e39a6130725e8db',
+    'Quality Gates run #182',
+    '356680b9fe8a2724e778d40386ca182247715249',
+    'Quality Gates run #183',
     'implementation branch deleted',
 ) as $closure_evidence) {
-    q2_assert(q2_contains($quality_record, $closure_evidence), "Q1 closure evidence is pinned: {$closure_evidence}");
+    q2_assert(q2_contains($quality_record, $closure_evidence), "Q2 closure evidence is pinned: {$closure_evidence}");
 }
-q2_assert(q2_contains($status, '| Current program gate | **Full Automated Quality Platform — Q2** |'), 'project status advances to Quality Platform Q2');
-q2_assert(q2_contains($readme, 'The current program gate is **Full Automated Quality Platform — Q2**.'), 'README advances to Quality Platform Q2');
+q2_assert(q2_contains($status, '| Current program gate | **Full Automated Quality Platform — Q3** |'), 'project status advances beyond Quality Platform Q2');
+q2_assert(q2_contains($readme, 'The current program gate is **Full Automated Quality Platform — Q3**.'), 'README advances beyond Quality Platform Q2');
 q2_assert(!q2_contains($handoff, 'CURRENT / Q1'), 'handoff program sequence rejects alternate stale Q1 gate marker');
 q2_assert(!q2_contains($playbook, 'CURRENT / Q1'), 'master playbook phase ordering rejects alternate stale Q1 gate marker');
 q2_assert(q2_contains($workflow, "reject_across_live_records 'CURRENT / Q1'"), 'Governance rejects alternate stale Q1 gate marker');

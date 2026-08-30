@@ -17,7 +17,7 @@ final class StatusRateGate {
     private const PREFIX = 'simplixpay_upay_status_v1_';
 
     /**
-     * @param object $gateway Active WC_Upayments gateway instance.
+     * @param mixed $gateway Defensive active-gateway boundary value.
      * @return bool True when one provider-query slot was acquired.
      */
     public static function acquire($gateway) {

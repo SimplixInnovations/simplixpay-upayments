@@ -38,7 +38,7 @@ The following engineering gates are **DONE / VERIFIED**:
 - Security Threat-Model Closure;
 - Architecture & Code-Quality Foundation A1-A5.
 
-The current program gate is **Full Automated Quality Platform — Q2**.
+Quality Platform Q1-Q2 are **DONE / VERIFIED**. The current program gate is **Full Automated Quality Platform — Q3**.
 
 The project remains in **pre-release engineering hardening**. It is not yet a broadly certified stable production release and has not yet been published to WordPress.org.
 
@@ -55,7 +55,8 @@ The project remains in **pre-release engineering hardening**. It is not yet a br
 | Provider Contract & Payment Lifecycle | **DONE / VERIFIED** |
 | Security Threat-Model Closure | **DONE / VERIFIED** |
 | Architecture & Code-Quality Foundation | **DONE / VERIFIED (A1-A5)** |
-| Current engineering gate | **Full Automated Quality Platform — Q2** |
+| Quality Platform Q1-Q2 | **DONE / VERIFIED** |
+| Current engineering gate | **Full Automated Quality Platform — Q3** |
 | Stable SimplixPay release | **Not yet published** |
 | WordPress.org release | **Not yet published** |
 | Phase 0 release-identity harness | **35 PASS / 0 FAIL** |
@@ -163,7 +164,7 @@ Phase 9I system completion does not mean every merchant installation was automat
 
 ## Current engineering gate — Full Automated Quality Platform
 
-Architecture discovery/A1-A5 and Quality Platform Q1 are DONE / VERIFIED. Q2 expands baseline-free PHPStan and PHPUnit boundary characterization into `CheckoutPayload` while retaining the locked development-only toolchain, every historical/architecture regression and the protected H12 prerequisite aggregator. It must preserve the closed payment lifecycle, Security Threat-Model, H12 and Phase 9I contracts and protected persisted/runtime identities.
+Architecture discovery/A1-A5 and Quality Platform Q1-Q2 are DONE / VERIFIED. Q2 closed on merge `356680b9fe8a2724e778d40386ca182247715249` with CheckoutPayload static analysis and boundary tests green. Q3 expands the same baseline-free platform into `StatusRateGate` and `OrderLock`, characterizing exact provider-status capacity and database compare-and-swap lifecycle locking while retaining the locked development-only toolchain, every historical/architecture regression and the protected H12 prerequisite aggregator. It must preserve the closed payment lifecycle, Security Threat-Model, H12 and Phase 9I contracts and protected persisted/runtime identities.
 
 No big-bang rewrite, runtime branding rename, runtime Composer dependency or broad compatibility claim is authorized by this gate.
 
