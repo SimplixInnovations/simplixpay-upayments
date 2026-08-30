@@ -1516,8 +1516,8 @@ Where security correctness requires a fresh read, verify or invalidate caches de
 LAST VERIFIED PROJECT STATE
 Date: 2026-08-30
 Repository: SimplixInnovations/simplixpay-upayments
-Last verified implementation main SHA: 30e99a6a456b72709c87e442b8437301ba64e99b
-Canonical implementation tree: 703a56c03e95862b8b4807d9a1ea28e2e3e201dd
+Last verified implementation main SHA: 4b3db92b0ded0c598bad0ab677babab9e6102811
+Canonical implementation tree: ad5ae98d5e935bb48d1441f94e130f5d3adb3ca9
 Historical H12 merge: SimplixInnovations/upayments-woocommerce@93e9925247a8bfade626cb822136852fd96eaea2
 Repository foundation/readiness: DONE / VERIFIED
 Phase 0 release identity/updater ownership: DONE / VERIFIED

@@ -134,6 +134,11 @@ foreach (array(
 q5_assert(q5_contains($quality_record, '**Status:** Q5 / IMPLEMENTATION'), 'quality record advances to Q5');
 q5_assert(q5_contains($status, '| Current program gate | **Full Automated Quality Platform — Q5** |'), 'project status advances to Quality Platform Q5');
 q5_assert(q5_contains($readme, 'The current program gate is **Full Automated Quality Platform — Q5**.'), 'README advances to Quality Platform Q5');
+q5_assert(
+    q5_contains($playbook, 'Last verified implementation main SHA: 4b3db92b0ded0c598bad0ab677babab9e6102811')
+        && q5_contains($playbook, 'Canonical implementation tree: ad5ae98d5e935bb48d1441f94e130f5d3adb3ca9'),
+    'master playbook restart anchors pin the verified Q4 merge and tree'
+);
 q5_assert(!q5_contains($handoff, 'CURRENT / Q4'), 'handoff rejects the stale current-Q4 marker');
 q5_assert(!q5_contains($playbook, 'CURRENT / Q4'), 'master playbook rejects the stale current-Q4 marker');
 q5_assert(q5_contains($workflow, "reject_across_live_records 'CURRENT / Q4'"), 'Governance rejects stale current-Q4 markers');
