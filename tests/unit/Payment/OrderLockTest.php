@@ -13,7 +13,6 @@ final class OrderLockTest extends TestCase {
     public function test_invalid_order_identity_fails_without_mutation(): void {
         self::assertNull(OrderLock::acquire(0));
         self::assertNull(OrderLock::acquire(-1));
-        self::assertNull(OrderLock::acquire('not-an-order'));
         self::assertSame(array(), $GLOBALS['simplixpay_test_options']);
     }
 

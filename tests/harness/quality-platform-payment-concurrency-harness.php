@@ -60,7 +60,10 @@ q3_assert(q3_contains($rate_gate, "hash_hmac('sha256', \$mode . '|' . \$gateway-
 q3_assert(q3_contains($rate_gate, "add_option(\$option_name, time(), '', 'no')"), 'rate slots retain atomic non-autoloaded add_option acquisition');
 q3_assert(q3_contains($rate_gate, 'self::delete_bucket($scope, $previous_bucket);'), 'valid previous bucket cleanup remains explicit');
 
-q3_assert(q3_contains($order_lock, '@param mixed $order_id'), 'order lock documents its defensive mixed order boundary');
+q3_assert(
+    substr_count($order_lock, '@param int') === 2 && !q3_contains($order_lock, '@param mixed $order_id'),
+    'order lock retains its positive-integer caller contract'
+);
 q3_assert(q3_contains($order_lock, '@param mixed $token'), 'order lock documents its defensive mixed token boundary');
 q3_assert(q3_contains($order_lock, 'private const TTL = 45;'), 'order lock TTL remains exactly 45 seconds');
 q3_assert(q3_contains($order_lock, "private const PREFIX = 'simplixpay_upay_order_lock_v1_';"), 'order-lock option identity remains frozen');

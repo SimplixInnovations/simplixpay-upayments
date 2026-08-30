@@ -16,7 +16,7 @@ final class OrderLock {
     private const TTL = 45;
 
     /**
-     * @param mixed $order_id Defensive order-identity boundary value.
+     * @param int $order_id Positive WooCommerce order identity.
      * @return string|null Opaque owner token on success.
      */
     public static function acquire($order_id) {
@@ -51,7 +51,7 @@ final class OrderLock {
     /**
      * Release only the exact record owned by this token.
      *
-     * @param mixed $order_id Defensive order-identity boundary value.
+     * @param int   $order_id Positive WooCommerce order identity.
      * @param mixed $token    Token returned by acquire().
      * @return void
      */

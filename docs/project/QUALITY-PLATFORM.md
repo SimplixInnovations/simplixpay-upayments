@@ -72,7 +72,7 @@ Q3 may:
 - add bounded development-only WordPress option/`wpdb` analysis symbols;
 - add deterministic unit fixtures for WordPress option uniqueness, conditional SQL mutation and cache invalidation;
 - add PHPUnit characterization for invalid input, exact capacity, scope isolation/redaction, bucket cleanup, live-owner exclusion, exact-token release, stale takeover, competing-worker races and malformed-record fail-closed behavior;
-- correct PHPDoc parameter types to reflect already-defensive mixed-input runtime contracts;
+- reconcile PHPDoc with existing runtime checks while retaining the positive-integer caller contract for order identities;
 - add a permanent Quality Platform Payment-Concurrency harness;
 - retain the exact Q1 Composer lock, tool versions, analysis level, PHPCS rules and PHPStan no-baseline/no-`ignoreErrors` rule; exact-line PHPCS annotations are permitted only for immediately prepared conditional SQL that the sniff cannot follow through a local variable.
 
