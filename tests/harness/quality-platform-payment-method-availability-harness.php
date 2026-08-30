@@ -1,0 +1,147 @@
+<?php
+
+$q5_pass = 0;
+$q5_fail = 0;
+$q5_root = dirname(__DIR__, 2);
+
+function q5_assert($condition, $label) {
+    global $q5_pass, $q5_fail;
+
+    if ($condition) {
+        ++$q5_pass;
+        echo "PASS: {$label}\n";
+        return;
+    }
+
+    ++$q5_fail;
+    echo "FAIL: {$label}\n";
+}
+
+function q5_read($root, $relative) {
+    $contents = file_get_contents($root . '/' . $relative);
+    q5_assert(is_string($contents), "source readable: {$relative}");
+    return is_string($contents) ? $contents : '';
+}
+
+function q5_contains($source, $needle) {
+    return strpos($source, $needle) !== false;
+}
+
+$phpstan = q5_read($q5_root, 'phpstan.neon.dist');
+$phpcs = q5_read($q5_root, 'phpcs.xml.dist');
+$availability = q5_read($q5_root, 'src/Provider/PaymentMethodAvailability.php');
+$tests = q5_read($q5_root, 'tests/unit/Provider/PaymentMethodAvailabilityTest.php');
+$fixture = q5_read($q5_root, 'tests/support/wordpress-availability.php');
+$option_fixture = q5_read($q5_root, 'tests/support/wordpress-option-store.php');
+$analysis_stubs = q5_read($q5_root, 'tests/phpstan/wordpress-option-stubs.php');
+$workflow = q5_read($q5_root, '.github/workflows/quality-gates.yml');
+$quality_record = q5_read($q5_root, 'docs/project/QUALITY-PLATFORM.md');
+$status = q5_read($q5_root, 'docs/project/PROJECT-STATUS.md');
+$readme = q5_read($q5_root, 'README.md');
+$handoff = q5_read($q5_root, 'docs/project/NEW-CHAT-HANDOFF.md');
+$playbook = q5_read($q5_root, 'docs/project/MASTER-ENGINEERING-PLAYBOOK.md');
+
+q5_assert(q5_contains($phpstan, 'src/Provider/PaymentMethodAvailability.php'), 'PHPStan owns payment-method availability');
+q5_assert(q5_contains($phpcs, 'src/Provider/PaymentMethodAvailability.php'), 'PHPCS owns payment-method availability');
+q5_assert(!q5_contains($phpstan, 'baseline'), 'Q5 remains baseline-free');
+q5_assert(!q5_contains($phpstan, 'ignoreErrors'), 'Q5 introduces no ignored analyzer errors');
+
+q5_assert(q5_contains($availability, 'private const CACHE_SCHEMA = 3;'), 'availability cache schema remains exactly three');
+q5_assert(q5_contains($availability, 'private const RATE_GATE_COOLDOWN = 65;'), 'availability cooldown remains exactly 65 seconds');
+foreach (array(
+    'knet',
+    'credit_card',
+    'apple_pay_knet',
+    'apple_pay',
+    'samsung_pay',
+    'google_pay',
+) as $button) {
+    q5_assert(q5_contains($availability, "'{$button}'"), "known payment button remains explicit: {$button}");
+}
+q5_assert(q5_contains($availability, "hash_hmac('sha256', \$mode . '|' . \$this->api_key, wp_salt('auth'))"), 'credential cache identity remains HMAC-derived');
+q5_assert(q5_contains($availability, "'upay_pm_v3_' . substr(\$fingerprint, 0, 16)"), 'cache prefix and fingerprint width remain frozen');
+q5_assert(q5_contains($availability, "\$db_name . '|' . \$wpdb->prefix . '|' . (string) get_current_blog_id() . '|' . \$mode"), 'advisory lock remains database/site/mode scoped');
+q5_assert(q5_contains($availability, "'upay_pm_' . substr(hash('sha256', \$lock_input), 0, 16)"), 'advisory lock name remains hashed and bounded');
+q5_assert(q5_contains($availability, "'SELECT GET_LOCK(%s, 0)'"), 'availability lock acquisition remains non-blocking');
+q5_assert(q5_contains($availability, "'SELECT RELEASE_LOCK(%s)'"), 'availability lock release remains explicit');
+
+$set_gate = strpos($availability, '$new_not_before = $now + self::RATE_GATE_COOLDOWN;');
+$release = strpos($availability, '$this->release_lock();', $set_gate === false ? 0 : $set_gate);
+$transport = strpos($availability, '$transport = call_user_func($this->transport);');
+q5_assert(
+    $set_gate !== false && $release !== false && $transport !== false
+        && $set_gate < $release && $release < $transport,
+    'durable gate is set and advisory lock released before transport'
+);
+q5_assert(q5_contains($availability, "\$verify_gate['not_before'] < \$new_not_before"), 'durable gate write is verified before transport');
+
+q5_assert(q5_contains($availability, "count(\$cached) === 2"), 'failure cache requires its exact two-key shape');
+q5_assert(q5_contains($availability, "\$cached_keys !== \$expected_keys"), 'success cache rejects extra or missing top-level keys');
+q5_assert(q5_contains($availability, "\$button_keys !== \$expected_button_keys"), 'success cache rejects extra or missing button keys');
+q5_assert(q5_contains($availability, "\$cached['payButtons'][\$button] !== 0"), 'cached payment buttons remain strict zero-or-one integers');
+q5_assert(q5_contains($availability, "array('schema' => self::CACHE_SCHEMA, 'state' => 'failure')"), 'provider failures retain canonical negative cache sentinel');
+
+q5_assert(q5_contains($availability, "\$transport['transport_ok'] !== true"), 'transport success remains strict true');
+q5_assert(q5_contains($availability, "(int) \$transport['http_status'] !== 201"), 'availability transport requires exact HTTP 201');
+q5_assert(q5_contains($availability, "(int) \$transport['curl_errno'] !== 0"), 'availability transport rejects curl errors');
+q5_assert(q5_contains($availability, "\$result['status'] !== true"), 'provider envelope requires strict true status');
+q5_assert(q5_contains($availability, "\$white_label === true || \$white_label === 1 || \$white_label === '1'"), 'white-label true normalization remains bounded');
+q5_assert(q5_contains($availability, "\$value === false || \$value === 0 || \$value === '0'"), 'button false normalization remains bounded');
+q5_assert(q5_contains($availability, "\$normalized_buttons[\$button] = 0;"), 'missing known buttons remain fail-closed unavailable');
+q5_assert(q5_contains($availability, "\$payment_methods['payButtons'] = \$normalized_buttons;"), 'fresh provider result exposes only normalized known buttons');
+
+q5_assert(substr_count($tests, 'public function test_') >= 8, 'PaymentMethodAvailability has focused PHPUnit characterization');
+foreach (array(
+    'cache_gate_and_lock_identities_are_scoped_without_leaking_credentials',
+    'cache_classifier_accepts_only_exact_schema_three_shapes',
+    'fresh_success_persists_gate_before_transport_and_caches_canonical_result',
+    'cache_hits_failure_sentinels_and_empty_credentials_bypass_mutation',
+    'lock_contention_rechecks_cache_and_lock_errors_fail_closed',
+    'cooldown_and_gate_persistence_failures_prevent_transport',
+    'malformed_cache_is_refreshed_instead_of_trusted',
+    'every_transport_or_provider_failure_caches_the_exact_failure_sentinel',
+) as $test_name) {
+    q5_assert(q5_contains($tests, $test_name), "availability test exists: {$test_name}");
+}
+q5_assert(q5_contains($tests, "'failure extra key'" ) || q5_contains($tests, "'extra' => 1"), 'cache classifier tests reject expanded failure shapes');
+q5_assert(q5_contains($tests, "'non-strict status'"), 'provider failure matrix covers non-boolean success');
+q5_assert(q5_contains($tests, "'malformed button'"), 'provider failure matrix covers invalid button flags');
+
+q5_assert(q5_contains($fixture, 'class SimplixPay_Test_Availability_WPDB'), 'unit fixture provides deterministic advisory-lock database');
+q5_assert(q5_contains($fixture, "strpos(\$statement['query'], 'SELECT GET_LOCK(') === 0"), 'unit fixture executes advisory-lock acquisition semantics');
+q5_assert(q5_contains($fixture, "strpos(\$statement['query'], 'SELECT RELEASE_LOCK(') === 0"), 'unit fixture executes advisory-lock release semantics');
+q5_assert(q5_contains($fixture, 'function get_transient(') && q5_contains($fixture, 'function set_transient('), 'unit fixture provides deterministic transient persistence');
+q5_assert(q5_contains($option_fixture, 'simplixpay_test_update_option_result'), 'option fixture exposes deterministic gate-write failure');
+q5_assert(q5_contains($analysis_stubs, 'public $prefix;'), 'analysis stubs declare the bounded wpdb prefix');
+q5_assert(q5_contains($analysis_stubs, 'function get_transient('), 'analysis stubs declare transient reads');
+q5_assert(q5_contains($analysis_stubs, 'function get_current_blog_id('), 'analysis stubs declare multisite lock scope');
+
+q5_assert(q5_contains($workflow, 'quality-platform-payment-method-availability-harness.php'), 'Q5 harness is mandatory in Quality Gates');
+q5_assert(q5_contains($workflow, 'if: ${{ always() }}'), 'protected H12 aggregator still always runs');
+q5_assert(q5_contains($workflow, 'QUALITY_PLATFORM_RESULT: ${{ needs.quality-platform.result }}'), 'protected H12 aggregator still reads quality result');
+q5_assert(q5_contains($workflow, 'PHP_SYNTAX_RESULT: ${{ needs.php-syntax-compatibility.result }}'), 'protected H12 aggregator still reads syntax result');
+
+foreach (array(
+    '8543bdfce1a4e216200791dc5637b646f49bcb59',
+    'ad5ae98d5e935bb48d1441f94e130f5d3adb3ca9',
+    'Quality Gates run #194',
+    '4b3db92b0ded0c598bad0ab677babab9e6102811',
+    'Quality Gates run #195',
+    'implementation branch deleted',
+) as $closure_evidence) {
+    q5_assert(q5_contains($quality_record, $closure_evidence), "Q4 closure evidence is pinned: {$closure_evidence}");
+}
+q5_assert(q5_contains($quality_record, '**Status:** Q5 / IMPLEMENTATION'), 'quality record advances to Q5');
+q5_assert(q5_contains($status, '| Current program gate | **Full Automated Quality Platform — Q5** |'), 'project status advances to Quality Platform Q5');
+q5_assert(q5_contains($readme, 'The current program gate is **Full Automated Quality Platform — Q5**.'), 'README advances to Quality Platform Q5');
+q5_assert(
+    q5_contains($playbook, 'Last verified implementation main SHA: 4b3db92b0ded0c598bad0ab677babab9e6102811')
+        && q5_contains($playbook, 'Canonical implementation tree: ad5ae98d5e935bb48d1441f94e130f5d3adb3ca9'),
+    'master playbook restart anchors pin the verified Q4 merge and tree'
+);
+q5_assert(!q5_contains($handoff, 'CURRENT / Q4'), 'handoff rejects the stale current-Q4 marker');
+q5_assert(!q5_contains($playbook, 'CURRENT / Q4'), 'master playbook rejects the stale current-Q4 marker');
+q5_assert(q5_contains($workflow, "reject_across_live_records 'CURRENT / Q4'"), 'Governance rejects stale current-Q4 markers');
+
+echo "\nQ5 Payment-Method Availability Analysis: {$q5_pass} PASS / {$q5_fail} FAIL\n";
+exit($q5_fail === 0 ? 0 : 1);

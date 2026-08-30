@@ -52,11 +52,18 @@ The project is still in pre-release engineering hardening. Entries below are eng
 - Exact final PR #29 head `e08be468b5453524996c525860c12d5619081132` passed Quality Gates #188 and clean independent exact-head review; Q1 was **74/0**, Q2 **64/0**, Q3 **69/0** and PHPUnit **31 tests / 220 assertions**.
 - Squash-merged PR #29 as `30e99a6a456b72709c87e442b8437301ba64e99b`, tree `703a56c03e95862b8b4807d9a1ea28e2e3e201dd`; post-merge run #189 passed and the implementation branch was deleted.
 
-### Full Automated Quality Platform — Q4 Authenticated Status Analysis
+### Full Automated Quality Platform — Q4 Authenticated Status Analysis — DONE / VERIFIED
 
-- Expands baseline-free PHPStan/PHPCS and deterministic PHPUnit characterization into `StatusVerifier`.
-- Freezes exact UPayments status destination validation before rate/Bearer use, hardened no-redirect/TLS HTTP handling and exact authenticated order/transaction binding.
-- Adds bounded development-only WordPress HTTP fixtures and a permanent Q4 regression harness; no executable payment behavior, runtime dependency or certification claim is introduced.
+- Expanded baseline-free PHPStan/PHPCS and deterministic PHPUnit characterization into `StatusVerifier`.
+- Froze exact UPayments status destination validation before rate/Bearer use, hardened no-redirect/TLS HTTP handling and exact authenticated order/transaction binding.
+- Exact final PR #30 head `8543bdfce1a4e216200791dc5637b646f49bcb59` passed Quality Gates #194 and clean independent exact-head review; Q4 was **68/0** and PHPUnit **39 tests / 327 assertions**.
+- Squash-merged PR #30 as `4b3db92b0ded0c598bad0ab677babab9e6102811`, tree `ad5ae98d5e935bb48d1441f94e130f5d3adb3ca9`; post-merge run #195 passed and the implementation branch was deleted.
+
+### Full Automated Quality Platform — Q5 Payment-Method Availability Analysis
+
+- Expands baseline-free PHPStan/PHPCS and deterministic PHPUnit characterization into `PaymentMethodAvailability`.
+- Freezes exact credential/mode/site cache and advisory-lock identities, the durable 65-second gate, strict schema-3 caches, provider failure sentinel and bounded payment-button normalization.
+- Adds development-only transient/advisory-lock fixtures and a permanent Q5 regression harness; no executable payment behavior, runtime dependency or certification claim is introduced.
 
 ### Architecture A2 — Payment-Method Availability Client/Cache — DONE / VERIFIED
 
@@ -90,7 +97,7 @@ The project is still in pre-release engineering hardening. Entries below are eng
 
 ### Current program gate
 
-**Full Automated Quality Platform — Q4** is now the active gate. Architecture A1-A5 and Quality Platform Q1-Q3 are DONE / VERIFIED; Q4 is limited to StatusVerifier authenticated-transport/binding characterization and baseline-free static-analysis expansion and does not certify platforms or alter payment runtime contracts.
+**Full Automated Quality Platform — Q5** is now the active gate. Architecture A1-A5 and Quality Platform Q1-Q4 are DONE / VERIFIED; Q5 is limited to PaymentMethodAvailability cache/lock/gate/provider-normalization characterization and baseline-free static-analysis expansion and does not certify platforms or alter payment runtime contracts.
 
 ### Provider Contract & Payment Lifecycle — DONE / VERIFIED
 

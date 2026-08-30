@@ -71,6 +71,8 @@ if (!function_exists('simplixpay_test_reset_wp_options')) {
         $GLOBALS['simplixpay_test_option_calls'] = array();
         $GLOBALS['simplixpay_test_cache_deletes'] = array();
         $GLOBALS['simplixpay_test_wp_salt'] = 'simplixpay-test-auth-salt';
+        $GLOBALS['simplixpay_test_update_option_result'] = true;
+        $GLOBALS['simplixpay_test_get_option_filter'] = null;
         $GLOBALS['wpdb'] = new SimplixPay_Test_WPDB();
     }
 }
@@ -97,15 +99,22 @@ if (!function_exists('add_option')) {
 
 if (!function_exists('get_option')) {
     function get_option($name, $default = false) {
-        return array_key_exists($name, $GLOBALS['simplixpay_test_options'])
+        $value = array_key_exists($name, $GLOBALS['simplixpay_test_options'])
             ? $GLOBALS['simplixpay_test_options'][$name]
             : $default;
+        if (is_callable($GLOBALS['simplixpay_test_get_option_filter'])) {
+            return call_user_func($GLOBALS['simplixpay_test_get_option_filter'], $name, $value, $default);
+        }
+        return $value;
     }
 }
 
 if (!function_exists('update_option')) {
     function update_option($name, $value, $autoload = null) {
         $GLOBALS['simplixpay_test_option_calls'][] = array('update', $name, $value, $autoload);
+        if ($GLOBALS['simplixpay_test_update_option_result'] !== true) {
+            return false;
+        }
         $GLOBALS['simplixpay_test_options'][$name] = $value;
         return true;
     }

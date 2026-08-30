@@ -1,0 +1,311 @@
+<?php
+
+namespace Simplix\Pay\UPayments\Tests\Provider;
+
+use PHPUnit\Framework\TestCase;
+use ReflectionMethod;
+use Simplix\Pay\UPayments\Provider\PaymentMethodAvailability;
+
+final class PaymentMethodAvailabilityTest extends TestCase {
+    protected function setUp(): void {
+        \simplixpay_test_reset_availability();
+    }
+
+    public function test_cache_gate_and_lock_identities_are_scoped_without_leaking_credentials(): void {
+        $live = $this->service(false, 'live-secret', false);
+        $test = $this->service(true, 'live-secret', false);
+        $rotated = $this->service(false, 'rotated-secret', false);
+
+        $live_transient = $this->invoke_private($live, 'transient_name');
+        $test_transient = $this->invoke_private($test, 'transient_name');
+        $rotated_transient = $this->invoke_private($rotated, 'transient_name');
+        $expected_transient_hash = substr(
+            hash_hmac('sha256', 'live|live-secret', 'simplixpay-test-auth-salt'),
+            0,
+            16
+        );
+        $expected_lock_hash = substr(
+            hash('sha256', 'simplixpay_test_database|wp_7_|7|live'),
+            0,
+            16
+        );
+
+        self::assertSame('upayments_payment_methods_rate_gate_live', $this->invoke_private($live, 'rate_gate_option_name'));
+        self::assertSame('upayments_payment_methods_rate_gate_test', $this->invoke_private($test, 'rate_gate_option_name'));
+        self::assertSame('upay_pm_v3_' . $expected_transient_hash, $live_transient);
+        self::assertNotSame($live_transient, $test_transient);
+        self::assertNotSame($live_transient, $rotated_transient);
+        self::assertStringNotContainsString('live-secret', $live_transient);
+        self::assertSame('upay_pm_' . $expected_lock_hash, $this->invoke_private($live, 'lock_name'));
+        self::assertNotSame($this->invoke_private($live, 'lock_name'), $this->invoke_private($test, 'lock_name'));
+        self::assertSame($this->invoke_private($live, 'lock_name'), $this->invoke_private($rotated, 'lock_name'));
+        self::assertLessThanOrEqual(64, strlen($this->invoke_private($live, 'lock_name')));
+    }
+
+    public function test_cache_classifier_accepts_only_exact_schema_three_shapes(): void {
+        $canonical = $this->canonical();
+        self::assertSame('success', PaymentMethodAvailability::classify_cached($canonical));
+        self::assertSame(
+            'failure',
+            PaymentMethodAvailability::classify_cached(array('schema' => 3, 'state' => 'failure'))
+        );
+
+        $mutations = array(
+            null,
+            array_replace($canonical, array('schema' => 2)),
+            array_replace($canonical, array('extra' => 1)),
+            array_replace($canonical, array('isWhiteLabel' => '1')),
+            array_replace($canonical, array('payButtons' => array_slice($canonical['payButtons'], 0, 5, true))),
+            array_replace($canonical, array('payButtons' => array_replace($canonical['payButtons'], array('future_pay' => 1)))),
+            array_replace($canonical, array('payButtons' => array_replace($canonical['payButtons'], array('knet' => '1')))),
+            array_replace($canonical, array('payButtons' => array_replace($canonical['payButtons'], array('knet' => true)))),
+            array_replace($canonical, array('payButtons' => array_replace($canonical['payButtons'], array('knet' => 2)))),
+            array('schema' => 3, 'state' => 'failure', 'extra' => 1),
+        );
+        foreach ($mutations as $index => $mutation) {
+            self::assertFalse(PaymentMethodAvailability::classify_cached($mutation), (string) $index);
+        }
+    }
+
+    public function test_fresh_success_persists_gate_before_transport_and_caches_canonical_result(): void {
+        $transport_calls = 0;
+        $lock_held_during_transport = null;
+        $gate_during_transport = null;
+        $provider_data = array(
+            'isWhiteLabel' => '1',
+            'payButtons'   => array('knet' => true, 'credit_card' => '0', 'future_pay' => 1),
+            'providerTrace' => 'fresh-only',
+        );
+        $transport = function () use (
+            &$transport_calls,
+            &$lock_held_during_transport,
+            &$gate_during_transport,
+            $provider_data
+        ) {
+            ++$transport_calls;
+            $lock_held_during_transport = !empty($GLOBALS['simplixpay_test_availability']['locks']);
+            $gate_during_transport = get_option('upayments_payment_methods_rate_gate_live', null);
+            return $this->envelope($provider_data);
+        };
+        $service = new PaymentMethodAvailability(false, 'fresh-key', $transport);
+
+        $before = time();
+        $result = $service->fetch();
+        $after = time();
+
+        self::assertSame(1, $transport_calls);
+        self::assertFalse($lock_held_during_transport);
+        self::assertSame(1, $GLOBALS['simplixpay_test_availability']['lock_acquires']);
+        self::assertSame(1, $GLOBALS['simplixpay_test_availability']['lock_releases']);
+        self::assertCount(1, $GLOBALS['simplixpay_test_option_calls']);
+        $gate = $GLOBALS['simplixpay_test_options']['upayments_payment_methods_rate_gate_live'];
+        self::assertGreaterThanOrEqual($before + 65, $gate);
+        self::assertLessThanOrEqual($after + 65, $gate);
+        self::assertSame($gate, $gate_during_transport);
+        self::assertSame('fresh-only', $result['providerTrace']);
+        self::assertTrue($result['isWhiteLabel']);
+        self::assertSame(1, $result['payButtons']['knet']);
+        self::assertSame(0, $result['payButtons']['credit_card']);
+        self::assertSame(0, $result['payButtons']['google_pay']);
+        self::assertArrayNotHasKey('future_pay', $result['payButtons']);
+
+        $transient = $this->invoke_private($service, 'transient_name');
+        self::assertSame($this->canonical(true, 1, 0), $GLOBALS['simplixpay_test_availability']['transients'][$transient]);
+        self::assertArrayNotHasKey('providerTrace', $GLOBALS['simplixpay_test_availability']['transients'][$transient]);
+        $ttl = $GLOBALS['simplixpay_test_availability']['transient_ttls'][$transient];
+        self::assertGreaterThanOrEqual(1, $ttl);
+        self::assertLessThanOrEqual(65, $ttl);
+    }
+
+    public function test_cache_hits_failure_sentinels_and_empty_credentials_bypass_mutation(): void {
+        $transport_calls = 0;
+        $service = $this->service(false, 'cached-key', $this->counting_transport($transport_calls, false));
+        $transient = $this->invoke_private($service, 'transient_name');
+        $GLOBALS['simplixpay_test_availability']['transients'][$transient] = $this->canonical(false, 0);
+
+        self::assertSame($this->canonical(false, 0), $service->fetch());
+        self::assertSame(0, $transport_calls);
+        self::assertSame(0, $GLOBALS['simplixpay_test_availability']['lock_acquires']);
+
+        \simplixpay_test_reset_availability();
+        $failure = $this->service(false, 'failure-key', $this->counting_transport($transport_calls, false));
+        $failure_transient = $this->invoke_private($failure, 'transient_name');
+        $GLOBALS['simplixpay_test_availability']['transients'][$failure_transient] = array(
+            'schema' => 3,
+            'state'  => 'failure',
+        );
+        self::assertSame(array('result' => 'failure'), $failure->fetch());
+        self::assertSame(0, $GLOBALS['simplixpay_test_availability']['lock_acquires']);
+
+        \simplixpay_test_reset_availability();
+        $empty = $this->service(false, '', $this->counting_transport($transport_calls, false));
+        self::assertNull($empty->fetch());
+        self::assertSame(0, $GLOBALS['simplixpay_test_availability']['lock_acquires']);
+        self::assertSame(0, $transport_calls);
+    }
+
+    public function test_lock_contention_rechecks_cache_and_lock_errors_fail_closed(): void {
+        $transport_calls = 0;
+        $service = $this->service(false, 'contended-key', $this->counting_transport($transport_calls, false));
+        $GLOBALS['simplixpay_test_availability']['lock_result'] = '0';
+        $GLOBALS['simplixpay_test_availability']['populate_on_lock'] = function () use ($service) {
+            $name = $this->invoke_private($service, 'transient_name');
+            $GLOBALS['simplixpay_test_availability']['transients'][$name] = $this->canonical(false, 0);
+        };
+
+        self::assertSame($this->canonical(false, 0), $service->fetch());
+        self::assertSame(1, $GLOBALS['simplixpay_test_availability']['lock_acquires']);
+        self::assertSame(0, $GLOBALS['simplixpay_test_availability']['lock_releases']);
+        self::assertSame(0, $transport_calls);
+
+        \simplixpay_test_reset_availability();
+        $GLOBALS['simplixpay_test_availability']['lock_result'] = null;
+        $error = $this->service(false, 'error-key', $this->counting_transport($transport_calls, false));
+        self::assertSame(array('result' => 'failure'), $error->fetch());
+        self::assertSame(1, $GLOBALS['simplixpay_test_availability']['lock_acquires']);
+        self::assertSame(0, $transport_calls);
+    }
+
+    public function test_cooldown_and_gate_persistence_failures_prevent_transport(): void {
+        $transport_calls = 0;
+        $cooldown = $this->service(false, 'cooldown-key', $this->counting_transport($transport_calls, false));
+        $GLOBALS['simplixpay_test_options']['upayments_payment_methods_rate_gate_live'] = time() + 30;
+        self::assertSame(array('result' => 'failure'), $cooldown->fetch());
+        self::assertSame(1, $GLOBALS['simplixpay_test_availability']['lock_releases']);
+        self::assertSame(0, $transport_calls);
+
+        \simplixpay_test_reset_availability();
+        $GLOBALS['simplixpay_test_update_option_result'] = false;
+        $write_failure = $this->service(false, 'write-key', $this->counting_transport($transport_calls, false));
+        self::assertSame(array('result' => 'failure'), $write_failure->fetch());
+        self::assertSame(1, $GLOBALS['simplixpay_test_availability']['lock_releases']);
+        self::assertSame(0, $transport_calls);
+
+        \simplixpay_test_reset_availability();
+        $GLOBALS['simplixpay_test_get_option_filter'] = function ($name, $value) {
+            if (strpos($name, 'upayments_payment_methods_rate_gate_') === 0
+                && !empty($GLOBALS['simplixpay_test_option_calls'])
+            ) {
+                return (int) $value - 1;
+            }
+            return $value;
+        };
+        $verify_failure = $this->service(false, 'verify-key', $this->counting_transport($transport_calls, false));
+        self::assertSame(array('result' => 'failure'), $verify_failure->fetch());
+        self::assertSame(1, $GLOBALS['simplixpay_test_availability']['lock_releases']);
+        self::assertSame(0, $transport_calls);
+    }
+
+    public function test_malformed_cache_is_refreshed_instead_of_trusted(): void {
+        $transport_calls = 0;
+        $data = array('isWhiteLabel' => false, 'payButtons' => array());
+        $service = $this->service(
+            false,
+            'malformed-key',
+            $this->counting_transport($transport_calls, $this->envelope($data))
+        );
+        $transient = $this->invoke_private($service, 'transient_name');
+        $GLOBALS['simplixpay_test_availability']['transients'][$transient] = array(
+            'schema' => 3,
+            'result' => 'success',
+        );
+
+        $result = $service->fetch();
+
+        self::assertSame('success', $result['result']);
+        self::assertSame(1, $transport_calls);
+        self::assertSame(1, $GLOBALS['simplixpay_test_availability']['lock_releases']);
+        self::assertSame('success', PaymentMethodAvailability::classify_cached(
+            $GLOBALS['simplixpay_test_availability']['transients'][$transient]
+        ));
+    }
+
+    public function test_every_transport_or_provider_failure_caches_the_exact_failure_sentinel(): void {
+        $provider_data = array('isWhiteLabel' => true, 'payButtons' => array());
+        $failures = array(
+            'non-array transport' => false,
+            'transport not ok'    => array('transport_ok' => false, 'http_status' => 201, 'curl_errno' => 0, 'body' => '{}'),
+            'HTTP status'         => $this->envelope($provider_data, true, 200),
+            'curl error'          => array('transport_ok' => true, 'http_status' => 201, 'curl_errno' => 7, 'body' => '{}'),
+            'empty body'          => array('transport_ok' => true, 'http_status' => 201, 'curl_errno' => 0, 'body' => ''),
+            'invalid JSON'        => array('transport_ok' => true, 'http_status' => 201, 'curl_errno' => 0, 'body' => '{'),
+            'non-strict status'   => $this->envelope($provider_data, 1),
+            'missing data'        => array(
+                'transport_ok' => true,
+                'http_status'  => 201,
+                'curl_errno'   => 0,
+                'body'         => json_encode(array('status' => true)),
+            ),
+            'missing white label' => $this->envelope(array('payButtons' => array())),
+            'malformed white label' => $this->envelope(array('isWhiteLabel' => 'true', 'payButtons' => array())),
+            'malformed button' => $this->envelope(array('isWhiteLabel' => true, 'payButtons' => array('knet' => 2))),
+        );
+
+        foreach ($failures as $label => $failure) {
+            \simplixpay_test_reset_availability();
+            $transport_calls = 0;
+            $service = $this->service(
+                false,
+                'failure-' . $label,
+                $this->counting_transport($transport_calls, $failure)
+            );
+            self::assertSame(array('result' => 'failure'), $service->fetch(), $label);
+            $transient = $this->invoke_private($service, 'transient_name');
+            self::assertSame(
+                array('schema' => 3, 'state' => 'failure'),
+                $GLOBALS['simplixpay_test_availability']['transients'][$transient],
+                $label
+            );
+            self::assertSame(1, $transport_calls, $label);
+            self::assertSame(1, $GLOBALS['simplixpay_test_availability']['lock_releases'], $label);
+        }
+    }
+
+    private function service($test_mode, $api_key, $transport): PaymentMethodAvailability {
+        if (!is_callable($transport)) {
+            $response = $transport;
+            $transport = function () use ($response) {
+                return $response;
+            };
+        }
+        return new PaymentMethodAvailability($test_mode, $api_key, $transport);
+    }
+
+    private function counting_transport(&$calls, $response): callable {
+        return function () use (&$calls, $response) {
+            ++$calls;
+            return $response;
+        };
+    }
+
+    private function envelope($data, $status = true, $http_status = 201): array {
+        return array(
+            'transport_ok' => true,
+            'http_status'  => $http_status,
+            'curl_errno'   => 0,
+            'body'         => json_encode(array('status' => $status, 'data' => $data)),
+        );
+    }
+
+    private function canonical($white_label = true, $knet = 1, $credit_card = 1): array {
+        return array(
+            'schema'       => 3,
+            'result'       => 'success',
+            'isWhiteLabel' => $white_label,
+            'payButtons'   => array(
+                'knet'           => $knet,
+                'credit_card'    => $credit_card,
+                'apple_pay_knet' => 0,
+                'apple_pay'      => 0,
+                'samsung_pay'    => 0,
+                'google_pay'     => 0,
+            ),
+        );
+    }
+
+    private function invoke_private($object, $method) {
+        $reflection = new ReflectionMethod($object, $method);
+        $reflection->setAccessible(true);
+        return $reflection->invoke($object);
+    }
+}
