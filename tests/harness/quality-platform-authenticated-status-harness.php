@@ -37,6 +37,7 @@ $workflow = q4_read($q4_root, '.github/workflows/quality-gates.yml');
 $quality_record = q4_read($q4_root, 'docs/project/QUALITY-PLATFORM.md');
 $status = q4_read($q4_root, 'docs/project/PROJECT-STATUS.md');
 $readme = q4_read($q4_root, 'README.md');
+$audit = q4_read($q4_root, 'docs/project/REPOSITORY-AUDIT.md');
 $handoff = q4_read($q4_root, 'docs/project/NEW-CHAT-HANDOFF.md');
 $playbook = q4_read($q4_root, 'docs/project/MASTER-ENGINEERING-PLAYBOOK.md');
 
@@ -119,6 +120,12 @@ foreach (array(
 q4_assert(q4_contains($quality_record, '**Status:** Q4 / IMPLEMENTATION'), 'quality record advances to Q4');
 q4_assert(q4_contains($status, '| Current program gate | **Full Automated Quality Platform — Q4** |'), 'project status advances to Quality Platform Q4');
 q4_assert(q4_contains($readme, 'The current program gate is **Full Automated Quality Platform — Q4**.'), 'README advances to Quality Platform Q4');
+q4_assert(
+    q4_contains($audit, 'deterministic PHPUnit characterization of StatusVerifier destination-before-rate/Bearer validation')
+        && q4_contains($audit, 'PHPCS ownership of StatusVerifier beside the Q1-Q3 modules')
+        && !q4_contains($audit, 'characterization of the exact 30-slot rate gate'),
+    'repository audit assigns the exact Q4 authenticated-status scope'
+);
 q4_assert(!q4_contains($handoff, 'CURRENT / Q3'), 'handoff rejects the stale current-Q3 marker');
 q4_assert(!q4_contains($playbook, 'CURRENT / Q3'), 'master playbook rejects the stale current-Q3 marker');
 q4_assert(q4_contains($workflow, "reject_across_live_records 'CURRENT / Q3'"), 'Governance rejects stale current-Q3 markers');

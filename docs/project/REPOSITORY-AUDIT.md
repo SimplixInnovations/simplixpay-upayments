@@ -217,8 +217,8 @@ The required custom harness stack now includes Phase 0, all Phase 9I suites, Pro
 
 The current tranche must preserve the verified architecture map while establishing:
 
-- deterministic PHPUnit characterization of the exact 30-slot rate gate and exact-record compare-and-swap order lock;
-- baseline-free PHPStan level 5 and PHPCS ownership of StatusRateGate/OrderLock beside the Q1-Q2 modules;
+- deterministic PHPUnit characterization of StatusVerifier destination-before-rate/Bearer validation, hardened HTTP/envelope failures and exact authenticated transaction/order binding;
+- baseline-free PHPStan level 5 and PHPCS ownership of StatusVerifier beside the Q1-Q3 modules;
 - unchanged Q1 dependency, audit, syntax and required-check controls;
 - permanent Q1/Q2/Q3/Q4 and historical regression gates.
 
