@@ -1,0 +1,122 @@
+<?php
+
+$q3_pass = 0;
+$q3_fail = 0;
+$q3_root = dirname(__DIR__, 2);
+
+function q3_assert($condition, $label) {
+    global $q3_pass, $q3_fail;
+
+    if ($condition) {
+        ++$q3_pass;
+        echo "PASS: {$label}\n";
+        return;
+    }
+
+    ++$q3_fail;
+    echo "FAIL: {$label}\n";
+}
+
+function q3_read($root, $relative) {
+    $contents = file_get_contents($root . '/' . $relative);
+    q3_assert(is_string($contents), "source readable: {$relative}");
+    return is_string($contents) ? $contents : '';
+}
+
+function q3_contains($source, $needle) {
+    return strpos($source, $needle) !== false;
+}
+
+$phpstan = q3_read($q3_root, 'phpstan.neon.dist');
+$phpcs = q3_read($q3_root, 'phpcs.xml.dist');
+$rate_gate = q3_read($q3_root, 'src/Payment/StatusRateGate.php');
+$order_lock = q3_read($q3_root, 'src/Payment/OrderLock.php');
+$rate_tests = q3_read($q3_root, 'tests/unit/Payment/StatusRateGateTest.php');
+$lock_tests = q3_read($q3_root, 'tests/unit/Payment/OrderLockTest.php');
+$option_fixture = q3_read($q3_root, 'tests/support/wordpress-option-store.php');
+$analysis_stubs = q3_read($q3_root, 'tests/phpstan/wordpress-option-stubs.php');
+$workflow = q3_read($q3_root, '.github/workflows/quality-gates.yml');
+$quality_record = q3_read($q3_root, 'docs/project/QUALITY-PLATFORM.md');
+$status = q3_read($q3_root, 'docs/project/PROJECT-STATUS.md');
+$readme = q3_read($q3_root, 'README.md');
+$handoff = q3_read($q3_root, 'docs/project/NEW-CHAT-HANDOFF.md');
+$playbook = q3_read($q3_root, 'docs/project/MASTER-ENGINEERING-PLAYBOOK.md');
+
+foreach (array(
+    'src/Payment/StatusRateGate.php',
+    'src/Payment/OrderLock.php',
+) as $path) {
+    q3_assert(q3_contains($phpstan, $path), "PHPStan owns Q3 payment-safety module: {$path}");
+    q3_assert(q3_contains($phpcs, $path), "PHPCS owns Q3 payment-safety module: {$path}");
+}
+q3_assert(q3_contains($phpstan, 'tests/phpstan/wordpress-option-stubs.php'), 'PHPStan scans the bounded WordPress option symbols');
+q3_assert(!q3_contains($phpstan, 'baseline'), 'Q3 remains baseline-free');
+q3_assert(!q3_contains($phpstan, 'ignoreErrors'), 'Q3 introduces no ignored analyzer errors');
+
+q3_assert(q3_contains($rate_gate, '@param mixed $gateway'), 'rate gate documents its defensive mixed gateway boundary');
+q3_assert(q3_contains($rate_gate, 'private const LIMIT_PER_MINUTE = 30;'), 'rate ceiling remains exactly 30 per minute');
+q3_assert(q3_contains($rate_gate, "private const PREFIX = 'simplixpay_upay_status_v1_';"), 'rate-slot option identity remains frozen');
+q3_assert(q3_contains($rate_gate, "hash_hmac('sha256', \$mode . '|' . \$gateway->apiKey, \$salt)"), 'credential/mode scope remains HMAC-derived');
+q3_assert(q3_contains($rate_gate, "add_option(\$option_name, time(), '', 'no')"), 'rate slots retain atomic non-autoloaded add_option acquisition');
+q3_assert(q3_contains($rate_gate, 'self::delete_bucket($scope, $previous_bucket);'), 'valid previous bucket cleanup remains explicit');
+
+q3_assert(q3_contains($order_lock, '@param mixed $order_id'), 'order lock documents its defensive mixed order boundary');
+q3_assert(q3_contains($order_lock, '@param mixed $token'), 'order lock documents its defensive mixed token boundary');
+q3_assert(q3_contains($order_lock, 'private const TTL = 45;'), 'order lock TTL remains exactly 45 seconds');
+q3_assert(q3_contains($order_lock, "private const PREFIX = 'simplixpay_upay_order_lock_v1_';"), 'order-lock option identity remains frozen');
+q3_assert(q3_contains($order_lock, "add_option(\$name, \$record, '', 'no')"), 'first lock acquisition remains atomic and non-autoloaded');
+q3_assert(q3_contains($order_lock, 'AND option_value = %s'), 'takeover/release SQL remains exact-record compare-and-swap');
+q3_assert(!q3_contains($order_lock, 'delete_option($name)'), 'order lock never blindly deletes a contested lock');
+q3_assert(q3_contains($order_lock, "wp_cache_delete(\$name, 'options')"), 'successful SQL mutation flushes the option cache');
+
+q3_assert(substr_count($rate_tests, 'public function test_') >= 4, 'StatusRateGate has focused PHPUnit characterization');
+foreach (array(
+    'exactly_thirty_atomic_slots_are_available_per_minute',
+    'credential_and_mode_scopes_are_isolated_without_leaking_secrets',
+    'previous_valid_bucket_slots_are_deleted_before_acquisition',
+) as $test_name) {
+    q3_assert(q3_contains($rate_tests, $test_name), "rate-gate test exists: {$test_name}");
+}
+
+q3_assert(substr_count($lock_tests, 'public function test_') >= 6, 'OrderLock has focused PHPUnit characterization');
+foreach (array(
+    'atomic_acquire_blocks_a_second_live_owner',
+    'release_requires_the_exact_owner_token',
+    'expired_record_is_replaced_only_by_compare_and_swap',
+    'stale_takeover_cannot_replace_a_newer_competing_owner',
+    'malformed_existing_record_fails_closed_without_deletion',
+) as $test_name) {
+    q3_assert(q3_contains($lock_tests, $test_name), "order-lock test exists: {$test_name}");
+}
+
+q3_assert(q3_contains($option_fixture, 'class SimplixPay_Test_WPDB'), 'unit fixture provides a deterministic wpdb compare-and-swap seam');
+q3_assert(q3_contains($option_fixture, "strpos(\$statement['query'], 'UPDATE ') === 0"), 'unit fixture executes conditional update semantics');
+q3_assert(q3_contains($option_fixture, "strpos(\$statement['query'], 'DELETE ') === 0"), 'unit fixture executes conditional delete semantics');
+q3_assert(q3_contains($analysis_stubs, 'class wpdb'), 'analysis stubs declare the bounded wpdb surface');
+q3_assert(q3_contains($analysis_stubs, 'function add_option('), 'analysis stubs declare atomic option acquisition');
+q3_assert(q3_contains($analysis_stubs, 'function wp_cache_delete('), 'analysis stubs declare option-cache invalidation');
+
+q3_assert(q3_contains($workflow, 'quality-platform-payment-concurrency-harness.php'), 'Q3 harness is mandatory in Quality Gates');
+q3_assert(q3_contains($workflow, 'if: ${{ always() }}'), 'protected H12 aggregator still always runs');
+q3_assert(q3_contains($workflow, 'QUALITY_PLATFORM_RESULT: ${{ needs.quality-platform.result }}'), 'protected H12 aggregator still reads quality result');
+q3_assert(q3_contains($workflow, 'PHP_SYNTAX_RESULT: ${{ needs.php-syntax-compatibility.result }}'), 'protected H12 aggregator still reads syntax result');
+
+foreach (array(
+    'c2c30f90688747a523301cb776ed920ef39063f3',
+    '3550fdbb0810af26808851e24e39a6130725e8db',
+    'Quality Gates run #182',
+    '356680b9fe8a2724e778d40386ca182247715249',
+    'Quality Gates run #183',
+    'implementation branch deleted',
+) as $closure_evidence) {
+    q3_assert(q3_contains($quality_record, $closure_evidence), "Q2 closure evidence is pinned: {$closure_evidence}");
+}
+q3_assert(q3_contains($quality_record, '**Status:** Q3 / IMPLEMENTATION'), 'quality record advances to Q3');
+q3_assert(q3_contains($status, '| Current program gate | **Full Automated Quality Platform — Q3** |'), 'project status advances to Quality Platform Q3');
+q3_assert(q3_contains($readme, 'The current program gate is **Full Automated Quality Platform — Q3**.'), 'README advances to Quality Platform Q3');
+q3_assert(!q3_contains($handoff, 'CURRENT / Q2'), 'handoff rejects the stale current-Q2 marker');
+q3_assert(!q3_contains($playbook, 'CURRENT / Q2'), 'master playbook rejects the stale current-Q2 marker');
+q3_assert(q3_contains($workflow, "reject_across_live_records 'CURRENT / Q2'"), 'Governance rejects stale current-Q2 markers');
+
+echo "\nQ3 Payment Concurrency Analysis: {$q3_pass} PASS / {$q3_fail} FAIL\n";
+exit($q3_fail === 0 ? 0 : 1);

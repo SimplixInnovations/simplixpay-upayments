@@ -1,8 +1,12 @@
 parameters:
     level: 5
     phpVersion: 70200
+    scanFiles:
+        - tests/phpstan/wordpress-option-stubs.php
     paths:
         - src/Payment/CheckoutPayload.php
+        - src/Payment/OrderLock.php
         - src/Payment/ProviderResult.php
+        - src/Payment/StatusRateGate.php
         - src/Provider/EndpointResolver.php
     tmpDir: .cache/phpstan

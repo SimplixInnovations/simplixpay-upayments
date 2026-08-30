@@ -16,7 +16,7 @@ final class OrderLock {
     private const TTL = 45;
 
     /**
-     * @param int $order_id
+     * @param mixed $order_id Defensive order-identity boundary value.
      * @return string|null Opaque owner token on success.
      */
     public static function acquire($order_id) {
@@ -51,8 +51,8 @@ final class OrderLock {
     /**
      * Release only the exact record owned by this token.
      *
-     * @param int    $order_id
-     * @param string $token Token returned by acquire().
+     * @param mixed $order_id Defensive order-identity boundary value.
+     * @param mixed $token    Token returned by acquire().
      * @return void
      */
     public static function release($order_id, $token) {
