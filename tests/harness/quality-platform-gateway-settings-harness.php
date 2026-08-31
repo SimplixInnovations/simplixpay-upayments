@@ -109,25 +109,25 @@ q6_assert(q6_contains($workflow, 'QUALITY_PLATFORM_RESULT: ${{ needs.quality-pla
 q6_assert(q6_contains($workflow, 'PHP_SYNTAX_RESULT: ${{ needs.php-syntax-compatibility.result }}'), 'protected H12 aggregator still reads syntax result');
 
 foreach (array(
-    'd4132b0caccaa6edc6d7421afcfd8e9694563224',
-    'dee657b03f8d44670b0ae2501a40dabf718d4bb2',
-    'Quality Gates run #197',
-    '984053aee6bb50e62e457a639f44307e461f5e38',
-    'Quality Gates run #198',
+    '85de7a009205e6bb810fad8ab8a0634ca91d1fa8',
+    '07f944a3adbbdbf6953ea96512555cb6b16286fe',
+    'Quality Gates run #201',
+    '651e604659d1891e0f7d05b8e684edb4aa31c2b1',
+    'Quality Gates run #202',
     'implementation branch deleted',
 ) as $closure_evidence) {
-    q6_assert(q6_contains($quality_record, $closure_evidence), "Q5 closure evidence is pinned: {$closure_evidence}");
+    q6_assert(q6_contains($quality_record, $closure_evidence), "Q6 closure evidence is pinned: {$closure_evidence}");
 }
-q6_assert(q6_contains($quality_record, '**Status:** Q6 / IMPLEMENTATION'), 'quality record advances to Q6');
-q6_assert(q6_contains($status, '| Current program gate | **Full Automated Quality Platform — Q6** |'), 'project status advances to Quality Platform Q6');
-q6_assert(q6_contains($readme, 'The current program gate is **Full Automated Quality Platform — Q6**.'), 'README advances to Quality Platform Q6');
+q6_assert(q6_contains($quality_record, '**Status:** Q7 / IMPLEMENTATION'), 'quality record advances beyond Q6');
+q6_assert(q6_contains($status, '| Current program gate | **Full Automated Quality Platform — Q7** |'), 'project status advances beyond Quality Platform Q6');
+q6_assert(q6_contains($readme, 'The current program gate is **Full Automated Quality Platform — Q7**.'), 'README advances beyond Quality Platform Q6');
 q6_assert(
-    q6_contains($playbook, 'Last verified implementation main SHA: 984053aee6bb50e62e457a639f44307e461f5e38')
-        && q6_contains($playbook, 'Canonical implementation tree: dee657b03f8d44670b0ae2501a40dabf718d4bb2'),
-    'master playbook restart anchors pin the verified Q5 merge and tree'
+    q6_contains($playbook, 'Last verified implementation main SHA: 651e604659d1891e0f7d05b8e684edb4aa31c2b1')
+        && q6_contains($playbook, 'Canonical implementation tree: 07f944a3adbbdbf6953ea96512555cb6b16286fe'),
+    'master playbook restart anchors pin the verified Q6 merge and tree'
 );
-q6_assert(!q6_contains($handoff, 'CURRENT / Q5'), 'handoff rejects the stale current-Q5 marker');
-q6_assert(!q6_contains($playbook, 'CURRENT / Q5'), 'master playbook rejects the stale current-Q5 marker');
+q6_assert(!q6_contains($handoff, 'CURRENT / Q6'), 'handoff rejects the stale current-Q6 marker');
+q6_assert(!q6_contains($playbook, 'CURRENT / Q6'), 'master playbook rejects the stale current-Q6 marker');
 q6_assert(q6_contains($workflow, "reject_across_live_records 'CURRENT / Q5'"), 'Governance rejects stale current-Q5 markers');
 
 echo "\nQ6 Gateway Settings Analysis: {$q6_pass} PASS / {$q6_fail} FAIL\n";

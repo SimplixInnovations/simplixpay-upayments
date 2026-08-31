@@ -66,11 +66,19 @@ The project is still in pre-release engineering hardening. Entries below are eng
 - Exact final PR #31 head `d4132b0caccaa6edc6d7421afcfd8e9694563224` passed Quality Gates #197 and clean independent exact-head review; Q5 was **83/0** and PHPUnit **47 tests / 444 assertions**.
 - Squash-merged PR #31 as `984053aee6bb50e62e457a639f44307e461f5e38`, tree `dee657b03f8d44670b0ae2501a40dabf718d4bb2`; post-merge run #198 passed and the implementation branch was deleted.
 
-### Full Automated Quality Platform — Q6 Gateway Settings Analysis
+### Full Automated Quality Platform — Q6 Gateway Settings Analysis — DONE / VERIFIED
 
 - Expands baseline-free PHPStan/PHPCS and deterministic PHPUnit characterization into `GatewaySettings`.
 - Freezes the exact 21-field schema, subscription/save-card dependency, API/allocation validation, five-field non-secret sanitation, escaped single-allocation renderer and exact admin asset scopes.
 - Adds development-only WordPress/WooCommerce admin fixtures and a permanent Q6 regression harness without changing payment truth, provider transport, scheduler state or protected compatibility identities.
+- Exact final PR #32 head `85de7a009205e6bb810fad8ab8a0634ca91d1fa8` passed Quality Gates #201 and clean independent exact-head review; Q6 was **83/0** and PHPUnit **55 tests / 498 assertions**.
+- Squash-merged PR #32 as `651e604659d1891e0f7d05b8e684edb4aa31c2b1`, tree `07f944a3adbbdbf6953ea96512555cb6b16286fe`; post-merge run #202 passed and the implementation branch was deleted.
+
+### Full Automated Quality Platform — Q7 Public Order Status Analysis
+
+- Expands baseline-free PHPStan/PHPCS and deterministic PHPUnit characterization into `PublicOrderStatus`.
+- Freezes GET-only parsing, UPayments-order enforcement, exact owner/order-key authority, generic unavailable errors and the minimal allowlisted public response.
+- Adds development-only WordPress/WooCommerce order/authentication/JSON fixtures and a permanent Q7 regression harness without changing payment truth, provider transport, callbacks, order mutation or protected compatibility identities.
 
 ### Architecture A2 — Payment-Method Availability Client/Cache — DONE / VERIFIED
 
@@ -104,7 +112,7 @@ The project is still in pre-release engineering hardening. Entries below are eng
 
 ### Current program gate
 
-**Full Automated Quality Platform — Q6** is now the active gate. Architecture A1-A5 and Quality Platform Q1-Q5 are DONE / VERIFIED; Q6 is limited to GatewaySettings schema/validation/sanitation/rendering/admin-asset characterization and baseline-free static-analysis expansion and does not certify platforms or alter payment runtime contracts.
+**Full Automated Quality Platform — Q7** is now the active gate. Architecture A1-A5 and Quality Platform Q1-Q6 are DONE / VERIFIED; Q7 is limited to PublicOrderStatus request/authentication/response characterization and baseline-free static-analysis expansion and does not certify platforms or alter payment runtime contracts.
 
 ### Provider Contract & Payment Lifecycle — DONE / VERIFIED
 
