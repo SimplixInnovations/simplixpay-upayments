@@ -108,6 +108,8 @@ Q7 is DONE / VERIFIED and added `src/Security/PublicOrderStatus.php` to baseline
 
 Q7 changed no payment truth, provider transport, callback, reconciliation or order-state contract. Its strict-boundary hardening affects malformed inputs only.
 
+Q7 closure evidence remains pinned: PR #33 final reviewed head `48de59414c952d6f90ce90c4f462dde67fcbdabc`, exact reviewed tree `6ef43632a4868a1114b5468a38ad45138e41c393`, exact-head Quality Gates run #212, squash merge `e00a80147d4f6267d137e1bdfa0b2d1211e00f6a`, post-merge Quality Gates run #213 and implementation branch deleted after verified merge.
+
 ## Closed Q8 contract
 
 Q8 is DONE / VERIFIED and added `src/Release/Identity.php` to baseline-free PHPStan and PHPCS. Deterministic PHPUnit tests protect exact product/version/repository ownership, the disabled external update channel, historical installed main-file/text-domain identities, distinct future migration targets and the final non-instantiable constant boundary. Q8 changed no production source statement and did not activate an updater or identity migration.
