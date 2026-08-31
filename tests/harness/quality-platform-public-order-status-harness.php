@@ -42,7 +42,7 @@ foreach (array('wait', 'pending', 'failed', 'completed', 'cancelled') as $allowe
 q7_assert(q7_contains($source, "\$method !== 'GET'"), 'public poll remains GET-only');
 q7_assert(q7_contains($source, "array_key_exists('wc_order_id', \$get)"), 'order ID remains explicit request input');
 q7_assert(q7_contains($source, "(string) \$order->get_payment_method() === 'upayments'"), 'only UPayments orders are eligible');
-q7_assert(q7_contains($source, '\$current_user_id === $order_user_id'), 'logged-in ownership remains exact');
+q7_assert(q7_contains($source, '$current_user_id === $order_user_id'), 'logged-in ownership remains exact');
 q7_assert(q7_contains($source, 'hash_equals($order_key, $provided_key)'), 'guest order-key comparison remains constant-time');
 q7_assert(q7_contains($source, "strlen(\$value) > 18"), 'order ID length remains bounded');
 q7_assert(q7_contains($source, "preg_match('/\\A[1-9][0-9]*\\z/', \$value)"), 'order ID uses absolute anchors for strict positive decimal input');
