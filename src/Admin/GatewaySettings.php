@@ -208,6 +208,10 @@ final class GatewaySettings {
      * @return string
      */
     public static function sanitize_multimerchant_accounts($value) {
+        if (!is_string($value)) {
+            return '[]';
+        }
+
         $rules = json_decode(stripslashes($value), true);
         if (!is_array($rules)) {
             return '[]';
@@ -223,7 +227,8 @@ final class GatewaySettings {
                 'cc_charge_type' => wc_clean(isset($rule['cc_charge_type']) ? $rule['cc_charge_type'] : ''),
             );
         }
-        return json_encode($sanitized_rules);
+        $encoded = json_encode($sanitized_rules);
+        return is_string($encoded) ? $encoded : '[]';
     }
 
     /**
@@ -290,7 +295,8 @@ final class GatewaySettings {
             </td>
         </tr>
         <?php
-        return ob_get_clean();
+        $output = ob_get_clean();
+        return is_string($output) ? $output : '';
     }
 
     /**

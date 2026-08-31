@@ -59,11 +59,18 @@ The project is still in pre-release engineering hardening. Entries below are eng
 - Exact final PR #30 head `8543bdfce1a4e216200791dc5637b646f49bcb59` passed Quality Gates #194 and clean independent exact-head review; Q4 was **68/0** and PHPUnit **39 tests / 327 assertions**.
 - Squash-merged PR #30 as `4b3db92b0ded0c598bad0ab677babab9e6102811`, tree `ad5ae98d5e935bb48d1441f94e130f5d3adb3ca9`; post-merge run #195 passed and the implementation branch was deleted.
 
-### Full Automated Quality Platform — Q5 Payment-Method Availability Analysis
+### Full Automated Quality Platform — Q5 Payment-Method Availability Analysis — DONE / VERIFIED
 
-- Expands baseline-free PHPStan/PHPCS and deterministic PHPUnit characterization into `PaymentMethodAvailability`.
-- Freezes exact credential/mode/site cache and advisory-lock identities, the durable 65-second gate, strict schema-3 caches, provider failure sentinel and bounded payment-button normalization.
-- Adds development-only transient/advisory-lock fixtures and a permanent Q5 regression harness; no executable payment behavior, runtime dependency or certification claim is introduced.
+- Expanded baseline-free PHPStan/PHPCS and deterministic PHPUnit characterization into `PaymentMethodAvailability`.
+- Froze exact credential/mode/site cache and advisory-lock identities, the durable 65-second gate, strict schema-3 caches, provider failure sentinel and bounded payment-button normalization.
+- Exact final PR #31 head `d4132b0caccaa6edc6d7421afcfd8e9694563224` passed Quality Gates #197 and clean independent exact-head review; Q5 was **83/0** and PHPUnit **47 tests / 444 assertions**.
+- Squash-merged PR #31 as `984053aee6bb50e62e457a639f44307e461f5e38`, tree `dee657b03f8d44670b0ae2501a40dabf718d4bb2`; post-merge run #198 passed and the implementation branch was deleted.
+
+### Full Automated Quality Platform — Q6 Gateway Settings Analysis
+
+- Expands baseline-free PHPStan/PHPCS and deterministic PHPUnit characterization into `GatewaySettings`.
+- Freezes the exact 21-field schema, subscription/save-card dependency, API/allocation validation, five-field non-secret sanitation, escaped single-allocation renderer and exact admin asset scopes.
+- Adds development-only WordPress/WooCommerce admin fixtures and a permanent Q6 regression harness without changing payment truth, provider transport, scheduler state or protected compatibility identities.
 
 ### Architecture A2 — Payment-Method Availability Client/Cache — DONE / VERIFIED
 
@@ -97,7 +104,7 @@ The project is still in pre-release engineering hardening. Entries below are eng
 
 ### Current program gate
 
-**Full Automated Quality Platform — Q5** is now the active gate. Architecture A1-A5 and Quality Platform Q1-Q4 are DONE / VERIFIED; Q5 is limited to PaymentMethodAvailability cache/lock/gate/provider-normalization characterization and baseline-free static-analysis expansion and does not certify platforms or alter payment runtime contracts.
+**Full Automated Quality Platform — Q6** is now the active gate. Architecture A1-A5 and Quality Platform Q1-Q5 are DONE / VERIFIED; Q6 is limited to GatewaySettings schema/validation/sanitation/rendering/admin-asset characterization and baseline-free static-analysis expansion and does not certify platforms or alter payment runtime contracts.
 
 ### Provider Contract & Payment Lifecycle — DONE / VERIFIED
 

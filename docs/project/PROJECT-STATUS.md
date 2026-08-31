@@ -2,7 +2,7 @@
 
 **Status document:** canonical living engineering state
 
-**Last updated:** 2026-08-30
+**Last updated:** 2026-08-31
 
 **Canonical repository:** `SimplixInnovations/simplixpay-upayments`
 
@@ -33,11 +33,35 @@
 | Quality Platform Q2 CheckoutPayload analysis | **DONE / VERIFIED** |
 | Quality Platform Q3 payment-concurrency analysis | **DONE / VERIFIED** |
 | Quality Platform Q4 authenticated-status analysis | **DONE / VERIFIED** |
-| Current program gate | **Full Automated Quality Platform — Q5** |
+| Quality Platform Q5 payment-method availability analysis | **DONE / VERIFIED** |
+| Current program gate | **Full Automated Quality Platform — Q6** |
 
-The plugin remains a pre-release engineering project. Architecture discovery/A1-A5 and Quality Platform Q1-Q4 are DONE / VERIFIED; Q5 payment-method availability analysis is the current bounded implementation tranche. None of these milestones constitutes broad code-quality, provider-host, penetration-test, PCI/compliance, platform, feature, performance or release certification.
+The plugin remains a pre-release engineering project. Architecture discovery/A1-A5 and Quality Platform Q1-Q5 are DONE / VERIFIED; Q6 gateway-settings analysis is the current bounded implementation tranche. None of these milestones constitutes broad code-quality, provider-host, penetration-test, PCI/compliance, platform, feature, performance or release certification.
 
-## Latest verified milestone — Quality Platform Q4 authenticated-status analysis
+## Latest verified milestone — Quality Platform Q5 payment-method availability analysis
+
+PR #31 final reviewed head:
+
+- `d4132b0caccaa6edc6d7421afcfd8e9694563224`
+
+Verified squash merge on `main`:
+
+- merge: `984053aee6bb50e62e457a639f44307e461f5e38`
+- tree: `dee657b03f8d44670b0ae2501a40dabf718d4bb2`
+- parent: `4b3db92b0ded0c598bad0ab677babab9e6102811`
+- implementation branch `quality/payment-method-availability-analysis`: **deleted after verified merge**
+- exact-head Quality Gates run #197: **SUCCESS**
+- push-triggered post-merge Quality Gates run #198: **SUCCESS**
+- PHPUnit: **47 tests / 444 assertions**
+- Quality Platform Foundation: **74/0**
+- Q2 Checkout Payload Analysis: **64/0**
+- Q3 Payment Concurrency Analysis: **69/0**
+- Q4 Authenticated Status Analysis: **68/0**
+- Q5 Payment-Method Availability Analysis: **83/0**
+
+Q5 expanded baseline-free PHPStan level 5/PHP 7.2, PHPCS and PHPUnit into PaymentMethodAvailability without changing executable production statements. It characterizes exact cache/gate/lock identities, strict schema-3 cache shapes, lock contention, the durable 65-second gate, provider failure caching and normalized known-button results. Every historical/architecture/H12 regression remained green; the valid living-state P2 was resolved, and final independent exact-head review found no major issues. Q5 makes no live-provider, platform or production-certification claim.
+
+## Previous verified milestone — Quality Platform Q4 authenticated-status analysis
 
 PR #30 final reviewed head:
 
@@ -419,19 +443,19 @@ Repository readiness remains DONE / VERIFIED:
 
 ## Current program gate — Full Automated Quality Platform
 
-**Status: Q5 — PAYMENT-METHOD AVAILABILITY ANALYSIS / IMPLEMENTATION.**
+**Status: Q6 — GATEWAY SETTINGS ANALYSIS / IMPLEMENTATION.**
 
-Architecture discovery/A1-A5 and Quality Platform Q1-Q4 are complete. Q5 is limited to the extracted payment-method availability cache, advisory-lock, durable-gate and provider-normalization boundary. Current scope:
+Architecture discovery/A1-A5 and Quality Platform Q1-Q5 are complete. Q6 is limited to the extracted gateway settings schema, validation, sanitation, escaped rendering and admin-asset boundary. Current scope:
 
-- add `PaymentMethodAvailability.php` to the baseline-free PHPStan level 5 / PHP 7.2 and risk-focused PHPCS scopes;
-- add development-only WordPress transient/advisory-lock symbols and deterministic fixtures;
-- expand PHPUnit characterization across exact cache/gate/lock identities, strict schema-3 cache shapes, lock contention, cooldown/write failure, provider transport/envelope failure and normalized known-button results;
-- reconcile documentation-only property/return PHPDoc with existing runtime behavior and change no executable payment behavior;
+- add `GatewaySettings.php` to the baseline-free PHPStan level 5 / PHP 7.2 and risk-focused PHPCS scopes;
+- add development-only WordPress/WooCommerce translation, sanitation, escaping and enqueue symbols and deterministic fixtures;
+- expand PHPUnit characterization across the exact 21-field schema, dependency normalization, API/allocation validation, bounded five-field sanitation, escaped single-allocation rendering and exact asset scopes;
+- reconcile only analyzer-proven documentation or fail-closed return normalization under characterization;
 - keep the Q1 dependency lock, tool versions, analysis level, PHPStan no-baseline/no-`ignoreErrors` rule and protected H12 aggregator unchanged;
-- keep every historical and architecture harness plus all five permanent quality-platform harnesses mandatory;
+- keep every historical and architecture harness plus all six permanent quality-platform harnesses mandatory;
 - preserve protected identities and keep Security **82/0**, Provider **141/0 + 4/0**, Phase 9I, Phase 0, H12 and all architecture regressions green.
 
-No cache schema/prefix/fingerprint width, known-button set, gate option identity, 65-second cooldown, advisory-lock formula/timing, provider route/transport, strict HTTP 201/status contract, normalization, payment truth, scheduler/attempt state, protected persistence identity or order-state mutation is authorized to change in Q5. `QUALITY-PLATFORM.md` is the current gate record.
+No `woocommerce_upayments_settings` identity, field key/order/default, five runtime allocation keys, single-additional-merchant boundary, provider route/payload/transport, payment truth, scheduler/attempt state, protected persistence identity or order-state mutation is authorized to change in Q6. `QUALITY-PLATFORM.md` is the current gate record.
 
 ## Later program blockers
 
