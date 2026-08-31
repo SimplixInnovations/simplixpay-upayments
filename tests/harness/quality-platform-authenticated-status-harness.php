@@ -136,9 +136,10 @@ q4_assert(
 q4_assert(q4_contains($status, '| Current program gate | **Full Automated Quality Platform — Q8** |'), 'project status advances beyond Quality Platform Q4');
 q4_assert(q4_contains($readme, 'The current program gate is **Full Automated Quality Platform — Q8**.'), 'README advances beyond Quality Platform Q4');
 q4_assert(
-    q4_contains($audit, 'PublicOrderStatus request/authorization/minimal-response surface')
+    q4_contains($audit, 'Q7 added public status request/authorization/minimal-response tests')
+        && q4_contains($audit, '`Release/Identity.php`')
         && q4_contains($audit, 'Q1-Q7 modules'),
-    'repository audit advances beyond Q4 to the exact Q7 owner scope'
+    'repository audit retains Q7 closure and advances to the exact Q8 owner scope'
 );
 q4_assert(!q4_contains($handoff, 'CURRENT / Q3'), 'handoff rejects the stale current-Q3 marker');
 q4_assert(!q4_contains($playbook, 'CURRENT / Q3'), 'master playbook rejects the stale current-Q3 marker');
