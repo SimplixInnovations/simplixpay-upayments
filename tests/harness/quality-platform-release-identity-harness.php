@@ -58,23 +58,23 @@ q8_assert(q8_contains($tests, 'test_external_update_channel_is_explicitly_disabl
 q8_assert(q8_contains($workflow, 'quality-platform-release-identity-harness.php'), 'Q8 harness is mandatory in Quality Gates');
 q8_assert(q8_contains($workflow, 'if: ${{ always() }}'), 'protected H12 aggregator still always runs');
 foreach (array(
-    '48de59414c952d6f90ce90c4f462dde67fcbdabc',
-    '6ef43632a4868a1114b5468a38ad45138e41c393',
-    'Quality Gates run #212',
-    'e00a80147d4f6267d137e1bdfa0b2d1211e00f6a',
-    'Quality Gates run #213',
+    '458bf35b0cc60d78dc8f32d28605d1f60cbc501c',
+    '109415fa6a4bc04bba60bb23275bc192dd232559',
+    'Quality Gates run #218',
+    'b59eb2d50b86a38d8ea130de63c38a672db86d32',
+    'Quality Gates run #219',
     'implementation branch deleted',
 ) as $evidence) {
-    q8_assert(q8_contains($quality, $evidence), "Q7 closure evidence is pinned: {$evidence}");
+    q8_assert(q8_contains($quality, $evidence), "Q8 closure evidence is pinned: {$evidence}");
 }
-q8_assert(q8_contains($quality, '**Status:** Q8 / IMPLEMENTATION'), 'quality record advances to Q8');
-q8_assert(q8_contains($status, '| Current program gate | **Full Automated Quality Platform — Q8** |'), 'project status advances to Q8');
-q8_assert(q8_contains($readme, 'The current program gate is **Full Automated Quality Platform — Q8**.'), 'README advances to Q8');
-q8_assert(q8_contains($playbook, 'Last verified implementation main SHA: e00a80147d4f6267d137e1bdfa0b2d1211e00f6a'), 'playbook pins Q7 merge');
-q8_assert(q8_contains($playbook, 'Canonical implementation tree: 6ef43632a4868a1114b5468a38ad45138e41c393'), 'playbook pins Q7 tree');
-q8_assert(!q8_contains($handoff, 'CURRENT / Q7'), 'handoff rejects stale current-Q7 marker');
-q8_assert(!q8_contains($playbook, 'CURRENT / Q7'), 'playbook rejects stale current-Q7 marker');
-q8_assert(q8_contains($workflow, "reject_across_live_records 'CURRENT / Q7'"), 'Governance rejects stale current-Q7 markers');
+q8_assert(q8_contains($quality, '**Status:** Q9 / IMPLEMENTATION'), 'quality record advances beyond Q8');
+q8_assert(q8_contains($status, '| Current program gate | **Full Automated Quality Platform — Q9** |'), 'project status advances beyond Q8');
+q8_assert(q8_contains($readme, 'The current program gate is **Full Automated Quality Platform — Q9**.'), 'README advances beyond Q8');
+q8_assert(q8_contains($playbook, 'Last verified implementation main SHA: b59eb2d50b86a38d8ea130de63c38a672db86d32'), 'playbook pins Q8 merge');
+q8_assert(q8_contains($playbook, 'Canonical implementation tree: 109415fa6a4bc04bba60bb23275bc192dd232559'), 'playbook pins Q8 tree');
+q8_assert(!q8_contains($handoff, 'CURRENT / Q8'), 'handoff rejects stale current-Q8 marker');
+q8_assert(!q8_contains($playbook, 'CURRENT / Q8'), 'playbook rejects stale current-Q8 marker');
+q8_assert(q8_contains($workflow, "reject_across_live_records 'CURRENT / Q8'"), 'Governance rejects stale current-Q8 markers');
 
 echo "\nQ8 Release Identity Analysis: {$q8_pass} PASS / {$q8_fail} FAIL\n";
 exit($q8_fail === 0 ? 0 : 1);

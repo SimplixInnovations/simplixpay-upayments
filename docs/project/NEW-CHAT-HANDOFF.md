@@ -35,7 +35,8 @@ Use this file with root `AGENTS.md`, `PROJECT-STATUS.md`, the naming standard, t
 - Quality Platform Q5 payment-method availability analysis: **DONE / VERIFIED**
 - Quality Platform Q6 gateway-settings analysis: **DONE / VERIFIED**
 - Quality Platform Q7 public-order-status analysis: **DONE / VERIFIED**
-- Current program gate: **Full Automated Quality Platform — Q8**
+- Quality Platform Q8 release-identity analysis: **DONE / VERIFIED**
+- Current program gate: **Full Automated Quality Platform — Q9**
 - Stable production release: **NO**
 - WordPress.org release: **NO**
 
@@ -308,20 +309,20 @@ Do not globally rename:
 - malformed H12 secret is distinct from missing and fails closed.
 - selected saved card requires current valid provenance + exact scope/generation + fresh provider Retrieve + exact membership.
 
-## Current tranche — Full Automated Quality Platform Q8
+## Current tranche — Full Automated Quality Platform Q9
 
-**Status: Q8 — RELEASE IDENTITY ANALYSIS / IMPLEMENTATION.**
+**Status: Q9 — MIGRATION SETTINGS ANALYSIS / IMPLEMENTATION.**
 
 Required bounded sequence:
 
-1. Work only from verified Q7 merge `e00a80147d4f6267d137e1bdfa0b2d1211e00f6a`, tree `6ef43632a4868a1114b5468a38ad45138e41c393`, on `quality/release-identity-analysis`.
-2. Expand deterministic PHPUnit characterization across the exact public product/version/repository, disabled update channel, historical installed identities, distinct future migration targets and non-instantiability.
-3. Add `Release/Identity.php` to the existing baseline-free PHPStan level 5 / PHP 7.2 and risk-focused PHPCS scopes.
-4. Reconcile only analyzer-proven documentation; do not activate the updater or identity migration and do not change payment/bootstrap behavior.
+1. Work only from verified Q8 merge `b59eb2d50b86a38d8ea130de63c38a672db86d32`, tree `109415fa6a4bc04bba60bb23275bc192dd232559`, on `quality/migration-settings-analysis`.
+2. Expand deterministic PHPUnit characterization across the exact historical option source, fail-closed API-key/mode shapes, byte-preserved valid credentials, no mutation, bounded redaction and non-instantiability.
+3. Add `Migration/MigrationSettings.php` to the existing baseline-free PHPStan level 5 / PHP 7.2 and risk-focused PHPCS scopes.
+4. Reconcile only analyzer-proven documentation; do not add credential sources/storage, transform valid API keys, broaden mode coercion or change Phase 9I execution/payment behavior.
 5. Keep the Q1 lockfile, tool versions, analysis level, PHPStan no-baseline/no-`ignoreErrors` rule, distributed syntax matrix and protected H12 prerequisite aggregator unchanged; do not broadly disable PHPCS rules.
-6. Keep every closed regression and architecture harness mandatory, plus all eight permanent Quality Platform harnesses.
+6. Keep every closed regression and architecture harness mandatory, plus all nine permanent Quality Platform harnesses.
 7. Preserve exact provider, Security, H12, Phase 9I, scheduler/attempt, payment truth and compatibility identities.
-8. Require independent exact-head review, green CI, verified merge, post-merge CI and branch cleanup before Q8 is DONE / VERIFIED.
+8. Require independent exact-head review, green CI, verified merge, post-merge CI and branch cleanup before Q9 is DONE / VERIFIED.
 
 The quality gate may improve evidence and tooling; it may not reinterpret provider truth, weaken authorization, or silently broaden certified feature/platform claims.
 
@@ -365,7 +366,7 @@ Read in this order:
 3. Provider Contract & Payment Lifecycle — **DONE / VERIFIED**
 4. Security Threat-Model Closure — **DONE / VERIFIED**
 5. Architecture & Code-Quality Foundation — **DONE / VERIFIED (A1-A5)**
-6. Full automated quality platform — **CURRENT / Q8**
+6. Full automated quality platform — **CURRENT / Q9**
 7. Platform certification: Woo/WP/PHP/HPOS/Blocks/WPML
 8. Feature certification
 9. Performance/UX/operations/diagnostics
@@ -381,9 +382,9 @@ Read AGENTS.md first, then docs/project/PROJECT-STATUS.md, docs/project/NAMING-I
 
 Treat recorded SHAs/status as verified milestone anchors, not substitutes for live GitHub. Freshly verify current main, open PRs/branches, checks, review state and current source before acting; reconcile any drift first.
 
-Repository readiness, Phase 0, Phase 9I, Provider Contract & Payment Lifecycle, Security Threat-Model Closure, Architecture discovery/A1-A5 and Quality Platform Q1-Q7 are DONE / VERIFIED. Q7 was squash-merged from PR #33 as main `e00a80147d4f6267d137e1bdfa0b2d1211e00f6a`, tree `6ef43632a4868a1114b5468a38ad45138e41c393`; exact-head run #212 and post-merge run #213 passed. The current permitted gate is Full Automated Quality Platform — Q8.
+Repository readiness, Phase 0, Phase 9I, Provider Contract & Payment Lifecycle, Security Threat-Model Closure, Architecture discovery/A1-A5 and Quality Platform Q1-Q8 are DONE / VERIFIED. Q8 was squash-merged from PR #34 as main `b59eb2d50b86a38d8ea130de63c38a672db86d32`, tree `109415fa6a4bc04bba60bb23275bc192dd232559`; exact-head run #218 and post-merge run #219 passed. The current permitted gate is Full Automated Quality Platform — Q9.
 
-Implement only Q8 release-identity analysis expansion: deepen deterministic PHPUnit characterization for `Release/Identity`, add it to baseline-free PHPStan level 5/PHP 7.2 and risk-focused PHPCS, and reconcile only analyzer-proven documentation. Keep Q1's lockfile, tool versions, dependency audit, distributed syntax jobs and always-running protected H12 prerequisite aggregator unchanged. Composer and tests remain development-only; `vendor/` and tests are not runtime or distribution code. Do not rename the current `UPayments.php` main file or `upayments` text domain, enable/replace the updater, change version/slug/repository, change any gateway ID/option/meta/route/hook/table/H12 identity, or alter payment lifecycle/bootstrap behavior. Keep all existing regression suites, every architecture harness and all eight Quality Platform harnesses mandatory.
+Implement only Q9 migration-settings analysis expansion: deepen deterministic PHPUnit characterization for `Migration/MigrationSettings`, add it to baseline-free PHPStan level 5/PHP 7.2 and risk-focused PHPCS, and reconcile only analyzer-proven documentation. Keep Q1's lockfile, tool versions, dependency audit, distributed syntax jobs and always-running protected H12 prerequisite aggregator unchanged. Composer and tests remain development-only; `vendor/` and tests are not runtime or distribution code. Do not add or change credential sources/input/storage, trim/sanitize/transform valid API keys, rename `woocommerce_upayments_settings`, broaden exact `yes`/`no` mode handling, expose secrets in reporting, or alter Phase 9I execution/payment behavior. Keep all existing regression suites, every architecture harness and all nine Quality Platform harnesses mandatory.
 
 Do not claim broad security, PCI/compliance, platform, feature, performance or production certification from the bounded security closure. UPayments webhook signature details remain provider-document unresolved, automatic refunds remain unsupported pending durable idempotency/reconciliation design, and subscription auto-deduction remains separately characterized rather than broadly certified.
 

@@ -87,6 +87,14 @@ The project is still in pre-release engineering hardening. Entries below are eng
 - Expands baseline-free PHPStan/PHPCS and deterministic PHPUnit characterization into `Release\Identity`.
 - Freezes the public product/version/repository boundary, disabled update channel, historical installed identities and distinct future migration targets.
 - Adds a permanent Q8 regression harness without activating the updater, renaming persisted identities or changing payment/bootstrap behavior.
+- Exact final PR #34 head `458bf35b0cc60d78dc8f32d28605d1f60cbc501c` passed Quality Gates #218 and clean independent exact-head review; Q8 was **46/0** and PHPUnit **69 tests / 604 assertions**.
+- Squash-merged PR #34 as `b59eb2d50b86a38d8ea130de63c38a672db86d32`, tree `109415fa6a4bc04bba60bb23275bc192dd232559`; post-merge run #219 passed and the implementation branch was deleted.
+
+### Full Automated Quality Platform — Q9 Migration Settings Analysis
+
+- Expands baseline-free PHPStan/PHPCS and deterministic PHPUnit characterization into `MigrationSettings`.
+- Freezes the sole historical Woo gateway-option source, fail-closed credential/mode parsing, exact in-memory credential preservation and secret-free reporting redaction.
+- Adds a permanent Q9 regression harness without adding credential input/storage or changing Phase 9I execution and payment behavior.
 
 ### Architecture A2 — Payment-Method Availability Client/Cache — DONE / VERIFIED
 
@@ -120,7 +128,7 @@ The project is still in pre-release engineering hardening. Entries below are eng
 
 ### Current program gate
 
-**Full Automated Quality Platform — Q8** is now the active gate. Architecture A1-A5 and Quality Platform Q1-Q7 are DONE / VERIFIED; Q8 is limited to release-identity characterization and baseline-free static-analysis expansion and does not activate migration/update behavior, certify platforms or alter payment runtime contracts.
+**Full Automated Quality Platform — Q9** is now the active gate. Architecture A1-A5 and Quality Platform Q1-Q8 are DONE / VERIFIED; Q9 is limited to MigrationSettings credential/mode/redaction characterization and baseline-free static-analysis expansion and does not add credential sources, execute migration, certify platforms or alter payment runtime contracts.
 
 ### Provider Contract & Payment Lifecycle — DONE / VERIFIED
 
