@@ -57,8 +57,11 @@ function wp_unslash($value) {
     return is_string($value) ? stripslashes($value) : $value;
 }
 
-function sanitize_key($value) {
-    return is_string($value) ? preg_replace('/[^a-z0-9_\-]/', '', strtolower($value)) : '';
+function sanitize_text_field($value) {
+    if (!is_string($value)) {
+        return '';
+    }
+    return trim(preg_replace('/[\r\n\t ]+/', ' ', strip_tags($value)));
 }
 
 function wp_send_json($response, $status_code = null, $flags = 0) {

@@ -52,9 +52,11 @@ final class PublicOrderStatusTest extends TestCase {
     }
 
     public function test_handle_rejects_non_get_and_invalid_or_missing_order_identifiers(): void {
-        $_SERVER['REQUEST_METHOD'] = 'POST';
-        $_GET = array('wc_order_id' => '42', 'key' => 'wc_order_secret');
-        $this->assert_response(404, array('status' => 'error', 'message' => 'Order status unavailable.'));
+        foreach (array('POST', 'G ET', 'G\\ET', "GET\n", '<GET>') as $method) {
+            $_SERVER['REQUEST_METHOD'] = $method;
+            $_GET = array('wc_order_id' => '42', 'key' => 'wc_order_secret');
+            $this->assert_response(404, array('status' => 'error', 'message' => 'Order status unavailable.'));
+        }
 
         foreach (array(array(), array('wc_order_id' => '0'), array('wc_order_id' => array('42')), array('wc_order_id' => '999')) as $query) {
             \simplixpay_test_reset_public_order_status();

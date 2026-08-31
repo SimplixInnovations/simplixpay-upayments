@@ -112,7 +112,7 @@ function get_current_user_id() {}
 function wp_unslash($value) {}
 
 /** @return string */
-function sanitize_key($value) {}
+function sanitize_text_field($value) {}
 
 /** @return void */
 function wp_send_json($response, $status_code = null, $flags = 0) {}

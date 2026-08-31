@@ -32,9 +32,11 @@ final class PublicOrderStatus {
      * @return void
      */
     public static function handle() {
-        $method = isset($_SERVER['REQUEST_METHOD']) && is_string($_SERVER['REQUEST_METHOD'])
-            ? strtoupper(sanitize_key(wp_unslash($_SERVER['REQUEST_METHOD'])))
-            : 'GET';
+        $raw_method = isset($_SERVER['REQUEST_METHOD']) && is_string($_SERVER['REQUEST_METHOD'])
+            ? (string) wp_unslash($_SERVER['REQUEST_METHOD'])
+            : null;
+        $sanitized_method = $raw_method !== null ? sanitize_text_field($raw_method) : '';
+        $method = $sanitized_method === $raw_method ? strtoupper($sanitized_method) : '';
         if ($method !== 'GET') {
             self::send_unavailable();
         }

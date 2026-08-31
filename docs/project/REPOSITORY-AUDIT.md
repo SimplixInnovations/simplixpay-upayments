@@ -217,7 +217,7 @@ The required custom harness stack now includes Phase 0, all Phase 9I suites, Pro
 
 The current tranche must preserve the verified architecture map while establishing:
 
-- deterministic PHPUnit characterization of GatewaySettings field schema/order/defaults, dependency normalization, API/allocation validation, bounded sanitation, escaped rendering and exact admin asset scopes;
+- deterministic PHPUnit characterization of PublicOrderStatus GET-only request handling, strict identifiers, UPayments-order enforcement, exact owner/order-key authorization, allowlisted normalization and minimal responses;
 - baseline-free PHPStan level 5 and PHPCS ownership of PublicOrderStatus beside the Q1-Q6 modules;
 - unchanged Q1 dependency, audit, syntax and required-check controls;
 - permanent Q1/Q2/Q3/Q4/Q5/Q6/Q7 and historical regression gates.

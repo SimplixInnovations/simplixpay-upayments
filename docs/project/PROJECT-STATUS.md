@@ -34,11 +34,32 @@
 | Quality Platform Q3 payment-concurrency analysis | **DONE / VERIFIED** |
 | Quality Platform Q4 authenticated-status analysis | **DONE / VERIFIED** |
 | Quality Platform Q5 payment-method availability analysis | **DONE / VERIFIED** |
+| Quality Platform Q6 gateway-settings analysis | **DONE / VERIFIED** |
 | Current program gate | **Full Automated Quality Platform — Q7** |
 
 The plugin remains a pre-release engineering project. Architecture discovery/A1-A5 and Quality Platform Q1-Q6 are DONE / VERIFIED; Q7 public-order-status analysis is the current bounded implementation tranche. None of these milestones constitutes broad code-quality, provider-host, penetration-test, PCI/compliance, platform, feature, performance or release certification.
 
-## Latest verified milestone — Quality Platform Q5 payment-method availability analysis
+## Latest verified milestone — Quality Platform Q6 gateway-settings analysis
+
+PR #32 final reviewed head:
+
+- `85de7a009205e6bb810fad8ab8a0634ca91d1fa8`
+
+Verified squash merge on `main`:
+
+- merge: `651e604659d1891e0f7d05b8e684edb4aa31c2b1`
+- tree: `07f944a3adbbdbf6953ea96512555cb6b16286fe`
+- parent: `984053aee6bb50e62e457a639f44307e461f5e38`
+- implementation branch `quality/gateway-settings-analysis`: **deleted after verified merge**
+- exact-head Quality Gates run #201: **SUCCESS across all five jobs**
+- push-triggered post-merge Quality Gates run #202: **SUCCESS across all five jobs**
+- PHPUnit: **55 tests / 498 assertions**
+- Q6 Gateway Settings Analysis: **83/0**
+- H12 PHP: **1927/0**; Blocks: **144/0**
+
+Q6 expanded baseline-free PHPStan level 5/PHP 7.2, PHPCS and PHPUnit into GatewaySettings, preserving its exact schema, dependency, validation, sanitation, rendering and admin-asset contracts. Final independent exact-head review was clean, the reviewed tree was preserved by the signed squash merge, post-merge CI passed and the branch was deleted. Q6 makes no live-provider, platform or production-certification claim.
+
+## Previous verified milestone — Quality Platform Q5 payment-method availability analysis
 
 PR #31 final reviewed head:
 
@@ -61,7 +82,7 @@ Verified squash merge on `main`:
 
 Q5 expanded baseline-free PHPStan level 5/PHP 7.2, PHPCS and PHPUnit into PaymentMethodAvailability without changing executable production statements. It characterizes exact cache/gate/lock identities, strict schema-3 cache shapes, lock contention, the durable 65-second gate, provider failure caching and normalized known-button results. Every historical/architecture/H12 regression remained green; the valid living-state P2 was resolved, and final independent exact-head review found no major issues. Q5 makes no live-provider, platform or production-certification claim.
 
-## Previous verified milestone — Quality Platform Q4 authenticated-status analysis
+## Earlier verified milestone — Quality Platform Q4 authenticated-status analysis
 
 PR #30 final reviewed head:
 
