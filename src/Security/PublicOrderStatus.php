@@ -33,12 +33,13 @@ final class PublicOrderStatus {
      */
     public static function handle() {
         $method = isset($_SERVER['REQUEST_METHOD']) && is_string($_SERVER['REQUEST_METHOD'])
-            ? strtoupper($_SERVER['REQUEST_METHOD'])
+            ? strtoupper(sanitize_key(wp_unslash($_SERVER['REQUEST_METHOD'])))
             : 'GET';
         if ($method !== 'GET') {
             self::send_unavailable();
         }
 
+        // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only endpoint with exact owner/order-key authorization.
         $get = $_GET;
         $order_id = array_key_exists('wc_order_id', $get)
             ? self::parse_order_id(self::unslash_string($get['wc_order_id']))

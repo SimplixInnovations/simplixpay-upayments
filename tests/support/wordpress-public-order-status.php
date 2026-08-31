@@ -57,6 +57,10 @@ function wp_unslash($value) {
     return is_string($value) ? stripslashes($value) : $value;
 }
 
+function sanitize_key($value) {
+    return is_string($value) ? preg_replace('/[^a-z0-9_\-]/', '', strtolower($value)) : '';
+}
+
 function wp_send_json($response, $status_code = null, $flags = 0) {
     throw new SimplixPay_Test_Json_Response($response, $status_code);
 }
