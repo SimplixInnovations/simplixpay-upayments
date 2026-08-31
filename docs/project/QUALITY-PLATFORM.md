@@ -149,6 +149,6 @@ Q8 may be merged only when:
 
 ## Non-claims
 
-Q8 is a bounded static-analysis and deterministic unit-characterization tranche. It is not a main-file/text-domain migration, updater launch, stable-release declaration, WordPress, WooCommerce, PHP, HPOS, Checkout Blocks, WPML/WCML, browser, accessibility, performance, penetration-test, PCI/compliance or production certification. It is also not live-provider certification; deterministic tests do not replace later runtime integration or compatibility certification.
+Q8 is a bounded static-analysis and deterministic unit-characterization tranche. It is not WordPress, WooCommerce, PHP, HPOS, Checkout Blocks, WPML/WCML, browser, accessibility, performance, penetration-test, PCI/compliance or production certification. It does not perform a main-file/text-domain migration, launch an updater or declare a stable release. It is also not live-provider certification; deterministic tests do not replace later runtime integration or compatibility certification.
 
 Later quality tranches expand WordPress/WooCommerce integration tests, further static-analysis scope, compatibility matrices, mutation testing, CodeQL and browser tooling only when each protects a named risk.
