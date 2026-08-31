@@ -122,26 +122,26 @@ q5_assert(q5_contains($workflow, 'QUALITY_PLATFORM_RESULT: ${{ needs.quality-pla
 q5_assert(q5_contains($workflow, 'PHP_SYNTAX_RESULT: ${{ needs.php-syntax-compatibility.result }}'), 'protected H12 aggregator still reads syntax result');
 
 foreach (array(
-    '8543bdfce1a4e216200791dc5637b646f49bcb59',
-    'ad5ae98d5e935bb48d1441f94e130f5d3adb3ca9',
-    'Quality Gates run #194',
-    '4b3db92b0ded0c598bad0ab677babab9e6102811',
-    'Quality Gates run #195',
+    'd4132b0caccaa6edc6d7421afcfd8e9694563224',
+    'dee657b03f8d44670b0ae2501a40dabf718d4bb2',
+    'Quality Gates run #197',
+    '984053aee6bb50e62e457a639f44307e461f5e38',
+    'Quality Gates run #198',
     'implementation branch deleted',
 ) as $closure_evidence) {
-    q5_assert(q5_contains($quality_record, $closure_evidence), "Q4 closure evidence is pinned: {$closure_evidence}");
+    q5_assert(q5_contains($quality_record, $closure_evidence), "Q5 closure evidence is pinned: {$closure_evidence}");
 }
-q5_assert(q5_contains($quality_record, '**Status:** Q5 / IMPLEMENTATION'), 'quality record advances to Q5');
-q5_assert(q5_contains($status, '| Current program gate | **Full Automated Quality Platform — Q5** |'), 'project status advances to Quality Platform Q5');
-q5_assert(q5_contains($readme, 'The current program gate is **Full Automated Quality Platform — Q5**.'), 'README advances to Quality Platform Q5');
+q5_assert(q5_contains($quality_record, '**Status:** Q6 / IMPLEMENTATION'), 'quality record advances beyond Q5');
+q5_assert(q5_contains($status, '| Current program gate | **Full Automated Quality Platform — Q6** |'), 'project status advances beyond Quality Platform Q5');
+q5_assert(q5_contains($readme, 'The current program gate is **Full Automated Quality Platform — Q6**.'), 'README advances beyond Quality Platform Q5');
 q5_assert(
-    q5_contains($playbook, 'Last verified implementation main SHA: 4b3db92b0ded0c598bad0ab677babab9e6102811')
-        && q5_contains($playbook, 'Canonical implementation tree: ad5ae98d5e935bb48d1441f94e130f5d3adb3ca9'),
-    'master playbook restart anchors pin the verified Q4 merge and tree'
+    q5_contains($playbook, 'Last verified implementation main SHA: 984053aee6bb50e62e457a639f44307e461f5e38')
+        && q5_contains($playbook, 'Canonical implementation tree: dee657b03f8d44670b0ae2501a40dabf718d4bb2'),
+    'master playbook restart anchors pin the verified Q5 merge and tree'
 );
-q5_assert(!q5_contains($handoff, 'CURRENT / Q4'), 'handoff rejects the stale current-Q4 marker');
-q5_assert(!q5_contains($playbook, 'CURRENT / Q4'), 'master playbook rejects the stale current-Q4 marker');
-q5_assert(q5_contains($workflow, "reject_across_live_records 'CURRENT / Q4'"), 'Governance rejects stale current-Q4 markers');
+q5_assert(!q5_contains($handoff, 'CURRENT / Q5'), 'handoff rejects the stale current-Q5 marker');
+q5_assert(!q5_contains($playbook, 'CURRENT / Q5'), 'master playbook rejects the stale current-Q5 marker');
+q5_assert(q5_contains($workflow, "reject_across_live_records 'CURRENT / Q5'"), 'Governance rejects stale current-Q5 markers');
 
 echo "\nQ5 Payment-Method Availability Analysis: {$q5_pass} PASS / {$q5_fail} FAIL\n";
 exit($q5_fail === 0 ? 0 : 1);

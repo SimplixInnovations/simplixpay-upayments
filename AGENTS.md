@@ -57,7 +57,7 @@ When **Architecture & Code-Quality Foundation** is current, `ARCHITECTURE-CODE-Q
 
 For A5 and every later architecture tranche, keep `tests/harness/architecture-foundation-harness.php`, `tests/harness/architecture-runtime-bindings-harness.php`, `tests/harness/architecture-bootstrap-path-harness.php`, `tests/harness/architecture-provider-endpoints-harness.php`, `tests/harness/architecture-payment-method-availability-harness.php`, `tests/harness/architecture-gateway-settings-harness.php`, `tests/harness/architecture-subscription-presentation-harness.php` and `tests/harness/architecture-checkout-orchestration-harness.php` mandatory in Quality Gates.
 
-When **Full Automated Quality Platform** is current, `QUALITY-PLATFORM.md` is mandatory. Introduce tools progressively against named risks, commit dependency locks, keep Composer development-only until an explicit packaging migration exists, and do not convert green tooling into platform-certification claims. Keep every historical/architecture harness, `tests/harness/quality-platform-foundation-harness.php`, `tests/harness/quality-platform-static-analysis-harness.php`, `tests/harness/quality-platform-payment-concurrency-harness.php`, `tests/harness/quality-platform-authenticated-status-harness.php` and `tests/harness/quality-platform-payment-method-availability-harness.php` mandatory after Q5. The protected H12 job must always run and explicitly fail when any prerequisite quality job is not successful; dependency-skipped required checks are not acceptable gates.
+When **Full Automated Quality Platform** is current, `QUALITY-PLATFORM.md` is mandatory. Introduce tools progressively against named risks, commit dependency locks, keep Composer development-only until an explicit packaging migration exists, and do not convert green tooling into platform-certification claims. Keep every historical/architecture harness, `tests/harness/quality-platform-foundation-harness.php`, `tests/harness/quality-platform-static-analysis-harness.php`, `tests/harness/quality-platform-payment-concurrency-harness.php`, `tests/harness/quality-platform-authenticated-status-harness.php`, `tests/harness/quality-platform-payment-method-availability-harness.php` and `tests/harness/quality-platform-gateway-settings-harness.php` mandatory after Q6. The protected H12 job must always run and explicitly fail when any prerequisite quality job is not successful; dependency-skipped required checks are not acceptable gates.
 
 ## Protected compatibility identities
 
@@ -144,6 +144,10 @@ php tests/harness/architecture-subscription-presentation-harness.php
 php tests/harness/architecture-checkout-orchestration-harness.php
 php tests/harness/quality-platform-foundation-harness.php
 php tests/harness/quality-platform-static-analysis-harness.php
+php tests/harness/quality-platform-payment-concurrency-harness.php
+php tests/harness/quality-platform-authenticated-status-harness.php
+php tests/harness/quality-platform-payment-method-availability-harness.php
+php tests/harness/quality-platform-gateway-settings-harness.php
 php tests/harness/security-threat-model-harness.php
 php tests/harness/phase-9g-h12-php-harness.php
 node --check tests/harness/phase-9g-h12-blocks-harness.js

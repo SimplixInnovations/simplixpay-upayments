@@ -204,7 +204,7 @@ final class GatewaySettings {
      * Runtime Charge allocation continues to use the five legacy scalar
      * settings; this method does not broaden routing to arbitrary rules.
      *
-     * @param mixed $value Raw field value.
+     * @param string $value Raw field value.
      * @return string
      */
     public static function sanitize_multimerchant_accounts($value) {
@@ -223,7 +223,8 @@ final class GatewaySettings {
                 'cc_charge_type' => wc_clean(isset($rule['cc_charge_type']) ? $rule['cc_charge_type'] : ''),
             );
         }
-        return json_encode($sanitized_rules);
+        $encoded = json_encode($sanitized_rules);
+        return is_string($encoded) ? $encoded : '[]';
     }
 
     /**
@@ -290,7 +291,8 @@ final class GatewaySettings {
             </td>
         </tr>
         <?php
-        return ob_get_clean();
+        $output = ob_get_clean();
+        return is_string($output) ? $output : '';
     }
 
     /**

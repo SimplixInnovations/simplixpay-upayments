@@ -63,5 +63,41 @@ function get_transient($transient) {}
  */
 function set_transient($transient, $value, $expiration = 0) {}
 
+/** @return string */
+function __($text, $domain = 'default') {}
+
+/** @return string */
+function sanitize_text_field($value) {}
+
+/** @return string */
+function wc_clean($value) {}
+
+/** @return string */
+function esc_html($value) {}
+
+/** @return string */
+function esc_attr($value) {}
+
+/** @return string */
+function wp_kses_post($value) {}
+
+/** @return string */
+function sanitize_title($value) {}
+
+/** @return void */
+function esc_html_e($text, $domain = 'default') {}
+
+/** @return string */
+function selected($selected, $current = true, $display = true) {}
+
+/** @return void */
+function wp_enqueue_style($handle, $source, $dependencies = array(), $version = false, $media = 'all') {}
+
+/** @return void */
+function wp_enqueue_script($handle, $source = '', $dependencies = array(), $version = false, $in_footer = false) {}
+
+/** @return bool */
+function wp_add_inline_style($handle, $css) {}
+
 /** @return int */
 function get_current_blog_id() {}

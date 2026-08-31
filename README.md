@@ -38,7 +38,7 @@ The following engineering gates are **DONE / VERIFIED**:
 - Security Threat-Model Closure;
 - Architecture & Code-Quality Foundation A1-A5.
 
-Quality Platform Q1-Q4 are **DONE / VERIFIED**. The current program gate is **Full Automated Quality Platform — Q5**.
+Quality Platform Q1-Q5 are **DONE / VERIFIED**. The current program gate is **Full Automated Quality Platform — Q6**.
 
 The project remains in **pre-release engineering hardening**. It is not yet a broadly certified stable production release and has not yet been published to WordPress.org.
 
@@ -55,8 +55,8 @@ The project remains in **pre-release engineering hardening**. It is not yet a br
 | Provider Contract & Payment Lifecycle | **DONE / VERIFIED** |
 | Security Threat-Model Closure | **DONE / VERIFIED** |
 | Architecture & Code-Quality Foundation | **DONE / VERIFIED (A1-A5)** |
-| Quality Platform Q1-Q4 | **DONE / VERIFIED** |
-| Current engineering gate | **Full Automated Quality Platform — Q5** |
+| Quality Platform Q1-Q5 | **DONE / VERIFIED** |
+| Current engineering gate | **Full Automated Quality Platform — Q6** |
 | Stable SimplixPay release | **Not yet published** |
 | WordPress.org release | **Not yet published** |
 | Phase 0 release-identity harness | **35 PASS / 0 FAIL** |
@@ -166,7 +166,7 @@ Phase 9I system completion does not mean every merchant installation was automat
 
 ## Current engineering gate — Full Automated Quality Platform
 
-Architecture discovery/A1-A5 and Quality Platform Q1-Q4 are DONE / VERIFIED. Q4 closed on merge `4b3db92b0ded0c598bad0ab677babab9e6102811` with StatusVerifier analysis and authenticated transport/binding characterization green. Q5 expands the same baseline-free platform into `PaymentMethodAvailability`, characterizing credential-scoped cache identity, advisory-lock coordination, the durable 65-second gate and strict provider availability normalization while retaining the locked development-only toolchain, every historical/architecture regression and the protected H12 prerequisite aggregator. It must preserve the closed payment lifecycle, Security Threat-Model, H12 and Phase 9I contracts and protected persisted/runtime identities.
+Architecture discovery/A1-A5 and Quality Platform Q1-Q5 are DONE / VERIFIED. Q5 closed on merge `984053aee6bb50e62e457a639f44307e461f5e38` with PaymentMethodAvailability analysis and cache/lock/gate/provider-normalization characterization green. Q6 expands the same baseline-free platform into `GatewaySettings`, characterizing the exact schema, dependency normalization, validation, bounded sanitation, escaped renderer and admin asset scopes while retaining the locked development-only toolchain, every historical/architecture regression and the protected H12 prerequisite aggregator. It must preserve the closed payment lifecycle, Security Threat-Model, H12 and Phase 9I contracts and protected persisted/runtime identities.
 
 No big-bang rewrite, runtime branding rename, runtime Composer dependency or broad compatibility claim is authorized by this gate.
 
