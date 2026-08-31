@@ -85,6 +85,8 @@ Q4 closure evidence remains pinned: PR #30 final reviewed head `8543bdfce1a4e216
 
 Q5 is DONE / VERIFIED and added `src/Provider/PaymentMethodAvailability.php` to baseline-free PHPStan and PHPCS. Development-only transient/advisory-lock fixtures and PHPUnit tests characterize exact credential/mode/site identities, strict schema-3 positive and negative caches, non-blocking lock contention, the durable 65-second gate, provider failure caching and bounded payment-button normalization. Q5 changed no executable production statement.
 
+Q5 closure evidence remains pinned: PR #31 final reviewed head `d4132b0caccaa6edc6d7421afcfd8e9694563224`, exact reviewed tree `dee657b03f8d44670b0ae2501a40dabf718d4bb2`, exact-head Quality Gates run #197, squash merge `984053aee6bb50e62e457a639f44307e461f5e38`, post-merge Quality Gates run #198 and implementation branch deleted after verified merge.
+
 ## Closed Q6 contract
 
 Q6 is DONE / VERIFIED and added `src/Admin/GatewaySettings.php` to baseline-free PHPStan and PHPCS. Development-only WordPress/WooCommerce admin fixtures and PHPUnit tests characterize the exact 21-field schema, dependency normalization, validation, bounded five-field sanitation, escaped renderer and exact admin asset scopes. Mixed sanitizer input now fails closed without changing any valid stored contract.

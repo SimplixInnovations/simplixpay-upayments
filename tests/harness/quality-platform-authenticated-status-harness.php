@@ -136,7 +136,7 @@ q4_assert(
 q4_assert(q4_contains($status, '| Current program gate | **Full Automated Quality Platform — Q7** |'), 'project status advances beyond Quality Platform Q4');
 q4_assert(q4_contains($readme, 'The current program gate is **Full Automated Quality Platform — Q7**.'), 'README advances beyond Quality Platform Q4');
 q4_assert(
-    q4_contains($audit, 'GatewaySettings schema/validation/sanitation/rendering/admin-asset surface')
+    q4_contains($audit, 'PublicOrderStatus request/authorization/minimal-response surface')
         && q4_contains($audit, 'Q1-Q6 modules'),
     'repository audit advances beyond Q4 to the exact Q7 owner scope'
 );
