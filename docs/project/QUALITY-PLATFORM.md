@@ -78,6 +78,8 @@ Q4 is DONE / VERIFIED and added `src/Payment/StatusVerifier.php` to baseline-fre
 
 Q4 changed no executable production statement. Its PHPDoc reflects existing defensive mixed-input guards only.
 
+Q4 closure evidence remains pinned: PR #30 final reviewed head `8543bdfce1a4e216200791dc5637b646f49bcb59`, exact reviewed tree `ad5ae98d5e935bb48d1441f94e130f5d3adb3ca9`, exact-head Quality Gates run #194, squash merge `4b3db92b0ded0c598bad0ab677babab9e6102811`, post-merge Quality Gates run #195 and implementation branch deleted after verified merge.
+
 ## Closed Q5 contract
 
 Q5 is DONE / VERIFIED and added `src/Provider/PaymentMethodAvailability.php` to baseline-free PHPStan and PHPCS. Development-only transient/advisory-lock fixtures and PHPUnit tests characterize exact credential/mode/site identities, strict schema-3 positive and negative caches, non-blocking lock contention, the durable 65-second gate, provider failure caching and bounded payment-button normalization. Q5 changed no executable production statement.
