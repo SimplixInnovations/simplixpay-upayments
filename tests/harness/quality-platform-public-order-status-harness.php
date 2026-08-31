@@ -71,7 +71,7 @@ q7_assert(q7_contains($fixture, 'class SimplixPay_Test_Json_Response'), 'fixture
 q7_assert(q7_contains($fixture, 'function wc_get_order('), 'fixture provides deterministic order lookup');
 q7_assert(q7_contains($fixture, 'function is_user_logged_in('), 'fixture provides deterministic login state');
 q7_assert(q7_contains($fixture, 'function wp_send_json('), 'fixture captures WordPress JSON dispatch');
-q7_assert(q7_contains($fixture, 'function sanitize_text_field('), 'fixture provides deterministic request-method sanitation');
+q7_assert(q7_contains($stubs, 'function sanitize_text_field('), 'analysis stubs declare request-method sanitation');
 q7_assert(q7_contains($source, '$sanitized_method === $raw_method'), 'malformed request methods cannot become GET through sanitation');
 q7_assert(q7_contains($stubs, 'function wp_send_json('), 'analysis stubs declare public JSON dispatch');
 q7_assert(q7_contains($stubs, 'function wc_get_order('), 'analysis stubs declare bounded order lookup');
