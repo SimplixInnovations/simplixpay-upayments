@@ -79,6 +79,14 @@ The project is still in pre-release engineering hardening. Entries below are eng
 - Expands baseline-free PHPStan/PHPCS and deterministic PHPUnit characterization into `PublicOrderStatus`.
 - Freezes GET-only parsing, UPayments-order enforcement, exact owner/order-key authority, generic unavailable errors and the minimal allowlisted public response.
 - Adds development-only WordPress/WooCommerce order/authentication/JSON fixtures and a permanent Q7 regression harness without changing payment truth, provider transport, callbacks, order mutation or protected compatibility identities.
+- Exact final PR #33 head `48de59414c952d6f90ce90c4f462dde67fcbdabc` passed Quality Gates #212 and clean independent exact-head review; Q7 was **69/0** and PHPUnit **63 tests / 588 assertions**.
+- Squash-merged PR #33 as `e00a80147d4f6267d137e1bdfa0b2d1211e00f6a`, tree `6ef43632a4868a1114b5468a38ad45138e41c393`; post-merge run #213 passed and the implementation branch was deleted.
+
+### Full Automated Quality Platform — Q8 Release Identity Analysis
+
+- Expands baseline-free PHPStan/PHPCS and deterministic PHPUnit characterization into `Release\Identity`.
+- Freezes the public product/version/repository boundary, disabled update channel, historical installed identities and distinct future migration targets.
+- Adds a permanent Q8 regression harness without activating the updater, renaming persisted identities or changing payment/bootstrap behavior.
 
 ### Architecture A2 — Payment-Method Availability Client/Cache — DONE / VERIFIED
 
@@ -112,7 +120,7 @@ The project is still in pre-release engineering hardening. Entries below are eng
 
 ### Current program gate
 
-**Full Automated Quality Platform — Q7** is now the active gate. Architecture A1-A5 and Quality Platform Q1-Q6 are DONE / VERIFIED; Q7 is limited to PublicOrderStatus request/authentication/response characterization and baseline-free static-analysis expansion and does not certify platforms or alter payment runtime contracts.
+**Full Automated Quality Platform — Q8** is now the active gate. Architecture A1-A5 and Quality Platform Q1-Q7 are DONE / VERIFIED; Q8 is limited to release-identity characterization and baseline-free static-analysis expansion and does not activate migration/update behavior, certify platforms or alter payment runtime contracts.
 
 ### Provider Contract & Payment Lifecycle — DONE / VERIFIED
 

@@ -80,23 +80,23 @@ q7_assert(q7_contains($stubs, 'function wc_get_order('), 'analysis stubs declare
 q7_assert(q7_contains($workflow, 'quality-platform-public-order-status-harness.php'), 'Q7 harness is mandatory in Quality Gates');
 q7_assert(q7_contains($workflow, 'if: ${{ always() }}'), 'protected H12 aggregator still always runs');
 foreach (array(
-    '85de7a009205e6bb810fad8ab8a0634ca91d1fa8',
-    '07f944a3adbbdbf6953ea96512555cb6b16286fe',
-    'Quality Gates run #201',
-    '651e604659d1891e0f7d05b8e684edb4aa31c2b1',
-    'Quality Gates run #202',
+    '48de59414c952d6f90ce90c4f462dde67fcbdabc',
+    '6ef43632a4868a1114b5468a38ad45138e41c393',
+    'Quality Gates run #212',
+    'e00a80147d4f6267d137e1bdfa0b2d1211e00f6a',
+    'Quality Gates run #213',
     'implementation branch deleted',
 ) as $evidence) {
-    q7_assert(q7_contains($quality, $evidence), "Q6 closure evidence is pinned: {$evidence}");
+    q7_assert(q7_contains($quality, $evidence), "Q7 closure evidence is pinned: {$evidence}");
 }
-q7_assert(q7_contains($quality, '**Status:** Q7 / IMPLEMENTATION'), 'quality record advances to Q7');
-q7_assert(q7_contains($status, '| Current program gate | **Full Automated Quality Platform — Q7** |'), 'project status advances to Q7');
-q7_assert(q7_contains($readme, 'The current program gate is **Full Automated Quality Platform — Q7**.'), 'README advances to Q7');
-q7_assert(q7_contains($playbook, 'Last verified implementation main SHA: 651e604659d1891e0f7d05b8e684edb4aa31c2b1'), 'playbook pins Q6 merge');
-q7_assert(q7_contains($playbook, 'Canonical implementation tree: 07f944a3adbbdbf6953ea96512555cb6b16286fe'), 'playbook pins Q6 tree');
-q7_assert(!q7_contains($handoff, 'CURRENT / Q6'), 'handoff rejects stale current-Q6 marker');
-q7_assert(!q7_contains($playbook, 'CURRENT / Q6'), 'playbook rejects stale current-Q6 marker');
-q7_assert(q7_contains($workflow, "reject_across_live_records 'CURRENT / Q6'"), 'Governance rejects stale current-Q6 markers');
+q7_assert(q7_contains($quality, '**Status:** Q8 / IMPLEMENTATION'), 'quality record advances beyond Q7');
+q7_assert(q7_contains($status, '| Current program gate | **Full Automated Quality Platform — Q8** |'), 'project status advances beyond Q7');
+q7_assert(q7_contains($readme, 'The current program gate is **Full Automated Quality Platform — Q8**.'), 'README advances beyond Q7');
+q7_assert(q7_contains($playbook, 'Last verified implementation main SHA: e00a80147d4f6267d137e1bdfa0b2d1211e00f6a'), 'playbook pins Q7 merge');
+q7_assert(q7_contains($playbook, 'Canonical implementation tree: 6ef43632a4868a1114b5468a38ad45138e41c393'), 'playbook pins Q7 tree');
+q7_assert(!q7_contains($handoff, 'CURRENT / Q7'), 'handoff rejects stale current-Q7 marker');
+q7_assert(!q7_contains($playbook, 'CURRENT / Q7'), 'playbook rejects stale current-Q7 marker');
+q7_assert(q7_contains($workflow, "reject_across_live_records 'CURRENT / Q7'"), 'Governance rejects stale current-Q7 markers');
 
 echo "\nQ7 Public Order Status Analysis: {$q7_pass} PASS / {$q7_fail} FAIL\n";
 exit($q7_fail === 0 ? 0 : 1);

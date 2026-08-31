@@ -118,17 +118,17 @@ foreach (array(
 ) as $closure_evidence) {
     q6_assert(q6_contains($quality_record, $closure_evidence), "Q6 closure evidence is pinned: {$closure_evidence}");
 }
-q6_assert(q6_contains($quality_record, '**Status:** Q7 / IMPLEMENTATION'), 'quality record advances beyond Q6');
-q6_assert(q6_contains($status, '| Current program gate | **Full Automated Quality Platform — Q7** |'), 'project status advances beyond Quality Platform Q6');
-q6_assert(q6_contains($readme, 'The current program gate is **Full Automated Quality Platform — Q7**.'), 'README advances beyond Quality Platform Q6');
+q6_assert(q6_contains($quality_record, '**Status:** Q8 / IMPLEMENTATION'), 'quality record advances beyond Q6');
+q6_assert(q6_contains($status, '| Current program gate | **Full Automated Quality Platform — Q8** |'), 'project status advances beyond Quality Platform Q6');
+q6_assert(q6_contains($readme, 'The current program gate is **Full Automated Quality Platform — Q8**.'), 'README advances beyond Quality Platform Q6');
 q6_assert(
-    q6_contains($playbook, 'Last verified implementation main SHA: 651e604659d1891e0f7d05b8e684edb4aa31c2b1')
-        && q6_contains($playbook, 'Canonical implementation tree: 07f944a3adbbdbf6953ea96512555cb6b16286fe'),
-    'master playbook restart anchors pin the verified Q6 merge and tree'
+    q6_contains($playbook, 'Last verified implementation main SHA: e00a80147d4f6267d137e1bdfa0b2d1211e00f6a')
+        && q6_contains($playbook, 'Canonical implementation tree: 6ef43632a4868a1114b5468a38ad45138e41c393'),
+    'master playbook restart anchors advance beyond Q6 to the verified Q7 merge and tree'
 );
 q6_assert(!q6_contains($handoff, 'CURRENT / Q6'), 'handoff rejects the stale current-Q6 marker');
 q6_assert(!q6_contains($playbook, 'CURRENT / Q6'), 'master playbook rejects the stale current-Q6 marker');
-q6_assert(q6_contains($workflow, "reject_across_live_records 'CURRENT / Q5'"), 'Governance rejects stale current-Q5 markers');
+q6_assert(q6_contains($workflow, "reject_across_live_records 'CURRENT / Q6'"), 'Governance rejects stale current-Q6 markers');
 
 echo "\nQ6 Gateway Settings Analysis: {$q6_pass} PASS / {$q6_fail} FAIL\n";
 exit($q6_fail === 0 ? 0 : 1);

@@ -1,21 +1,21 @@
 # Full Automated Quality Platform
 
-**Status:** Q7 / IMPLEMENTATION
+**Status:** Q8 / IMPLEMENTATION
 
-**Current branch:** `quality/public-order-status-analysis`
+**Current branch:** `quality/release-identity-analysis`
 
-**Verified base `main`:** `651e604659d1891e0f7d05b8e684edb4aa31c2b1`
+**Verified base `main`:** `e00a80147d4f6267d137e1bdfa0b2d1211e00f6a`
 
-**Verified base tree:** `07f944a3adbbdbf6953ea96512555cb6b16286fe`
+**Verified base tree:** `6ef43632a4868a1114b5468a38ad45138e41c393`
 
 ## Entry evidence
 
-Q6 is DONE / VERIFIED:
+Q7 is DONE / VERIFIED:
 
-- PR #32 final reviewed head `85de7a009205e6bb810fad8ab8a0634ca91d1fa8`;
-- exact reviewed tree `07f944a3adbbdbf6953ea96512555cb6b16286fe`;
-- exact-head Quality Gates run #201: SUCCESS across all five jobs;
-- PHPUnit: **55 tests / 498 assertions**;
+- PR #33 final reviewed head `48de59414c952d6f90ce90c4f462dde67fcbdabc`;
+- exact reviewed tree `6ef43632a4868a1114b5468a38ad45138e41c393`;
+- exact-head Quality Gates run #212: SUCCESS across all five jobs;
+- PHPUnit: **63 tests / 588 assertions**;
 - PHPStan level 5/PHP 7.2 and PHPCS/WPCS: clean;
 - Quality Platform Foundation: **74/0**;
 - Q2 Checkout Payload Analysis: **64/0**;
@@ -23,10 +23,11 @@ Q6 is DONE / VERIFIED:
 - Q4 Authenticated Status Analysis: **68/0**;
 - Q5 Payment-Method Availability Analysis: **83/0**;
 - Q6 Gateway Settings Analysis: **83/0**;
+- Q7 Public Order Status Analysis: **69/0**;
 - every historical, architecture and H12 regression remained green, including H12 PHP **1927/0** and Blocks **144/0**;
-- final independent review: no major issues on exact head `85de7a0092`;
-- squash merge `651e604659d1891e0f7d05b8e684edb4aa31c2b1` on sole parent `984053aee6bb50e62e457a639f44307e461f5e38` with the identical reviewed tree;
-- push-triggered post-merge Quality Gates run #202: SUCCESS across all five jobs;
+- final independent review: no major issues on exact head `48de59414c`;
+- squash merge `e00a80147d4f6267d137e1bdfa0b2d1211e00f6a` on sole parent `651e604659d1891e0f7d05b8e684edb4aa31c2b1` with the identical reviewed tree;
+- push-triggered post-merge Quality Gates run #213: SUCCESS across all five jobs;
 - implementation branch deleted after verified merge.
 
 ## Closed Q1 contract
@@ -91,42 +92,57 @@ Q5 closure evidence remains pinned: PR #31 final reviewed head `d4132b0caccaa6ed
 
 Q6 is DONE / VERIFIED and added `src/Admin/GatewaySettings.php` to baseline-free PHPStan and PHPCS. Development-only WordPress/WooCommerce admin fixtures and PHPUnit tests characterize the exact 21-field schema, dependency normalization, validation, bounded five-field sanitation, escaped renderer and exact admin asset scopes. Mixed sanitizer input now fails closed without changing any valid stored contract.
 
-## Q7 purpose
+Q6 closure evidence remains pinned: PR #32 final reviewed head `85de7a009205e6bb810fad8ab8a0634ca91d1fa8`, exact reviewed tree `07f944a3adbbdbf6953ea96512555cb6b16286fe`, exact-head Quality Gates run #201, squash merge `651e604659d1891e0f7d05b8e684edb4aa31c2b1`, post-merge Quality Gates run #202 and implementation branch deleted after verified merge.
 
-Expand baseline-free static analysis and executable PHPUnit characterization into `src/Security/PublicOrderStatus.php`, the historical public status-poll boundary whose authorization and response minimization closed the former numeric-order-ID exposure.
+## Closed Q7 contract
 
-Q7 is deliberately limited to:
+Q7 is DONE / VERIFIED and added `src/Security/PublicOrderStatus.php` to baseline-free PHPStan and PHPCS. Development-only WordPress/WooCommerce order, authentication and JSON fixtures plus PHPUnit tests characterize:
 
-- GET-only status polling with strict positive decimal order IDs of at most 18 digits;
+- byte-exact GET-only request-method handling, so sanitation cannot normalize malformed input into an authorized method;
+- strict positive decimal order IDs of at most 18 digits, using absolute `\A`/`\z` anchors so terminal newlines cannot pass;
 - UPayments-order enforcement before disclosure;
 - exact logged-in ownership or exact, bounded, control-free WooCommerce order-key authorization;
 - generic unavailable responses for invalid, missing, non-UPayments and unauthorized requests;
-- a response allowlist containing only `status` and `message`;
-- exact public states `wait`, `pending`, `failed`, `completed` and `cancelled`, with every unknown state normalized to `wait`.
+- the minimal `status`/`message` response and narrow public-state allowlist.
 
-`PublicOrderStatus` does not own provider verification, payment truth, callbacks, reconciliation or order mutation.
+Q7 changed no payment truth, provider transport, callback, reconciliation or order-state contract. Its strict-boundary hardening affects malformed inputs only.
 
-## Q7 scope
+## Q8 purpose
 
-Q7 may:
+Expand baseline-free static analysis and executable PHPUnit characterization into `src/Release/Identity.php`, the canonical public product and release-identity boundary.
 
-- add `PublicOrderStatus.php` to the existing baseline-free PHPStan level 5/PHP 7.2 and risk-focused PHPCS scopes;
-- add bounded development-only WordPress/WooCommerce order, authentication and JSON-response fixtures;
-- add PHPUnit endpoint characterization for method, parsing, gateway, authorization, normalization and minimal response boundaries;
+Q8 is deliberately limited to:
+
+- exact public product and short names;
+- exact independent version `0.1.0` on the pre-1.0 development line;
+- exact canonical slug and Simplix Innovations repository;
+- an explicitly disabled external update channel;
+- exact historical `UPayments.php` main-file and `upayments` text-domain identities;
+- distinct, frozen future main-file and text-domain targets that are not activated by this tranche;
+- a final, non-instantiable constant boundary and the existing conditional WordPress payment-lifecycle bootstrap.
+
+`Identity` records release ownership; it does not authorize an identity migration, updater activation or payment-runtime redesign.
+
+## Q8 scope
+
+Q8 may:
+
+- add `Identity.php` to the existing baseline-free PHPStan level 5/PHP 7.2 and risk-focused PHPCS scopes;
+- add deterministic PHPUnit characterization of the exact identity constants, disabled updater ownership and non-instantiable boundary;
 - reconcile analyzer-proven type documentation only;
-- add a permanent Quality Platform Public Order Status harness;
+- add a permanent Quality Platform Release Identity harness;
 - retain the exact Q1 Composer lock, tool versions, analysis level, PHPCS rules and PHPStan no-baseline/no-`ignoreErrors` rule.
 
-Q7 may not change the `wc_upayments` route, request keys, persisted/provider-facing identities, provider payload or transport, credentials, payment truth, callbacks, reconciliation, order status, scheduler/cycle-claim/billing-attempt state, subscription state or runtime Composer behavior.
+Q8 may not rename the current main file or text domain, enable or replace the updater, change the version, slug or repository, change gateway IDs/options/meta/routes/hooks/tables/H12 identities, or alter payment-lifecycle/bootstrap semantics. Provider payloads, transport, credentials, payment truth, callbacks, reconciliation, order status, scheduler/cycle-claim/billing-attempt state, subscription state and runtime Composer behavior remain frozen.
 
-## Q7 acceptance
+## Q8 acceptance
 
-Q7 may be merged only when:
+Q8 may be merged only when:
 
-1. PHPUnit covers every named public-status method/parsing/gateway/authorization/normalization/response boundary and passes with no risky tests or warnings;
-2. PHPStan level 5 passes on all Q1-Q7 modules against PHP 7.2 with no baseline or `ignoreErrors` entries;
+1. PHPUnit covers every named release-identity, version, updater, legacy/future-target and non-instantiability boundary and passes with no risky tests or warnings;
+2. PHPStan level 5 passes on all Q1-Q8 modules against PHP 7.2 with no baseline or `ignoreErrors` entries;
 3. PHPCS/WPCS, Composer validation, locked install and dependency audit remain clean;
-4. the Q1 **74/0**, Q2 **64/0**, Q3 **69/0**, Q4 **68/0**, Q5 **83/0**, Q6 **83/0** and new Q7 permanent harnesses are green;
+4. the Q1 **74/0**, Q2 **64/0**, Q3 **69/0**, Q4 **68/0**, Q5 **83/0**, Q6 **83/0**, Q7 **69/0** and new Q8 permanent harnesses are green;
 5. PHP 7.2 and PHP 8.2 distributed-source syntax jobs remain green;
 6. the protected H12 prerequisite aggregator still rejects every non-success upstream result;
 7. every historical and architecture regression remains green with unchanged payment/security counts;
@@ -135,6 +151,6 @@ Q7 may be merged only when:
 
 ## Non-claims
 
-Q7 is a bounded static-analysis and deterministic unit-characterization tranche. It is not WordPress, WooCommerce, PHP, HPOS, Checkout Blocks, WPML/WCML, browser, accessibility, performance, penetration-test, PCI/compliance or production certification. It is also not live-provider certification; deterministic fixtures do not replace later runtime integration or compatibility certification.
+Q8 is a bounded static-analysis and deterministic unit-characterization tranche. It is not WordPress, WooCommerce, PHP, HPOS, Checkout Blocks, WPML/WCML, browser, accessibility, performance, penetration-test, PCI/compliance or production certification. It does not perform a main-file/text-domain migration, launch an updater or declare a stable release. It is also not live-provider certification; deterministic tests do not replace later runtime integration or compatibility certification.
 
 Later quality tranches expand WordPress/WooCommerce integration tests, further static-analysis scope, compatibility matrices, mutation testing, CodeQL and browser tooling only when each protects a named risk.

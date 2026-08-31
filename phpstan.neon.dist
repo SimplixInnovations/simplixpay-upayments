@@ -13,4 +13,5 @@ parameters:
         - src/Provider/PaymentMethodAvailability.php
         - src/Admin/GatewaySettings.php
         - src/Security/PublicOrderStatus.php
+        - src/Release/Identity.php
     tmpDir: .cache/phpstan
