@@ -39,7 +39,7 @@ final class PublicOrderStatus {
             self::send_unavailable();
         }
 
-        $get = isset($_GET) && is_array($_GET) ? $_GET : array();
+        $get = $_GET;
         $order_id = array_key_exists('wc_order_id', $get)
             ? self::parse_order_id(self::unslash_string($get['wc_order_id']))
             : null;
