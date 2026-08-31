@@ -82,14 +82,15 @@ Use:
    - static analysis/coding standards/dead-code/complexity cleanup;
    - no big-bang runtime rename.
 
-6. **Full Automated Quality Platform — CURRENT GATE / Q7**
+6. **Full Automated Quality Platform — CURRENT GATE / Q8**
    - Q1 locked development-toolchain foundation: **DONE / VERIFIED** through PR #26 and post-merge Quality Gates #178;
    - Q2 CheckoutPayload boundary characterization and baseline-free static-analysis expansion: **DONE / VERIFIED** through PR #28 and post-merge Quality Gates #183;
    - Q3 payment-concurrency characterization and baseline-free analysis for StatusRateGate/OrderLock: **DONE / VERIFIED** through PR #29 and post-merge Quality Gates #189;
    - Q4 authenticated status transport/binding characterization and baseline-free analysis for StatusVerifier: **DONE / VERIFIED** through PR #30 and post-merge Quality Gates #195;
    - Q5 payment-method availability cache/lock/gate/provider normalization characterization and baseline-free analysis: **DONE / VERIFIED**;
    - Q6 gateway settings schema/validation/sanitation/rendering/admin-asset characterization and baseline-free analysis: **DONE / VERIFIED**;
-   - Q7 public order-status parsing/authorization/response characterization and baseline-free analysis: **CURRENT**;
+   - Q7 public order-status parsing/authorization/response characterization and baseline-free analysis: **DONE / VERIFIED** through PR #33 and post-merge Quality Gates #213;
+   - Q8 release-identity/version/updater/legacy-and-target-identity characterization and baseline-free analysis: **CURRENT**;
    - PHPUnit;
    - WordPress/WooCommerce integration tests;
    - PHPStan and PHPCS/WPCS/Woo standards;

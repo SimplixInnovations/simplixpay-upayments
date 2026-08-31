@@ -15,6 +15,7 @@
     <file>src/Provider/PaymentMethodAvailability.php</file>
     <file>src/Admin/GatewaySettings.php</file>
     <file>src/Security/PublicOrderStatus.php</file>
+    <file>src/Release/Identity.php</file>
 
     <exclude-pattern>vendor/*</exclude-pattern>
 

@@ -38,7 +38,7 @@ The following engineering gates are **DONE / VERIFIED**:
 - Security Threat-Model Closure;
 - Architecture & Code-Quality Foundation A1-A5.
 
-Quality Platform Q1-Q6 are **DONE / VERIFIED**. The current program gate is **Full Automated Quality Platform — Q7**.
+Quality Platform Q1-Q7 are **DONE / VERIFIED**. The current program gate is **Full Automated Quality Platform — Q8**.
 
 The project remains in **pre-release engineering hardening**. It is not yet a broadly certified stable production release and has not yet been published to WordPress.org.
 
@@ -55,8 +55,8 @@ The project remains in **pre-release engineering hardening**. It is not yet a br
 | Provider Contract & Payment Lifecycle | **DONE / VERIFIED** |
 | Security Threat-Model Closure | **DONE / VERIFIED** |
 | Architecture & Code-Quality Foundation | **DONE / VERIFIED (A1-A5)** |
-| Quality Platform Q1-Q6 | **DONE / VERIFIED** |
-| Current engineering gate | **Full Automated Quality Platform — Q7** |
+| Quality Platform Q1-Q7 | **DONE / VERIFIED** |
+| Current engineering gate | **Full Automated Quality Platform — Q8** |
 | Stable SimplixPay release | **Not yet published** |
 | WordPress.org release | **Not yet published** |
 | Phase 0 release-identity harness | **35 PASS / 0 FAIL** |
@@ -70,6 +70,9 @@ The project remains in **pre-release engineering hardening**. It is not yet a br
 | Q2 CheckoutPayload analysis harness | **64 PASS / 0 FAIL** |
 | Q3 payment-concurrency analysis harness | **69 PASS / 0 FAIL** |
 | Q4 authenticated-status analysis harness | **68 PASS / 0 FAIL** |
+| Q5 payment-method availability analysis harness | **83 PASS / 0 FAIL** |
+| Q6 gateway-settings analysis harness | **83 PASS / 0 FAIL** |
+| Q7 public-order-status analysis harness | **69 PASS / 0 FAIL** |
 | H12 regression baseline | **PHP 1927 PASS / 0 FAIL; Blocks 144 PASS / 0 FAIL** |
 | Bounded Security Threat-Model Closure | **DONE / VERIFIED** |
 | Broad penetration-test/PCI/platform/feature certification | **Pending** |
@@ -166,7 +169,7 @@ Phase 9I system completion does not mean every merchant installation was automat
 
 ## Current engineering gate — Full Automated Quality Platform
 
-Architecture discovery/A1-A5 and Quality Platform Q1-Q6 are DONE / VERIFIED. Q6 closed on merge `651e604659d1891e0f7d05b8e684edb4aa31c2b1` with GatewaySettings analysis and schema/validation/sanitation/rendering/asset characterization green. Q7 expands the same baseline-free platform into `PublicOrderStatus`, characterizing strict request parsing, UPayments-only authorization, exact owner/order-key authority and minimal allowlisted responses while retaining the locked development-only toolchain, every historical/architecture regression and the protected H12 prerequisite aggregator. It must preserve the closed payment lifecycle, Security Threat-Model, H12 and Phase 9I contracts and protected persisted/runtime identities.
+Architecture discovery/A1-A5 and Quality Platform Q1-Q7 are DONE / VERIFIED. Q7 closed on merge `e00a80147d4f6267d137e1bdfa0b2d1211e00f6a` with strict `PublicOrderStatus` request, authorization and minimal-response characterization green. Q8 expands the same baseline-free platform into `Release\Identity`, characterizing exact public product/version/repository ownership, the disabled update channel, historical installed identities and distinct future migration targets while retaining the locked development-only toolchain, every historical/architecture regression and the protected H12 prerequisite aggregator. It must preserve the closed payment lifecycle, Security Threat-Model, H12 and Phase 9I contracts and protected persisted/runtime identities.
 
 No big-bang rewrite, runtime branding rename, runtime Composer dependency or broad compatibility claim is authorized by this gate.
 

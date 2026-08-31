@@ -131,9 +131,9 @@ foreach (array(
 ) as $closure_evidence) {
     q5_assert(q5_contains($quality_record, $closure_evidence), "Q5 closure evidence is pinned: {$closure_evidence}");
 }
-q5_assert(q5_contains($quality_record, '**Status:** Q7 / IMPLEMENTATION'), 'quality record advances beyond Q5');
-q5_assert(q5_contains($status, '| Current program gate | **Full Automated Quality Platform — Q7** |'), 'project status advances beyond Quality Platform Q5');
-q5_assert(q5_contains($readme, 'The current program gate is **Full Automated Quality Platform — Q7**.'), 'README advances beyond Quality Platform Q5');
+q5_assert(q5_contains($quality_record, '**Status:** Q8 / IMPLEMENTATION'), 'quality record advances beyond Q5');
+q5_assert(q5_contains($status, '| Current program gate | **Full Automated Quality Platform — Q8** |'), 'project status advances beyond Quality Platform Q5');
+q5_assert(q5_contains($readme, 'The current program gate is **Full Automated Quality Platform — Q8**.'), 'README advances beyond Quality Platform Q5');
 q5_assert(
     q5_contains($playbook, 'Last verified implementation main SHA: 651e604659d1891e0f7d05b8e684edb4aa31c2b1')
         && q5_contains($playbook, 'Canonical implementation tree: 07f944a3adbbdbf6953ea96512555cb6b16286fe'),
