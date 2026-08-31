@@ -62,6 +62,7 @@ foreach (array('iban_number', 'cc_charge', 'cc_charge_type', 'knet_charge', 'kne
 }
 q6_assert(!q6_contains($settings, "'merchant_id' => sanitize"), 'presentation sanitizer does not retain merchant credentials');
 q6_assert(!q6_contains($settings, "'api_key' => sanitize"), 'presentation sanitizer does not retain API credentials');
+q6_assert(q6_contains($settings, 'if (!is_string($value))'), 'malformed non-string presentation input fails closed');
 
 foreach (array(
     'esc_html($data[\'title\'])',

@@ -149,6 +149,8 @@ final class GatewaySettingsTest extends TestCase {
         )), $sanitized);
         self::assertSame('[]', GatewaySettings::sanitize_multimerchant_accounts('{invalid'));
         self::assertSame('[]', GatewaySettings::sanitize_multimerchant_accounts('"scalar"'));
+        self::assertSame('[]', GatewaySettings::sanitize_multimerchant_accounts(null));
+        self::assertSame('[]', GatewaySettings::sanitize_multimerchant_accounts(array('unexpected')));
         self::assertSame('[]', GatewaySettings::sanitize_multimerchant_accounts(
             '[{"iban_number":"' . "\xB1\x31" . '"}]'
         ));

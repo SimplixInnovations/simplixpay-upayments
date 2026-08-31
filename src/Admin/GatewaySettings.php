@@ -204,10 +204,14 @@ final class GatewaySettings {
      * Runtime Charge allocation continues to use the five legacy scalar
      * settings; this method does not broaden routing to arbitrary rules.
      *
-     * @param string $value Raw field value.
+     * @param mixed $value Raw field value.
      * @return string
      */
     public static function sanitize_multimerchant_accounts($value) {
+        if (!is_string($value)) {
+            return '[]';
+        }
+
         $rules = json_decode(stripslashes($value), true);
         if (!is_array($rules)) {
             return '[]';
