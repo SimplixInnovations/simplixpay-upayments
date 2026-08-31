@@ -12,4 +12,5 @@ parameters:
         - src/Provider/EndpointResolver.php
         - src/Provider/PaymentMethodAvailability.php
         - src/Admin/GatewaySettings.php
+        - src/Security/PublicOrderStatus.php
     tmpDir: .cache/phpstan

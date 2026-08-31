@@ -99,5 +99,26 @@ function wp_enqueue_script($handle, $source = '', $dependencies = array(), $vers
 /** @return bool */
 function wp_add_inline_style($handle, $css) {}
 
+/** @return mixed */
+function wc_get_order($order_id) {}
+
+/** @return bool */
+function is_user_logged_in() {}
+
+/** @return int */
+function get_current_user_id() {}
+
+/** @return mixed */
+function wp_unslash($value) {}
+
+/** @return void */
+function wp_send_json($response, $status_code = null, $flags = 0) {}
+
+/** @return void */
+function status_header($code, $description = '') {}
+
+/** @return string|false */
+function wp_json_encode($data, $options = 0, $depth = 512) {}
+
 /** @return int */
 function get_current_blog_id() {}

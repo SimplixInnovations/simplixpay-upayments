@@ -1,31 +1,32 @@
 # Full Automated Quality Platform
 
-**Status:** Q6 / IMPLEMENTATION
+**Status:** Q7 / IMPLEMENTATION
 
-**Current branch:** `quality/gateway-settings-analysis`
+**Current branch:** `quality/public-order-status-analysis`
 
-**Verified base `main`:** `984053aee6bb50e62e457a639f44307e461f5e38`
+**Verified base `main`:** `651e604659d1891e0f7d05b8e684edb4aa31c2b1`
 
-**Verified base tree:** `dee657b03f8d44670b0ae2501a40dabf718d4bb2`
+**Verified base tree:** `07f944a3adbbdbf6953ea96512555cb6b16286fe`
 
 ## Entry evidence
 
-Q5 is DONE / VERIFIED:
+Q6 is DONE / VERIFIED:
 
-- PR #31 final reviewed head `d4132b0caccaa6edc6d7421afcfd8e9694563224`;
-- exact reviewed tree `dee657b03f8d44670b0ae2501a40dabf718d4bb2`;
-- exact-head Quality Gates run #197: SUCCESS across all five jobs;
-- PHPUnit: **47 tests / 444 assertions**;
+- PR #32 final reviewed head `85de7a009205e6bb810fad8ab8a0634ca91d1fa8`;
+- exact reviewed tree `07f944a3adbbdbf6953ea96512555cb6b16286fe`;
+- exact-head Quality Gates run #201: SUCCESS across all five jobs;
+- PHPUnit: **55 tests / 498 assertions**;
 - PHPStan level 5/PHP 7.2 and PHPCS/WPCS: clean;
 - Quality Platform Foundation: **74/0**;
 - Q2 Checkout Payload Analysis: **64/0**;
 - Q3 Payment Concurrency Analysis: **69/0**;
 - Q4 Authenticated Status Analysis: **68/0**;
 - Q5 Payment-Method Availability Analysis: **83/0**;
+- Q6 Gateway Settings Analysis: **83/0**;
 - every historical, architecture and H12 regression remained green, including H12 PHP **1927/0** and Blocks **144/0**;
-- final independent review: no major issues on exact head `d4132b0cacc`, with the valid living-state P2 resolved;
-- squash merge `984053aee6bb50e62e457a639f44307e461f5e38` on sole parent `4b3db92b0ded0c598bad0ab677babab9e6102811` with the identical reviewed tree;
-- push-triggered post-merge Quality Gates run #198: SUCCESS across all five jobs;
+- final independent review: no major issues on exact head `85de7a0092`;
+- squash merge `651e604659d1891e0f7d05b8e684edb4aa31c2b1` on sole parent `984053aee6bb50e62e457a639f44307e461f5e38` with the identical reviewed tree;
+- push-triggered post-merge Quality Gates run #202: SUCCESS across all five jobs;
 - implementation branch deleted after verified merge.
 
 ## Closed Q1 contract
@@ -84,43 +85,46 @@ Q4 closure evidence remains pinned: PR #30 final reviewed head `8543bdfce1a4e216
 
 Q5 is DONE / VERIFIED and added `src/Provider/PaymentMethodAvailability.php` to baseline-free PHPStan and PHPCS. Development-only transient/advisory-lock fixtures and PHPUnit tests characterize exact credential/mode/site identities, strict schema-3 positive and negative caches, non-blocking lock contention, the durable 65-second gate, provider failure caching and bounded payment-button normalization. Q5 changed no executable production statement.
 
-## Q6 purpose
+## Closed Q6 contract
 
-Expand baseline-free static analysis and executable PHPUnit characterization into `src/Admin/GatewaySettings.php`, the extracted admin boundary that owns the exact 21-field gateway schema, subscription/save-card dependency normalization, gateway post-data validation, bounded single-allocation presentation sanitation, escaped rendering and exact settings-page asset scopes.
+Q6 is DONE / VERIFIED and added `src/Admin/GatewaySettings.php` to baseline-free PHPStan and PHPCS. Development-only WordPress/WooCommerce admin fixtures and PHPUnit tests characterize the exact 21-field schema, dependency normalization, validation, bounded five-field sanitation, escaped renderer and exact admin asset scopes. Mixed sanitizer input now fails closed without changing any valid stored contract.
 
-Q6 is deliberately limited to:
+## Q7 purpose
 
-- exact field keys, order, defaults and runtime setting identities;
-- the existing subscription-to-save-card dependency normalization;
-- missing API-key and enabled-allocation completeness failures;
-- clearing the five runtime allocation fields when multi-merchant allocation is disabled;
-- retaining only the five non-secret historical presentation fields during JSON sanitation;
-- context-escaped single-allocation rendering with no credential fields;
-- exact WooCommerce gateway-section and checkout-settings asset scopes, handles, paths, dependencies and versions.
+Expand baseline-free static analysis and executable PHPUnit characterization into `src/Security/PublicOrderStatus.php`, the historical public status-poll boundary whose authorization and response minimization closed the former numeric-order-ID exposure.
 
-`GatewaySettings` does not own checkout Charge construction, provider transport, payment truth, callbacks, reconciliation, saved-card identity, subscription mutation, scheduler/cycle claims, billing attempts or arbitrary marketplace splitting.
+Q7 is deliberately limited to:
 
-## Q6 scope
+- GET-only status polling with strict positive decimal order IDs of at most 18 digits;
+- UPayments-order enforcement before disclosure;
+- exact logged-in ownership or exact, bounded, control-free WooCommerce order-key authorization;
+- generic unavailable responses for invalid, missing, non-UPayments and unauthorized requests;
+- a response allowlist containing only `status` and `message`;
+- exact public states `wait`, `pending`, `failed`, `completed` and `cancelled`, with every unknown state normalized to `wait`.
 
-Q6 may:
+`PublicOrderStatus` does not own provider verification, payment truth, callbacks, reconciliation or order mutation.
 
-- add `GatewaySettings.php` to the existing baseline-free PHPStan level 5/PHP 7.2 and risk-focused PHPCS scopes;
-- add bounded development-only WordPress/WooCommerce translation, sanitation, escaping and enqueue symbols and deterministic fixtures;
-- add PHPUnit characterization for schema, normalization, validation, sanitation, escaped rendering and exact asset scopes;
-- reconcile only analyzer-proven type documentation or fail-closed return normalization when characterization protects the existing contract;
-- add a permanent Quality Platform Gateway Settings harness;
+## Q7 scope
+
+Q7 may:
+
+- add `PublicOrderStatus.php` to the existing baseline-free PHPStan level 5/PHP 7.2 and risk-focused PHPCS scopes;
+- add bounded development-only WordPress/WooCommerce order, authentication and JSON-response fixtures;
+- add PHPUnit endpoint characterization for method, parsing, gateway, authorization, normalization and minimal response boundaries;
+- reconcile analyzer-proven type documentation only;
+- add a permanent Quality Platform Public Order Status harness;
 - retain the exact Q1 Composer lock, tool versions, analysis level, PHPCS rules and PHPStan no-baseline/no-`ignoreErrors` rule.
 
-Q6 may not change `woocommerce_upayments_settings`, any field key/order/default, the five runtime allocation keys, the single-additional-merchant boundary, provider payloads, credentials, payment truth, order mutation, saved-card identity, scheduler/cycle-claim/billing-attempt state, subscription mutation, protected compatibility identities or runtime Composer behavior.
+Q7 may not change the `wc_upayments` route, request keys, persisted/provider-facing identities, provider payload or transport, credentials, payment truth, callbacks, reconciliation, order status, scheduler/cycle-claim/billing-attempt state, subscription state or runtime Composer behavior.
 
-## Q6 acceptance
+## Q7 acceptance
 
-Q6 may be merged only when:
+Q7 may be merged only when:
 
-1. PHPUnit covers every named settings schema/validation/sanitation/rendering/asset boundary and passes with no risky tests or warnings;
-2. PHPStan level 5 passes on all Q1-Q6 modules against PHP 7.2 with no baseline or `ignoreErrors` entries;
+1. PHPUnit covers every named public-status method/parsing/gateway/authorization/normalization/response boundary and passes with no risky tests or warnings;
+2. PHPStan level 5 passes on all Q1-Q7 modules against PHP 7.2 with no baseline or `ignoreErrors` entries;
 3. PHPCS/WPCS, Composer validation, locked install and dependency audit remain clean;
-4. the Q1 **74/0**, Q2 **64/0**, Q3 **69/0**, Q4 **68/0**, Q5 **83/0** and new Q6 permanent harnesses are green;
+4. the Q1 **74/0**, Q2 **64/0**, Q3 **69/0**, Q4 **68/0**, Q5 **83/0**, Q6 **83/0** and new Q7 permanent harnesses are green;
 5. PHP 7.2 and PHP 8.2 distributed-source syntax jobs remain green;
 6. the protected H12 prerequisite aggregator still rejects every non-success upstream result;
 7. every historical and architecture regression remains green with unchanged payment/security counts;
@@ -129,6 +133,6 @@ Q6 may be merged only when:
 
 ## Non-claims
 
-Q6 is a bounded static-analysis and deterministic unit-characterization tranche. It is not WordPress, WooCommerce, PHP, HPOS, Checkout Blocks, WPML/WCML, browser, accessibility, performance, penetration-test, PCI/compliance or production certification. It is also not live-provider certification; deterministic fixtures do not replace later runtime integration or compatibility certification.
+Q7 is a bounded static-analysis and deterministic unit-characterization tranche. It is not WordPress, WooCommerce, PHP, HPOS, Checkout Blocks, WPML/WCML, browser, accessibility, performance, penetration-test, PCI/compliance or production certification. It is also not live-provider certification; deterministic fixtures do not replace later runtime integration or compatibility certification.
 
 Later quality tranches expand WordPress/WooCommerce integration tests, further static-analysis scope, compatibility matrices, mutation testing, CodeQL and browser tooling only when each protects a named risk.

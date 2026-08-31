@@ -130,15 +130,15 @@ foreach (array(
 }
 q4_assert(
     q4_contains($quality_record, 'Q4 is DONE / VERIFIED')
-        && q4_contains($quality_record, '**Status:** Q6 / IMPLEMENTATION'),
+        && q4_contains($quality_record, '**Status:** Q7 / IMPLEMENTATION'),
     'quality record closes Q4 and advances beyond it'
 );
-q4_assert(q4_contains($status, '| Current program gate | **Full Automated Quality Platform — Q6** |'), 'project status advances beyond Quality Platform Q4');
-q4_assert(q4_contains($readme, 'The current program gate is **Full Automated Quality Platform — Q6**.'), 'README advances beyond Quality Platform Q4');
+q4_assert(q4_contains($status, '| Current program gate | **Full Automated Quality Platform — Q7** |'), 'project status advances beyond Quality Platform Q4');
+q4_assert(q4_contains($readme, 'The current program gate is **Full Automated Quality Platform — Q7**.'), 'README advances beyond Quality Platform Q4');
 q4_assert(
     q4_contains($audit, 'GatewaySettings schema/validation/sanitation/rendering/admin-asset surface')
-        && q4_contains($audit, 'Q1-Q5 modules'),
-    'repository audit advances beyond Q4 to the exact Q6 owner scope'
+        && q4_contains($audit, 'Q1-Q6 modules'),
+    'repository audit advances beyond Q4 to the exact Q7 owner scope'
 );
 q4_assert(!q4_contains($handoff, 'CURRENT / Q3'), 'handoff rejects the stale current-Q3 marker');
 q4_assert(!q4_contains($playbook, 'CURRENT / Q3'), 'master playbook rejects the stale current-Q3 marker');

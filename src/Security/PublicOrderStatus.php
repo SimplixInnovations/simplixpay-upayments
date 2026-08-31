@@ -28,6 +28,8 @@ final class PublicOrderStatus {
 
     /**
      * Handle the historical GET status poll and terminate the request.
+     *
+     * @return void
      */
     public static function handle() {
         $method = isset($_SERVER['REQUEST_METHOD']) && is_string($_SERVER['REQUEST_METHOD'])
@@ -70,10 +72,11 @@ final class PublicOrderStatus {
     /**
      * Pure authorization seam used by the security harness.
      *
-     * @param object      $order           WooCommerce-like order object.
+     * @param mixed       $order           WooCommerce-like order object.
      * @param string|null $provided_key    Exact caller-supplied order key.
      * @param int         $current_user_id Current logged-in user ID.
      * @param bool        $logged_in       Whether the caller is logged in.
+     * @return bool
      */
     public static function authorize_order($order, $provided_key, $current_user_id, $logged_in) {
         if (!self::is_upayments_order($order)
@@ -102,6 +105,9 @@ final class PublicOrderStatus {
 
     /**
      * Strict positive decimal order ID parser.
+     *
+     * @param mixed $value Raw order ID boundary value.
+     * @return int|null
      */
     public static function parse_order_id($value) {
         if (!is_string($value)
@@ -117,6 +123,9 @@ final class PublicOrderStatus {
 
     /**
      * Collapse untrusted persisted status to the narrow display contract.
+     *
+     * @param mixed $value Persisted status boundary value.
+     * @return string
      */
     public static function normalize_status($value) {
         if (!is_string($value) || !in_array($value, self::ALLOWED_STATUSES, true)) {
@@ -125,6 +134,10 @@ final class PublicOrderStatus {
         return $value;
     }
 
+    /**
+     * @param mixed $order WooCommerce-like order value.
+     * @return bool
+     */
     private static function is_upayments_order($order) {
         return is_object($order)
             && method_exists($order, 'get_payment_method')
@@ -132,6 +145,10 @@ final class PublicOrderStatus {
             && (string) $order->get_payment_method() === 'upayments';
     }
 
+    /**
+     * @param mixed $value Raw order-key boundary value.
+     * @return string|null
+     */
     private static function normalize_order_key($value) {
         if (!is_string($value) || $value === '' || strlen($value) > 128) {
             return null;
@@ -142,6 +159,10 @@ final class PublicOrderStatus {
         return $value;
     }
 
+    /**
+     * @param mixed $value Raw request value.
+     * @return string|null
+     */
     private static function unslash_string($value) {
         if (!is_string($value)) {
             return null;
@@ -152,6 +173,9 @@ final class PublicOrderStatus {
         return is_string($value) ? $value : null;
     }
 
+    /**
+     * @return void
+     */
     private static function send_unavailable() {
         self::send(
             array(
@@ -162,6 +186,11 @@ final class PublicOrderStatus {
         );
     }
 
+    /**
+     * @param array<string, string> $payload Narrow public response.
+     * @param int                  $status_code HTTP status code.
+     * @return void
+     */
     private static function send(array $payload, $status_code) {
         $status_code = (int) $status_code;
         if (function_exists('wp_send_json')) {
