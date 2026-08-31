@@ -92,6 +92,8 @@ Q5 closure evidence remains pinned: PR #31 final reviewed head `d4132b0caccaa6ed
 
 Q6 is DONE / VERIFIED and added `src/Admin/GatewaySettings.php` to baseline-free PHPStan and PHPCS. Development-only WordPress/WooCommerce admin fixtures and PHPUnit tests characterize the exact 21-field schema, dependency normalization, validation, bounded five-field sanitation, escaped renderer and exact admin asset scopes. Mixed sanitizer input now fails closed without changing any valid stored contract.
 
+Q6 closure evidence remains pinned: PR #32 final reviewed head `85de7a009205e6bb810fad8ab8a0634ca91d1fa8`, exact reviewed tree `07f944a3adbbdbf6953ea96512555cb6b16286fe`, exact-head Quality Gates run #201, squash merge `651e604659d1891e0f7d05b8e684edb4aa31c2b1`, post-merge Quality Gates run #202 and implementation branch deleted after verified merge.
+
 ## Closed Q7 contract
 
 Q7 is DONE / VERIFIED and added `src/Security/PublicOrderStatus.php` to baseline-free PHPStan and PHPCS. Development-only WordPress/WooCommerce order, authentication and JSON fixtures plus PHPUnit tests characterize:
