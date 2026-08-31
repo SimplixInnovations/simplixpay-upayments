@@ -52,6 +52,7 @@ final class PublicOrderStatusTest extends TestCase {
     }
 
     public function test_handle_rejects_non_get_and_invalid_or_missing_order_identifiers(): void {
+        $GLOBALS['simplixpay_test_status_orders'][42] = $this->order('upayments', 0, 'wc_order_secret', 'completed');
         foreach (array('POST', 'G ET', 'G\\ET', "GET\n", '<GET>') as $method) {
             $_SERVER['REQUEST_METHOD'] = $method;
             $_GET = array('wc_order_id' => '42', 'key' => 'wc_order_secret');

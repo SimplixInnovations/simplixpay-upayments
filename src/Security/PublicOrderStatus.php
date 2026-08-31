@@ -33,8 +33,8 @@ final class PublicOrderStatus {
      */
     public static function handle() {
         if (isset($_SERVER['REQUEST_METHOD']) && is_string($_SERVER['REQUEST_METHOD'])) {
-            // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Intact method is compared with its sanitized copy before use.
-            $raw_method = (string) wp_unslash($_SERVER['REQUEST_METHOD']);
+            // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.MissingUnslash,WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Server method is not slashed; intact bytes are compared with the sanitized copy before use.
+            $raw_method = $_SERVER['REQUEST_METHOD'];
         } else {
             $raw_method = null;
         }
