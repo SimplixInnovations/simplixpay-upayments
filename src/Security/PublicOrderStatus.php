@@ -113,7 +113,7 @@ final class PublicOrderStatus {
         if (!is_string($value)
             || $value === ''
             || strlen($value) > 18
-            || !preg_match('/^[1-9][0-9]*$/', $value)
+            || !preg_match('/\A[1-9][0-9]*\z/', $value)
         ) {
             return null;
         }

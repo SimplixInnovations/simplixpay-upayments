@@ -45,7 +45,7 @@ q7_assert(q7_contains($source, "(string) \$order->get_payment_method() === 'upay
 q7_assert(q7_contains($source, '\$current_user_id === $order_user_id'), 'logged-in ownership remains exact');
 q7_assert(q7_contains($source, 'hash_equals($order_key, $provided_key)'), 'guest order-key comparison remains constant-time');
 q7_assert(q7_contains($source, "strlen(\$value) > 18"), 'order ID length remains bounded');
-q7_assert(q7_contains($source, "preg_match('/^[1-9][0-9]*$/', \$value)"), 'order ID remains strict positive decimal');
+q7_assert(q7_contains($source, "preg_match('/\\A[1-9][0-9]*\\z/', \$value)"), 'order ID uses absolute anchors for strict positive decimal input');
 q7_assert(q7_contains($source, 'strlen($value) > 128'), 'order key length remains bounded');
 q7_assert(q7_contains($source, "preg_match('/[\\x00-\\x20\\x7F]/', \$value)"), 'order key rejects controls and whitespace');
 q7_assert(q7_contains($source, "\$order->get_meta('UPayments_WHS')"), 'public output reads only the protected narrow status');
