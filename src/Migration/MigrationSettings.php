@@ -55,6 +55,13 @@ final class MigrationSettings {
             && $resolved['ok'] === true
             && $reason === 'settings_resolved'
             && ($mode === 'test' || $mode === 'live')
+            && isset($resolved['api_key'])
+            && is_string($resolved['api_key'])
+            && $resolved['api_key'] !== ''
+            && trim($resolved['api_key']) !== ''
+            && array_key_exists('is_test_mode', $resolved)
+            && is_bool($resolved['is_test_mode'])
+            && $resolved['is_test_mode'] === ($mode === 'test')
         ) {
             return array(
                 'ok' => true,
@@ -67,6 +74,10 @@ final class MigrationSettings {
             array_key_exists('ok', $resolved)
             && $resolved['ok'] === false
             && in_array($reason, array('settings_missing', 'api_key_missing', 'test_mode_invalid'), true)
+            && array_key_exists('api_key', $resolved)
+            && $resolved['api_key'] === null
+            && array_key_exists('is_test_mode', $resolved)
+            && $resolved['is_test_mode'] === null
             && array_key_exists('mode', $resolved)
             && $resolved['mode'] === null
         ) {

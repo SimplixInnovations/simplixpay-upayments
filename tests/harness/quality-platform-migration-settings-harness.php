@@ -49,6 +49,8 @@ q9_assert(q9_contains($source, "'mode' => (\$test_mode === 'yes') ? 'test' : 'li
 q9_assert(q9_contains($source, 'public static function redact($resolved)'), 'redaction remains an explicit reporting boundary');
 q9_assert(q9_contains($source, "in_array(\$reason, array('settings_missing', 'api_key_missing', 'test_mode_invalid'), true)"), 'redaction allowlists exact failure reasons');
 q9_assert(q9_contains($source, "(\$mode === 'test' || \$mode === 'live')"), 'redaction allowlists exact reportable modes');
+q9_assert(q9_contains($source, "array_key_exists('is_test_mode', \$resolved)"), 'redaction requires the canonical mode flag field');
+q9_assert(q9_contains($source, "\$resolved['is_test_mode'] === (\$mode === 'test')"), 'redaction requires exact flag and mode correlation');
 $redact_start = strpos($source, 'public static function redact');
 $failure_start = strpos($source, 'private static function failure');
 $redact_source = ($redact_start !== false && $failure_start !== false && $failure_start > $redact_start)
@@ -63,6 +65,7 @@ foreach (array(
     'test_mode_accepts_only_exact_woocommerce_checkbox_states',
     'absent_no_and_yes_modes_resolve_exactly_without_mutation',
     'redaction_never_returns_the_api_key_or_unbounded_fields',
+    'redaction_rejects_incomplete_or_inconsistent_success_shapes',
     'settings_boundary_is_final_and_non_instantiable',
 ) as $name) {
     q9_assert(q9_contains($tests, $name), "migration-settings test exists: {$name}");

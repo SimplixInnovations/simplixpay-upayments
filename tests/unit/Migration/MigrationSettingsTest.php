@@ -72,13 +72,18 @@ final class MigrationSettingsTest extends TestCase {
             }
             $GLOBALS['simplixpay_test_options'][MigrationSettings::OPTION_KEY] = $settings;
 
+            $resolved = MigrationSettings::resolve();
             self::assertSame(array(
                 'ok'           => true,
                 'reason'       => 'settings_resolved',
                 'api_key'      => '  exact-secret  ',
                 'is_test_mode' => $is_test_mode,
                 'mode'         => $mode,
-            ), MigrationSettings::resolve());
+            ), $resolved);
+            self::assertSame(
+                array('ok' => true, 'reason' => 'settings_resolved', 'mode' => $mode),
+                MigrationSettings::redact($resolved)
+            );
             self::assertSame($settings, $GLOBALS['simplixpay_test_options'][MigrationSettings::OPTION_KEY]);
         }
         self::assertSame(array(), $GLOBALS['simplixpay_test_option_calls']);
@@ -94,6 +99,7 @@ final class MigrationSettingsTest extends TestCase {
             MigrationSettings::redact(array(
                 'ok' => true,
                 'reason' => 'settings_resolved',
+                'is_test_mode' => true,
                 'mode' => 'test',
                 'api_key' => 'must-never-escape',
                 'extra' => 'must-never-escape',
@@ -106,10 +112,10 @@ final class MigrationSettingsTest extends TestCase {
 
         $sentinel = 'must-never-escape-' . str_repeat('x', 4096);
         foreach (array(
-            array('ok' => true, 'reason' => $sentinel, 'mode' => 'test'),
-            array('ok' => true, 'reason' => 'settings_resolved', 'mode' => $sentinel),
-            array('ok' => false, 'reason' => $sentinel, 'mode' => null),
-            array('ok' => false, 'reason' => 'settings_missing', 'mode' => $sentinel),
+            array('ok' => true, 'reason' => $sentinel, 'api_key' => 'secret', 'is_test_mode' => true, 'mode' => 'test'),
+            array('ok' => true, 'reason' => 'settings_resolved', 'api_key' => 'secret', 'is_test_mode' => true, 'mode' => $sentinel),
+            array('ok' => false, 'reason' => $sentinel, 'api_key' => null, 'is_test_mode' => null, 'mode' => null),
+            array('ok' => false, 'reason' => 'settings_missing', 'api_key' => null, 'is_test_mode' => null, 'mode' => $sentinel),
         ) as $malformed) {
             $redacted = MigrationSettings::redact($malformed);
             self::assertSame(array('ok' => false, 'reason' => 'settings_malformed', 'mode' => null), $redacted);
@@ -120,6 +126,32 @@ final class MigrationSettingsTest extends TestCase {
             self::assertSame(
                 array('ok' => false, 'reason' => $reason, 'mode' => null),
                 MigrationSettings::redact($this->failure($reason))
+            );
+        }
+    }
+
+    public function test_redaction_rejects_incomplete_or_inconsistent_success_shapes(): void {
+        $canonical = array(
+            'ok' => true,
+            'reason' => 'settings_resolved',
+            'api_key' => 'secret-api',
+            'is_test_mode' => true,
+            'mode' => 'test',
+        );
+
+        foreach (array(
+            array_diff_key($canonical, array('api_key' => true)),
+            array_diff_key($canonical, array('is_test_mode' => true)),
+            array_merge($canonical, array('api_key' => '')),
+            array_merge($canonical, array('api_key' => " \t\n")),
+            array_merge($canonical, array('api_key' => 123)),
+            array_merge($canonical, array('is_test_mode' => false)),
+            array_merge($canonical, array('is_test_mode' => 1)),
+            array_merge($canonical, array('mode' => 'live')),
+        ) as $malformed) {
+            self::assertSame(
+                array('ok' => false, 'reason' => 'settings_malformed', 'mode' => null),
+                MigrationSettings::redact($malformed)
             );
         }
     }
