@@ -112,7 +112,8 @@ The project is still in pre-release engineering hardening. Entries below are eng
 - Adds PHPUnit characterization for strict requests, explicit execute confirmation, resume/offset exclusion, bounded integers, redacted JSON and exact CLI errors.
 - Extends development-only WP-CLI fixtures/stubs and adds a permanent Q13 harness without executing migration/provider behavior or changing observable runtime behavior.
 - Removes one PHPStan-proven unreachable missing-reason fallback; every `MigrationBatch::resumeOffset()` result already carries the exact reason returned to the CLI.
-- Makes the permanent Q11 playbook checks closure-aware so later verified milestones cannot erase its immutable merge/tree evidence.
+- Makes the permanent Q11/Q12 playbook checks closure-aware so later verified milestones cannot erase their immutable merge/tree evidence.
+- Rejects terminal-newline offset/limit values with an absolute regex end anchor so canonical integer parsing is exact.
 
 ### Full Automated Quality Platform — Q12 Subscription Product Type Analysis — DONE / VERIFIED
 

@@ -596,7 +596,7 @@ Architecture discovery/A1-A5 and Quality Platform Q1-Q12 are complete. Q13 is li
 
 - add `Migration/MigrationCliCommand.php` to the baseline-free PHPStan level 5 / PHP 7.2 and risk-focused PHPCS scopes;
 - add PHPUnit characterization for strict request parsing, execute confirmation, resume/offset exclusion, bounded integers, redacted JSON and exact CLI errors;
-- reconcile analyzer-proven documentation only;
+- apply only analyzer/review-proven bounded corrections: preserve the exact resume failure reason and reject terminal-newline integers with `\z`;
 - keep the Q1 dependency lock, tool versions, analysis level, PHPStan no-baseline/no-`ignoreErrors` rule and protected H12 aggregator unchanged;
 - keep every historical and architecture harness plus all thirteen permanent quality-platform harnesses mandatory;
 - preserve exact Scheduler/CycleClaim blobs, protected identities and Security **82/0**, Provider **141/0 + 4/0**, Phase 9I, Phase 0, H12 and all architecture regressions.

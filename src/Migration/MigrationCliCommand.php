@@ -181,7 +181,7 @@ final class MigrationCliCommand {
     private static function strictInt($value, $allow_zero) {
         if (is_int($value)) {
             $parsed = $value;
-        } elseif (is_string($value) && preg_match('/^(?:0|[1-9][0-9]*)$/', $value) === 1) {
+        } elseif (is_string($value) && preg_match('/^(?:0|[1-9][0-9]*)\z/', $value) === 1) {
             if (strlen($value) > strlen((string) PHP_INT_MAX)
                 || (strlen($value) === strlen((string) PHP_INT_MAX) && strcmp($value, (string) PHP_INT_MAX) > 0)
             ) {

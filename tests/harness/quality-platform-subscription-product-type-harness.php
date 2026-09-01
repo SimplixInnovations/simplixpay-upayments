@@ -98,8 +98,8 @@ foreach (array(
 q12_assert(q12_contains($quality, '**Status:** Q13 / IMPLEMENTATION'), 'quality record advances beyond Q12');
 q12_assert(q12_contains($status, '| Current program gate | **Full Automated Quality Platform — Q13** |'), 'project status advances beyond Q12');
 q12_assert(q12_contains($readme, 'The current program gate is **Full Automated Quality Platform — Q13**.'), 'README advances beyond Q12');
-q12_assert(q12_contains($playbook, 'Last verified implementation main SHA: 6dc53bdaf60f12774d7516294d7004974be3874f'), 'playbook pins Q12 merge');
-q12_assert(q12_contains($playbook, 'Canonical implementation tree: b8a9f956e304fa9dba7658809207ddae14b1f4e1'), 'playbook pins Q12 tree');
+q12_assert(q12_contains($playbook, 'Quality Platform Q12: DONE / VERIFIED; PR #38; merge 6dc53bdaf60f12774d7516294d7004974be3874f;'), 'playbook pins Q12 merge');
+q12_assert(q12_contains($playbook, 'tree b8a9f956e304fa9dba7658809207ddae14b1f4e1; Q12 63/0; post-merge Quality Gates #232 SUCCESS'), 'playbook pins Q12 tree');
 q12_assert(!q12_contains($handoff, 'CURRENT / Q12'), 'handoff rejects stale current-Q12 marker');
 q12_assert(!q12_contains($playbook, 'CURRENT / Q12'), 'playbook rejects stale current-Q12 marker');
 q12_assert(q12_contains($workflow, "reject_across_live_records 'CURRENT / Q12'"), 'Governance rejects stale current-Q12 markers');

@@ -24,8 +24,10 @@ final class MigrationCliCommandTest extends TestCase {
             'resume with offset' => array(array('user-ids' => '1', 'resume' => true, 'offset' => '0'), 'resume_with_offset_invalid'),
             'negative offset' => array(array('user-ids' => '1', 'offset' => '-1'), 'invalid_offset'),
             'leading-zero offset' => array(array('user-ids' => '1', 'offset' => '01'), 'invalid_offset'),
+            'terminal-newline offset' => array(array('user-ids' => '1', 'offset' => "1\n"), 'invalid_offset'),
             'zero limit' => array(array('user-ids' => '1', 'limit' => '0'), 'invalid_limit'),
             'over-limit' => array(array('user-ids' => '1', 'limit' => (string) (MigrationBatch::MAX_LIMIT + 1)), 'invalid_limit'),
+            'terminal-newline limit' => array(array('user-ids' => '1', 'limit' => "1\n"), 'invalid_limit'),
         );
     }
 
@@ -90,6 +92,7 @@ final class MigrationCliCommandTest extends TestCase {
         self::assertNull($this->invokePrivate('strictInt', '00', true));
         self::assertNull($this->invokePrivate('strictInt', '+1', true));
         self::assertNull($this->invokePrivate('strictInt', '1e2', true));
+        self::assertNull($this->invokePrivate('strictInt', "1\n", true));
         self::assertNull($this->invokePrivate('strictInt', $overflow, true));
         self::assertNull($this->invokePrivate('strictInt', 0, false));
     }

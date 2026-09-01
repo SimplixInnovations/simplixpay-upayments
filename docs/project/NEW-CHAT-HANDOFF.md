@@ -318,7 +318,7 @@ Required bounded sequence:
 1. Work only from verified Q12 merge `6dc53bdaf60f12774d7516294d7004974be3874f`, tree `b8a9f956e304fa9dba7658809207ddae14b1f4e1`, on `quality/migration-cli-analysis`.
 2. Expand PHPUnit characterization across strict requests, explicit execute confirmation, resume/offset exclusion, bounded integers, redacted output and exact CLI errors.
 3. Add `Migration/MigrationCliCommand.php` to the existing baseline-free PHPStan level 5 / PHP 7.2 and risk-focused PHPCS scopes.
-4. Reconcile only analyzer-proven documentation; do not add API-key input, rename the command, weaken confirmation/resume/bounds/redaction/errors, execute migrations or enter provider/payment behavior.
+4. Keep production correction bounded to the analyzer-proven exact resume reason and review-proven terminal-newline rejection with `\z`; do not add API-key input, rename the command, weaken confirmation/resume/bounds/redaction/errors, execute migrations or enter provider/payment behavior.
 5. Keep the Q1 lockfile, tool versions, analysis level, PHPStan no-baseline/no-`ignoreErrors` rule, distributed syntax matrix and protected H12 prerequisite aggregator unchanged; do not broadly disable PHPCS rules.
 6. Keep every closed regression and architecture harness mandatory, plus all thirteen permanent Quality Platform harnesses.
 7. Preserve exact Scheduler/CycleClaim blobs, provider, Security, H12, Phase 9I, scheduler/attempt, payment truth and compatibility identities.
