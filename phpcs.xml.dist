@@ -19,6 +19,7 @@
     <file>src/Migration/MigrationSettings.php</file>
     <file>src/Migration/MigrationBootstrap.php</file>
     <file>src/Subscription/Composition.php</file>
+    <file>src/Subscription/WCProductCustomType.php</file>
 
     <exclude-pattern>vendor/*</exclude-pattern>
 

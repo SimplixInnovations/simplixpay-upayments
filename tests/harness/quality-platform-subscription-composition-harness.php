@@ -117,23 +117,23 @@ q11_assert(q11_contains($stubs, 'namespace UPayments\\Subscription'), 'analysis 
 q11_assert(q11_contains($workflow, 'quality-platform-subscription-composition-harness.php'), 'Q11 harness is mandatory in Quality Gates');
 q11_assert(q11_contains($workflow, 'if: ${{ always() }}'), 'protected H12 aggregator still always runs');
 foreach (array(
-    '41b0d6d03af91b1e811562d609cf809345a221df',
-    'eae2fe0d0f0f54bef793ed6e58c9837bd01403ab',
-    'Quality Gates run #226',
-    '02a1ad24d262c3cb6d14653bf48aa31c3796ae4e',
-    'Quality Gates run #227',
+    '2a03537723ec937e58337dfa3432500c2ce85728',
+    'f27880f5f2a93f1dfd6428619e5bffa75e0bd4aa',
+    'Quality Gates run #229',
+    'e544a65130d4b009efea179038dd03275cd46897',
+    'Quality Gates run #230',
     'implementation branch deleted',
 ) as $evidence) {
-    q11_assert(q11_contains($quality, $evidence), "Q10 closure evidence is pinned: {$evidence}");
+    q11_assert(q11_contains($quality, $evidence), "Q11 closure evidence is pinned: {$evidence}");
 }
-q11_assert(q11_contains($quality, '**Status:** Q11 / IMPLEMENTATION'), 'quality record advances to Q11');
-q11_assert(q11_contains($status, '| Current program gate | **Full Automated Quality Platform — Q11** |'), 'project status advances to Q11');
-q11_assert(q11_contains($readme, 'The current program gate is **Full Automated Quality Platform — Q11**.'), 'README advances to Q11');
-q11_assert(q11_contains($playbook, 'Last verified implementation main SHA: 02a1ad24d262c3cb6d14653bf48aa31c3796ae4e'), 'playbook pins Q10 merge');
-q11_assert(q11_contains($playbook, 'Canonical implementation tree: eae2fe0d0f0f54bef793ed6e58c9837bd01403ab'), 'playbook pins Q10 tree');
-q11_assert(!q11_contains($handoff, 'CURRENT / Q10'), 'handoff rejects stale current-Q10 marker');
-q11_assert(!q11_contains($playbook, 'CURRENT / Q10'), 'playbook rejects stale current-Q10 marker');
-q11_assert(q11_contains($workflow, "reject_across_live_records 'CURRENT / Q10'"), 'Governance rejects stale current-Q10 markers');
+q11_assert(q11_contains($quality, '**Status:** Q12 / IMPLEMENTATION'), 'quality record advances beyond Q11');
+q11_assert(q11_contains($status, '| Current program gate | **Full Automated Quality Platform — Q12** |'), 'project status advances beyond Q11');
+q11_assert(q11_contains($readme, 'The current program gate is **Full Automated Quality Platform — Q12**.'), 'README advances beyond Q11');
+q11_assert(q11_contains($playbook, 'Last verified implementation main SHA: e544a65130d4b009efea179038dd03275cd46897'), 'playbook pins Q11 merge');
+q11_assert(q11_contains($playbook, 'Canonical implementation tree: f27880f5f2a93f1dfd6428619e5bffa75e0bd4aa'), 'playbook pins Q11 tree');
+q11_assert(!q11_contains($handoff, 'CURRENT / Q11'), 'handoff rejects stale current-Q11 marker');
+q11_assert(!q11_contains($playbook, 'CURRENT / Q11'), 'playbook rejects stale current-Q11 marker');
+q11_assert(q11_contains($workflow, "reject_across_live_records 'CURRENT / Q11'"), 'Governance rejects stale current-Q11 markers');
 
 echo "\nQ11 Subscription Composition Analysis: {$q11_pass} PASS / {$q11_fail} FAIL\n";
 exit($q11_fail === 0 ? 0 : 1);

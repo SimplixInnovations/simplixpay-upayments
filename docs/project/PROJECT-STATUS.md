@@ -39,11 +39,32 @@
 | Quality Platform Q8 release-identity analysis | **DONE / VERIFIED** |
 | Quality Platform Q9 migration-settings analysis | **DONE / VERIFIED** |
 | Quality Platform Q10 migration-bootstrap analysis | **DONE / VERIFIED** |
-| Current program gate | **Full Automated Quality Platform — Q11** |
+| Quality Platform Q11 subscription-composition analysis | **DONE / VERIFIED** |
+| Current program gate | **Full Automated Quality Platform — Q12** |
 
-The plugin remains a pre-release engineering project. Architecture discovery/A1-A5 and Quality Platform Q1-Q10 are DONE / VERIFIED; Q11 subscription-composition analysis is the current bounded implementation tranche. None of these milestones constitutes broad code-quality, provider-host, penetration-test, PCI/compliance, platform, feature, performance or release certification.
+The plugin remains a pre-release engineering project. Architecture discovery/A1-A5 and Quality Platform Q1-Q11 are DONE / VERIFIED; Q12 subscription-product-type analysis is the current bounded implementation tranche. None of these milestones constitutes broad code-quality, provider-host, penetration-test, PCI/compliance, platform, feature, performance or release certification.
 
-## Latest verified milestone — Quality Platform Q10 migration-bootstrap analysis
+## Latest verified milestone — Quality Platform Q11 subscription-composition analysis
+
+PR #37 final reviewed head:
+
+- `2a03537723ec937e58337dfa3432500c2ce85728`
+
+Verified squash merge on `main`:
+
+- merge: `e544a65130d4b009efea179038dd03275cd46897`
+- tree: `f27880f5f2a93f1dfd6428619e5bffa75e0bd4aa`
+- parent: `02a1ad24d262c3cb6d14653bf48aa31c3796ae4e`
+- implementation branch `quality/subscription-composition-analysis`: **deleted after verified merge**
+- exact-head Quality Gates run #229: **SUCCESS across all five jobs**
+- push-triggered post-merge Quality Gates run #230: **SUCCESS across all five jobs**
+- PHPUnit: **87 tests / 708 assertions**
+- Q11 Subscription Composition Analysis: **84/0**
+- H12 PHP: **1927/0**; Blocks: **144/0**
+
+Q11 expanded baseline-free PHPStan level 5/PHP 7.2, PHPCS and PHPUnit into `Subscription\Composition`. It freezes the exact presentation/gateway hook topology, legacy dependency paths, module initialization, ownership exclusions and non-instantiability. The initial review finding identified missing Q9 closure evidence; the restored evidence passed exact-head and post-merge CI. The signed squash merge preserved the reviewed tree and the branch was deleted. Q11 makes no live-provider, platform or production-certification claim.
+
+## Previous verified milestone — Quality Platform Q10 migration-bootstrap analysis
 
 PR #36 final reviewed head:
 
@@ -548,18 +569,18 @@ Repository readiness remains DONE / VERIFIED:
 
 ## Current program gate — Full Automated Quality Platform
 
-**Status: Q11 — SUBSCRIPTION COMPOSITION ANALYSIS / IMPLEMENTATION.**
+**Status: Q12 — SUBSCRIPTION PRODUCT TYPE ANALYSIS / IMPLEMENTATION.**
 
-Architecture discovery/A1-A5 and Quality Platform Q1-Q10 are complete. Q11 is limited to the already-separated Architecture A4 subscription composition boundary. Current scope:
+Architecture discovery/A1-A5 and Quality Platform Q1-Q11 are complete. Q12 is limited to the bounded global WooCommerce product-type compatibility shim. Current scope:
 
-- add `Subscription/Composition.php` to the baseline-free PHPStan level 5 / PHP 7.2 and risk-focused PHPCS scopes;
-- expand deterministic PHPUnit characterization across exact ordered presentation hooks, gateway-instance hooks, legacy dependencies/initializers, ownership exclusions and non-instantiability;
+- add `Subscription/WCProductCustomType.php` to the baseline-free PHPStan level 5 / PHP 7.2 and risk-focused PHPCS scopes;
+- add isolated-process PHPUnit characterization for absent-base, available-base and predeclared-child load states, the exact parent and historical type result;
 - reconcile analyzer-proven documentation only;
 - keep the Q1 dependency lock, tool versions, analysis level, PHPStan no-baseline/no-`ignoreErrors` rule and protected H12 aggregator unchanged;
-- keep every historical and architecture harness plus all eleven permanent quality-platform harnesses mandatory;
+- keep every historical and architecture harness plus all twelve permanent quality-platform harnesses mandatory;
 - preserve exact Scheduler/CycleClaim blobs, protected identities and Security **82/0**, Provider **141/0 + 4/0**, Phase 9I, Phase 0, H12 and all architecture regressions.
 
-No hook/callback/priority/accepted-argument/dependency/initializer rename, scheduler/cycle-claim/billing-attempt/dispatch/customer-mutation move, protected cron-file change, gateway ID/option/meta/route/table/H12 rename, provider transport change or payment-truth/order-state mutation is authorized in Q11. `QUALITY-PLATFORM.md` is the current gate record.
+No global-class/base/type rename, unconditional autoload, hook addition, scheduler/cycle-claim/billing-attempt/dispatch/customer-mutation move, protected cron-file change, gateway ID/option/meta/route/table/H12 rename, provider transport change or payment-truth/order-state mutation is authorized in Q12. `QUALITY-PLATFORM.md` is the current gate record.
 
 ## Later program blockers
 

@@ -106,11 +106,19 @@ The project is still in pre-release engineering hardening. Entries below are eng
 - Exact final PR #36 head `41b0d6d03af91b1e811562d609cf809345a221df` passed Quality Gates #226 and clean independent exact-head review; Q10 was **67/0** and PHPUnit **82 tests / 686 assertions**.
 - Squash-merged PR #36 as `02a1ad24d262c3cb6d14653bf48aa31c3796ae4e`, tree `eae2fe0d0f0f54bef793ed6e58c9837bd01403ab`; post-merge run #227 passed and the implementation branch was deleted.
 
-### Full Automated Quality Platform — Q11 Subscription Composition Analysis
+### Full Automated Quality Platform — Q12 Subscription Product Type Analysis
+
+- Expands baseline-free PHPStan level 5/PHP 7.2 and risk-focused PHPCS ownership into the guarded global `WCProductCustomType` compatibility shim.
+- Adds isolated-process PHPUnit characterization for absent base, available base and predeclared-child load states, plus the exact `WC_Product_Simple` parent and historical `custom_type` result.
+- Adds a development-only analyzer base-class stub and permanent Q12 regression harness without changing production source behavior or entering hook, scheduler, cycle-claim, billing, dispatch, mutation or provider-transport ownership.
+
+### Full Automated Quality Platform — Q11 Subscription Composition Analysis — DONE / VERIFIED
 
 - Expands baseline-free PHPStan/PHPCS and deterministic PHPUnit characterization into `Subscription\Composition`.
 - Freezes the exact ordered presentation/gateway hook topology and legacy checkout/storage module initialization.
 - Adds a permanent Q11 regression harness while preserving exact Scheduler/CycleClaim blobs and excluding billing, dispatch, mutation and provider-transport ownership.
+- Exact final PR #37 head `2a03537723ec937e58337dfa3432500c2ce85728` passed Quality Gates #229 and clean independent exact-head review; Q11 was **84/0** and PHPUnit **87 tests / 708 assertions**.
+- Squash-merged PR #37 as `e544a65130d4b009efea179038dd03275cd46897`, tree `f27880f5f2a93f1dfd6428619e5bffa75e0bd4aa`; post-merge run #230 passed and the implementation branch was deleted.
 
 ### Architecture A2 — Payment-Method Availability Client/Cache — DONE / VERIFIED
 
@@ -144,7 +152,7 @@ The project is still in pre-release engineering hardening. Entries below are eng
 
 ### Current program gate
 
-**Full Automated Quality Platform — Q11** is now the active gate. Architecture A1-A5 and Quality Platform Q1-Q10 are DONE / VERIFIED; Q11 is limited to Subscription Composition hook/dependency/initializer characterization and baseline-free static-analysis expansion and does not run billing, dispatch payments, mutate subscriptions, certify platforms or alter payment runtime contracts.
+**Full Automated Quality Platform — Q12** is now the active gate. Architecture A1-A5 and Quality Platform Q1-Q11 are DONE / VERIFIED; Q12 is limited to guarded subscription-product-type compatibility characterization and baseline-free static-analysis expansion and does not add hooks, run billing, dispatch payments, mutate subscriptions, certify platforms or alter payment runtime contracts.
 
 ### Provider Contract & Payment Lifecycle — DONE / VERIFIED
 

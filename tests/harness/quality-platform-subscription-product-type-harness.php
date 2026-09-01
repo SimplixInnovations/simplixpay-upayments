@@ -1,0 +1,108 @@
+<?php
+
+$q12_pass = 0;
+$q12_fail = 0;
+$q12_root = dirname(__DIR__, 2);
+
+function q12_assert($condition, $label) {
+    global $q12_pass, $q12_fail;
+    if ($condition) { ++$q12_pass; echo "PASS: {$label}\n"; return; }
+    ++$q12_fail; echo "FAIL: {$label}\n";
+}
+
+function q12_read($root, $relative) {
+    $contents = file_get_contents($root . '/' . $relative);
+    q12_assert(is_string($contents), "source readable: {$relative}");
+    return is_string($contents) ? $contents : '';
+}
+
+function q12_contains($source, $needle) { return strpos($source, $needle) !== false; }
+
+function q12_git_blob_sha($path) {
+    $bytes = file_get_contents($path);
+    return is_string($bytes) ? sha1('blob ' . strlen($bytes) . "\0" . $bytes) : '';
+}
+
+$phpstan = q12_read($q12_root, 'phpstan.neon.dist');
+$phpcs = q12_read($q12_root, 'phpcs.xml.dist');
+$source = q12_read($q12_root, 'src/Subscription/WCProductCustomType.php');
+$tests = q12_read($q12_root, 'tests/unit/Subscription/WCProductCustomTypeTest.php');
+$stubs = q12_read($q12_root, 'tests/phpstan/subscription-product-type-stubs.php');
+$base_fixture = q12_read($q12_root, 'tests/fixtures/subscription-product-type-base.php');
+$existing_fixture = q12_read($q12_root, 'tests/fixtures/subscription-product-type-existing.php');
+$workflow = q12_read($q12_root, '.github/workflows/quality-gates.yml');
+$quality = q12_read($q12_root, 'docs/project/QUALITY-PLATFORM.md');
+$status = q12_read($q12_root, 'docs/project/PROJECT-STATUS.md');
+$readme = q12_read($q12_root, 'README.md');
+$handoff = q12_read($q12_root, 'docs/project/NEW-CHAT-HANDOFF.md');
+$playbook = q12_read($q12_root, 'docs/project/MASTER-ENGINEERING-PLAYBOOK.md');
+
+q12_assert(q12_contains($phpstan, 'src/Subscription/WCProductCustomType.php'), 'PHPStan owns subscription product type');
+q12_assert(q12_contains($phpcs, 'src/Subscription/WCProductCustomType.php'), 'PHPCS owns subscription product type');
+q12_assert(q12_contains($phpstan, 'tests/phpstan/subscription-product-type-stubs.php'), 'analysis loads bounded product-type stubs');
+q12_assert(!q12_contains($phpstan, 'baseline'), 'Q12 remains baseline-free');
+q12_assert(!q12_contains($phpstan, 'ignoreErrors'), 'Q12 introduces no ignored analyzer errors');
+
+q12_assert(substr_count($source, "!class_exists('WCProductCustomType')") === 1, 'pre-existing global class guard remains exact');
+q12_assert(substr_count($source, "class_exists('WC_Product_Simple')") === 1, 'WooCommerce base-class guard remains exact');
+q12_assert(substr_count($source, 'class WCProductCustomType extends WC_Product_Simple') === 1, 'global compatibility class and parent remain exact');
+q12_assert(substr_count($source, "return 'custom_type';") === 1, 'custom product type identity remains exact');
+q12_assert(substr_count($source, 'function get_type()') === 1, 'product-type override remains singular');
+foreach (array(
+    'namespace ',
+    'add_action(',
+    'add_filter(',
+    'Scheduler',
+    'CycleClaim',
+    'process_payment',
+    'update_meta_data',
+    'wp_remote_',
+    'CURLOPT_',
+) as $forbidden) {
+    q12_assert(!q12_contains($source, $forbidden), "product-type shim excludes unrelated ownership: {$forbidden}");
+}
+
+q12_assert(substr_count($tests, '#[RunInSeparateProcess]') === 3, 'all load-state tests use isolated processes');
+q12_assert(substr_count($tests, '#[PreserveGlobalState(false)]') === 3, 'all load-state tests disable inherited globals');
+foreach (array(
+    'is_inert_when_woocommerce_simple_product_base_is_absent',
+    'declares_exact_global_child_and_product_type_when_base_exists',
+    'preserves_a_preexisting_global_compatibility_class',
+) as $name) {
+    q12_assert(q12_contains($tests, $name), "subscription product-type test exists: {$name}");
+}
+q12_assert(q12_contains($tests, "fixtures/subscription-product-type-base.php"), 'base-present test loads a true global parent fixture');
+q12_assert(q12_contains($tests, "fixtures/subscription-product-type-existing.php"), 'pre-existing-class test loads a true global compatibility fixture');
+q12_assert(q12_contains($tests, "assertSame('custom_type'"), 'exact custom product type is asserted');
+q12_assert(substr_count($base_fixture, 'class WC_Product_Simple') === 1, 'base fixture declares the exact global WooCommerce parent');
+q12_assert(substr_count($existing_fixture, 'class WCProductCustomType') === 1, 'pre-existing fixture declares the exact global compatibility class');
+q12_assert(q12_contains($existing_fixture, "return 'existing_type';"), 'pre-existing fixture exposes a distinguishable preserved behavior');
+q12_assert(q12_contains($stubs, 'class WC_Product_Simple'), 'analysis stubs declare only the WooCommerce parent boundary');
+q12_assert(!q12_contains($stubs, 'WCProductCustomType'), 'analysis stubs do not mask the production child class');
+
+q12_assert(q12_git_blob_sha($q12_root . '/includes/Subscription/Cron/Scheduler.php') === '5251866d4df2d1326e7c09f0c8ec1d146c0bb325', 'protected Scheduler blob remains exact');
+q12_assert(q12_git_blob_sha($q12_root . '/includes/Subscription/Cron/CycleClaim.php') === 'c34d83e2d77cc65024fe663e4c378cecb2b17347', 'protected CycleClaim blob remains exact');
+
+q12_assert(q12_contains($workflow, 'quality-platform-subscription-product-type-harness.php'), 'Q12 harness is mandatory in Quality Gates');
+q12_assert(q12_contains($workflow, 'if: ${{ always() }}'), 'protected H12 aggregator still always runs');
+foreach (array(
+    '2a03537723ec937e58337dfa3432500c2ce85728',
+    'f27880f5f2a93f1dfd6428619e5bffa75e0bd4aa',
+    'Quality Gates run #229',
+    'e544a65130d4b009efea179038dd03275cd46897',
+    'Quality Gates run #230',
+    'implementation branch deleted',
+) as $evidence) {
+    q12_assert(q12_contains($quality, $evidence), "Q11 closure evidence is pinned: {$evidence}");
+}
+q12_assert(q12_contains($quality, '**Status:** Q12 / IMPLEMENTATION'), 'quality record advances to Q12');
+q12_assert(q12_contains($status, '| Current program gate | **Full Automated Quality Platform — Q12** |'), 'project status advances to Q12');
+q12_assert(q12_contains($readme, 'The current program gate is **Full Automated Quality Platform — Q12**.'), 'README advances to Q12');
+q12_assert(q12_contains($playbook, 'Last verified implementation main SHA: e544a65130d4b009efea179038dd03275cd46897'), 'playbook pins Q11 merge');
+q12_assert(q12_contains($playbook, 'Canonical implementation tree: f27880f5f2a93f1dfd6428619e5bffa75e0bd4aa'), 'playbook pins Q11 tree');
+q12_assert(!q12_contains($handoff, 'CURRENT / Q11'), 'handoff rejects stale current-Q11 marker');
+q12_assert(!q12_contains($playbook, 'CURRENT / Q11'), 'playbook rejects stale current-Q11 marker');
+q12_assert(q12_contains($workflow, "reject_across_live_records 'CURRENT / Q11'"), 'Governance rejects stale current-Q11 markers');
+
+echo "\nQ12 Subscription Product Type Analysis: {$q12_pass} PASS / {$q12_fail} FAIL\n";
+exit($q12_fail === 0 ? 0 : 1);
