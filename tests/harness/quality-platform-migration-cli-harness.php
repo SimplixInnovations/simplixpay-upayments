@@ -35,6 +35,7 @@ $status = q13_read($q13_root, 'docs/project/PROJECT-STATUS.md');
 $readme = q13_read($q13_root, 'README.md');
 $handoff = q13_read($q13_root, 'docs/project/NEW-CHAT-HANDOFF.md');
 $playbook = q13_read($q13_root, 'docs/project/MASTER-ENGINEERING-PLAYBOOK.md');
+$q11_harness = q13_read($q13_root, 'tests/harness/quality-platform-subscription-composition-harness.php');
 
 q13_assert(q13_contains($phpstan, 'src/Migration/MigrationCliCommand.php'), 'PHPStan owns migration CLI adapter');
 q13_assert(q13_contains($phpcs, 'src/Migration/MigrationCliCommand.php'), 'PHPCS owns migration CLI adapter');
@@ -96,6 +97,8 @@ q13_assert(q13_contains($status, '| Current program gate | **Full Automated Qual
 q13_assert(q13_contains($readme, 'The current program gate is **Full Automated Quality Platform — Q13**.'), 'README advances to Q13');
 q13_assert(q13_contains($playbook, 'Last verified implementation main SHA: 6dc53bdaf60f12774d7516294d7004974be3874f'), 'playbook pins Q12 merge');
 q13_assert(q13_contains($playbook, 'Canonical implementation tree: b8a9f956e304fa9dba7658809207ddae14b1f4e1'), 'playbook pins Q12 tree');
+q13_assert(q13_contains($q11_harness, 'Quality Platform Q11: DONE / VERIFIED; PR #37; merge e544a65130d4b009efea179038dd03275cd46897;'), 'Q11 harness uses its immutable closure row');
+q13_assert(!q13_contains($q11_harness, 'Last verified implementation main SHA: e544a65130d4b009efea179038dd03275cd46897'), 'Q11 harness does not mistake a historical merge for current main');
 q13_assert(!q13_contains($handoff, 'CURRENT / Q12'), 'handoff rejects stale current-Q12 marker');
 q13_assert(!q13_contains($playbook, 'CURRENT / Q12'), 'playbook rejects stale current-Q12 marker');
 q13_assert(q13_contains($workflow, "reject_across_live_records 'CURRENT / Q12'"), 'Governance rejects stale current-Q12 markers');
