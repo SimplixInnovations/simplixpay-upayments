@@ -110,7 +110,8 @@ The project is still in pre-release engineering hardening. Entries below are eng
 
 - Expands baseline-free PHPStan level 5/PHP 7.2 and risk-focused PHPCS ownership into the existing Phase 9I WP-CLI adapter.
 - Adds PHPUnit characterization for strict requests, explicit execute confirmation, resume/offset exclusion, bounded integers, redacted JSON and exact CLI errors.
-- Extends development-only WP-CLI fixtures/stubs and adds a permanent Q13 harness without executing migration/provider behavior or changing production source.
+- Extends development-only WP-CLI fixtures/stubs and adds a permanent Q13 harness without executing migration/provider behavior or changing observable runtime behavior.
+- Removes one PHPStan-proven unreachable missing-reason fallback; every `MigrationBatch::resumeOffset()` result already carries the exact reason returned to the CLI.
 
 ### Full Automated Quality Platform — Q12 Subscription Product Type Analysis — DONE / VERIFIED
 

@@ -171,7 +171,7 @@ final class MigrationCliCommand {
             $dry_run
         );
         if (empty($resume['ok'])) {
-            return array('ok' => false, 'reason' => isset($resume['reason']) ? $resume['reason'] : 'resume_unavailable');
+            return array('ok' => false, 'reason' => $resume['reason']);
         }
         $request['offset'] = $resume['offset'];
         $request['resume_reason'] = $resume['reason'];

@@ -190,10 +190,11 @@ Q13 may:
 - add `Migration/MigrationCliCommand.php` to PHPStan level 5/PHP 7.2 and risk-focused PHPCS ownership;
 - extend development-only WP-CLI fixtures/stubs to record lines and errors;
 - add deterministic PHPUnit characterization for parsing, confirmation, bounds, integer overflow, redaction and public command shape;
+- remove the analyzer-proven unreachable resume-reason fallback while preserving the exact `MigrationBatch::resumeOffset()` reason contract;
 - add a permanent Quality Platform Migration CLI harness;
 - retain every prior tool, harness, protected identity and closed runtime contract.
 
-Q13 may not add an API-key argument, change the canonical command namespace, weaken confirmation, resume, bounds, redaction or nonzero failure behavior, execute live migration/provider behavior in unit tests, or enter batch/executor/admin/payment/scheduler/provider ownership.
+Q13 may not add an API-key argument, change the canonical command namespace, weaken confirmation, resume, bounds, redaction or nonzero failure behavior, execute live migration/provider behavior in unit tests, or enter batch/executor/admin/payment/scheduler/provider ownership. The single analyzer-proven production edit may only remove the impossible missing-reason fallback from the closed `MigrationBatch::resumeOffset()` array contract.
 
 ## Q13 acceptance
 

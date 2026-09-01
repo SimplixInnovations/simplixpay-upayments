@@ -44,6 +44,8 @@ q13_assert(!q13_contains($phpstan, 'ignoreErrors'), 'Q13 introduces no ignored a
 q13_assert(q13_contains($source, "if (!is_array(\$assoc_args) || !array_key_exists('yes', \$assoc_args))"), 'execute keeps explicit confirmation before parsing');
 q13_assert(q13_contains($source, "array_key_exists('resume', \$assoc_args)"), 'resume flag remains explicit');
 q13_assert(q13_contains($source, "if (\$resume && array_key_exists('offset', \$assoc_args))"), 'resume and offset remain mutually exclusive');
+q13_assert(q13_contains($source, "return array('ok' => false, 'reason' => \$resume['reason']);"), 'resume failure preserves the exact batch-contract reason');
+q13_assert(!q13_contains($source, "'resume_unavailable'"), 'analyzer-proven unreachable resume fallback is removed');
 q13_assert(q13_contains($source, "preg_match('/^(?:0|[1-9][0-9]*)$/', \$value) === 1"), 'integer text parser remains canonical decimal only');
 q13_assert(q13_contains($source, 'MigrationBatch::DEFAULT_LIMIT'), 'default batch limit remains centralized');
 q13_assert(q13_contains($source, 'MigrationBatch::MAX_LIMIT'), 'maximum batch limit remains centralized');
