@@ -47,6 +47,8 @@ q9_assert(q9_contains($source, "\$test_mode !== 'yes' && \$test_mode !== 'no'"),
 q9_assert(q9_contains($source, "'api_key' => \$api_key"), 'successful internal result preserves the exact in-memory credential');
 q9_assert(q9_contains($source, "'mode' => (\$test_mode === 'yes') ? 'test' : 'live'"), 'successful result derives the exact bounded mode');
 q9_assert(q9_contains($source, 'public static function redact($resolved)'), 'redaction remains an explicit reporting boundary');
+q9_assert(q9_contains($source, "in_array(\$reason, array('settings_missing', 'api_key_missing', 'test_mode_invalid'), true)"), 'redaction allowlists exact failure reasons');
+q9_assert(q9_contains($source, "(\$mode === 'test' || \$mode === 'live')"), 'redaction allowlists exact reportable modes');
 $redact_start = strpos($source, 'public static function redact');
 $failure_start = strpos($source, 'private static function failure');
 $redact_source = ($redact_start !== false && $failure_start !== false && $failure_start > $redact_start)
@@ -67,6 +69,8 @@ foreach (array(
 }
 q9_assert(q9_contains($tests, "'  exact-secret  '"), 'credential byte preservation is executable regression evidence');
 q9_assert(q9_contains($tests, "'must-never-escape'"), 'redaction explicitly tests secret and extra-field exclusion');
+q9_assert(q9_contains($tests, "'must-never-escape-' . str_repeat('x', 4096)"), 'redaction tests secret-bearing unbounded retained fields');
+q9_assert(q9_contains($tests, 'assertStringNotContainsString($sentinel, serialize($redacted))'), 'redaction proves retained fields cannot emit the sentinel');
 q9_assert(q9_contains($fixture, 'function get_option('), 'unit fixture provides deterministic option reads');
 q9_assert(q9_contains($stubs, 'function get_option('), 'analysis stubs declare the bounded option read');
 

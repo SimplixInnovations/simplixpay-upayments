@@ -103,6 +103,25 @@ final class MigrationSettingsTest extends TestCase {
             array('ok' => false, 'reason' => 'settings_malformed', 'mode' => null),
             MigrationSettings::redact(array('ok' => 0, 'reason' => array('bad'), 'mode' => false))
         );
+
+        $sentinel = 'must-never-escape-' . str_repeat('x', 4096);
+        foreach (array(
+            array('ok' => true, 'reason' => $sentinel, 'mode' => 'test'),
+            array('ok' => true, 'reason' => 'settings_resolved', 'mode' => $sentinel),
+            array('ok' => false, 'reason' => $sentinel, 'mode' => null),
+            array('ok' => false, 'reason' => 'settings_missing', 'mode' => $sentinel),
+        ) as $malformed) {
+            $redacted = MigrationSettings::redact($malformed);
+            self::assertSame(array('ok' => false, 'reason' => 'settings_malformed', 'mode' => null), $redacted);
+            self::assertStringNotContainsString($sentinel, serialize($redacted));
+        }
+
+        foreach (array('settings_missing', 'api_key_missing', 'test_mode_invalid') as $reason) {
+            self::assertSame(
+                array('ok' => false, 'reason' => $reason, 'mode' => null),
+                MigrationSettings::redact($this->failure($reason))
+            );
+        }
     }
 
     public function test_settings_boundary_is_final_and_non_instantiable(): void {

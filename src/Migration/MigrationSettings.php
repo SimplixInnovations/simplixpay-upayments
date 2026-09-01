@@ -42,10 +42,45 @@ final class MigrationSettings {
         if (!is_array($resolved)) {
             return array('ok' => false, 'reason' => 'settings_malformed');
         }
+
+        $reason = isset($resolved['reason']) && is_string($resolved['reason'])
+            ? $resolved['reason']
+            : null;
+        $mode = isset($resolved['mode']) && is_string($resolved['mode'])
+            ? $resolved['mode']
+            : null;
+
+        if (
+            isset($resolved['ok'])
+            && $resolved['ok'] === true
+            && $reason === 'settings_resolved'
+            && ($mode === 'test' || $mode === 'live')
+        ) {
+            return array(
+                'ok' => true,
+                'reason' => 'settings_resolved',
+                'mode' => $mode,
+            );
+        }
+
+        if (
+            array_key_exists('ok', $resolved)
+            && $resolved['ok'] === false
+            && in_array($reason, array('settings_missing', 'api_key_missing', 'test_mode_invalid'), true)
+            && array_key_exists('mode', $resolved)
+            && $resolved['mode'] === null
+        ) {
+            return array(
+                'ok' => false,
+                'reason' => $reason,
+                'mode' => null,
+            );
+        }
+
         return array(
-            'ok' => !empty($resolved['ok']),
-            'reason' => isset($resolved['reason']) && is_string($resolved['reason']) ? $resolved['reason'] : 'settings_malformed',
-            'mode' => isset($resolved['mode']) && is_string($resolved['mode']) ? $resolved['mode'] : null,
+            'ok' => false,
+            'reason' => 'settings_malformed',
+            'mode' => null,
         );
     }
 
