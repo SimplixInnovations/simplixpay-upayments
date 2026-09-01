@@ -37,11 +37,32 @@
 | Quality Platform Q6 gateway-settings analysis | **DONE / VERIFIED** |
 | Quality Platform Q7 public-order-status analysis | **DONE / VERIFIED** |
 | Quality Platform Q8 release-identity analysis | **DONE / VERIFIED** |
-| Current program gate | **Full Automated Quality Platform — Q9** |
+| Quality Platform Q9 migration-settings analysis | **DONE / VERIFIED** |
+| Current program gate | **Full Automated Quality Platform — Q10** |
 
-The plugin remains a pre-release engineering project. Architecture discovery/A1-A5 and Quality Platform Q1-Q8 are DONE / VERIFIED; Q9 migration-settings analysis is the current bounded implementation tranche. None of these milestones constitutes broad code-quality, provider-host, penetration-test, PCI/compliance, platform, feature, performance or release certification.
+The plugin remains a pre-release engineering project. Architecture discovery/A1-A5 and Quality Platform Q1-Q9 are DONE / VERIFIED; Q10 migration-bootstrap analysis is the current bounded implementation tranche. None of these milestones constitutes broad code-quality, provider-host, penetration-test, PCI/compliance, platform, feature, performance or release certification.
 
-## Latest verified milestone — Quality Platform Q8 release-identity analysis
+## Latest verified milestone — Quality Platform Q9 migration-settings analysis
+
+PR #35 final reviewed head:
+
+- `01ca31ec3bf55f60dbec5f8293c73ab5bfbdc9a5`
+
+Verified squash merge on `main`:
+
+- merge: `f63591188e232505f8307cb71fdbe4c32d2dc4c7`
+- tree: `96936981b8d3088a65c1d0917b7e5773952bc346`
+- parent: `b59eb2d50b86a38d8ea130de63c38a672db86d32`
+- implementation branch `quality/migration-settings-analysis`: **deleted after verified merge**
+- exact-head Quality Gates run #223: **SUCCESS across all five jobs**
+- push-triggered post-merge Quality Gates run #224: **SUCCESS across all five jobs**
+- PHPUnit: **76 tests / 663 assertions**
+- Q9 Migration Settings Analysis: **62/0**
+- H12 PHP: **1927/0**; Blocks: **144/0**
+
+Q9 expanded baseline-free PHPStan level 5/PHP 7.2, PHPCS and PHPUnit into `MigrationSettings`. It protects the sole historical Woo settings source, strict byte-preserved credentials and mode parsing, no option mutation, and canonical secret-free reporting. Two valid review findings hardened malformed redaction inputs before the final clean exact-head review. The signed squash merge preserved the reviewed tree, post-merge CI passed and the branch was deleted. Q9 makes no live-provider, platform or production-certification claim.
+
+## Previous verified milestone — Quality Platform Q8 release-identity analysis
 
 PR #34 final reviewed head:
 
@@ -506,18 +527,18 @@ Repository readiness remains DONE / VERIFIED:
 
 ## Current program gate — Full Automated Quality Platform
 
-**Status: Q9 — MIGRATION SETTINGS ANALYSIS / IMPLEMENTATION.**
+**Status: Q10 — MIGRATION BOOTSTRAP ANALYSIS / IMPLEMENTATION.**
 
-Architecture discovery/A1-A5 and Quality Platform Q1-Q8 are complete. Q9 is limited to the read-only Phase 9I credential/mode resolver. Current scope:
+Architecture discovery/A1-A5 and Quality Platform Q1-Q9 are complete. Q10 is limited to the Phase 9I admin/CLI context and registration bootstrap. Current scope:
 
-- add `Migration/MigrationSettings.php` to the baseline-free PHPStan level 5 / PHP 7.2 and risk-focused PHPCS scopes;
-- expand deterministic PHPUnit characterization across the exact historical option source, fail-closed credential/mode shapes, byte-preserved valid API keys, no mutation, bounded redaction and non-instantiability;
+- add `Migration/MigrationBootstrap.php` to the baseline-free PHPStan level 5 / PHP 7.2 and risk-focused PHPCS scopes;
+- expand deterministic PHPUnit characterization across frontend inertness, exact admin/CLI contexts, dependency loading, canonical registrations and non-instantiability;
 - reconcile analyzer-proven documentation only;
 - keep the Q1 dependency lock, tool versions, analysis level, PHPStan no-baseline/no-`ignoreErrors` rule and protected H12 aggregator unchanged;
-- keep every historical and architecture harness plus all nine permanent quality-platform harnesses mandatory;
+- keep every historical and architecture harness plus all ten permanent quality-platform harnesses mandatory;
 - preserve protected identities and keep Security **82/0**, Provider **141/0 + 4/0**, Phase 9I, Phase 0, H12 and all architecture regressions green.
 
-No credential-source/input/storage change, valid-key transformation, Woo gateway-option rename, expanded mode coercion, Phase 9I execution change, gateway ID/option/meta/route/hook/table/H12 rename, provider transport change or payment-truth/order-state mutation is authorized in Q9. `QUALITY-PLATFORM.md` is the current gate record.
+No new runtime context, cron/REST/AJAX/frontend hook, admin-menu/CLI rename, credential or user input, Phase 9I execution change, gateway ID/option/meta/route/hook/table/H12 rename, provider transport change or payment-truth/order-state mutation is authorized in Q10. `QUALITY-PLATFORM.md` is the current gate record.
 
 ## Later program blockers
 

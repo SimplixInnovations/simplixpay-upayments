@@ -80,23 +80,23 @@ q9_assert(q9_contains($stubs, 'function get_option('), 'analysis stubs declare t
 q9_assert(q9_contains($workflow, 'quality-platform-migration-settings-harness.php'), 'Q9 harness is mandatory in Quality Gates');
 q9_assert(q9_contains($workflow, 'if: ${{ always() }}'), 'protected H12 aggregator still always runs');
 foreach (array(
-    '458bf35b0cc60d78dc8f32d28605d1f60cbc501c',
-    '109415fa6a4bc04bba60bb23275bc192dd232559',
-    'Quality Gates run #218',
-    'b59eb2d50b86a38d8ea130de63c38a672db86d32',
-    'Quality Gates run #219',
+    '01ca31ec3bf55f60dbec5f8293c73ab5bfbdc9a5',
+    '96936981b8d3088a65c1d0917b7e5773952bc346',
+    'Quality Gates run #223',
+    'f63591188e232505f8307cb71fdbe4c32d2dc4c7',
+    'Quality Gates run #224',
     'implementation branch deleted',
 ) as $evidence) {
-    q9_assert(q9_contains($quality, $evidence), "Q8 closure evidence is pinned: {$evidence}");
+    q9_assert(q9_contains($quality, $evidence), "Q9 closure evidence is pinned: {$evidence}");
 }
-q9_assert(q9_contains($quality, '**Status:** Q9 / IMPLEMENTATION'), 'quality record advances to Q9');
-q9_assert(q9_contains($status, '| Current program gate | **Full Automated Quality Platform — Q9** |'), 'project status advances to Q9');
-q9_assert(q9_contains($readme, 'The current program gate is **Full Automated Quality Platform — Q9**.'), 'README advances to Q9');
-q9_assert(q9_contains($playbook, 'Last verified implementation main SHA: b59eb2d50b86a38d8ea130de63c38a672db86d32'), 'playbook pins Q8 merge');
-q9_assert(q9_contains($playbook, 'Canonical implementation tree: 109415fa6a4bc04bba60bb23275bc192dd232559'), 'playbook pins Q8 tree');
-q9_assert(!q9_contains($handoff, 'CURRENT / Q8'), 'handoff rejects stale current-Q8 marker');
-q9_assert(!q9_contains($playbook, 'CURRENT / Q8'), 'playbook rejects stale current-Q8 marker');
-q9_assert(q9_contains($workflow, "reject_across_live_records 'CURRENT / Q8'"), 'Governance rejects stale current-Q8 markers');
+q9_assert(q9_contains($quality, '**Status:** Q10 / IMPLEMENTATION'), 'quality record advances beyond Q9');
+q9_assert(q9_contains($status, '| Current program gate | **Full Automated Quality Platform — Q10** |'), 'project status advances beyond Q9');
+q9_assert(q9_contains($readme, 'The current program gate is **Full Automated Quality Platform — Q10**.'), 'README advances beyond Q9');
+q9_assert(q9_contains($playbook, 'Last verified implementation main SHA: f63591188e232505f8307cb71fdbe4c32d2dc4c7'), 'playbook pins Q9 merge');
+q9_assert(q9_contains($playbook, 'Canonical implementation tree: 96936981b8d3088a65c1d0917b7e5773952bc346'), 'playbook pins Q9 tree');
+q9_assert(!q9_contains($handoff, 'CURRENT / Q9'), 'handoff rejects stale current-Q9 marker');
+q9_assert(!q9_contains($playbook, 'CURRENT / Q9'), 'playbook rejects stale current-Q9 marker');
+q9_assert(q9_contains($workflow, "reject_across_live_records 'CURRENT / Q9'"), 'Governance rejects stale current-Q9 markers');
 
 echo "\nQ9 Migration Settings Analysis: {$q9_pass} PASS / {$q9_fail} FAIL\n";
 exit($q9_fail === 0 ? 0 : 1);
