@@ -47,7 +47,7 @@ q14_assert(!q14_contains($phpstan, 'ignoreErrors'), 'Q14 introduces no ignored a
 foreach (array(
     "const CAPABILITY = 'manage_woocommerce'",
     "const PAGE_SLUG = 'simplixpay-upayments-migration'",
-    "const NONCE_ACTION = 'simplixpay_upayments_migration'",
+    "const NONCE_ACTION = 'simplixpay_upayments_migration_run'",
     "const NONCE_FIELD = 'simplixpay_upayments_nonce'",
 ) as $contract) {
     q14_assert(q14_contains($source, $contract), "admin constant remains exact: {$contract}");
