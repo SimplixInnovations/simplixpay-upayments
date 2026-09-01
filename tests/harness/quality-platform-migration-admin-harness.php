@@ -59,6 +59,7 @@ $request_position = strpos($source, "\$_SERVER['REQUEST_METHOD']");
 $nonce_position = strpos($source, 'check_admin_referer(self::NONCE_ACTION, self::NONCE_FIELD)');
 q14_assert($capability_position !== false && $request_position !== false && $capability_position < $request_position, 'capability check precedes request processing');
 q14_assert($nonce_position !== false && $request_position !== false && $request_position < $nonce_position, 'POST gate precedes nonce verification');
+q14_assert(q14_contains($source, "sanitize_key(wp_unslash(\$_SERVER['REQUEST_METHOD']))"), 'request method is unslashed and sanitized before comparison');
 q14_assert(q14_contains($source, "\$form['migration_action'] === 'execute'"), 'execute mode remains explicit');
 q14_assert(q14_contains($source, "\$_POST['confirm_execute'] !== 'yes'"), 'execute confirmation requires exact yes');
 q14_assert(q14_contains($source, "sanitize_key(wp_unslash(\$_POST['migration_action']))"), 'submitted action is unslashed and sanitized');

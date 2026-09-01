@@ -36,10 +36,16 @@ final class MigrationAdmin {
             'resume' => 'no',
         );
 
-        if (isset($_SERVER['REQUEST_METHOD']) && strtoupper((string) $_SERVER['REQUEST_METHOD']) === 'POST') {
+        $request_method = isset($_SERVER['REQUEST_METHOD']) && is_string($_SERVER['REQUEST_METHOD'])
+            ? sanitize_key(wp_unslash($_SERVER['REQUEST_METHOD']))
+            : '';
+        if (strtoupper($request_method) === 'POST') {
             check_admin_referer(self::NONCE_ACTION, self::NONCE_FIELD);
+            // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- The strict ID parser must reject, not normalize, malformed input.
             $form['user_ids'] = isset($_POST['user_ids']) && is_string($_POST['user_ids']) ? wp_unslash($_POST['user_ids']) : '';
+            // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- strictInt() validates canonical decimal input without lossy normalization.
             $form['offset'] = isset($_POST['offset']) && is_string($_POST['offset']) ? wp_unslash($_POST['offset']) : '0';
+            // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- strictInt() validates canonical decimal input without lossy normalization.
             $form['limit'] = isset($_POST['limit']) && is_string($_POST['limit']) ? wp_unslash($_POST['limit']) : (string) MigrationBatch::DEFAULT_LIMIT;
             $form['migration_action'] = isset($_POST['migration_action']) && is_string($_POST['migration_action'])
                 ? sanitize_key(wp_unslash($_POST['migration_action']))
