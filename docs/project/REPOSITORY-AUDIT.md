@@ -217,7 +217,7 @@ The required custom harness stack now includes Phase 0, all Phase 9I suites, Pro
 
 The current tranche must preserve the verified architecture map while establishing:
 
-- PHPUnit characterization of strict CLI requests, confirmation, resume/offset exclusion, bounds, redaction and exact errors;
+- PHPUnit characterization of admin capability/nonce ordering, bounded credential-free forms, confirmation, resume/offset exclusion, redaction and escaping;
 - baseline-free PHPStan level 5 and PHPCS ownership of `Migration/MigrationAdmin.php` beside the Q1-Q13 modules;
 - unchanged Q1 dependency, audit, syntax and required-check controls;
 - permanent Q1/Q2/Q3/Q4/Q5/Q6/Q7/Q8/Q9/Q10/Q11/Q12/Q13/Q14 and historical regression gates.
