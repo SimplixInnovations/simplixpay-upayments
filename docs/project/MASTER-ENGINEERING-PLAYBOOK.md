@@ -479,7 +479,7 @@ Requirements:
 | Payment lifecycle/state machine | **DONE / VERIFIED** | Critical |
 | Security threat-model audit | **DONE / VERIFIED** | Critical |
 | Architecture/code quality | **DONE / VERIFIED (A1-A5)** | High |
-| Full automated quality platform | **Q8 — CURRENT GATE; Q1-Q7 DONE / VERIFIED** | Critical before public stable |
+| Full automated quality platform | **Q9 — CURRENT GATE; Q1-Q8 DONE / VERIFIED** | Critical before public stable |
 | WooCommerce/WordPress/PHP certification | **PENDING** | Critical |
 | WPML/multilingual/multicurrency certification | **FIXES PARTIAL; CERTIFICATION PENDING** | High/product objective |
 | Saved cards/subscriptions/wallets/multi-merchant | **PARTIAL; MATRIX PENDING** | Critical per enabled feature |
@@ -492,7 +492,7 @@ Requirements:
 | WordPress.org publication | **DEFERRED UNTIL READY** | Strategic |
 | Continuous maintenance | **ONGOING AFTER FIRST STABLE** | Critical long-term |
 
-Provider Contract & Payment Lifecycle, the bounded Security Threat-Model Closure, Architecture discovery/A1-A5 and Quality Platform Q1-Q7 are **DONE / VERIFIED**. The current unified gate is **Full Automated Quality Platform — Q8**. Provider contract and lifecycle rows remain separated because they retain distinct closed contracts and regression evidence.
+Provider Contract & Payment Lifecycle, the bounded Security Threat-Model Closure, Architecture discovery/A1-A5 and Quality Platform Q1-Q8 are **DONE / VERIFIED**. The current unified gate is **Full Automated Quality Platform — Q9**. Provider contract and lifecycle rows remain separated because they retain distinct closed contracts and regression evidence.
 
 ## 18. Phase ordering
 
@@ -503,7 +503,7 @@ Recommended execution order:
 3. Provider Contract & Payment Lifecycle — **DONE / VERIFIED**.
 4. Security Threat-Model Closure — **DONE / VERIFIED**.
 5. Architecture & Code Quality Foundation — **DONE / VERIFIED (A1-A5)**.
-6. Full Test-Driven Quality Platform — **CURRENT / Q8**.
+6. Full Test-Driven Quality Platform — **CURRENT / Q9**.
 7. WooCommerce / WordPress / PHP Certification.
 8. WPML / i18n / multilingual / multicurrency / RTL.
 9. Feature-specific certification — saved cards, subscriptions, wallets, multi-merchant, refunds.
@@ -809,7 +809,7 @@ Model events such as:
 
 # SECURITY THREAT-MODEL AUDIT
 
-**Program status:** DONE / VERIFIED. This section retains the security phase scope as a historical engineering standard; the current program gate is **Full Automated Quality Platform — Q8**.
+**Program status:** DONE / VERIFIED. This section retains the security phase scope as a historical engineering standard; the current program gate is **Full Automated Quality Platform — Q9**.
 
 ## 30. Scope
 
@@ -928,7 +928,7 @@ Do not mechanically “clean” payment-critical logic without regression charac
 
 # FULL TEST-DRIVEN QUALITY PLATFORM
 
-**Program status:** Q8 / CURRENT GATE; Q1-Q7 DONE / VERIFIED. Q8 expands the locked, baseline-free foundation into the characterized Release Identity constant boundary; it does not activate identity migration or updater behavior and is not provider-sandbox, platform or whole-repository static-analysis certification.
+**Program status:** Q9 / CURRENT GATE; Q1-Q8 DONE / VERIFIED. Q9 expands the locked, baseline-free foundation into the characterized Migration Settings credential/mode/redaction boundary; it does not add credential storage or execute migration and is not provider-sandbox, platform or whole-repository static-analysis certification.
 
 ## 35. Testing philosophy
 
@@ -1516,8 +1516,8 @@ Where security correctness requires a fresh read, verify or invalidate caches de
 LAST VERIFIED PROJECT STATE
 Date: 2026-08-31
 Repository: SimplixInnovations/simplixpay-upayments
-Last verified implementation main SHA: e00a80147d4f6267d137e1bdfa0b2d1211e00f6a
-Canonical implementation tree: 6ef43632a4868a1114b5468a38ad45138e41c393
+Last verified implementation main SHA: b59eb2d50b86a38d8ea130de63c38a672db86d32
+Canonical implementation tree: 109415fa6a4bc04bba60bb23275bc192dd232559
 Historical H12 merge: SimplixInnovations/upayments-woocommerce@93e9925247a8bfade626cb822136852fd96eaea2
 Repository foundation/readiness: DONE / VERIFIED
 Phase 0 release identity/updater ownership: DONE / VERIFIED
@@ -1537,7 +1537,8 @@ Quality Platform Q4: DONE / VERIFIED; PR #30; merge 4b3db92b0ded0c598bad0ab677ba
 Quality Platform Q5: DONE / VERIFIED; PR #31; merge 984053aee6bb50e62e457a639f44307e461f5e38; Q5 83/0; post-merge Quality Gates #198 SUCCESS
 Quality Platform Q6: DONE / VERIFIED; PR #32; merge 651e604659d1891e0f7d05b8e684edb4aa31c2b1; Q6 83/0; post-merge Quality Gates #202 SUCCESS
 Quality Platform Q7: DONE / VERIFIED; PR #33; merge e00a80147d4f6267d137e1bdfa0b2d1211e00f6a; Q7 69/0; post-merge Quality Gates #213 SUCCESS
-Current program gate: Full Automated Quality Platform — Q8
+Quality Platform Q8: DONE / VERIFIED; PR #34; merge b59eb2d50b86a38d8ea130de63c38a672db86d32; Q8 46/0; post-merge Quality Gates #219 SUCCESS
+Current program gate: Full Automated Quality Platform — Q9
 Production readiness: R0 — engineering hardening
 Public stable release: NO
 WordPress.org release: NO
@@ -1588,8 +1589,9 @@ The security implementation anchor above is post-merge verified. `PROJECT-STATUS
 - [x] Full Automated Quality Platform Q5 payment-method availability expansion — **DONE / VERIFIED** through PR #31 and post-merge Quality Gates #198.
 - [x] Full Automated Quality Platform — **Q6 / DONE / VERIFIED**.
 - [x] Full Automated Quality Platform — **Q7 / DONE / VERIFIED** through PR #33 and post-merge Quality Gates #213.
-- [ ] Full Automated Quality Platform — **Q8 / CURRENT GATE**.
-- [ ] Complete standard Composer/PHPUnit/static-analysis platform beyond the Q8 release-identity expansion.
+- [x] Full Automated Quality Platform — **Q8 / DONE / VERIFIED** through PR #34 and post-merge Quality Gates #219.
+- [ ] Full Automated Quality Platform — **Q9 / CURRENT GATE**.
+- [ ] Complete standard Composer/PHPUnit/static-analysis platform beyond the Q9 migration-settings expansion.
 - [ ] WordPress/WooCommerce/PHP compatibility certification.
 - [ ] WPML/WCML certification.
 - [ ] Feature-specific certification: saved cards/subscriptions/wallets/multi-merchant/refunds.
