@@ -103,6 +103,14 @@ The project is still in pre-release engineering hardening. Entries below are eng
 - Expands baseline-free PHPStan/PHPCS and deterministic PHPUnit characterization into `MigrationBootstrap`.
 - Freezes frontend inertness, exact admin/CLI contexts, bounded migration dependencies and canonical menu/command registrations.
 - Adds a permanent Q10 regression harness without executing migration, adding operational contexts or changing payment behavior.
+- Exact final PR #36 head `41b0d6d03af91b1e811562d609cf809345a221df` passed Quality Gates #226 and clean independent exact-head review; Q10 was **67/0** and PHPUnit **82 tests / 686 assertions**.
+- Squash-merged PR #36 as `02a1ad24d262c3cb6d14653bf48aa31c3796ae4e`, tree `eae2fe0d0f0f54bef793ed6e58c9837bd01403ab`; post-merge run #227 passed and the implementation branch was deleted.
+
+### Full Automated Quality Platform — Q11 Subscription Composition Analysis
+
+- Expands baseline-free PHPStan/PHPCS and deterministic PHPUnit characterization into `Subscription\Composition`.
+- Freezes the exact ordered presentation/gateway hook topology and legacy checkout/storage module initialization.
+- Adds a permanent Q11 regression harness while preserving exact Scheduler/CycleClaim blobs and excluding billing, dispatch, mutation and provider-transport ownership.
 
 ### Architecture A2 — Payment-Method Availability Client/Cache — DONE / VERIFIED
 
@@ -136,7 +144,7 @@ The project is still in pre-release engineering hardening. Entries below are eng
 
 ### Current program gate
 
-**Full Automated Quality Platform — Q10** is now the active gate. Architecture A1-A5 and Quality Platform Q1-Q9 are DONE / VERIFIED; Q10 is limited to MigrationBootstrap context/dependency/registration characterization and baseline-free static-analysis expansion and does not add operational contexts, execute migration, certify platforms or alter payment runtime contracts.
+**Full Automated Quality Platform — Q11** is now the active gate. Architecture A1-A5 and Quality Platform Q1-Q10 are DONE / VERIFIED; Q11 is limited to Subscription Composition hook/dependency/initializer characterization and baseline-free static-analysis expansion and does not run billing, dispatch payments, mutate subscriptions, certify platforms or alter payment runtime contracts.
 
 ### Provider Contract & Payment Lifecycle — DONE / VERIFIED
 

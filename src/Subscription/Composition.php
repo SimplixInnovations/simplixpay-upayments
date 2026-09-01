@@ -12,6 +12,10 @@ use UPayments\Subscription\Manager;
  * outside this class. This boundary owns hook registration only.
  */
 final class Composition {
+    /** Prevent instantiation of the static composition boundary. */
+    private function __construct() {
+    }
+
     /**
      * Register hooks that are independent of a gateway instance.
      *

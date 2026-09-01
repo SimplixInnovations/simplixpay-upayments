@@ -38,7 +38,7 @@ The following engineering gates are **DONE / VERIFIED**:
 - Security Threat-Model Closure;
 - Architecture & Code-Quality Foundation A1-A5.
 
-Quality Platform Q1-Q9 are **DONE / VERIFIED**. The current program gate is **Full Automated Quality Platform — Q10**.
+Quality Platform Q1-Q10 are **DONE / VERIFIED**. The current program gate is **Full Automated Quality Platform — Q11**.
 
 The project remains in **pre-release engineering hardening**. It is not yet a broadly certified stable production release and has not yet been published to WordPress.org.
 
@@ -55,8 +55,8 @@ The project remains in **pre-release engineering hardening**. It is not yet a br
 | Provider Contract & Payment Lifecycle | **DONE / VERIFIED** |
 | Security Threat-Model Closure | **DONE / VERIFIED** |
 | Architecture & Code-Quality Foundation | **DONE / VERIFIED (A1-A5)** |
-| Quality Platform Q1-Q9 | **DONE / VERIFIED** |
-| Current engineering gate | **Full Automated Quality Platform — Q10** |
+| Quality Platform Q1-Q10 | **DONE / VERIFIED** |
+| Current engineering gate | **Full Automated Quality Platform — Q11** |
 | Stable SimplixPay release | **Not yet published** |
 | WordPress.org release | **Not yet published** |
 | Phase 0 release-identity harness | **35 PASS / 0 FAIL** |
@@ -75,6 +75,7 @@ The project remains in **pre-release engineering hardening**. It is not yet a br
 | Q7 public-order-status analysis harness | **69 PASS / 0 FAIL** |
 | Q8 release-identity analysis harness | **46 PASS / 0 FAIL** |
 | Q9 migration-settings analysis harness | **62 PASS / 0 FAIL** |
+| Q10 migration-bootstrap analysis harness | **67 PASS / 0 FAIL** |
 | H12 regression baseline | **PHP 1927 PASS / 0 FAIL; Blocks 144 PASS / 0 FAIL** |
 | Bounded Security Threat-Model Closure | **DONE / VERIFIED** |
 | Broad penetration-test/PCI/platform/feature certification | **Pending** |
@@ -171,7 +172,7 @@ Phase 9I system completion does not mean every merchant installation was automat
 
 ## Current engineering gate — Full Automated Quality Platform
 
-Architecture discovery/A1-A5 and Quality Platform Q1-Q9 are DONE / VERIFIED. Q9 closed on merge `f63591188e232505f8307cb71fdbe4c32d2dc4c7` with strict migration-settings source, credential/mode and canonical redaction characterization green. Q10 expands the same baseline-free platform into `MigrationBootstrap`, characterizing inert frontend behavior, exact admin/CLI contexts, bounded dependencies and canonical registrations while retaining the locked development-only toolchain, every historical/architecture regression and the protected H12 prerequisite aggregator. It must preserve the closed payment lifecycle, Security Threat-Model, H12 and Phase 9I contracts and protected persisted/runtime identities.
+Architecture discovery/A1-A5 and Quality Platform Q1-Q10 are DONE / VERIFIED. Q10 closed on merge `02a1ad24d262c3cb6d14653bf48aa31c3796ae4e` with frontend-inert migration bootstrap context, dependency and registration characterization green. Q11 expands the same baseline-free platform into `Subscription\Composition`, freezing exact presentation/gateway hook topology and legacy module initialization while excluding scheduler, cycle-claim, dispatch, mutation and transport ownership. It must preserve the closed payment lifecycle, Security Threat-Model, H12, Phase 9I and protected scheduler/attempt contracts and persisted/runtime identities.
 
 No big-bang rewrite, runtime branding rename, runtime Composer dependency or broad compatibility claim is authorized by this gate.
 
