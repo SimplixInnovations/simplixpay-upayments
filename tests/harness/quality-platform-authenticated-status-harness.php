@@ -130,16 +130,16 @@ foreach (array(
 }
 q4_assert(
     q4_contains($quality_record, 'Q4 is DONE / VERIFIED')
-        && q4_contains($quality_record, '**Status:** Q11 / IMPLEMENTATION'),
+        && q4_contains($quality_record, '**Status:** Q12 / IMPLEMENTATION'),
     'quality record closes Q4 and advances beyond it'
 );
-q4_assert(q4_contains($status, '| Current program gate | **Full Automated Quality Platform — Q11** |'), 'project status advances beyond Quality Platform Q4');
-q4_assert(q4_contains($readme, 'The current program gate is **Full Automated Quality Platform — Q11**.'), 'README advances beyond Quality Platform Q4');
+q4_assert(q4_contains($status, '| Current program gate | **Full Automated Quality Platform — Q12** |'), 'project status advances beyond Quality Platform Q4');
+q4_assert(q4_contains($readme, 'The current program gate is **Full Automated Quality Platform — Q12**.'), 'README advances beyond Quality Platform Q4');
 q4_assert(
     q4_contains($audit, 'Q8 added release-identity/version/updater/legacy-target tests')
-        && q4_contains($audit, '`Subscription/Composition.php`')
-        && q4_contains($audit, 'Q1-Q10 modules'),
-    'repository audit retains Q8 closure and advances to the exact Q11 owner scope'
+        && q4_contains($audit, '`Subscription/WCProductCustomType.php`')
+        && q4_contains($audit, 'Q1-Q11'),
+    'repository audit retains Q8 closure and advances to the exact Q12 owner scope'
 );
 q4_assert(!q4_contains($handoff, 'CURRENT / Q3'), 'handoff rejects the stale current-Q3 marker');
 q4_assert(!q4_contains($playbook, 'CURRENT / Q3'), 'master playbook rejects the stale current-Q3 marker');

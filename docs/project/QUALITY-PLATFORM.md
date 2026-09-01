@@ -1,21 +1,21 @@
 # Full Automated Quality Platform
 
-**Status:** Q11 / IMPLEMENTATION
+**Status:** Q12 / IMPLEMENTATION
 
-**Current branch:** `quality/subscription-composition-analysis`
+**Current branch:** `quality/subscription-product-type-analysis`
 
-**Verified base `main`:** `02a1ad24d262c3cb6d14653bf48aa31c3796ae4e`
+**Verified base `main`:** `e544a65130d4b009efea179038dd03275cd46897`
 
-**Verified base tree:** `eae2fe0d0f0f54bef793ed6e58c9837bd01403ab`
+**Verified base tree:** `f27880f5f2a93f1dfd6428619e5bffa75e0bd4aa`
 
 ## Entry evidence
 
-Q10 is DONE / VERIFIED:
+Q11 is DONE / VERIFIED:
 
-- PR #36 final reviewed head `41b0d6d03af91b1e811562d609cf809345a221df`;
-- exact reviewed tree `eae2fe0d0f0f54bef793ed6e58c9837bd01403ab`;
-- exact-head Quality Gates run #226: SUCCESS across all five jobs;
-- PHPUnit: **82 tests / 686 assertions**;
+- PR #37 final reviewed head `2a03537723ec937e58337dfa3432500c2ce85728`;
+- exact reviewed tree `f27880f5f2a93f1dfd6428619e5bffa75e0bd4aa`;
+- exact-head Quality Gates run #229: SUCCESS across all five jobs;
+- PHPUnit: **87 tests / 708 assertions**;
 - PHPStan level 5/PHP 7.2 and PHPCS/WPCS: clean;
 - Quality Platform Foundation: **74/0**;
 - Q2 Checkout Payload Analysis: **64/0**;
@@ -27,10 +27,11 @@ Q10 is DONE / VERIFIED:
 - Q8 Release Identity Analysis: **46/0**;
 - Q9 Migration Settings Analysis: **62/0**;
 - Q10 Migration Bootstrap Analysis: **67/0**;
+- Q11 Subscription Composition Analysis: **84/0**;
 - every historical, architecture and H12 regression remained green, including H12 PHP **1927/0** and Blocks **144/0**;
-- final independent review: no major issues on exact head `41b0d6d03a` after the initial stale-Q1/Q10 substring finding was fixed and resolved;
-- squash merge `02a1ad24d262c3cb6d14653bf48aa31c3796ae4e` on sole parent `f63591188e232505f8307cb71fdbe4c32d2dc4c7` with the identical reviewed tree and valid GitHub signature;
-- push-triggered post-merge Quality Gates run #227: SUCCESS across all five jobs;
+- final independent review: no major issues on exact head `2a03537723` after the initial missing Q9 closure-evidence finding was fixed and resolved;
+- squash merge `e544a65130d4b009efea179038dd03275cd46897` on sole parent `02a1ad24d262c3cb6d14653bf48aa31c3796ae4e` with the identical reviewed tree and valid GitHub signature;
+- push-triggered post-merge Quality Gates run #230: SUCCESS across all five jobs;
 - implementation branch deleted after verified merge.
 
 ## Closed Q1 contract
@@ -130,9 +131,9 @@ Q10 is DONE / VERIFIED and added `src/Migration/MigrationBootstrap.php` to basel
 
 Q10 closure evidence remains pinned: PR #36 final reviewed head `41b0d6d03af91b1e811562d609cf809345a221df`, exact reviewed tree `eae2fe0d0f0f54bef793ed6e58c9837bd01403ab`, exact-head Quality Gates run #226, PHPUnit **82 tests / 686 assertions**, Q10 **67/0**, clean independent exact-head review, squash merge `02a1ad24d262c3cb6d14653bf48aa31c3796ae4e` on sole parent `f63591188e232505f8307cb71fdbe4c32d2dc4c7` with the identical reviewed tree and valid GitHub signature, post-merge Quality Gates run #227 and implementation branch deleted after verified merge.
 
-## Q11 purpose
+## Closed Q11 contract
 
-Expand baseline-free static analysis and executable PHPUnit characterization into `src/Subscription/Composition.php`, the already-separated Architecture A4 boundary that registers inherited subscription presentation hooks and initializes legacy checkout/storage modules.
+Q11 is DONE / VERIFIED and expanded baseline-free static analysis and executable PHPUnit characterization into `src/Subscription/Composition.php`, the already-separated Architecture A4 boundary that registers inherited subscription presentation hooks and initializes legacy checkout/storage modules.
 
 Q11 is deliberately limited to:
 
@@ -145,9 +146,7 @@ Q11 is deliberately limited to:
 
 `Subscription\Composition` does not calculate billing dates, claim cycles, dispatch payments, mutate subscription state, store billing attempts, build checkout payloads or communicate with UPayments.
 
-## Q11 scope
-
-Q11 may:
+Q11 added:
 
 - add `Subscription/Composition.php` to the existing baseline-free PHPStan level 5/PHP 7.2 and risk-focused PHPCS scopes;
 - add bounded development-only hook and dependency stubs plus deterministic PHPUnit characterization;
@@ -155,16 +154,36 @@ Q11 may:
 - add a permanent Quality Platform Subscription Composition harness;
 - retain the exact Q1 Composer lock, tool versions, analysis level, PHPCS rules and PHPStan no-baseline/no-`ignoreErrors` rule.
 
-Q11 may not rename, add, remove or reorder hooks; change callback priority/accepted arguments; change legacy dependency paths or initializers; move scheduler/dispatch/mutation behavior; modify protected cron files; or alter any gateway ID/option/meta/route/hook/table/H12/payment contract.
+Q11 changed no hook, callback, priority, accepted argument, legacy dependency path or initializer. It moved no scheduler/dispatch/mutation behavior, modified no protected cron file and altered no gateway ID/option/meta/route/hook/table/H12/payment contract.
 
-## Q11 acceptance
+Q11 closure evidence remains pinned: PR #37 final reviewed head `2a03537723ec937e58337dfa3432500c2ce85728`, exact reviewed tree `f27880f5f2a93f1dfd6428619e5bffa75e0bd4aa`, exact-head Quality Gates run #229, PHPUnit **87 tests / 708 assertions**, Q11 **84/0**, clean independent exact-head review, squash merge `e544a65130d4b009efea179038dd03275cd46897` on sole parent `02a1ad24d262c3cb6d14653bf48aa31c3796ae4e` with the identical reviewed tree and valid GitHub signature, post-merge Quality Gates run #230 and implementation branch deleted after verified merge.
 
-Q11 may be merged only when:
+## Q12 purpose
 
-1. PHPUnit covers the exact ordered presentation topology, exact gateway-instance registrations, legacy dependency/initializer contract, ownership exclusions and non-instantiability;
-2. PHPStan level 5 passes on all Q1-Q11 modules against PHP 7.2 with no baseline or `ignoreErrors` entries;
+Expand the same baseline-free analysis and deterministic PHPUnit characterization into the bounded global WooCommerce compatibility shim `src/Subscription/WCProductCustomType.php`.
+
+Q12 freezes three exact load states: the shim is inert when `WC_Product_Simple` is unavailable, declares `WCProductCustomType` as a direct child when the base exists, and preserves an already-declared child. When declared, its sole behavior remains returning the historical `custom_type` product-type identifier.
+
+## Q12 scope
+
+Q12 may:
+
+- add `Subscription/WCProductCustomType.php` to PHPStan level 5/PHP 7.2 and risk-focused PHPCS ownership;
+- add a development-only base-class analyzer stub that does not mask the production child;
+- add isolated-process PHPUnit characterization for all three load states, the exact parent and exact type result;
+- add a permanent Quality Platform Subscription Product Type harness;
+- retain the exact Q1 Composer lock, tool versions, analysis level, PHPCS rules and PHPStan no-baseline/no-`ignoreErrors` rule.
+
+Q12 may not rename the global `WCProductCustomType` class, change its `WC_Product_Simple` base or `custom_type` result, autoload it unconditionally, add hooks or presentation behavior, or enter scheduler, cycle-claim, billing-attempt, dispatch, customer-mutation, provider-transport or payment-truth ownership. It may not alter any protected identity, blob or closed contract.
+
+## Q12 acceptance
+
+Q12 may be merged only when:
+
+1. isolated-process PHPUnit covers all three load states plus the exact parent and type result without leaking global classes between tests;
+2. PHPStan level 5 passes on all Q1-Q12 modules against PHP 7.2 with no baseline or `ignoreErrors` entries;
 3. PHPCS/WPCS, Composer validation, locked install and dependency audit remain clean;
-4. every Q1-Q10 permanent harness and the new Q11 harness are green;
+4. every Q1-Q11 permanent harness and the new Q12 harness are green;
 5. PHP 7.2 and PHP 8.2 distributed-source syntax jobs remain green;
 6. the protected H12 prerequisite aggregator still rejects every non-success upstream result;
 7. every historical and architecture regression remains green, including exact Scheduler/CycleClaim blobs and unchanged payment/security counts;
@@ -173,6 +192,6 @@ Q11 may be merged only when:
 
 ## Non-claims
 
-Q11 is a bounded static-analysis and deterministic unit-characterization tranche. It is not WordPress, WooCommerce, PHP, HPOS, Checkout Blocks, WPML/WCML, browser, accessibility, performance, penetration-test, PCI/compliance or production certification. It is also not subscription/recurring-billing certification and does not run a scheduler, claim a cycle, dispatch a payment, mutate a subscription or certify provider connectivity.
+Q12 is a bounded static-analysis and deterministic unit-characterization tranche. It is not WordPress, WooCommerce, PHP, HPOS, Checkout Blocks, WPML/WCML, browser, accessibility, performance, penetration-test, PCI/compliance or production certification. It is also not product-type ecosystem or subscription/recurring-billing certification and does not run a scheduler, claim a cycle, dispatch a payment, mutate a subscription or certify provider connectivity.
 
 Later quality tranches expand WordPress/WooCommerce integration tests, further static-analysis scope, compatibility matrices, mutation testing, CodeQL and browser tooling only when each protects a named risk.
