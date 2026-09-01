@@ -56,7 +56,7 @@ final class MigrationAdmin {
             } else {
                 $settings = MigrationSettings::resolve();
                 if (empty($settings['ok'])) {
-                    $error = isset($settings['reason']) ? $settings['reason'] : 'settings_unavailable';
+                    $error = $settings['reason'];
                 } else {
                     $dry_run = ($form['migration_action'] !== 'execute');
                     $offset = $request['offset'];
@@ -69,7 +69,7 @@ final class MigrationAdmin {
                             $dry_run
                         );
                         if (empty($resume_info['ok'])) {
-                            $error = isset($resume_info['reason']) ? $resume_info['reason'] : 'resume_unavailable';
+                            $error = $resume_info['reason'];
                         } else {
                             $offset = $resume_info['offset'];
                         }
@@ -169,7 +169,7 @@ final class MigrationAdmin {
     private static function strictInt($value, $allow_zero) {
         if (is_int($value)) {
             $parsed = $value;
-        } elseif (is_string($value) && preg_match('/^(?:0|[1-9][0-9]*)$/', $value) === 1) {
+        } elseif (is_string($value) && preg_match('/^(?:0|[1-9][0-9]*)\z/', $value) === 1) {
             if (strlen($value) > strlen((string) PHP_INT_MAX)
                 || (strlen($value) === strlen((string) PHP_INT_MAX) && strcmp($value, (string) PHP_INT_MAX) > 0)
             ) {

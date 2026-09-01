@@ -106,7 +106,14 @@ The project is still in pre-release engineering hardening. Entries below are eng
 - Exact final PR #36 head `41b0d6d03af91b1e811562d609cf809345a221df` passed Quality Gates #226 and clean independent exact-head review; Q10 was **67/0** and PHPUnit **82 tests / 686 assertions**.
 - Squash-merged PR #36 as `02a1ad24d262c3cb6d14653bf48aa31c3796ae4e`, tree `eae2fe0d0f0f54bef793ed6e58c9837bd01403ab`; post-merge run #227 passed and the implementation branch was deleted.
 
-### Full Automated Quality Platform — Q13 Migration CLI Analysis
+### Full Automated Quality Platform — Q14 Migration Admin Analysis
+
+- Expands baseline-free PHPStan level 5/PHP 7.2 and risk-focused PHPCS ownership into the existing privileged Phase 9I migration-admin adapter.
+- Adds PHPUnit characterization for exact submenu registration, capability-before-request authorization, POST nonce verification, credential-free bounded form input, explicit execute confirmation, resume/offset exclusion and escaped/redacted output.
+- Adds development-only WordPress admin fixtures/stubs and a permanent Q14 harness without executing migration/provider behavior or changing valid request behavior.
+- Rejects terminal-newline offset/limit values with an absolute regex end anchor and removes only analyzer-proven unreachable missing-reason fallbacks.
+
+### Full Automated Quality Platform — Q13 Migration CLI Analysis — DONE / VERIFIED
 
 - Expands baseline-free PHPStan level 5/PHP 7.2 and risk-focused PHPCS ownership into the existing Phase 9I WP-CLI adapter.
 - Adds PHPUnit characterization for strict requests, explicit execute confirmation, resume/offset exclusion, bounded integers, redacted JSON and exact CLI errors.
@@ -114,6 +121,8 @@ The project is still in pre-release engineering hardening. Entries below are eng
 - Removes one PHPStan-proven unreachable missing-reason fallback; every `MigrationBatch::resumeOffset()` result already carries the exact reason returned to the CLI.
 - Makes the permanent Q11/Q12 playbook checks closure-aware so later verified milestones cannot erase their immutable merge/tree evidence.
 - Rejects terminal-newline offset/limit values with an absolute regex end anchor so canonical integer parsing is exact.
+- Exact final PR #39 head `302dcdf9c1bbd3a1d259790e8f9f9c2d694b74d7` passed Quality Gates #236 and clean independent exact-head review; Q13 was **77/0** and PHPUnit **105 tests / 766 assertions**.
+- Squash-merged PR #39 as `a744417e1ec2f40b4f59706df84589d8b18638cb`, tree `be7c52143d2085550790b742d164ecbec413377f`; post-merge run #237 passed and the implementation branch was deleted.
 
 ### Full Automated Quality Platform — Q12 Subscription Product Type Analysis — DONE / VERIFIED
 
@@ -163,7 +172,7 @@ The project is still in pre-release engineering hardening. Entries below are eng
 
 ### Current program gate
 
-**Full Automated Quality Platform — Q13** is now the active gate. Architecture A1-A5 and Quality Platform Q1-Q12 are DONE / VERIFIED; Q13 is limited to Phase 9I CLI parsing/redaction/error characterization and baseline-free static-analysis expansion and does not execute migration/provider behavior, dispatch payments, certify platforms or alter payment runtime contracts.
+**Full Automated Quality Platform — Q14** is now the active gate. Architecture A1-A5 and Quality Platform Q1-Q13 are DONE / VERIFIED; Q14 is limited to Phase 9I privileged migration-admin authorization/form/redaction/escaping characterization and baseline-free static-analysis expansion and does not execute migration/provider behavior, dispatch payments, certify platforms or alter payment runtime contracts.
 
 ### Provider Contract & Payment Lifecycle — DONE / VERIFIED
 

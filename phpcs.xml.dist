@@ -21,6 +21,7 @@
     <file>src/Subscription/Composition.php</file>
     <file>src/Subscription/WCProductCustomType.php</file>
     <file>src/Migration/MigrationCliCommand.php</file>
+    <file>src/Migration/MigrationAdmin.php</file>
 
     <exclude-pattern>vendor/*</exclude-pattern>
 
