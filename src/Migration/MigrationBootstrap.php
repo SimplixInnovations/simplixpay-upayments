@@ -9,6 +9,10 @@ final class MigrationBootstrap {
         $is_cli = defined('WP_CLI') && WP_CLI;
         $is_admin = function_exists('is_admin') && is_admin();
 
+        self::bootForContext($is_cli, $is_admin);
+    }
+
+    private static function bootForContext($is_cli, $is_admin) {
         if (!$is_cli && !$is_admin) {
             return;
         }

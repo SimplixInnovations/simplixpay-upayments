@@ -3,6 +3,7 @@ parameters:
     phpVersion: 70200
     scanFiles:
         - tests/phpstan/wordpress-option-stubs.php
+        - tests/phpstan/migration-bootstrap-stubs.php
     paths:
         - src/Payment/CheckoutPayload.php
         - src/Payment/OrderLock.php
@@ -15,4 +16,5 @@ parameters:
         - src/Security/PublicOrderStatus.php
         - src/Release/Identity.php
         - src/Migration/MigrationSettings.php
+        - src/Migration/MigrationBootstrap.php
     tmpDir: .cache/phpstan
