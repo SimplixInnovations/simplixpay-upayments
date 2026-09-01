@@ -114,9 +114,9 @@ foreach (array(
 }
 q2_assert(q2_contains($status, '| Current program gate | **Full Automated Quality Platform — Q10** |'), 'project status advances beyond Quality Platform Q2');
 q2_assert(q2_contains($readme, 'The current program gate is **Full Automated Quality Platform — Q10**.'), 'README advances beyond Quality Platform Q2');
-q2_assert(!q2_contains($handoff, 'CURRENT / Q1'), 'handoff program sequence rejects alternate stale Q1 gate marker');
-q2_assert(!q2_contains($playbook, 'CURRENT / Q1'), 'master playbook phase ordering rejects alternate stale Q1 gate marker');
-q2_assert(q2_contains($workflow, "reject_across_live_records 'CURRENT / Q1'"), 'Governance rejects alternate stale Q1 gate marker');
+q2_assert(!q2_contains($handoff, 'CURRENT / Q1**'), 'handoff program sequence rejects alternate stale Q1 gate marker without matching Q10');
+q2_assert(!q2_contains($playbook, 'CURRENT / Q1**'), 'master playbook phase ordering rejects alternate stale Q1 gate marker without matching Q10');
+q2_assert(q2_contains($workflow, "reject_across_live_records 'CURRENT / Q1**'"), 'Governance rejects alternate stale Q1 gate marker without matching Q10');
 
 echo "\nQ2 Checkout Payload Analysis: {$q2_pass} PASS / {$q2_fail} FAIL\n";
 exit($q2_fail === 0 ? 0 : 1);
