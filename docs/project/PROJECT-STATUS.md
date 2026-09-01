@@ -2,7 +2,7 @@
 
 **Status document:** canonical living engineering state
 
-**Last updated:** 2026-08-31
+**Last updated:** 2026-09-01
 
 **Canonical repository:** `SimplixInnovations/simplixpay-upayments`
 
@@ -38,11 +38,32 @@
 | Quality Platform Q7 public-order-status analysis | **DONE / VERIFIED** |
 | Quality Platform Q8 release-identity analysis | **DONE / VERIFIED** |
 | Quality Platform Q9 migration-settings analysis | **DONE / VERIFIED** |
-| Current program gate | **Full Automated Quality Platform — Q10** |
+| Quality Platform Q10 migration-bootstrap analysis | **DONE / VERIFIED** |
+| Current program gate | **Full Automated Quality Platform — Q11** |
 
-The plugin remains a pre-release engineering project. Architecture discovery/A1-A5 and Quality Platform Q1-Q9 are DONE / VERIFIED; Q10 migration-bootstrap analysis is the current bounded implementation tranche. None of these milestones constitutes broad code-quality, provider-host, penetration-test, PCI/compliance, platform, feature, performance or release certification.
+The plugin remains a pre-release engineering project. Architecture discovery/A1-A5 and Quality Platform Q1-Q10 are DONE / VERIFIED; Q11 subscription-composition analysis is the current bounded implementation tranche. None of these milestones constitutes broad code-quality, provider-host, penetration-test, PCI/compliance, platform, feature, performance or release certification.
 
-## Latest verified milestone — Quality Platform Q9 migration-settings analysis
+## Latest verified milestone — Quality Platform Q10 migration-bootstrap analysis
+
+PR #36 final reviewed head:
+
+- `41b0d6d03af91b1e811562d609cf809345a221df`
+
+Verified squash merge on `main`:
+
+- merge: `02a1ad24d262c3cb6d14653bf48aa31c3796ae4e`
+- tree: `eae2fe0d0f0f54bef793ed6e58c9837bd01403ab`
+- parent: `f63591188e232505f8307cb71fdbe4c32d2dc4c7`
+- implementation branch `quality/migration-bootstrap-analysis`: **deleted after verified merge**
+- exact-head Quality Gates run #226: **SUCCESS across all five jobs**
+- push-triggered post-merge Quality Gates run #227: **SUCCESS across all five jobs**
+- PHPUnit: **82 tests / 686 assertions**
+- Q10 Migration Bootstrap Analysis: **67/0**
+- H12 PHP: **1927/0**; Blocks: **144/0**
+
+Q10 expanded baseline-free PHPStan level 5/PHP 7.2, PHPCS and PHPUnit into `MigrationBootstrap`. It protects frontend inertness, exact admin/CLI contexts, bounded dependencies, canonical registrations and non-instantiability. The valid initial review finding exposed a Q1/Q10 governance substring collision; the delimiter-aware correction passed exact-head and post-merge CI. The signed squash merge preserved the reviewed tree and the branch was deleted. Q10 makes no live-provider, platform or production-certification claim.
+
+## Previous verified milestone — Quality Platform Q9 migration-settings analysis
 
 PR #35 final reviewed head:
 
@@ -62,7 +83,7 @@ Verified squash merge on `main`:
 
 Q9 expanded baseline-free PHPStan level 5/PHP 7.2, PHPCS and PHPUnit into `MigrationSettings`. It protects the sole historical Woo settings source, strict byte-preserved credentials and mode parsing, no option mutation, and canonical secret-free reporting. Two valid review findings hardened malformed redaction inputs before the final clean exact-head review. The signed squash merge preserved the reviewed tree, post-merge CI passed and the branch was deleted. Q9 makes no live-provider, platform or production-certification claim.
 
-## Previous verified milestone — Quality Platform Q8 release-identity analysis
+## Earlier verified milestone — Quality Platform Q8 release-identity analysis
 
 PR #34 final reviewed head:
 
@@ -527,18 +548,18 @@ Repository readiness remains DONE / VERIFIED:
 
 ## Current program gate — Full Automated Quality Platform
 
-**Status: Q10 — MIGRATION BOOTSTRAP ANALYSIS / IMPLEMENTATION.**
+**Status: Q11 — SUBSCRIPTION COMPOSITION ANALYSIS / IMPLEMENTATION.**
 
-Architecture discovery/A1-A5 and Quality Platform Q1-Q9 are complete. Q10 is limited to the Phase 9I admin/CLI context and registration bootstrap. Current scope:
+Architecture discovery/A1-A5 and Quality Platform Q1-Q10 are complete. Q11 is limited to the already-separated Architecture A4 subscription composition boundary. Current scope:
 
-- add `Migration/MigrationBootstrap.php` to the baseline-free PHPStan level 5 / PHP 7.2 and risk-focused PHPCS scopes;
-- expand deterministic PHPUnit characterization across frontend inertness, exact admin/CLI contexts, dependency loading, canonical registrations and non-instantiability;
+- add `Subscription/Composition.php` to the baseline-free PHPStan level 5 / PHP 7.2 and risk-focused PHPCS scopes;
+- expand deterministic PHPUnit characterization across exact ordered presentation hooks, gateway-instance hooks, legacy dependencies/initializers, ownership exclusions and non-instantiability;
 - reconcile analyzer-proven documentation only;
 - keep the Q1 dependency lock, tool versions, analysis level, PHPStan no-baseline/no-`ignoreErrors` rule and protected H12 aggregator unchanged;
-- keep every historical and architecture harness plus all ten permanent quality-platform harnesses mandatory;
-- preserve protected identities and keep Security **82/0**, Provider **141/0 + 4/0**, Phase 9I, Phase 0, H12 and all architecture regressions green.
+- keep every historical and architecture harness plus all eleven permanent quality-platform harnesses mandatory;
+- preserve exact Scheduler/CycleClaim blobs, protected identities and Security **82/0**, Provider **141/0 + 4/0**, Phase 9I, Phase 0, H12 and all architecture regressions.
 
-No new runtime context, cron/REST/AJAX/frontend hook, admin-menu/CLI rename, credential or user input, Phase 9I execution change, gateway ID/option/meta/route/hook/table/H12 rename, provider transport change or payment-truth/order-state mutation is authorized in Q10. `QUALITY-PLATFORM.md` is the current gate record.
+No hook/callback/priority/accepted-argument/dependency/initializer rename, scheduler/cycle-claim/billing-attempt/dispatch/customer-mutation move, protected cron-file change, gateway ID/option/meta/route/table/H12 rename, provider transport change or payment-truth/order-state mutation is authorized in Q11. `QUALITY-PLATFORM.md` is the current gate record.
 
 ## Later program blockers
 

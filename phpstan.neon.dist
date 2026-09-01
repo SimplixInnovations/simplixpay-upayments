@@ -4,6 +4,7 @@ parameters:
     scanFiles:
         - tests/phpstan/wordpress-option-stubs.php
         - tests/phpstan/migration-bootstrap-stubs.php
+        - tests/phpstan/subscription-composition-stubs.php
     paths:
         - src/Payment/CheckoutPayload.php
         - src/Payment/OrderLock.php
@@ -17,4 +18,5 @@ parameters:
         - src/Release/Identity.php
         - src/Migration/MigrationSettings.php
         - src/Migration/MigrationBootstrap.php
+        - src/Subscription/Composition.php
     tmpDir: .cache/phpstan

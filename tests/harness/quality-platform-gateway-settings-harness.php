@@ -118,12 +118,12 @@ foreach (array(
 ) as $closure_evidence) {
     q6_assert(q6_contains($quality_record, $closure_evidence), "Q6 closure evidence is pinned: {$closure_evidence}");
 }
-q6_assert(q6_contains($quality_record, '**Status:** Q10 / IMPLEMENTATION'), 'quality record advances beyond Q6');
-q6_assert(q6_contains($status, '| Current program gate | **Full Automated Quality Platform — Q10** |'), 'project status advances beyond Quality Platform Q6');
-q6_assert(q6_contains($readme, 'The current program gate is **Full Automated Quality Platform — Q10**.'), 'README advances beyond Quality Platform Q6');
+q6_assert(q6_contains($quality_record, '**Status:** Q11 / IMPLEMENTATION'), 'quality record advances beyond Q6');
+q6_assert(q6_contains($status, '| Current program gate | **Full Automated Quality Platform — Q11** |'), 'project status advances beyond Quality Platform Q6');
+q6_assert(q6_contains($readme, 'The current program gate is **Full Automated Quality Platform — Q11**.'), 'README advances beyond Quality Platform Q6');
 q6_assert(
-    q6_contains($playbook, 'Last verified implementation main SHA: f63591188e232505f8307cb71fdbe4c32d2dc4c7')
-        && q6_contains($playbook, 'Canonical implementation tree: 96936981b8d3088a65c1d0917b7e5773952bc346'),
+    q6_contains($playbook, 'Last verified implementation main SHA: 02a1ad24d262c3cb6d14653bf48aa31c3796ae4e')
+        && q6_contains($playbook, 'Canonical implementation tree: eae2fe0d0f0f54bef793ed6e58c9837bd01403ab'),
     'master playbook restart anchors advance beyond Q6 to the verified Q9 merge and tree'
 );
 q6_assert(!q6_contains($handoff, 'CURRENT / Q6'), 'handoff rejects the stale current-Q6 marker');

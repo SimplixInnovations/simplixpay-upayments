@@ -84,23 +84,23 @@ q10_assert(q10_contains($test_bootstrap, "wordpress-migration-bootstrap.php"), '
 q10_assert(q10_contains($workflow, 'quality-platform-migration-bootstrap-harness.php'), 'Q10 harness is mandatory in Quality Gates');
 q10_assert(q10_contains($workflow, 'if: ${{ always() }}'), 'protected H12 aggregator still always runs');
 foreach (array(
-    '01ca31ec3bf55f60dbec5f8293c73ab5bfbdc9a5',
-    '96936981b8d3088a65c1d0917b7e5773952bc346',
-    'Quality Gates run #223',
-    'f63591188e232505f8307cb71fdbe4c32d2dc4c7',
-    'Quality Gates run #224',
+    '41b0d6d03af91b1e811562d609cf809345a221df',
+    'eae2fe0d0f0f54bef793ed6e58c9837bd01403ab',
+    'Quality Gates run #226',
+    '02a1ad24d262c3cb6d14653bf48aa31c3796ae4e',
+    'Quality Gates run #227',
     'implementation branch deleted',
 ) as $evidence) {
-    q10_assert(q10_contains($quality, $evidence), "Q9 closure evidence is pinned: {$evidence}");
+    q10_assert(q10_contains($quality, $evidence), "Q10 closure evidence is pinned: {$evidence}");
 }
-q10_assert(q10_contains($quality, '**Status:** Q10 / IMPLEMENTATION'), 'quality record advances to Q10');
-q10_assert(q10_contains($status, '| Current program gate | **Full Automated Quality Platform — Q10** |'), 'project status advances to Q10');
-q10_assert(q10_contains($readme, 'The current program gate is **Full Automated Quality Platform — Q10**.'), 'README advances to Q10');
-q10_assert(q10_contains($playbook, 'Last verified implementation main SHA: f63591188e232505f8307cb71fdbe4c32d2dc4c7'), 'playbook pins Q9 merge');
-q10_assert(q10_contains($playbook, 'Canonical implementation tree: 96936981b8d3088a65c1d0917b7e5773952bc346'), 'playbook pins Q9 tree');
-q10_assert(!q10_contains($handoff, 'CURRENT / Q9'), 'handoff rejects stale current-Q9 marker');
-q10_assert(!q10_contains($playbook, 'CURRENT / Q9'), 'playbook rejects stale current-Q9 marker');
-q10_assert(q10_contains($workflow, "reject_across_live_records 'CURRENT / Q9'"), 'Governance rejects stale current-Q9 markers');
+q10_assert(q10_contains($quality, '**Status:** Q11 / IMPLEMENTATION'), 'quality record advances beyond Q10');
+q10_assert(q10_contains($status, '| Current program gate | **Full Automated Quality Platform — Q11** |'), 'project status advances beyond Q10');
+q10_assert(q10_contains($readme, 'The current program gate is **Full Automated Quality Platform — Q11**.'), 'README advances beyond Q10');
+q10_assert(q10_contains($playbook, 'Last verified implementation main SHA: 02a1ad24d262c3cb6d14653bf48aa31c3796ae4e'), 'playbook pins Q10 merge');
+q10_assert(q10_contains($playbook, 'Canonical implementation tree: eae2fe0d0f0f54bef793ed6e58c9837bd01403ab'), 'playbook pins Q10 tree');
+q10_assert(!q10_contains($handoff, 'CURRENT / Q10'), 'handoff rejects stale current-Q10 marker');
+q10_assert(!q10_contains($playbook, 'CURRENT / Q10'), 'playbook rejects stale current-Q10 marker');
+q10_assert(q10_contains($workflow, "reject_across_live_records 'CURRENT / Q10'"), 'Governance rejects stale current-Q10 markers');
 
 echo "\nQ10 Migration Bootstrap Analysis: {$q10_pass} PASS / {$q10_fail} FAIL\n";
 exit($q10_fail === 0 ? 0 : 1);

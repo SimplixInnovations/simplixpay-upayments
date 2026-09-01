@@ -1,21 +1,21 @@
 # Full Automated Quality Platform
 
-**Status:** Q10 / IMPLEMENTATION
+**Status:** Q11 / IMPLEMENTATION
 
-**Current branch:** `quality/migration-bootstrap-analysis`
+**Current branch:** `quality/subscription-composition-analysis`
 
-**Verified base `main`:** `f63591188e232505f8307cb71fdbe4c32d2dc4c7`
+**Verified base `main`:** `02a1ad24d262c3cb6d14653bf48aa31c3796ae4e`
 
-**Verified base tree:** `96936981b8d3088a65c1d0917b7e5773952bc346`
+**Verified base tree:** `eae2fe0d0f0f54bef793ed6e58c9837bd01403ab`
 
 ## Entry evidence
 
-Q9 is DONE / VERIFIED:
+Q10 is DONE / VERIFIED:
 
-- PR #35 final reviewed head `01ca31ec3bf55f60dbec5f8293c73ab5bfbdc9a5`;
-- exact reviewed tree `96936981b8d3088a65c1d0917b7e5773952bc346`;
-- exact-head Quality Gates run #223: SUCCESS across all five jobs;
-- PHPUnit: **76 tests / 663 assertions**;
+- PR #36 final reviewed head `41b0d6d03af91b1e811562d609cf809345a221df`;
+- exact reviewed tree `eae2fe0d0f0f54bef793ed6e58c9837bd01403ab`;
+- exact-head Quality Gates run #226: SUCCESS across all five jobs;
+- PHPUnit: **82 tests / 686 assertions**;
 - PHPStan level 5/PHP 7.2 and PHPCS/WPCS: clean;
 - Quality Platform Foundation: **74/0**;
 - Q2 Checkout Payload Analysis: **64/0**;
@@ -26,10 +26,11 @@ Q9 is DONE / VERIFIED:
 - Q7 Public Order Status Analysis: **69/0**;
 - Q8 Release Identity Analysis: **46/0**;
 - Q9 Migration Settings Analysis: **62/0**;
+- Q10 Migration Bootstrap Analysis: **67/0**;
 - every historical, architecture and H12 regression remained green, including H12 PHP **1927/0** and Blocks **144/0**;
-- final independent review: no major issues on exact head `01ca31ec3b` after two valid redaction findings were fixed and resolved;
-- squash merge `f63591188e232505f8307cb71fdbe4c32d2dc4c7` on sole parent `b59eb2d50b86a38d8ea130de63c38a672db86d32` with the identical reviewed tree and valid GitHub signature;
-- push-triggered post-merge Quality Gates run #224: SUCCESS across all five jobs;
+- final independent review: no major issues on exact head `41b0d6d03a` after the initial stale-Q1/Q10 substring finding was fixed and resolved;
+- squash merge `02a1ad24d262c3cb6d14653bf48aa31c3796ae4e` on sole parent `f63591188e232505f8307cb71fdbe4c32d2dc4c7` with the identical reviewed tree and valid GitHub signature;
+- push-triggered post-merge Quality Gates run #227: SUCCESS across all five jobs;
 - implementation branch deleted after verified merge.
 
 ## Closed Q1 contract
@@ -121,50 +122,55 @@ Q8 closure evidence remains pinned: PR #34 final reviewed head `458bf35b0cc60d78
 
 Q9 is DONE / VERIFIED and added `src/Migration/MigrationSettings.php` to baseline-free PHPStan and PHPCS. Deterministic PHPUnit tests protect the sole historical Woo option source, strict nonblank byte-preserved API keys, exact `yes`/`no` mode handling, no option mutation and bounded secret-free reporting. Review-driven hardening changed malformed redaction inputs only: reportable reasons/modes are allowlisted and success/failure reporting now requires canonical resolver fields, types and mode correlation. Valid resolver behavior, Phase 9I execution and payment runtime contracts were unchanged.
 
-## Q10 purpose
+## Closed Q10 contract
 
-Expand baseline-free static analysis and executable PHPUnit characterization into `src/Migration/MigrationBootstrap.php`, the context gate that makes the already-verified Phase 9I operational tools reachable only from WordPress admin and WP-CLI.
+Q10 is DONE / VERIFIED and added `src/Migration/MigrationBootstrap.php` to baseline-free PHPStan and PHPCS. Deterministic PHPUnit tests protect frontend inertness, exact admin/CLI contexts, bounded dependency loading, canonical registrations and the final non-instantiable bootstrap boundary. The only behavior-preserving production refactor extracted the existing registration body behind a private context seam.
 
-Q10 is deliberately limited to:
+Q10 closure evidence remains pinned: PR #36 final reviewed head `41b0d6d03af91b1e811562d609cf809345a221df`, exact reviewed tree `eae2fe0d0f0f54bef793ed6e58c9837bd01403ab`, exact-head Quality Gates run #226, PHPUnit **82 tests / 686 assertions**, Q10 **67/0**, clean independent exact-head review, squash merge `02a1ad24d262c3cb6d14653bf48aa31c3796ae4e` on sole parent `f63591188e232505f8307cb71fdbe4c32d2dc4c7` with the identical reviewed tree and valid GitHub signature, post-merge Quality Gates run #227 and implementation branch deleted after verified merge.
 
-- exact guarded detection of WP-CLI and WordPress admin contexts;
-- an inert frontend/non-admin/non-CLI path before any migration dependency load;
-- the exact shared migration dependency set;
-- admin-only registration of the canonical `admin_menu` callback;
-- CLI-only registration of the canonical `simplixpay-upayments migration` command when the WP-CLI class exists;
-- no checkout, payment, provider-transport or public hook path;
-- a final non-instantiable bootstrap boundary.
+## Q11 purpose
 
-`MigrationBootstrap` does not execute migration, accept credentials or user IDs, authorize admin actions, dispatch provider transport, mutate payment truth or own the migration batch contract.
+Expand baseline-free static analysis and executable PHPUnit characterization into `src/Subscription/Composition.php`, the already-separated Architecture A4 boundary that registers inherited subscription presentation hooks and initializes legacy checkout/storage modules.
 
-## Q10 scope
+Q11 is deliberately limited to:
 
-Q10 may:
+- the exact ordered 18-hook product/admin/My Account presentation topology;
+- the exact two gateway-instance cart-validation/product-badge hooks;
+- the existing plugin-root calculation, three legacy dependency paths and two initializers;
+- exclusion of scheduler, cycle-claim, billing-attempt, payment-dispatch, customer-mutation and provider-transport ownership;
+- preservation of the exact protected Scheduler and CycleClaim blobs;
+- a final non-instantiable static composition boundary.
 
-- add `MigrationBootstrap.php` to the existing baseline-free PHPStan level 5/PHP 7.2 and risk-focused PHPCS scopes;
-- add bounded development-only WordPress/WP-CLI fixtures and deterministic PHPUnit characterization of context gating, dependencies and registrations;
-- extract the existing registration body behind a private context seam without changing public bootstrap behavior;
-- add a permanent Quality Platform Migration Bootstrap harness;
+`Subscription\Composition` does not calculate billing dates, claim cycles, dispatch payments, mutate subscription state, store billing attempts, build checkout payloads or communicate with UPayments.
+
+## Q11 scope
+
+Q11 may:
+
+- add `Subscription/Composition.php` to the existing baseline-free PHPStan level 5/PHP 7.2 and risk-focused PHPCS scopes;
+- add bounded development-only hook and dependency stubs plus deterministic PHPUnit characterization;
+- make the already-static final boundary explicitly non-instantiable without changing any registered hook or initializer;
+- add a permanent Quality Platform Subscription Composition harness;
 - retain the exact Q1 Composer lock, tool versions, analysis level, PHPCS rules and PHPStan no-baseline/no-`ignoreErrors` rule.
 
-Q10 may not broaden runtime contexts, add cron/REST/AJAX/frontend hooks, rename the admin menu or CLI command, change migration settings/preflight/executor/batch/admin/CLI behavior, add credential or user input, or alter any gateway ID/option/meta/route/hook/table/H12/payment contract.
+Q11 may not rename, add, remove or reorder hooks; change callback priority/accepted arguments; change legacy dependency paths or initializers; move scheduler/dispatch/mutation behavior; modify protected cron files; or alter any gateway ID/option/meta/route/hook/table/H12/payment contract.
 
-## Q10 acceptance
+## Q11 acceptance
 
-Q10 may be merged only when:
+Q11 may be merged only when:
 
-1. PHPUnit covers frontend inertness, exact admin/CLI registrations, combined context, bounded dependencies and non-instantiability with no risky tests or warnings;
-2. PHPStan level 5 passes on all Q1-Q10 modules against PHP 7.2 with no baseline or `ignoreErrors` entries;
+1. PHPUnit covers the exact ordered presentation topology, exact gateway-instance registrations, legacy dependency/initializer contract, ownership exclusions and non-instantiability;
+2. PHPStan level 5 passes on all Q1-Q11 modules against PHP 7.2 with no baseline or `ignoreErrors` entries;
 3. PHPCS/WPCS, Composer validation, locked install and dependency audit remain clean;
-4. the Q1 **74/0**, Q2 **64/0**, Q3 **69/0**, Q4 **68/0**, Q5 **83/0**, Q6 **83/0**, Q7 **69/0**, Q8 **46/0**, Q9 **62/0** and new Q10 permanent harnesses are green;
+4. every Q1-Q10 permanent harness and the new Q11 harness are green;
 5. PHP 7.2 and PHP 8.2 distributed-source syntax jobs remain green;
 6. the protected H12 prerequisite aggregator still rejects every non-success upstream result;
-7. every historical and architecture regression remains green with unchanged payment/security counts;
+7. every historical and architecture regression remains green, including exact Scheduler/CycleClaim blobs and unchanged payment/security counts;
 8. exact-head independent review is clean with zero unresolved valid findings;
 9. merge, post-merge CI and branch cleanup are independently verified.
 
 ## Non-claims
 
-Q10 is a bounded static-analysis and deterministic unit-characterization tranche. It is not WordPress, WooCommerce, PHP, HPOS, Checkout Blocks, WPML/WCML, browser, accessibility, performance, penetration-test, PCI/compliance or production certification. It does not execute Phase 9I against a merchant store, add operational contexts or certify provider connectivity. It is also not live-provider certification; deterministic tests do not replace later runtime integration or compatibility certification.
+Q11 is a bounded static-analysis and deterministic unit-characterization tranche. It is not WordPress, WooCommerce, PHP, HPOS, Checkout Blocks, WPML/WCML, browser, accessibility, performance, penetration-test, PCI/compliance or production certification. It is also not subscription/recurring-billing certification and does not run a scheduler, claim a cycle, dispatch a payment, mutate a subscription or certify provider connectivity.
 
 Later quality tranches expand WordPress/WooCommerce integration tests, further static-analysis scope, compatibility matrices, mutation testing, CodeQL and browser tooling only when each protects a named risk.
