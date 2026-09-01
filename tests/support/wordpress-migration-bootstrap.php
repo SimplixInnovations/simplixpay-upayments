@@ -11,6 +11,8 @@ function simplixpay_test_reset_migration_bootstrap() {
     $GLOBALS['simplixpay_test_filter_calls'] = array();
     $GLOBALS['simplixpay_test_hook_calls'] = array();
     WP_CLI::$commands = array();
+    WP_CLI::$lines = array();
+    WP_CLI::$errors = array();
 }
 
 function simplixpay_test_reset_subscription_composition() {
@@ -37,10 +39,23 @@ function add_filter($hook_name, $callback, $priority = 10, $accepted_args = 1) {
 
 final class WP_CLI {
     public static $commands = array();
+    public static $lines = array();
+    public static $errors = array();
 
     public static function add_command($name, $callable) {
         self::$commands[] = array($name, $callable);
         return true;
+    }
+
+    public static function line($message) {
+        self::$lines[] = $message;
+    }
+
+    public static function error($message, $exit = true) {
+        self::$errors[] = array($message, $exit);
+        if ($exit) {
+            throw new RuntimeException($message);
+        }
     }
 
     private function __construct() {

@@ -38,7 +38,7 @@ The following engineering gates are **DONE / VERIFIED**:
 - Security Threat-Model Closure;
 - Architecture & Code-Quality Foundation A1-A5.
 
-Quality Platform Q1-Q11 are **DONE / VERIFIED**. The current program gate is **Full Automated Quality Platform — Q12**.
+Quality Platform Q1-Q12 are **DONE / VERIFIED**. The current program gate is **Full Automated Quality Platform — Q13**.
 
 The project remains in **pre-release engineering hardening**. It is not yet a broadly certified stable production release and has not yet been published to WordPress.org.
 
@@ -55,8 +55,8 @@ The project remains in **pre-release engineering hardening**. It is not yet a br
 | Provider Contract & Payment Lifecycle | **DONE / VERIFIED** |
 | Security Threat-Model Closure | **DONE / VERIFIED** |
 | Architecture & Code-Quality Foundation | **DONE / VERIFIED (A1-A5)** |
-| Quality Platform Q1-Q11 | **DONE / VERIFIED** |
-| Current engineering gate | **Full Automated Quality Platform — Q12** |
+| Quality Platform Q1-Q12 | **DONE / VERIFIED** |
+| Current engineering gate | **Full Automated Quality Platform — Q13** |
 | Stable SimplixPay release | **Not yet published** |
 | WordPress.org release | **Not yet published** |
 | Phase 0 release-identity harness | **35 PASS / 0 FAIL** |
@@ -172,7 +172,7 @@ Phase 9I system completion does not mean every merchant installation was automat
 
 ## Current engineering gate — Full Automated Quality Platform
 
-Architecture discovery/A1-A5 and Quality Platform Q1-Q11 are DONE / VERIFIED. Q11 closed on merge `e544a65130d4b009efea179038dd03275cd46897` with exact presentation/gateway hook topology and legacy module initialization characterized. Q12 expands the same baseline-free platform into the bounded global `WCProductCustomType` compatibility shim, freezing its guarded load states, `WC_Product_Simple` parent and historical `custom_type` result while excluding hooks, scheduler, cycle-claim, dispatch, mutation and transport ownership. It must preserve the closed payment lifecycle, Security Threat-Model, H12, Phase 9I, protected scheduler/attempt contracts and persisted/runtime identities.
+Architecture discovery/A1-A5 and Quality Platform Q1-Q12 are DONE / VERIFIED. Q12 closed on merge `6dc53bdaf60f12774d7516294d7004974be3874f` with guarded product-type load states, parent and historical type result characterized. Q13 expands the same baseline-free platform into the Phase 9I WP-CLI adapter, freezing strict request parsing, execute confirmation, resume/offset exclusion, batch bounds, existing-settings-only credentials, redacted output and exact CLI errors while excluding migration execution, provider transport and payment runtime ownership.
 
 No big-bang rewrite, runtime branding rename, runtime Composer dependency or broad compatibility claim is authorized by this gate.
 

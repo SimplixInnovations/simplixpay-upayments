@@ -126,11 +126,11 @@ foreach (array(
 ) as $evidence) {
     q11_assert(q11_contains($quality, $evidence), "Q11 closure evidence is pinned: {$evidence}");
 }
-q11_assert(q11_contains($quality, '**Status:** Q12 / IMPLEMENTATION'), 'quality record advances beyond Q11');
-q11_assert(q11_contains($status, '| Current program gate | **Full Automated Quality Platform — Q12** |'), 'project status advances beyond Q11');
-q11_assert(q11_contains($readme, 'The current program gate is **Full Automated Quality Platform — Q12**.'), 'README advances beyond Q11');
-q11_assert(q11_contains($playbook, 'Last verified implementation main SHA: e544a65130d4b009efea179038dd03275cd46897'), 'playbook pins Q11 merge');
-q11_assert(q11_contains($playbook, 'Canonical implementation tree: f27880f5f2a93f1dfd6428619e5bffa75e0bd4aa'), 'playbook pins Q11 tree');
+q11_assert(q11_contains($quality, '**Status:** Q13 / IMPLEMENTATION'), 'quality record advances beyond Q11');
+q11_assert(q11_contains($status, '| Current program gate | **Full Automated Quality Platform — Q13** |'), 'project status advances beyond Q11');
+q11_assert(q11_contains($readme, 'The current program gate is **Full Automated Quality Platform — Q13**.'), 'README advances beyond Q11');
+q11_assert(q11_contains($playbook, 'Quality Platform Q11: DONE / VERIFIED; PR #37; merge e544a65130d4b009efea179038dd03275cd46897;'), 'playbook pins Q11 merge');
+q11_assert(q11_contains($playbook, 'tree f27880f5f2a93f1dfd6428619e5bffa75e0bd4aa; Q11 84/0; post-merge Quality Gates #230 SUCCESS'), 'playbook pins Q11 tree');
 q11_assert(!q11_contains($handoff, 'CURRENT / Q11'), 'handoff rejects stale current-Q11 marker');
 q11_assert(!q11_contains($playbook, 'CURRENT / Q11'), 'playbook rejects stale current-Q11 marker');
 q11_assert(q11_contains($workflow, "reject_across_live_records 'CURRENT / Q11'"), 'Governance rejects stale current-Q11 markers');

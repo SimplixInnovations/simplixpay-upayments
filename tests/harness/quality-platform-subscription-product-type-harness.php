@@ -86,23 +86,23 @@ q12_assert(q12_git_blob_sha($q12_root . '/includes/Subscription/Cron/CycleClaim.
 q12_assert(q12_contains($workflow, 'quality-platform-subscription-product-type-harness.php'), 'Q12 harness is mandatory in Quality Gates');
 q12_assert(q12_contains($workflow, 'if: ${{ always() }}'), 'protected H12 aggregator still always runs');
 foreach (array(
-    '2a03537723ec937e58337dfa3432500c2ce85728',
-    'f27880f5f2a93f1dfd6428619e5bffa75e0bd4aa',
-    'Quality Gates run #229',
-    'e544a65130d4b009efea179038dd03275cd46897',
-    'Quality Gates run #230',
+    '4396b83ef67a90d6d12d1d761e6c071e601c235c',
+    'b8a9f956e304fa9dba7658809207ddae14b1f4e1',
+    'Quality Gates run #231',
+    '6dc53bdaf60f12774d7516294d7004974be3874f',
+    'Quality Gates run #232',
     'implementation branch deleted',
 ) as $evidence) {
-    q12_assert(q12_contains($quality, $evidence), "Q11 closure evidence is pinned: {$evidence}");
+    q12_assert(q12_contains($quality, $evidence), "Q12 closure evidence is pinned: {$evidence}");
 }
-q12_assert(q12_contains($quality, '**Status:** Q12 / IMPLEMENTATION'), 'quality record advances to Q12');
-q12_assert(q12_contains($status, '| Current program gate | **Full Automated Quality Platform — Q12** |'), 'project status advances to Q12');
-q12_assert(q12_contains($readme, 'The current program gate is **Full Automated Quality Platform — Q12**.'), 'README advances to Q12');
-q12_assert(q12_contains($playbook, 'Last verified implementation main SHA: e544a65130d4b009efea179038dd03275cd46897'), 'playbook pins Q11 merge');
-q12_assert(q12_contains($playbook, 'Canonical implementation tree: f27880f5f2a93f1dfd6428619e5bffa75e0bd4aa'), 'playbook pins Q11 tree');
-q12_assert(!q12_contains($handoff, 'CURRENT / Q11'), 'handoff rejects stale current-Q11 marker');
-q12_assert(!q12_contains($playbook, 'CURRENT / Q11'), 'playbook rejects stale current-Q11 marker');
-q12_assert(q12_contains($workflow, "reject_across_live_records 'CURRENT / Q11'"), 'Governance rejects stale current-Q11 markers');
+q12_assert(q12_contains($quality, '**Status:** Q13 / IMPLEMENTATION'), 'quality record advances beyond Q12');
+q12_assert(q12_contains($status, '| Current program gate | **Full Automated Quality Platform — Q13** |'), 'project status advances beyond Q12');
+q12_assert(q12_contains($readme, 'The current program gate is **Full Automated Quality Platform — Q13**.'), 'README advances beyond Q12');
+q12_assert(q12_contains($playbook, 'Quality Platform Q12: DONE / VERIFIED; PR #38; merge 6dc53bdaf60f12774d7516294d7004974be3874f;'), 'playbook pins Q12 merge');
+q12_assert(q12_contains($playbook, 'tree b8a9f956e304fa9dba7658809207ddae14b1f4e1; Q12 63/0; post-merge Quality Gates #232 SUCCESS'), 'playbook pins Q12 tree');
+q12_assert(!q12_contains($handoff, 'CURRENT / Q12'), 'handoff rejects stale current-Q12 marker');
+q12_assert(!q12_contains($playbook, 'CURRENT / Q12'), 'playbook rejects stale current-Q12 marker');
+q12_assert(q12_contains($workflow, "reject_across_live_records 'CURRENT / Q12'"), 'Governance rejects stale current-Q12 markers');
 
 echo "\nQ12 Subscription Product Type Analysis: {$q12_pass} PASS / {$q12_fail} FAIL\n";
 exit($q12_fail === 0 ? 0 : 1);
