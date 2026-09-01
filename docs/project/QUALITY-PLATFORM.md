@@ -122,6 +122,8 @@ Q8 closure evidence remains pinned: PR #34 final reviewed head `458bf35b0cc60d78
 
 Q9 is DONE / VERIFIED and added `src/Migration/MigrationSettings.php` to baseline-free PHPStan and PHPCS. Deterministic PHPUnit tests protect the sole historical Woo option source, strict nonblank byte-preserved API keys, exact `yes`/`no` mode handling, no option mutation and bounded secret-free reporting. Review-driven hardening changed malformed redaction inputs only: reportable reasons/modes are allowlisted and success/failure reporting now requires canonical resolver fields, types and mode correlation. Valid resolver behavior, Phase 9I execution and payment runtime contracts were unchanged.
 
+Q9 closure evidence remains pinned: PR #35 final reviewed head `01ca31ec3bf55f60dbec5f8293c73ab5bfbdc9a5`, exact reviewed tree `96936981b8d3088a65c1d0917b7e5773952bc346`, exact-head Quality Gates run #223, squash merge `f63591188e232505f8307cb71fdbe4c32d2dc4c7`, post-merge Quality Gates run #224 and implementation branch deleted after verified merge.
+
 ## Closed Q10 contract
 
 Q10 is DONE / VERIFIED and added `src/Migration/MigrationBootstrap.php` to baseline-free PHPStan and PHPCS. Deterministic PHPUnit tests protect frontend inertness, exact admin/CLI contexts, bounded dependency loading, canonical registrations and the final non-instantiable bootstrap boundary. The only behavior-preserving production refactor extracted the existing registration body behind a private context seam.
