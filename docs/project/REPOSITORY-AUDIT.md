@@ -32,13 +32,13 @@ The repository remains a pre-release engineering codebase. It is not the intende
 
 Phase 0 took ownership of public release identity and removed inherited update authority. Phase 9I added isolated historical-identity migration tooling. The provider lifecycle gate then added an isolated `Simplix\Pay\UPayments\Payment` strangler for ordinary browser/webhook/status truth and WooCommerce payment-state transitions without broadly rewriting the inherited gateway bootstrap.
 
-Architecture discovery/A1-A5 and Quality Platform Q1-Q11 are **DONE / VERIFIED**. The current owner/gate is **Full Automated Quality Platform — Q12**. Q12 may expand isolated-process PHPUnit characterization and baseline-free PHPStan/PHPCS only across the bounded `Subscription/WCProductCustomType.php` guarded compatibility surface. It does not authorize a big-bang rewrite, global-class/base/type changes, unconditional autoloading, hook changes, identity migration, updater activation, scheduler/cycle-claim/attempt/dispatch/mutation changes, protected-meta renames, provider-host migration, payment-truth reinterpretation or weakening closed Security/Payment/H12/Phase 9I contracts.
+Architecture discovery/A1-A5 and Quality Platform Q1-Q12 are **DONE / VERIFIED**. The current owner/gate is **Full Automated Quality Platform — Q13**. Q13 may expand PHPUnit characterization and baseline-free PHPStan/PHPCS only across the bounded `Migration/MigrationCliCommand.php` request/redaction/error adapter. It does not authorize a big-bang rewrite, API-key input, command-namespace or confirmation/resume/bounds changes, migration execution, identity migration, updater activation, scheduler/cycle-claim/attempt/dispatch/mutation changes, protected-meta renames, provider-host migration, payment-truth reinterpretation or weakening closed Security/Payment/H12/Phase 9I contracts.
 
 ## Top-level inventory after Security Threat-Model closure
 
 | Area | Current state | Classification | Next owner/gate |
 |---|---|---|---|
-| `.github/` | CODEOWNERS, templates, Dependabot, protected Quality Gates | **KEEP / CONTROL PLANE** | Q12 preserves Q1-Q11 gating while expanding bounded subscription-product-type evidence |
+| `.github/` | CODEOWNERS, templates, Dependabot, protected Quality Gates | **KEEP / CONTROL PLANE** | Q13 preserves Q1-Q12 gating while expanding bounded migration-CLI evidence |
 | `AGENTS.md` | Permanent execution/review rules | **KEEP / CONTROL PLANE** | Mandatory before substantive work |
 | `README.md`, `CHANGELOG.md` | Simplix-led public/project records | **KEEP CURRENT** | Update at verified milestones |
 | `LICENSE`, `NOTICE.md`, `UPSTREAM.md` | MIT + provenance/trademark boundaries | **KEEP** | Re-review at publication gates |
@@ -209,18 +209,18 @@ Known inherited empty/duplicate/legacy assets remain recorded debt. Do not delet
 
 ### Test platform
 
-The required custom harness stack now includes Phase 0, all Phase 9I suites, Provider Lifecycle, Exact Amount, Security Threat-Model, all architecture suites, H12 PHP and H12 Blocks. Q1 added locked PHPUnit/PHPStan/PHPCS evidence and a foundation harness; Q2 added CheckoutPayload boundary tests and a static-analysis expansion harness; Q3 added deterministic rate-gate/order-lock tests and a payment-concurrency harness; Q4 added authenticated status transport/binding tests and a dedicated permanent harness; Q5 added payment-method availability cache/lock/gate/provider-normalization tests and a dedicated permanent harness; Q6 added gateway settings schema/validation/sanitation/rendering/admin-asset tests and a dedicated permanent harness; Q7 added public status request/authorization/minimal-response tests and a dedicated permanent harness; Q8 added release-identity/version/updater/legacy-target tests and its own permanent harness; Q9 added historical-option/credential/mode/redaction tests and its own permanent harness; Q10 added migration-bootstrap context/dependency/registration tests and its own permanent harness; Q11 added subscription-composition hook/dependency/initializer tests and its own permanent harness; Q12 adds guarded product-type load/parent/type tests and its own permanent harness. This remains a progressive quality platform rather than WordPress/WooCommerce/browser/performance/product-type/recurring-billing certification.
+The required custom harness stack now includes Phase 0, all Phase 9I suites, Provider Lifecycle, Exact Amount, Security Threat-Model, all architecture suites, H12 PHP and H12 Blocks. Q1 added locked PHPUnit/PHPStan/PHPCS evidence and a foundation harness; Q2 added CheckoutPayload boundary tests and a static-analysis expansion harness; Q3 added deterministic rate-gate/order-lock tests and a payment-concurrency harness; Q4 added authenticated status transport/binding tests and a dedicated permanent harness; Q5 added payment-method availability cache/lock/gate/provider-normalization tests and a dedicated permanent harness; Q6 added gateway settings schema/validation/sanitation/rendering/admin-asset tests and a dedicated permanent harness; Q7 added public status request/authorization/minimal-response tests and a dedicated permanent harness; Q8 added release-identity/version/updater/legacy-target tests and its own permanent harness; Q9 added historical-option/credential/mode/redaction tests and its own permanent harness; Q10 added migration-bootstrap context/dependency/registration tests and its own permanent harness; Q11 added subscription-composition hook/dependency/initializer tests and its own permanent harness; Q12 added guarded product-type load/parent/type tests and its own permanent harness; Q13 adds migration-CLI request/confirmation/bounds/redaction/error tests and its own permanent harness. This remains a progressive quality platform rather than WordPress/WooCommerce/WP-CLI/browser/performance/migration/product-type/recurring-billing certification.
 
 ## Current next owner/gate
 
-**Full Automated Quality Platform — Q12**.
+**Full Automated Quality Platform — Q13**.
 
 The current tranche must preserve the verified architecture map while establishing:
 
-- isolated-process PHPUnit characterization of absent-base, available-base and predeclared-child product-type load states, the exact parent and historical type result;
-- baseline-free PHPStan level 5 and PHPCS ownership of `Subscription/WCProductCustomType.php` beside the Q1-Q11 modules;
+- PHPUnit characterization of strict CLI requests, confirmation, resume/offset exclusion, bounds, redaction and exact errors;
+- baseline-free PHPStan level 5 and PHPCS ownership of `Migration/MigrationCliCommand.php` beside the Q1-Q12 modules;
 - unchanged Q1 dependency, audit, syntax and required-check controls;
-- permanent Q1/Q2/Q3/Q4/Q5/Q6/Q7/Q8/Q9/Q10/Q11/Q12 and historical regression gates.
+- permanent Q1/Q2/Q3/Q4/Q5/Q6/Q7/Q8/Q9/Q10/Q11/Q12/Q13 and historical regression gates.
 
 Do not reinterpret green tooling as platform certification or modify payment runtime to satisfy a tool. Closed Architecture/Security/Provider/H12/Phase 9I contracts remain required regressions throughout quality-platform work.
 

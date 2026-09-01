@@ -106,11 +106,19 @@ The project is still in pre-release engineering hardening. Entries below are eng
 - Exact final PR #36 head `41b0d6d03af91b1e811562d609cf809345a221df` passed Quality Gates #226 and clean independent exact-head review; Q10 was **67/0** and PHPUnit **82 tests / 686 assertions**.
 - Squash-merged PR #36 as `02a1ad24d262c3cb6d14653bf48aa31c3796ae4e`, tree `eae2fe0d0f0f54bef793ed6e58c9837bd01403ab`; post-merge run #227 passed and the implementation branch was deleted.
 
-### Full Automated Quality Platform — Q12 Subscription Product Type Analysis
+### Full Automated Quality Platform — Q13 Migration CLI Analysis
+
+- Expands baseline-free PHPStan level 5/PHP 7.2 and risk-focused PHPCS ownership into the existing Phase 9I WP-CLI adapter.
+- Adds PHPUnit characterization for strict requests, explicit execute confirmation, resume/offset exclusion, bounded integers, redacted JSON and exact CLI errors.
+- Extends development-only WP-CLI fixtures/stubs and adds a permanent Q13 harness without executing migration/provider behavior or changing production source.
+
+### Full Automated Quality Platform — Q12 Subscription Product Type Analysis — DONE / VERIFIED
 
 - Expands baseline-free PHPStan level 5/PHP 7.2 and risk-focused PHPCS ownership into the guarded global `WCProductCustomType` compatibility shim.
 - Adds isolated-process PHPUnit characterization for absent base, available base and predeclared-child load states, plus the exact `WC_Product_Simple` parent and historical `custom_type` result.
 - Adds a development-only analyzer base-class stub and permanent Q12 regression harness without changing production source behavior or entering hook, scheduler, cycle-claim, billing, dispatch, mutation or provider-transport ownership.
+- Exact final PR #38 head `4396b83ef67a90d6d12d1d761e6c071e601c235c` passed Quality Gates #231 and clean independent exact-head review; Q12 was **63/0** and PHPUnit **90 tests / 714 assertions**.
+- Squash-merged PR #38 as `6dc53bdaf60f12774d7516294d7004974be3874f`, tree `b8a9f956e304fa9dba7658809207ddae14b1f4e1`; post-merge run #232 passed and the implementation branch was deleted.
 
 ### Full Automated Quality Platform — Q11 Subscription Composition Analysis — DONE / VERIFIED
 
@@ -152,7 +160,7 @@ The project is still in pre-release engineering hardening. Entries below are eng
 
 ### Current program gate
 
-**Full Automated Quality Platform — Q12** is now the active gate. Architecture A1-A5 and Quality Platform Q1-Q11 are DONE / VERIFIED; Q12 is limited to guarded subscription-product-type compatibility characterization and baseline-free static-analysis expansion and does not add hooks, run billing, dispatch payments, mutate subscriptions, certify platforms or alter payment runtime contracts.
+**Full Automated Quality Platform — Q13** is now the active gate. Architecture A1-A5 and Quality Platform Q1-Q12 are DONE / VERIFIED; Q13 is limited to Phase 9I CLI parsing/redaction/error characterization and baseline-free static-analysis expansion and does not execute migration/provider behavior, dispatch payments, certify platforms or alter payment runtime contracts.
 
 ### Provider Contract & Payment Lifecycle — DONE / VERIFIED
 

@@ -36,7 +36,7 @@ Use this file with root `AGENTS.md`, `PROJECT-STATUS.md`, the naming standard, t
 - Quality Platform Q6 gateway-settings analysis: **DONE / VERIFIED**
 - Quality Platform Q7 public-order-status analysis: **DONE / VERIFIED**
 - Quality Platform Q8 release-identity analysis: **DONE / VERIFIED**
-- Current program gate: **Full Automated Quality Platform — Q12**
+- Current program gate: **Full Automated Quality Platform — Q13**
 - Stable production release: **NO**
 - WordPress.org release: **NO**
 
@@ -309,20 +309,20 @@ Do not globally rename:
 - malformed H12 secret is distinct from missing and fails closed.
 - selected saved card requires current valid provenance + exact scope/generation + fresh provider Retrieve + exact membership.
 
-## Current tranche — Full Automated Quality Platform Q12
+## Current tranche — Full Automated Quality Platform Q13
 
-**Status: Q12 — SUBSCRIPTION PRODUCT TYPE ANALYSIS / IMPLEMENTATION.**
+**Status: Q13 — MIGRATION CLI ANALYSIS / IMPLEMENTATION.**
 
 Required bounded sequence:
 
-1. Work only from verified Q11 merge `e544a65130d4b009efea179038dd03275cd46897`, tree `f27880f5f2a93f1dfd6428619e5bffa75e0bd4aa`, on `quality/subscription-product-type-analysis`.
-2. Expand isolated-process PHPUnit characterization across absent-base, available-base and predeclared-child load states, the exact parent and historical type result.
-3. Add `Subscription/WCProductCustomType.php` to the existing baseline-free PHPStan level 5 / PHP 7.2 and risk-focused PHPCS scopes.
-4. Reconcile only analyzer-proven documentation; do not rename the global class, base class or historical type, autoload it unconditionally, add hooks or move billing/dispatch/mutation behavior.
+1. Work only from verified Q12 merge `6dc53bdaf60f12774d7516294d7004974be3874f`, tree `b8a9f956e304fa9dba7658809207ddae14b1f4e1`, on `quality/migration-cli-analysis`.
+2. Expand PHPUnit characterization across strict requests, explicit execute confirmation, resume/offset exclusion, bounded integers, redacted output and exact CLI errors.
+3. Add `Migration/MigrationCliCommand.php` to the existing baseline-free PHPStan level 5 / PHP 7.2 and risk-focused PHPCS scopes.
+4. Reconcile only analyzer-proven documentation; do not add API-key input, rename the command, weaken confirmation/resume/bounds/redaction/errors, execute migrations or enter provider/payment behavior.
 5. Keep the Q1 lockfile, tool versions, analysis level, PHPStan no-baseline/no-`ignoreErrors` rule, distributed syntax matrix and protected H12 prerequisite aggregator unchanged; do not broadly disable PHPCS rules.
-6. Keep every closed regression and architecture harness mandatory, plus all twelve permanent Quality Platform harnesses.
+6. Keep every closed regression and architecture harness mandatory, plus all thirteen permanent Quality Platform harnesses.
 7. Preserve exact Scheduler/CycleClaim blobs, provider, Security, H12, Phase 9I, scheduler/attempt, payment truth and compatibility identities.
-8. Require independent exact-head review, green CI, verified merge, post-merge CI and branch cleanup before Q12 is DONE / VERIFIED.
+8. Require independent exact-head review, green CI, verified merge, post-merge CI and branch cleanup before Q13 is DONE / VERIFIED.
 
 The quality gate may improve evidence and tooling; it may not reinterpret provider truth, weaken authorization, or silently broaden certified feature/platform claims.
 
@@ -366,7 +366,7 @@ Read in this order:
 3. Provider Contract & Payment Lifecycle — **DONE / VERIFIED**
 4. Security Threat-Model Closure — **DONE / VERIFIED**
 5. Architecture & Code-Quality Foundation — **DONE / VERIFIED (A1-A5)**
-6. Full automated quality platform — **CURRENT / Q12**
+6. Full automated quality platform — **CURRENT / Q13**
 7. Platform certification: Woo/WP/PHP/HPOS/Blocks/WPML
 8. Feature certification
 9. Performance/UX/operations/diagnostics
@@ -382,9 +382,9 @@ Read AGENTS.md first, then docs/project/PROJECT-STATUS.md, docs/project/NAMING-I
 
 Treat recorded SHAs/status as verified milestone anchors, not substitutes for live GitHub. Freshly verify current main, open PRs/branches, checks, review state and current source before acting; reconcile any drift first.
 
-Repository readiness, Phase 0, Phase 9I, Provider Contract & Payment Lifecycle, Security Threat-Model Closure, Architecture discovery/A1-A5 and Quality Platform Q1-Q11 are DONE / VERIFIED. Q11 was squash-merged from PR #37 as main `e544a65130d4b009efea179038dd03275cd46897`, tree `f27880f5f2a93f1dfd6428619e5bffa75e0bd4aa`; exact-head run #229 and post-merge run #230 passed. The current permitted gate is Full Automated Quality Platform — Q12.
+Repository readiness, Phase 0, Phase 9I, Provider Contract & Payment Lifecycle, Security Threat-Model Closure, Architecture discovery/A1-A5 and Quality Platform Q1-Q12 are DONE / VERIFIED. Q12 was squash-merged from PR #38 as main `6dc53bdaf60f12774d7516294d7004974be3874f`, tree `b8a9f956e304fa9dba7658809207ddae14b1f4e1`; exact-head run #231 and post-merge run #232 passed. The current permitted gate is Full Automated Quality Platform — Q13.
 
-Implement only Q12 subscription-product-type analysis expansion: add isolated-process PHPUnit characterization for `Subscription/WCProductCustomType.php`, add it to baseline-free PHPStan level 5/PHP 7.2 and risk-focused PHPCS, and reconcile only analyzer-proven documentation. Keep Q1's lockfile, tool versions, dependency audit, distributed syntax jobs and always-running protected H12 prerequisite aggregator unchanged. Composer and tests remain development-only; `vendor/` and tests are not runtime or distribution code. Do not rename the global class, base class or historical type, autoload it unconditionally, add hooks, touch protected Scheduler/CycleClaim files or move billing, dispatch, mutation or provider transport behavior. Keep all existing regression suites, every architecture harness and all twelve Quality Platform harnesses mandatory.
+Implement only Q13 migration-CLI analysis expansion: add deterministic PHPUnit characterization for `Migration/MigrationCliCommand.php`, add it to baseline-free PHPStan level 5/PHP 7.2 and risk-focused PHPCS, and reconcile only analyzer-proven documentation. Keep Q1's lockfile, tool versions, dependency audit, distributed syntax jobs and always-running protected H12 prerequisite aggregator unchanged. Composer and tests remain development-only. Do not add API-key input, rename the command, weaken confirmation/resume/bounds/redaction/errors, execute migrations, touch protected Scheduler/CycleClaim files or enter provider/payment behavior. Keep all existing regression suites, every architecture harness and all thirteen Quality Platform harnesses mandatory.
 
 Do not claim broad security, PCI/compliance, platform, feature, performance or production certification from the bounded security closure. UPayments webhook signature details remain provider-document unresolved, automatic refunds remain unsupported pending durable idempotency/reconciliation design, and subscription auto-deduction remains separately characterized rather than broadly certified.
 

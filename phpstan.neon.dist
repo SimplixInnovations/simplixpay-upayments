@@ -21,4 +21,5 @@ parameters:
         - src/Migration/MigrationBootstrap.php
         - src/Subscription/Composition.php
         - src/Subscription/WCProductCustomType.php
+        - src/Migration/MigrationCliCommand.php
     tmpDir: .cache/phpstan

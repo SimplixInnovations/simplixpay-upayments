@@ -59,6 +59,8 @@ For A5 and every later architecture tranche, keep `tests/harness/architecture-fo
 
 When **Full Automated Quality Platform** is current, `QUALITY-PLATFORM.md` is mandatory. Introduce tools progressively against named risks, commit dependency locks, keep Composer development-only until an explicit packaging migration exists, and do not convert green tooling into platform-certification claims. Keep every historical/architecture harness, `tests/harness/quality-platform-foundation-harness.php`, `tests/harness/quality-platform-static-analysis-harness.php`, `tests/harness/quality-platform-payment-concurrency-harness.php`, `tests/harness/quality-platform-authenticated-status-harness.php`, `tests/harness/quality-platform-payment-method-availability-harness.php`, `tests/harness/quality-platform-gateway-settings-harness.php`, `tests/harness/quality-platform-public-order-status-harness.php`, `tests/harness/quality-platform-release-identity-harness.php`, `tests/harness/quality-platform-migration-settings-harness.php`, `tests/harness/quality-platform-migration-bootstrap-harness.php`, `tests/harness/quality-platform-subscription-composition-harness.php` and `tests/harness/quality-platform-subscription-product-type-harness.php` mandatory after Q12. The protected H12 job must always run and explicitly fail when any prerequisite quality job is not successful; dependency-skipped required checks are not acceptable gates.
 
+Keep `tests/harness/quality-platform-migration-cli-harness.php` mandatory after Q13.
+
 ## Protected compatibility identities
 
 Rebranding must never silently change persisted payment identity. Do not globally rename `upayments` or `_upay_*`.
@@ -154,6 +156,7 @@ php tests/harness/quality-platform-migration-settings-harness.php
 php tests/harness/quality-platform-migration-bootstrap-harness.php
 php tests/harness/quality-platform-subscription-composition-harness.php
 php tests/harness/quality-platform-subscription-product-type-harness.php
+php tests/harness/quality-platform-migration-cli-harness.php
 php tests/harness/security-threat-model-harness.php
 php tests/harness/phase-9g-h12-php-harness.php
 node --check tests/harness/phase-9g-h12-blocks-harness.js

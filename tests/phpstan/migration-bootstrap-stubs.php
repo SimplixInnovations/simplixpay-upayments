@@ -12,4 +12,10 @@ class WP_CLI {
     public static function add_command($name, $callable) {
         return true;
     }
+
+    public static function line($message) {
+    }
+
+    public static function error($message, $exit = true) {
+    }
 }
