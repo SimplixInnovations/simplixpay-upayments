@@ -37,6 +37,13 @@ final class MigrationAdminTest extends TestCase {
         );
     }
 
+    public static function noncanonicalRequestMethodProvider(): array {
+        return array(
+            'embedded whitespace' => array('P OST'),
+            'embedded backslash' => array('P\\OST'),
+        );
+    }
+
     public function test_register_uses_exact_woocommerce_submenu_contract(): void {
         MigrationAdmin::register();
 
@@ -84,8 +91,9 @@ final class MigrationAdminTest extends TestCase {
         self::assertSame(array(array(MigrationAdmin::NONCE_ACTION, MigrationAdmin::NONCE_FIELD)), $GLOBALS['simplixpay_test_migration_admin']['nonce_fields']);
     }
 
-    public function test_noncanonical_request_method_cannot_enter_post_path(): void {
-        $_SERVER['REQUEST_METHOD'] = 'P OST';
+    #[DataProvider('noncanonicalRequestMethodProvider')]
+    public function test_noncanonical_request_method_cannot_enter_post_path(string $request_method): void {
+        $_SERVER['REQUEST_METHOD'] = $request_method;
         $_POST = array(
             'user_ids' => '7',
             'offset' => '0',

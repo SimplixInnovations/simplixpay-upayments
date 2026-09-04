@@ -107,7 +107,8 @@ foreach (array(
 q14_assert(q14_contains($tests, '"1\\n"'), 'admin parser tests reject terminal-newline integers');
 q14_assert(q14_contains($tests, "'overflow offset'"), 'admin parser matrix rejects integer overflow');
 q14_assert(q14_contains($tests, "'over-limit'"), 'admin parser matrix rejects values above the centralized maximum');
-q14_assert(q14_contains($tests, "\$_SERVER['REQUEST_METHOD'] = 'P OST'"), 'request-level regression covers a malformed POST token');
+q14_assert(q14_contains($tests, "'embedded whitespace' => array('P OST')"), 'request-level regression covers a whitespace-malformed POST token');
+q14_assert(q14_contains($tests, "'embedded backslash' => array('P\\\\OST')"), 'request-level regression covers an already-unslashed backslash method');
 q14_assert(q14_contains($tests, "'migration_action' => 'exec ute'"), 'request-level regression covers a malformed execute token');
 q14_assert(q14_contains($tests, "assertStringNotContainsString('name=\"api_key\"'"), 'admin form test rejects credential input');
 q14_assert(q14_contains($tests, 'settings_must_not_be_read'), 'execute confirmation test proves settings are not read early');
