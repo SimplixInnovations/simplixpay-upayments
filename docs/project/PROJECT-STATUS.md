@@ -597,7 +597,7 @@ Architecture discovery/A1-A5 and Quality Platform Q1-Q13 are complete. Q14 is li
 
 - add `Migration/MigrationAdmin.php` to the baseline-free PHPStan level 5 / PHP 7.2 and risk-focused PHPCS scopes;
 - add PHPUnit characterization for exact submenu registration, capability-before-request authorization, POST nonce verification, credential-free bounded form inputs, explicit execute confirmation, resume/offset exclusion and escaped/redacted output;
-- apply only analyzer/review-proven bounded corrections: preserve exact settings/resume failure reasons and reject terminal-newline integers with `\z`;
+- apply only analyzer/review-proven bounded corrections: preserve exact settings/resume failure reasons, reject terminal-newline integers with `\z`, and use exact raw-unslashed request-method/action allowlists so malformed privileged control tokens fail closed;
 - keep the Q1 dependency lock, tool versions, analysis level, PHPStan no-baseline/no-`ignoreErrors` rule and protected H12 aggregator unchanged;
 - keep every historical and architecture harness plus all fourteen permanent quality-platform harnesses mandatory;
 - preserve exact Scheduler/CycleClaim blobs, protected identities and Security **82/0**, Provider **141/0 + 4/0**, Phase 9I, Phase 0, H12 and all architecture regressions.

@@ -59,10 +59,13 @@ $request_position = strpos($source, "\$_SERVER['REQUEST_METHOD']");
 $nonce_position = strpos($source, 'check_admin_referer(self::NONCE_ACTION, self::NONCE_FIELD)');
 q14_assert($capability_position !== false && $request_position !== false && $capability_position < $request_position, 'capability check precedes request processing');
 q14_assert($nonce_position !== false && $request_position !== false && $request_position < $nonce_position, 'POST gate precedes nonce verification');
-q14_assert(q14_contains($source, "sanitize_key(wp_unslash(\$_SERVER['REQUEST_METHOD']))"), 'request method is unslashed and sanitized before comparison');
+q14_assert(q14_contains($source, "? wp_unslash(\$_SERVER['REQUEST_METHOD'])"), 'request method is unslashed without lossy normalization');
+q14_assert(q14_contains($source, "if (\$request_method === 'POST')"), 'request method uses an exact POST allowlist');
+q14_assert(!q14_contains($source, "sanitize_key(wp_unslash(\$_SERVER['REQUEST_METHOD']))"), 'malformed request methods cannot normalize into POST');
 q14_assert(q14_contains($source, "\$form['migration_action'] === 'execute'"), 'execute mode remains explicit');
 q14_assert(q14_contains($source, "\$_POST['confirm_execute'] !== 'yes'"), 'execute confirmation requires exact yes');
-q14_assert(q14_contains($source, "sanitize_key(wp_unslash(\$_POST['migration_action']))"), 'submitted action is unslashed and sanitized');
+q14_assert(q14_contains($source, "? wp_unslash(\$_POST['migration_action'])"), 'submitted action is unslashed without lossy normalization');
+q14_assert(!q14_contains($source, "sanitize_key(wp_unslash(\$_POST['migration_action']))"), 'malformed action tokens cannot normalize into execute');
 q14_assert(q14_contains($source, "\$form['resume'] = isset(\$_POST['resume']) && \$_POST['resume'] === 'yes' ? 'yes' : 'no'"), 'resume checkbox accepts exact yes only');
 q14_assert(q14_contains($source, "if (\$resume && \$offset !== 0)"), 'resume and nonzero offset remain mutually exclusive');
 q14_assert(q14_contains($source, "preg_match('/^(?:0|[1-9][0-9]*)\\z/', \$value) === 1"), 'integer text parser uses an absolute canonical-decimal end anchor');
@@ -104,6 +107,8 @@ foreach (array(
 q14_assert(q14_contains($tests, '"1\\n"'), 'admin parser tests reject terminal-newline integers');
 q14_assert(q14_contains($tests, "'overflow offset'"), 'admin parser matrix rejects integer overflow');
 q14_assert(q14_contains($tests, "'over-limit'"), 'admin parser matrix rejects values above the centralized maximum');
+q14_assert(q14_contains($tests, "\$_SERVER['REQUEST_METHOD'] = 'P OST'"), 'request-level regression covers a malformed POST token');
+q14_assert(q14_contains($tests, "'migration_action' => 'exec ute'"), 'request-level regression covers a malformed execute token');
 q14_assert(q14_contains($tests, "assertStringNotContainsString('name=\"api_key\"'"), 'admin form test rejects credential input');
 q14_assert(q14_contains($tests, 'settings_must_not_be_read'), 'execute confirmation test proves settings are not read early');
 q14_assert(q14_contains($tests, 'secret-api-key<script>'), 'successful render test uses a detectable secret sentinel');
@@ -117,7 +122,7 @@ q14_assert(q14_contains($bootstrap, "require __DIR__ . '/support/wordpress-migra
 q14_assert(q14_git_blob_sha($q14_root . '/includes/Subscription/Cron/Scheduler.php') === '5251866d4df2d1326e7c09f0c8ec1d146c0bb325', 'protected Scheduler blob remains exact');
 q14_assert(q14_git_blob_sha($q14_root . '/includes/Subscription/Cron/CycleClaim.php') === 'c34d83e2d77cc65024fe663e4c378cecb2b17347', 'protected CycleClaim blob remains exact');
 
-q14_assert(q14_contains($workflow, 'quality-platform-migration-admin-harness.php'), 'Q14 harness is mandatory in Quality Gates');
+q14_assert(q14_contains($workflow, 'run: php tests/harness/quality-platform-migration-admin-harness.php'), 'Q14 harness has an exact mandatory Quality Gates invocation');
 q14_assert(q14_contains($workflow, 'if: ${{ always() }}'), 'protected H12 aggregator still always runs');
 foreach (array(
     '302dcdf9c1bbd3a1d259790e8f9f9c2d694b74d7',
@@ -132,6 +137,7 @@ foreach (array(
     q14_assert(q14_contains($quality, $evidence), "Q13 closure evidence is pinned: {$evidence}");
 }
 q14_assert(q14_contains($quality, '**Status:** Q14 / IMPLEMENTATION'), 'quality record advances to Q14');
+q14_assert(q14_contains($quality, 'exact raw-unslashed allowlists'), 'quality record documents strict privileged control tokens');
 q14_assert(q14_contains($status, '| Current program gate | **Full Automated Quality Platform — Q14** |'), 'project status advances to Q14');
 q14_assert(q14_contains($readme, 'The current program gate is **Full Automated Quality Platform — Q14**.'), 'README advances to Q14');
 q14_assert(q14_contains($playbook, 'Quality Platform Q13: DONE / VERIFIED; PR #39; merge a744417e1ec2f40b4f59706df84589d8b18638cb;'), 'playbook pins Q13 merge');

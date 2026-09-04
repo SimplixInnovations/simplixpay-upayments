@@ -197,12 +197,13 @@ Q14 may:
 - add `Migration/MigrationAdmin.php` to PHPStan level 5/PHP 7.2 and risk-focused PHPCS ownership;
 - add development-only WordPress admin fixtures/stubs for capability, submenu, nonce, escaping and form-output boundaries;
 - add deterministic PHPUnit characterization for authorization order, nonce use, credential-free fields, parsing, confirmation, bounds, redaction and public method shape;
+- replace lossy request-method/action normalization with exact raw-unslashed allowlists so malformed privileged control tokens fail closed;
 - remove analyzer-proven unreachable settings/resume reason fallbacks while preserving the exact underlying contract reasons;
 - replace the permissive integer `$` end anchor with absolute `\z` so terminal-newline offset/limit input fails closed;
 - add a permanent Quality Platform Migration Admin harness;
 - retain every prior tool, harness, protected identity and closed runtime contract.
 
-Q14 may not add an API-key field, weaken the capability or nonce boundary, add a new admin context, weaken confirmation, resume, bounds, redaction or escaping, execute live migration/provider behavior in unit tests, or enter batch/executor/payment/scheduler/provider ownership. Its only production edits remove impossible missing-reason fallbacks from closed array contracts and make malformed terminal-newline integer input fail closed with `\z`; valid requests keep the same behavior.
+Q14 may not add an API-key field, weaken the capability or nonce boundary, add a new admin context, weaken confirmation, resume, bounds, redaction or escaping, execute live migration/provider behavior in unit tests, or enter batch/executor/payment/scheduler/provider ownership. Its production edits remove impossible missing-reason fallbacks from closed array contracts, make malformed terminal-newline integer input fail closed with `\z`, and replace lossy request-method/action normalization with exact raw-unslashed allowlists; canonical valid requests keep the same behavior.
 
 ## Q14 acceptance
 
