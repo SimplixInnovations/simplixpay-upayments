@@ -8,6 +8,7 @@ use ReflectionMethod;
 use RuntimeException;
 use Simplix\Pay\UPayments\Migration\MigrationAdmin;
 use Simplix\Pay\UPayments\Migration\MigrationBatch;
+use Simplix\Pay\UPayments\Migration\MigrationSettings;
 
 final class MigrationAdminTest extends TestCase {
     protected function setUp(): void {
@@ -105,6 +106,32 @@ final class MigrationAdminTest extends TestCase {
 
         self::assertSame('', $output);
         self::assertSame(array(array(MigrationAdmin::NONCE_ACTION, MigrationAdmin::NONCE_FIELD)), $GLOBALS['simplixpay_test_migration_admin']['nonce_checks']);
+    }
+
+    public function test_successful_preflight_renders_redacted_and_escaped_result_without_execution(): void {
+        $GLOBALS['simplixpay_test_options'][MigrationSettings::OPTION_KEY] = array(
+            'api_key' => 'secret-api-key<script>',
+            'test_mode' => 'yes',
+        );
+        $_SERVER['REQUEST_METHOD'] = 'POST';
+        $_POST = array(
+            'user_ids' => '7',
+            'offset' => '1',
+            'limit' => '1',
+            'migration_action' => 'preflight',
+        );
+
+        ob_start();
+        MigrationAdmin::render();
+        $output = ob_get_clean();
+
+        self::assertStringNotContainsString('secret-api-key', $output);
+        self::assertStringNotContainsString('&quot;api_key&quot;', $output);
+        self::assertStringNotContainsString('"settings"', $output);
+        self::assertStringContainsString('&quot;settings&quot;', $output);
+        self::assertStringContainsString('&quot;mode&quot;: &quot;test&quot;', $output);
+        self::assertStringContainsString('&quot;reason&quot;: &quot;batch_complete&quot;', $output);
+        self::assertStringContainsString('<h2>Result</h2>', $output);
     }
 
     public function test_execute_requires_explicit_confirmation_before_settings_resolution(): void {

@@ -91,6 +91,7 @@ foreach (array(
     'get_render_exposes_only_the_bounded_credential_free_form',
     'post_requires_exact_nonce_and_escapes_rejected_form_values',
     'invalid_nonce_terminates_before_form_or_settings_processing',
+    'successful_preflight_renders_redacted_and_escaped_result_without_execution',
     'execute_requires_explicit_confirmation_before_settings_resolution',
     'form_parser_preserves_exact_defaults_bounds_and_resume_exclusion',
     'boundary_is_final_with_only_register_and_render_public',
@@ -100,6 +101,8 @@ foreach (array(
 q14_assert(q14_contains($tests, '"1\\n"'), 'admin parser tests reject terminal-newline integers');
 q14_assert(q14_contains($tests, "assertStringNotContainsString('name=\"api_key\"'"), 'admin form test rejects credential input');
 q14_assert(q14_contains($tests, 'settings_must_not_be_read'), 'execute confirmation test proves settings are not read early');
+q14_assert(q14_contains($tests, 'secret-api-key<script>'), 'successful render test uses a detectable secret sentinel');
+q14_assert(q14_contains($tests, "'&quot;reason&quot;: &quot;batch_complete&quot;'"), 'successful render test requires escaped structured output');
 q14_assert(q14_contains($fixture, "'capability_calls'"), 'admin fixture records capability checks');
 q14_assert(q14_contains($fixture, "'nonce_checks'"), 'admin fixture records nonce checks');
 q14_assert(q14_contains($fixture, "'submenu_calls'"), 'admin fixture records submenu registration');
