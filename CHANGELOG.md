@@ -111,7 +111,7 @@ The project is still in pre-release engineering hardening. Entries below are eng
 - Expands baseline-free PHPStan level 5/PHP 7.2 and risk-focused PHPCS ownership into the existing privileged Phase 9I migration-admin adapter.
 - Adds PHPUnit characterization for exact submenu registration, capability-before-request authorization, POST nonce verification, credential-free bounded form input, explicit execute confirmation, resume/offset exclusion and escaped/redacted output.
 - Adds development-only WordPress admin fixtures/stubs and a permanent Q14 harness without executing migration/provider behavior or changing valid request behavior.
-- Rejects terminal-newline offset/limit values with an absolute regex end anchor, replaces lossy request-method/action normalization with exact raw-unslashed allowlists, and removes only analyzer-proven unreachable missing-reason fallbacks.
+- Rejects terminal-newline offset/limit values with an absolute regex end anchor, replaces lossy control-token normalization with a byte-preserving request-method allowlist plus a raw-unslashed action allowlist, and removes only analyzer-proven unreachable missing-reason fallbacks.
 
 ### Full Automated Quality Platform — Q13 Migration CLI Analysis — DONE / VERIFIED
 

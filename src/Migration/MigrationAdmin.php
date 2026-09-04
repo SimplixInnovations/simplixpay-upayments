@@ -38,8 +38,8 @@ final class MigrationAdmin {
 
         $request_method = '';
         if (isset($_SERVER['REQUEST_METHOD']) && is_string($_SERVER['REQUEST_METHOD'])) {
-            // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Exact allowlisting must reject, not normalize, malformed methods.
-            $request_method = wp_unslash($_SERVER['REQUEST_METHOD']);
+            // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized,WordPress.Security.ValidatedSanitizedInput.MissingUnslash -- Server method bytes must remain exact for the fail-closed allowlist.
+            $request_method = $_SERVER['REQUEST_METHOD'];
         }
         if ($request_method === 'POST') {
             check_admin_referer(self::NONCE_ACTION, self::NONCE_FIELD);
