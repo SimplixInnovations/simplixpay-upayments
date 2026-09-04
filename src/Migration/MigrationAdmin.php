@@ -36,10 +36,11 @@ final class MigrationAdmin {
             'resume' => 'no',
         );
 
-        // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Exact allowlisting must reject, not normalize, malformed methods.
-        $request_method = isset($_SERVER['REQUEST_METHOD']) && is_string($_SERVER['REQUEST_METHOD'])
-            ? wp_unslash($_SERVER['REQUEST_METHOD'])
-            : '';
+        $request_method = '';
+        if (isset($_SERVER['REQUEST_METHOD']) && is_string($_SERVER['REQUEST_METHOD'])) {
+            // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Exact allowlisting must reject, not normalize, malformed methods.
+            $request_method = wp_unslash($_SERVER['REQUEST_METHOD']);
+        }
         if ($request_method === 'POST') {
             check_admin_referer(self::NONCE_ACTION, self::NONCE_FIELD);
             // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- The strict ID parser must reject, not normalize, malformed input.
@@ -48,10 +49,11 @@ final class MigrationAdmin {
             $form['offset'] = isset($_POST['offset']) && is_string($_POST['offset']) ? wp_unslash($_POST['offset']) : '0';
             // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- strictInt() validates canonical decimal input without lossy normalization.
             $form['limit'] = isset($_POST['limit']) && is_string($_POST['limit']) ? wp_unslash($_POST['limit']) : (string) MigrationBatch::DEFAULT_LIMIT;
-            // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- parseForm() applies an exact preflight/execute allowlist.
-            $form['migration_action'] = isset($_POST['migration_action']) && is_string($_POST['migration_action'])
-                ? wp_unslash($_POST['migration_action'])
-                : 'preflight';
+            $form['migration_action'] = 'preflight';
+            if (isset($_POST['migration_action']) && is_string($_POST['migration_action'])) {
+                // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- parseForm() applies an exact preflight/execute allowlist.
+                $form['migration_action'] = wp_unslash($_POST['migration_action']);
+            }
             $form['resume'] = isset($_POST['resume']) && $_POST['resume'] === 'yes' ? 'yes' : 'no';
 
             $request = self::parseForm($form);
