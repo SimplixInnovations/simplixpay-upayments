@@ -2,6 +2,7 @@
 
 namespace Simplix\Pay\UPayments\Tests\Migration;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 use ReflectionMethod;
@@ -14,6 +15,26 @@ final class MigrationAdminTest extends TestCase {
     protected function setUp(): void {
         \simplixpay_test_reset_migration_admin();
         \simplixpay_test_reset_wp_options();
+    }
+
+    public static function invalidIntegerProvider(): array {
+        $max = (string) PHP_INT_MAX;
+        $overflow = substr($max, 0, -1) . ((int) substr($max, -1) + 1);
+
+        return array(
+            'negative offset' => array('offset', '-1', 'invalid_offset'),
+            'leading-zero offset' => array('offset', '01', 'invalid_offset'),
+            'signed offset' => array('offset', '+1', 'invalid_offset'),
+            'exponent offset' => array('offset', '1e2', 'invalid_offset'),
+            'overflow offset' => array('offset', $overflow, 'invalid_offset'),
+            'zero limit' => array('limit', '0', 'invalid_limit'),
+            'negative limit' => array('limit', '-1', 'invalid_limit'),
+            'leading-zero limit' => array('limit', '01', 'invalid_limit'),
+            'signed limit' => array('limit', '+1', 'invalid_limit'),
+            'exponent limit' => array('limit', '1e2', 'invalid_limit'),
+            'over-limit' => array('limit', (string) (MigrationBatch::MAX_LIMIT + 1), 'invalid_limit'),
+            'overflow limit' => array('limit', $overflow, 'invalid_limit'),
+        );
     }
 
     public function test_register_uses_exact_woocommerce_submenu_contract(): void {
@@ -63,6 +84,25 @@ final class MigrationAdminTest extends TestCase {
         self::assertSame(array(array(MigrationAdmin::NONCE_ACTION, MigrationAdmin::NONCE_FIELD)), $GLOBALS['simplixpay_test_migration_admin']['nonce_fields']);
     }
 
+    public function test_noncanonical_request_method_cannot_enter_post_path(): void {
+        $_SERVER['REQUEST_METHOD'] = 'P OST';
+        $_POST = array(
+            'user_ids' => '7',
+            'offset' => '0',
+            'limit' => '1',
+            'migration_action' => 'preflight',
+        );
+        $GLOBALS['simplixpay_test_migration_admin']['nonce_valid'] = false;
+
+        ob_start();
+        MigrationAdmin::render();
+        $output = ob_get_clean();
+
+        self::assertSame(array(), $GLOBALS['simplixpay_test_migration_admin']['nonce_checks']);
+        self::assertStringNotContainsString('Migration request rejected:', $output);
+        self::assertStringNotContainsString('<h2>Result</h2>', $output);
+    }
+
     public function test_post_requires_exact_nonce_and_escapes_rejected_form_values(): void {
         $_SERVER['REQUEST_METHOD'] = 'POST';
         $_POST = array(
@@ -106,6 +146,28 @@ final class MigrationAdminTest extends TestCase {
 
         self::assertSame('', $output);
         self::assertSame(array(array(MigrationAdmin::NONCE_ACTION, MigrationAdmin::NONCE_FIELD)), $GLOBALS['simplixpay_test_migration_admin']['nonce_checks']);
+    }
+
+    public function test_noncanonical_action_fails_closed_before_settings_resolution(): void {
+        $_SERVER['REQUEST_METHOD'] = 'POST';
+        $_POST = array(
+            'user_ids' => '7',
+            'offset' => '0',
+            'limit' => '1',
+            'migration_action' => 'exec ute',
+            'confirm_execute' => 'yes',
+        );
+        $GLOBALS['simplixpay_test_get_option_filter'] = static function () {
+            throw new RuntimeException('settings_must_not_be_read');
+        };
+
+        ob_start();
+        MigrationAdmin::render();
+        $output = ob_get_clean();
+
+        self::assertStringContainsString('Migration request rejected: action_invalid', $output);
+        self::assertStringNotContainsString('settings_must_not_be_read', $output);
+        self::assertStringNotContainsString('<h2>Result</h2>', $output);
     }
 
     public function test_successful_preflight_renders_redacted_and_escaped_result_without_execution(): void {
@@ -190,6 +252,19 @@ final class MigrationAdminTest extends TestCase {
             'limit' => "1\n",
             'migration_action' => 'preflight',
         ))['reason']);
+    }
+
+    #[DataProvider('invalidIntegerProvider')]
+    public function test_form_parser_rejects_noncanonical_and_out_of_range_integers(string $field, string $value, string $reason): void {
+        $form = array(
+            'user_ids' => '3',
+            'offset' => '0',
+            'limit' => '1',
+            'migration_action' => 'preflight',
+        );
+        $form[$field] = $value;
+
+        self::assertSame($reason, $this->invokePrivate('parseForm', $form)['reason']);
     }
 
     public function test_boundary_is_final_with_only_register_and_render_public(): void {

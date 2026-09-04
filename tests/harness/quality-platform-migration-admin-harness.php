@@ -89,16 +89,21 @@ foreach (array(
     'register_uses_exact_woocommerce_submenu_contract',
     'render_denies_missing_capability_before_request_processing',
     'get_render_exposes_only_the_bounded_credential_free_form',
+    'noncanonical_request_method_cannot_enter_post_path',
     'post_requires_exact_nonce_and_escapes_rejected_form_values',
     'invalid_nonce_terminates_before_form_or_settings_processing',
+    'noncanonical_action_fails_closed_before_settings_resolution',
     'successful_preflight_renders_redacted_and_escaped_result_without_execution',
     'execute_requires_explicit_confirmation_before_settings_resolution',
     'form_parser_preserves_exact_defaults_bounds_and_resume_exclusion',
+    'form_parser_rejects_noncanonical_and_out_of_range_integers',
     'boundary_is_final_with_only_register_and_render_public',
 ) as $name) {
     q14_assert(q14_contains($tests, $name), "migration admin test exists: {$name}");
 }
 q14_assert(q14_contains($tests, '"1\\n"'), 'admin parser tests reject terminal-newline integers');
+q14_assert(q14_contains($tests, "'overflow offset'"), 'admin parser matrix rejects integer overflow');
+q14_assert(q14_contains($tests, "'over-limit'"), 'admin parser matrix rejects values above the centralized maximum');
 q14_assert(q14_contains($tests, "assertStringNotContainsString('name=\"api_key\"'"), 'admin form test rejects credential input');
 q14_assert(q14_contains($tests, 'settings_must_not_be_read'), 'execute confirmation test proves settings are not read early');
 q14_assert(q14_contains($tests, 'secret-api-key<script>'), 'successful render test uses a detectable secret sentinel');
