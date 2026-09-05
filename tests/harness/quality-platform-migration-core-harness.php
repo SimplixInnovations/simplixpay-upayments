@@ -37,6 +37,7 @@ $status = q16_read($root, 'docs/project/PROJECT-STATUS.md');
 $readme = q16_read($root, 'README.md');
 $agents = q16_read($root, 'AGENTS.md');
 $playbook = q16_read($root, 'docs/project/MASTER-ENGINEERING-PLAYBOOK.md');
+$audit = q16_read($root, 'docs/project/REPOSITORY-AUDIT.md');
 
 foreach (array('src/Migration/MigrationPreflight.php','src/Migration/MigrationBatch.php','src/Migration/MigrationExecutor.php') as $path) {
     q16_assert(q16_has($phpstan, $path), 'PHPStan owns migration core: ' . $path);
@@ -91,6 +92,8 @@ q16_assert(q16_has($playbook, '- [x] Full Automated Quality Platform — **Q15 /
 q16_assert(q16_has($playbook, '- [ ] Full Automated Quality Platform — **Q16 / CURRENT GATE**.'), 'playbook has the single current Q16 ledger entry');
 q16_assert(!q16_has($playbook, '**Q16 / PLANNED MIGRATION CORE**'), 'playbook has no contradictory planned-Q16 entry');
 q16_assert(q16_has($playbook, '**Q17 / PLANNED PAYMENT-RUNTIME CLOSEOUT**'), 'playbook keeps Q17 as the next planned payment-runtime closeout');
+q16_assert(!q16_has($audit, 'No Q18 is planned or authorized'), 'repository audit does not contradict the enterprise-risk extension policy');
+q16_assert(q16_has($audit, 'any later Q gate requires a concrete separately bounded enterprise-critical risk'), 'repository audit preserves the bounded enterprise-risk extension policy');
 
 echo "\nQ16 Migration Core Analysis: " . $pass . " PASS / " . $fail . " FAIL\n";
 exit($fail === 0 ? 0 : 1);
