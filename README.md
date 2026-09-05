@@ -38,7 +38,7 @@ The following engineering gates are **DONE / VERIFIED**:
 - Security Threat-Model Closure;
 - Architecture & Code-Quality Foundation A1-A5.
 
-Quality Platform Q1-Q12 are **DONE / VERIFIED**. The current program gate is **Full Automated Quality Platform — Q13**.
+Quality Platform Q1-Q13 are **DONE / VERIFIED**. The current program gate is **Full Automated Quality Platform — Q14**.
 
 The project remains in **pre-release engineering hardening**. It is not yet a broadly certified stable production release and has not yet been published to WordPress.org.
 
@@ -55,8 +55,8 @@ The project remains in **pre-release engineering hardening**. It is not yet a br
 | Provider Contract & Payment Lifecycle | **DONE / VERIFIED** |
 | Security Threat-Model Closure | **DONE / VERIFIED** |
 | Architecture & Code-Quality Foundation | **DONE / VERIFIED (A1-A5)** |
-| Quality Platform Q1-Q12 | **DONE / VERIFIED** |
-| Current engineering gate | **Full Automated Quality Platform — Q13** |
+| Quality Platform Q1-Q13 | **DONE / VERIFIED** |
+| Current engineering gate | **Full Automated Quality Platform — Q14** |
 | Stable SimplixPay release | **Not yet published** |
 | WordPress.org release | **Not yet published** |
 | Phase 0 release-identity harness | **35 PASS / 0 FAIL** |
@@ -172,7 +172,7 @@ Phase 9I system completion does not mean every merchant installation was automat
 
 ## Current engineering gate — Full Automated Quality Platform
 
-Architecture discovery/A1-A5 and Quality Platform Q1-Q12 are DONE / VERIFIED. Q12 closed on merge `6dc53bdaf60f12774d7516294d7004974be3874f` with guarded product-type load states, parent and historical type result characterized. Q13 expands the same baseline-free platform into the Phase 9I WP-CLI adapter, freezing strict request parsing, execute confirmation, resume/offset exclusion, batch bounds, existing-settings-only credentials, redacted output and exact CLI errors while excluding migration execution, provider transport and payment runtime ownership.
+Architecture discovery/A1-A5 and Quality Platform Q1-Q13 are DONE / VERIFIED. Q13 closed on merge `a744417e1ec2f40b4f59706df84589d8b18638cb` with strict CLI parsing, execute confirmation, resume/offset exclusion, batch bounds, redacted output and exact CLI errors characterized. Q14 expands the same baseline-free platform into the privileged Phase 9I migration-admin adapter, freezing capability and nonce ordering, credential-free form inputs, explicit execute confirmation, strict bounds, redacted results and context-correct escaping while excluding migration execution, provider transport and payment runtime ownership.
 
 No big-bang rewrite, runtime branding rename, runtime Composer dependency or broad compatibility claim is authorized by this gate.
 

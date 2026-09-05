@@ -61,6 +61,8 @@ When **Full Automated Quality Platform** is current, `QUALITY-PLATFORM.md` is ma
 
 Keep `tests/harness/quality-platform-migration-cli-harness.php` mandatory after Q13.
 
+Keep `tests/harness/quality-platform-migration-admin-harness.php` mandatory after Q14.
+
 ## Protected compatibility identities
 
 Rebranding must never silently change persisted payment identity. Do not globally rename `upayments` or `_upay_*`.
@@ -157,6 +159,7 @@ php tests/harness/quality-platform-migration-bootstrap-harness.php
 php tests/harness/quality-platform-subscription-composition-harness.php
 php tests/harness/quality-platform-subscription-product-type-harness.php
 php tests/harness/quality-platform-migration-cli-harness.php
+php tests/harness/quality-platform-migration-admin-harness.php
 php tests/harness/security-threat-model-harness.php
 php tests/harness/phase-9g-h12-php-harness.php
 node --check tests/harness/phase-9g-h12-blocks-harness.js

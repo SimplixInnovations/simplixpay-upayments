@@ -36,14 +36,24 @@ final class MigrationAdmin {
             'resume' => 'no',
         );
 
-        if (isset($_SERVER['REQUEST_METHOD']) && strtoupper((string) $_SERVER['REQUEST_METHOD']) === 'POST') {
+        $request_method = '';
+        if (isset($_SERVER['REQUEST_METHOD']) && is_string($_SERVER['REQUEST_METHOD'])) {
+            // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized,WordPress.Security.ValidatedSanitizedInput.MissingUnslash -- Server method bytes must remain exact for the fail-closed allowlist.
+            $request_method = $_SERVER['REQUEST_METHOD'];
+        }
+        if ($request_method === 'POST') {
             check_admin_referer(self::NONCE_ACTION, self::NONCE_FIELD);
+            // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- The strict ID parser must reject, not normalize, malformed input.
             $form['user_ids'] = isset($_POST['user_ids']) && is_string($_POST['user_ids']) ? wp_unslash($_POST['user_ids']) : '';
+            // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- strictInt() validates canonical decimal input without lossy normalization.
             $form['offset'] = isset($_POST['offset']) && is_string($_POST['offset']) ? wp_unslash($_POST['offset']) : '0';
+            // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- strictInt() validates canonical decimal input without lossy normalization.
             $form['limit'] = isset($_POST['limit']) && is_string($_POST['limit']) ? wp_unslash($_POST['limit']) : (string) MigrationBatch::DEFAULT_LIMIT;
-            $form['migration_action'] = isset($_POST['migration_action']) && is_string($_POST['migration_action'])
-                ? sanitize_key(wp_unslash($_POST['migration_action']))
-                : 'preflight';
+            $form['migration_action'] = 'preflight';
+            if (isset($_POST['migration_action']) && is_string($_POST['migration_action'])) {
+                // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- parseForm() applies an exact preflight/execute allowlist.
+                $form['migration_action'] = wp_unslash($_POST['migration_action']);
+            }
             $form['resume'] = isset($_POST['resume']) && $_POST['resume'] === 'yes' ? 'yes' : 'no';
 
             $request = self::parseForm($form);
@@ -56,7 +66,7 @@ final class MigrationAdmin {
             } else {
                 $settings = MigrationSettings::resolve();
                 if (empty($settings['ok'])) {
-                    $error = isset($settings['reason']) ? $settings['reason'] : 'settings_unavailable';
+                    $error = $settings['reason'];
                 } else {
                     $dry_run = ($form['migration_action'] !== 'execute');
                     $offset = $request['offset'];
@@ -69,7 +79,7 @@ final class MigrationAdmin {
                             $dry_run
                         );
                         if (empty($resume_info['ok'])) {
-                            $error = isset($resume_info['reason']) ? $resume_info['reason'] : 'resume_unavailable';
+                            $error = $resume_info['reason'];
                         } else {
                             $offset = $resume_info['offset'];
                         }
@@ -169,7 +179,7 @@ final class MigrationAdmin {
     private static function strictInt($value, $allow_zero) {
         if (is_int($value)) {
             $parsed = $value;
-        } elseif (is_string($value) && preg_match('/^(?:0|[1-9][0-9]*)$/', $value) === 1) {
+        } elseif (is_string($value) && preg_match('/^(?:0|[1-9][0-9]*)\z/', $value) === 1) {
             if (strlen($value) > strlen((string) PHP_INT_MAX)
                 || (strlen($value) === strlen((string) PHP_INT_MAX) && strcmp($value, (string) PHP_INT_MAX) > 0)
             ) {

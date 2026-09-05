@@ -10,4 +10,5 @@ require __DIR__ . '/support/wordpress-availability.php';
 require __DIR__ . '/support/wordpress-gateway-settings.php';
 require __DIR__ . '/support/wordpress-public-order-status.php';
 require __DIR__ . '/support/wordpress-migration-bootstrap.php';
+require __DIR__ . '/support/wordpress-migration-admin.php';
 require dirname(__DIR__) . '/vendor/autoload.php';

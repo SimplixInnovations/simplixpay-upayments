@@ -86,18 +86,22 @@ q13_assert(q13_git_blob_sha($q13_root . '/includes/Subscription/Cron/CycleClaim.
 q13_assert(q13_contains($workflow, 'quality-platform-migration-cli-harness.php'), 'Q13 harness is mandatory in Quality Gates');
 q13_assert(q13_contains($workflow, 'if: ${{ always() }}'), 'protected H12 aggregator still always runs');
 foreach (array(
-    '4396b83ef67a90d6d12d1d761e6c071e601c235c',
-    'b8a9f956e304fa9dba7658809207ddae14b1f4e1',
-    'Quality Gates run #231',
-    '6dc53bdaf60f12774d7516294d7004974be3874f',
-    'Quality Gates run #232',
+    '302dcdf9c1bbd3a1d259790e8f9f9c2d694b74d7',
+    'be7c52143d2085550790b742d164ecbec413377f',
+    'Quality Gates run #236',
+    '105 tests / 766 assertions',
+    'Q13 **77/0**',
+    'a744417e1ec2f40b4f59706df84589d8b18638cb',
+    'Quality Gates run #237',
     'implementation branch deleted',
 ) as $evidence) {
-    q13_assert(q13_contains($quality, $evidence), "Q12 closure evidence is pinned: {$evidence}");
+    q13_assert(q13_contains($quality, $evidence), "Q13 closure evidence is pinned: {$evidence}");
 }
-q13_assert(q13_contains($quality, '**Status:** Q13 / IMPLEMENTATION'), 'quality record advances to Q13');
-q13_assert(q13_contains($status, '| Current program gate | **Full Automated Quality Platform — Q13** |'), 'project status advances to Q13');
-q13_assert(q13_contains($readme, 'The current program gate is **Full Automated Quality Platform — Q13**.'), 'README advances to Q13');
+q13_assert(q13_contains($quality, '**Status:** Q14 / IMPLEMENTATION'), 'quality record advances beyond Q13');
+q13_assert(q13_contains($status, '| Current program gate | **Full Automated Quality Platform — Q14** |'), 'project status advances beyond Q13');
+q13_assert(q13_contains($readme, 'The current program gate is **Full Automated Quality Platform — Q14**.'), 'README advances beyond Q13');
+q13_assert(q13_contains($playbook, 'Quality Platform Q13: DONE / VERIFIED; PR #39; merge a744417e1ec2f40b4f59706df84589d8b18638cb;'), 'playbook pins Q13 merge');
+q13_assert(q13_contains($playbook, 'tree be7c52143d2085550790b742d164ecbec413377f; Q13 77/0; post-merge Quality Gates #237 SUCCESS'), 'playbook pins Q13 tree');
 q13_assert(q13_contains($playbook, 'Quality Platform Q12: DONE / VERIFIED; PR #38; merge 6dc53bdaf60f12774d7516294d7004974be3874f;'), 'playbook pins Q12 merge');
 q13_assert(q13_contains($playbook, 'tree b8a9f956e304fa9dba7658809207ddae14b1f4e1; Q12 63/0; post-merge Quality Gates #232 SUCCESS'), 'playbook pins Q12 tree');
 q13_assert(q13_contains($q11_harness, 'Quality Platform Q11: DONE / VERIFIED; PR #37; merge e544a65130d4b009efea179038dd03275cd46897;'), 'Q11 harness uses its immutable closure row');
@@ -106,9 +110,9 @@ q13_assert(q13_contains($q11_harness, 'tree f27880f5f2a93f1dfd6428619e5bffa75e0b
 q13_assert(q13_contains($q12_harness, 'Quality Platform Q12: DONE / VERIFIED; PR #38; merge 6dc53bdaf60f12774d7516294d7004974be3874f;'), 'Q12 harness uses its immutable closure row');
 q13_assert(!q13_contains($q12_harness, 'Last verified implementation main SHA: 6dc53bdaf60f12774d7516294d7004974be3874f'), 'Q12 harness does not mistake a historical merge for current main');
 q13_assert(q13_contains($q12_harness, 'tree b8a9f956e304fa9dba7658809207ddae14b1f4e1; Q12 63/0; post-merge Quality Gates #232 SUCCESS'), 'Q12 harness pins its immutable closure tree');
-q13_assert(!q13_contains($handoff, 'CURRENT / Q12'), 'handoff rejects stale current-Q12 marker');
-q13_assert(!q13_contains($playbook, 'CURRENT / Q12'), 'playbook rejects stale current-Q12 marker');
-q13_assert(q13_contains($workflow, "reject_across_live_records 'CURRENT / Q12'"), 'Governance rejects stale current-Q12 markers');
+q13_assert(!q13_contains($handoff, 'CURRENT / Q13'), 'handoff rejects stale current-Q13 marker');
+q13_assert(!q13_contains($playbook, 'CURRENT / Q13'), 'playbook rejects stale current-Q13 marker');
+q13_assert(q13_contains($workflow, "reject_across_live_records 'CURRENT / Q13'"), 'Governance rejects stale current-Q13 markers');
 
 echo "\nQ13 Migration CLI Analysis: {$q13_pass} PASS / {$q13_fail} FAIL\n";
 exit($q13_fail === 0 ? 0 : 1);
