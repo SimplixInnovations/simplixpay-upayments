@@ -2,6 +2,8 @@
 
 namespace Simplix\Pay\UPayments\Tests\Payment;
 
+use PHPUnit\Framework\Attributes\PreserveGlobalState;
+use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
 use PHPUnit\Framework\TestCase;
 use Simplix\Pay\UPayments\Payment\CheckoutOrchestrator;
 
@@ -32,8 +34,11 @@ final class CheckoutOrchestratorGateway {
     }
 }
 
+#[RunTestsInSeparateProcesses]
+#[PreserveGlobalState(false)]
 final class CheckoutOrchestratorTest extends TestCase {
     protected function setUp(): void {
+        require_once dirname(__DIR__, 2) . '/support/wordpress-payment-runtime.php';
         \simplixpay_test_reset_payment_runtime();
     }
 
