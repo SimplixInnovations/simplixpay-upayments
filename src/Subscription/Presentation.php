@@ -333,10 +333,10 @@ final class Presentation {
                 <tbody>
                     <tr><th style="border: 1px solid;"><?php esc_html_e('Plan', 'woocommerce'); ?></th><td style="border: 1px solid;"><?php echo esc_html(isset($plan_labels[$plan]) ? $plan_labels[$plan] : ucfirst($plan)); ?></td></tr>
                     <tr><th style="border: 1px solid;"><?php esc_html_e('Interval', 'woocommerce'); ?></th><td style="border: 1px solid;"><?php echo esc_html(isset($interval_labels[$plan][$interval]) ? $interval_labels[$plan][$interval] : $interval); ?></td></tr>
-                    <tr><th style="border: 1px solid;"><?php esc_html_e('Started On', 'woocommerce'); ?></th><td style="border: 1px solid;"><?php echo esc_html($started_at ? $started_at->format('Y-m-d H:i:s') : '-'); ?></td></tr>
+                    <tr><th style="border: 1px solid;"><?php esc_html_e('Started On', 'woocommerce'); ?></th><td style="border: 1px solid;"><?php echo esc_html($started_at->format('Y-m-d H:i:s')); ?></td></tr>
                     <?php if ($order->get_meta('UPayments_AutoDeduction') !== 'yes') { ?>
                         <tr><th style="border: 1px solid;"><?php esc_html_e('Last Billed On', 'woocommerce'); ?></th><td style="border: 1px solid;"><?php echo esc_html($last_billed_dt ? $last_billed_dt->format('Y-m-d H:i:s') : '-'); ?></td></tr>
-                        <tr><th style="border: 1px solid;"><?php esc_html_e('Next Billing Date', 'woocommerce'); ?></th><td style="border: 1px solid;"><?php echo esc_html($next_billing_dt ? $next_billing_dt->format('Y-m-d H:i:s') : '-'); ?></td></tr>
+                        <tr><th style="border: 1px solid;"><?php esc_html_e('Next Billing Date', 'woocommerce'); ?></th><td style="border: 1px solid;"><?php echo esc_html($next_billing_dt->format('Y-m-d H:i:s')); ?></td></tr>
                     <?php } ?>
                 </tbody>
             </table>
