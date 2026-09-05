@@ -51,7 +51,7 @@ Always verify live GitHub before acting. Recorded SHAs are milestone evidence, n
 
 ## Latest verified milestone — Quality Platform Q15
 
-PR #41 final reviewed head `01a06d45fcc0bc3d08da8d58f6be177b232bb1d4`, tree `ea5b0b3880a99999577d51a9ed5f6a8c77a52cf0`, was squash-merged as commit `a4bbb05021dbded73072c0ba108a18245b60ad88` on sole parent `22857f6304d4b4f19ec1cb6303a80d120173bcd1`. Exact-head Quality Gates run #253 and post-merge run #254 passed all five jobs; PHPUnit was **144 tests / 899 assertions**, Q15 was **107/0**, H12 PHP was **1927/0**, H12 Blocks was **144/0**, final exact-head review was clean after its valid findings were fixed and regression-guarded, and the implementation branch was deleted after verified merge.
+PR #41 final reviewed head `01a06d45fcc0bc3d08da8d58f6be177b232bb1d4`, tree `ea5b0b3880a99999577d51a9ed5f6a8c77a52cf0`, was squash-merged as commit `a4bbb05021dbded73072c0ba108a18245b60ad88` on sole parent `22857f6304d4b4f19ec1cb6303a80d120173bcd1`. Exact-head Quality Gates run #253 and post-merge Quality Gates run #254 passed all five jobs; PHPUnit was **144 tests / 899 assertions**, Q15 was **107/0**, H12 PHP was **1927/0**, H12 Blocks was **144/0**, final exact-head review was clean after its valid findings were fixed and regression-guarded, and the implementation branch was deleted after verified merge.
 
 ## Previous verified milestone — Quality Platform Q14
 
