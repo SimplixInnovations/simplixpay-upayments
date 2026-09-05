@@ -85,6 +85,7 @@ foreach (array(
     'test_reconcile_rejects_noncanonical_order_ids_before_woo_lookup',
     'test_reconcile_keeps_positive_integer_order_ids_compatible',
     'test_failed_payment_complete_postcondition_does_not_leave_durable_capture_metadata',
+    'test_throwing_payment_complete_restores_prior_durable_capture_metadata',
     'test_request_merge_is_presence_aware_and_conflict_safe'
 ) as $name) {
     q17_assert(q17_has($lifecycle_tests, $name), 'lifecycle runtime test: ' . $name);
