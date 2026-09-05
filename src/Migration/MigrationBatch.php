@@ -40,7 +40,7 @@ final class MigrationBatch {
         $ids = array();
         $seen = array();
         foreach ($parts as $part) {
-            if (!is_string($part) || preg_match('/^[1-9][0-9]*$/', $part) !== 1) {
+            if (!is_string($part) || preg_match('/^[1-9][0-9]*\\z/', $part) !== 1) {
                 return array('ok' => false, 'reason' => 'user_id_invalid', 'user_ids' => array());
             }
             if (strlen($part) > strlen((string) PHP_INT_MAX)
@@ -311,7 +311,7 @@ final class MigrationBatch {
     private static function isResultLedgerRecord($record) {
         if (!is_array($record)
             || !isset($record['version']) || $record['version'] !== self::RESULT_LEDGER_VERSION
-            || !isset($record['batch_digest']) || !is_string($record['batch_digest']) || preg_match('/^[0-9a-f]{64}$/', $record['batch_digest']) !== 1
+            || !isset($record['batch_digest']) || !is_string($record['batch_digest']) || preg_match('/^[0-9a-f]{64}\\z/', $record['batch_digest']) !== 1
             || !isset($record['position']) || !is_int($record['position']) || $record['position'] < 0
             || !isset($record['next_offset']) || !is_int($record['next_offset']) || $record['next_offset'] !== ($record['position'] + 1)
             || !isset($record['input_count']) || !is_int($record['input_count']) || $record['input_count'] <= 0 || $record['input_count'] > self::MAX_INPUT_USERS
@@ -324,7 +324,7 @@ final class MigrationBatch {
             || !isset($record['idempotent']) || !is_bool($record['idempotent'])
             || !isset($record['executor_ledger_written']) || !is_bool($record['executor_ledger_written'])
             || !array_key_exists('token_digest', $record)
-            || ($record['token_digest'] !== null && (!is_string($record['token_digest']) || preg_match('/^[0-9a-f]{64}$/', $record['token_digest']) !== 1))
+            || ($record['token_digest'] !== null && (!is_string($record['token_digest']) || preg_match('/^[0-9a-f]{64}\\z/', $record['token_digest']) !== 1))
             || !isset($record['processed_at_gmt']) || !is_int($record['processed_at_gmt']) || $record['processed_at_gmt'] <= 0
         ) {
             return false;
@@ -333,7 +333,7 @@ final class MigrationBatch {
     }
 
     private static function isSafeReason($reason) {
-        return is_string($reason) && strlen($reason) <= 96 && preg_match('/^[a-z0-9_]+$/', $reason) === 1;
+        return is_string($reason) && strlen($reason) <= 96 && preg_match('/^[a-z0-9_]+\\z/', $reason) === 1;
     }
 
     private static function isSafeClassification($classification) {
@@ -371,7 +371,7 @@ final class MigrationBatch {
         $safe['idempotent'] = !empty($execution['idempotent']);
         $safe['ledger_written'] = !empty($execution['ledger_written']);
         if (isset($execution['token_digest']) && is_string($execution['token_digest'])
-            && preg_match('/^[0-9a-f]{64}$/', $execution['token_digest']) === 1
+            && preg_match('/^[0-9a-f]{64}\\z/', $execution['token_digest']) === 1
         ) {
             $safe['token_digest'] = $execution['token_digest'];
         }
