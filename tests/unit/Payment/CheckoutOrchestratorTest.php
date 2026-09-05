@@ -214,8 +214,12 @@ final class CheckoutOrchestratorTest extends TestCase {
         $result = $orchestrator->process(42);
 
         self::assertSame('failure', $result['result']);
-        self::assertSame(0, $request_body_calls);
+        self::assertSame(1, $request_body_calls);
         self::assertSame(array(), $provider_requests);
+        self::assertContains(
+            array('warning', 'Subscription plan rejected: product-level opt-out.'),
+            $gateway->logs
+        );
     }
 
     public function test_same_second_retries_use_distinct_provider_order_ids(): void {
