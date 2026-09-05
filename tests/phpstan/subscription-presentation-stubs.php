@@ -36,6 +36,8 @@ namespace {
     class WC_Order_Item_Product {
         /** @return mixed */
         public function get_product() {}
+        /** @return int */
+        public function get_product_id() { return 0; }
         /** @return mixed */
         public function get_quantity() {}
         /** @return mixed */
