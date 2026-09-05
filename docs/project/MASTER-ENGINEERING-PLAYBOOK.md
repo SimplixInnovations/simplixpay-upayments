@@ -1602,9 +1602,9 @@ The security implementation anchor above is post-merge verified. `PROJECT-STATUS
 - [x] Full Automated Quality Platform — **Q12 / DONE / VERIFIED** through PR #38 and post-merge Quality Gates #232.
 - [x] Full Automated Quality Platform — **Q13 / DONE / VERIFIED** through PR #39 and post-merge Quality Gates #237.
 - [x] Full Automated Quality Platform — **Q14 / DONE / VERIFIED** through PR #40 and post-merge Quality Gates #248.
+- [x] Full Automated Quality Platform — **Q15 / DONE / VERIFIED** through PR #41 and post-merge Quality Gates #254.
 - [ ] Full Automated Quality Platform — **Q16 / CURRENT GATE**.
-- [ ] Full Automated Quality Platform — **Q16 / PLANNED MIGRATION CORE**.
-- [ ] Full Automated Quality Platform — **Q17 / PLANNED FINAL PAYMENT-RUNTIME GATE**; no Q18 is planned.
+- [ ] Full Automated Quality Platform — **Q17 / PLANNED PAYMENT-RUNTIME CLOSEOUT**; any later Q gate requires a separately bounded enterprise-critical risk that is not better owned by certification/readiness/release work.
 - [ ] WordPress/WooCommerce/PHP compatibility certification.
 - [ ] WPML/WCML certification.
 - [ ] Feature-specific certification: saved cards/subscriptions/wallets/multi-merchant/refunds.
