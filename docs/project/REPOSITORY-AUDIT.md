@@ -32,13 +32,13 @@ The repository remains a pre-release engineering codebase. It is not the intende
 
 Phase 0 took ownership of public release identity and removed inherited update authority. Phase 9I added isolated historical-identity migration tooling. The provider lifecycle gate then added an isolated `Simplix\Pay\UPayments\Payment` strangler for ordinary browser/webhook/status truth and WooCommerce payment-state transitions without broadly rewriting the inherited gateway bootstrap.
 
-Architecture discovery/A1-A5 and Quality Platform Q1-Q14 are **DONE / VERIFIED**. The current owner/gate is **Full Automated Quality Platform — Q15**. Q15 may expand PHPUnit characterization and baseline-free PHPStan/PHPCS only across `Subscription/Presentation.php`: product/admin schema, product-meta authorization, cart/order-item presentation, account ownership/actions/filtering and escaped output. It does not authorize a big-bang rewrite, hook-topology changes, subscription-state mutation, scheduler/cycle-claim/attempt/dispatch/provider/payment behavior, protected-meta renames, provider-host migration, payment-truth reinterpretation or weakening closed Security/Payment/H12/Phase 9I contracts.
+Architecture discovery/A1-A5 and Quality Platform Q1-Q15 are **DONE / VERIFIED**. The current owner/gate is **Full Automated Quality Platform — Q16**. Q16 may expand PHPUnit characterization and baseline-free PHPStan/PHPCS only across `MigrationPreflight.php`, `MigrationBatch.php` and `MigrationExecutor.php`: deterministic classification, bounded scans, strict identifiers, credential-scoped redacted checkpoints, locking, exact legacy provenance and idempotency. It does not authorize a big-bang rewrite, migration-eligibility broadening, historical-order mutation, scheduler/cycle-claim/attempt/dispatch/provider/payment behavior, protected-meta renames, provider-host migration, payment-truth reinterpretation or weakening closed Security/Payment/H12/Phase 9I contracts.
 
 ## Top-level inventory after Security Threat-Model closure
 
 | Area | Current state | Classification | Next owner/gate |
 |---|---|---|---|
-| `.github/` | CODEOWNERS, templates, Dependabot, protected Quality Gates | **KEEP / CONTROL PLANE** | Q15 preserves Q1-Q14 gating while expanding bounded subscription-presentation evidence |
+| `.github/` | CODEOWNERS, templates, Dependabot, protected Quality Gates | **KEEP / CONTROL PLANE** | Q16 preserves Q1-Q15 gating while expanding bounded migration-core evidence |
 | `AGENTS.md` | Permanent execution/review rules | **KEEP / CONTROL PLANE** | Mandatory before substantive work |
 | `README.md`, `CHANGELOG.md` | Simplix-led public/project records | **KEEP CURRENT** | Update at verified milestones |
 | `LICENSE`, `NOTICE.md`, `UPSTREAM.md` | MIT + provenance/trademark boundaries | **KEEP** | Re-review at publication gates |
@@ -209,11 +209,11 @@ Known inherited empty/duplicate/legacy assets remain recorded debt. Do not delet
 
 ### Test platform
 
-The required custom harness stack now includes Phase 0, all Phase 9I suites, Provider Lifecycle, Exact Amount, Security Threat-Model, all architecture suites, H12 PHP and H12 Blocks. Q1-Q13 progressively added locked toolchain and bounded module evidence; Q14 added migration-admin capability/nonce/form/bounds/redaction/escaping tests and its permanent harness. Q15 adds subscription product/admin/cart/account presentation tests and its own permanent harness. This remains a progressive quality platform rather than WordPress/WooCommerce/WP-CLI/browser/performance/migration/admin/recurring-billing certification.
+The required custom harness stack now includes Phase 0, all Phase 9I suites, Provider Lifecycle, Exact Amount, Security Threat-Model, all architecture suites, H12 PHP and H12 Blocks. Q1-Q15 progressively added locked toolchain and bounded module evidence. Q16 adds migration preflight/batch/executor characterization, exact-token/SQL hardening and its own permanent harness while retaining the original Phase 9I suites. This remains a progressive quality platform rather than WordPress/WooCommerce/WP-CLI/browser/performance/merchant-migration/recurring-billing certification.
 
 ## Current next owner/gate
 
-**Full Automated Quality Platform — Q15**.
+**Full Automated Quality Platform — Q16**.
 
 The current tranche must preserve the verified architecture map while establishing:
 
