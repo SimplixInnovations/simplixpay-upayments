@@ -43,11 +43,32 @@
 | Quality Platform Q12 subscription-product-type analysis | **DONE / VERIFIED** |
 | Quality Platform Q13 migration-CLI analysis | **DONE / VERIFIED** |
 | Quality Platform Q14 migration-admin analysis | **DONE / VERIFIED** |
+| Quality Platform Q15 subscription-presentation analysis | **DONE / VERIFIED** |
 | Current program gate | **Full Automated Quality Platform — Q16** |
 
 The plugin remains a pre-release engineering project. Architecture discovery/A1-A5 and Quality Platform Q1-Q15 are DONE / VERIFIED; Q16 migration-core analysis is the current bounded implementation tranche. Q17 remains the planned Quality Platform closeout, followed by named certification, product-readiness and release-engineering programs unless a concrete enterprise-critical quality risk justifies a separately bounded gate. None of these milestones constitutes broad provider-host, penetration-test, PCI/compliance, platform, feature, performance or release certification.
 
-## Latest verified milestone — Quality Platform Q14 migration-admin analysis
+## Latest verified milestone — Quality Platform Q15 subscription-presentation analysis
+
+PR #41 final reviewed head:
+
+- `01a06d45fcc0bc3d08da8d58f6be177b232bb1d4`
+- tree: `ea5b0b3880a99999577d51a9ed5f6a8c77a52cf0`
+
+Verified squash merge on `main`:
+
+- merge: `a4bbb05021dbded73072c0ba108a18245b60ad88`
+- parent: `22857f6304d4b4f19ec1cb6303a80d120173bcd1`
+- implementation branch `quality/subscription-presentation-analysis`: **deleted after verified merge**
+- exact-head Quality Gates run #253: **SUCCESS across all five jobs**
+- push-triggered post-merge Quality Gates run #254: **SUCCESS across all five jobs**
+- PHPUnit: **144 tests / 899 assertions**
+- Q15 Subscription Presentation Analysis: **107/0**
+- H12 PHP: **1927/0**; Blocks: **144/0**
+
+Q15 expanded baseline-free PHPStan level 5/PHP 7.2, risk-focused PHPCS and deterministic PHPUnit characterization into `Subscription/Presentation.php`. It hardened malformed product/admin/cart/account/date input handling while preserving protected hook, gateway, scheduler, billing, provider and payment-runtime contracts. The exact reviewed tree was squash-merged, post-merge CI passed and the implementation branch was deleted. Q15 makes no broad platform, recurring-billing, browser, compliance or production-certification claim.
+
+## Previous verified milestone — Quality Platform Q14 migration-admin analysis
 
 PR #40 final reviewed head:
 
