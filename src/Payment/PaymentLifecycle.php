@@ -724,9 +724,6 @@ final class PaymentLifecycle {
     }
 
     private static function gateway() {
-        if (!is_callable('WC')) {
-            return null;
-        }
         $woocommerce = WC();
         if (!is_object($woocommerce) || !method_exists($woocommerce, 'payment_gateways')) {
             return null;
@@ -747,13 +744,11 @@ final class PaymentLifecycle {
                 if (is_string($candidate) && $candidate !== '') {
                     $redirect = $candidate;
                 }
-                if (is_callable('WC')) {
-                    $woocommerce = WC();
-                    if (is_object($woocommerce) && isset($woocommerce->cart) && is_object($woocommerce->cart)
-                        && method_exists($woocommerce->cart, 'empty_cart')
-                    ) {
-                        $woocommerce->cart->empty_cart();
-                    }
+                $woocommerce = WC();
+                if (is_object($woocommerce) && isset($woocommerce->cart) && is_object($woocommerce->cart)
+                    && method_exists($woocommerce->cart, 'empty_cart')
+                ) {
+                    $woocommerce->cart->empty_cart();
                 }
             }
             wp_safe_redirect($redirect);
