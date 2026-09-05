@@ -90,10 +90,10 @@ final class Presentation {
         if ($post_id <= 0) {
             return;
         }
-        if (empty($_POST['woocommerce_meta_nonce'])
-            || !is_string($_POST['woocommerce_meta_nonce'])
-            || !wp_verify_nonce(wp_unslash($_POST['woocommerce_meta_nonce']), 'woocommerce_save_data')
-        ) {
+        $nonce = isset($_POST['woocommerce_meta_nonce']) && is_string($_POST['woocommerce_meta_nonce'])
+            ? sanitize_text_field(wp_unslash($_POST['woocommerce_meta_nonce']))
+            : '';
+        if ($nonce === '' || !wp_verify_nonce($nonce, 'woocommerce_save_data')) {
             return;
         }
         if (empty($_POST['post_ID'])

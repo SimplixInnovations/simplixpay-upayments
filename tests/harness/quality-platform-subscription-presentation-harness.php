@@ -52,14 +52,15 @@ foreach (array(
     "'target' => 'custom_product_data_panel'",
     "'class' => array('show_if_custom_type')",
     "'id' => '_custom_field_id'",
-    "wp_verify_nonce(wp_unslash(\$_POST['woocommerce_meta_nonce']), 'woocommerce_save_data')",
+    "wp_verify_nonce(\$nonce, 'woocommerce_save_data')",
     "current_user_can('edit_post', \$post_id)",
     "update_post_meta(\$post_id, '_custom_field_id', \$custom_field_value)",
 ) as $contract) {
     q15_assert(q15_contains($source, $contract), "product/admin contract remains exact: {$contract}");
 }
 
-q15_assert(q15_contains($source, "!is_string(\$_POST['woocommerce_meta_nonce'])"), 'malformed nonce shape fails closed');
+q15_assert(q15_contains($source, "isset(\$_POST['woocommerce_meta_nonce']) && is_string(\$_POST['woocommerce_meta_nonce'])"), 'malformed nonce shape fails closed');
+q15_assert(q15_contains($source, "sanitize_text_field(wp_unslash(\$_POST['woocommerce_meta_nonce']))"), 'product nonce is unslashed and sanitized before verification');
 q15_assert(q15_contains($source, "!is_string(\$_POST['post_ID']) && !is_int(\$_POST['post_ID'])"), 'malformed product ID shape fails closed');
 q15_assert(q15_contains($source, '!$product instanceof \\WC_Product'), 'frontend presentation requires a WooCommerce product');
 q15_assert(substr_count($source, "!isset(\$cart_item['product_id'])") === 1, 'cart presentation guards a missing product ID');
