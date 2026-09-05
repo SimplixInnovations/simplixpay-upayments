@@ -34,12 +34,14 @@ class CheckoutOrchestrator {
             global $woocommerce;
 
             // Section Y: Defensive order boundary.
-            if (!is_numeric($order_id) || (int) $order_id <= 0) {
+            $parsed_order_id = self::parse_order_id($order_id);
+            if ($parsed_order_id === null) {
                 wc_add_notice(__('Payment request could not be completed. Please try again.', $gateway->domain), 'error');
                 return array('result' => 'failure', 'redirect' => wc_get_checkout_url());
             }
+            $order_id = $parsed_order_id;
 
-            $order = wc_get_order((int) $order_id);
+            $order = wc_get_order($order_id);
             if (!$order || !($order instanceof \WC_Order)) {
                 wc_add_notice(__('Payment request could not be completed. Please try again.', $gateway->domain), 'error');
                 return array('result' => 'failure', 'redirect' => wc_get_checkout_url());
@@ -1330,5 +1332,16 @@ class CheckoutOrchestrator {
                 wc_add_notice(__("Payment request could not be completed. Please try again.", $gateway->domain), "error");
                 return ["result" => "failure", "redirect" => wc_get_checkout_url()];
             }
+        }
+
+        private static function parse_order_id($value) {
+            if (is_int($value)) {
+                return $value > 0 ? $value : null;
+            }
+            if (!is_string($value) || strlen($value) > 18 || !preg_match('/^[1-9][0-9]*\\z/', $value)) {
+                return null;
+            }
+            $order_id = (int) $value;
+            return $order_id > 0 ? $order_id : null;
         }
 }
