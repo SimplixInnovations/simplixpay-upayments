@@ -43,9 +43,9 @@
 | Quality Platform Q12 subscription-product-type analysis | **DONE / VERIFIED** |
 | Quality Platform Q13 migration-CLI analysis | **DONE / VERIFIED** |
 | Quality Platform Q14 migration-admin analysis | **DONE / VERIFIED** |
-| Current program gate | **Full Automated Quality Platform — Q15** |
+| Current program gate | **Full Automated Quality Platform — Q16** |
 
-The plugin remains a pre-release engineering project. Architecture discovery/A1-A5 and Quality Platform Q1-Q14 are DONE / VERIFIED; Q15 subscription-presentation analysis is the current bounded implementation tranche. The Quality Platform is capped at Q17, followed by named certification, product-readiness and release-engineering programs. None of these milestones constitutes broad code-quality, provider-host, penetration-test, PCI/compliance, platform, feature, performance or release certification.
+The plugin remains a pre-release engineering project. Architecture discovery/A1-A5 and Quality Platform Q1-Q15 are DONE / VERIFIED; Q16 migration-core analysis is the current bounded implementation tranche. Q17 remains the planned Quality Platform closeout, followed by named certification, product-readiness and release-engineering programs unless a concrete enterprise-critical quality risk justifies a separately bounded gate. None of these milestones constitutes broad provider-host, penetration-test, PCI/compliance, platform, feature, performance or release certification.
 
 ## Latest verified milestone — Quality Platform Q14 migration-admin analysis
 
@@ -592,18 +592,17 @@ Repository readiness remains DONE / VERIFIED:
 
 ## Current program gate — Full Automated Quality Platform
 
-**Status: Q15 — SUBSCRIPTION PRESENTATION ANALYSIS / IMPLEMENTATION.**
+**Status: Q16 — MIGRATION CORE ANALYSIS / IMPLEMENTATION.**
 
-Architecture discovery/A1-A5 and Quality Platform Q1-Q14 are complete. Q15 is limited to the existing Architecture A4 `Subscription/Presentation.php` boundary. Current scope:
+Architecture discovery/A1-A5 and Quality Platform Q1-Q15 are complete. Q16 is limited to the closed Phase 9I migration-core boundaries:
 
-- add `Subscription/Presentation.php` to the baseline-free PHPStan level 5 / PHP 7.2 and risk-focused PHPCS scopes;
-- add PHPUnit characterization for product-type/admin fields, product-meta authorization, cart compatibility, customer ownership, manual-action nonces, account filters and escaped output;
-- apply only analyzer/test/review-proven corrections within the presentation boundary while preserving canonical valid behavior;
-- keep the Q1 dependency lock, tool versions, analysis level, PHPStan no-baseline/no-`ignoreErrors` rule and protected H12 aggregator unchanged;
-- keep every historical and architecture harness plus all fifteen permanent quality-platform harnesses mandatory;
-- preserve exact Scheduler/CycleClaim blobs, protected identities and Security **82/0**, Provider **141/0 + 4/0**, Phase 9I, Phase 0, H12 and all architecture regressions.
+- `src/Migration/MigrationPreflight.php`: deterministic classification, bounded history/provenance scans, exact identifiers and cross-user conflict checks;
+- `src/Migration/MigrationBatch.php`: strict user-ID input, bounded pages, redacted credential-scoped checkpoints and fail-closed resume behavior;
+- `src/Migration/MigrationExecutor.php`: lock/re-preflight, exact legacy provenance creation/verification, idempotency and redacted ledgers;
+- baseline-free PHPStan level 5/PHP 7.2, risk-focused PHPCS/WPCS and deterministic PHPUnit characterization across those three files;
+- every original Phase 9I, Q1-Q15, architecture, security and H12 regression remains mandatory.
 
-No hook-topology change, subscription-state mutation, scheduler/cycle-claim/billing-attempt/dispatch/provider behavior, protected identity rename or payment-truth mutation is authorized in Q15. The finite closeout is Q15 Presentation, Q16 Migration Core and Q17 Payment Runtime; Q17 ends the Q sequence. `QUALITY-PLATFORM.md` is the current gate record.
+No provider transport, payment dispatch, historical-order mutation, scheduler/cycle-claim/billing-attempt execution, protected identity rename, migration-eligibility broadening or payment-truth mutation is authorized in Q16. Q17 Payment Runtime remains the planned Quality Platform closeout; any later Q gate requires a concrete separately bounded enterprise-critical risk. `QUALITY-PLATFORM.md` is the current gate record.
 
 ## Later program blockers
 
