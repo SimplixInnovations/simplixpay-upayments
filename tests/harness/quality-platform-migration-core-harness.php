@@ -100,7 +100,11 @@ q16_assert(q16_has($readme, '| Quality Platform Q1-Q15 | **DONE / VERIFIED** |')
 q16_assert(q16_has($audit, '`src/Migration/MigrationPreflight.php`') && q16_has($audit, '`src/Migration/MigrationBatch.php`') && q16_has($audit, '`src/Migration/MigrationExecutor.php`'), 'repository audit current Q16 tranche names all migration-core owners');
 q16_assert(q16_has($audit, 'permanent Q1/Q2/Q3/Q4/Q5/Q6/Q7/Q8/Q9/Q10/Q11/Q12/Q13/Q14/Q15/Q16 and historical regression gates'), 'repository audit current Q16 tranche requires Q1-Q16 regressions');
 q16_assert(!q16_has($audit, 'PHPUnit characterization of product/admin schema, product-meta authorization, malformed cart/order payloads, account ownership/actions, exact filter allowlists, dates and escaped output'), 'repository audit removes stale Q15 presentation tranche bullet');
-q16_assert(q16_has($status, '| Current program gate | **Full Automated Quality Platform — Q16** |'), 'project status advances to Q16');
+q16_assert(
+    q16_has($status, '| Current program gate | **Full Automated Quality Platform — Q16** |')
+    || q16_has($status, '| Quality Platform Q16 migration-core analysis | **DONE / VERIFIED** |'),
+    'project status preserves Q16 current-or-closed state'
+);
 q16_assert(q16_has($readme, 'The current program gate is **Full Automated Quality Platform — Q16**.'), 'README advances to Q16');
 q16_assert(q16_has($playbook, '- [x] Full Automated Quality Platform — **Q15 / DONE / VERIFIED** through PR #41 and post-merge Quality Gates #254.'), 'playbook preserves Q15 as completed');
 q16_assert(q16_has($playbook, '- [ ] Full Automated Quality Platform — **Q16 / CURRENT GATE**.'), 'playbook has the single current Q16 ledger entry');

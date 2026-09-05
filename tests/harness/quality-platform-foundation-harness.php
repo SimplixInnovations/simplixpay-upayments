@@ -121,10 +121,15 @@ foreach (array('/vendor/', '/tests/', '/composer.json', '/composer.lock', '/phpc
 q1_assert(q1_contains($gitignore, '/vendor/'), 'Composer vendor directory is ignored');
 q1_assert(!q1_contains(q1_read($q1_root, 'UPayments.php'), 'vendor/autoload.php'), 'plugin runtime does not load Composer vendor code');
 q1_assert(q1_contains($quality_record, 'Q1 is DONE / VERIFIED'), 'quality control record closes the Q1 foundation');
-q1_assert(q1_contains($quality_record, '**Status:** Q16 / IMPLEMENTATION'), 'quality control record advances beyond Q1-Q13');
+q1_assert(
+    q1_contains($quality_record, '**Status:** Q17 / IMPLEMENTATION')
+    || q1_contains($quality_record, 'Q17 is DONE / VERIFIED'),
+    'quality control record preserves later-gate progression beyond Q1'
+);
 q1_assert(
     q1_contains($quality_record, 'WordPress/WooCommerce/PHP') &&
-    q1_contains($quality_record, 'or production certification.'),
+    q1_contains($quality_record, 'PCI/compliance') &&
+    q1_contains($quality_record, 'production readiness'),
     'quality record rejects certification overclaim'
 );
 

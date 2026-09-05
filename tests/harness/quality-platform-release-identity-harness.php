@@ -67,9 +67,9 @@ foreach (array(
 ) as $evidence) {
     q8_assert(q8_contains($quality, $evidence), "Q8 closure evidence is pinned: {$evidence}");
 }
-q8_assert(q8_contains($quality, '**Status:** Q16 / IMPLEMENTATION'), 'quality record advances beyond Q8');
-q8_assert(q8_contains($status, '| Current program gate | **Full Automated Quality Platform — Q16** |'), 'project status advances beyond Q8');
-q8_assert(q8_contains($readme, 'The current program gate is **Full Automated Quality Platform — Q16**.'), 'README advances beyond Q8');
+q8_assert(q8_contains($quality, 'Q16 is DONE / VERIFIED'), 'quality record advances beyond Q8');
+q8_assert(q8_contains($status, '| Quality Platform Q16 migration-core analysis | **DONE / VERIFIED** |'), 'project status advances beyond Q8');
+q8_assert(q8_contains($readme, 'Quality Platform Q1-Q16 are **DONE / VERIFIED**.'), 'README advances beyond Q8');
 q8_assert(!q8_contains($playbook, 'Last verified implementation main SHA: b59eb2d50b86a38d8ea130de63c38a672db86d32'), 'playbook does not mistake verified Q8 merge for current main');
 q8_assert(!q8_contains($playbook, 'Canonical implementation tree: 109415fa6a4bc04bba60bb23275bc192dd232559'), 'playbook does not mistake verified Q8 tree for current tree');
 q8_assert(!q8_contains($handoff, 'CURRENT / Q8'), 'handoff rejects stale current-Q8 marker');
