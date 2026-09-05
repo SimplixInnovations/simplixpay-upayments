@@ -92,8 +92,8 @@ foreach (array(
 q9_assert(q9_contains($quality, '**Status:** Q16 / IMPLEMENTATION'), 'quality record advances beyond Q9');
 q9_assert(q9_contains($status, '| Current program gate | **Full Automated Quality Platform — Q16** |'), 'project status advances beyond Q9');
 q9_assert(q9_contains($readme, 'The current program gate is **Full Automated Quality Platform — Q16**.'), 'README advances beyond Q9');
-q9_assert(q9_contains($playbook, 'Last verified implementation main SHA: 22857f6304d4b4f19ec1cb6303a80d120173bcd1'), 'playbook advances beyond Q9 to the Q14 merge');
-q9_assert(q9_contains($playbook, 'Canonical implementation tree: 53107c93c8756985461a8d75e2009c91b89ee851'), 'playbook advances beyond Q9 to the Q14 tree');
+q9_assert(!q9_contains($playbook, 'Last verified implementation main SHA: f63591188e232505f8307cb71fdbe4c32d2dc4c7'), 'playbook does not mistake verified Q9 merge for current main');
+q9_assert(!q9_contains($playbook, 'Canonical implementation tree: 96936981b8d3088a65c1d0917b7e5773952bc346'), 'playbook does not mistake verified Q9 tree for current tree');
 q9_assert(!q9_contains($handoff, 'CURRENT / Q9'), 'handoff rejects stale current-Q9 marker');
 q9_assert(!q9_contains($playbook, 'CURRENT / Q9'), 'playbook rejects stale current-Q9 marker');
 q9_assert(q9_contains($workflow, "reject_across_live_records 'CURRENT / Q9'"), 'Governance rejects stale current-Q9 markers');
