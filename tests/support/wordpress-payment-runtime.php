@@ -32,6 +32,7 @@ class WC_Order_Item_Product {
     }
 
     public function get_product() { return $this->product; }
+    public function get_product_id() { return $this->product ? $this->product->get_id() : 0; }
     public function get_quantity() { return $this->quantity; }
     public function get_total() { return $this->total; }
     public function get_name() { return $this->name; }
