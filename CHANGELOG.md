@@ -106,13 +106,21 @@ The project is still in pre-release engineering hardening. Entries below are eng
 - Exact final PR #36 head `41b0d6d03af91b1e811562d609cf809345a221df` passed Quality Gates #226 and clean independent exact-head review; Q10 was **67/0** and PHPUnit **82 tests / 686 assertions**.
 - Squash-merged PR #36 as `02a1ad24d262c3cb6d14653bf48aa31c3796ae4e`, tree `eae2fe0d0f0f54bef793ed6e58c9837bd01403ab`; post-merge run #227 passed and the implementation branch was deleted.
 
-### Full Automated Quality Platform — Q16 Migration Core Analysis
+### Full Automated Quality Platform — Q17 Payment Runtime Analysis
 
-- Expands baseline-free PHPStan level 5/PHP 7.2 and risk-focused PHPCS ownership into `MigrationPreflight`, `MigrationBatch` and `MigrationExecutor`.
-- Adds deterministic migration-core PHPUnit characterization while preserving every original Phase 9I preflight/executor/operations regression.
-- Hardens full-string numeric/generation/digest/reason parsing, preserves bounded scans/checkpoints and keeps SQL preparation explicit without broadening migration eligibility.
-- Adds a permanent Q16 governance harness; provider transport, payment dispatch, historical-order mutation and subscription runtime remain excluded.
-- Q17 remains the planned payment-runtime closeout; later Q work requires a concrete separately bounded enterprise-critical risk.
+- Expands baseline-free PHPStan level 5/PHP 7.2 and risk-focused PHPCS ownership into `CheckoutOrchestrator.php` and `PaymentLifecycle.php`.
+- Adds process-isolated deterministic PHPUnit characterization for checkout/reconciliation order-ID boundaries, callback merge behavior and provider-bound payment-runtime inputs.
+- Hardens canonical Woo order IDs, terminal-newline currency/IBAN boundaries and same-second Charge-attempt identity while preserving the provider-facing 32-lowercase-hex order-ID shape.
+- Preserves authenticated status binding, lock/rebind TOCTOU protection, attempt-scoped cursor rotation, Woo `payment_complete()` semantics, no-resurrection rules and bounded reconciliation.
+- Q17 is the current Quality Platform closeout; after it, run the enterprise-risk audit and move to Platform Certification unless a concrete separately bounded enterprise-critical risk justifies another Quality Platform gate.
+
+### Full Automated Quality Platform — Q16 Migration Core Analysis — DONE / VERIFIED
+
+- Expanded baseline-free PHPStan level 5/PHP 7.2 and risk-focused PHPCS ownership into `MigrationPreflight`, `MigrationBatch` and `MigrationExecutor`.
+- Added deterministic migration-core PHPUnit characterization while preserving every original Phase 9I preflight/executor/operations regression.
+- Hardened full-string numeric/generation/digest/reason parsing, preserved bounded scans/checkpoints and kept SQL preparation explicit without broadening migration eligibility.
+- Final reviewed PR #42 head `3cff2fcc64053d79be7427696c86039f1b52bbfd`, tree `b9cc6eafb3c7f8df36b9c5db8b2e45bb330688d2`, passed Quality Gates #315 with PHPUnit **160 tests / 987 assertions**, Q16 **120/0**, H12 PHP **1927/0**, H12 Blocks **144/0** and CodeQL #83; exact-head Codex review was clean.
+- Squash-merged as `06a9ebd732c7cc3f062d4bb361aaef4054a1dfa3`; post-merge Quality Gates #316 and main security run #84 passed and the implementation branch was deleted.
 
 ### Full Automated Quality Platform — Q15 Subscription Presentation Analysis — DONE / VERIFIED
 
@@ -189,7 +197,7 @@ The project is still in pre-release engineering hardening. Entries below are eng
 
 ### Current program gate
 
-**Full Automated Quality Platform — Q16** is now the active gate. Architecture A1-A5 and Quality Platform Q1-Q15 are DONE / VERIFIED; Q16 is limited to migration-core preflight/batch/executor characterization and baseline-free static-analysis expansion and does not call the provider, dispatch payments, mutate historical order evidence or certify platforms. Q17 remains the planned payment-runtime closeout; later Q work requires a concrete separately bounded enterprise-critical risk.
+**Full Automated Quality Platform — Q17** is now the active gate. Architecture A1-A5 and Quality Platform Q1-Q16 are DONE / VERIFIED; Q17 is limited to payment-runtime checkout-orchestration/lifecycle characterization, baseline-free static-analysis expansion and test-proven hardening. It does not establish broad platform, feature, performance, PCI/compliance or production certification. After Q17, run the enterprise-risk audit and move to Platform Certification unless a concrete separately bounded enterprise-critical risk justifies another Quality Platform gate.
 
 ### Provider Contract & Payment Lifecycle — DONE / VERIFIED
 
