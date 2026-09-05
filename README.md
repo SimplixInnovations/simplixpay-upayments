@@ -55,7 +55,7 @@ The project remains in **pre-release engineering hardening**. It is not yet a br
 | Provider Contract & Payment Lifecycle | **DONE / VERIFIED** |
 | Security Threat-Model Closure | **DONE / VERIFIED** |
 | Architecture & Code-Quality Foundation | **DONE / VERIFIED (A1-A5)** |
-| Quality Platform Q1-Q14 | **DONE / VERIFIED** |
+| Quality Platform Q1-Q15 | **DONE / VERIFIED** |
 | Current engineering gate | **Full Automated Quality Platform — Q16** |
 | Stable SimplixPay release | **Not yet published** |
 | WordPress.org release | **Not yet published** |
