@@ -26,8 +26,11 @@ class WCGatewayUPaymentsBlocks extends AbstractPaymentMethodType {
         $this->settings = get_option( 'woocommerce_upayments_settings', [] );
         if ( class_exists( 'WC_Upayments' ) ) {
             $this->gateway = new WC_Upayments();
-        } else {
-            error_log( 'UPayments Error: WC_Upayments class not found during Blocks init.' );
+        } elseif ( function_exists( 'wc_get_logger' ) ) {
+            wc_get_logger()->warning(
+                'UPayments gateway class not found during Blocks initialization.',
+                array( 'source' => 'upayments' )
+            );
         }
     }
 
