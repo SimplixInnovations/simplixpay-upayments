@@ -42,13 +42,18 @@ Use this file with root `AGENTS.md`, `PROJECT-STATUS.md`, the naming standard, t
 - Quality Platform Q12 subscription-product-type analysis: **DONE / VERIFIED**
 - Quality Platform Q13 migration-CLI analysis: **DONE / VERIFIED**
 - Quality Platform Q14 migration-admin analysis: **DONE / VERIFIED**
+- Quality Platform Q15 subscription-presentation analysis: **DONE / VERIFIED**
 - Current program gate: **Full Automated Quality Platform — Q16**
 - Stable production release: **NO**
 - WordPress.org release: **NO**
 
 Always verify live GitHub before acting. Recorded SHAs are milestone evidence, not substitutes for fresh source/check/review verification.
 
-## Latest verified milestone — Quality Platform Q14
+## Latest verified milestone — Quality Platform Q15
+
+PR #41 final reviewed head `01a06d45fcc0bc3d08da8d58f6be177b232bb1d4`, tree `ea5b0b3880a99999577d51a9ed5f6a8c77a52cf0`, was squash-merged as commit `a4bbb05021dbded73072c0ba108a18245b60ad88` on sole parent `22857f6304d4b4f19ec1cb6303a80d120173bcd1`. Exact-head Quality Gates run #253 and post-merge run #254 passed all five jobs; PHPUnit was **144 tests / 899 assertions**, Q15 was **107/0**, H12 PHP was **1927/0**, H12 Blocks was **144/0**, final exact-head review was clean after its valid findings were fixed and regression-guarded, and the implementation branch was deleted after verified merge.
+
+## Previous verified milestone — Quality Platform Q14
 
 PR #40 final reviewed head `b2d8630a5903af8f26a7f770a2a80547c871f7c6` was squash-merged as commit `22857f6304d4b4f19ec1cb6303a80d120173bcd1`, tree `53107c93c8756985461a8d75e2009c91b89ee851`, on sole parent `a744417e1ec2f40b4f59706df84589d8b18638cb`. Exact-head Quality Gates run #247 and post-merge run #248 passed all five jobs; PHPUnit was **129 tests / 825 assertions**, Q14 was **109/0**, PHPStan/PHPCS/audit and every historical/architecture/H12 regression were green, final independent exact-head review was clean with zero unresolved threads, the GitHub signature was valid, and the implementation branch was deleted.
 
