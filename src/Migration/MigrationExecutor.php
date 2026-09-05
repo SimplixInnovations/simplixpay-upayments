@@ -44,7 +44,7 @@ final class MigrationExecutor {
 
         $initial = MigrationPreflight::inspect($user_id, $api_key, $is_test_mode);
         $result['preflight'] = self::redactPreflight($initial);
-        if (!is_array($initial) || !isset($initial['classification'])) {
+        if (!isset($initial['classification'])) {
             return self::finish($result, false, 'preflight_malformed');
         }
 
@@ -79,7 +79,7 @@ final class MigrationExecutor {
             // success. Any other transition fails closed before mutation.
             $locked = MigrationPreflight::inspect($user_id, $api_key, $is_test_mode);
             $result['locked_preflight'] = self::redactPreflight($locked);
-            if (!is_array($locked) || !isset($locked['classification'])) {
+            if (!isset($locked['classification'])) {
                 return self::finish($result, false, 'locked_preflight_malformed');
             }
             if ($locked['classification'] === MigrationPreflight::CLEAN) {
@@ -138,8 +138,7 @@ final class MigrationExecutor {
             if ($needs_secret) {
                 $after_secret = MigrationPreflight::inspect($user_id, $api_key, $is_test_mode);
                 $result['post_secret_preflight'] = self::redactPreflight($after_secret);
-                if (!is_array($after_secret)
-                    || !isset($after_secret['classification'])
+                if (!isset($after_secret['classification'])
                     || $after_secret['classification'] !== MigrationPreflight::MIGRATABLE
                     || !isset($after_secret['migration']['token'])
                     || !is_string($after_secret['migration']['token'])
@@ -187,8 +186,7 @@ final class MigrationExecutor {
 
             $final = MigrationPreflight::inspect($user_id, $api_key, $is_test_mode);
             $result['final_preflight'] = self::redactPreflight($final);
-            if (!is_array($final)
-                || !isset($final['classification'])
+            if (!isset($final['classification'])
                 || $final['classification'] !== MigrationPreflight::CLEAN
             ) {
                 return self::finish($result, false, 'final_preflight_not_clean');
