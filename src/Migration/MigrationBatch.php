@@ -29,6 +29,7 @@ final class MigrationBatch {
             return array('ok' => false, 'reason' => 'user_ids_missing', 'user_ids' => array());
         }
 
+        /** @var mixed $parts */
         $parts = preg_split('/[\s,]+/', $raw, -1, PREG_SPLIT_NO_EMPTY);
         if (!is_array($parts) || count($parts) === 0) {
             return array('ok' => false, 'reason' => 'user_ids_missing', 'user_ids' => array());
@@ -70,10 +71,10 @@ final class MigrationBatch {
      * count as evaluated; an operator may deliberately re-evaluate them by
      * supplying an explicit offset instead of choosing resume mode.
      *
-     * @param array  $user_ids
-     * @param string $api_key
-     * @param bool   $is_test_mode
-     * @param bool   $dry_run
+     * @param mixed $user_ids
+     * @param mixed $api_key
+     * @param mixed $is_test_mode
+     * @param mixed $dry_run
      * @return array{ok:bool,reason:string,offset:int}
      */
     public static function resumeOffset($user_ids, $api_key, $is_test_mode, $dry_run) {
@@ -112,12 +113,12 @@ final class MigrationBatch {
     /**
      * Run one bounded page of explicit user IDs.
      *
-     * @param array  $user_ids
-     * @param string $api_key
-     * @param bool   $is_test_mode
-     * @param bool   $dry_run
-     * @param int    $offset
-     * @param int    $limit
+     * @param mixed $user_ids
+     * @param mixed $api_key
+     * @param mixed $is_test_mode
+     * @param mixed $dry_run
+     * @param mixed $offset
+     * @param mixed $limit
      * @return array
      */
     public static function run($user_ids, $api_key, $is_test_mode, $dry_run = true, $offset = 0, $limit = self::DEFAULT_LIMIT) {
