@@ -30,6 +30,10 @@ namespace {
     $root = dirname(__DIR__, 2);
     $blocks_file = $root . '/includes/class-wc-gateway-upayments-blocks.php';
     $blocks_js = $root . '/assets/js/upayments-block.js';
+    $phpstan_file = $root . '/phpstan.neon.dist';
+    $phpcs_file = $root . '/phpcs.xml.dist';
+    $workflow_file = $root . '/.github/workflows/quality-gates.yml';
+    $agents_file = $root . '/AGENTS.md';
 
     q18_assert(is_file($blocks_file), 'Blocks adapter source exists');
     q18_assert(is_file($blocks_js), 'Blocks client source exists');
@@ -72,6 +76,33 @@ namespace {
         is_string($js_source)
         && strpos($js_source, "name: 'upayments'") !== false,
         'Blocks client registration identity remains upayments'
+    );
+
+    $phpstan_source = file_get_contents($phpstan_file);
+    $phpcs_source = file_get_contents($phpcs_file);
+    $workflow_source = file_get_contents($workflow_file);
+    $agents_source = file_get_contents($agents_file);
+
+    q18_assert(
+        is_string($phpstan_source)
+        && strpos($phpstan_source, 'includes/class-wc-gateway-upayments-blocks.php') !== false
+        && strpos($phpstan_source, 'tests/phpstan/blocks-availability-stubs.php') !== false,
+        'PHPStan owns Blocks adapter without a baseline'
+    );
+    q18_assert(
+        is_string($phpcs_source)
+        && strpos($phpcs_source, '<file>includes/class-wc-gateway-upayments-blocks.php</file>') !== false,
+        'PHPCS owns Blocks adapter'
+    );
+    q18_assert(
+        is_string($workflow_source)
+        && strpos($workflow_source, 'run: php tests/harness/quality-platform-blocks-availability-harness.php') !== false,
+        'Q18 harness is mandatory in Quality Gates'
+    );
+    q18_assert(
+        is_string($agents_source)
+        && strpos($agents_source, 'quality-platform-blocks-availability-harness.php') !== false,
+        'AGENTS keeps Q18 mandatory'
     );
 
     echo "\nQ18 Blocks Availability Enforcement: " . $pass . " PASS / " . $fail . " FAIL\n";
