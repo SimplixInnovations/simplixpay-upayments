@@ -36,6 +36,7 @@ $quality = q16_read($root, 'docs/project/QUALITY-PLATFORM.md');
 $status = q16_read($root, 'docs/project/PROJECT-STATUS.md');
 $readme = q16_read($root, 'README.md');
 $agents = q16_read($root, 'AGENTS.md');
+$playbook = q16_read($root, 'docs/project/MASTER-ENGINEERING-PLAYBOOK.md');
 
 foreach (array('src/Migration/MigrationPreflight.php','src/Migration/MigrationBatch.php','src/Migration/MigrationExecutor.php') as $path) {
     q16_assert(q16_has($phpstan, $path), 'PHPStan owns migration core: ' . $path);
@@ -86,6 +87,10 @@ foreach (array('01a06d45fcc0bc3d08da8d58f6be177b232bb1d4','ea5b0b3880a99999577d5
 q16_assert(q16_has($quality, '**Status:** Q16 / IMPLEMENTATION'), 'quality record advances to Q16');
 q16_assert(q16_has($status, '| Current program gate | **Full Automated Quality Platform — Q16** |'), 'project status advances to Q16');
 q16_assert(q16_has($readme, 'The current program gate is **Full Automated Quality Platform — Q16**.'), 'README advances to Q16');
+q16_assert(q16_has($playbook, '- [x] Full Automated Quality Platform — **Q15 / DONE / VERIFIED** through PR #41 and post-merge Quality Gates #254.'), 'playbook preserves Q15 as completed');
+q16_assert(q16_has($playbook, '- [ ] Full Automated Quality Platform — **Q16 / CURRENT GATE**.'), 'playbook has the single current Q16 ledger entry');
+q16_assert(!q16_has($playbook, '**Q16 / PLANNED MIGRATION CORE**'), 'playbook has no contradictory planned-Q16 entry');
+q16_assert(q16_has($playbook, '**Q17 / PLANNED PAYMENT-RUNTIME CLOSEOUT**'), 'playbook keeps Q17 as the next planned payment-runtime closeout');
 
 echo "\nQ16 Migration Core Analysis: " . $pass . " PASS / " . $fail . " FAIL\n";
 exit($fail === 0 ? 0 : 1);
