@@ -129,11 +129,24 @@ q15_assert(q15_contains($workflow, 'run: php tests/harness/quality-platform-subs
 q15_assert(q15_contains($workflow, 'if: ${{ always() }}'), 'protected H12 aggregator still always runs');
 q15_assert(q15_contains($workflow, "reject_across_live_records 'CURRENT / Q14'"), 'Governance rejects stale current-Q14 markers');
 q15_assert(q15_contains($agents, 'quality-platform-subscription-presentation-harness.php'), 'root execution rules keep Q15 mandatory');
-q15_assert(q15_contains($quality, '**Status:** Q15 / IMPLEMENTATION'), 'quality record advances to Q15');
-q15_assert(q15_contains($status, '| Current program gate | **Full Automated Quality Platform — Q15** |'), 'project status advances to Q15');
-q15_assert(q15_contains($readme, 'The current program gate is **Full Automated Quality Platform — Q15**.'), 'README advances to Q15');
+q15_assert(q15_contains($quality, '**Status:** Q16 / IMPLEMENTATION'), 'quality record advances beyond Q15');
+q15_assert(q15_contains($status, '| Current program gate | **Full Automated Quality Platform — Q16** |'), 'project status advances beyond Q15');
+q15_assert(q15_contains($readme, 'The current program gate is **Full Automated Quality Platform — Q16**.'), 'README advances beyond Q15');
 q15_assert(q15_contains($roadmap, 'Q17 payment-runtime checkout-orchestration/lifecycle'), 'roadmap names the finite Q17 closeout');
-q15_assert(q15_contains($quality, 'No Q18 is authorized'), 'quality record prohibits silent Q-sequence extension');
+q15_assert(q15_contains($quality, 'enterprise-critical risk'), 'quality record prohibits meaningless Q-sequence extension');
+
+foreach (array(
+    '01a06d45fcc0bc3d08da8d58f6be177b232bb1d4',
+    'ea5b0b3880a99999577d51a9ed5f6a8c77a52cf0',
+    'Quality Gates run #253',
+    '144 tests / 899 assertions',
+    'Q15 **107/0**',
+    'a4bbb05021dbded73072c0ba108a18245b60ad88',
+    'Quality Gates run #254',
+    'implementation branch deleted',
+) as $evidence) {
+    q15_assert(q15_contains($quality, $evidence), "Q15 closure evidence is pinned: {$evidence}");
+}
 
 foreach (array(
     'b2d8630a5903af8f26a7f770a2a80547c871f7c6',
