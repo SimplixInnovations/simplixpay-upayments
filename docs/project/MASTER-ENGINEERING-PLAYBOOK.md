@@ -809,7 +809,7 @@ Model events such as:
 
 # SECURITY THREAT-MODEL AUDIT
 
-**Program status:** DONE / VERIFIED. This section retains the security phase scope as a historical engineering standard; the current program gate is **Full Automated Quality Platform — Q16**.
+**Program status:** DONE / VERIFIED. This section retains the security phase scope as a historical engineering standard; the current program gate is **Full Automated Quality Platform — Q17**.
 
 ## 30. Scope
 
