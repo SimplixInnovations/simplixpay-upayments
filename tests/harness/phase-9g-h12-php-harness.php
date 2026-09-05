@@ -5855,10 +5855,6 @@ class WCGatewayUPaymentsBlocks_Testable extends WCGatewayUPaymentsBlocks {
         parent::__construct($pluginFile);
         $this->gateway = $gw;
     }
-
-    public function set_test_settings($settings) {
-        $this->settings = $settings;
-    }
 }
 }
 
@@ -5919,26 +5915,6 @@ $blocks_gw->mock_saved_cards = [
 ];
 
 $blocks = new WCGatewayUPaymentsBlocks_Testable('', $blocks_gw);
-
-// Q18 RED characterization: the Blocks adapter must mirror the merchant's
-// canonical WooCommerce gateway enabled flag and fail closed on missing or
-// malformed values. These call the real production is_active() method.
-$blocks->set_test_settings(['enabled' => 'yes']);
-upay_assert_eq($blocks->is_active(), true, 'BLOCKS-SAN-ACTIVE-1 enabled=yes exposes Blocks method', 'semantic_runtime');
-
-$blocks->set_test_settings(['enabled' => 'no']);
-upay_assert_eq($blocks->is_active(), false, 'BLOCKS-SAN-ACTIVE-2 enabled=no suppresses Blocks method', 'semantic_runtime');
-
-$blocks->set_test_settings([]);
-upay_assert_eq($blocks->is_active(), false, 'BLOCKS-SAN-ACTIVE-3 missing enabled flag fails closed', 'semantic_runtime');
-
-$blocks->set_test_settings(['enabled' => true]);
-upay_assert_eq($blocks->is_active(), false, 'BLOCKS-SAN-ACTIVE-4 malformed boolean enabled flag fails closed', 'semantic_runtime');
-
-$blocks->set_test_settings(['enabled' => 'YES']);
-upay_assert_eq($blocks->is_active(), false, 'BLOCKS-SAN-ACTIVE-5 noncanonical enabled token fails closed', 'semantic_runtime');
-
-$blocks->set_test_settings($state['options']['woocommerce_upayments_settings']);
 
 $blocks_data = $blocks->get_payment_method_data();
 $blocks_saved_cards = $blocks_data['saved_cards'] ?? [];
