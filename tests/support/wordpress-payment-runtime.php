@@ -60,6 +60,10 @@ class WC_Order {
     public function get_total() { return $this->total; }
     public function get_items($type = '') { return $this->items; }
     public function get_billing_phone() { return $this->billing_phone; }
+    public function get_meta($key) { return ''; }
+    public function add_meta_data($key, $value, $unique = false) {}
+    public function delete_meta_data($key) {}
+    public function save_meta_data() {}
 }
 
 final class SimplixPay_Test_Payment_Runtime_Session {
