@@ -60,6 +60,7 @@ jobs:
             tests/harness/quality-platform-migration-admin-harness.php
             tests/harness/quality-platform-subscription-presentation-harness.php
             tests/harness/quality-platform-migration-core-harness.php
+            tests/harness/quality-platform-payment-runtime-harness.php
             docs/project/PROJECT-STATUS.md
             docs/project/PHASE-0-RELEASE-IDENTITY.md
             docs/project/PHASE-9I-MIGRATION.md
@@ -467,6 +468,9 @@ jobs:
 
       - name: Quality platform migration-core harness
         run: php tests/harness/quality-platform-migration-core-harness.php
+
+      - name: Quality platform payment-runtime harness
+        run: php tests/harness/quality-platform-payment-runtime-harness.php
 
       - name: H12 PHP harness
         run: php tests/harness/phase-9g-h12-php-harness.php
