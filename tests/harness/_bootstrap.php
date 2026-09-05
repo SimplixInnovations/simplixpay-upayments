@@ -97,6 +97,7 @@ $GLOBALS['__upay_test_state'] = [
     'bootstrap_call_count' => 0,
     // process_payment call counter (so we can detect re-entrancy)
     'process_payment_calls' => 0,
+    'uuid_counter' => 0,
 ];
 
 function &upay_test_state() {
@@ -134,6 +135,7 @@ function upay_reset_state() {
         'force_lock_acquire_failure' => false,
         'bootstrap_call_count' => 0,
         'process_payment_calls' => 0,
+        'uuid_counter' => 0,
     ];
 }
 
@@ -149,6 +151,12 @@ if (!defined('WP_CONTENT_DIR')) { define('WP_CONTENT_DIR', $ROOT . '/wp-content'
 if (!defined('MINUTE_IN_SECONDS')) { define('MINUTE_IN_SECONDS', 60); }
 if (!defined('HOUR_IN_SECONDS')) { define('HOUR_IN_SECONDS', 3600); }
 if (!defined('DAY_IN_SECONDS')) { define('DAY_IN_SECONDS', 86400); }
+
+function wp_generate_uuid4() {
+    $state =& upay_test_state();
+    $state['uuid_counter'] = isset($state['uuid_counter']) ? ((int) $state['uuid_counter'] + 1) : 1;
+    return sprintf('00000000-0000-4000-8000-%012x', $state['uuid_counter']);
+}
 
 function get_option($name, $default = false) {
     $state =& upay_test_state();

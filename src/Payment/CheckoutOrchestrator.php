@@ -34,12 +34,14 @@ class CheckoutOrchestrator {
             global $woocommerce;
 
             // Section Y: Defensive order boundary.
-            if (!is_numeric($order_id) || (int) $order_id <= 0) {
+            $parsed_order_id = self::parse_order_id($order_id);
+            if ($parsed_order_id === null) {
                 wc_add_notice(__('Payment request could not be completed. Please try again.', $gateway->domain), 'error');
                 return array('result' => 'failure', 'redirect' => wc_get_checkout_url());
             }
+            $order_id = $parsed_order_id;
 
-            $order = wc_get_order((int) $order_id);
+            $order = wc_get_order($order_id);
             if (!$order || !($order instanceof \WC_Order)) {
                 wc_add_notice(__('Payment request could not be completed. Please try again.', $gateway->domain), 'error');
                 return array('result' => 'failure', 'redirect' => wc_get_checkout_url());
@@ -53,7 +55,7 @@ class CheckoutOrchestrator {
             $error_url = site_url() . "/?wc-api=wc_upayments&page=error&wc_order_id=" . $order_id;
             $ipn_url = site_url() . "/?wc-api=wc_upayments&wc_order_id=" . $order_id;
 
-            $unique_order_id = md5($order_id * time());
+            $unique_order_id = md5(wp_generate_uuid4());
             $product_name = [];
             $product_price = [];
             $product_qty = [];
@@ -76,7 +78,7 @@ class CheckoutOrchestrator {
                     return array('result' => 'failure', 'redirect' => wc_get_checkout_url());
                 }
 
-                /** @var WC_Order_Item_Product $item */
+                /** @var \WC_Order_Item_Product $item */
                 $product = $item->get_product();
                 if (!$product || !($product instanceof \WC_Product)) {
                     $gateway->log('Unloadable product in order.', 'warning');
@@ -307,7 +309,8 @@ class CheckoutOrchestrator {
                 // Section AC: Reject non-scalar security-sensitive fields.
                 // Presence-aware: $_POST is treated as array for field presence.
                 $gateway->log("Whitelabled: " . ($whitelabled ? "true" : "false"));
-                $classic_post = isset($_POST) && is_array($_POST) ? $_POST : array();
+                // WooCommerce validates the checkout request before invoking gateway process_payment().
+                $classic_post = $_POST; // phpcs:ignore WordPress.Security.NonceVerification -- Nonce ownership is upstream in Woo checkout.
 
                 if (CheckoutPayload::field_present($classic_post, 'save_card')) {
                     if (!is_scalar($classic_post['save_card'])) {
@@ -418,7 +421,7 @@ class CheckoutOrchestrator {
             // Section C: Source validation only for Whitelabel.
             if ($whitelabled) {
                 // Payment source server allowlist.
-                if ($src === null || !CheckoutPayload::is_valid_payment_source($src)) {
+                if (!CheckoutPayload::is_valid_payment_source($src)) {
                     $gateway->log('Invalid payment source rejected.', 'warning');
                     WC()->session->set("refresh_totals", true);
                     wc_add_notice(__("Please select a valid UPayments payment method.", $gateway->domain), "error");
@@ -426,8 +429,7 @@ class CheckoutOrchestrator {
                 }
 
                 // Whitelabel enabled-method check: fail closed if payment map unavailable.
-                if (!is_array($payment_data)
-                    || !isset($payment_data['payment'])
+                if (!isset($payment_data['payment'])
                     || !is_array($payment_data['payment'])
                 ) {
                     $gateway->log('Whitelabel: payment method map unavailable.', 'warning');
@@ -440,13 +442,6 @@ class CheckoutOrchestrator {
                     WC()->session->set("refresh_totals", true);
                     wc_add_notice(__("Please select a valid UPayments payment method.", $gateway->domain), "error");
                     return ["result" => "failure", "redirect" => wc_get_checkout_url()];
-                }
-            } else {
-                // Non-Whitelabel: $src must be null (hosted checkout).
-                if ($src !== null) {
-                    $gateway->log('Non-Whitelabel: source must be null.', 'warning');
-                    wc_add_notice(__('Payment request could not be completed. Please try again.', $gateway->domain), 'error');
-                    return array('result' => 'failure', 'redirect' => wc_get_checkout_url());
                 }
             }
 
@@ -525,7 +520,8 @@ class CheckoutOrchestrator {
 
             // === EFFECTIVE SAVE CARD (Section U) ===
             // After contract validation: only new CC + explicit opt-in.
-            $isSaveCard = $isSaveCardRequested && !$has_selected_card;
+            // A validated save-card request has already rejected an existing selected card.
+            $isSaveCard = $isSaveCardRequested;
 
             // Read phone through WC Order API (works for both Classic and Blocks).
             $billing_phone_raw = $order->get_billing_phone();
@@ -585,7 +581,7 @@ class CheckoutOrchestrator {
             if (!is_string($currency)) {
                 $currency = strtoupper((string) $order_data["currency"]);
             }
-            if (!preg_match('/^[A-Z]{3}$/', $currency)) {
+            if (!preg_match('/^[A-Z]{3}\\z/', $currency)) {
                 wc_add_notice(__('Payment request could not be completed. Please try again.', $gateway->domain), 'error');
                 return array('result' => 'failure', 'redirect' => wc_get_checkout_url());
             }
@@ -646,11 +642,11 @@ class CheckoutOrchestrator {
                 'notificationUrl' => $ipn_url,
             );
             foreach ($callback_urls as $cb_url) {
-                if (!is_scalar($cb_url) || (string) $cb_url === '' || strlen((string) $cb_url) > 250) {
+                if (strlen($cb_url) > 250) {
                     wc_add_notice(__('Payment request could not be completed. Please try again.', $gateway->domain), 'error');
                     return array('result' => 'failure', 'redirect' => wc_get_checkout_url());
                 }
-                $parsed = wp_parse_url((string) $cb_url);
+                $parsed = wp_parse_url($cb_url);
                 if (!$parsed
                     || !isset($parsed['scheme'])
                     || !isset($parsed['host'])
@@ -675,11 +671,11 @@ class CheckoutOrchestrator {
             if ($email !== '' && strlen($email) <= 50 && filter_var($email, FILTER_VALIDATE_EMAIL)) {
                 $customer_data['email'] = $email;
             }
-            if ($customer_unique_id !== '' && is_scalar($customer_unique_id) && strlen((string) $customer_unique_id) <= 50) {
-                $customer_data['uniqueId'] = (string) $customer_unique_id;
+            if ($customer_unique_id !== '' && strlen($customer_unique_id) <= 50) {
+                $customer_data['uniqueId'] = $customer_unique_id;
             }
-            if ($provider_mobile !== '' && is_scalar($provider_mobile)) {
-                $customer_data['mobile'] = (string) $provider_mobile;
+            if ($provider_mobile !== '') {
+                $customer_data['mobile'] = $provider_mobile;
             }
 
             // MultiMerchant validation.
@@ -701,7 +697,7 @@ class CheckoutOrchestrator {
                 // Provider documentation states 25 chars, but observed real-world
                 // values reach 30 (e.g. Kuwait IBAN); we accept 15-34 to avoid
                 // over-rejecting while still catching wholesale garbage.
-                if (!preg_match('/^[A-Z]{2}[0-9]{2}[A-Z0-9]{11,30}$/', $iban)) {
+                if (!preg_match('/^[A-Z]{2}[0-9]{2}[A-Z0-9]{11,30}\\z/', $iban)) {
                     $gateway->log('MultiMerchant: invalid IBAN format.', 'warning');
                     wc_add_notice(__('Payment request could not be completed. Please try again.', $gateway->domain), 'error');
                     return array('result' => 'failure', 'redirect' => wc_get_checkout_url());
@@ -835,7 +831,7 @@ class CheckoutOrchestrator {
             );
 
             // Whitelabel: add paymentGateway.
-            if ($whitelabled && $src !== null) {
+            if ($whitelabled) {
                 // Section AS: Source string is sent verbatim — no invented length
                 // ceiling. Provider documents the field but does not bound it.
                 // Future invariants can be added explicitly if documentation confirms a bound.
@@ -1016,7 +1012,7 @@ class CheckoutOrchestrator {
                     $user_id,
                     $gateway->apiKey,
                     $gateway->getMode(),
-                    function($candidate) use ($gateway) {
+                    function($candidate) {
                         $params = wp_json_encode(array('customerUniqueToken' => $candidate));
                         return $this->execute_request('create-customer-unique-token', 'POST', $params);
                     }
@@ -1262,9 +1258,8 @@ class CheckoutOrchestrator {
                     return ["result" => "failure", "redirect" => wc_get_checkout_url()];
                 }
 
-                // C/D. Status=true: require structural data.
-                if ($result['status'] === true){
-                    // Require data to be an array.
+                // C/D. Status=true is the only remaining boolean state.
+                // Require data to be an array.
                     if (!isset($result['data']) || !is_array($result['data'])) {
                         $gateway->log('Charge response: status=true but data missing/invalid.', 'warning');
                         WC()->session->set("refresh_totals", true);
@@ -1314,13 +1309,6 @@ class CheckoutOrchestrator {
                     $order->save_meta_data();
 
                     return ["result" => "success", "redirect" => $redirect_url];
-                }
-
-                // Unrecognized response structure.
-                $gateway->log('Charge response: unrecognized structure.', 'warning');
-                WC()->session->set("refresh_totals", true);
-                wc_add_notice(__("Payment request could not be completed. Please try again.", $gateway->domain), "error");
-                return ["result" => "failure", "redirect" => wc_get_checkout_url()];
 
             } catch (\Throwable $e) {
                 // Fail-closed: catch TypeError (PHP 8+) and Exception (PHP 7.2+).
@@ -1330,5 +1318,16 @@ class CheckoutOrchestrator {
                 wc_add_notice(__("Payment request could not be completed. Please try again.", $gateway->domain), "error");
                 return ["result" => "failure", "redirect" => wc_get_checkout_url()];
             }
+        }
+
+        private static function parse_order_id($value) {
+            if (is_int($value)) {
+                return $value > 0 ? $value : null;
+            }
+            if (!is_string($value) || strlen($value) > 18 || !preg_match('/^[1-9][0-9]*\\z/', $value)) {
+                return null;
+            }
+            $order_id = (int) $value;
+            return $order_id > 0 ? $order_id : null;
         }
 }

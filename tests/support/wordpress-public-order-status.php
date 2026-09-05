@@ -36,9 +36,11 @@ function simplixpay_test_reset_public_order_status() {
     $GLOBALS['simplixpay_test_status_orders'] = array();
     $GLOBALS['simplixpay_test_status_logged_in'] = false;
     $GLOBALS['simplixpay_test_status_user_id'] = 0;
+    $GLOBALS['simplixpay_test_wc_get_order_calls'] = array();
 }
 
 function wc_get_order($order_id) {
+    $GLOBALS['simplixpay_test_wc_get_order_calls'][] = $order_id;
     $order_id = (int) $order_id;
     return isset($GLOBALS['simplixpay_test_status_orders'][$order_id])
         ? $GLOBALS['simplixpay_test_status_orders'][$order_id]

@@ -9,12 +9,15 @@ parameters:
         - tests/phpstan/migration-admin-stubs.php
         - tests/phpstan/migration-core-stubs.php
         - tests/phpstan/subscription-presentation-stubs.php
+        - tests/phpstan/payment-runtime-stubs.php
     paths:
         - src/Payment/CheckoutPayload.php
         - src/Payment/OrderLock.php
         - src/Payment/ProviderResult.php
         - src/Payment/StatusRateGate.php
         - src/Payment/StatusVerifier.php
+        - src/Payment/CheckoutOrchestrator.php
+        - src/Payment/PaymentLifecycle.php
         - src/Provider/EndpointResolver.php
         - src/Provider/PaymentMethodAvailability.php
         - src/Admin/GatewaySettings.php

@@ -65,7 +65,9 @@ Keep `tests/harness/quality-platform-migration-admin-harness.php` mandatory afte
 
 Keep `tests/harness/quality-platform-subscription-presentation-harness.php` mandatory after Q15.
 
-Keep `tests/harness/quality-platform-migration-core-harness.php` mandatory after Q16. Q17 is the planned Quality Platform closeout for payment runtime. Do not invent later Q gates merely to extend the sequence; an additional gate requires a concrete unresolved enterprise-critical risk and an explicitly bounded contract.
+Keep `tests/harness/quality-platform-migration-core-harness.php` mandatory after Q16.
+
+Keep `tests/harness/quality-platform-payment-runtime-harness.php` mandatory during and after Q17. Q17 is the planned Quality Platform closeout for payment runtime. Do not invent later Q gates merely to extend the sequence; an additional gate requires a concrete unresolved enterprise-critical risk and an explicitly bounded contract.
 
 ## Protected compatibility identities
 
@@ -166,6 +168,7 @@ php tests/harness/quality-platform-migration-cli-harness.php
 php tests/harness/quality-platform-migration-admin-harness.php
 php tests/harness/quality-platform-subscription-presentation-harness.php
 php tests/harness/quality-platform-migration-core-harness.php
+php tests/harness/quality-platform-payment-runtime-harness.php
 php tests/harness/security-threat-model-harness.php
 php tests/harness/phase-9g-h12-php-harness.php
 node --check tests/harness/phase-9g-h12-blocks-harness.js

@@ -93,9 +93,9 @@ foreach (array(
 ) as $evidence) {
     q10_assert(q10_contains($quality, $evidence), "Q10 closure evidence is pinned: {$evidence}");
 }
-q10_assert(q10_contains($quality, '**Status:** Q16 / IMPLEMENTATION'), 'quality record advances beyond Q10');
-q10_assert(q10_contains($status, '| Current program gate | **Full Automated Quality Platform — Q16** |'), 'project status advances beyond Q10');
-q10_assert(q10_contains($readme, 'The current program gate is **Full Automated Quality Platform — Q16**.'), 'README advances beyond Q10');
+q10_assert(q10_contains($quality, 'Q16 is DONE / VERIFIED'), 'quality record advances beyond Q10');
+q10_assert(q10_contains($status, '| Quality Platform Q16 migration-core analysis | **DONE / VERIFIED** |'), 'project status advances beyond Q10');
+q10_assert(q10_contains($readme, 'Quality Platform Q1-Q16 are **DONE / VERIFIED**.'), 'README advances beyond Q10');
 q10_assert(!q10_contains($playbook, 'Last verified implementation main SHA: 02a1ad24d262c3cb6d14653bf48aa31c3796ae4e'), 'playbook does not mistake verified Q10 merge for current main');
 q10_assert(!q10_contains($playbook, 'Canonical implementation tree: eae2fe0d0f0f54bef793ed6e58c9837bd01403ab'), 'playbook does not mistake verified Q10 tree for current tree');
 q10_assert(!q10_contains($handoff, 'CURRENT / Q10'), 'handoff rejects stale current-Q10 marker');
