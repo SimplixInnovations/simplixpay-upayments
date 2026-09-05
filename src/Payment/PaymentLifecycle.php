@@ -45,8 +45,9 @@ final class PaymentLifecycle {
      * WC-API entrypoint. The historical get_order_status poll is intercepted here before inherited priority 10.
      */
     public static function handle_callback() {
-        $get = $_GET;
-        $post = $_POST;
+        // Provider callbacks cannot carry a WordPress nonce; authority comes only from authenticated status binding.
+        $get = $_GET; // phpcs:ignore WordPress.Security.NonceVerification -- Public callback values are untrusted routing hints only.
+        $post = $_POST; // phpcs:ignore WordPress.Security.NonceVerification -- Provider status verification supplies payment authority.
 
         if (array_key_exists('get_order_status', $get)) {
             PublicOrderStatus::handle();
