@@ -462,12 +462,14 @@ final class MigrationPreflight {
         $key_like = $wpdb->esc_like($prefix) . '%';
         $token_like = '%' . $wpdb->esc_like($token) . '%';
         $limit = self::GLOBAL_PROVENANCE_LIMIT + 1;
-        $sql = $wpdb->prepare(
-            "SELECT user_id, meta_key, meta_value FROM {$wpdb->usermeta} WHERE meta_key LIKE %s AND meta_value LIKE %s LIMIT {$limit}",
-            $key_like,
-            $token_like
+        $rows = $wpdb->get_results(
+            $wpdb->prepare(
+                "SELECT user_id, meta_key, meta_value FROM {$wpdb->usermeta} WHERE meta_key LIKE %s AND meta_value LIKE %s LIMIT %d",
+                $key_like,
+                $token_like,
+                $limit
+            )
         );
-        $rows = $wpdb->get_results($sql);
         if (!is_array($rows)) {
             return array('status' => self::INDETERMINATE, 'reason' => 'provenance_query_failed');
         }
@@ -513,11 +515,12 @@ final class MigrationPreflight {
         }
         $prefix = '_upay_customer_token_v2_b' . (string) get_current_blog_id() . '_';
         $like = $wpdb->esc_like($prefix) . '%';
-        $sql = $wpdb->prepare(
-            "SELECT meta_key FROM {$wpdb->usermeta} WHERE meta_key LIKE %s LIMIT 1",
-            $like
+        $value = $wpdb->get_var(
+            $wpdb->prepare(
+                "SELECT meta_key FROM {$wpdb->usermeta} WHERE meta_key LIKE %s LIMIT 1",
+                $like
+            )
         );
-        $value = $wpdb->get_var($sql);
         if ($value === false) {
             return array('state' => self::INDETERMINATE, 'reason' => 'provenance_query_failed', 'exists' => false);
         }
