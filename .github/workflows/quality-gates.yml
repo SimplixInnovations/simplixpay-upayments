@@ -250,6 +250,7 @@ jobs:
           reject_across_live_records 'Current program gate: **Full Automated Quality Platform — Q16**'
           reject_across_live_records 'CURRENT / Q16'
           reject_across_live_records '**Status:** Q16 / IMPLEMENTATION'
+          reject_across_live_records 'current program gate is **Full Automated Quality Platform — Q16**'
 
           if grep -FnH -F -- '**Current program status:** DISCOVERY / CURRENT GATE.' docs/project/MASTER-ENGINEERING-PLAYBOOK.md; then
             echo 'Obsolete Security program-status marker detected in Master Playbook.'
