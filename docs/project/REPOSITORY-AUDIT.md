@@ -222,7 +222,7 @@ The current tranche must preserve the verified architecture map while establishi
 - unchanged Q1 dependency, audit, syntax and required-check controls;
 - permanent Q1/Q2/Q3/Q4/Q5/Q6/Q7/Q8/Q9/Q10/Q11/Q12/Q13/Q14 and historical regression gates.
 
-The Quality Platform closes at Q17: Q16 owns only migration core and Q17 owns only payment runtime. No Q18 is planned or authorized by this ledger.
+Q17 remains the planned Quality Platform closeout: Q16 owns only migration core and Q17 owns only payment runtime. Do not extend the sequence for numbering alone; any later Q gate requires a concrete separately bounded enterprise-critical risk that is not better owned by certification, product-readiness or release-engineering work.
 
 Do not reinterpret green tooling as platform certification or modify payment runtime to satisfy a tool. Closed Architecture/Security/Provider/H12/Phase 9I contracts remain required regressions throughout quality-platform work.
 
