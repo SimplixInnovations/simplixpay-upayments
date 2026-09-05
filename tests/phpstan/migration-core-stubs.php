@@ -45,5 +45,13 @@ namespace UPayments\Token {
         public static function create_provenance($user_id, $api_key, $is_test_mode, $scope, $generation, $kind, $token, $source) {}
         /** @return bool */
         public static function force_refresh_user_meta($user_id) {}
+        /** @return mixed */
+        public static function get_or_establish_token($user_id, $api_key, $is_test_mode, $scope, $legacy_token = null) {}
+        /** @return mixed */
+        public static function validate_token_runtime_context($user_id, $api_key, $is_test_mode, $scope, $token) {}
+        /** @return mixed */
+        public static function verify_card_membership($token, $card_token) {}
+        /** @return bool */
+        public static function clear_stale_attempt_metadata($order) {}
     }
 }
