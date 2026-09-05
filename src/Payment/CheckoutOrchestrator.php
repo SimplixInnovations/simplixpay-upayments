@@ -309,7 +309,8 @@ class CheckoutOrchestrator {
                 // Section AC: Reject non-scalar security-sensitive fields.
                 // Presence-aware: $_POST is treated as array for field presence.
                 $gateway->log("Whitelabled: " . ($whitelabled ? "true" : "false"));
-                $classic_post = $_POST;
+                // WooCommerce validates the checkout request before invoking gateway process_payment().
+                $classic_post = $_POST; // phpcs:ignore WordPress.Security.NonceVerification -- Nonce ownership is upstream in Woo checkout.
 
                 if (CheckoutPayload::field_present($classic_post, 'save_card')) {
                     if (!is_scalar($classic_post['save_card'])) {
