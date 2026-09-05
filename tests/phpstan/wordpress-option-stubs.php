@@ -79,6 +79,9 @@ function __($text, $domain = 'default') {}
 function sanitize_text_field($value) {}
 
 /** @return string */
+function sanitize_key($value) {}
+
+/** @return string */
 function wc_clean($value) {}
 
 /** @return string */
