@@ -6,13 +6,6 @@ namespace {
     }
 }
 
-namespace UPayments\Subscription\Checkout {
-    final class Fields {
-        public static function init() {
-        }
-    }
-}
-
 namespace UPayments\Subscription {
     final class Manager {
         public static function init() {
