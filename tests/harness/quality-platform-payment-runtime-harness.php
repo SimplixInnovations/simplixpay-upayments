@@ -123,13 +123,27 @@ q17_assert(q17_has($lifecycle, 'if (self::is_refunded($order) || self::is_verifi
 q17_assert(q17_has($lifecycle, "self::log('transaction_id_conflict', 'warning')"), 'captured path fails closed on transaction conflict');
 q17_assert(q17_has($lifecycle, '$order->payment_complete($payment_id)'), 'captured path keeps canonical Woo payment completion');
 q17_assert(q17_has($lifecycle, "self::log('payment_complete_postcondition_failed', 'warning')"), 'capture requires payment-complete postcondition');
+$payment_complete_position = strpos($lifecycle, '$order->payment_complete($payment_id)');
+$legacy_capture_stage_position = strpos($lifecycle, "'UPayments_Result' => 'CAPTURED'");
 $postcondition_position = strpos($lifecycle, "self::log('payment_complete_postcondition_failed', 'warning')");
-$capture_meta_position = strpos($lifecycle, "\$order->update_meta_data('UPayments_Result', 'CAPTURED')");
+$verified_capture_position = strpos($lifecycle, "$order->update_meta_data('_upay_verified_capture', 1)");
+q17_assert(
+    $payment_complete_position !== false
+    && $legacy_capture_stage_position !== false
+    && $legacy_capture_stage_position < $payment_complete_position,
+    'legacy provider capture metadata is staged before Woo payment-completion hooks'
+);
 q17_assert(
     $postcondition_position !== false
-    && $capture_meta_position !== false
-    && $capture_meta_position > $postcondition_position,
-    'legacy CAPTURED metadata is staged only after Woo paid-state postcondition'
+    && $verified_capture_position !== false
+    && $verified_capture_position > $postcondition_position,
+    'Simplix verified-capture truth remains gated by Woo paid-state postcondition'
+);
+q17_assert(
+    q17_has($lifecycle, '$legacy_capture_snapshot')
+    && q17_has($lifecycle, '$order->delete_meta_data($key)')
+    && q17_has($lifecycle, "$order->update_meta_data($key, $snapshot['value'])"),
+    'failed or throwing payment completion restores staged legacy capture metadata'
 );
 q17_assert(
     q17_has($lifecycle, 'Provider callbacks cannot carry a WordPress nonce; authority comes only from authenticated status binding.'),
