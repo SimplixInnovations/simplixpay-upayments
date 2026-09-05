@@ -29,9 +29,12 @@ final class MigrationBatch {
             return array('ok' => false, 'reason' => 'user_ids_missing', 'user_ids' => array());
         }
 
-        /** @var mixed $parts */
+        if (preg_match('/^[\s,]+\z/', $raw) === 1) {
+            return array('ok' => false, 'reason' => 'user_ids_missing', 'user_ids' => array());
+        }
+
         $parts = preg_split('/[\s,]+/', $raw, -1, PREG_SPLIT_NO_EMPTY);
-        if (!is_array($parts) || count($parts) === 0) {
+        if (!is_array($parts)) {
             return array('ok' => false, 'reason' => 'user_ids_missing', 'user_ids' => array());
         }
         if (count($parts) > self::MAX_INPUT_USERS) {
