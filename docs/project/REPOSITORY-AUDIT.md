@@ -217,10 +217,10 @@ The required custom harness stack now includes Phase 0, all Phase 9I suites, Pro
 
 The current tranche must preserve the verified architecture map while establishing:
 
-- PHPUnit characterization of product/admin schema, product-meta authorization, malformed cart/order payloads, account ownership/actions, exact filter allowlists, dates and escaped output;
-- baseline-free PHPStan level 5 and PHPCS ownership of `Subscription/Presentation.php` beside the Q1-Q14 modules;
-- unchanged Q1 dependency, audit, syntax and required-check controls;
-- permanent Q1/Q2/Q3/Q4/Q5/Q6/Q7/Q8/Q9/Q10/Q11/Q12/Q13/Q14 and historical regression gates.
+- deterministic PHPUnit characterization of migration preflight, bounded batch/checkpoint and executor/idempotency behavior across `src/Migration/MigrationPreflight.php`, `src/Migration/MigrationBatch.php` and `src/Migration/MigrationExecutor.php`;
+- baseline-free PHPStan level 5 / PHP 7.2 and risk-focused PHPCS ownership of the three migration-core classes beside the Q1-Q15 modules;
+- unchanged dependency-audit, distributed-syntax, required-check, Phase 9I, provider/payment, security and protected H12 controls;
+- permanent Q1/Q2/Q3/Q4/Q5/Q6/Q7/Q8/Q9/Q10/Q11/Q12/Q13/Q14/Q15/Q16 and historical regression gates.
 
 Q17 remains the planned Quality Platform closeout: Q16 owns only migration core and Q17 owns only payment runtime. Do not extend the sequence for numbering alone; any later Q gate requires a concrete separately bounded enterprise-critical risk that is not better owned by certification, product-readiness or release-engineering work.
 
