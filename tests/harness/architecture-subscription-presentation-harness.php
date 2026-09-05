@@ -63,6 +63,7 @@ function esc_js($value) { return addslashes((string) $value); }
 function esc_html_e($text, $domain = null) { echo esc_html($text); }
 function wp_kses_post($value) { return (string) $value; }
 function sanitize_text_field($value) { return trim(strip_tags((string) $value)); }
+function sanitize_key($value) { return (string) preg_replace('/[^a-z0-9_\-]/', '', strtolower((string) $value)); }
 function wp_unslash($value) { return $value; }
 function absint($value) { return abs((int) $value); }
 function wp_verify_nonce($nonce, $action) { global $a4_nonce_valid; return $a4_nonce_valid; }
