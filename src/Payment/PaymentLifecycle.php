@@ -448,15 +448,6 @@ final class PaymentLifecycle {
             return false;
         }
 
-        $order->update_meta_data('UPayments_Result', 'CAPTURED');
-        $order->update_meta_data('UPayments_PaymentID', $payment_id);
-        $order->update_meta_data('UPayments_TrackID', (string) $transaction['track_id']);
-        if (isset($transaction['payment_type']) && is_scalar($transaction['payment_type'])) {
-            $order->update_meta_data('UPayments_payment_type', (string) $transaction['payment_type']);
-        }
-        $order->update_meta_data('UPayments_Ref', (string) $transaction['reference']);
-        $order->update_meta_data('_payment_method_title', 'UPayments');
-
         $already_paid = (bool) $order->is_paid();
         if ($already_paid) {
             if ($existing_transaction_id === '' && method_exists($order, 'set_transaction_id')) {
@@ -493,6 +484,17 @@ final class PaymentLifecycle {
             return false;
         }
 
+        // Persist provider-facing legacy capture metadata only after WooCommerce
+        // confirms the paid-state + transaction-id postcondition. This prevents a
+        // failed payment_complete() path from durably presenting CAPTURED evidence.
+        $order->update_meta_data('UPayments_Result', 'CAPTURED');
+        $order->update_meta_data('UPayments_PaymentID', $payment_id);
+        $order->update_meta_data('UPayments_TrackID', (string) $transaction['track_id']);
+        if (isset($transaction['payment_type']) && is_scalar($transaction['payment_type'])) {
+            $order->update_meta_data('UPayments_payment_type', (string) $transaction['payment_type']);
+        }
+        $order->update_meta_data('UPayments_Ref', (string) $transaction['reference']);
+        $order->update_meta_data('_payment_method_title', 'UPayments');
         $order->update_meta_data('_upay_verified_capture', 1);
         $order->update_meta_data('UPayments_webhook_triggered', 1);
         $order->save();
