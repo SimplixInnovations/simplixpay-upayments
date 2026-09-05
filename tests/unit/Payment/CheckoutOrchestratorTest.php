@@ -172,7 +172,7 @@ final class CheckoutOrchestratorTest extends TestCase {
         self::assertSame(array(42), $GLOBALS['simplixpay_test_wc_get_order_calls']);
     }
 
-    public function test_store_api_rejects_explicitly_opted_out_subscription_product_before_request_body(): void {
+    public function test_store_api_rejects_explicitly_opted_out_subscription_product_before_provider_request(): void {
         if (!defined('REST_REQUEST')) {
             define('REST_REQUEST', true);
         }
