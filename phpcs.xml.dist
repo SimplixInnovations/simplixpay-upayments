@@ -21,7 +21,7 @@
     <file>src/Subscription/Composition.php</file>
     <file>src/Subscription/WCProductCustomType.php</file>
     <file>src/Migration/MigrationCliCommand.php</file>
-    <file>src/Migration/MigrationAdmin.php</file>
+    <file>src/Migration/MigrationAdmin.php</file>\n    <file>src/Migration/MigrationPreflight.php</file>\n    <file>src/Migration/MigrationBatch.php</file>\n    <file>src/Migration/MigrationExecutor.php</file>
     <file>src/Subscription/Presentation.php</file>
 
     <exclude-pattern>vendor/*</exclude-pattern>
