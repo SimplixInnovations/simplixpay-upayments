@@ -126,7 +126,7 @@ q17_assert(q17_has($lifecycle, "self::log('payment_complete_postcondition_failed
 $payment_complete_position = strpos($lifecycle, '$order->payment_complete($payment_id)');
 $legacy_capture_stage_position = strpos($lifecycle, "'UPayments_Result' => 'CAPTURED'");
 $postcondition_position = strpos($lifecycle, "self::log('payment_complete_postcondition_failed', 'warning')");
-$verified_capture_position = strpos($lifecycle, "$order->update_meta_data('_upay_verified_capture', 1)");
+$verified_capture_position = strpos($lifecycle, "\$order->update_meta_data('_upay_verified_capture', 1)");
 q17_assert(
     $payment_complete_position !== false
     && $legacy_capture_stage_position !== false
@@ -142,7 +142,7 @@ q17_assert(
 q17_assert(
     q17_has($lifecycle, '$legacy_capture_snapshot')
     && q17_has($lifecycle, '$order->delete_meta_data($key)')
-    && q17_has($lifecycle, "$order->update_meta_data($key, $snapshot['value'])"),
+    && q17_has($lifecycle, '$order->update_meta_data($key, $snapshot[\'value\'])'),
     'failed or throwing payment completion restores staged legacy capture metadata'
 );
 q17_assert(
