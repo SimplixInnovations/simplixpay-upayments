@@ -23,7 +23,7 @@ class wpdb {
     /** @return string */
     public function esc_like($value) {}
 
-    /** @return array|null */
+    /** @return mixed */
     public function get_results($query) {}
 
     /**
@@ -138,7 +138,7 @@ function get_user_meta($user_id, $key, $single = false) {}
 /** @return int|bool */
 function update_user_meta($user_id, $key, $value, $prev_value = '') {}
 
-/** @return object */
+/** @return mixed */
 function wc_get_orders($args = array()) {}
 
 /** @return mixed */
