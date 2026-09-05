@@ -111,7 +111,7 @@ The project is still in pre-release engineering hardening. Entries below are eng
 - Expands baseline-free PHPStan level 5/PHP 7.2 and risk-focused PHPCS ownership into `CheckoutOrchestrator.php` and `PaymentLifecycle.php`.
 - Adds process-isolated deterministic PHPUnit characterization for checkout/reconciliation order-ID boundaries, callback merge behavior and provider-bound payment-runtime inputs.
 - Hardens canonical Woo order IDs, terminal-newline currency/IBAN boundaries and same-second Charge-attempt identity while preserving the provider-facing 32-lowercase-hex order-ID shape.
-- Preserves authenticated status binding, lock/rebind TOCTOU protection, attempt-scoped cursor rotation, Woo `payment_complete()` semantics, no-resurrection rules and bounded reconciliation.
+- Preserves authenticated status binding, lock/rebind TOCTOU protection, attempt-scoped cursor rotation, Woo `payment_complete()` semantics, no-resurrection rules and bounded reconciliation; legacy CAPTURED/payment metadata is now staged only after Woo paid-state + transaction-ID postconditions succeed.
 - Q17 is the current Quality Platform closeout; after it, run the enterprise-risk audit and move to Platform Certification unless a concrete separately bounded enterprise-critical risk justifies another Quality Platform gate.
 
 ### Full Automated Quality Platform — Q16 Migration Core Analysis — DONE / VERIFIED
