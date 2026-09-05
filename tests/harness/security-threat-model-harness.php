@@ -137,9 +137,17 @@ sec_assert(strpos($new_template, '$_REQUEST') === false, 'new checkout template 
 sec_assert(strpos($old_template, '$_REQUEST') === false, 'old checkout template excludes $_REQUEST');
 
 // SEC-05: plugin product-meta write mirrors WooCommerce save authorization.
-sec_assert(strpos($subscription_presentation, "empty(\$_POST['woocommerce_meta_nonce'])") !== false, 'custom product meta save requires WooCommerce nonce');
-sec_assert(strpos($subscription_presentation, "wp_verify_nonce(wp_unslash(\$_POST['woocommerce_meta_nonce']), 'woocommerce_save_data')") !== false, 'custom product meta save verifies WooCommerce nonce action');
-sec_assert(strpos($subscription_presentation, "empty(\$_POST['post_ID']) || absint(\$_POST['post_ID']) !== \$post_id") !== false, 'custom product meta save binds posted product id');
+sec_assert(
+    strpos($subscription_presentation, "isset(\$_POST['woocommerce_meta_nonce']) && is_string(\$_POST['woocommerce_meta_nonce'])") !== false
+        && strpos($subscription_presentation, "sanitize_text_field(wp_unslash(\$_POST['woocommerce_meta_nonce']))") !== false,
+    'custom product meta save requires a sanitized scalar WooCommerce nonce'
+);
+sec_assert(strpos($subscription_presentation, "wp_verify_nonce(\$nonce, 'woocommerce_save_data')") !== false, 'custom product meta save verifies WooCommerce nonce action');
+sec_assert(
+    strpos($subscription_presentation, "!is_string(\$_POST['post_ID']) && !is_int(\$_POST['post_ID'])") !== false
+        && strpos($subscription_presentation, "absint(\$_POST['post_ID']) !== \$post_id") !== false,
+    'custom product meta save binds a scalar posted product id'
+);
 sec_assert(strpos($subscription_presentation, "current_user_can('edit_post', \$post_id)") !== false, 'custom product meta save requires edit_post capability');
 
 // Existing verified trust boundaries must remain intact.
