@@ -56,9 +56,9 @@ q17_assert(q17_has($phpstan, 'tests/phpstan/payment-runtime-stubs.php'), 'PHPSta
 q17_assert(!q17_has($phpstan, 'baseline'), 'Q17 remains baseline-free');
 q17_assert(!q17_has($phpstan, 'ignoreErrors'), 'Q17 has no ignored analyzer errors');
 
-q17_assert(q17_has($checkout, "preg_match('/^[1-9][0-9]*\\z/', \$value)"), 'checkout order IDs use absolute end anchor');
-q17_assert(q17_has($checkout, "preg_match('/^[A-Z]{3}\\z/', \$currency)"), 'provider currency uses absolute end anchor');
-q17_assert(q17_has($checkout, "preg_match('/^[A-Z]{2}[0-9]{2}[A-Z0-9]{11,30}\\z/', \$iban)"), 'provider IBAN uses absolute end anchor');
+q17_assert(q17_has($checkout, "preg_match('/^[1-9][0-9]*\\\\z/', \$value)"), 'checkout order IDs use absolute end anchor');
+q17_assert(q17_has($checkout, "preg_match('/^[A-Z]{3}\\\\z/', \$currency)"), 'provider currency uses absolute end anchor');
+q17_assert(q17_has($checkout, "preg_match('/^[A-Z]{2}[0-9]{2}[A-Z0-9]{11,30}\\\\z/', \$iban)"), 'provider IBAN uses absolute end anchor');
 q17_assert(q17_has($checkout, 'CheckoutPayload::build_amount_json_token($amount_str)'), 'order amount retains exact JSON-number validator');
 q17_assert(q17_has($checkout, 'CustomerTokenIdentity::clear_stale_attempt_metadata($order)'), 'new Charge attempt clears stale attempt state');
 q17_assert(
@@ -97,7 +97,7 @@ q17_assert(
 );
 q17_assert(q17_has($runtime_stubs, 'function wc_get_checkout_url'), 'payment-runtime stubs model checkout URL boundary');
 
-q17_assert(q17_has($lifecycle, "preg_match('/^[1-9][0-9]*\\z/', \$value)"), 'lifecycle order IDs use absolute end anchor');
+q17_assert(q17_has($lifecycle, "preg_match('/^[1-9][0-9]*\\\\z/', \$value)"), 'lifecycle order IDs use absolute end anchor');
 q17_assert(q17_has($lifecycle, 'merge_request_value('), 'callback preserves presence-aware GET/POST merge');
 q17_assert(
     q17_has($lifecycle, 'OrderLock::acquire($order_id)')
