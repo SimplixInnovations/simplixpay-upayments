@@ -97,8 +97,8 @@ final class PaymentLifecycle {
      * the cursor is read from order meta and never grants payment authority itself.
      */
     public static function reconcile_order($order_id) {
-        $order_id = is_numeric($order_id) ? (int) $order_id : 0;
-        if ($order_id <= 0) {
+        $order_id = self::parse_order_id($order_id);
+        if ($order_id === null) {
             return;
         }
 
@@ -693,7 +693,10 @@ final class PaymentLifecycle {
     }
 
     private static function parse_order_id($value) {
-        if (!is_string($value) || !preg_match('/^[1-9][0-9]*$/', $value) || strlen($value) > 18) {
+        if (is_int($value)) {
+            return $value > 0 ? $value : null;
+        }
+        if (!is_string($value) || strlen($value) > 18 || !preg_match('/^[1-9][0-9]*\\z/', $value)) {
             return null;
         }
         $id = (int) $value;
