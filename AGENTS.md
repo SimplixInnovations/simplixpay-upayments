@@ -67,7 +67,7 @@ Keep `tests/harness/quality-platform-subscription-presentation-harness.php` mand
 
 Keep `tests/harness/quality-platform-migration-core-harness.php` mandatory after Q16.
 
-Keep `tests/harness/quality-platform-payment-runtime-harness.php` mandatory during and after Q17. Q17 is the planned Quality Platform closeout for payment runtime. Do not invent later Q gates merely to extend the sequence; an additional gate requires a concrete unresolved enterprise-critical risk and an explicitly bounded contract.
+Keep `tests/harness/quality-platform-payment-runtime-harness.php` mandatory during and after Q17. Q17 is the planned Quality Platform closeout for payment runtime. Do not invent later Q gates merely to extend the sequence; an additional gate requires a concrete unresolved enterprise-critical risk and an explicitly bounded contract. The Q18 Blocks Availability Enforcement gate is separately justified by the concrete finding that the Blocks adapter previously reported itself active regardless of the canonical WooCommerce gateway enabled setting. Keep `tests/harness/quality-platform-blocks-availability-harness.php` mandatory during and after Q18; Q18 is limited to Blocks activation/availability enforcement and does not constitute Blocks/platform certification.
 
 ## Protected compatibility identities
 
@@ -169,6 +169,7 @@ php tests/harness/quality-platform-migration-admin-harness.php
 php tests/harness/quality-platform-subscription-presentation-harness.php
 php tests/harness/quality-platform-migration-core-harness.php
 php tests/harness/quality-platform-payment-runtime-harness.php
+php tests/harness/quality-platform-blocks-availability-harness.php
 php tests/harness/security-threat-model-harness.php
 php tests/harness/phase-9g-h12-php-harness.php
 node --check tests/harness/phase-9g-h12-blocks-harness.js
