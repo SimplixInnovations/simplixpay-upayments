@@ -142,7 +142,7 @@ foreach (array(
     q17_assert(q17_has($workflow, 'run: php tests/harness/' . $name), 'historical runtime regression remains mandatory: ' . $name);
 }
 q17_assert(q17_has($workflow, 'run: php tests/harness/quality-platform-payment-runtime-harness.php'), 'Q17 harness is mandatory');
-q17_assert(q17_has($workflow, 'if: $\{{ always() }}'), 'H12 aggregator always runs');
+q17_assert(q17_has($workflow, 'if: ${{ always() }}'), 'H12 aggregator always runs');
 q17_assert(q17_has($agents, 'quality-platform-payment-runtime-harness.php'), 'AGENTS keeps Q17 mandatory');
 
 foreach (array(
