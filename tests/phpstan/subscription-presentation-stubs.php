@@ -15,7 +15,14 @@ namespace UPayments\Subscription\Cron {
 }
 
 namespace {
-    class WooCommerce {}
+    class WooCommerce {
+        /** @var mixed */
+        public $cart;
+        /** @var mixed */
+        public $session;
+        /** @return mixed */
+        public function payment_gateways() {}
+    }
 
     class WC_Product {
         /** @return string */
@@ -24,6 +31,17 @@ namespace {
         public function is_type($type) { return false; }
         /** @return int */
         public function get_id() { return 0; }
+    }
+
+    class WC_Order_Item_Product {
+        /** @return mixed */
+        public function get_product() {}
+        /** @return mixed */
+        public function get_quantity() {}
+        /** @return mixed */
+        public function get_total() {}
+        /** @return mixed */
+        public function get_name() {}
     }
 
     class WC_Order {
@@ -41,6 +59,42 @@ namespace {
         public function get_date_completed() {}
         /** @return mixed */
         public function get_date_created() {}
+        /** @return mixed */
+        public function get_data() {}
+        /** @return mixed */
+        public function get_total() {}
+        /** @return mixed */
+        public function get_billing_phone() {}
+        /** @return string */
+        public function get_payment_method() { return ''; }
+        /** @return string */
+        public function get_currency() { return ''; }
+        /** @return string */
+        public function get_status() { return ''; }
+        /** @return string */
+        public function get_transaction_id() { return ''; }
+        /** @return bool */
+        public function is_paid() { return false; }
+        /** @return bool */
+        public function has_status($status) { return false; }
+        /** @return void */
+        public function update_meta_data($key, $value) {}
+        /** @return void */
+        public function delete_meta_data($key) {}
+        /** @return void */
+        public function add_meta_data($key, $value) {}
+        /** @return void */
+        public function save_meta_data() {}
+        /** @return mixed */
+        public function save() {}
+        /** @return void */
+        public function set_transaction_id($id) {}
+        /** @return void */
+        public function payment_complete($id = '') {}
+        /** @return mixed */
+        public function update_status($status, $note = '') {}
+        /** @return mixed */
+        public function add_order_note($note) {}
     }
 
     class WC_Upayments {
@@ -53,8 +107,8 @@ namespace {
     function get_post_meta($post_id, $key, $single = false) {}
     function get_post_type() { return ''; }
     function woocommerce_wp_text_input($args) {}
-    /** @return object{cart:mixed} */
-    function WC() { return (object) array('cart' => null); }
+    /** @return WooCommerce */
+    function WC() { return new WooCommerce(); }
     /** @return WC_Product|false */
     function wc_get_product($product_id) { return false; }
     function wc_add_notice($message, $type) {}
