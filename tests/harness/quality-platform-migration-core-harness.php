@@ -85,33 +85,50 @@ q16_assert(q16_has($workflow, 'run: php tests/harness/quality-platform-migration
 q16_assert(q16_has($workflow, 'if: ${{ always() }}'), 'H12 aggregator always runs');
 q16_assert(q16_has($agents, 'quality-platform-migration-core-harness.php'), 'AGENTS keeps Q16 mandatory');
 
-foreach (array('01a06d45fcc0bc3d08da8d58f6be177b232bb1d4','ea5b0b3880a99999577d51a9ed5f6a8c77a52cf0','Quality Gates run #253','144 tests / 899 assertions','Q15 **107/0**','a4bbb05021dbded73072c0ba108a18245b60ad88','Quality Gates run #254','implementation branch deleted') as $evidence) q16_assert(q16_has($quality, $evidence), 'Q15 closure evidence pinned: ' . $evidence);
-q16_assert(q16_has($quality, '**Status:** Q16 / IMPLEMENTATION'), 'quality record advances to Q16');
-q16_assert(q16_has($status, '| Quality Platform Q15 subscription-presentation analysis | **DONE / VERIFIED** |'), 'project status preserves Q15 completion row');
-q16_assert(q16_has($status, '## Latest verified milestone — Quality Platform Q15 subscription-presentation analysis'), 'project status names Q15 as latest verified milestone');
-foreach (array('01a06d45fcc0bc3d08da8d58f6be177b232bb1d4','ea5b0b3880a99999577d51a9ed5f6a8c77a52cf0','a4bbb05021dbded73072c0ba108a18245b60ad88','Quality Gates run #253','Quality Gates run #254','144 tests / 899 assertions','Q15 Subscription Presentation Analysis: **107/0**','implementation branch `quality/subscription-presentation-analysis`: **deleted after verified merge**') as $evidence) q16_assert(q16_has($status, $evidence), 'project status pins Q15 closure evidence: ' . $evidence);
-q16_assert(q16_has($playbook, 'Quality Platform Q15: DONE / VERIFIED; PR #41; merge a4bbb05021dbded73072c0ba108a18245b60ad88; tree ea5b0b3880a99999577d51a9ed5f6a8c77a52cf0; Q15 107/0; post-merge Quality Gates #254 SUCCESS'), 'playbook restart snapshot records Q15 closure');
-q16_assert(q16_has($playbook, 'Last verified implementation main SHA: a4bbb05021dbded73072c0ba108a18245b60ad88'), 'playbook restart snapshot uses Q15 main SHA');
-q16_assert(q16_has($playbook, 'Canonical implementation tree: ea5b0b3880a99999577d51a9ed5f6a8c77a52cf0'), 'playbook restart snapshot uses Q15 tree');
-q16_assert(q16_has($handoff, '- Quality Platform Q15 subscription-presentation analysis: **DONE / VERIFIED**'), 'handoff preserves Q15 completion row');
-q16_assert(q16_has($handoff, '## Latest verified milestone — Quality Platform Q15'), 'handoff names Q15 as latest verified milestone');
-foreach (array('01a06d45fcc0bc3d08da8d58f6be177b232bb1d4','ea5b0b3880a99999577d51a9ed5f6a8c77a52cf0','a4bbb05021dbded73072c0ba108a18245b60ad88','Quality Gates run #253','Quality Gates run #254','144 tests / 899 assertions','Q15 was **107/0**') as $evidence) q16_assert(q16_has($handoff, $evidence), 'handoff pins Q15 closure evidence: ' . $evidence);
-q16_assert(q16_has($readme, '| Quality Platform Q1-Q15 | **DONE / VERIFIED** |'), 'README completion table includes Q15');
-q16_assert(q16_has($audit, '`src/Migration/MigrationPreflight.php`') && q16_has($audit, '`src/Migration/MigrationBatch.php`') && q16_has($audit, '`src/Migration/MigrationExecutor.php`'), 'repository audit current Q16 tranche names all migration-core owners');
-q16_assert(q16_has($audit, 'permanent Q1/Q2/Q3/Q4/Q5/Q6/Q7/Q8/Q9/Q10/Q11/Q12/Q13/Q14/Q15/Q16 and historical regression gates'), 'repository audit current Q16 tranche requires Q1-Q16 regressions');
-q16_assert(!q16_has($audit, 'PHPUnit characterization of product/admin schema, product-meta authorization, malformed cart/order payloads, account ownership/actions, exact filter allowlists, dates and escaped output'), 'repository audit removes stale Q15 presentation tranche bullet');
-q16_assert(
-    q16_has($status, '| Current program gate | **Full Automated Quality Platform — Q16** |')
-    || q16_has($status, '| Quality Platform Q16 migration-core analysis | **DONE / VERIFIED** |'),
-    'project status preserves Q16 current-or-closed state'
-);
-q16_assert(q16_has($readme, 'The current program gate is **Full Automated Quality Platform — Q16**.'), 'README advances to Q16');
-q16_assert(q16_has($playbook, '- [x] Full Automated Quality Platform — **Q15 / DONE / VERIFIED** through PR #41 and post-merge Quality Gates #254.'), 'playbook preserves Q15 as completed');
-q16_assert(q16_has($playbook, '- [ ] Full Automated Quality Platform — **Q16 / CURRENT GATE**.'), 'playbook has the single current Q16 ledger entry');
-q16_assert(!q16_has($playbook, '**Q16 / PLANNED MIGRATION CORE**'), 'playbook has no contradictory planned-Q16 entry');
-q16_assert(q16_has($playbook, '**Q17 / PLANNED PAYMENT-RUNTIME CLOSEOUT**'), 'playbook keeps Q17 as the next planned payment-runtime closeout');
+foreach (array(
+    '3cff2fcc64053d79be7427696c86039f1b52bbfd',
+    'b9cc6eafb3c7f8df36b9c5db8b2e45bb330688d2',
+    'Quality Gates run #315',
+    '160 tests / 987 assertions',
+    'Q16 **120/0**',
+    'CodeQL PR scan #83',
+    '06a9ebd732c7cc3f062d4bb361aaef4054a1dfa3',
+    'Quality Gates run #316',
+    'main security run #84',
+    'implementation branch deleted'
+) as $evidence) {
+    q16_assert(q16_has($quality, $evidence), 'Q16 closure evidence pinned: ' . $evidence);
+}
+q16_assert(q16_has($quality, '## Closed Q16 contract'), 'quality record preserves closed Q16 contract');
+q16_assert(q16_has($quality, '**Status:** Q17 / IMPLEMENTATION'), 'quality record advances beyond Q16');
+q16_assert(q16_has($status, '| Quality Platform Q16 migration-core analysis | **DONE / VERIFIED** |'), 'project status preserves Q16 completion row');
+q16_assert(q16_has($status, '## Latest verified milestone — Quality Platform Q16 migration-core analysis'), 'project status names Q16 as latest verified milestone');
+foreach (array(
+    '3cff2fcc64053d79be7427696c86039f1b52bbfd',
+    'b9cc6eafb3c7f8df36b9c5db8b2e45bb330688d2',
+    '06a9ebd732c7cc3f062d4bb361aaef4054a1dfa3',
+    'Quality Gates run #315',
+    'Quality Gates run #316',
+    '160 tests / 987 assertions',
+    'Q16 Migration Core Analysis: **120/0**',
+    'implementation branch `quality/migration-core-analysis`: **deleted after verified merge**'
+) as $evidence) {
+    q16_assert(q16_has($status, $evidence), 'project status pins Q16 closure evidence: ' . $evidence);
+}
+q16_assert(q16_has($playbook, 'Quality Platform Q16: DONE / VERIFIED; PR #42; merge 06a9ebd732c7cc3f062d4bb361aaef4054a1dfa3; tree b9cc6eafb3c7f8df36b9c5db8b2e45bb330688d2; Q16 120/0; post-merge Quality Gates #316 SUCCESS; main security #84 SUCCESS'), 'playbook restart snapshot records Q16 closure');
+q16_assert(q16_has($playbook, 'Last verified implementation main SHA: 06a9ebd732c7cc3f062d4bb361aaef4054a1dfa3'), 'playbook restart snapshot uses Q16 main SHA');
+q16_assert(q16_has($playbook, 'Canonical implementation tree: b9cc6eafb3c7f8df36b9c5db8b2e45bb330688d2'), 'playbook restart snapshot uses Q16 tree');
+q16_assert(q16_has($handoff, '- Quality Platform Q16 migration-core analysis: **DONE / VERIFIED**'), 'handoff preserves Q16 completion row');
+q16_assert(q16_has($handoff, '## Latest verified milestone — Quality Platform Q16'), 'handoff names Q16 as latest verified milestone');
+q16_assert(q16_has($readme, '| Quality Platform Q1-Q16 | **DONE / VERIFIED** |'), 'README completion table includes Q16');
+q16_assert(q16_has($audit, '`src/Payment/CheckoutOrchestrator.php`') && q16_has($audit, '`src/Payment/PaymentLifecycle.php`'), 'repository audit advances to bounded Q17 owners');
+q16_assert(q16_has($audit, 'permanent Q1/Q2/Q3/Q4/Q5/Q6/Q7/Q8/Q9/Q10/Q11/Q12/Q13/Q14/Q15/Q16/Q17 and historical regression gates'), 'repository audit requires Q1-Q17 regressions');
+q16_assert(q16_has($status, '| Current program gate | **Full Automated Quality Platform — Q17** |'), 'project status advances beyond Q16');
+q16_assert(q16_has($readme, 'The current program gate is **Full Automated Quality Platform — Q17**.'), 'README advances beyond Q16');
+q16_assert(q16_has($playbook, '- [x] Full Automated Quality Platform — **Q16 / DONE / VERIFIED** through PR #42 and post-merge Quality Gates #316.'), 'playbook preserves Q16 as completed');
+q16_assert(q16_has($playbook, '**Q17 / CURRENT GATE — PAYMENT-RUNTIME CLOSEOUT**'), 'playbook advances to Q17 current closeout');
 q16_assert(!q16_has($audit, 'No Q18 is planned or authorized'), 'repository audit does not contradict the enterprise-risk extension policy');
-q16_assert(q16_has($audit, 'any later Q gate requires a concrete separately bounded enterprise-critical risk'), 'repository audit preserves the bounded enterprise-risk extension policy');
+q16_assert(q16_has($audit, 'concrete separately bounded enterprise-critical risk remains'), 'repository audit preserves bounded enterprise-risk extension policy');
 
 echo "\nQ16 Migration Core Analysis: " . $pass . " PASS / " . $fail . " FAIL\n";
 exit($fail === 0 ? 0 : 1);
