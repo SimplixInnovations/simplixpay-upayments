@@ -73,11 +73,11 @@ namespace UPayments\Token {
             }
 
             public static function is_valid_scope($scope) {
-                return is_string($scope) && preg_match('/^[0-9a-f]{32}\\z/', $scope) === 1;
+                return is_string($scope) && preg_match('/^[0-9a-f]{32}\z/', $scope) === 1;
             }
 
             public static function is_valid_legacy_token($token) {
-                return is_string($token) && preg_match('/^[0-9]{8,18}\\z/', $token) === 1;
+                return is_string($token) && preg_match('/^[0-9]{8,18}\z/', $token) === 1;
             }
 
             public static function is_valid_token_for_kind($token, $kind) {
@@ -113,9 +113,9 @@ namespace UPayments\Token {
             public static function is_valid_secret_record($record) {
                 if (!is_array($record)
                     || !isset($record['version']) || $record['version'] !== 1
-                    || !isset($record['secret']) || !is_string($record['secret']) || preg_match('/^[0-9a-f]{64}\\z/', $record['secret']) !== 1
-                    || !isset($record['generation_id']) || !is_string($record['generation_id']) || preg_match('/^[0-9a-f]{32}\\z/', $record['generation_id']) !== 1
-                    || !isset($record['verifier']) || !is_string($record['verifier']) || preg_match('/^[0-9a-f]{64}\\z/', $record['verifier']) !== 1
+                    || !isset($record['secret']) || !is_string($record['secret']) || preg_match('/^[0-9a-f]{64}\z/', $record['secret']) !== 1
+                    || !isset($record['generation_id']) || !is_string($record['generation_id']) || preg_match('/^[0-9a-f]{32}\z/', $record['generation_id']) !== 1
+                    || !isset($record['verifier']) || !is_string($record['verifier']) || preg_match('/^[0-9a-f]{64}\z/', $record['verifier']) !== 1
                 ) {
                     return false;
                 }
