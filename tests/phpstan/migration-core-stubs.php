@@ -46,11 +46,11 @@ namespace UPayments\Token {
         /** @return bool */
         public static function force_refresh_user_meta($user_id) {}
         /** @return mixed */
-        public static function get_or_establish_token($user_id, $api_key, $is_test_mode, $scope, $legacy_token = null) {}
+        public static function get_or_establish_token($user_id, $api_key, $is_test_mode, callable $create_token_caller) {}
         /** @return mixed */
-        public static function validate_token_runtime_context($user_id, $api_key, $is_test_mode, $scope, $token) {}
+        public static function validate_token_runtime_context($token, $kind, $scope, $generation_id, $expected_scope, $expected_generation) {}
         /** @return mixed */
-        public static function verify_card_membership($token, $card_token) {}
+        public static function verify_card_membership($card_token, $customer_token, callable $get_saved_cards_caller) {}
         /** @return bool */
         public static function clear_stale_attempt_metadata($order) {}
     }
