@@ -5,6 +5,9 @@
  */
 
 /** @return string */
+function wp_generate_uuid4() { return ''; }
+
+/** @return string */
 function site_url($path = '', $scheme = null) { return ''; }
 
 /** @return string */
