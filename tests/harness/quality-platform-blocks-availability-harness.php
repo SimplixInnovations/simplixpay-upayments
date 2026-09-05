@@ -44,12 +44,22 @@ namespace {
         public function set_settings_for_test($settings) {
             $this->settings = $settings;
         }
+
+        public function set_gateway_for_test($gateway) {
+            $this->gateway = $gateway;
+        }
     }
 
     $probe = new Q18BlocksAvailabilityProbe('');
+    $probe->set_gateway_for_test(new \stdClass());
 
     $probe->set_settings_for_test(array('enabled' => 'yes'));
-    q18_assert($probe->is_active() === true, 'canonical enabled=yes exposes Blocks method');
+    q18_assert($probe->is_active() === true, 'canonical enabled=yes with gateway exposes Blocks method');
+
+    $probe->set_gateway_for_test(null);
+    q18_assert($probe->is_active() === false, 'enabled=yes without gateway fails closed');
+
+    $probe->set_gateway_for_test(new \stdClass());
 
     $probe->set_settings_for_test(array('enabled' => 'no'));
     q18_assert($probe->is_active() === false, 'enabled=no suppresses Blocks method');
