@@ -38,7 +38,7 @@ The following engineering gates are **DONE / VERIFIED**:
 - Security Threat-Model Closure;
 - Architecture & Code-Quality Foundation A1-A5.
 
-Quality Platform Q1-Q14 are **DONE / VERIFIED**. The current program gate is **Full Automated Quality Platform — Q15**.
+Quality Platform Q1-Q15 are **DONE / VERIFIED**. The current program gate is **Full Automated Quality Platform — Q16**.
 
 The project remains in **pre-release engineering hardening**. It is not yet a broadly certified stable production release and has not yet been published to WordPress.org.
 
@@ -56,7 +56,7 @@ The project remains in **pre-release engineering hardening**. It is not yet a br
 | Security Threat-Model Closure | **DONE / VERIFIED** |
 | Architecture & Code-Quality Foundation | **DONE / VERIFIED (A1-A5)** |
 | Quality Platform Q1-Q14 | **DONE / VERIFIED** |
-| Current engineering gate | **Full Automated Quality Platform — Q15** |
+| Current engineering gate | **Full Automated Quality Platform — Q16** |
 | Stable SimplixPay release | **Not yet published** |
 | WordPress.org release | **Not yet published** |
 | Phase 0 release-identity harness | **35 PASS / 0 FAIL** |
@@ -172,7 +172,7 @@ Phase 9I system completion does not mean every merchant installation was automat
 
 ## Current engineering gate — Full Automated Quality Platform
 
-Architecture discovery/A1-A5 and Quality Platform Q1-Q14 are DONE / VERIFIED. Q14 closed on merge `22857f6304d4b4f19ec1cb6303a80d120173bcd1` with privileged migration-admin authorization, exact control tokens, nonce, bounds, redaction and escaping characterized. Q15 expands the same baseline-free platform into `Subscription/Presentation.php` while excluding scheduler, cycle-claim, billing-attempt, provider, checkout and payment-runtime ownership. The Quality Platform is capped at Q17; no Q18 is planned.
+Architecture discovery/A1-A5 and Quality Platform Q1-Q15 are DONE / VERIFIED. Q15 closed through PR #41, exact-head Quality Gates #253 and post-merge Quality Gates #254 on merge `a4bbb05021dbded73072c0ba108a18245b60ad88`. Q16 expands the same baseline-free platform into the closed Phase 9I migration core (`MigrationPreflight.php`, `MigrationBatch.php`, `MigrationExecutor.php`) while excluding provider, checkout, subscription scheduler and payment-runtime ownership. Q17 remains the planned Quality Platform closeout; any later quality gate must be justified by a concrete separately bounded enterprise-critical risk.
 
 No big-bang rewrite, runtime branding rename, runtime Composer dependency or broad compatibility claim is authorized by this gate.
 
