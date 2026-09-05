@@ -88,6 +88,10 @@ namespace UPayments\Token {
             public static function force_refresh_order_meta($order) {
                 return is_object($order) && (!property_exists($order, 'refresh_ok') || $order->refresh_ok === true);
             }
+            public static function clear_stale_attempt_metadata($order) {
+                return true;
+            }
+
 
             public static function get_historical_meta_cardinality($order, $key) {
                 if (!is_object($order) || !property_exists($order, 'meta') || !is_array($order->meta)) {
