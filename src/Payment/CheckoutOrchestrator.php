@@ -519,7 +519,8 @@ class CheckoutOrchestrator {
 
             // === EFFECTIVE SAVE CARD (Section U) ===
             // After contract validation: only new CC + explicit opt-in.
-            $isSaveCard = $isSaveCardRequested && !$has_selected_card;
+            // A validated save-card request has already rejected an existing selected card.
+            $isSaveCard = $isSaveCardRequested;
 
             // Read phone through WC Order API (works for both Classic and Blocks).
             $billing_phone_raw = $order->get_billing_phone();
@@ -640,7 +641,7 @@ class CheckoutOrchestrator {
                 'notificationUrl' => $ipn_url,
             );
             foreach ($callback_urls as $cb_url) {
-                if ($cb_url === '' || strlen($cb_url) > 250) {
+                if (strlen($cb_url) > 250) {
                     wc_add_notice(__('Payment request could not be completed. Please try again.', $gateway->domain), 'error');
                     return array('result' => 'failure', 'redirect' => wc_get_checkout_url());
                 }
