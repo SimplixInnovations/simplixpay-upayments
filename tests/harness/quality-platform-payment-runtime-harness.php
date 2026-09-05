@@ -60,6 +60,8 @@ q17_assert(q17_has($checkout, "preg_match('/^[1-9][0-9]*\\\\z/', \$value)"), 'ch
 q17_assert(q17_has($checkout, "preg_match('/^[A-Z]{3}\\\\z/', \$currency)"), 'provider currency uses absolute end anchor');
 q17_assert(q17_has($checkout, "preg_match('/^[A-Z]{2}[0-9]{2}[A-Z0-9]{11,30}\\\\z/', \$iban)"), 'provider IBAN uses absolute end anchor');
 q17_assert(q17_has($checkout, 'CheckoutPayload::build_amount_json_token($amount_str)'), 'order amount retains exact JSON-number validator');
+q17_assert(q17_has($checkout, '$unique_order_id = md5(wp_generate_uuid4());'), 'Charge attempt identity uses fresh WordPress UUID entropy');
+q17_assert(!q17_has($checkout, '$order_id * time()'), 'Charge attempt identity is not second-bound');
 q17_assert(q17_has($checkout, 'CustomerTokenIdentity::clear_stale_attempt_metadata($order)'), 'new Charge attempt clears stale attempt state');
 q17_assert(
     q17_has($checkout, 'delete_meta_data("UPayments_order_id")')
@@ -72,6 +74,7 @@ q17_assert(!q17_has($bootstrap, "support/wordpress-payment-runtime.php"), 'heavy
 foreach (array(
     'test_process_rejects_noncanonical_order_ids_before_woo_lookup',
     'test_process_keeps_positive_integer_order_ids_compatible',
+    'test_same_second_retries_use_distinct_provider_order_ids',
     'test_currency_with_terminal_newline_is_rejected_before_provider_request',
     'test_iban_with_terminal_newline_is_rejected_before_provider_request',
     'test_multimerchant_charge_newline_already_fails_closed_before_provider_request'
