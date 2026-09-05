@@ -17,13 +17,13 @@ namespace UPayments\Token {
         const GENERATION_ID_BYTES = 16;
         const VERIFIER_DOMAIN = 'upayments-token-identity';
 
-        /** @return array */
+        /** @return mixed */
         public static function read_existing_secret_record() {}
-        /** @return array */
+        /** @return mixed */
         public static function read_existing_identity_context($api_key, $is_test_mode) {}
-        /** @return array */
+        /** @return mixed */
         public static function read_provenance($user_id, $scope, $generation) {}
-        /** @return array */
+        /** @return mixed */
         public static function inspect_current_user_prior_provenance($user_id, $generation) {}
         /** @return bool */
         public static function is_valid_scope($scope) {}
@@ -33,7 +33,7 @@ namespace UPayments\Token {
         public static function is_valid_token_for_kind($token, $kind) {}
         /** @return bool */
         public static function force_refresh_order_meta($order) {}
-        /** @return array */
+        /** @return mixed */
         public static function get_historical_meta_cardinality($order, $key) {}
         /** @return string */
         public static function get_bootstrap_lock_name() {}
