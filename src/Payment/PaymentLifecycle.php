@@ -45,8 +45,8 @@ final class PaymentLifecycle {
      * WC-API entrypoint. The historical get_order_status poll is intercepted here before inherited priority 10.
      */
     public static function handle_callback() {
-        $get = isset($_GET) && is_array($_GET) ? $_GET : array();
-        $post = isset($_POST) && is_array($_POST) ? $_POST : array();
+        $get = $_GET;
+        $post = $_POST;
 
         if (array_key_exists('get_order_status', $get)) {
             PublicOrderStatus::handle();
@@ -420,6 +420,16 @@ final class PaymentLifecycle {
     }
 
     private static function apply_captured($gateway, $order, array $transaction) {
+        if (!is_object($order)
+            || !method_exists($order, 'get_id')
+            || !method_exists($order, 'get_transaction_id')
+            || !method_exists($order, 'is_paid')
+            || !method_exists($order, 'update_meta_data')
+            || !method_exists($order, 'save')
+        ) {
+            return false;
+        }
+
         $payment_id = isset($transaction['payment_id']) && is_scalar($transaction['payment_id'])
             ? (string) $transaction['payment_id']
             : '';
@@ -431,9 +441,7 @@ final class PaymentLifecycle {
             return false;
         }
 
-        $existing_transaction_id = method_exists($order, 'get_transaction_id')
-            ? (string) $order->get_transaction_id()
-            : '';
+        $existing_transaction_id = (string) $order->get_transaction_id();
         if ($existing_transaction_id !== '' && !hash_equals($existing_transaction_id, $payment_id)) {
             self::log('transaction_id_conflict', 'warning');
             return false;
@@ -448,7 +456,7 @@ final class PaymentLifecycle {
         $order->update_meta_data('UPayments_Ref', (string) $transaction['reference']);
         $order->update_meta_data('_payment_method_title', 'UPayments');
 
-        $already_paid = method_exists($order, 'is_paid') && $order->is_paid();
+        $already_paid = (bool) $order->is_paid();
         if ($already_paid) {
             if ($existing_transaction_id === '' && method_exists($order, 'set_transaction_id')) {
                 $order->set_transaction_id($payment_id);
@@ -477,10 +485,8 @@ final class PaymentLifecycle {
             }
         }
 
-        $transaction_after = method_exists($order, 'get_transaction_id')
-            ? (string) $order->get_transaction_id()
-            : '';
-        $paid_after = method_exists($order, 'is_paid') && $order->is_paid();
+        $transaction_after = (string) $order->get_transaction_id();
+        $paid_after = (bool) $order->is_paid();
         if (!$paid_after || $transaction_after !== $payment_id) {
             self::log('payment_complete_postcondition_failed', 'warning');
             return false;
@@ -718,10 +724,18 @@ final class PaymentLifecycle {
     }
 
     private static function gateway() {
-        if (!function_exists('WC') || !WC() || !WC()->payment_gateways()) {
+        if (!is_callable('WC')) {
             return null;
         }
-        $gateways = WC()->payment_gateways()->payment_gateways();
+        $woocommerce = WC();
+        if (!is_object($woocommerce) || !method_exists($woocommerce, 'payment_gateways')) {
+            return null;
+        }
+        $registry = $woocommerce->payment_gateways();
+        if (!is_object($registry) || !method_exists($registry, 'payment_gateways')) {
+            return null;
+        }
+        $gateways = $registry->payment_gateways();
         return is_array($gateways) && isset($gateways['upayments']) ? $gateways['upayments'] : null;
     }
 
@@ -733,8 +747,13 @@ final class PaymentLifecycle {
                 if (is_string($candidate) && $candidate !== '') {
                     $redirect = $candidate;
                 }
-                if (function_exists('WC') && WC() && WC()->cart) {
-                    WC()->cart->empty_cart();
+                if (is_callable('WC')) {
+                    $woocommerce = WC();
+                    if (is_object($woocommerce) && isset($woocommerce->cart) && is_object($woocommerce->cart)
+                        && method_exists($woocommerce->cart, 'empty_cart')
+                    ) {
+                        $woocommerce->cart->empty_cart();
+                    }
                 }
             }
             wp_safe_redirect($redirect);
