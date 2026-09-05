@@ -82,7 +82,7 @@ Use:
    - static analysis/coding standards/dead-code/complexity cleanup;
    - no big-bang runtime rename.
 
-6. **Full Automated Quality Platform — CURRENT GATE / Q14**
+6. **Full Automated Quality Platform — CURRENT GATE / Q15; FINITE CLOSEOUT AT Q17**
    - Q1 locked development-toolchain foundation: **DONE / VERIFIED** through PR #26 and post-merge Quality Gates #178;
    - Q2 CheckoutPayload boundary characterization and baseline-free static-analysis expansion: **DONE / VERIFIED** through PR #28 and post-merge Quality Gates #183;
    - Q3 payment-concurrency characterization and baseline-free analysis for StatusRateGate/OrderLock: **DONE / VERIFIED** through PR #29 and post-merge Quality Gates #189;
@@ -96,7 +96,11 @@ Use:
    - Q11 subscription-composition hook/dependency/initializer characterization and baseline-free analysis: **DONE / VERIFIED** through PR #37 and post-merge Quality Gates #230;
    - Q12 guarded subscription-product-type load/parent/type characterization and baseline-free analysis: **DONE / VERIFIED** through PR #38 and post-merge Quality Gates #232;
    - Q13 migration CLI parsing/confirmation/bounds/redaction/error characterization and baseline-free analysis: **DONE / VERIFIED** through PR #39 and post-merge Quality Gates #237;
-   - Q14 migration-admin authorization/nonce/form/bounds/redaction/escaping characterization and baseline-free analysis: **CURRENT**;
+   - Q14 migration-admin authorization/nonce/form/bounds/redaction/escaping characterization and baseline-free analysis: **DONE / VERIFIED** through PR #40 and post-merge Quality Gates #248;
+   - Q15 subscription-presentation product/admin/cart/account characterization and baseline-free analysis: **CURRENT**;
+   - Q16 migration-core preflight/batch/executor characterization and baseline-free analysis: **PLANNED**;
+   - Q17 payment-runtime checkout-orchestration/lifecycle characterization and baseline-free analysis: **PLANNED FINAL QUALITY GATE**;
+   - no Q18 is planned or authorized; after Q17 the project moves to Platform Certification;
    - PHPUnit;
    - WordPress/WooCommerce integration tests;
    - PHPStan and PHPCS/WPCS/Woo standards;

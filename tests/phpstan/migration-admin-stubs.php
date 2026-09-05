@@ -1,6 +1,6 @@
 <?php
 
-function current_user_can($capability) {
+function current_user_can($capability, $object_id = null) {
     return true;
 }
 
@@ -33,7 +33,7 @@ function checked($checked, $current = true, $echo = true) {
     return '';
 }
 
-function wp_nonce_field($action, $name) {
+function wp_nonce_field($action, $name, $referer = true) {
 }
 
 function submit_button($text) {

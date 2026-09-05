@@ -89,11 +89,11 @@ foreach (array(
 ) as $evidence) {
     q9_assert(q9_contains($quality, $evidence), "Q9 closure evidence is pinned: {$evidence}");
 }
-q9_assert(q9_contains($quality, '**Status:** Q14 / IMPLEMENTATION'), 'quality record advances beyond Q9');
-q9_assert(q9_contains($status, '| Current program gate | **Full Automated Quality Platform — Q14** |'), 'project status advances beyond Q9');
-q9_assert(q9_contains($readme, 'The current program gate is **Full Automated Quality Platform — Q14**.'), 'README advances beyond Q9');
-q9_assert(q9_contains($playbook, 'Last verified implementation main SHA: 02a1ad24d262c3cb6d14653bf48aa31c3796ae4e'), 'playbook advances beyond Q9 to Q10 merge');
-q9_assert(q9_contains($playbook, 'Canonical implementation tree: eae2fe0d0f0f54bef793ed6e58c9837bd01403ab'), 'playbook advances beyond Q9 to Q10 tree');
+q9_assert(q9_contains($quality, '**Status:** Q15 / IMPLEMENTATION'), 'quality record advances beyond Q9');
+q9_assert(q9_contains($status, '| Current program gate | **Full Automated Quality Platform — Q15** |'), 'project status advances beyond Q9');
+q9_assert(q9_contains($readme, 'The current program gate is **Full Automated Quality Platform — Q15**.'), 'README advances beyond Q9');
+q9_assert(q9_contains($playbook, 'Last verified implementation main SHA: 22857f6304d4b4f19ec1cb6303a80d120173bcd1'), 'playbook advances beyond Q9 to the Q14 merge');
+q9_assert(q9_contains($playbook, 'Canonical implementation tree: 53107c93c8756985461a8d75e2009c91b89ee851'), 'playbook advances beyond Q9 to the Q14 tree');
 q9_assert(!q9_contains($handoff, 'CURRENT / Q9'), 'handoff rejects stale current-Q9 marker');
 q9_assert(!q9_contains($playbook, 'CURRENT / Q9'), 'playbook rejects stale current-Q9 marker');
 q9_assert(q9_contains($workflow, "reject_across_live_records 'CURRENT / Q9'"), 'Governance rejects stale current-Q9 markers');

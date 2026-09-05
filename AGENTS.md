@@ -63,6 +63,8 @@ Keep `tests/harness/quality-platform-migration-cli-harness.php` mandatory after 
 
 Keep `tests/harness/quality-platform-migration-admin-harness.php` mandatory after Q14.
 
+Keep `tests/harness/quality-platform-subscription-presentation-harness.php` mandatory after Q15. The Quality Platform is capped at Q17: Q16 owns only migration core, Q17 owns only payment runtime, and no Q18 may be invented without a separately approved critical-defect reopening.
+
 ## Protected compatibility identities
 
 Rebranding must never silently change persisted payment identity. Do not globally rename `upayments` or `_upay_*`.
@@ -160,6 +162,7 @@ php tests/harness/quality-platform-subscription-composition-harness.php
 php tests/harness/quality-platform-subscription-product-type-harness.php
 php tests/harness/quality-platform-migration-cli-harness.php
 php tests/harness/quality-platform-migration-admin-harness.php
+php tests/harness/quality-platform-subscription-presentation-harness.php
 php tests/harness/security-threat-model-harness.php
 php tests/harness/phase-9g-h12-php-harness.php
 node --check tests/harness/phase-9g-h12-blocks-harness.js

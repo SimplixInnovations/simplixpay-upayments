@@ -127,21 +127,21 @@ q14_assert(q14_git_blob_sha($q14_root . '/includes/Subscription/Cron/CycleClaim.
 q14_assert(q14_contains($workflow, 'run: php tests/harness/quality-platform-migration-admin-harness.php'), 'Q14 harness has an exact mandatory Quality Gates invocation');
 q14_assert(q14_contains($workflow, 'if: ${{ always() }}'), 'protected H12 aggregator still always runs');
 foreach (array(
-    '302dcdf9c1bbd3a1d259790e8f9f9c2d694b74d7',
-    'be7c52143d2085550790b742d164ecbec413377f',
-    'Quality Gates run #236',
-    '105 tests / 766 assertions',
-    'Q13 **77/0**',
-    'a744417e1ec2f40b4f59706df84589d8b18638cb',
-    'Quality Gates run #237',
-    'implementation branch deleted',
+    'b2d8630a5903af8f26a7f770a2a80547c871f7c6',
+    '53107c93c8756985461a8d75e2009c91b89ee851',
+    'Quality Gates run #247',
+    '129 tests / 825 assertions',
+    'Q14 Migration Admin Analysis: **109/0**',
+    '22857f6304d4b4f19ec1cb6303a80d120173bcd1',
+    'Quality Gates run #248',
+    'implementation branch deleted after verified merge',
 ) as $evidence) {
-    q14_assert(q14_contains($quality, $evidence), "Q13 closure evidence is pinned: {$evidence}");
+    q14_assert(q14_contains($quality, $evidence), "Q14 closure evidence is pinned: {$evidence}");
 }
-q14_assert(q14_contains($quality, '**Status:** Q14 / IMPLEMENTATION'), 'quality record advances to Q14');
-q14_assert(q14_contains($quality, 'byte-preserving request-method and raw-unslashed action allowlists'), 'quality record documents strict privileged control tokens');
-q14_assert(q14_contains($status, '| Current program gate | **Full Automated Quality Platform — Q14** |'), 'project status advances to Q14');
-q14_assert(q14_contains($readme, 'The current program gate is **Full Automated Quality Platform — Q14**.'), 'README advances to Q14');
+q14_assert(q14_contains($quality, '**Status:** Q15 / IMPLEMENTATION'), 'quality record advances beyond Q14');
+q14_assert(q14_contains($quality, 'capability-before-request authorization'), 'quality record documents strict privileged control ordering');
+q14_assert(q14_contains($status, '| Current program gate | **Full Automated Quality Platform — Q15** |'), 'project status advances beyond Q14');
+q14_assert(q14_contains($readme, 'The current program gate is **Full Automated Quality Platform — Q15**.'), 'README advances beyond Q14');
 q14_assert(q14_contains($playbook, 'Quality Platform Q13: DONE / VERIFIED; PR #39; merge a744417e1ec2f40b4f59706df84589d8b18638cb;'), 'playbook pins Q13 merge');
 q14_assert(q14_contains($playbook, 'tree be7c52143d2085550790b742d164ecbec413377f; Q13 77/0; post-merge Quality Gates #237 SUCCESS'), 'playbook pins Q13 tree');
 q14_assert(q14_contains($q13_harness, 'Quality Platform Q13: DONE / VERIFIED; PR #39; merge a744417e1ec2f40b4f59706df84589d8b18638cb;'), 'Q13 harness uses its immutable closure row');
@@ -150,6 +150,9 @@ q14_assert(q14_contains($q13_harness, 'tree be7c52143d2085550790b742d164ecbec413
 q14_assert(!q14_contains($handoff, 'CURRENT / Q13'), 'handoff rejects stale current-Q13 marker');
 q14_assert(!q14_contains($playbook, 'CURRENT / Q13'), 'playbook rejects stale current-Q13 marker');
 q14_assert(q14_contains($workflow, "reject_across_live_records 'CURRENT / Q13'"), 'Governance rejects stale current-Q13 markers');
+q14_assert(!q14_contains($handoff, 'CURRENT / Q14'), 'handoff rejects stale current-Q14 marker');
+q14_assert(!q14_contains($playbook, 'CURRENT / Q14'), 'playbook rejects stale current-Q14 marker');
+q14_assert(q14_contains($workflow, "reject_across_live_records 'CURRENT / Q14'"), 'Governance rejects stale current-Q14 markers');
 
 echo "\nQ14 Migration Admin Analysis: {$q14_pass} PASS / {$q14_fail} FAIL\n";
 exit($q14_fail === 0 ? 0 : 1);

@@ -7,6 +7,7 @@ parameters:
         - tests/phpstan/subscription-composition-stubs.php
         - tests/phpstan/subscription-product-type-stubs.php
         - tests/phpstan/migration-admin-stubs.php
+        - tests/phpstan/subscription-presentation-stubs.php
     paths:
         - src/Payment/CheckoutPayload.php
         - src/Payment/OrderLock.php
@@ -24,4 +25,5 @@ parameters:
         - src/Subscription/WCProductCustomType.php
         - src/Migration/MigrationCliCommand.php
         - src/Migration/MigrationAdmin.php
+        - src/Subscription/Presentation.php
     tmpDir: .cache/phpstan

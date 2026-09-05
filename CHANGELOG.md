@@ -106,12 +106,22 @@ The project is still in pre-release engineering hardening. Entries below are eng
 - Exact final PR #36 head `41b0d6d03af91b1e811562d609cf809345a221df` passed Quality Gates #226 and clean independent exact-head review; Q10 was **67/0** and PHPUnit **82 tests / 686 assertions**.
 - Squash-merged PR #36 as `02a1ad24d262c3cb6d14653bf48aa31c3796ae4e`, tree `eae2fe0d0f0f54bef793ed6e58c9837bd01403ab`; post-merge run #227 passed and the implementation branch was deleted.
 
-### Full Automated Quality Platform — Q14 Migration Admin Analysis
+### Full Automated Quality Platform — Q15 Subscription Presentation Analysis
+
+- Expands baseline-free PHPStan level 5/PHP 7.2 and risk-focused PHPCS ownership into the existing Architecture A4 subscription-presentation boundary.
+- Adds deterministic product/admin/cart/My Account characterization without running scheduler, billing, provider or payment behavior.
+- Makes malformed product/cart/order/filter/date inputs fail closed, escapes the account type label, suppresses cancelled next-billing output and renders the admin subscription summary at most once per order while preserving valid legacy identities and actions.
+- Adds a permanent Q15 governance harness and keeps every Q1-Q14, architecture, historical and protected H12 regression mandatory.
+- Caps the Quality Platform at Q17: Q15 Presentation, Q16 Migration Core and Q17 Payment Runtime; no Q18 is planned.
+
+### Full Automated Quality Platform — Q14 Migration Admin Analysis — DONE / VERIFIED
 
 - Expands baseline-free PHPStan level 5/PHP 7.2 and risk-focused PHPCS ownership into the existing privileged Phase 9I migration-admin adapter.
 - Adds PHPUnit characterization for exact submenu registration, capability-before-request authorization, POST nonce verification, credential-free bounded form input, explicit execute confirmation, resume/offset exclusion and escaped/redacted output.
 - Adds development-only WordPress admin fixtures/stubs and a permanent Q14 harness without executing migration/provider behavior or changing valid request behavior.
 - Rejects terminal-newline offset/limit values with an absolute regex end anchor, replaces lossy control-token normalization with a byte-preserving request-method allowlist plus a raw-unslashed action allowlist, and removes only analyzer-proven unreachable missing-reason fallbacks.
+- Exact final PR #40 head `b2d8630a5903af8f26a7f770a2a80547c871f7c6` passed Quality Gates #247 and clean independent exact-head review; Q14 was **109/0** and PHPUnit **129 tests / 825 assertions**.
+- Squash-merged PR #40 as `22857f6304d4b4f19ec1cb6303a80d120173bcd1`, tree `53107c93c8756985461a8d75e2009c91b89ee851`; post-merge run #248 passed and the implementation branch was deleted.
 
 ### Full Automated Quality Platform — Q13 Migration CLI Analysis — DONE / VERIFIED
 
@@ -172,7 +182,7 @@ The project is still in pre-release engineering hardening. Entries below are eng
 
 ### Current program gate
 
-**Full Automated Quality Platform — Q14** is now the active gate. Architecture A1-A5 and Quality Platform Q1-Q13 are DONE / VERIFIED; Q14 is limited to Phase 9I privileged migration-admin authorization/form/redaction/escaping characterization and baseline-free static-analysis expansion and does not execute migration/provider behavior, dispatch payments, certify platforms or alter payment runtime contracts.
+**Full Automated Quality Platform — Q15** is now the active gate. Architecture A1-A5 and Quality Platform Q1-Q14 are DONE / VERIFIED; Q15 is limited to subscription product/admin/cart/account presentation characterization and baseline-free static-analysis expansion and does not run scheduler/billing/provider/payment behavior, certify platforms or alter payment runtime contracts. Q17 is the finite Quality Platform closeout; no Q18 is planned.
 
 ### Provider Contract & Payment Lifecycle — DONE / VERIFIED
 

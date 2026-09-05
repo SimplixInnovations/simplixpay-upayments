@@ -36,7 +36,7 @@ final class Presentation {
 
     /** @return void */
     public static function custom_product_types() {
-        if ('product' != get_post_type()) {
+        if ('product' !== get_post_type()) {
             return;
         }
         ?>
@@ -83,16 +83,23 @@ final class Presentation {
 
     /** @param mixed $post_id @return void */
     public static function save_custom_field_data($post_id) {
+        if (!is_string($post_id) && !is_int($post_id)) {
+            return;
+        }
         $post_id = absint($post_id);
         if ($post_id <= 0) {
             return;
         }
-        if (empty($_POST['woocommerce_meta_nonce'])
-            || !wp_verify_nonce(wp_unslash($_POST['woocommerce_meta_nonce']), 'woocommerce_save_data')
-        ) {
+        $nonce = isset($_POST['woocommerce_meta_nonce']) && is_string($_POST['woocommerce_meta_nonce'])
+            ? sanitize_text_field(wp_unslash($_POST['woocommerce_meta_nonce']))
+            : '';
+        if ($nonce === '' || !wp_verify_nonce($nonce, 'woocommerce_save_data')) {
             return;
         }
-        if (empty($_POST['post_ID']) || absint($_POST['post_ID']) !== $post_id) {
+        if (empty($_POST['post_ID'])
+            || (!is_string($_POST['post_ID']) && !is_int($_POST['post_ID']))
+            || absint($_POST['post_ID']) !== $post_id
+        ) {
             return;
         }
         if (!current_user_can('edit_post', $post_id)) {
@@ -110,7 +117,7 @@ final class Presentation {
     /** @return void */
     public static function display_custom_field_on_frontend() {
         global $product;
-        if (!is_object($product) || !$product->is_type('custom_type')) {
+        if (!$product instanceof \WC_Product || !$product->is_type('custom_type')) {
             return;
         }
         $custom_data = get_post_meta($product->get_id(), '_custom_field_id', true);
@@ -123,7 +130,15 @@ final class Presentation {
 
     /** @param array $item_data @param array $cart_item @return array */
     public static function display_custom_data_in_cart($item_data, $cart_item) {
-        $product_id = $cart_item['product_id'];
+        if (!isset($cart_item['product_id'])
+            || (!is_string($cart_item['product_id']) && !is_int($cart_item['product_id']))
+        ) {
+            return $item_data;
+        }
+        $product_id = absint($cart_item['product_id']);
+        if ($product_id <= 0) {
+            return $item_data;
+        }
         $custom_value = get_post_meta($product_id, '_custom_field_id', true);
         if (!empty($custom_value)) {
             $item_data[] = array(
@@ -137,7 +152,17 @@ final class Presentation {
 
     /** @return void */
     public static function save_custom_data_to_order_items($item, $cart_item_key, $values, $order) {
-        $product_id = $values['product_id'];
+        if (!is_object($item)
+            || !method_exists($item, 'add_meta_data')
+            || !isset($values['product_id'])
+            || (!is_string($values['product_id']) && !is_int($values['product_id']))
+        ) {
+            return;
+        }
+        $product_id = absint($values['product_id']);
+        if ($product_id <= 0) {
+            return;
+        }
         $custom_value = get_post_meta($product_id, '_custom_field_id', true);
         if (!empty($custom_value)) {
             $item->add_meta_data(__('Special Feature', 'upayments'), $custom_value);
@@ -146,46 +171,58 @@ final class Presentation {
 
     /** @return void */
     public static function render_admin_order_summary($order) {
+        if (!$order instanceof \WC_Order) {
+            return;
+        }
         foreach ($order->get_items('line_item') as $item) {
+            if (!is_object($item) || !method_exists($item, 'get_product')) {
+                continue;
+            }
             $product = $item->get_product();
-            if ($product->get_type() === 'custom_type') {
+            if ($product instanceof \WC_Product && $product->get_type() === 'custom_type') {
                 $gateway = new \WC_Upayments();
                 $gateway->render_subscription_summary($order);
+                return;
             }
         }
     }
 
     /** @return void */
     public static function render_admin_summary($order) {
+        if (!$order instanceof \WC_Order) {
+            return;
+        }
         $plan = $order->get_meta('_upay_subscription_plan');
         $interval = (int) $order->get_meta('_upay_subscription_interval');
+        if (!is_string($plan) || $plan === '' || $plan === 'one_time' || $interval <= 0) {
+            return;
+        }
         $auto_deduction = $order->get_meta('UPayments_AutoDeduction');
         $last_billed = $order->get_meta('_upay_last_billed_at');
         $started_at = $order->get_date_paid() ?: $order->get_date_completed() ?: $order->get_date_created();
+        $started_at = self::date_time_or_null($started_at);
         if (!$started_at) {
             return;
         }
-        if (is_string($started_at)) {
-            $started_at = new \DateTime($started_at);
-        }
         $timezone = wp_timezone();
-        $last_billed_dt = !empty($last_billed) ? new \DateTime($last_billed, $timezone) : null;
+        $last_billed_dt = !empty($last_billed) ? self::date_time_or_null($last_billed, $timezone) : null;
+        if (!empty($last_billed) && !$last_billed_dt) {
+            return;
+        }
         $next_billing_dt = Scheduler::getNextBillingDate($started_at, $plan, $interval);
         if (!$next_billing_dt) {
             return;
         }
-        $status = $order->get_meta('_upay_subscription_status');
-        if ($status === 'active') {
-            $status = '<span class="upay-status-active">' . ucfirst($status) . '</span>';
-        } elseif ($status === 'paused') {
-            $status = '<span class="upay-status-paused">' . ucfirst($status) . '</span>';
-        } elseif ($status === 'cancelled') {
-            $status = '<span class="upay-status-cancelled">' . ucfirst($status) . '</span>';
+        $raw_status = $order->get_meta('_upay_subscription_status');
+        $raw_status = is_string($raw_status) ? $raw_status : '';
+        if ($raw_status === 'active') {
+            $status = '<span class="upay-status-active">' . ucfirst($raw_status) . '</span>';
+        } elseif ($raw_status === 'paused') {
+            $status = '<span class="upay-status-paused">' . ucfirst($raw_status) . '</span>';
+        } elseif ($raw_status === 'cancelled') {
+            $status = '<span class="upay-status-cancelled">' . ucfirst($raw_status) . '</span>';
         } else {
-            $status = ucfirst($status);
-        }
-        if (!$plan || $plan === 'one_time') {
-            return;
+            $status = ucfirst($raw_status);
         }
         if ($plan === 'yearly') {
             $period = 'Year';
@@ -206,7 +243,7 @@ final class Presentation {
         if ($auto_deduction === 'yes' && empty($last_billed_dt)) {
             echo '<p><strong>Auto Deduction Order:</strong> Yes</p>';
         } else {
-            if ($status !== 'cancelled') {
+            if ($raw_status !== 'cancelled') {
                 echo '<p><strong>Next Billing Date:</strong> ' . esc_html($next_billing_dt->format('Y-m-d H:i:s')) . '</p>';
             }
             if (!empty($last_billed_dt)) {
@@ -261,20 +298,21 @@ final class Presentation {
         }
         $plan = $order->get_meta('_upay_subscription_plan');
         $interval = (int) $order->get_meta('_upay_subscription_interval');
-        if (!$plan) {
+        if (!is_string($plan) || $plan === '' || $interval <= 0) {
             return;
         }
         $started_at = $order->get_date_paid() ?: $order->get_date_completed() ?: $order->get_date_created();
+        $started_at = self::date_time_or_null($started_at);
         if (!$started_at) {
             return;
         }
-        if (is_string($started_at)) {
-            $started_at = new \DateTime($started_at);
-        }
         $last_billed = $order->get_meta('_upay_last_billed_at');
-        $last_billed_dt = !empty($last_billed) ? new \DateTime($last_billed, wp_timezone()) : null;
+        $last_billed_dt = !empty($last_billed) ? self::date_time_or_null($last_billed, wp_timezone()) : null;
+        if (!empty($last_billed) && !$last_billed_dt) {
+            return;
+        }
         $next_billing_dt = Scheduler::getNextBillingDate($started_at, $plan, $interval);
-        if (!$next_billing_dt || !$interval) {
+        if (!$next_billing_dt) {
             return;
         }
         $plan_labels = array(
@@ -295,10 +333,10 @@ final class Presentation {
                 <tbody>
                     <tr><th style="border: 1px solid;"><?php esc_html_e('Plan', 'woocommerce'); ?></th><td style="border: 1px solid;"><?php echo esc_html(isset($plan_labels[$plan]) ? $plan_labels[$plan] : ucfirst($plan)); ?></td></tr>
                     <tr><th style="border: 1px solid;"><?php esc_html_e('Interval', 'woocommerce'); ?></th><td style="border: 1px solid;"><?php echo esc_html(isset($interval_labels[$plan][$interval]) ? $interval_labels[$plan][$interval] : $interval); ?></td></tr>
-                    <tr><th style="border: 1px solid;"><?php esc_html_e('Started On', 'woocommerce'); ?></th><td style="border: 1px solid;"><?php echo esc_html($started_at ? $started_at->format('Y-m-d H:i:s') : '-'); ?></td></tr>
+                    <tr><th style="border: 1px solid;"><?php esc_html_e('Started On', 'woocommerce'); ?></th><td style="border: 1px solid;"><?php echo esc_html($started_at->format('Y-m-d H:i:s')); ?></td></tr>
                     <?php if ($order->get_meta('UPayments_AutoDeduction') !== 'yes') { ?>
                         <tr><th style="border: 1px solid;"><?php esc_html_e('Last Billed On', 'woocommerce'); ?></th><td style="border: 1px solid;"><?php echo esc_html($last_billed_dt ? $last_billed_dt->format('Y-m-d H:i:s') : '-'); ?></td></tr>
-                        <tr><th style="border: 1px solid;"><?php esc_html_e('Next Billing Date', 'woocommerce'); ?></th><td style="border: 1px solid;"><?php echo esc_html($next_billing_dt ? $next_billing_dt->format('Y-m-d H:i:s') : '-'); ?></td></tr>
+                        <tr><th style="border: 1px solid;"><?php esc_html_e('Next Billing Date', 'woocommerce'); ?></th><td style="border: 1px solid;"><?php echo esc_html($next_billing_dt->format('Y-m-d H:i:s')); ?></td></tr>
                     <?php } ?>
                 </tbody>
             </table>
@@ -329,10 +367,13 @@ final class Presentation {
 
     /** @return void */
     public static function render_account_orders_filter() {
-        $current = sanitize_text_field(isset($_GET['subscription_filter']) ? $_GET['subscription_filter'] : '');
+        // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only account orders filter.
+        $current = self::subscription_filter($_GET);
+        // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only account pagination identity.
+        $page_id = self::request_text($_GET, 'page_id', '12');
         ?>
         <form method="get" class="upay-orders-filter" action="<?php echo esc_url(add_query_arg(null, null)); ?>">
-            <input type="hidden" name="page_id" value="<?php echo esc_attr(isset($_GET['page_id']) ? $_GET['page_id'] : 12); ?>">
+            <input type="hidden" name="page_id" value="<?php echo esc_attr($page_id); ?>">
             <input type="hidden" name="orders" value="">
             <label for="subscription_filter">Select Order Type:</label>
             <select id="subscription_filter" name="subscription_filter" onchange="this.form.submit()">
@@ -347,10 +388,14 @@ final class Presentation {
 
     /** @param array $args @return array */
     public static function filter_account_orders_query($args) {
-        if (empty($_GET['subscription_filter'])) {
+        // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only account orders query filter.
+        $filter = self::subscription_filter($_GET);
+        if ($filter === '') {
             return $args;
         }
-        $filter = sanitize_text_field($_GET['subscription_filter']);
+        if (!isset($args['meta_query']) || !is_array($args['meta_query'])) {
+            $args['meta_query'] = array();
+        }
         $args['meta_query'][] = array('key' => '_upay_subscription_status', 'value' => $filter);
         return $args;
     }
@@ -370,18 +415,60 @@ final class Presentation {
 
     /** @return void */
     public static function render_account_order_type($order) {
+        if (!$order instanceof \WC_Order) {
+            return;
+        }
         echo $order->get_meta('UPayments_AutoDeduction') === 'yes'
-            ? __('Auto Deduction', 'woocommerce')
-            : __('Regular', 'woocommerce');
+            ? esc_html__('Auto Deduction', 'woocommerce')
+            : esc_html__('Regular', 'woocommerce');
     }
 
     /** @return void */
     public static function render_account_subscription_status($order) {
+        if (!$order instanceof \WC_Order) {
+            return;
+        }
         $status = $order->get_meta('_upay_subscription_status');
-        if (!$status) {
+        if (!is_string($status) || $status === '') {
             echo '—';
             return;
         }
         echo '<span class="upay-status upay-status-' . esc_attr($status) . '">' . esc_html(ucfirst($status)) . '</span>';
+    }
+
+    /** @param mixed $value @param \DateTimeZone|null $timezone @return \DateTime|null */
+    private static function date_time_or_null($value, $timezone = null) {
+        if ($value instanceof \DateTime) {
+            return $value;
+        }
+        if (!is_string($value) || trim($value) === '') {
+            return null;
+        }
+        try {
+            return new \DateTime($value, $timezone);
+        } catch (\Exception $exception) {
+            return null;
+        }
+    }
+
+    /** @param array $request @param string $key @param string $default @return string */
+    private static function request_text($request, $key, $default = '') {
+        if (!isset($request[$key]) || !is_string($request[$key])) {
+            return $default;
+        }
+        return sanitize_text_field(wp_unslash($request[$key]));
+    }
+
+    /** @param array $request @return string */
+    private static function subscription_filter($request) {
+        if (!isset($request['subscription_filter']) || !is_string($request['subscription_filter'])) {
+            return '';
+        }
+        $raw_filter = wp_unslash($request['subscription_filter']);
+        $filter = sanitize_key($raw_filter);
+        if ($filter !== $raw_filter) {
+            return '';
+        }
+        return in_array($filter, array('active', 'paused', 'cancelled'), true) ? $filter : '';
     }
 }

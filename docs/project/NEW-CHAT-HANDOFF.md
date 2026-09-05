@@ -41,15 +41,16 @@ Use this file with root `AGENTS.md`, `PROJECT-STATUS.md`, the naming standard, t
 - Quality Platform Q11 subscription-composition analysis: **DONE / VERIFIED**
 - Quality Platform Q12 subscription-product-type analysis: **DONE / VERIFIED**
 - Quality Platform Q13 migration-CLI analysis: **DONE / VERIFIED**
-- Current program gate: **Full Automated Quality Platform — Q14**
+- Quality Platform Q14 migration-admin analysis: **DONE / VERIFIED**
+- Current program gate: **Full Automated Quality Platform — Q15**
 - Stable production release: **NO**
 - WordPress.org release: **NO**
 
 Always verify live GitHub before acting. Recorded SHAs are milestone evidence, not substitutes for fresh source/check/review verification.
 
-## Latest verified milestone — Quality Platform Q13
+## Latest verified milestone — Quality Platform Q14
 
-PR #39 final reviewed head `302dcdf9c1bbd3a1d259790e8f9f9c2d694b74d7` was squash-merged as commit `a744417e1ec2f40b4f59706df84589d8b18638cb`, tree `be7c52143d2085550790b742d164ecbec413377f`, on sole parent `6dc53bdaf60f12774d7516294d7004974be3874f`. Exact-head Quality Gates run #236 and post-merge run #237 passed all five jobs; PHPUnit was **105 tests / 766 assertions**, Q13 was **77/0**, PHPStan/PHPCS/audit and every historical/architecture/H12 regression were green, final independent exact-head review was clean with zero unresolved threads, the GitHub signature was valid, and the implementation branch was deleted.
+PR #40 final reviewed head `b2d8630a5903af8f26a7f770a2a80547c871f7c6` was squash-merged as commit `22857f6304d4b4f19ec1cb6303a80d120173bcd1`, tree `53107c93c8756985461a8d75e2009c91b89ee851`, on sole parent `a744417e1ec2f40b4f59706df84589d8b18638cb`. Exact-head Quality Gates run #247 and post-merge run #248 passed all five jobs; PHPUnit was **129 tests / 825 assertions**, Q14 was **109/0**, PHPStan/PHPCS/audit and every historical/architecture/H12 regression were green, final independent exact-head review was clean with zero unresolved threads, the GitHub signature was valid, and the implementation branch was deleted.
 
 ## Previous verified milestone — Quality Platform Q5
 
@@ -318,20 +319,22 @@ Do not globally rename:
 - malformed H12 secret is distinct from missing and fails closed.
 - selected saved card requires current valid provenance + exact scope/generation + fresh provider Retrieve + exact membership.
 
-## Current tranche — Full Automated Quality Platform Q14
+## Current tranche — Full Automated Quality Platform Q15
 
-**Status: Q14 — MIGRATION ADMIN ANALYSIS / IMPLEMENTATION.**
+**Status: Q15 — SUBSCRIPTION PRESENTATION ANALYSIS / IMPLEMENTATION.**
 
 Required bounded sequence:
 
-1. Work only from verified Q13 merge `a744417e1ec2f40b4f59706df84589d8b18638cb`, tree `be7c52143d2085550790b742d164ecbec413377f`, on `quality/migration-admin-analysis`.
-2. Expand PHPUnit characterization across exact submenu registration, capability-before-request authorization, POST nonce use, credential-free bounded inputs, explicit execute confirmation, resume/offset exclusion and escaped/redacted output.
-3. Add `Migration/MigrationAdmin.php` to the existing baseline-free PHPStan level 5 / PHP 7.2 and risk-focused PHPCS scopes.
-4. Keep production correction bounded to analyzer-proven exact settings/resume reasons and terminal-newline rejection with `\z`; do not add API-key input, weaken capability/nonce/confirmation/resume/bounds/redaction/escaping, execute migrations in tests or enter provider/payment behavior.
+1. Work only from verified Q14 merge `22857f6304d4b4f19ec1cb6303a80d120173bcd1`, tree `53107c93c8756985461a8d75e2009c91b89ee851`, on `quality/subscription-presentation-analysis`.
+2. Expand PHPUnit characterization across product/admin schema, product-meta nonce/post/capability authorization, cart/order-item payloads, account ownership/manual actions/filtering, dates and escaped output.
+3. Add `Subscription/Presentation.php` to the existing baseline-free PHPStan level 5 / PHP 7.2 and risk-focused PHPCS scopes.
+4. Keep production correction bounded to analyzer- or test-proven malformed-input, duplicate-summary, date and escaping failures; do not move hook composition, mutate subscription state, execute scheduler/billing/provider/payment behavior or touch protected Scheduler/CycleClaim files.
 5. Keep the Q1 lockfile, tool versions, analysis level, PHPStan no-baseline/no-`ignoreErrors` rule, distributed syntax matrix and protected H12 prerequisite aggregator unchanged; do not broadly disable PHPCS rules.
-6. Keep every closed regression and architecture harness mandatory, plus all fourteen permanent Quality Platform harnesses.
+6. Keep every closed regression and architecture harness mandatory, plus all fifteen permanent Quality Platform harnesses.
 7. Preserve exact Scheduler/CycleClaim blobs, provider, Security, H12, Phase 9I, scheduler/attempt, payment truth and compatibility identities.
-8. Require independent exact-head review, green CI, verified merge, post-merge CI and branch cleanup before Q14 is DONE / VERIFIED.
+8. Require independent exact-head review, green CI, verified merge, post-merge CI and branch cleanup before Q15 is DONE / VERIFIED.
+
+The Quality Platform is finite: Q16 is migration core and Q17 is the final payment-runtime gate. No Q18 is planned; later work moves to Platform Certification, Feature Certification, Product Readiness and Release Engineering.
 
 The quality gate may improve evidence and tooling; it may not reinterpret provider truth, weaken authorization, or silently broaden certified feature/platform claims.
 
@@ -375,7 +378,7 @@ Read in this order:
 3. Provider Contract & Payment Lifecycle — **DONE / VERIFIED**
 4. Security Threat-Model Closure — **DONE / VERIFIED**
 5. Architecture & Code-Quality Foundation — **DONE / VERIFIED (A1-A5)**
-6. Full automated quality platform — **CURRENT / Q14**
+6. Full automated quality platform — **CURRENT / Q15**
 7. Platform certification: Woo/WP/PHP/HPOS/Blocks/WPML
 8. Feature certification
 9. Performance/UX/operations/diagnostics
@@ -391,9 +394,9 @@ Read AGENTS.md first, then docs/project/PROJECT-STATUS.md, docs/project/NAMING-I
 
 Treat recorded SHAs/status as verified milestone anchors, not substitutes for live GitHub. Freshly verify current main, open PRs/branches, checks, review state and current source before acting; reconcile any drift first.
 
-Repository readiness, Phase 0, Phase 9I, Provider Contract & Payment Lifecycle, Security Threat-Model Closure, Architecture discovery/A1-A5 and Quality Platform Q1-Q13 are DONE / VERIFIED. Q13 was squash-merged from PR #39 as main `a744417e1ec2f40b4f59706df84589d8b18638cb`, tree `be7c52143d2085550790b742d164ecbec413377f`; exact-head run #236 and post-merge run #237 passed. The current permitted gate is Full Automated Quality Platform — Q14.
+Repository readiness, Phase 0, Phase 9I, Provider Contract & Payment Lifecycle, Security Threat-Model Closure, Architecture discovery/A1-A5 and Quality Platform Q1-Q14 are DONE / VERIFIED. Q14 was squash-merged from PR #40 as main `22857f6304d4b4f19ec1cb6303a80d120173bcd1`, tree `53107c93c8756985461a8d75e2009c91b89ee851`; exact-head run #247 and post-merge run #248 passed. The current permitted gate is Full Automated Quality Platform — Q15.
 
-Implement only Q14 migration-admin analysis expansion: add deterministic PHPUnit characterization for `Migration/MigrationAdmin.php`, add it to baseline-free PHPStan level 5/PHP 7.2 and risk-focused PHPCS, and reconcile only analyzer-proven documentation. Keep Q1's lockfile, tool versions, dependency audit, distributed syntax jobs and always-running protected H12 prerequisite aggregator unchanged. Composer and tests remain development-only. Do not add API-key input, weaken capability/nonce/confirmation/resume/bounds/redaction/escaping, execute migrations in tests, touch protected Scheduler/CycleClaim files or enter provider/payment behavior. Keep all existing regression suites, every architecture harness and all fourteen Quality Platform harnesses mandatory.
+Implement only Q15 subscription-presentation analysis expansion: add deterministic PHPUnit characterization for `Subscription/Presentation.php`, add it to baseline-free PHPStan level 5/PHP 7.2 and risk-focused PHPCS, and correct only analyzer- or test-proven presentation-boundary defects. Keep Q1's lockfile, tool versions, dependency audit, distributed syntax jobs and always-running protected H12 prerequisite aggregator unchanged. Composer and tests remain development-only. Do not move hook composition, mutate subscription state, execute scheduler/billing/provider/payment behavior, touch protected Scheduler/CycleClaim files or alter compatibility identities. Keep all existing regression suites, every architecture harness and all fifteen Quality Platform harnesses mandatory. Q16 and Q17 are the only remaining Quality Platform gates; no Q18 is planned.
 
 Do not claim broad security, PCI/compliance, platform, feature, performance or production certification from the bounded security closure. UPayments webhook signature details remain provider-document unresolved, automatic refunds remain unsupported pending durable idempotency/reconciliation design, and subscription auto-deduction remains separately characterized rather than broadly certified.
 

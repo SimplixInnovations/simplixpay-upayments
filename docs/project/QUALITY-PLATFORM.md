@@ -1,21 +1,21 @@
 # Full Automated Quality Platform
 
-**Status:** Q14 / IMPLEMENTATION
+**Status:** Q15 / IMPLEMENTATION
 
-**Current branch:** `quality/migration-admin-analysis`
+**Current branch:** `quality/subscription-presentation-analysis`
 
-**Verified base `main`:** `a744417e1ec2f40b4f59706df84589d8b18638cb`
+**Verified base `main`:** `22857f6304d4b4f19ec1cb6303a80d120173bcd1`
 
-**Verified base tree:** `be7c52143d2085550790b742d164ecbec413377f`
+**Verified base tree:** `53107c93c8756985461a8d75e2009c91b89ee851`
 
 ## Entry evidence
 
-Q13 is DONE / VERIFIED:
+Q14 is DONE / VERIFIED:
 
-- PR #39 final reviewed head `302dcdf9c1bbd3a1d259790e8f9f9c2d694b74d7`;
-- exact reviewed tree `be7c52143d2085550790b742d164ecbec413377f`;
-- exact-head Quality Gates run #236: SUCCESS across all five jobs;
-- PHPUnit: **105 tests / 766 assertions**;
+- PR #40 final reviewed head `b2d8630a5903af8f26a7f770a2a80547c871f7c6`;
+- exact reviewed tree `53107c93c8756985461a8d75e2009c91b89ee851`;
+- exact-head Quality Gates run #247: SUCCESS across all five jobs;
+- PHPUnit: **129 tests / 825 assertions**;
 - PHPStan level 5/PHP 7.2 and PHPCS/WPCS: clean;
 - Quality Platform Foundation: **74/0**;
 - Q2 Checkout Payload Analysis: **64/0**;
@@ -30,10 +30,11 @@ Q13 is DONE / VERIFIED:
 - Q11 Subscription Composition Analysis: **84/0**;
 - Q12 Subscription Product Type Analysis: **63/0**;
 - Q13 Migration CLI Analysis: **77/0**;
+- Q14 Migration Admin Analysis: **109/0**;
 - every historical, architecture and H12 regression remained green, including H12 PHP **1927/0** and Blocks **144/0**;
-- final independent review: clean on exact head `302dcdf9c1bbd3a1d259790e8f9f9c2d694b74d7` with zero unresolved review threads;
-- squash merge `a744417e1ec2f40b4f59706df84589d8b18638cb` on sole parent `6dc53bdaf60f12774d7516294d7004974be3874f` with the identical reviewed tree and valid GitHub signature;
-- push-triggered post-merge Quality Gates run #237: SUCCESS across all five jobs;
+- final independent review: clean on exact head `b2d8630a5903af8f26a7f770a2a80547c871f7c6` with zero unresolved review threads;
+- squash merge `22857f6304d4b4f19ec1cb6303a80d120173bcd1` on sole parent `a744417e1ec2f40b4f59706df84589d8b18638cb` with the identical reviewed tree and valid GitHub signature;
+- push-triggered post-merge Quality Gates run #248: SUCCESS across all five jobs;
 - implementation branch deleted after verified merge.
 
 ## Closed Q1 contract
@@ -184,35 +185,42 @@ Q13 expanded baseline-free analysis and deterministic PHPUnit characterization i
 
 Q13 closure evidence remains pinned: PR #39 final reviewed head `302dcdf9c1bbd3a1d259790e8f9f9c2d694b74d7`, exact reviewed tree `be7c52143d2085550790b742d164ecbec413377f`, exact-head Quality Gates run #236, PHPUnit **105 tests / 766 assertions**, Q13 **77/0**, clean independent exact-head review with zero unresolved threads, squash merge `a744417e1ec2f40b4f59706df84589d8b18638cb` on sole parent `6dc53bdaf60f12774d7516294d7004974be3874f` with the identical reviewed tree and valid GitHub signature, post-merge Quality Gates run #237 and implementation branch deleted after verified merge.
 
-## Q14 purpose
+## Closed Q14 contract
 
-Expand baseline-free analysis and deterministic PHPUnit characterization into the existing privileged Phase 9I admin adapter `src/Migration/MigrationAdmin.php`.
+Q14 is DONE / VERIFIED and expanded baseline-free analysis and deterministic PHPUnit characterization into the existing privileged Phase 9I admin adapter `src/Migration/MigrationAdmin.php`.
 
 Q14 freezes exact submenu registration, capability-before-request authorization, POST nonce verification, bounded credential-free form parsing, explicit execute confirmation, resume/offset exclusion, existing-settings-only credential use, redacted structured results and context-correct escaping.
 
-## Q14 scope
+Q14 changed only malformed/admin-boundary behavior: terminal-newline integers, lossy request/action normalization and analyzer-proven unreachable missing-reason fallbacks. Canonical valid requests retained the same contract. Exact closure evidence is pinned in Entry evidence above.
 
-Q14 may:
+## Finite Quality Platform closeout
 
-- add `Migration/MigrationAdmin.php` to PHPStan level 5/PHP 7.2 and risk-focused PHPCS ownership;
-- add development-only WordPress admin fixtures/stubs for capability, submenu, nonce, escaping and form-output boundaries;
-- add deterministic PHPUnit characterization for authorization order, nonce use, credential-free fields, parsing, confirmation, bounds, redaction and public method shape;
-- replace lossy control-token normalization with byte-preserving request-method and raw-unslashed action allowlists so malformed privileged control tokens fail closed;
-- remove analyzer-proven unreachable settings/resume reason fallbacks while preserving the exact underlying contract reasons;
-- replace the permissive integer `$` end anchor with absolute `\z` so terminal-newline offset/limit input fails closed;
-- add a permanent Quality Platform Migration Admin harness;
-- retain every prior tool, harness, protected identity and closed runtime contract.
+The Quality Platform is explicitly capped at Q17:
 
-Q14 may not add an API-key field, weaken the capability or nonce boundary, add a new admin context, weaken confirmation, resume, bounds, redaction or escaping, execute live migration/provider behavior in unit tests, or enter batch/executor/payment/scheduler/provider ownership. Its production edits remove impossible missing-reason fallbacks from closed array contracts, make malformed terminal-newline integer input fail closed with `\z`, and replace lossy control-token normalization with a byte-preserving request-method allowlist plus a raw-unslashed action allowlist; canonical valid requests keep the same behavior.
+- Q15: `Subscription/Presentation.php`;
+- Q16: migration core — `MigrationPreflight.php`, `MigrationBatch.php` and `MigrationExecutor.php`;
+- Q17: payment runtime — `CheckoutOrchestrator.php` and `PaymentLifecycle.php`.
 
-## Q14 acceptance
+Q17 is the planned closeout. No Q18 is authorized by this roadmap; later work belongs to the named Platform Certification, Feature Certification, Product Readiness and Release Engineering programs. A newly discovered critical defect may reopen the relevant closed contract, but it does not silently extend the Q sequence.
 
-Q14 may be merged only when:
+## Q15 purpose
 
-1. PHPUnit covers exact submenu registration, authorization ordering, nonce use, credential-free inputs, explicit execute confirmation, resume/offset conflict, strict bounded integers, redacted output and escaping;
-2. PHPStan level 5 passes on all Q1-Q14 modules against PHP 7.2 with no baseline or `ignoreErrors` entries;
+Expand baseline-free analysis and deterministic PHPUnit characterization into `src/Subscription/Presentation.php`, the existing Architecture A4 product/admin/cart/My Account presentation boundary.
+
+## Q15 scope
+
+Q15 may add bounded development-only WordPress/WooCommerce fixtures and tests for product-type presentation, product-meta authorization, cart compatibility, customer ownership, manual-action nonce identities, account filters, escaped output and the static class boundary. Analyzer- or test-proven corrections must remain inside `Subscription/Presentation.php`, preserve canonical valid behavior and fail closed on malformed input.
+
+Q15 may not move hook composition, mutate subscription state, schedule billing, claim cycles, write billing attempts, dispatch payments, call the provider, change gateway/options/meta/routes/hooks/tables/H12 identities, alter protected Scheduler/CycleClaim files or claim recurring-billing/platform/browser/accessibility/performance certification.
+
+## Q15 acceptance
+
+Q15 may be merged only when:
+
+1. PHPUnit covers the named product/admin/cart/account ownership, nonce, input and output boundaries without executing scheduler, billing, provider or payment behavior;
+2. PHPStan level 5 passes on all Q1-Q15 modules against PHP 7.2 with no baseline or `ignoreErrors` entries;
 3. PHPCS/WPCS, Composer validation, locked install and dependency audit remain clean;
-4. every Q1-Q13 permanent harness and the new Q14 harness are green;
+4. every Q1-Q14 permanent harness and the new Q15 harness are green;
 5. PHP 7.2 and PHP 8.2 distributed-source syntax jobs remain green;
 6. the protected H12 prerequisite aggregator and every historical/architecture regression remain green;
 7. exact-head independent review is clean with zero unresolved valid findings;
@@ -220,6 +228,6 @@ Q14 may be merged only when:
 
 ## Non-claims
 
-Q14 is a bounded static-analysis and deterministic unit-characterization tranche. It is not WordPress, WooCommerce, PHP, migration-execution, browser, accessibility, performance, penetration-test, PCI/compliance or production certification. It does not execute a migration, call the provider, mutate identity, run a scheduler, dispatch a payment or certify provider connectivity.
+Q15 is a bounded static-analysis and deterministic unit-characterization tranche. It is not WordPress, WooCommerce, PHP, recurring-billing, browser, accessibility, performance, penetration-test, PCI/compliance or production certification. It does not run a scheduler, claim a cycle, dispatch a payment or certify provider connectivity.
 
 Later quality tranches expand WordPress/WooCommerce integration tests, further static-analysis scope, compatibility matrices, mutation testing, CodeQL and browser tooling only when each protects a named risk.

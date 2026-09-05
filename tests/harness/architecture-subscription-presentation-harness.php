@@ -63,6 +63,7 @@ function esc_js($value) { return addslashes((string) $value); }
 function esc_html_e($text, $domain = null) { echo esc_html($text); }
 function wp_kses_post($value) { return (string) $value; }
 function sanitize_text_field($value) { return trim(strip_tags((string) $value)); }
+function sanitize_key($value) { return (string) preg_replace('/[^a-z0-9_\-]/', '', strtolower((string) $value)); }
 function wp_unslash($value) { return $value; }
 function absint($value) { return abs((int) $value); }
 function wp_verify_nonce($nonce, $action) { global $a4_nonce_valid; return $a4_nonce_valid; }
@@ -180,7 +181,9 @@ a4_same(true, Presentation::restrict_mixed_cart_products(true, 12, 1, 'upayments
 $_GET = array();
 a4_same(array('limit' => 10), Presentation::filter_account_orders_query(array('limit' => 10)), 'empty account filter leaves query unchanged');
 $_GET['subscription_filter'] = '<b>paused</b>';
-a4_same(array('meta_query' => array(array('key' => '_upay_subscription_status', 'value' => 'paused'))), Presentation::filter_account_orders_query(array()), 'account filter retains sanitized subscription-status meta query');
+a4_same(array(), Presentation::filter_account_orders_query(array()), 'malformed account filter cannot normalize into an allowed status');
+$_GET['subscription_filter'] = 'paused';
+a4_same(array('meta_query' => array(array('key' => '_upay_subscription_status', 'value' => 'paused'))), Presentation::filter_account_orders_query(array()), 'account filter retains exact subscription-status meta query');
 $columns = Presentation::filter_account_orders_columns(array('order-number' => 'Order', 'order-status' => 'Woo Status', 'order-total' => 'Total'));
 a4_same(array('order-number' => 'Order', 'order-status' => 'Woo Status', 'order_type' => 'Type', 'order_status' => 'Status', 'order-total' => 'Total'), $columns, 'account Type/Status columns retain exact insertion order');
 

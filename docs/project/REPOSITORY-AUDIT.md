@@ -32,13 +32,13 @@ The repository remains a pre-release engineering codebase. It is not the intende
 
 Phase 0 took ownership of public release identity and removed inherited update authority. Phase 9I added isolated historical-identity migration tooling. The provider lifecycle gate then added an isolated `Simplix\Pay\UPayments\Payment` strangler for ordinary browser/webhook/status truth and WooCommerce payment-state transitions without broadly rewriting the inherited gateway bootstrap.
 
-Architecture discovery/A1-A5 and Quality Platform Q1-Q13 are **DONE / VERIFIED**. The current owner/gate is **Full Automated Quality Platform — Q14**. Q14 may expand PHPUnit characterization and baseline-free PHPStan/PHPCS only across the bounded `Migration/MigrationAdmin.php` capability/nonce/form/redaction/escaping adapter. It does not authorize a big-bang rewrite, API-key input, capability/nonce weakening, new admin context, confirmation/resume/bounds changes, migration execution in tests, identity migration, updater activation, scheduler/cycle-claim/attempt/dispatch/mutation changes, protected-meta renames, provider-host migration, payment-truth reinterpretation or weakening closed Security/Payment/H12/Phase 9I contracts.
+Architecture discovery/A1-A5 and Quality Platform Q1-Q14 are **DONE / VERIFIED**. The current owner/gate is **Full Automated Quality Platform — Q15**. Q15 may expand PHPUnit characterization and baseline-free PHPStan/PHPCS only across `Subscription/Presentation.php`: product/admin schema, product-meta authorization, cart/order-item presentation, account ownership/actions/filtering and escaped output. It does not authorize a big-bang rewrite, hook-topology changes, subscription-state mutation, scheduler/cycle-claim/attempt/dispatch/provider/payment behavior, protected-meta renames, provider-host migration, payment-truth reinterpretation or weakening closed Security/Payment/H12/Phase 9I contracts.
 
 ## Top-level inventory after Security Threat-Model closure
 
 | Area | Current state | Classification | Next owner/gate |
 |---|---|---|---|
-| `.github/` | CODEOWNERS, templates, Dependabot, protected Quality Gates | **KEEP / CONTROL PLANE** | Q14 preserves Q1-Q13 gating while expanding bounded migration-admin evidence |
+| `.github/` | CODEOWNERS, templates, Dependabot, protected Quality Gates | **KEEP / CONTROL PLANE** | Q15 preserves Q1-Q14 gating while expanding bounded subscription-presentation evidence |
 | `AGENTS.md` | Permanent execution/review rules | **KEEP / CONTROL PLANE** | Mandatory before substantive work |
 | `README.md`, `CHANGELOG.md` | Simplix-led public/project records | **KEEP CURRENT** | Update at verified milestones |
 | `LICENSE`, `NOTICE.md`, `UPSTREAM.md` | MIT + provenance/trademark boundaries | **KEEP** | Re-review at publication gates |
@@ -209,18 +209,20 @@ Known inherited empty/duplicate/legacy assets remain recorded debt. Do not delet
 
 ### Test platform
 
-The required custom harness stack now includes Phase 0, all Phase 9I suites, Provider Lifecycle, Exact Amount, Security Threat-Model, all architecture suites, H12 PHP and H12 Blocks. Q1 added locked PHPUnit/PHPStan/PHPCS evidence and a foundation harness; Q2 added CheckoutPayload boundary tests and a static-analysis expansion harness; Q3 added deterministic rate-gate/order-lock tests and a payment-concurrency harness; Q4 added authenticated status transport/binding tests and a dedicated permanent harness; Q5 added payment-method availability cache/lock/gate/provider-normalization tests and a dedicated permanent harness; Q6 added gateway settings schema/validation/sanitation/rendering/admin-asset tests and a dedicated permanent harness; Q7 added public status request/authorization/minimal-response tests and a dedicated permanent harness; Q8 added release-identity/version/updater/legacy-target tests and its own permanent harness; Q9 added historical-option/credential/mode/redaction tests and its own permanent harness; Q10 added migration-bootstrap context/dependency/registration tests and its own permanent harness; Q11 added subscription-composition hook/dependency/initializer tests and its own permanent harness; Q12 added guarded product-type load/parent/type tests and its own permanent harness; Q13 added migration-CLI request/confirmation/bounds/redaction/error tests and its own permanent harness; Q14 adds migration-admin capability/nonce/form/bounds/redaction/escaping tests and its own permanent harness. This remains a progressive quality platform rather than WordPress/WooCommerce/WP-CLI/browser/performance/migration/admin/recurring-billing certification.
+The required custom harness stack now includes Phase 0, all Phase 9I suites, Provider Lifecycle, Exact Amount, Security Threat-Model, all architecture suites, H12 PHP and H12 Blocks. Q1-Q13 progressively added locked toolchain and bounded module evidence; Q14 added migration-admin capability/nonce/form/bounds/redaction/escaping tests and its permanent harness. Q15 adds subscription product/admin/cart/account presentation tests and its own permanent harness. This remains a progressive quality platform rather than WordPress/WooCommerce/WP-CLI/browser/performance/migration/admin/recurring-billing certification.
 
 ## Current next owner/gate
 
-**Full Automated Quality Platform — Q14**.
+**Full Automated Quality Platform — Q15**.
 
 The current tranche must preserve the verified architecture map while establishing:
 
-- PHPUnit characterization of admin capability/nonce ordering, bounded credential-free forms, confirmation, resume/offset exclusion, redaction and escaping;
-- baseline-free PHPStan level 5 and PHPCS ownership of `Migration/MigrationAdmin.php` beside the Q1-Q13 modules;
+- PHPUnit characterization of product/admin schema, product-meta authorization, malformed cart/order payloads, account ownership/actions, exact filter allowlists, dates and escaped output;
+- baseline-free PHPStan level 5 and PHPCS ownership of `Subscription/Presentation.php` beside the Q1-Q14 modules;
 - unchanged Q1 dependency, audit, syntax and required-check controls;
 - permanent Q1/Q2/Q3/Q4/Q5/Q6/Q7/Q8/Q9/Q10/Q11/Q12/Q13/Q14 and historical regression gates.
+
+The Quality Platform closes at Q17: Q16 owns only migration core and Q17 owns only payment runtime. No Q18 is planned or authorized by this ledger.
 
 Do not reinterpret green tooling as platform certification or modify payment runtime to satisfy a tool. Closed Architecture/Security/Provider/H12/Phase 9I contracts remain required regressions throughout quality-platform work.
 
