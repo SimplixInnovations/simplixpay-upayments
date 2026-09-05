@@ -129,9 +129,9 @@ q15_assert(q15_contains($workflow, 'run: php tests/harness/quality-platform-subs
 q15_assert(q15_contains($workflow, 'if: ${{ always() }}'), 'protected H12 aggregator still always runs');
 q15_assert(q15_contains($workflow, "reject_across_live_records 'CURRENT / Q14'"), 'Governance rejects stale current-Q14 markers');
 q15_assert(q15_contains($agents, 'quality-platform-subscription-presentation-harness.php'), 'root execution rules keep Q15 mandatory');
-q15_assert(q15_contains($quality, '**Status:** Q16 / IMPLEMENTATION'), 'quality record advances beyond Q15');
-q15_assert(q15_contains($status, '| Current program gate | **Full Automated Quality Platform — Q16** |'), 'project status advances beyond Q15');
-q15_assert(q15_contains($readme, 'The current program gate is **Full Automated Quality Platform — Q16**.'), 'README advances beyond Q15');
+q15_assert(q15_contains($quality, 'Q16 is DONE / VERIFIED'), 'quality record advances beyond Q15');
+q15_assert(q15_contains($status, '| Quality Platform Q16 migration-core analysis | **DONE / VERIFIED** |'), 'project status advances beyond Q15');
+q15_assert(q15_contains($readme, 'Quality Platform Q1-Q16 are **DONE / VERIFIED**.'), 'README advances beyond Q15');
 q15_assert(q15_contains($roadmap, 'Q17 payment-runtime checkout-orchestration/lifecycle'), 'roadmap names the finite Q17 closeout');
 q15_assert(q15_contains($quality, 'enterprise-critical risk'), 'quality record prohibits meaningless Q-sequence extension');
 
