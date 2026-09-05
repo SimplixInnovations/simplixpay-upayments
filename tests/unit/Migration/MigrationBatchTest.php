@@ -21,6 +21,7 @@ final class MigrationBatchTest extends TestCase {
         self::assertSame('duplicate_user_id', MigrationBatch::parseUserIds('1,1')['reason']);
         self::assertSame('user_id_invalid', MigrationBatch::parseUserIds('1e2')['reason']);
         self::assertSame('user_ids_missing', MigrationBatch::parseUserIds('')['reason']);
+        self::assertSame('user_ids_missing', MigrationBatch::parseUserIds(" , \n\t, ")['reason']);
     }
 
     public function test_bounded_clean_page_writes_redacted_checkpoint_and_resumes(): void {
