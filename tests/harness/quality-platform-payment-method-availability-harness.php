@@ -135,9 +135,9 @@ q5_assert(q5_contains($quality_record, '**Status:** Q16 / IMPLEMENTATION'), 'qua
 q5_assert(q5_contains($status, '| Current program gate | **Full Automated Quality Platform — Q16** |'), 'project status advances beyond Quality Platform Q5');
 q5_assert(q5_contains($readme, 'The current program gate is **Full Automated Quality Platform — Q16**.'), 'README advances beyond Quality Platform Q5');
 q5_assert(
-    q5_contains($playbook, 'Last verified implementation main SHA: 22857f6304d4b4f19ec1cb6303a80d120173bcd1')
-        && q5_contains($playbook, 'Canonical implementation tree: 53107c93c8756985461a8d75e2009c91b89ee851'),
-    'master playbook restart anchors advance beyond Q5 to the verified Q10 merge and tree'
+    !q5_contains($playbook, 'Last verified implementation main SHA: 984053aee6bb50e62e457a639f44307e461f5e38')
+        && !q5_contains($playbook, 'Canonical implementation tree: dee657b03f8d44670b0ae2501a40dabf718d4bb2'),
+    'master playbook restart anchors do not mistake verified Q5 closure for current main'
 );
 q5_assert(!q5_contains($handoff, 'CURRENT / Q5'), 'handoff rejects the stale current-Q5 marker');
 q5_assert(!q5_contains($playbook, 'CURRENT / Q5'), 'master playbook rejects the stale current-Q5 marker');
