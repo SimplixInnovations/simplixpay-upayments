@@ -180,6 +180,8 @@ Q14 freezes exact submenu registration, capability-before-request authorization,
 
 Q14 changed only malformed/admin-boundary behavior: terminal-newline integers, lossy request/action normalization and analyzer-proven unreachable missing-reason fallbacks. Canonical valid requests retained the same contract. Exact closure evidence is pinned in Entry evidence above.
 
+Q14 closure evidence remains pinned: PR #40 final reviewed head `b2d8630a5903af8f26a7f770a2a80547c871f7c6`, exact reviewed tree `53107c93c8756985461a8d75e2009c91b89ee851`, exact-head Quality Gates run #247, PHPUnit **129 tests / 825 assertions**, Q14 Migration Admin Analysis: **109/0**, squash merge `22857f6304d4b4f19ec1cb6303a80d120173bcd1`, post-merge Quality Gates run #248, and implementation branch deleted after verified merge.
+
 ## Closed Q15 contract
 
 Q15 is DONE / VERIFIED and expanded baseline-free analysis and deterministic PHPUnit characterization into `src/Subscription/Presentation.php`, the Architecture A4 product/admin/cart/My Account presentation boundary.
