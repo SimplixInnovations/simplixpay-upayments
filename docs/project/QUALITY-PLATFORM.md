@@ -255,7 +255,8 @@ The characterization has already proven and corrected bounded defects:
 
 - checkout and reconciliation previously accepted a terminal-newline numeric order ID through permissive numeric/end-anchor handling; the red characterization reached `wc_get_order(42)` for `"42\n"`, and the correction now uses canonical positive integer parsing with absolute `\z`;
 - provider currency and MultiMerchant IBAN lexical checks now use absolute `\z` boundaries so terminal-newline values fail before provider transport;
-- two Charge attempts for the same Woo order in the same second previously reused the same `md5(order_id * time())` provider identity; the red characterization proved identical outbound IDs. Q17 now derives each attempt from a fresh WordPress UUID and hashes it to preserve the established 32-lowercase-hex shape.
+- two Charge attempts for the same Woo order in the same second previously reused the same `md5(order_id * time())` provider identity; the red characterization proved identical outbound IDs. Q17 now derives each attempt from a fresh WordPress UUID and hashes it to preserve the established 32-lowercase-hex shape;
+- a failed Woo `payment_complete()` postcondition could durably expose legacy `UPayments_Result = CAPTURED` / payment metadata because those fields were staged before Woo paid-state confirmation. The red characterization proved the partial durable write; Q17 now stages legacy capture metadata only after the paid-state + transaction-ID postcondition succeeds.
 
 The MultiMerchant charge-number terminal-newline case was also characterized and already failed closed through downstream exact number-token validation, so no redundant production change was made.
 
