@@ -284,7 +284,7 @@ final class MigrationExecutor {
         if (!is_array($record)
             || !isset($record['version']) || $record['version'] !== self::LEDGER_VERSION
             || !isset($record['status']) || $record['status'] !== 'migrated'
-            || !isset($record['token_digest']) || !is_string($record['token_digest']) || preg_match('/^[0-9a-f]{64}$/', $record['token_digest']) !== 1
+            || !isset($record['token_digest']) || !is_string($record['token_digest']) || preg_match('/^[0-9a-f]{64}\\z/', $record['token_digest']) !== 1
             || !isset($record['scope']) || !CustomerTokenIdentity::is_valid_scope($record['scope'])
             || !isset($record['generation_id']) || !self::isGeneration($record['generation_id'])
             || !isset($record['completed_at_gmt']) || !is_int($record['completed_at_gmt']) || $record['completed_at_gmt'] <= 0
@@ -372,7 +372,7 @@ final class MigrationExecutor {
     }
 
     private static function isGeneration($value) {
-        return is_string($value) && preg_match('/^[0-9a-f]{32}$/', $value) === 1;
+        return is_string($value) && preg_match('/^[0-9a-f]{32}\\z/', $value) === 1;
     }
 
     private static function baseResult($dry_run) {
