@@ -99,7 +99,7 @@ q2_assert(q2_contains($workflow, 'PHP_SYNTAX_RESULT: ${{ needs.php-syntax-compat
 
 q2_assert(
     q2_contains($quality_record, 'Q2 is DONE / VERIFIED') &&
-    q2_contains($quality_record, '**Status:** Q15 / IMPLEMENTATION'),
+    q2_contains($quality_record, '**Status:** Q16 / IMPLEMENTATION'),
     'quality record closes Q2 and advances beyond it'
 );
 foreach (array(
@@ -112,8 +112,8 @@ foreach (array(
 ) as $closure_evidence) {
     q2_assert(q2_contains($quality_record, $closure_evidence), "Q2 closure evidence is pinned: {$closure_evidence}");
 }
-q2_assert(q2_contains($status, '| Current program gate | **Full Automated Quality Platform — Q15** |'), 'project status advances beyond Quality Platform Q2');
-q2_assert(q2_contains($readme, 'The current program gate is **Full Automated Quality Platform — Q15**.'), 'README advances beyond Quality Platform Q2');
+q2_assert(q2_contains($status, '| Current program gate | **Full Automated Quality Platform — Q16** |'), 'project status advances beyond Quality Platform Q2');
+q2_assert(q2_contains($readme, 'The current program gate is **Full Automated Quality Platform — Q16**.'), 'README advances beyond Quality Platform Q2');
 q2_assert(!q2_contains($handoff, 'CURRENT / Q1**'), 'handoff program sequence rejects alternate stale Q1 gate marker without matching Q12');
 q2_assert(!q2_contains($playbook, 'CURRENT / Q1**'), 'master playbook phase ordering rejects alternate stale Q1 gate marker without matching Q12');
 q2_assert(q2_contains($workflow, "reject_across_live_records 'CURRENT / Q1**'"), 'Governance rejects alternate stale Q1 gate marker without matching Q12');
