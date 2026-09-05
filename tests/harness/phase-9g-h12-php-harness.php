@@ -5935,6 +5935,9 @@ upay_assert_eq($blocks->is_active(), false, 'BLOCKS-ACTIVE-3 missing enabled fla
 $blocks->set_test_settings(['enabled' => true]);
 upay_assert_eq($blocks->is_active(), false, 'BLOCKS-ACTIVE-4 malformed boolean enabled flag fails closed', 'semantic_runtime');
 
+$blocks->set_test_settings(['enabled' => 'YES']);
+upay_assert_eq($blocks->is_active(), false, 'BLOCKS-ACTIVE-5 noncanonical enabled token fails closed', 'semantic_runtime');
+
 $blocks->set_test_settings($state['options']['woocommerce_upayments_settings']);
 
 $blocks_data = $blocks->get_payment_method_data();
