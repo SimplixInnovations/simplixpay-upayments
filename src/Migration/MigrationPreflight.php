@@ -26,9 +26,9 @@ final class MigrationPreflight {
     /**
      * Inspect one customer's complete relevant history.
      *
-     * @param int    $user_id
-     * @param string $api_key
-     * @param bool   $is_test_mode
+     * @param mixed $user_id
+     * @param mixed $api_key
+     * @param mixed $is_test_mode
      * @return array
      */
     public static function inspect($user_id, $api_key, $is_test_mode) {
