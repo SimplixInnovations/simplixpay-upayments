@@ -479,7 +479,7 @@ Requirements:
 | Payment lifecycle/state machine | **DONE / VERIFIED** | Critical |
 | Security threat-model audit | **DONE / VERIFIED** | Critical |
 | Architecture/code quality | **DONE / VERIFIED (A1-A5)** | High |
-| Full automated quality platform | **Q16 — CURRENT GATE; Q1-Q15 DONE / VERIFIED** | Critical before public stable |
+| Full automated quality platform | **Q17 — CURRENT GATE; Q1-Q16 DONE / VERIFIED** | Critical before public stable |
 | WooCommerce/WordPress/PHP certification | **PENDING** | Critical |
 | WPML/multilingual/multicurrency certification | **FIXES PARTIAL; CERTIFICATION PENDING** | High/product objective |
 | Saved cards/subscriptions/wallets/multi-merchant | **PARTIAL; MATRIX PENDING** | Critical per enabled feature |
@@ -492,7 +492,7 @@ Requirements:
 | WordPress.org publication | **DEFERRED UNTIL READY** | Strategic |
 | Continuous maintenance | **ONGOING AFTER FIRST STABLE** | Critical long-term |
 
-Provider Contract & Payment Lifecycle, the bounded Security Threat-Model Closure, Architecture discovery/A1-A5 and Quality Platform Q1-Q15 are **DONE / VERIFIED**. The current unified gate is **Full Automated Quality Platform — Q16**. Provider contract and lifecycle rows remain separated because they retain distinct closed contracts and regression evidence.
+Provider Contract & Payment Lifecycle, the bounded Security Threat-Model Closure, Architecture discovery/A1-A5 and Quality Platform Q1-Q16 are **DONE / VERIFIED**. The current unified gate is **Full Automated Quality Platform — Q17**. Provider contract and lifecycle rows remain separated because they retain distinct closed contracts and regression evidence.
 
 ## 18. Phase ordering
 
@@ -503,7 +503,7 @@ Recommended execution order:
 3. Provider Contract & Payment Lifecycle — **DONE / VERIFIED**.
 4. Security Threat-Model Closure — **DONE / VERIFIED**.
 5. Architecture & Code Quality Foundation — **DONE / VERIFIED (A1-A5)**.
-6. Full Test-Driven Quality Platform — **CURRENT / Q16**.
+6. Full Test-Driven Quality Platform — **CURRENT / Q17**.
 7. WooCommerce / WordPress / PHP Certification.
 8. WPML / i18n / multilingual / multicurrency / RTL.
 9. Feature-specific certification — saved cards, subscriptions, wallets, multi-merchant, refunds.
@@ -928,7 +928,7 @@ Do not mechanically “clean” payment-critical logic without regression charac
 
 # FULL TEST-DRIVEN QUALITY PLATFORM
 
-**Program status:** Q16 / CURRENT GATE; Q1-Q15 DONE / VERIFIED. Q16 expands the locked, baseline-free foundation into the closed Phase 9I migration core: `MigrationPreflight.php`, `MigrationBatch.php` and `MigrationExecutor.php`. It may correct only analyzer- or test-proven migration-core input, bounded-scan, checkpoint, locking, provenance-verification and redaction defects; it does not call the provider, dispatch payments, mutate historical order evidence, run subscription scheduling or claim broad platform/migration certification. Q17 remains the planned payment-runtime closeout; a later Quality Platform gate requires a concrete separately bounded enterprise-critical risk.
+**Program status:** Q17 / CURRENT GATE; Q1-Q16 DONE / VERIFIED. Q17 is the payment-runtime closeout for `CheckoutOrchestrator.php` and `PaymentLifecycle.php`. It may correct only analyzer- or test-proven checkout/lifecycle input, attempt-identity, callback, lock/rebind, cursor, idempotency and reconciliation defects while preserving authenticated provider truth, Woo payment semantics, frozen compatibility identities and protected subscription/H12 contracts. After Q17, run the enterprise-risk audit and move to Platform Certification unless a concrete separately bounded enterprise-critical risk requires another Quality Platform gate.
 
 ## 35. Testing philosophy
 
@@ -1541,10 +1541,12 @@ Quality Platform Q10: DONE / VERIFIED; PR #36; merge 02a1ad24d262c3cb6d14653bf48
 Quality Platform Q11: DONE / VERIFIED; PR #37; merge e544a65130d4b009efea179038dd03275cd46897; tree f27880f5f2a93f1dfd6428619e5bffa75e0bd4aa; Q11 84/0; post-merge Quality Gates #230 SUCCESS
 Quality Platform Q12: DONE / VERIFIED; PR #38; merge 6dc53bdaf60f12774d7516294d7004974be3874f; tree b8a9f956e304fa9dba7658809207ddae14b1f4e1; Q12 63/0; post-merge Quality Gates #232 SUCCESS
 Quality Platform Q13: DONE / VERIFIED; PR #39; merge a744417e1ec2f40b4f59706df84589d8b18638cb; tree be7c52143d2085550790b742d164ecbec413377f; Q13 77/0; post-merge Quality Gates #237 SUCCESS
+Quality Platform Q14: DONE / VERIFIED; PR #40; merge 22857f6304d4b4f19ec1cb6303a80d120173bcd1; tree 53107c93c8756985461a8d75e2009c91b89ee851; Q14 109/0; post-merge Quality Gates #248 SUCCESS
 Quality Platform Q15: DONE / VERIFIED; PR #41; merge a4bbb05021dbded73072c0ba108a18245b60ad88; tree ea5b0b3880a99999577d51a9ed5f6a8c77a52cf0; Q15 107/0; post-merge Quality Gates #254 SUCCESS
-Last verified implementation main SHA: a4bbb05021dbded73072c0ba108a18245b60ad88
-Canonical implementation tree: ea5b0b3880a99999577d51a9ed5f6a8c77a52cf0
-Current program gate: Full Automated Quality Platform — Q16
+Quality Platform Q16: DONE / VERIFIED; PR #42; merge 06a9ebd732c7cc3f062d4bb361aaef4054a1dfa3; tree b9cc6eafb3c7f8df36b9c5db8b2e45bb330688d2; Q16 120/0; post-merge Quality Gates #316 SUCCESS; main security #84 SUCCESS
+Last verified implementation main SHA: 06a9ebd732c7cc3f062d4bb361aaef4054a1dfa3
+Canonical implementation tree: b9cc6eafb3c7f8df36b9c5db8b2e45bb330688d2
+Current program gate: Full Automated Quality Platform — Q17
 Production readiness: R0 — engineering hardening
 Public stable release: NO
 WordPress.org release: NO
@@ -1603,8 +1605,8 @@ The security implementation anchor above is post-merge verified. `PROJECT-STATUS
 - [x] Full Automated Quality Platform — **Q13 / DONE / VERIFIED** through PR #39 and post-merge Quality Gates #237.
 - [x] Full Automated Quality Platform — **Q14 / DONE / VERIFIED** through PR #40 and post-merge Quality Gates #248.
 - [x] Full Automated Quality Platform — **Q15 / DONE / VERIFIED** through PR #41 and post-merge Quality Gates #254.
-- [ ] Full Automated Quality Platform — **Q16 / CURRENT GATE**.
-- [ ] Full Automated Quality Platform — **Q17 / PLANNED PAYMENT-RUNTIME CLOSEOUT**; any later Q gate requires a separately bounded enterprise-critical risk that is not better owned by certification/readiness/release work.
+- [x] Full Automated Quality Platform — **Q16 / DONE / VERIFIED** through PR #42 and post-merge Quality Gates #316.
+- [ ] Full Automated Quality Platform — **Q17 / CURRENT GATE — PAYMENT-RUNTIME CLOSEOUT**; after Q17, run the enterprise-risk audit and move to certification/readiness/release work unless a separately bounded enterprise-critical risk justifies another Quality Platform gate.
 - [ ] WordPress/WooCommerce/PHP compatibility certification.
 - [ ] WPML/WCML certification.
 - [ ] Feature-specific certification: saved cards/subscriptions/wallets/multi-merchant/refunds.
