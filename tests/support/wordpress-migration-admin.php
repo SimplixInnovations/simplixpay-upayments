@@ -1,6 +1,7 @@
 <?php
 
 function simplixpay_test_reset_migration_admin() {
+    $GLOBALS['simplixpay_test_subscription_presentation_active'] = false;
     $GLOBALS['simplixpay_test_migration_admin'] = array(
         'capability_allowed' => true,
         'capability_calls' => array(),
@@ -15,7 +16,11 @@ function simplixpay_test_reset_migration_admin() {
     $_SERVER['REQUEST_METHOD'] = 'GET';
 }
 
-function current_user_can($capability) {
+function current_user_can($capability, $object_id = null) {
+    if (!empty($GLOBALS['simplixpay_test_subscription_presentation_active'])) {
+        $GLOBALS['simplixpay_test_subscription_presentation']['capability_calls'][] = array($capability, $object_id);
+        return $GLOBALS['simplixpay_test_subscription_presentation']['capability_allowed'] === true;
+    }
     $GLOBALS['simplixpay_test_migration_admin']['capability_calls'][] = $capability;
     return $GLOBALS['simplixpay_test_migration_admin']['capability_allowed'] === true;
 }
@@ -66,7 +71,12 @@ function checked($checked, $current = true, $echo = true) {
     return $result;
 }
 
-function wp_nonce_field($action, $name) {
+function wp_nonce_field($action, $name, $referer = true) {
+    if (!empty($GLOBALS['simplixpay_test_subscription_presentation_active'])) {
+        $GLOBALS['simplixpay_test_subscription_presentation']['nonce_fields'][] = array($action, $name, $referer);
+        echo '<input type="hidden" name="' . esc_attr($name) . '" value="test-nonce">';
+        return;
+    }
     $GLOBALS['simplixpay_test_migration_admin']['nonce_fields'][] = array($action, $name);
     echo '<input type="hidden" name="' . esc_attr($name) . '" value="test-nonce">';
 }
