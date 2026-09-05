@@ -172,6 +172,48 @@ final class CheckoutOrchestratorTest extends TestCase {
         self::assertSame(array(42), $GLOBALS['simplixpay_test_wc_get_order_calls']);
     }
 
+    public function test_classic_rejects_explicitly_opted_out_subscription_product_before_provider_request(): void {
+        $_POST = array(
+            'upay_subscription_plan' => 'monthly',
+            'upay_subscription_interval' => '1',
+        );
+
+        $gateway = new CheckoutOrchestratorGateway();
+        $product = new \WC_Product('custom_type', 789);
+        $order = new \WC_Order(
+            42,
+            'KWD',
+            '10.000',
+            array(new \WC_Order_Item_Product($product))
+        );
+        $GLOBALS['simplixpay_test_status_orders'][42] = $order;
+        $GLOBALS['simplixpay_test_subscription_presentation']['meta'][789]['_upay_disable_subscription'] = 'yes';
+
+        $request_body_calls = 0;
+        $provider_requests = array();
+        $orchestrator = new CheckoutOrchestrator(
+            $gateway,
+            static function () use (&$request_body_calls) {
+                $request_body_calls++;
+                return '';
+            },
+            static function ($route, $method, $body) use (&$provider_requests) {
+                $provider_requests[] = array($route, $method, $body);
+                return array();
+            }
+        );
+
+        $result = $orchestrator->process(42);
+
+        self::assertSame('failure', $result['result']);
+        self::assertSame(0, $request_body_calls);
+        self::assertSame(array(), $provider_requests);
+        self::assertContains(
+            array('warning', 'Subscription plan rejected: product-level opt-out.'),
+            $gateway->logs
+        );
+    }
+
     public function test_store_api_rejects_explicitly_opted_out_subscription_product_before_provider_request(): void {
         if (!defined('REST_REQUEST')) {
             define('REST_REQUEST', true);
