@@ -587,7 +587,7 @@ class CheckoutOrchestrator {
             if (!is_string($currency)) {
                 $currency = strtoupper((string) $order_data["currency"]);
             }
-            if (!preg_match('/^[A-Z]{3}$/', $currency)) {
+            if (!preg_match('/^[A-Z]{3}\\z/', $currency)) {
                 wc_add_notice(__('Payment request could not be completed. Please try again.', $gateway->domain), 'error');
                 return array('result' => 'failure', 'redirect' => wc_get_checkout_url());
             }
@@ -703,7 +703,7 @@ class CheckoutOrchestrator {
                 // Provider documentation states 25 chars, but observed real-world
                 // values reach 30 (e.g. Kuwait IBAN); we accept 15-34 to avoid
                 // over-rejecting while still catching wholesale garbage.
-                if (!preg_match('/^[A-Z]{2}[0-9]{2}[A-Z0-9]{11,30}$/', $iban)) {
+                if (!preg_match('/^[A-Z]{2}[0-9]{2}[A-Z0-9]{11,30}\\z/', $iban)) {
                     $gateway->log('MultiMerchant: invalid IBAN format.', 'warning');
                     wc_add_notice(__('Payment request could not be completed. Please try again.', $gateway->domain), 'error');
                     return array('result' => 'failure', 'redirect' => wc_get_checkout_url());
