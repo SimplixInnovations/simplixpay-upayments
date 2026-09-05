@@ -21,10 +21,10 @@ final class MigrationExecutor {
     /**
      * Execute or dry-run one user's migration.
      *
-     * @param int    $user_id
-     * @param string $api_key
-     * @param bool   $is_test_mode
-     * @param bool   $dry_run
+     * @param mixed $user_id
+     * @param mixed $api_key
+     * @param mixed $is_test_mode
+     * @param mixed $dry_run
      * @return array
      */
     public static function execute($user_id, $api_key, $is_test_mode, $dry_run = false) {
