@@ -84,6 +84,7 @@ foreach (array(
 foreach (array(
     'test_reconcile_rejects_noncanonical_order_ids_before_woo_lookup',
     'test_reconcile_keeps_positive_integer_order_ids_compatible',
+    'test_failed_payment_complete_postcondition_does_not_leave_durable_capture_metadata',
     'test_request_merge_is_presence_aware_and_conflict_safe'
 ) as $name) {
     q17_assert(q17_has($lifecycle_tests, $name), 'lifecycle runtime test: ' . $name);
@@ -122,6 +123,14 @@ q17_assert(q17_has($lifecycle, 'if (self::is_refunded($order) || self::is_verifi
 q17_assert(q17_has($lifecycle, "self::log('transaction_id_conflict', 'warning')"), 'captured path fails closed on transaction conflict');
 q17_assert(q17_has($lifecycle, '$order->payment_complete($payment_id)'), 'captured path keeps canonical Woo payment completion');
 q17_assert(q17_has($lifecycle, "self::log('payment_complete_postcondition_failed', 'warning')"), 'capture requires payment-complete postcondition');
+$postcondition_position = strpos($lifecycle, "self::log('payment_complete_postcondition_failed', 'warning')");
+$capture_meta_position = strpos($lifecycle, "\$order->update_meta_data('UPayments_Result', 'CAPTURED')");
+q17_assert(
+    $postcondition_position !== false
+    && $capture_meta_position !== false
+    && $capture_meta_position > $postcondition_position,
+    'legacy CAPTURED metadata is staged only after Woo paid-state postcondition'
+);
 q17_assert(
     q17_has($lifecycle, 'Provider callbacks cannot carry a WordPress nonce; authority comes only from authenticated status binding.'),
     'callback nonce exception documents provider-auth authority'
