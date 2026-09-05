@@ -55,7 +55,7 @@ class CheckoutOrchestrator {
             $error_url = site_url() . "/?wc-api=wc_upayments&page=error&wc_order_id=" . $order_id;
             $ipn_url = site_url() . "/?wc-api=wc_upayments&wc_order_id=" . $order_id;
 
-            $unique_order_id = md5((string) ($order_id * time()));
+            $unique_order_id = md5(wp_generate_uuid4());
             $product_name = [];
             $product_price = [];
             $product_qty = [];
