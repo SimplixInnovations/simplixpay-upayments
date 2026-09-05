@@ -89,9 +89,9 @@ foreach (array(
 ) as $evidence) {
     q7_assert(q7_contains($quality, $evidence), "Q7 closure evidence is pinned: {$evidence}");
 }
-q7_assert(q7_contains($quality, '**Status:** Q15 / IMPLEMENTATION'), 'quality record advances beyond Q7');
-q7_assert(q7_contains($status, '| Current program gate | **Full Automated Quality Platform — Q15** |'), 'project status advances beyond Q7');
-q7_assert(q7_contains($readme, 'The current program gate is **Full Automated Quality Platform — Q15**.'), 'README advances beyond Q7');
+q7_assert(q7_contains($quality, '**Status:** Q16 / IMPLEMENTATION'), 'quality record advances beyond Q7');
+q7_assert(q7_contains($status, '| Current program gate | **Full Automated Quality Platform — Q16** |'), 'project status advances beyond Q7');
+q7_assert(q7_contains($readme, 'The current program gate is **Full Automated Quality Platform — Q16**.'), 'README advances beyond Q7');
 q7_assert(q7_contains($playbook, 'Last verified implementation main SHA: 22857f6304d4b4f19ec1cb6303a80d120173bcd1'), 'playbook advances beyond Q7 to the Q14 merge');
 q7_assert(q7_contains($playbook, 'Canonical implementation tree: 53107c93c8756985461a8d75e2009c91b89ee851'), 'playbook advances beyond Q7 to the Q14 tree');
 q7_assert(!q7_contains($handoff, 'CURRENT / Q7'), 'handoff rejects stale current-Q7 marker');
