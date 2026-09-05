@@ -15,6 +15,8 @@ parameters:
         - src/Payment/ProviderResult.php
         - src/Payment/StatusRateGate.php
         - src/Payment/StatusVerifier.php
+        - src/Payment/CheckoutOrchestrator.php
+        - src/Payment/PaymentLifecycle.php
         - src/Provider/EndpointResolver.php
         - src/Provider/PaymentMethodAvailability.php
         - src/Admin/GatewaySettings.php
