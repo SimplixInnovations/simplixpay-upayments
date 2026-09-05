@@ -10,6 +10,7 @@ parameters:
         - tests/phpstan/migration-core-stubs.php
         - tests/phpstan/subscription-presentation-stubs.php
         - tests/phpstan/payment-runtime-stubs.php
+        - tests/phpstan/blocks-availability-stubs.php
     paths:
         - src/Payment/CheckoutPayload.php
         - src/Payment/OrderLock.php
@@ -33,4 +34,5 @@ parameters:
         - src/Migration/MigrationBatch.php
         - src/Migration/MigrationExecutor.php
         - src/Subscription/Presentation.php
+        - includes/class-wc-gateway-upayments-blocks.php
     tmpDir: .cache/phpstan
