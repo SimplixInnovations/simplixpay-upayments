@@ -206,6 +206,8 @@ final class CheckoutOrchestratorTest extends TestCase {
         self::assertCount(2, $provider_order_ids);
         self::assertIsString($provider_order_ids[0]);
         self::assertIsString($provider_order_ids[1]);
+        self::assertMatchesRegularExpression('/^[0-9a-f]{32}$/', $provider_order_ids[0]);
+        self::assertMatchesRegularExpression('/^[0-9a-f]{32}$/', $provider_order_ids[1]);
         self::assertNotSame($provider_order_ids[0], $provider_order_ids[1]);
     }
 }
