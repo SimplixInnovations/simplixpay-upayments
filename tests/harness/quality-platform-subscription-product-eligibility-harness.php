@@ -99,5 +99,61 @@ $GLOBALS['q19_meta'] = array(
 );
 q19_assert(Utils::cartHasRestrictedProducts() === true, 'one explicitly opted-out product restricts the mixed cart');
 
+$root = dirname(__DIR__, 2);
+$utils_source = file_get_contents($root . '/includes/Subscription/Helpers/Utils.php');
+$fields_source = file_get_contents($root . '/includes/Subscription/Checkout/Fields.php');
+$checkout_source = file_get_contents($root . '/src/Payment/CheckoutOrchestrator.php');
+$checkout_test_source = file_get_contents($root . '/tests/unit/Payment/CheckoutOrchestratorTest.php');
+$phpstan_source = file_get_contents($root . '/phpstan.neon.dist');
+$phpcs_source = file_get_contents($root . '/phpcs.xml.dist');
+$workflow_source = file_get_contents($root . '/.github/workflows/quality-gates.yml');
+$agents_source = file_get_contents($root . '/AGENTS.md');
+
+q19_assert(
+    is_string($utils_source)
+    && strpos($utils_source, '[123, 456]') === false
+    && strpos($utils_source, "_upay_disable_subscription") !== false,
+    'eligibility helper has no arbitrary product IDs and retains explicit opt-out'
+);
+q19_assert(
+    is_string($fields_source)
+    && substr_count($fields_source, 'Utils::cartHasRestrictedProducts()') >= 2,
+    'Classic checkout hides and rejects restricted subscription context'
+);
+q19_assert(
+    is_string($checkout_source)
+    && strpos($checkout_source, "_upay_disable_subscription") !== false
+    && strpos($checkout_source, "Subscription plan rejected: product-level opt-out.") !== false,
+    'payment orchestrator enforces product opt-out server-side'
+);
+q19_assert(
+    is_string($checkout_test_source)
+    && strpos($checkout_test_source, 'test_store_api_rejects_explicitly_opted_out_subscription_product_before_provider_request') !== false
+    && strpos($checkout_test_source, 'test_classic_rejects_explicitly_opted_out_subscription_product_before_provider_request') !== false,
+    'Classic and Store API opt-out regressions remain permanent'
+);
+q19_assert(
+    is_string($phpstan_source)
+    && strpos($phpstan_source, 'includes/Subscription/Checkout/Fields.php') !== false
+    && strpos($phpstan_source, 'includes/Subscription/Helpers/Utils.php') !== false,
+    'PHPStan directly owns Q19 subscription eligibility sources'
+);
+q19_assert(
+    is_string($phpcs_source)
+    && strpos($phpcs_source, '<file>includes/Subscription/Checkout/Fields.php</file>') !== false
+    && strpos($phpcs_source, '<file>includes/Subscription/Helpers/Utils.php</file>') !== false,
+    'PHPCS directly owns Q19 subscription eligibility sources'
+);
+q19_assert(
+    is_string($workflow_source)
+    && strpos($workflow_source, 'run: php tests/harness/quality-platform-subscription-product-eligibility-harness.php') !== false,
+    'Q19 harness is mandatory in Quality Gates'
+);
+q19_assert(
+    is_string($agents_source)
+    && strpos($agents_source, 'quality-platform-subscription-product-eligibility-harness.php') !== false,
+    'AGENTS keeps Q19 permanent gate mandatory'
+);
+
 echo "\nQ19 Subscription Product Eligibility: " . $pass . " PASS / " . $fail . " FAIL\n";
 exit($fail === 0 ? 0 : 1);
