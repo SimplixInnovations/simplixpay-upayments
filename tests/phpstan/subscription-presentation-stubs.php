@@ -82,7 +82,7 @@ namespace {
         /** @return void */
         public function delete_meta_data($key) {}
         /** @return void */
-        public function add_meta_data($key, $value) {}
+        public function add_meta_data($key, $value, $unique = false) {}
         /** @return void */
         public function save_meta_data() {}
         /** @return mixed */
@@ -107,14 +107,14 @@ namespace {
     function get_post_meta($post_id, $key, $single = false) {}
     function get_post_type() { return ''; }
     function woocommerce_wp_text_input($args) {}
-    /** @return WooCommerce */
-    function WC() { return new WooCommerce(); }
+    /** @return mixed */
+    function WC() {}
     /** @return WC_Product|false */
     function wc_get_product($product_id) { return false; }
     function wc_add_notice($message, $type) {}
     function wp_timezone() { return new DateTimeZone('UTC'); }
     function wc_get_account_endpoint_url($endpoint) { return ''; }
-    function add_query_arg($key = null, $value = null) { return ''; }
+    function add_query_arg($key = null, $value = null, $url = null) { return ''; }
     function esc_url($value) { return ''; }
     function esc_js($value) { return ''; }
 }
