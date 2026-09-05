@@ -118,9 +118,9 @@ foreach (array(
 ) as $closure_evidence) {
     q6_assert(q6_contains($quality_record, $closure_evidence), "Q6 closure evidence is pinned: {$closure_evidence}");
 }
-q6_assert(q6_contains($quality_record, '**Status:** Q16 / IMPLEMENTATION'), 'quality record advances beyond Q6');
-q6_assert(q6_contains($status, '| Current program gate | **Full Automated Quality Platform — Q16** |'), 'project status advances beyond Quality Platform Q6');
-q6_assert(q6_contains($readme, 'The current program gate is **Full Automated Quality Platform — Q16**.'), 'README advances beyond Quality Platform Q6');
+q6_assert(q6_contains($quality_record, 'Q16 is DONE / VERIFIED'), 'quality record advances beyond Q6');
+q6_assert(q6_contains($status, '| Quality Platform Q16 migration-core analysis | **DONE / VERIFIED** |'), 'project status advances beyond Quality Platform Q6');
+q6_assert(q6_contains($readme, 'Quality Platform Q1-Q16 are **DONE / VERIFIED**.'), 'README advances beyond Quality Platform Q6');
 q6_assert(
     !q6_contains($playbook, 'Last verified implementation main SHA: 651e604659d1891e0f7d05b8e684edb4aa31c2b1')
         && !q6_contains($playbook, 'Canonical implementation tree: 07f944a3adbbdbf6953ea96512555cb6b16286fe'),
