@@ -66,6 +66,7 @@ class CheckoutOrchestrator {
             $cart_has_custom_product = false;
             $order_has_subscription_product = false;
             $order_has_normal_product = false;
+            $order_has_subscription_restricted_product = false;
 
             $i=0;
 
@@ -144,6 +145,12 @@ class CheckoutOrchestrator {
                 if($product->get_type() === 'custom_type'){
                     $cart_has_custom_product = true;
                     $order_has_subscription_product = true;
+                    $product_id = (int) $item->get_product_id();
+                    if ($product_id > 0
+                        && get_post_meta($product_id, '_upay_disable_subscription', true) === 'yes'
+                    ) {
+                        $order_has_subscription_restricted_product = true;
+                    }
                 } else {
                     $order_has_normal_product = true;
                 }
@@ -456,6 +463,12 @@ class CheckoutOrchestrator {
             // Section N: Subscription-context enforcement with mixed-order rejection.
             // Uses order-derived composition from the authoritative line-item pass above.
             if ($subscription_plan !== 'one_time') {
+                if ($order_has_subscription_restricted_product) {
+                    $gateway->log('Subscription plan rejected: product-level opt-out.', 'warning');
+                    WC()->session->set("refresh_totals", true);
+                    wc_add_notice(__("Please select a valid payment type.", $gateway->domain), "error");
+                    return ["result" => "failure", "redirect" => wc_get_checkout_url()];
+                }
                 if ($gateway->autoDeduction !== 'yes'
                     || !$order_has_subscription_product
                     || $order_has_normal_product
