@@ -180,7 +180,7 @@ q17_assert(q17_has($readme, '| Quality Platform Q1-Q16 | **DONE / VERIFIED** |')
 q17_assert(q17_has($readme, 'The current program gate is **Full Automated Quality Platform — Q17**.'), 'README advances to Q17');
 q17_assert(q17_has($playbook, '**Q17 / CURRENT GATE — PAYMENT-RUNTIME CLOSEOUT**'), 'playbook has Q17 as current closeout');
 q17_assert(!q17_has($playbook, '**Q17 / PLANNED PAYMENT-RUNTIME CLOSEOUT**'), 'playbook removes stale planned-Q17 marker');
-q17_assert(q17_has($audit, 'any later Q gate requires a concrete separately bounded enterprise-critical risk'), 'repository audit preserves bounded post-Q17 extension policy');
+q17_assert(q17_has($audit, 'concrete separately bounded enterprise-critical risk remains'), 'repository audit preserves bounded post-Q17 extension policy');
 q17_assert(q17_has($handoff, 'Quality Platform Q16 migration-core analysis: **DONE / VERIFIED**'), 'handoff preserves Q16 completion');
 q17_assert(q17_has($handoff, 'Full Automated Quality Platform — Q17'), 'handoff advances to Q17');
 
