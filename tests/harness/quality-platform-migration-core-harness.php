@@ -38,6 +38,7 @@ $readme = q16_read($root, 'README.md');
 $agents = q16_read($root, 'AGENTS.md');
 $playbook = q16_read($root, 'docs/project/MASTER-ENGINEERING-PLAYBOOK.md');
 $audit = q16_read($root, 'docs/project/REPOSITORY-AUDIT.md');
+$handoff = q16_read($root, 'docs/project/NEW-CHAT-HANDOFF.md');
 
 foreach (array('src/Migration/MigrationPreflight.php','src/Migration/MigrationBatch.php','src/Migration/MigrationExecutor.php') as $path) {
     q16_assert(q16_has($phpstan, $path), 'PHPStan owns migration core: ' . $path);
@@ -92,6 +93,13 @@ foreach (array('01a06d45fcc0bc3d08da8d58f6be177b232bb1d4','ea5b0b3880a99999577d5
 q16_assert(q16_has($playbook, 'Quality Platform Q15: DONE / VERIFIED; PR #41; merge a4bbb05021dbded73072c0ba108a18245b60ad88; tree ea5b0b3880a99999577d51a9ed5f6a8c77a52cf0; Q15 107/0; post-merge Quality Gates #254 SUCCESS'), 'playbook restart snapshot records Q15 closure');
 q16_assert(q16_has($playbook, 'Last verified implementation main SHA: a4bbb05021dbded73072c0ba108a18245b60ad88'), 'playbook restart snapshot uses Q15 main SHA');
 q16_assert(q16_has($playbook, 'Canonical implementation tree: ea5b0b3880a99999577d51a9ed5f6a8c77a52cf0'), 'playbook restart snapshot uses Q15 tree');
+q16_assert(q16_has($handoff, '- Quality Platform Q15 subscription-presentation analysis: **DONE / VERIFIED**'), 'handoff preserves Q15 completion row');
+q16_assert(q16_has($handoff, '## Latest verified milestone — Quality Platform Q15'), 'handoff names Q15 as latest verified milestone');
+foreach (array('01a06d45fcc0bc3d08da8d58f6be177b232bb1d4','ea5b0b3880a99999577d51a9ed5f6a8c77a52cf0','a4bbb05021dbded73072c0ba108a18245b60ad88','Quality Gates run #253','Quality Gates run #254','144 tests / 899 assertions','Q15 was **107/0**') as $evidence) q16_assert(q16_has($handoff, $evidence), 'handoff pins Q15 closure evidence: ' . $evidence);
+q16_assert(q16_has($readme, '| Quality Platform Q1-Q15 | **DONE / VERIFIED** |'), 'README completion table includes Q15');
+q16_assert(q16_has($audit, '`src/Migration/MigrationPreflight.php`') && q16_has($audit, '`src/Migration/MigrationBatch.php`') && q16_has($audit, '`src/Migration/MigrationExecutor.php`'), 'repository audit current Q16 tranche names all migration-core owners');
+q16_assert(q16_has($audit, 'permanent Q1/Q2/Q3/Q4/Q5/Q6/Q7/Q8/Q9/Q10/Q11/Q12/Q13/Q14/Q15/Q16 and historical regression gates'), 'repository audit current Q16 tranche requires Q1-Q16 regressions');
+q16_assert(!q16_has($audit, 'PHPUnit characterization of product/admin schema, product-meta authorization, malformed cart/order payloads, account ownership/actions, exact filter allowlists, dates and escaped output'), 'repository audit removes stale Q15 presentation tranche bullet');
 q16_assert(q16_has($status, '| Current program gate | **Full Automated Quality Platform — Q16** |'), 'project status advances to Q16');
 q16_assert(q16_has($readme, 'The current program gate is **Full Automated Quality Platform — Q16**.'), 'README advances to Q16');
 q16_assert(q16_has($playbook, '- [x] Full Automated Quality Platform — **Q15 / DONE / VERIFIED** through PR #41 and post-merge Quality Gates #254.'), 'playbook preserves Q15 as completed');
