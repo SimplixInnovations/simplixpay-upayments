@@ -1,40 +1,27 @@
 # Full Automated Quality Platform
 
-**Status:** Q15 / IMPLEMENTATION
+**Status:** Q16 / IMPLEMENTATION
 
-**Current branch:** `quality/subscription-presentation-analysis`
+**Current branch:** `quality/migration-core-analysis`
 
-**Verified base `main`:** `22857f6304d4b4f19ec1cb6303a80d120173bcd1`
+**Verified base `main`:** `a4bbb05021dbded73072c0ba108a18245b60ad88`
 
-**Verified base tree:** `53107c93c8756985461a8d75e2009c91b89ee851`
+**Verified base tree:** `ea5b0b3880a99999577d51a9ed5f6a8c77a52cf0`
 
 ## Entry evidence
 
-Q14 is DONE / VERIFIED:
+Q15 is DONE / VERIFIED:
 
-- PR #40 final reviewed head `b2d8630a5903af8f26a7f770a2a80547c871f7c6`;
-- exact reviewed tree `53107c93c8756985461a8d75e2009c91b89ee851`;
-- exact-head Quality Gates run #247: SUCCESS across all five jobs;
-- PHPUnit: **129 tests / 825 assertions**;
+- PR #41 final reviewed head `01a06d45fcc0bc3d08da8d58f6be177b232bb1d4`;
+- exact reviewed tree `ea5b0b3880a99999577d51a9ed5f6a8c77a52cf0`;
+- exact-head Quality Gates run #253: SUCCESS across all five jobs;
+- PHPUnit: **144 tests / 899 assertions**;
 - PHPStan level 5/PHP 7.2 and PHPCS/WPCS: clean;
-- Quality Platform Foundation: **74/0**;
-- Q2 Checkout Payload Analysis: **64/0**;
-- Q3 Payment Concurrency Analysis: **69/0**;
-- Q4 Authenticated Status Analysis: **68/0**;
-- Q5 Payment-Method Availability Analysis: **83/0**;
-- Q6 Gateway Settings Analysis: **83/0**;
-- Q7 Public Order Status Analysis: **69/0**;
-- Q8 Release Identity Analysis: **46/0**;
-- Q9 Migration Settings Analysis: **62/0**;
-- Q10 Migration Bootstrap Analysis: **67/0**;
-- Q11 Subscription Composition Analysis: **84/0**;
-- Q12 Subscription Product Type Analysis: **63/0**;
-- Q13 Migration CLI Analysis: **77/0**;
-- Q14 Migration Admin Analysis: **109/0**;
-- every historical, architecture and H12 regression remained green, including H12 PHP **1927/0** and Blocks **144/0**;
-- final independent review: clean on exact head `b2d8630a5903af8f26a7f770a2a80547c871f7c6` with zero unresolved review threads;
-- squash merge `22857f6304d4b4f19ec1cb6303a80d120173bcd1` on sole parent `a744417e1ec2f40b4f59706df84589d8b18638cb` with the identical reviewed tree and valid GitHub signature;
-- push-triggered post-merge Quality Gates run #248: SUCCESS across all five jobs;
+- Q15 **107/0**;
+- every historical, architecture, Q1-Q14 and H12 regression remained green, including H12 PHP **1927/0** and Blocks **144/0**;
+- final independent review was clean on exact head after both valid P1 findings were fixed, with zero unresolved review threads;
+- squash merge `a4bbb05021dbded73072c0ba108a18245b60ad88` on sole parent `22857f6304d4b4f19ec1cb6303a80d120173bcd1` with the identical reviewed tree and valid GitHub signature;
+- push-triggered post-merge Quality Gates run #254: SUCCESS;
 - implementation branch deleted after verified merge.
 
 ## Closed Q1 contract
@@ -193,41 +180,61 @@ Q14 freezes exact submenu registration, capability-before-request authorization,
 
 Q14 changed only malformed/admin-boundary behavior: terminal-newline integers, lossy request/action normalization and analyzer-proven unreachable missing-reason fallbacks. Canonical valid requests retained the same contract. Exact closure evidence is pinned in Entry evidence above.
 
-## Finite Quality Platform closeout
+## Closed Q15 contract
 
-The Quality Platform is explicitly capped at Q17:
+Q15 is DONE / VERIFIED and expanded baseline-free analysis and deterministic PHPUnit characterization into `src/Subscription/Presentation.php`, the Architecture A4 product/admin/cart/My Account presentation boundary.
 
-- Q15: `Subscription/Presentation.php`;
-- Q16: migration core — `MigrationPreflight.php`, `MigrationBatch.php` and `MigrationExecutor.php`;
-- Q17: payment runtime — `CheckoutOrchestrator.php` and `PaymentLifecycle.php`.
+Q15 froze product-type/admin schema identities, Woo product-meta authorization, cart/order-item presentation, account ownership and action nonces, strict account status filtering, escaped output and fail-closed malformed-date/request handling. It changed no hook topology, subscription state machine, scheduler, cycle claim, billing attempt, provider transport, checkout or payment-truth contract.
 
-Q17 is the planned closeout. No Q18 is authorized by this roadmap; later work belongs to the named Platform Certification, Feature Certification, Product Readiness and Release Engineering programs. A newly discovered critical defect may reopen the relevant closed contract, but it does not silently extend the Q sequence.
+Q15 closure evidence is pinned in Entry evidence above.
 
-## Q15 purpose
+## Planned Quality Platform closeout
 
-Expand baseline-free analysis and deterministic PHPUnit characterization into `src/Subscription/Presentation.php`, the existing Architecture A4 product/admin/cart/My Account presentation boundary.
+The current planned sequence is:
 
-## Q15 scope
+- Q15: subscription presentation — **DONE / VERIFIED**;
+- Q16: migration core — **CURRENT**;
+- Q17: payment runtime — **PLANNED CLOSEOUT**.
 
-Q15 may add bounded development-only WordPress/WooCommerce fixtures and tests for product-type presentation, product-meta authorization, cart compatibility, customer ownership, manual-action nonce identities, account filters, escaped output and the static class boundary. Analyzer- or test-proven corrections must remain inside `Subscription/Presentation.php`, preserve canonical valid behavior and fail closed on malformed input.
+Q17 remains the planned Quality Platform closeout. Do not extend the sequence merely to add more Q numbers. A later Q gate is justified only by a concrete unresolved **enterprise-critical risk** that is not better owned by Platform Certification, Feature Certification, Product Readiness or Release Engineering, and it must receive its own bounded contract and evidence.
 
-Q15 may not move hook composition, mutate subscription state, schedule billing, claim cycles, write billing attempts, dispatch payments, call the provider, change gateway/options/meta/routes/hooks/tables/H12 identities, alter protected Scheduler/CycleClaim files or claim recurring-billing/platform/browser/accessibility/performance certification.
+## Q16 purpose
 
-## Q15 acceptance
+Expand baseline-free PHPStan level 5/PHP 7.2, risk-focused PHPCS/WPCS and deterministic PHPUnit characterization into the closed Phase 9I migration core:
 
-Q15 may be merged only when:
+- `src/Migration/MigrationPreflight.php`;
+- `src/Migration/MigrationBatch.php`;
+- `src/Migration/MigrationExecutor.php`.
 
-1. PHPUnit covers the named product/admin/cart/account ownership, nonce, input and output boundaries without executing scheduler, billing, provider or payment behavior;
-2. PHPStan level 5 passes on all Q1-Q15 modules against PHP 7.2 with no baseline or `ignoreErrors` entries;
+The goal is to make the already-closed migration safety contract continuously analyzable and regression-testable without broadening migration authority.
+
+## Q16 scope
+
+Q16 may characterize and harden only the existing migration-core boundaries:
+
+- strict `CLEAN` / `MIGRATABLE` / `BLOCKED` / `INDETERMINATE` preflight input, pagination, historical-cardinality, scope/generation and cross-user-conflict behavior;
+- bounded batch user-ID parsing, page limits, credential/mode/dry-run-scoped HMAC checkpoints, redacted result ledgers and fail-closed resume behavior;
+- executor lock acquisition/release, locked re-preflight, optional secret bootstrap, exact legacy provenance creation/verification, final-clean verification, idempotency and redacted auxiliary ledgers;
+- analyzer- or test-proven corrections inside the three named migration-core files only, including exact full-string identifier/token parsing and properly prepared SQL boundaries.
+
+Q16 may not call the provider, dispatch a payment, mutate historical order metadata, change gateway/options/routes/H12 identities, run subscription scheduling/cycle-claim/billing-attempt logic, alter payment truth, broaden migration eligibility, or claim merchant-fleet migration, WordPress/WooCommerce/PHP, browser, performance, PCI/compliance or production certification.
+
+## Q16 acceptance
+
+Q16 may be merged only when:
+
+1. deterministic PHPUnit covers the named preflight, batch, checkpoint, executor, idempotency, redaction and malformed-boundary contracts;
+2. PHPStan level 5 passes on all Q1-Q16 owned modules against PHP 7.2 with no baseline or `ignoreErrors` entries;
 3. PHPCS/WPCS, Composer validation, locked install and dependency audit remain clean;
-4. every Q1-Q14 permanent harness and the new Q15 harness are green;
-5. PHP 7.2 and PHP 8.2 distributed-source syntax jobs remain green;
-6. the protected H12 prerequisite aggregator and every historical/architecture regression remain green;
-7. exact-head independent review is clean with zero unresolved valid findings;
-8. merge, post-merge CI and branch cleanup are independently verified.
+4. every Q1-Q15 permanent harness and the new Q16 migration-core harness are green;
+5. the original Phase 9I preflight/executor/operations suites remain green without weakened expectations;
+6. PHP 7.2 and PHP 8.2 distributed-source syntax jobs remain green;
+7. the protected H12 prerequisite aggregator and every historical/architecture regression remain green;
+8. exact-head independent review is clean with zero unresolved valid findings;
+9. merge, post-merge CI and implementation-branch cleanup are independently verified.
 
 ## Non-claims
 
-Q15 is a bounded static-analysis and deterministic unit-characterization tranche. It is not WordPress, WooCommerce, PHP, recurring-billing, browser, accessibility, performance, penetration-test, PCI/compliance or production certification. It does not run a scheduler, claim a cycle, dispatch a payment or certify provider connectivity.
+Q16 is a bounded migration-core static-analysis and deterministic characterization tranche. It does not execute a merchant migration campaign, contact UPayments, dispatch or reconcile payments, certify subscriptions, or establish broad platform/feature/performance/security/compliance/production readiness.
 
-Later quality tranches expand WordPress/WooCommerce integration tests, further static-analysis scope, compatibility matrices, mutation testing, CodeQL and browser tooling only when each protects a named risk.
+Later work moves to Q17 payment runtime and then the named certification/readiness/release programs unless concrete evidence establishes a separately bounded enterprise-critical quality gap.
