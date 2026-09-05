@@ -118,11 +118,11 @@ foreach (array(
 }
 q3_assert(
     q3_contains($quality_record, 'Q3 is DONE / VERIFIED') &&
-    q3_contains($quality_record, '**Status:** Q15 / IMPLEMENTATION'),
+    q3_contains($quality_record, '**Status:** Q16 / IMPLEMENTATION'),
     'quality record closes Q3 and advances beyond it'
 );
-q3_assert(q3_contains($status, '| Current program gate | **Full Automated Quality Platform — Q15** |'), 'project status advances beyond Quality Platform Q3');
-q3_assert(q3_contains($readme, 'The current program gate is **Full Automated Quality Platform — Q15**.'), 'README advances beyond Quality Platform Q3');
+q3_assert(q3_contains($status, '| Current program gate | **Full Automated Quality Platform — Q16** |'), 'project status advances beyond Quality Platform Q3');
+q3_assert(q3_contains($readme, 'The current program gate is **Full Automated Quality Platform — Q16**.'), 'README advances beyond Quality Platform Q3');
 q3_assert(!q3_contains($handoff, 'CURRENT / Q2'), 'handoff rejects the stale current-Q2 marker');
 q3_assert(!q3_contains($playbook, 'CURRENT / Q2'), 'master playbook rejects the stale current-Q2 marker');
 q3_assert(q3_contains($workflow, "reject_across_live_records 'CURRENT / Q2'"), 'Governance rejects stale current-Q2 markers');

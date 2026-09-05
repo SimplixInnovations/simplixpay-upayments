@@ -43,11 +43,32 @@
 | Quality Platform Q12 subscription-product-type analysis | **DONE / VERIFIED** |
 | Quality Platform Q13 migration-CLI analysis | **DONE / VERIFIED** |
 | Quality Platform Q14 migration-admin analysis | **DONE / VERIFIED** |
-| Current program gate | **Full Automated Quality Platform — Q15** |
+| Quality Platform Q15 subscription-presentation analysis | **DONE / VERIFIED** |
+| Current program gate | **Full Automated Quality Platform — Q16** |
 
-The plugin remains a pre-release engineering project. Architecture discovery/A1-A5 and Quality Platform Q1-Q14 are DONE / VERIFIED; Q15 subscription-presentation analysis is the current bounded implementation tranche. The Quality Platform is capped at Q17, followed by named certification, product-readiness and release-engineering programs. None of these milestones constitutes broad code-quality, provider-host, penetration-test, PCI/compliance, platform, feature, performance or release certification.
+The plugin remains a pre-release engineering project. Architecture discovery/A1-A5 and Quality Platform Q1-Q15 are DONE / VERIFIED; Q16 migration-core analysis is the current bounded implementation tranche. Q17 remains the planned Quality Platform closeout, followed by named certification, product-readiness and release-engineering programs unless a concrete enterprise-critical quality risk justifies a separately bounded gate. None of these milestones constitutes broad provider-host, penetration-test, PCI/compliance, platform, feature, performance or release certification.
 
-## Latest verified milestone — Quality Platform Q14 migration-admin analysis
+## Latest verified milestone — Quality Platform Q15 subscription-presentation analysis
+
+PR #41 final reviewed head:
+
+- `01a06d45fcc0bc3d08da8d58f6be177b232bb1d4`
+- tree: `ea5b0b3880a99999577d51a9ed5f6a8c77a52cf0`
+
+Verified squash merge on `main`:
+
+- merge: `a4bbb05021dbded73072c0ba108a18245b60ad88`
+- parent: `22857f6304d4b4f19ec1cb6303a80d120173bcd1`
+- implementation branch `quality/subscription-presentation-analysis`: **deleted after verified merge**
+- exact-head Quality Gates run #253: **SUCCESS across all five jobs**
+- push-triggered post-merge Quality Gates run #254: **SUCCESS across all five jobs**
+- PHPUnit: **144 tests / 899 assertions**
+- Q15 Subscription Presentation Analysis: **107/0**
+- H12 PHP: **1927/0**; Blocks: **144/0**
+
+Q15 expanded baseline-free PHPStan level 5/PHP 7.2, risk-focused PHPCS and deterministic PHPUnit characterization into `Subscription/Presentation.php`. It hardened malformed product/admin/cart/account/date input handling while preserving protected hook, gateway, scheduler, billing, provider and payment-runtime contracts. The exact reviewed tree was squash-merged, post-merge CI passed and the implementation branch was deleted. Q15 makes no broad platform, recurring-billing, browser, compliance or production-certification claim.
+
+## Previous verified milestone — Quality Platform Q14 migration-admin analysis
 
 PR #40 final reviewed head:
 
@@ -592,18 +613,17 @@ Repository readiness remains DONE / VERIFIED:
 
 ## Current program gate — Full Automated Quality Platform
 
-**Status: Q15 — SUBSCRIPTION PRESENTATION ANALYSIS / IMPLEMENTATION.**
+**Status: Q16 — MIGRATION CORE ANALYSIS / IMPLEMENTATION.**
 
-Architecture discovery/A1-A5 and Quality Platform Q1-Q14 are complete. Q15 is limited to the existing Architecture A4 `Subscription/Presentation.php` boundary. Current scope:
+Architecture discovery/A1-A5 and Quality Platform Q1-Q15 are complete. Q16 is limited to the closed Phase 9I migration-core boundaries:
 
-- add `Subscription/Presentation.php` to the baseline-free PHPStan level 5 / PHP 7.2 and risk-focused PHPCS scopes;
-- add PHPUnit characterization for product-type/admin fields, product-meta authorization, cart compatibility, customer ownership, manual-action nonces, account filters and escaped output;
-- apply only analyzer/test/review-proven corrections within the presentation boundary while preserving canonical valid behavior;
-- keep the Q1 dependency lock, tool versions, analysis level, PHPStan no-baseline/no-`ignoreErrors` rule and protected H12 aggregator unchanged;
-- keep every historical and architecture harness plus all fifteen permanent quality-platform harnesses mandatory;
-- preserve exact Scheduler/CycleClaim blobs, protected identities and Security **82/0**, Provider **141/0 + 4/0**, Phase 9I, Phase 0, H12 and all architecture regressions.
+- `src/Migration/MigrationPreflight.php`: deterministic classification, bounded history/provenance scans, exact identifiers and cross-user conflict checks;
+- `src/Migration/MigrationBatch.php`: strict user-ID input, bounded pages, redacted credential-scoped checkpoints and fail-closed resume behavior;
+- `src/Migration/MigrationExecutor.php`: lock/re-preflight, exact legacy provenance creation/verification, idempotency and redacted ledgers;
+- baseline-free PHPStan level 5/PHP 7.2, risk-focused PHPCS/WPCS and deterministic PHPUnit characterization across those three files;
+- every original Phase 9I, Q1-Q15, architecture, security and H12 regression remains mandatory.
 
-No hook-topology change, subscription-state mutation, scheduler/cycle-claim/billing-attempt/dispatch/provider behavior, protected identity rename or payment-truth mutation is authorized in Q15. The finite closeout is Q15 Presentation, Q16 Migration Core and Q17 Payment Runtime; Q17 ends the Q sequence. `QUALITY-PLATFORM.md` is the current gate record.
+No provider transport, payment dispatch, historical-order mutation, scheduler/cycle-claim/billing-attempt execution, protected identity rename, migration-eligibility broadening or payment-truth mutation is authorized in Q16. Q17 Payment Runtime remains the planned Quality Platform closeout; any later Q gate requires a concrete separately bounded enterprise-critical risk. `QUALITY-PLATFORM.md` is the current gate record.
 
 ## Later program blockers
 

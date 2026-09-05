@@ -21,10 +21,10 @@ final class MigrationExecutor {
     /**
      * Execute or dry-run one user's migration.
      *
-     * @param int    $user_id
-     * @param string $api_key
-     * @param bool   $is_test_mode
-     * @param bool   $dry_run
+     * @param mixed $user_id
+     * @param mixed $api_key
+     * @param mixed $is_test_mode
+     * @param mixed $dry_run
      * @return array
      */
     public static function execute($user_id, $api_key, $is_test_mode, $dry_run = false) {
@@ -44,7 +44,7 @@ final class MigrationExecutor {
 
         $initial = MigrationPreflight::inspect($user_id, $api_key, $is_test_mode);
         $result['preflight'] = self::redactPreflight($initial);
-        if (!is_array($initial) || !isset($initial['classification'])) {
+        if (!isset($initial['classification'])) {
             return self::finish($result, false, 'preflight_malformed');
         }
 
@@ -79,7 +79,7 @@ final class MigrationExecutor {
             // success. Any other transition fails closed before mutation.
             $locked = MigrationPreflight::inspect($user_id, $api_key, $is_test_mode);
             $result['locked_preflight'] = self::redactPreflight($locked);
-            if (!is_array($locked) || !isset($locked['classification'])) {
+            if (!isset($locked['classification'])) {
                 return self::finish($result, false, 'locked_preflight_malformed');
             }
             if ($locked['classification'] === MigrationPreflight::CLEAN) {
@@ -138,8 +138,7 @@ final class MigrationExecutor {
             if ($needs_secret) {
                 $after_secret = MigrationPreflight::inspect($user_id, $api_key, $is_test_mode);
                 $result['post_secret_preflight'] = self::redactPreflight($after_secret);
-                if (!is_array($after_secret)
-                    || !isset($after_secret['classification'])
+                if (!isset($after_secret['classification'])
                     || $after_secret['classification'] !== MigrationPreflight::MIGRATABLE
                     || !isset($after_secret['migration']['token'])
                     || !is_string($after_secret['migration']['token'])
@@ -187,8 +186,7 @@ final class MigrationExecutor {
 
             $final = MigrationPreflight::inspect($user_id, $api_key, $is_test_mode);
             $result['final_preflight'] = self::redactPreflight($final);
-            if (!is_array($final)
-                || !isset($final['classification'])
+            if (!isset($final['classification'])
                 || $final['classification'] !== MigrationPreflight::CLEAN
             ) {
                 return self::finish($result, false, 'final_preflight_not_clean');
@@ -284,7 +282,7 @@ final class MigrationExecutor {
         if (!is_array($record)
             || !isset($record['version']) || $record['version'] !== self::LEDGER_VERSION
             || !isset($record['status']) || $record['status'] !== 'migrated'
-            || !isset($record['token_digest']) || !is_string($record['token_digest']) || preg_match('/^[0-9a-f]{64}$/', $record['token_digest']) !== 1
+            || !isset($record['token_digest']) || !is_string($record['token_digest']) || preg_match('/^[0-9a-f]{64}\z/', $record['token_digest']) !== 1
             || !isset($record['scope']) || !CustomerTokenIdentity::is_valid_scope($record['scope'])
             || !isset($record['generation_id']) || !self::isGeneration($record['generation_id'])
             || !isset($record['completed_at_gmt']) || !is_int($record['completed_at_gmt']) || $record['completed_at_gmt'] <= 0
@@ -372,7 +370,7 @@ final class MigrationExecutor {
     }
 
     private static function isGeneration($value) {
-        return is_string($value) && preg_match('/^[0-9a-f]{32}$/', $value) === 1;
+        return is_string($value) && preg_match('/^[0-9a-f]{32}\z/', $value) === 1;
     }
 
     private static function baseResult($dry_run) {

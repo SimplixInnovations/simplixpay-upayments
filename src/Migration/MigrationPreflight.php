@@ -26,9 +26,9 @@ final class MigrationPreflight {
     /**
      * Inspect one customer's complete relevant history.
      *
-     * @param int    $user_id
-     * @param string $api_key
-     * @param bool   $is_test_mode
+     * @param mixed $user_id
+     * @param mixed $api_key
+     * @param mixed $is_test_mode
      * @return array
      */
     public static function inspect($user_id, $api_key, $is_test_mode) {
@@ -462,12 +462,14 @@ final class MigrationPreflight {
         $key_like = $wpdb->esc_like($prefix) . '%';
         $token_like = '%' . $wpdb->esc_like($token) . '%';
         $limit = self::GLOBAL_PROVENANCE_LIMIT + 1;
-        $sql = $wpdb->prepare(
-            "SELECT user_id, meta_key, meta_value FROM {$wpdb->usermeta} WHERE meta_key LIKE %s AND meta_value LIKE %s LIMIT {$limit}",
-            $key_like,
-            $token_like
+        $rows = $wpdb->get_results(
+            $wpdb->prepare(
+                "SELECT user_id, meta_key, meta_value FROM {$wpdb->usermeta} WHERE meta_key LIKE %s AND meta_value LIKE %s LIMIT %d",
+                $key_like,
+                $token_like,
+                $limit
+            )
         );
-        $rows = $wpdb->get_results($sql);
         if (!is_array($rows)) {
             return array('status' => self::INDETERMINATE, 'reason' => 'provenance_query_failed');
         }
@@ -513,11 +515,12 @@ final class MigrationPreflight {
         }
         $prefix = '_upay_customer_token_v2_b' . (string) get_current_blog_id() . '_';
         $like = $wpdb->esc_like($prefix) . '%';
-        $sql = $wpdb->prepare(
-            "SELECT meta_key FROM {$wpdb->usermeta} WHERE meta_key LIKE %s LIMIT 1",
-            $like
+        $value = $wpdb->get_var(
+            $wpdb->prepare(
+                "SELECT meta_key FROM {$wpdb->usermeta} WHERE meta_key LIKE %s LIMIT 1",
+                $like
+            )
         );
-        $value = $wpdb->get_var($sql);
         if ($value === false) {
             return array('state' => self::INDETERMINATE, 'reason' => 'provenance_query_failed', 'exists' => false);
         }
@@ -596,7 +599,7 @@ final class MigrationPreflight {
         if (is_int($value)) {
             return $value >= 0 ? $value : null;
         }
-        if (!is_string($value) || preg_match('/^(?:0|[1-9][0-9]*)$/', $value) !== 1) {
+        if (!is_string($value) || preg_match('/^(?:0|[1-9][0-9]*)\z/', $value) !== 1) {
             return null;
         }
         $max = (string) PHP_INT_MAX;
@@ -609,7 +612,7 @@ final class MigrationPreflight {
     }
 
     private static function isGeneration($value) {
-        return is_string($value) && preg_match('/^[0-9a-f]{32}$/', $value) === 1;
+        return is_string($value) && preg_match('/^[0-9a-f]{32}\z/', $value) === 1;
     }
 
     private function __construct() {

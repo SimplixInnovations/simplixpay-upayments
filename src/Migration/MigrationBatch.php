@@ -29,8 +29,12 @@ final class MigrationBatch {
             return array('ok' => false, 'reason' => 'user_ids_missing', 'user_ids' => array());
         }
 
+        if (preg_match('/^[\s,]+\z/', $raw) === 1) {
+            return array('ok' => false, 'reason' => 'user_ids_missing', 'user_ids' => array());
+        }
+
         $parts = preg_split('/[\s,]+/', $raw, -1, PREG_SPLIT_NO_EMPTY);
-        if (!is_array($parts) || count($parts) === 0) {
+        if (!is_array($parts)) {
             return array('ok' => false, 'reason' => 'user_ids_missing', 'user_ids' => array());
         }
         if (count($parts) > self::MAX_INPUT_USERS) {
@@ -40,7 +44,7 @@ final class MigrationBatch {
         $ids = array();
         $seen = array();
         foreach ($parts as $part) {
-            if (!is_string($part) || preg_match('/^[1-9][0-9]*$/', $part) !== 1) {
+            if (preg_match('/^[1-9][0-9]*\z/', $part) !== 1) {
                 return array('ok' => false, 'reason' => 'user_id_invalid', 'user_ids' => array());
             }
             if (strlen($part) > strlen((string) PHP_INT_MAX)
@@ -70,10 +74,10 @@ final class MigrationBatch {
      * count as evaluated; an operator may deliberately re-evaluate them by
      * supplying an explicit offset instead of choosing resume mode.
      *
-     * @param array  $user_ids
-     * @param string $api_key
-     * @param bool   $is_test_mode
-     * @param bool   $dry_run
+     * @param mixed $user_ids
+     * @param mixed $api_key
+     * @param mixed $is_test_mode
+     * @param mixed $dry_run
      * @return array{ok:bool,reason:string,offset:int}
      */
     public static function resumeOffset($user_ids, $api_key, $is_test_mode, $dry_run) {
@@ -112,12 +116,12 @@ final class MigrationBatch {
     /**
      * Run one bounded page of explicit user IDs.
      *
-     * @param array  $user_ids
-     * @param string $api_key
-     * @param bool   $is_test_mode
-     * @param bool   $dry_run
-     * @param int    $offset
-     * @param int    $limit
+     * @param mixed $user_ids
+     * @param mixed $api_key
+     * @param mixed $is_test_mode
+     * @param mixed $dry_run
+     * @param mixed $offset
+     * @param mixed $limit
      * @return array
      */
     public static function run($user_ids, $api_key, $is_test_mode, $dry_run = true, $offset = 0, $limit = self::DEFAULT_LIMIT) {
@@ -311,7 +315,7 @@ final class MigrationBatch {
     private static function isResultLedgerRecord($record) {
         if (!is_array($record)
             || !isset($record['version']) || $record['version'] !== self::RESULT_LEDGER_VERSION
-            || !isset($record['batch_digest']) || !is_string($record['batch_digest']) || preg_match('/^[0-9a-f]{64}$/', $record['batch_digest']) !== 1
+            || !isset($record['batch_digest']) || !is_string($record['batch_digest']) || preg_match('/^[0-9a-f]{64}\z/', $record['batch_digest']) !== 1
             || !isset($record['position']) || !is_int($record['position']) || $record['position'] < 0
             || !isset($record['next_offset']) || !is_int($record['next_offset']) || $record['next_offset'] !== ($record['position'] + 1)
             || !isset($record['input_count']) || !is_int($record['input_count']) || $record['input_count'] <= 0 || $record['input_count'] > self::MAX_INPUT_USERS
@@ -324,7 +328,7 @@ final class MigrationBatch {
             || !isset($record['idempotent']) || !is_bool($record['idempotent'])
             || !isset($record['executor_ledger_written']) || !is_bool($record['executor_ledger_written'])
             || !array_key_exists('token_digest', $record)
-            || ($record['token_digest'] !== null && (!is_string($record['token_digest']) || preg_match('/^[0-9a-f]{64}$/', $record['token_digest']) !== 1))
+            || ($record['token_digest'] !== null && (!is_string($record['token_digest']) || preg_match('/^[0-9a-f]{64}\z/', $record['token_digest']) !== 1))
             || !isset($record['processed_at_gmt']) || !is_int($record['processed_at_gmt']) || $record['processed_at_gmt'] <= 0
         ) {
             return false;
@@ -333,7 +337,7 @@ final class MigrationBatch {
     }
 
     private static function isSafeReason($reason) {
-        return is_string($reason) && strlen($reason) <= 96 && preg_match('/^[a-z0-9_]+$/', $reason) === 1;
+        return is_string($reason) && strlen($reason) <= 96 && preg_match('/^[a-z0-9_]+\z/', $reason) === 1;
     }
 
     private static function isSafeClassification($classification) {
@@ -371,7 +375,7 @@ final class MigrationBatch {
         $safe['idempotent'] = !empty($execution['idempotent']);
         $safe['ledger_written'] = !empty($execution['ledger_written']);
         if (isset($execution['token_digest']) && is_string($execution['token_digest'])
-            && preg_match('/^[0-9a-f]{64}$/', $execution['token_digest']) === 1
+            && preg_match('/^[0-9a-f]{64}\z/', $execution['token_digest']) === 1
         ) {
             $safe['token_digest'] = $execution['token_digest'];
         }

@@ -9,6 +9,9 @@ class wpdb {
     public $options;
 
     /** @var string */
+    public $usermeta;
+
+    /** @var string */
     public $prefix;
 
     /** @return string */
@@ -16,6 +19,12 @@ class wpdb {
 
     /** @return int|bool */
     public function query($query) {}
+
+    /** @return string */
+    public function esc_like($value) {}
+
+    /** @return mixed */
+    public function get_results($query) {}
 
     /**
      * @param string $query
@@ -122,3 +131,15 @@ function wp_json_encode($data, $options = 0, $depth = 512) {}
 
 /** @return int */
 function get_current_blog_id() {}
+
+/** @return mixed */
+function get_user_meta($user_id, $key, $single = false) {}
+
+/** @return int|bool */
+function update_user_meta($user_id, $key, $value, $prev_value = '') {}
+
+/** @return mixed */
+function wc_get_orders($args = array()) {}
+
+/** @return mixed */
+function maybe_unserialize($value) {}
