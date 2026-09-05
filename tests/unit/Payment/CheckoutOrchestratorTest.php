@@ -1,5 +1,13 @@
 <?php
 
+namespace Simplix\Pay\UPayments\Payment;
+
+function time() {
+    return isset($GLOBALS['simplixpay_test_payment_runtime_time'])
+        ? (int) $GLOBALS['simplixpay_test_payment_runtime_time']
+        : \time();
+}
+
 namespace Simplix\Pay\UPayments\Tests\Payment;
 
 use PHPUnit\Framework\Attributes\PreserveGlobalState;
@@ -153,5 +161,42 @@ final class CheckoutOrchestratorTest extends TestCase {
 
         self::assertSame('failure', $result['result']);
         self::assertSame(array(42), $GLOBALS['simplixpay_test_wc_get_order_calls']);
+    }
+
+    public function test_same_second_retries_use_distinct_provider_order_ids(): void {
+        $GLOBALS['simplixpay_test_payment_runtime_time'] = 1700000000;
+        $gateway = new CheckoutOrchestratorGateway();
+        $order = new \WC_Order(
+            42,
+            'KWD',
+            '10.000',
+            array(new \WC_Order_Item_Product(new \WC_Product('simple')))
+        );
+        $GLOBALS['simplixpay_test_status_orders'][42] = $order;
+        $provider_order_ids = array();
+
+        $orchestrator = new CheckoutOrchestrator(
+            $gateway,
+            static function () { return ''; },
+            static function ($route, $method, $body) use (&$provider_order_ids) {
+                if ($route === 'charge' && $method === 'POST' && is_string($body)) {
+                    $payload = json_decode($body, true);
+                    if (is_array($payload) && isset($payload['order']['id'])) {
+                        $provider_order_ids[] = $payload['order']['id'];
+                    }
+                }
+                return array();
+            }
+        );
+
+        $first = $orchestrator->process(42);
+        $second = $orchestrator->process(42);
+
+        self::assertSame('failure', $first['result']);
+        self::assertSame('failure', $second['result']);
+        self::assertCount(2, $provider_order_ids);
+        self::assertIsString($provider_order_ids[0]);
+        self::assertIsString($provider_order_ids[1]);
+        self::assertNotSame($provider_order_ids[0], $provider_order_ids[1]);
     }
 }
