@@ -29,10 +29,6 @@ class Utils
                 return true;
             }
 
-            // Hard-coded restriction example
-            if (in_array($product_id, [123, 456], true)) {
-                return true;
-            }
         }
 
         return false;
