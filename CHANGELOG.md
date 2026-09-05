@@ -106,13 +106,20 @@ The project is still in pre-release engineering hardening. Entries below are eng
 - Exact final PR #36 head `41b0d6d03af91b1e811562d609cf809345a221df` passed Quality Gates #226 and clean independent exact-head review; Q10 was **67/0** and PHPUnit **82 tests / 686 assertions**.
 - Squash-merged PR #36 as `02a1ad24d262c3cb6d14653bf48aa31c3796ae4e`, tree `eae2fe0d0f0f54bef793ed6e58c9837bd01403ab`; post-merge run #227 passed and the implementation branch was deleted.
 
-### Full Automated Quality Platform — Q15 Subscription Presentation Analysis
+### Full Automated Quality Platform — Q16 Migration Core Analysis
 
-- Expands baseline-free PHPStan level 5/PHP 7.2 and risk-focused PHPCS ownership into the existing Architecture A4 subscription-presentation boundary.
-- Adds deterministic product/admin/cart/My Account characterization without running scheduler, billing, provider or payment behavior.
-- Makes malformed product/cart/order/filter/date inputs fail closed, escapes the account type label, suppresses cancelled next-billing output and renders the admin subscription summary at most once per order while preserving valid legacy identities and actions.
-- Adds a permanent Q15 governance harness and keeps every Q1-Q14, architecture, historical and protected H12 regression mandatory.
-- Caps the Quality Platform at Q17: Q15 Presentation, Q16 Migration Core and Q17 Payment Runtime; no Q18 is planned.
+- Expands baseline-free PHPStan level 5/PHP 7.2 and risk-focused PHPCS ownership into `MigrationPreflight`, `MigrationBatch` and `MigrationExecutor`.
+- Adds deterministic migration-core PHPUnit characterization while preserving every original Phase 9I preflight/executor/operations regression.
+- Hardens full-string numeric/generation/digest/reason parsing, preserves bounded scans/checkpoints and keeps SQL preparation explicit without broadening migration eligibility.
+- Adds a permanent Q16 governance harness; provider transport, payment dispatch, historical-order mutation and subscription runtime remain excluded.
+- Q17 remains the planned payment-runtime closeout; later Q work requires a concrete separately bounded enterprise-critical risk.
+
+### Full Automated Quality Platform — Q15 Subscription Presentation Analysis — DONE / VERIFIED
+
+- Expanded baseline-free PHPStan level 5/PHP 7.2 and risk-focused PHPCS ownership into the Architecture A4 subscription-presentation boundary.
+- Added deterministic product/admin/cart/My Account characterization and malformed-input/output hardening without running scheduler, billing, provider or payment behavior.
+- Exact final PR #41 head `01a06d45fcc0bc3d08da8d58f6be177b232bb1d4`, tree `ea5b0b3880a99999577d51a9ed5f6a8c77a52cf0`, passed Quality Gates #253 with PHPUnit **144 tests / 899 assertions** and Q15 **107/0**.
+- Squash-merged as `a4bbb05021dbded73072c0ba108a18245b60ad88`; post-merge Quality Gates #254 passed and the implementation branch was deleted.
 
 ### Full Automated Quality Platform — Q14 Migration Admin Analysis — DONE / VERIFIED
 
@@ -182,7 +189,7 @@ The project is still in pre-release engineering hardening. Entries below are eng
 
 ### Current program gate
 
-**Full Automated Quality Platform — Q15** is now the active gate. Architecture A1-A5 and Quality Platform Q1-Q14 are DONE / VERIFIED; Q15 is limited to subscription product/admin/cart/account presentation characterization and baseline-free static-analysis expansion and does not run scheduler/billing/provider/payment behavior, certify platforms or alter payment runtime contracts. Q17 is the finite Quality Platform closeout; no Q18 is planned.
+**Full Automated Quality Platform — Q16** is now the active gate. Architecture A1-A5 and Quality Platform Q1-Q15 are DONE / VERIFIED; Q16 is limited to migration-core preflight/batch/executor characterization and baseline-free static-analysis expansion and does not call the provider, dispatch payments, mutate historical order evidence or certify platforms. Q17 remains the planned payment-runtime closeout; later Q work requires a concrete separately bounded enterprise-critical risk.
 
 ### Provider Contract & Payment Lifecycle — DONE / VERIFIED
 
