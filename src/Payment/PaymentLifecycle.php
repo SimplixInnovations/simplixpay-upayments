@@ -425,7 +425,9 @@ final class PaymentLifecycle {
             || !method_exists($order, 'get_id')
             || !method_exists($order, 'get_transaction_id')
             || !method_exists($order, 'is_paid')
+            || !method_exists($order, 'get_meta')
             || !method_exists($order, 'update_meta_data')
+            || !method_exists($order, 'delete_meta_data')
             || !method_exists($order, 'save')
         ) {
             return false;
@@ -448,7 +450,20 @@ final class PaymentLifecycle {
             return false;
         }
 
+        $legacy_capture_meta = array(
+            'UPayments_Result' => 'CAPTURED',
+            'UPayments_PaymentID' => $payment_id,
+            'UPayments_TrackID' => (string) $transaction['track_id'],
+            'UPayments_Ref' => (string) $transaction['reference'],
+            '_payment_method_title' => 'UPayments',
+        );
+        if (isset($transaction['payment_type']) && is_scalar($transaction['payment_type'])) {
+            $legacy_capture_meta['UPayments_payment_type'] = (string) $transaction['payment_type'];
+        }
+
         $already_paid = (bool) $order->is_paid();
+        $legacy_capture_snapshot = array();
+
         if ($already_paid) {
             if ($existing_transaction_id === '' && method_exists($order, 'set_transaction_id')) {
                 $order->set_transaction_id($payment_id);
@@ -456,6 +471,23 @@ final class PaymentLifecycle {
         } else {
             if (!method_exists($order, 'payment_complete')) {
                 return false;
+            }
+
+            // WooCommerce saves the order and fires payment-completion/status hooks
+            // inside payment_complete(). Stage legacy provider metadata first so
+            // those hooks observe the authenticated provider result. Do not stage
+            // Simplix verified-capture truth until the Woo paid-state postcondition
+            // succeeds. If completion fails or throws, restore the exact prior
+            // legacy metadata so false CAPTURED evidence cannot survive durably.
+            foreach ($legacy_capture_meta as $key => $value) {
+                $exists = method_exists($order, 'meta_exists')
+                    ? (bool) $order->meta_exists($key)
+                    : (string) $order->get_meta($key) !== '';
+                $legacy_capture_snapshot[$key] = array(
+                    'exists' => $exists,
+                    'value' => $exists ? $order->get_meta($key) : null,
+                );
+                $order->update_meta_data($key, $value);
             }
 
             $force_completed = method_exists($gateway, 'getIsOrderComplete') && $gateway->getIsOrderComplete();
@@ -470,6 +502,16 @@ final class PaymentLifecycle {
 
             try {
                 $order->payment_complete($payment_id);
+            } catch (\Throwable $e) {
+                foreach ($legacy_capture_snapshot as $key => $snapshot) {
+                    if (!empty($snapshot['exists'])) {
+                        $order->update_meta_data($key, $snapshot['value']);
+                    } else {
+                        $order->delete_meta_data($key);
+                    }
+                }
+                $order->save();
+                throw $e;
             } finally {
                 if ($filter !== null) {
                     remove_filter('woocommerce_payment_complete_order_status', $filter, PHP_INT_MAX);
@@ -480,21 +522,25 @@ final class PaymentLifecycle {
         $transaction_after = (string) $order->get_transaction_id();
         $paid_after = (bool) $order->is_paid();
         if (!$paid_after || $transaction_after !== $payment_id) {
+            if (!$already_paid) {
+                foreach ($legacy_capture_snapshot as $key => $snapshot) {
+                    if (!empty($snapshot['exists'])) {
+                        $order->update_meta_data($key, $snapshot['value']);
+                    } else {
+                        $order->delete_meta_data($key);
+                    }
+                }
+                $order->save();
+            }
             self::log('payment_complete_postcondition_failed', 'warning');
             return false;
         }
 
-        // Persist provider-facing legacy capture metadata only after WooCommerce
-        // confirms the paid-state + transaction-id postcondition. This prevents a
-        // failed payment_complete() path from durably presenting CAPTURED evidence.
-        $order->update_meta_data('UPayments_Result', 'CAPTURED');
-        $order->update_meta_data('UPayments_PaymentID', $payment_id);
-        $order->update_meta_data('UPayments_TrackID', (string) $transaction['track_id']);
-        if (isset($transaction['payment_type']) && is_scalar($transaction['payment_type'])) {
-            $order->update_meta_data('UPayments_payment_type', (string) $transaction['payment_type']);
+        // Re-assert canonical legacy metadata after completion hooks, then persist
+        // Simplix payment truth only after Woo confirms paid state + transaction ID.
+        foreach ($legacy_capture_meta as $key => $value) {
+            $order->update_meta_data($key, $value);
         }
-        $order->update_meta_data('UPayments_Ref', (string) $transaction['reference']);
-        $order->update_meta_data('_payment_method_title', 'UPayments');
         $order->update_meta_data('_upay_verified_capture', 1);
         $order->update_meta_data('UPayments_webhook_triggered', 1);
         $order->save();
