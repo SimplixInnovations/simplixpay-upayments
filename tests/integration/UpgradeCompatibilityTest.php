@@ -50,9 +50,8 @@ function simplixpay_upgrade_verify_data($settings_key, $settings_snapshot_key, $
 }
 
 function simplixpay_upgrade_assert_active_contract($old_basename, $target_basename) {
-    global $phase;
-
-    $is_legacy_seed = 'seed-existing' === $phase;
+    $current_phase = getenv('SIMPLIXPAY_UPGRADE_PHASE');
+    $is_legacy_seed = 'seed-existing' === $current_phase;
     $expected_text_domain = $is_legacy_seed ? 'upayments' : 'sucheckout-upayments';
     $identity_label = $is_legacy_seed ? 'legacy existing-install' : 'canonical SUCheckout';
 
