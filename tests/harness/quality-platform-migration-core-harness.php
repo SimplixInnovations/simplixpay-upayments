@@ -102,7 +102,7 @@ foreach (array(
 q16_assert(q16_has($quality, '## Closed Q16 contract'), 'quality record preserves closed Q16 contract');
 q16_assert(q16_has($quality, '**Status:** DONE / VERIFIED (Q1-Q19)') && q16_has($quality, 'Q19 is DONE / VERIFIED'), 'quality record advances beyond Q16 and closes the numbered platform');
 q16_assert(q16_has($status, '| Quality Platform Q16 migration-core analysis | **DONE / VERIFIED** |'), 'project status preserves Q16 completion row');
-q16_assert(preg_match('/## Latest verified milestone — Quality Platform Q([0-9]+)/', $status, $q16_status_latest_matches) === 1 && isset($q16_status_latest_matches[1]) && (int) $q16_status_latest_matches[1] > 16, 'project status advances latest verified milestone beyond Q16');
+q16_assert(q16_has($status, '## Latest verified milestone — Enterprise runtime certification foundation') && q16_has($status, '## Previous verified milestone — Quality Platform Q16 migration-core analysis'), 'project status advances latest verified milestone beyond Q16 into enterprise certification');
 foreach (array(
     '3cff2fcc64053d79be7427696c86039f1b52bbfd',
     'b9cc6eafb3c7f8df36b9c5db8b2e45bb330688d2',
