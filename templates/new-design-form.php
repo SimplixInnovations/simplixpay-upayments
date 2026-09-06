@@ -173,8 +173,8 @@ defined( 'ABSPATH' ) || exit;
                     ?>
 
                         <button type="button" value="<?php echo esc_attr($card_token); ?>" onclick="suCheckoutUpayments.submitSavedCard(this)" class="upay-payment-method" id="upay-button-cc">
-                        <span class="payment-method-icon"><img src="<?php echo esc_url(UP_PLUGIN_URL . 'assets/images/cc.png'); ?>" alt="<?php echo $card_number; ?>"  title="<?php echo $card_number; ?>"/></span>
-                        <span class="payment-method-label"><?php echo $card_number_text; ?></span>
+                        <span class="payment-method-icon"><img src="<?php echo esc_url(UP_PLUGIN_URL . 'assets/images/cc.png'); ?>" alt="<?php echo esc_attr($card_number_raw); ?>"  title="<?php echo esc_attr($card_number_raw); ?>"/></span>
+                        <span class="payment-method-label"><?php echo esc_html($card_number_raw); ?></span>
                         <span class="payment-method-price"><?php echo esc_html($total); ?> <?php echo wp_kses($currency, array()); ?></span>
                         <span class="payment-method-icon2"><span class="upay-chevron" aria-hidden="true">&#8250;</span></span>
                         </button>
@@ -202,27 +202,27 @@ defined( 'ABSPATH' ) || exit;
                     $key_js = wp_json_encode($key_string, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT);
                     $onclick = 'suCheckoutUpayments.submitPaymentMethod(' . $key_js . ')';
             ?>
-                <button type="button" onclick="<?php echo esc_attr($onclick); ?>" class="upay-payment-method" id="upay-button-<?php echo $key_attr; ?>">
+                <button type="button" onclick="<?php echo esc_attr($onclick); ?>" class="upay-payment-method" id="upay-button-<?php echo esc_attr($key_string); ?>">
                     <span class="payment-method-icon">
                         <?php
                             if ($key_string == 'apple-pay-knet') {
                                 ?>
-                                <img src="<?php echo esc_url(UP_PLUGIN_URL . 'assets/images/apple-pay.png'); ?>" alt="<?php echo $value_attr; ?>"  title="<?php echo $value_attr; ?>"/>
-                                    <img src="<?php echo esc_url(UP_PLUGIN_URL . 'assets/images/knet.png'); ?>" alt="<?php echo $value_attr; ?>"  title="<?php echo $value_attr; ?>"/>
+                                <img src="<?php echo esc_url(UP_PLUGIN_URL . 'assets/images/apple-pay.png'); ?>" alt="<?php echo esc_attr($value_string); ?>"  title="<?php echo esc_attr($value_string); ?>"/>
+                                    <img src="<?php echo esc_url(UP_PLUGIN_URL . 'assets/images/knet.png'); ?>" alt="<?php echo esc_attr($value_string); ?>"  title="<?php echo esc_attr($value_string); ?>"/>
                                 <?php
                             } elseif ($key_string == 'apple-pay') {
                                 ?>
-                                    <img src="<?php echo esc_url(UP_PLUGIN_URL . 'assets/images/apple-pay.png'); ?>" alt="<?php echo $value_attr; ?>"  title="<?php echo $value_attr; ?>"/>
-                                    <img src="<?php echo esc_url(UP_PLUGIN_URL . 'assets/images/cc.png'); ?>" alt="<?php echo $value_attr; ?>"  title="<?php echo $value_attr; ?>"/>
+                                    <img src="<?php echo esc_url(UP_PLUGIN_URL . 'assets/images/apple-pay.png'); ?>" alt="<?php echo esc_attr($value_string); ?>"  title="<?php echo esc_attr($value_string); ?>"/>
+                                    <img src="<?php echo esc_url(UP_PLUGIN_URL . 'assets/images/cc.png'); ?>" alt="<?php echo esc_attr($value_string); ?>"  title="<?php echo esc_attr($value_string); ?>"/>
                                 <?php
                             } else {
                                 ?>
-                                    <img src="<?php echo esc_url(UP_PLUGIN_URL . 'assets/images/' . $key_string . '.png'); ?>" alt="<?php echo $value_attr; ?>"  title="<?php echo $value_attr; ?>"/>
+                                    <img src="<?php echo esc_url(UP_PLUGIN_URL . 'assets/images/' . $key_string . '.png'); ?>" alt="<?php echo esc_attr($value_string); ?>"  title="<?php echo esc_attr($value_string); ?>"/>
                                 <?php
                             }
                         ?>
                     </span>
-                    <span class="payment-method-label"><?php echo $value_text; ?></span>
+                    <span class="payment-method-label"><?php echo esc_html($value_string); ?></span>
                     <span class="payment-method-price"><?php echo esc_html($total); ?> <?php echo wp_kses($currency, array()); ?></span>
                     <span class="payment-method-icon2"><span class="upay-chevron" aria-hidden="true">&#8250;</span></span>
                 </button>
@@ -262,7 +262,7 @@ defined( 'ABSPATH' ) || exit;
                     $key_attr = esc_attr($key_string);
                     $value_attr = esc_attr($value_string);
     ?>
-                <span class="payment-method-icon" style="margin-right: 5px;" id="upay-button-<?php echo $key_attr; ?>"><img src="<?php echo esc_url(UP_PLUGIN_URL . 'assets/images/' . $key_string . '.png'); ?>" alt="<?php echo $value_attr; ?>"  title="<?php echo $value_attr; ?>"/></span>
+                <span class="payment-method-icon" style="margin-right: 5px;" id="upay-button-<?php echo esc_attr($key_string); ?>"><img src="<?php echo esc_url(UP_PLUGIN_URL . 'assets/images/' . $key_string . '.png'); ?>" alt="<?php echo esc_attr($value_string); ?>"  title="<?php echo esc_attr($value_string); ?>"/></span>
     <?php
                 }
             }
