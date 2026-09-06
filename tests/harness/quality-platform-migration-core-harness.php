@@ -121,7 +121,7 @@ q16_assert(q16_has($playbook, 'Canonical implementation tree: 8230778e3313e4d201
 q16_assert(q16_has($handoff, '- Quality Platform Q16 migration-core analysis: **DONE / VERIFIED**'), 'handoff preserves Q16 completion row');
 q16_assert(preg_match('/## Latest verified milestone — Quality Platform Q([0-9]+)/', $handoff, $q16_handoff_latest_matches) === 1 && isset($q16_handoff_latest_matches[1]) && (int) $q16_handoff_latest_matches[1] > 16, 'handoff advances latest verified milestone beyond Q16');
 q16_assert(preg_match('/\\| Quality Platform Q1-Q([0-9]+) \\| \\*\\*DONE \\/ VERIFIED\\*\\* \\|/', $readme, $q16_readme_range_matches) === 1 && isset($q16_readme_range_matches[1]) && (int) $q16_readme_range_matches[1] >= 16, 'README completion table includes Q16 or a later verified gate');
-q16_assert(q16_has($audit, '`src/Payment/CheckoutOrchestrator.php`') && q16_has($audit, '`src/Payment/PaymentLifecycle.php`'), 'repository audit advances to bounded Q17 owners');
+q16_assert(q16_has($audit, '**Enterprise Compatibility Certification**') && q16_has($audit, 'every Q1-Q19 regression'), 'repository audit advances beyond Q16 into certification while preserving closed quality ownership');
 q16_assert(q16_has($audit, 'every Q1-Q19 regression'), 'repository audit requires the complete closed Q1-Q19 regression platform');
 q16_assert(q16_has($status, '| Current program gate | **Enterprise Compatibility Certification** |'), 'project status advances beyond Q16 into named certification');
 q16_assert(q16_has($readme, 'The current program gate is **Enterprise Compatibility Certification**.'), 'README advances beyond Q16 into named certification');
