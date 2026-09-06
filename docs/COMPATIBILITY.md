@@ -2,7 +2,7 @@
 
 This document is the public compatibility truth. A capability is **Verified** only when exact reproducible evidence exists; external/manual requirements and unsupported features are named explicitly.
 
-**Current posture:** Enterprise Release Candidate Closeout — final verification. No public stable release has been published.
+**Current posture:** Enterprise release-candidate qualification — **DONE / VERIFIED**. No public stable release has been published.
 
 ## Platform matrix
 

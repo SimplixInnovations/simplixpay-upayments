@@ -13,7 +13,7 @@
 | Product | **SimplixPay for UPayments** |
 | Canonical slug | `simplixpay-upayments` |
 | Current development version | **0.1.0** |
-| Production maturity | **Pre-release / release-candidate qualification** |
+| Production maturity | **Pre-release / enterprise-qualified release candidate** |
 | Stable SimplixPay release | **NO — no public 1.0/tag/release yet** |
 | WordPress.org release | **NO** |
 | Repository Foundation & Readiness | **DONE / VERIFIED** |
@@ -32,9 +32,10 @@
 | Enterprise Task 5 — deterministic release artifact | **DONE / VERIFIED** |
 | Enterprise Task 6 — feature/operations boundaries | **DONE / VERIFIED** |
 | Enterprise Task 7 — existing-install identity decision | **DONE / VERIFIED** |
-| Current program gate | **Enterprise Release Candidate Closeout — CURRENT / FINAL VERIFICATION** |
+| Enterprise Task 8 — release-candidate closeout | **DONE / VERIFIED** |
+| Current engineering state | **Enterprise release candidate qualified — awaiting owner release decision** |
 
-No Q20 is justified. The numbered Quality Platform remains permanently closed at Q19.
+No Q20 is justified. The numbered Quality Platform remains permanently closed at Q19. No active engineering gate is open.
 
 ## Preserved Quality Platform closure evidence
 
@@ -113,18 +114,41 @@ Post-merge `main` passed:
 - Release Artifact #27 — **SUCCESS**;
 - CodeQL main analysis #349 — **SUCCESS**.
 
-## Task 8 — current closeout contract
+## Task 8 — DONE / VERIFIED
 
-Enterprise Release Candidate Closeout must complete on one immutable candidate head:
+PR #54 completed the Enterprise Release Candidate Closeout.
 
-1. reconcile all living state/readiness/public documentation;
-2. verify repository hygiene and remove/supersede unjustified work;
-3. pass full Quality/H12, 16-cell Compatibility, deterministic Release Artifact including upgrade cells, bounded Provider Sandbox, CodeQL and locked dependency audit;
-4. classify all evidence that is genuinely external/manual rather than pretending repository automation proves it;
-5. run the reserved **one final whole-plugin Codex review** after primary evidence is green and resolve every valid finding;
-6. squash-merge the exact verified head and repeat required verification on canonical `main`.
+Final exact reviewed head:
 
-Task 8 does **not** itself publish a public 1.0, GitHub Release or WordPress.org package. Publication/version promotion is a separate owner release action after the release-candidate closeout is verified.
+- `5a24944617f7ee482c381e5e899f687b77d81d09`;
+- Quality Gates #552 including H12 — **SUCCESS**;
+- Compatibility Certification #80 — **16/16 SUCCESS**;
+- Release Artifact #34 — **SUCCESS**, including deterministic build, packaged legacy/HPOS and current/floor upgrade-identity cells;
+- Provider Sandbox #12 — **SUCCESS**;
+- locked dependency audit — **SUCCESS**;
+- CodeQL — **SUCCESS**;
+- unresolved review threads — **0**.
+
+The reserved final whole-plugin Codex review found one valid P2: Governance omitted stale-current rejection guards for Q4 and Q15-Q19. The finding was independently reproduced, fixed on the final head, and permanently regression-guarded by Q19's complete Q1-Q19 guard assertion.
+
+Exact squash merge:
+
+- `2ddb1790fead37c6055256847dc7c827e165af4a`.
+
+Post-merge canonical `main` passed:
+
+- Quality Gates #553 — **SUCCESS**;
+- Compatibility Certification #81 — **16/16 SUCCESS**;
+- Release Artifact #35 — **SUCCESS**;
+- Provider Sandbox #13 — **SUCCESS**;
+- CodeQL/main-security #358 — **SUCCESS**;
+- every check attached to the merge SHA — **SUCCESS**;
+- open issues — **0**;
+- open PRs — **0**.
+
+PR #53 is closed unmerged and explicitly superseded by Task 7 PR #52; its non-protected remote branch is not an active implementation line and contains no canonical release work.
+
+Task 8 establishes an **enterprise-qualified release-candidate engineering state**. It does **not** publish public 1.0, create a GitHub Release or publish to WordPress.org. Publication/version promotion remains an explicit owner release action.
 
 ## Explicit external/manual or unsupported boundaries
 

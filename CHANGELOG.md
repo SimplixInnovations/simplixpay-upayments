@@ -6,6 +6,14 @@ The project is still in pre-release engineering hardening. Entries below are eng
 
 ## [Unreleased]
 
+### Enterprise Release Candidate Closeout — DONE / VERIFIED
+
+- PR #54 final reviewed head `5a24944617f7ee482c381e5e899f687b77d81d09` passed Quality #552/H12, Compatibility #80 (**16/16**), Release Artifact #34 including packaged legacy/HPOS plus current/floor upgrade cells, Provider Sandbox #12, locked dependency audit and CodeQL.
+- The reserved final whole-plugin Codex review found one valid P2: stale-current-gate Governance guards omitted Q4 and Q15-Q19. The defect was independently reproduced and fixed on the final head, and Q19 now permanently asserts the complete Q1-Q19 guard set.
+- PR #54 squash-merged exactly as `2ddb1790fead37c6055256847dc7c827e165af4a`.
+- Canonical `main` then passed Quality #553, Compatibility #81 (**16/16**), Release Artifact #35, Provider Sandbox #13 and CodeQL/main-security #358 with no non-success checks.
+- Task 8 establishes an enterprise-qualified release-candidate engineering state. It does not publish 1.0, create a public GitHub Release or publish to WordPress.org.
+
 ### Enterprise Compatibility Certification — core runtime foundation — DONE / VERIFIED
 
 - Added a permanent real WordPress/WooCommerce/MySQL runtime matrix covering 16 WordPress/WooCommerce/PHP × legacy/HPOS cells.
@@ -228,9 +236,9 @@ The project is still in pre-release engineering hardening. Entries below are eng
 - Post-merge `main` Quality Gates run #89 passed the complete workflow again.
 - Explicit non-claims remain: webhook HMAC/signature is provider-document unresolved, automatic refunds are unsupported pending durable idempotency/reconciliation, subscription auto-deduction is not broadly recurring-billing certified, and this is not broad penetration-test/PCI/platform/feature/performance/production certification.
 
-### Current program gate
+### Historical program transition — Enterprise Compatibility Certification
 
-**Enterprise Compatibility Certification** is now the active gate. Architecture A1-A5, Quality Platform Q1-Q19 and the PR #47 core runtime foundation are DONE / VERIFIED. The current test-first declaration tranche publishes only matrix-proven WordPress/WooCommerce/PHP metadata and HPOS/Blocks feature declarations. Provider sandbox, feature-specific, multilingual, browser/accessibility/performance, operations and release certification remain open; completed gates do not establish broad feature, performance, PCI/compliance or production certification.
+**Enterprise Compatibility Certification** became the active gate at that milestone. Architecture A1-A5, Quality Platform Q1-Q19 and the PR #47 core runtime foundation are DONE / VERIFIED. That test-first declaration tranche published only matrix-proven WordPress/WooCommerce/PHP metadata and HPOS/Blocks feature declarations. Provider sandbox, feature-specific, multilingual, browser/accessibility/performance, operations and release certification remain open; completed gates do not establish broad feature, performance, PCI/compliance or production certification.
 
 ### Provider Contract & Payment Lifecycle — DONE / VERIFIED
 

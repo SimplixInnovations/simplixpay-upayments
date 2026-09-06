@@ -25,9 +25,9 @@
 
 Repository Foundation, Phase 0, Phase 9I, Provider Payment Lifecycle, bounded Security Threat-Model Closure, Architecture A1-A5 and Quality Platform Q1-Q19 are **DONE / VERIFIED**. Enterprise Tasks 1–7 are also **DONE / VERIFIED**: executable platform compatibility, support declarations, bounded public-provider sandbox, deterministic installable artifact, feature/operations boundaries and existing-install upgrade/identity certification.
 
-The current program gate is **Enterprise Release Candidate Closeout — CURRENT / FINAL VERIFICATION**.
+Enterprise Release Candidate Closeout is **DONE / VERIFIED**. The repository is an **enterprise-qualified release-candidate engineering state** with no active engineering gate; publication is an explicit owner decision.
 
-The project is still **pre-release**. No public SimplixPay 1.0 tag, GitHub Release or WordPress.org release has been created. Task 8 qualifies one exact release-candidate source/artifact state; publication remains a separate owner release action.
+The project is still **pre-release**. No public SimplixPay 1.0 tag, GitHub Release or WordPress.org release has been created. Task 8 qualified one exact release-candidate source/artifact state; publication remains a separate owner release action.
 
 | Area | Current verified position |
 |---|---|
