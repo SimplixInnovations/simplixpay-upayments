@@ -84,7 +84,7 @@ The reserved final whole-plugin Codex review produced one valid P2 governance fi
 
 PR #54 squash-merged as `2ddb1790fead37c6055256847dc7c827e165af4a`. Canonical `main` then passed Quality #553, Compatibility #81, Release Artifact #35, Provider Sandbox #13 and CodeQL/main-security #358.
 
-That pre-rebrand enterprise qualification is retained as historical evidence. The active engineering work is the approved **SUCheckout identity migration and exact-head re-certification**. A public tag, GitHub Release, WordPress.org publication and repository rename remain separate owner/admin decisions after verified merge.
+That pre-rebrand enterprise qualification is retained as historical evidence. The approved **SUCheckout identity migration is implemented** and remains protected by permanent exact-head certification. A public tag, GitHub Release, WordPress.org publication and repository rename remain separate owner/admin decisions after verified merge.
 
 ## External/manual evidence track
 
