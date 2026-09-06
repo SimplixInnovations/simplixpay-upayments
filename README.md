@@ -15,7 +15,7 @@
   <a href="LICENSE"><img alt="MIT License" src="https://img.shields.io/badge/License-MIT-2ea44f?style=flat-square"></a>
   <a href="SECURITY.md"><img alt="Security Policy" src="https://img.shields.io/badge/Security-Private%20Reporting-2ea44f?style=flat-square"></a>
   <img alt="Version 0.1.0" src="https://img.shields.io/badge/Version-0.1.0-2563eb?style=flat-square">
-  <img alt="Maturity: Release candidate qualification" src="https://img.shields.io/badge/Maturity-Release%20candidate%20qualification-f59e0b?style=flat-square">
+  <img alt="Maturity: Pre-release certification" src="https://img.shields.io/badge/Maturity-Pre--release%20certification-f59e0b?style=flat-square">
 </p>
 
 > [!IMPORTANT]
@@ -23,16 +23,23 @@
 
 ## Status
 
-Repository Foundation, Phase 0, Phase 9I, Provider Payment Lifecycle, bounded Security Threat-Model Closure, Architecture A1-A5 and Quality Platform Q1-Q19 are **DONE / VERIFIED**. Enterprise Tasks 1–7 are also **DONE / VERIFIED**: executable platform compatibility, support declarations, bounded public-provider sandbox, deterministic installable artifact, feature/operations boundaries and existing-install upgrade/identity certification.
+The historical enterprise engineering program through Quality Platform Q1-Q19 and Enterprise Tasks 1-8 is preserved as completed evidence. The current pre-release work is the approved **SUCheckout identity migration and re-certification** before any public release.
 
-Enterprise Release Candidate Closeout is **DONE / VERIFIED**. The repository is an **enterprise-qualified release-candidate engineering state** with no active engineering gate; publication is an explicit owner decision.
+No public SUCheckout 1.0 tag, GitHub Release or WordPress.org publication exists yet. Publication remains a separate owner action after the exact merged source/artifact state is certified.
 
-The project is still **pre-release**. No public SUCheckout 1.0 tag, GitHub Release or WordPress.org release has been created. Task 8 qualified one exact release-candidate source/artifact state; publication remains a separate owner release action.
-
-| Area | Current verified position |
+| Area | Current verified / target position |
 |---|---|
+| Human-facing product | **SUCheckout for UPayments** |
+| Canonical technical slug | `sucheckout-upayments` |
 | Development version | `0.1.0` |
-| Quality Platform Q1-Q19 | **DONE / VERIFIED** |
+| Composer namespace | `Simplixi\SUCheckout\UPayments` |
+| WordPress text domain | `sucheckout-upayments` |
+| Release ZIP/root | `sucheckout-upayments-X.Y.Z.zip` / `sucheckout-upayments/` |
+| Physical bootstrap | `UPayments.php` retained as a qualified compatibility exception |
+| Gateway/payment method ID | `upayments` preserved |
+| Settings option | `woocommerce_upayments_settings` preserved |
+| Woo callback identity | `wc_upayments` preserved |
+| Historical `_upay_*` metadata / tokens / cron | preserved |
 | WordPress | 6.9 series through 7.1 in exact certified cells |
 | WooCommerce | 10.8 series through 11.1 in exact certified cells |
 | PHP | 7.4, 8.3, 8.4 in exact certified cells |
@@ -40,58 +47,69 @@ The project is still **pre-release**. No public SUCheckout 1.0 tag, GitHub Relea
 | Cart / Checkout Blocks registration & availability | **Verified** |
 | HPOS | **Verified / declared compatible** |
 | Provider public-sandbox Charge initialization | **Verified, bounded** |
-| Saved-card/token identity boundaries | **Verified, bounded runtime** |
-| Subscription eligibility/pre-dispatch | **Verified, bounded runtime** |
-| Single additional-merchant allocation | **Verified, bounded runtime** |
-| Activation/deactivation/uninstall retention | **Verified** |
-| Deterministic ZIP + checksum + manifest | **Verified** |
-| Existing-install same-basename upgrade/rollback | **Verified** |
-| Physical main file for first stable | `UPayments.php` — intentionally retained |
-| Text domain for first stable | `upayments` — intentionally retained |
+| Deterministic ZIP + checksum + manifest | **Canonical SUCheckout contract under exact-head CI** |
+| Official WordPress Plugin Check | **Permanent packaged-artifact gate** |
 | Automatic Woo refunds | **Unsupported** |
 | Arbitrary marketplace multi-split | **Unsupported** |
 | Stable public release | **Not yet published** |
 
-See [`docs/COMPATIBILITY.md`](docs/COMPATIBILITY.md) for the exact verified/external/unsupported matrix and [`docs/project/PROJECT-STATUS.md`](docs/project/PROJECT-STATUS.md) for the living engineering ledger.
+See [`docs/COMPATIBILITY.md`](docs/COMPATIBILITY.md) for verified/external/unsupported boundaries and [`docs/project/PROJECT-STATUS.md`](docs/project/PROJECT-STATUS.md) for the living engineering ledger.
 
-## Why the transitional basename remains
+## Identity architecture
 
-Task 7 tested an already-active historical installation in real current and floor WordPress/WooCommerce environments. Same-basename upgrade, rollback, deactivate/reactivate, settings/order/token/subscription/cron/callback retention all passed.
+The rebrand intentionally separates first-party product identity from provider and merchant-data compatibility contracts.
 
-A controlled candidate that changed only:
+### Canonical first-party identity
 
-`UPayments.php` → `simplixpay-upayments.php`
+- product: **SUCheckout for UPayments**;
+- slug/text domain: `sucheckout-upayments`;
+- namespace: `Simplixi\SUCheckout\UPayments`;
+- deterministic release package: `sucheckout-upayments-X.Y.Z.zip` with root `sucheckout-upayments/`.
 
-failed the active-install migration contract: WordPress kept `simplixpay-upayments/UPayments.php` in `active_plugins`, the target basename was inactive, and the SimplixPay runtime did not load. The first stable release therefore keeps the historical physical basename. The text domain also remains `upayments`; the package still has 70 explicit PHP translation calls bound to it and no coordinated WPML/String Translation migration has been certified.
+### Protected compatibility identities
 
-This is a compatibility decision, not unfinished branding cleanup.
+Do not mechanically rename these without an explicit migration contract:
+
+- gateway/payment method ID `upayments`;
+- `woocommerce_upayments_settings`;
+- Blocks / Store API identity `upayments`;
+- callback `wc_upayments`;
+- `_upay_*` metadata;
+- `upayments_token_identity_secret_v2` and token provenance/scope/generation state;
+- `upay_process_subscriptions` and billing-attempt state;
+- historical order payment-method values.
+
+### Why `UPayments.php` remains
+
+Earlier real-install qualification proved that renaming an already-active physical main file could strand WordPress's stored plugin basename. Therefore the canonical SUCheckout package changes its package root, namespace, metadata and text domain while retaining `UPayments.php` as the bounded first-stable bootstrap exception.
+
+The release certification now exercises a real pre-release migration from legacy `simplixpay-upayments/UPayments.php` to canonical `sucheckout-upayments/UPayments.php`, preserves settings/orders/tokens/cron/provider IDs, proves rollback is non-destructive, and ends with the legacy package removed.
 
 ## Release artifact
 
-The canonical build is produced by:
+Build and verify the canonical package with:
 
 ```bash
 bash scripts/build-release.sh dist
-bash scripts/verify-release.sh dist/simplixpay-upayments-0.1.0.zip
+bash scripts/verify-release.sh dist/sucheckout-upayments-0.1.0.zip
 ```
 
-The release system guarantees, within the defined toolchain:
+The release contract provides:
 
-- one `simplixpay-upayments/` ZIP root;
+- one `sucheckout-upayments/` ZIP root;
 - exact file set and bytes from Git `HEAD` tree/blobs;
 - fixed archive timestamps/modes and deterministic ordering;
 - SHA-256 ZIP sidecar and sorted per-file manifest;
-- independent ZIP/source-byte verification;
-- rejection of a self-consistent but source-divergent tampered ZIP;
-- dirty worktree/index isolation;
+- source-byte verification and rejection of self-consistent tampered artifacts;
 - real packaged WordPress/WooCommerce activation, Blocks and legacy/HPOS smoke;
-- current/floor existing-install upgrade and rollback certification.
+- legacy-root → canonical-root migration/rollback qualification;
+- official WordPress Plugin Check against the unpacked deterministic package.
 
 Development/test/control files are excluded by `.distignore`.
 
 ## Compatibility and evidence boundaries
 
-A green repository does **not** justify claims that require external systems or organizations. The following remain external/manual or explicitly unsupported unless separately certified:
+A green repository does **not** justify claims that require external systems or organizations. These remain external/manual or unsupported unless separately certified:
 
 - production merchant payment completion and production credentials;
 - Apple Pay / Google Pay / Samsung Pay completion across real devices/accounts;
@@ -103,23 +121,6 @@ A green repository does **not** justify claims that require external systems or 
 - live subscription auto-deduction;
 - automatic Woo refunds;
 - arbitrary marketplace multi-split routing.
-
-The repository intentionally does not fabricate these claims.
-
-## Protected compatibility identities
-
-Do not mechanically rename historical runtime/persisted identities. Protected contracts include:
-
-- gateway/payment method ID `upayments`;
-- `woocommerce_upayments_settings`;
-- Blocks / Store API identity `upayments`;
-- callback `wc_upayments`;
-- `_upay_*` metadata;
-- `upayments_token_identity_secret_v2` and token provenance/scope/generation state;
-- `upay_process_subscriptions` and billing-attempt state;
-- historical order payment-method values.
-
-Changing any of these requires an explicit migration, precedence, rollback and regression contract.
 
 ## Security and payment truth
 
@@ -135,12 +136,12 @@ See [`SECURITY.md`](SECURITY.md), [`docs/project/PROVIDER-PAYMENT-LIFECYCLE.md`]
 ## Engineering records
 
 - [`docs/project/PROJECT-STATUS.md`](docs/project/PROJECT-STATUS.md) — current canonical state
+- [`docs/project/NAMING-IDENTITY-STANDARD.md`](docs/project/NAMING-IDENTITY-STANDARD.md) — SUCheckout identity contract
 - [`docs/project/ENTERPRISE-CERTIFICATION.md`](docs/project/ENTERPRISE-CERTIFICATION.md) — platform/provider/feature evidence
-- [`docs/project/RELEASE-ENGINEERING.md`](docs/project/RELEASE-ENGINEERING.md) — artifact/upgrade/release-candidate evidence
+- [`docs/project/RELEASE-ENGINEERING.md`](docs/project/RELEASE-ENGINEERING.md) — artifact/upgrade evidence
 - [`docs/project/QUALITY-PLATFORM.md`](docs/project/QUALITY-PLATFORM.md) — permanent Q1-Q19 record
-- [`docs/project/PHASE-9I-MIGRATION.md`](docs/project/PHASE-9I-MIGRATION.md) — historical identity migration
-- [`docs/project/PROVIDER-PAYMENT-LIFECYCLE.md`](docs/project/PROVIDER-PAYMENT-LIFECYCLE.md) — financial-state contract
-- [`docs/ENGINEERING-ROADMAP.md`](docs/ENGINEERING-ROADMAP.md) — high-level program sequence
+- [`docs/superpowers/specs/2026-09-06-sucheckout-upayments-identity-migration-design.md`](docs/superpowers/specs/2026-09-06-sucheckout-upayments-identity-migration-design.md) — approved migration design
+- [`docs/superpowers/plans/2026-09-06-sucheckout-upayments-identity-migration.md`](docs/superpowers/plans/2026-09-06-sucheckout-upayments-identity-migration.md) — approved execution plan
 
 ## Development
 
@@ -151,7 +152,7 @@ composer install
 composer quality
 ```
 
-CI also runs distributed PHP syntax, every permanent architecture/Quality/H12 harness, real compatibility certification, release-artifact certification and CodeQL.
+CI runs static/unit quality, distributed PHP syntax, permanent H12 regressions, real compatibility certification, deterministic package/runtime certification, provider sandbox qualification and official WordPress Plugin Check.
 
 ## License
 
