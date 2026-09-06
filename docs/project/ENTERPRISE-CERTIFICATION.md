@@ -1,11 +1,40 @@
 # SUCheckout for UPayments — Historical Enterprise Foundation & Re-certification Context
 
 **Historical status:** TASKS 1–8 DONE / VERIFIED under the former pre-rebrand product identity
-**Current engineering state:** SUCheckout identity migration implemented; permanent exact-head certification required before merge/release
+**Current engineering state:** SUCheckout identity migration DONE / VERIFIED; owner repository/release administration pending
 **Current GitHub repository pending owner/admin rename:** `SimplixInnovations/simplixpay-upayments`
 **Target canonical repository:** `SimplixInnovations/sucheckout-upayments`
 
 This record preserves the reproducible enterprise certification foundation established before the approved SUCheckout rebrand. Historical package names, basenames, text domains, SHAs and run numbers below remain evidence of what was certified then; they are not current SUCheckout identity declarations. Current state is owned by `PROJECT-STATUS.md`.
+
+## SUCheckout identity-migration certification — DONE / VERIFIED
+
+The historical Tasks 1–8 foundation was independently requalified after the full SUCheckout identity migration.
+
+PR #58:
+
+- final certified head: `5bf84dccb880733da45c1f922d43554af69a33dc`;
+- Quality #763/H12 — **SUCCESS**;
+- Compatibility #291 — **16/16 SUCCESS**;
+- Release Artifact #242 — **SUCCESS**;
+- Provider Sandbox #206 — **SUCCESS**;
+- WordPress.org Submission Check #100 — **SUCCESS**;
+- CodeQL — **SUCCESS**;
+- official packaged Plugin Check — **0 blocking errors**.
+
+Squash merge:
+
+- canonical runtime-bearing main merge: `6aabc4fcb0606567a11637ea07fe081fed4c7f85`;
+- post-merge Quality #764 — **SUCCESS**;
+- Compatibility #292 — **16/16 SUCCESS**;
+- Release Artifact #243 — **SUCCESS**;
+- Provider Sandbox #207 — **SUCCESS**;
+- WordPress.org Submission Check #101 — **SUCCESS**;
+- CodeQL/main-security #579 — **SUCCESS**.
+
+Review-specific permanent closures include the WordPress HTTP production transport contract (**27/27**), fail-closed provenance DB error contract (**3/3**) and retired-identity residue contract (**17/17**).
+
+This closes engineering migration certification only. Repository rename, public version/tag/GitHub Release and WordPress.org publication remain separate owner actions.
 
 ## Certified platform foundation
 
@@ -175,6 +204,6 @@ The reserved final whole-plugin Codex challenge identified one valid P2 in stale
 
 PR #54 squash-merged as `2ddb1790fead37c6055256847dc7c827e165af4a`. Post-merge canonical `main` passed Quality #553, Compatibility #81, Release Artifact #35, Provider Sandbox #13 and CodeQL/main-security #358.
 
-The historical enterprise engineering program is therefore **DONE / VERIFIED through Task 8**. The SUCheckout identity migration implementation is complete, and every candidate must independently satisfy the permanent exact-head certification gates before merge or release. External/manual classifications and unsupported features remain honest boundaries, not fabricated repository certifications.
+The historical enterprise engineering program is therefore **DONE / VERIFIED through Task 8**. The SUCheckout identity migration is now independently DONE / VERIFIED. Every future candidate must still satisfy the permanent exact-head certification gates appropriate to its scope before merge or release. External/manual classifications and unsupported features remain honest boundaries, not fabricated repository certifications.
 
 No public tag, GitHub Release, WordPress.org publication or repository rename is created or authorized by this engineering closeout alone.
