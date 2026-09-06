@@ -1,5 +1,7 @@
 # Architecture & Code-Quality Foundation
 
+> **Closed architecture milestone record with permanent ratchets.** Historical gate-entry/current-owner wording is preserved for provenance; later SUCheckout ratchets are appended where independently verified. `PROJECT-STATUS.md` owns current program state.
+
 **Status:** DONE / VERIFIED (DISCOVERY + A1-A5)
 
 **Final implementation PR:** #25
