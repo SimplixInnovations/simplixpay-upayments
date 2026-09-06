@@ -44,8 +44,8 @@ $gateway = file_get_contents($gatewayPath);
 $payload = file_get_contents($payloadPath);
 $orchestrator = file_get_contents($orchestratorPath);
 
-a5_assert(a5_contains($payload, 'namespace Simplix\\Pay\\UPayments\\Payment;'), 'payload service uses Payment namespace');
-a5_assert(a5_contains($orchestrator, 'namespace Simplix\\Pay\\UPayments\\Payment;'), 'orchestrator uses Payment namespace');
+a5_assert(a5_contains($payload, 'namespace Simplixi\\SUCheckout\\UPayments\\Payment;'), 'payload service uses Payment namespace');
+a5_assert(a5_contains($orchestrator, 'namespace Simplixi\\SUCheckout\\UPayments\\Payment;'), 'orchestrator uses Payment namespace');
 a5_assert(a5_contains($gateway, "require_once __DIR__ . '/src/Payment/CheckoutPayload.php';"), 'gateway loads payload service');
 a5_assert(a5_contains($gateway, "require_once __DIR__ . '/src/Payment/CheckoutOrchestrator.php';"), 'gateway loads orchestrator service');
 a5_assert(a5_contains($gateway, 'new CheckoutOrchestrator('), 'legacy process entry point composes orchestrator');
