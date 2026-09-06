@@ -1,5 +1,7 @@
 # Full Automated Quality Platform
 
+> **Closed Q1–Q19 program record.** The numbered Quality Platform is permanently closed at Q19. This file preserves its evidence and regression ownership; it is not authority to invent Q20 or to override the current SUCheckout state in `PROJECT-STATUS.md`.
+
 **Status:** DONE / VERIFIED (Q1-Q19)
 
 **Final implementation head:** `1717f0c25da7140a7799c7db3a7f016abecec7e9`
