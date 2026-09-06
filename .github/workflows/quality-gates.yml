@@ -275,6 +275,7 @@ jobs:
             tests/harness/sucheckout-frontend-identity-harness.php
             tests/harness/sucheckout-residue-harness.php
             tests/harness/wordpress-org-runtime-harness.php
+            tests/harness/sucheckout-http-transport-harness.php
             tests/harness/phase-0-release-identity-harness.php
             tests/harness/phase-9i-preflight-harness.php
             tests/harness/phase-9i-executor-harness.php
