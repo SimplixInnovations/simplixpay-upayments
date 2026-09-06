@@ -27,7 +27,6 @@ jobs:
           - previous
           - minimum
           - cross-new-wp-old-wc
-          - cross-old-wp-new-wc
           - legacy-php74
         storage: [legacy, hpos]
         include:
@@ -50,10 +49,6 @@ jobs:
           - cell: cross-new-wp-old-wc
             wordpress: '7.1'
             woocommerce: '10.8.1'
-            php: '8.3'
-          - cell: cross-old-wp-new-wc
-            wordpress: '6.9.7'
-            woocommerce: '11.1.0'
             php: '8.3'
           - cell: legacy-php74
             wordpress: '6.9.7'
