@@ -41,15 +41,17 @@ Live evidence beats recorded status. Before implementation/review:
 
 Historical records preserve milestone truth and may contain then-current gate wording. They are not current-gate owners.
 
-## Current phase gate
+## Current engineering state
 
-Repository Foundation, Phase 0, Phase 9I, Provider Lifecycle, Security, Architecture A1-A5, Quality Platform Q1-Q19 and Enterprise Tasks 1–7 are **DONE / VERIFIED**.
+Repository Foundation, Phase 0, Phase 9I, Provider Lifecycle, Security, Architecture A1-A5, Quality Platform Q1-Q19 and Enterprise Tasks 1–8 are **DONE / VERIFIED**.
 
 The numbered Quality Platform is closed at Q19. **Never invent Q20 for continuity.**
 
-The current named gate is **Enterprise Release Candidate Closeout**. It is complete only after one exact head passes final primary evidence, the reserved whole-plugin Codex review has been independently resolved, the exact head is squash-merged and required checks pass again on `main`.
+Enterprise Release Candidate Closeout is **DONE / VERIFIED** through PR #54, final reviewed head `5a24944617f7ee482c381e5e899f687b77d81d09`, squash merge `2ddb1790fead37c6055256847dc7c827e165af4a`, and successful post-merge main Quality #553, Compatibility #81, Release Artifact #35, Provider Sandbox #13 and CodeQL/main-security #358.
 
-Task 8 does not itself authorize a public 1.0 tag, GitHub Release or WordPress.org publication.
+There is no active engineering gate. The repository is in an **enterprise-qualified release-candidate engineering state** awaiting an explicit owner release decision.
+
+Task 8 did not authorize a public 1.0 tag, GitHub Release or WordPress.org publication.
 
 ## Permanent quality controls
 
@@ -151,7 +153,7 @@ Do not add compatibility/security/performance/compliance badges or prose beyond 
 
 ## Final review and merge
 
-External AI/bot reports are evidence requests, not proof. The **one final whole-plugin Codex review is reserved for Task 8 after all primary automated evidence is green**. Independently reproduce/inspect every material finding; fix valid findings and add regression evidence where appropriate.
+External AI/bot reports are evidence requests, not proof. Task 8's reserved final whole-plugin Codex review completed on PR #54 after primary evidence was green; its valid P2 was independently reproduced, fixed and regression-guarded before merge. Do not request a second Task 8 whole-plugin review. Future changes follow their normal review requirements.
 
 Final merge requires:
 

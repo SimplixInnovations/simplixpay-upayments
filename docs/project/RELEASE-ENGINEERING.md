@@ -1,6 +1,6 @@
 # SimplixPay for UPayments — Release Engineering
 
-**Status:** TASKS 5 & 7 DONE / VERIFIED; TASK 8 RELEASE-CANDIDATE CLOSEOUT CURRENT
+**Status:** TASKS 5, 7 & 8 DONE / VERIFIED; ENTERPRISE RELEASE CANDIDATE QUALIFIED
 **Canonical repository:** `SimplixInnovations/simplixpay-upayments`
 
 ## First-stable package contract
@@ -112,20 +112,22 @@ CI artifacts are verification artifacts, not public releases. A stable GitHub Re
 
 Do not publish an artifact from an unverified PR merge-ref, mutable worktree or unreviewed commit.
 
-## Task 8 release-candidate closeout
+## Task 8 release-candidate closeout — DONE / VERIFIED
 
-The final engineering candidate must pass on one exact head:
+Final reviewed candidate `5a24944617f7ee482c381e5e899f687b77d81d09` passed:
 
-1. current living documentation/governance reconciliation;
-2. zero unjustified open issues/PRs and clean branch topology to the extent supported by repository controls;
-3. Quality Gates including Composer validation/audit, analyzers, distributed syntax and H12;
-4. permanent 16-cell Compatibility Certification;
-5. Release Artifact including deterministic build, packaged legacy/HPOS and current/floor upgrade cells;
-6. bounded Provider Sandbox Charge initialization;
+1. living documentation/governance reconciliation;
+2. zero open issues/PRs and zero unresolved valid review findings;
+3. Quality Gates #552 including Composer validation/audit, analyzers, distributed syntax and H12;
+4. Compatibility Certification #80 — **16/16**;
+5. Release Artifact #34 — deterministic build, packaged legacy/HPOS and current/floor upgrade cells;
+6. bounded Provider Sandbox #12;
 7. CodeQL/security analysis;
-8. zero unresolved valid review findings;
-9. the reserved final whole-plugin Codex challenge after primary evidence is green;
-10. exact-head squash merge followed by post-merge verification on `main`.
+8. the reserved final whole-plugin Codex review and its independently verified P2 remediation.
+
+The exact candidate squash-merged as `2ddb1790fead37c6055256847dc7c827e165af4a`. Canonical `main` then passed Quality #553, Compatibility #81, Release Artifact #35, Provider Sandbox #13 and CodeQL/main-security #358.
+
+PR #53 remains closed unmerged and explicitly superseded by Task 7 PR #52; its non-protected branch is not canonical release work.
 
 ## External/manual release evidence
 

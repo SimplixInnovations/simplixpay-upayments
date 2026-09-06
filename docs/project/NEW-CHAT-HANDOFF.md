@@ -33,7 +33,8 @@ Use this file with root `AGENTS.md`, `docs/project/PROJECT-STATUS.md`, `docs/pro
 - Enterprise Task 5 deterministic release artifact — **DONE / VERIFIED**
 - Enterprise Task 6 feature/operations boundaries — **DONE / VERIFIED**
 - Enterprise Task 7 existing-install/release identity — **DONE / VERIFIED**
-- Current gate — **Enterprise Release Candidate Closeout — CURRENT / FINAL VERIFICATION**
+- Enterprise Task 8 release-candidate closeout — **DONE / VERIFIED**
+- Current engineering state — **Enterprise release candidate qualified; awaiting owner release decision**
 - Public stable release — **NO**
 - WordPress.org release — **NO**
 
@@ -86,19 +87,19 @@ Real-runtime bounded evidence for saved-card/token provenance, subscription elig
 
 Current/floor same-basename upgrade, rollback, deactivate/reactivate, merchant/payment/token/subscription/cron/callback retention and duplicate-root characterization.
 
-## Task 8 execution contract
+## Task 8 closeout — DONE / VERIFIED
 
-1. reconcile living docs and governance;
-2. check issues/PRs/branches and remove or explicitly supersede unjustified work;
-3. obtain one exact head passing Quality/H12, 16-cell Compatibility, Release Artifact/upgrade, bounded Provider Sandbox and CodeQL;
-4. keep external/manual/unsupported boundaries explicit;
-5. only after primary evidence is green, request the reserved final whole-plugin Codex review;
-6. independently verify and fix every valid finding, rerunning affected evidence;
-7. exact-head squash merge;
-8. verify canonical `main` workflows and topology;
-9. only then mark Task 8 **DONE / VERIFIED**.
+- final reviewed head: `5a24944617f7ee482c381e5e899f687b77d81d09`;
+- exact-head Quality #552/H12, Compatibility #80 (16/16), Release Artifact #34, Provider Sandbox #12 and CodeQL: **SUCCESS**;
+- reserved final Codex review: **completed**;
+- valid final-review P2: **reproduced, fixed and permanently regression-guarded**;
+- squash merge: `2ddb1790fead37c6055256847dc7c827e165af4a`;
+- post-merge Quality #553, Compatibility #81, Release Artifact #35, Provider Sandbox #13 and CodeQL/main-security #358: **SUCCESS**;
+- open issues: **0**;
+- open PRs: **0**;
+- public stable release: **NO — separate owner decision**.
 
-Do not create a public 1.0 tag/GitHub Release/WordPress.org publication as part of engineering closeout unless the owner explicitly authorizes that release action.
+PR #53 is closed unmerged and explicitly superseded by Task 7 PR #52. Its remote branch is not an active implementation line.
 
 ## External/manual and unsupported boundaries
 
@@ -120,4 +121,4 @@ Unsupported:
 
 ## Merge discipline
 
-External AI/bot output is evidence to verify, never authority. The final Codex review is intentionally reserved for Task 8 after primary evidence is green. Pin all merge decisions to the exact head SHA; require zero unresolved valid review threads and verify `main` after squash merge.
+External AI/bot output is evidence to verify, never authority. Task 8's reserved final whole-plugin Codex review is complete and must not be repeated as a second Task 8 review. Future work must still pin merge decisions to exact heads, resolve valid review findings and verify `main` after merge.

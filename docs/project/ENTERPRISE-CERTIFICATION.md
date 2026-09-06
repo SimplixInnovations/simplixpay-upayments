@@ -1,6 +1,6 @@
 # SimplixPay for UPayments — Enterprise Certification
 
-**Status:** TASKS 1–7 DONE / VERIFIED; TASK 8 RELEASE-CANDIDATE CLOSEOUT CURRENT
+**Status:** TASKS 1–8 DONE / VERIFIED; ENTERPRISE RELEASE CANDIDATE QUALIFIED
 **Canonical repository:** `SimplixInnovations/simplixpay-upayments`
 
 This record owns the reproducible enterprise certification evidence. It does not convert external/manual evidence into repository claims.
@@ -165,15 +165,14 @@ The following are deliberately **not** converted into broad repository claims:
 
 Automatic Woo refunds remain **unsupported** pending durable idempotency/reconciliation design. Arbitrary marketplace multi-split remains **unsupported**; only one additional merchant is certified.
 
-## Task 8 — Enterprise Release Candidate Closeout
+## Task 8 — Enterprise Release Candidate Closeout — DONE / VERIFIED
 
-Current final gate:
+PR #54 final reviewed head `5a24944617f7ee482c381e5e899f687b77d81d09` passed the complete Quality/H12, 16-cell Compatibility, deterministic Release Artifact/upgrade, bounded Provider Sandbox, locked dependency audit and CodeQL evidence set.
 
-1. reconcile living docs/governance;
-2. verify repository hygiene;
-3. run Quality/H12 + 16-cell Compatibility + Release Artifact/upgrade + bounded Provider Sandbox + CodeQL/dependency audit on one exact head;
-4. run the reserved final whole-plugin Codex review after primary evidence is green;
-5. fix every valid finding and rerun affected evidence;
-6. exact-head squash merge and post-merge verification.
+The reserved final whole-plugin Codex challenge identified one valid P2 in stale-current Governance coverage. Q4 and Q15-Q19 guards were restored, and the Q19 permanent harness now asserts the complete closed Q1-Q19 guard set.
+
+PR #54 squash-merged as `2ddb1790fead37c6055256847dc7c827e165af4a`. Post-merge canonical `main` passed Quality #553, Compatibility #81, Release Artifact #35, Provider Sandbox #13 and CodeQL/main-security #358.
+
+The enterprise engineering program is therefore **DONE / VERIFIED through Task 8**. The repository is an enterprise-qualified release candidate. External/manual classifications and unsupported features below remain honest boundaries, not fabricated repository certifications.
 
 No public 1.0/tag/GitHub Release/WordPress.org publication is created by this engineering closeout alone.

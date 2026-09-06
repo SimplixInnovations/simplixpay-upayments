@@ -73,19 +73,15 @@ Direct `UPayments.php` → `simplixpay-upayments.php` migration fails the active
 
 The eventual canonical filename/text-domain targets remain future tested migrations.
 
-### Task 8 — Enterprise Release Candidate Closeout — CURRENT / FINAL VERIFICATION
+### Task 8 — Enterprise Release Candidate Closeout — DONE / VERIFIED
 
-Task 8 must finish on one immutable candidate head:
+Final reviewed head `5a24944617f7ee482c381e5e899f687b77d81d09` passed the complete Quality/H12 stack, permanent 16-cell Compatibility matrix, deterministic Release Artifact including packaged legacy/HPOS and current/floor upgrade cells, bounded Provider Sandbox, locked dependency audit and CodeQL.
 
-- reconcile living status/readiness/public docs;
-- clean repository topology and unjustified work;
-- pass full Quality/H12, 16-cell Compatibility, Release Artifact including upgrade cells, bounded Provider Sandbox, CodeQL and locked dependency audit;
-- classify external/manual evidence honestly;
-- run the reserved one final whole-plugin Codex challenge after primary evidence is green;
-- resolve every valid finding;
-- squash-merge the exact verified head and repeat required checks on `main`.
+The reserved final whole-plugin Codex review produced one valid P2 governance finding. It was independently reproduced, fixed and made permanent by asserting all closed Q1-Q19 stale-current markers before the final exact head was reverified.
 
-Task 8 does **not** automatically create a public 1.0 tag, GitHub Release or WordPress.org publication. Those are owner release actions after release-candidate qualification.
+PR #54 squash-merged as `2ddb1790fead37c6055256847dc7c827e165af4a`. Canonical `main` then passed Quality #553, Compatibility #81, Release Artifact #35, Provider Sandbox #13 and CodeQL/main-security #358.
+
+The repository is now an **enterprise-qualified release-candidate engineering state**. No active engineering gate is open. A public 1.0 tag, GitHub Release or WordPress.org publication remains a separate owner release decision.
 
 ## External/manual evidence track
 

@@ -77,14 +77,17 @@ jobs:
         run: |
           set -euo pipefail
           grep -Fq 'SimplixPay for UPayments' README.md
-          grep -Fq 'The current program gate is **Enterprise Release Candidate Closeout — CURRENT / FINAL VERIFICATION**.' README.md
-          grep -Fq '| Current program gate | **Enterprise Release Candidate Closeout — CURRENT / FINAL VERIFICATION** |' docs/project/PROJECT-STATUS.md
+          grep -Fq 'Enterprise Release Candidate Closeout is **DONE / VERIFIED**.' README.md
+          grep -Fq '| Enterprise Task 8 — release-candidate closeout | **DONE / VERIFIED** |' docs/project/PROJECT-STATUS.md
+          grep -Fq '| Current engineering state | **Enterprise release candidate qualified — awaiting owner release decision** |' docs/project/PROJECT-STATUS.md
           grep -Fq 'Task 7 — existing-install upgrade / release identity — DONE / VERIFIED' docs/ENGINEERING-ROADMAP.md
-          grep -Fq 'Task 8 — Enterprise Release Candidate Closeout — CURRENT / FINAL VERIFICATION' docs/ENGINEERING-ROADMAP.md
-          grep -Fq '**Status:** TASKS 1–7 DONE / VERIFIED; TASK 8 RELEASE-CANDIDATE CLOSEOUT CURRENT' docs/project/ENTERPRISE-CERTIFICATION.md
-          grep -Fq '**Status:** TASKS 5 & 7 DONE / VERIFIED; TASK 8 RELEASE-CANDIDATE CLOSEOUT CURRENT' docs/project/RELEASE-ENGINEERING.md
-          grep -Fq -- '- Current gate — **Enterprise Release Candidate Closeout — CURRENT / FINAL VERIFICATION**' docs/project/NEW-CHAT-HANDOFF.md
-          grep -Fq 'The current named gate is **Enterprise Release Candidate Closeout**.' AGENTS.md
+          grep -Fq 'Task 8 — Enterprise Release Candidate Closeout — DONE / VERIFIED' docs/ENGINEERING-ROADMAP.md
+          grep -Fq '**Status:** TASKS 1–8 DONE / VERIFIED; ENTERPRISE RELEASE CANDIDATE QUALIFIED' docs/project/ENTERPRISE-CERTIFICATION.md
+          grep -Fq '**Status:** TASKS 5, 7 & 8 DONE / VERIFIED; ENTERPRISE RELEASE CANDIDATE QUALIFIED' docs/project/RELEASE-ENGINEERING.md
+          grep -Fq -- '- Enterprise Task 8 release-candidate closeout — **DONE / VERIFIED**' docs/project/NEW-CHAT-HANDOFF.md
+          grep -Fq 'Enterprise Tasks 1–8 are **DONE / VERIFIED**.' AGENTS.md
+          grep -Fq '### Enterprise Release Candidate Closeout — DONE / VERIFIED' CHANGELOG.md
+          grep -Fq '**Current posture:** Enterprise release-candidate qualification — **DONE / VERIFIED**.' docs/COMPATIBILITY.md
           grep -Fq 'main file: `UPayments.php`' docs/project/PROJECT-STATUS.md
           grep -Fq 'text domain: `upayments`' docs/project/PROJECT-STATUS.md
           grep -Fq '**Unsupported**' docs/COMPATIBILITY.md
@@ -102,7 +105,7 @@ jobs:
         run: |
           set -euo pipefail
           living=(
-            AGENTS.md README.md docs/ENGINEERING-ROADMAP.md docs/COMPATIBILITY.md
+            AGENTS.md README.md CHANGELOG.md docs/ENGINEERING-ROADMAP.md docs/COMPATIBILITY.md
             docs/project/PROJECT-STATUS.md docs/project/ENTERPRISE-CERTIFICATION.md
             docs/project/RELEASE-ENGINEERING.md docs/project/NEW-CHAT-HANDOFF.md
           )
@@ -121,6 +124,11 @@ jobs:
           reject_across_live_records 'Full Automated Quality Platform — CURRENT GATE'
           reject_across_live_records 'Security Threat-Model Closure — CURRENT GATE'
           reject_across_live_records 'Architecture & Code-Quality Foundation — CURRENT GATE'
+          reject_across_live_records 'Enterprise Release Candidate Closeout — CURRENT / FINAL VERIFICATION'
+          reject_across_live_records 'TASK 8 RELEASE-CANDIDATE CLOSEOUT CURRENT'
+          reject_across_live_records 'The current named gate is **Enterprise Release Candidate Closeout**.'
+          reject_across_live_records 'The current program gate is **Enterprise Release Candidate Closeout'
+          reject_across_live_records 'Current final gate:'
           reject_across_live_records 'CURRENT / Q1**'
           reject_across_live_records 'CURRENT / Q2'
           reject_across_live_records 'CURRENT / Q3'
