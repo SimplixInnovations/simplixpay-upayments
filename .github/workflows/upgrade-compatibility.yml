@@ -1,0 +1,116 @@
+name: Upgrade Compatibility
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: upgrade-compatibility-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  physical-basename-migration:
+    name: Existing install / physical basename migration
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: wordpress
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h 127.0.0.1 -proot"
+          --health-interval=5s
+          --health-timeout=5s
+          --health-retries=20
+
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Set up PHP 8.3
+        uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240
+        with:
+          php-version: '8.3'
+          extensions: curl, mbstring, mysqli, zip
+          coverage: none
+
+      - name: Install pinned WP-CLI
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl -fsSL \
+            https://github.com/wp-cli/wp-cli/releases/download/v2.12.0/wp-cli-2.12.0.phar \
+            -o /tmp/wp-cli.phar
+          echo 'ce34ddd838f7351d6759068d09793f26755463b4a4610a5a5c0a97b68220d85c  /tmp/wp-cli.phar' | sha256sum -c -
+          chmod +x /tmp/wp-cli.phar
+          /tmp/wp-cli.phar --version
+
+      - name: Build canonical historical-basename artifact
+        shell: bash
+        run: |
+          set -euo pipefail
+          bash scripts/build-release.sh "$RUNNER_TEMP/release"
+          bash scripts/verify-release.sh "$RUNNER_TEMP/release/simplixpay-upayments-0.1.0.zip"
+
+      - name: Install real current WordPress/WooCommerce with packaged plugin
+        env:
+          WP_CLI_BIN: /tmp/wp-cli.phar
+          SIMPLIXPAY_PLUGIN_ZIP: ${{ runner.temp }}/release/simplixpay-upayments-0.1.0.zip
+        run: >-
+          bash scripts/install-wp-test-environment.sh
+          "7.1"
+          "11.1.0"
+          "$RUNNER_TEMP/wordpress"
+
+      - name: Activate existing historical-basename installation
+        run: /tmp/wp-cli.phar plugin activate simplixpay-upayments --path="$RUNNER_TEMP/wordpress"
+
+      - name: Seed existing merchant/payment state
+        env:
+          SIMPLIXPAY_UPGRADE_PHASE: seed
+        run: /tmp/wp-cli.phar eval-file "$GITHUB_WORKSPACE/tests/integration/UpgradeCompatibilityTest.php" --path="$RUNNER_TEMP/wordpress"
+
+      - name: Build proposed renamed-main-file candidate
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import zipfile
+          from pathlib import Path
+
+          src = Path("${{ runner.temp }}/release/simplixpay-upayments-0.1.0.zip")
+          dst = Path("${{ runner.temp }}/simplixpay-upayments-renamed.zip")
+          old = "simplixpay-upayments/UPayments.php"
+          new = "simplixpay-upayments/simplixpay-upayments.php"
+
+          with zipfile.ZipFile(src, "r") as zin, zipfile.ZipFile(dst, "w", zipfile.ZIP_DEFLATED) as zout:
+              for info in zin.infolist():
+                  data = zin.read(info.filename)
+                  name = new if info.filename == old else info.filename
+                  replacement = zipfile.ZipInfo(name, info.date_time)
+                  replacement.external_attr = info.external_attr
+                  replacement.compress_type = zipfile.ZIP_DEFLATED
+                  replacement.create_system = info.create_system
+                  zout.writestr(replacement, data)
+          PY
+
+      - name: Upgrade active install in place with renamed candidate
+        run: /tmp/wp-cli.phar plugin install "$RUNNER_TEMP/simplixpay-upayments-renamed.zip" --force --path="$RUNNER_TEMP/wordpress"
+
+      - name: RED — renamed package must preserve active gateway automatically
+        env:
+          SIMPLIXPAY_UPGRADE_PHASE: renamed-red
+        run: /tmp/wp-cli.phar eval-file "$GITHUB_WORKSPACE/tests/integration/UpgradeCompatibilityTest.php" --path="$RUNNER_TEMP/wordpress"
