@@ -35,7 +35,7 @@ function sec_source($relative) {
 
 require_once dirname(__DIR__, 2) . '/src/Security/PublicOrderStatus.php';
 
-use Simplix\Pay\UPayments\Security\PublicOrderStatus;
+use Simplixi\SUCheckout\UPayments\Security\PublicOrderStatus;
 
 final class SecurityHarnessOrder {
     private $payment_method;
