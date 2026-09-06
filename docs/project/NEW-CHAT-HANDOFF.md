@@ -35,7 +35,7 @@ Use this file with root `AGENTS.md`, `docs/project/PROJECT-STATUS.md`, `docs/pro
 - Enterprise Task 6 feature/operations boundaries — **DONE / VERIFIED**
 - Enterprise Task 7 existing-install/release identity — **DONE / VERIFIED**
 - Enterprise Task 8 release-candidate closeout — **DONE / VERIFIED**
-- Current engineering state — **SUCheckout identity migration and exact-head re-certification**
+- Current engineering state — **SUCheckout identity migration implemented; exact-head certification required before merge/release**
 - Public stable release — **NO**
 - WordPress.org release — **NO**
 
