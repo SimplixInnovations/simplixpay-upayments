@@ -52,7 +52,7 @@
 | Core WP/Woo/PHP runtime matrix | **VERIFIED — 16/16 real runtime/storage cells** |
 | Classic + standard Blocks registration/availability | **VERIFIED** |
 | HPOS legacy/on authoritative storage CRUD | **VERIFIED** |
-| Current program gate | **Enterprise Compatibility Certification — declarations / broader feature certification** |
+| Current program gate | **Enterprise Compatibility Certification** |
 
 The plugin remains a pre-release engineering project. Architecture discovery/A1-A5 and Quality Platform Q1-Q19 are DONE / VERIFIED, and the real-runtime Enterprise Compatibility foundation is DONE / VERIFIED through PR #47. The numbered Quality Platform remains closed at Q19; no Q20 is justified by current evidence. Enterprise Compatibility Certification continues with evidence-derived public declarations plus provider/feature/multilingual/browser/performance certification before Product Readiness and Release Engineering. None of these completed milestones constitutes broad provider-host, penetration-test, PCI/compliance, feature, performance or release certification.
 
