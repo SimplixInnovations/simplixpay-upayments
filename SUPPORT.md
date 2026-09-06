@@ -2,7 +2,7 @@
 
 ## Scope
 
-This repository covers **SimplixPay for UPayments**, the WooCommerce integration layer maintained by Simplix Innovations.
+This repository covers **SUCheckout for UPayments**, the WooCommerce integration layer maintained by Simplix Innovations.
 
 Appropriate reports include reproducible checkout failures; WordPress/WooCommerce/PHP regressions; WPML/multilingual issues; Classic/Blocks defects; HPOS issues; callback/webhook/order-status defects; frontend asset conflicts; saved-card/tokenization/subscription/multi-merchant integration defects; performance regressions; and plugin logging/diagnostics behavior.
 
