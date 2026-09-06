@@ -1147,7 +1147,7 @@ arch2_assert(
 
 $namespaceFixture = <<<'PHP'
 <?php
-namespace Simplix\Pay\UPayments;
+namespace Simplixi\SUCheckout\UPayments;
 add_filter("woocommerce_payment_gateways", "addUpaymentsGatewayClass");
 function addUpaymentsGatewayClass($methods) { $methods[] = "WC_UPayments"; return $methods; }
 PHP;
@@ -1266,10 +1266,10 @@ $statusInertFixture = <<<'PHP'
 <?php
 class WC_Upayments {
     public function get_payment_staus() {
-        // \Simplix\Pay\UPayments\Security\PublicOrderStatus::handle();
-        $dead = '\Simplix\Pay\UPayments\Security\PublicOrderStatus::handle();';
+        // \Simplixi\SUCheckout\UPayments\Security\PublicOrderStatus::handle();
+        $dead = '\Simplixi\SUCheckout\UPayments\Security\PublicOrderStatus::handle();';
         $nested = function () {
-            \Simplix\Pay\UPayments\Security\PublicOrderStatus::handle();
+            \Simplixi\SUCheckout\UPayments\Security\PublicOrderStatus::handle();
         };
     }
 }
