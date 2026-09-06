@@ -52,7 +52,7 @@ namespace {
     }
 }
 
-namespace Simplix\Pay\UPayments\Migration {
+namespace Simplixi\SUCheckout\UPayments\Migration {
     final class MigrationExecutor {
         public static function execute($user_id, $api_key, $is_test_mode, $dry_run = false) {
             $GLOBALS['p9o']['executor_calls'][] = array(
@@ -87,9 +87,9 @@ namespace {
     require_once $root . '/src/Migration/MigrationBatch.php';
     require_once $root . '/src/Migration/MigrationCliCommand.php';
 
-    use Simplix\Pay\UPayments\Migration\MigrationSettings;
-    use Simplix\Pay\UPayments\Migration\MigrationBatch;
-    use Simplix\Pay\UPayments\Migration\MigrationCliCommand;
+    use Simplixi\SUCheckout\UPayments\Migration\MigrationSettings;
+    use Simplixi\SUCheckout\UPayments\Migration\MigrationBatch;
+    use Simplixi\SUCheckout\UPayments\Migration\MigrationCliCommand;
 
     $pass = 0; $fail = 0;
     function p9o_assert($condition, $label) {
