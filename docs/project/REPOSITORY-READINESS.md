@@ -1,5 +1,7 @@
 # Pre-Phase-0 Repository Readiness — CLOSED
 
+> **Historical closed-gate record.** Statements below about the “current program gate,” repository name, product identity, branch inventory or support posture describe the state at this gate’s closure. Current SUCheckout state is owned by `PROJECT-STATUS.md`; owner/admin next actions are in `OWNER-HANDOFF.md`.
+
 **Purpose:** historical record of the repository, governance, presentation, settings, attribution and local-history gate required before runtime-changing SimplixPay release-identity work.
 
 **Canonical repository:** `SimplixInnovations/simplixpay-upayments`
