@@ -1,10 +1,10 @@
 # Enterprise Compatibility Certification
 
-**Status:** CORE PLATFORM VERIFIED / SUPPORT DECLARATION CANDIDATE
+**Status:** CORE PLATFORM + SUPPORT DECLARATIONS VERIFIED / PROVIDER SANDBOX VERIFIED
 
 **Verified runtime-foundation merge:** `5e4f33d24bcaed1032691c564b570e60c95a9483`
 
-**Current declaration branch:** `enterprise/compatibility-declarations`
+**Verified support-declaration merge:** `bfcd572f4eb27945a98b158743a4826c9a8894ea`
 
 ## Evidence rule
 
@@ -135,7 +135,7 @@ inside the existing guarded `before_woocommerce_init` callback beside the alread
 
 Real runtime cells then passed the metadata/feature-registry assertion and proceeded through Blocks plus HPOS/legacy order CRUD. Quality Gates #497 failed only the intentionally stale architecture byte ratchet. The exact measured `UPayments.php` size after the declaration is **89,102 bytes**, and the ratchet has been advanced without removing semantic architecture checks.
 
-A final exact-head full Quality Gates + 16-cell Compatibility Certification + CodeQL run is required before the declaration tranche is merge-approved.
+Declaration tranche final head `2c2a6af890cf7304dcbf63cbc7fb03c2be1af7a6` passed Quality Gates #512, Compatibility Certification #40 across all 16 runtime/storage cells, H12 and CodeQL, then squash-merged as signed `bfcd572f4eb27945a98b158743a4826c9a8894ea`. Post-merge `main` passed the permanent 16-cell compatibility matrix, H12, Quality Platform, Governance, syntax lanes and CodeQL.
 
 ## Current public platform declarations
 
@@ -187,3 +187,46 @@ Still not certified by this platform-core tranche:
 3. feature-specific certification;
 4. multilingual/RTL/browser/accessibility/performance and operations certification;
 5. deterministic release packaging and packaged-artifact installation/upgrade certification.
+
+
+## Provider public-sandbox Charge initialization — VERIFIED
+
+Current official UPayments test documentation publishes:
+
+- sandbox API base: `https://sandboxapi.upayments.com/api/v1/`;
+- non-whitelabel public test bearer token: `jtest123`;
+- Charge endpoint: `POST /charge`;
+- successful Charge initialization: HTTP `201`;
+- Get Payment Status limit: **30 requests/minute**.
+
+The bounded repository smoke in `tests/provider/sandbox-charge-smoke.php` uses only that documented public non-whitelabel test token. It derives the Charge endpoint through `Simplix\\Pay\\UPayments\\Provider\\EndpointResolver`, preserves TLS verification and redirect-disable transport behavior, and validates the returned payment link through the production `CheckoutPayload::normalize_upayments_redirect_url()` boundary.
+
+### Safety boundary
+
+The automated provider smoke:
+
+- creates exactly one sandbox Charge initialization per workflow job;
+- uses a one-minute payment-link expiry;
+- never follows the returned payment link;
+- never enters card/test-card data;
+- never completes or captures a payment;
+- never polls payment status;
+- never issues a refund;
+- never saves/retrieves a card;
+- never performs subscription/auto-deduction;
+- never uses a merchant production credential;
+- never logs the raw provider body, bearer token or session URL.
+
+Exact PR #49 candidate `e7dd5b96b03c2aefe73b44b837df84976b852d83` produced Provider Sandbox Certification **run #1 — SUCCESS**. The public-sandbox job proved: exact documented token gating, endpoint derivation through Simplix `EndpointResolver`, HTTPS host/path, JSON encoding, cURL transport without error, exact HTTP 201, valid JSON, strict `status === true`, structured `data`, production redirect normalization, HTTPS payment-link scheme and bounded UPayments sandbox host.
+
+The sanitized workflow log exposed no raw response body, bearer token or session URL and ended with:
+
+`CERT: UPayments public-sandbox Charge initialization verified; no payment completion attempted.`
+
+This certifies sandbox Charge **transport and initialization schema only**. It is not captured-payment, wallet, saved-card, subscription, refund, webhook-signature or production-merchant certification.
+
+Current provider-document rate boundaries remain explicit:
+- Get Payment Status: **30 requests/minute**;
+- Check Payment Button Availability: **1 request/minute**.
+
+The automated provider smoke performs no status polling and preserves the plugin's stricter bounded availability/cache behavior.
