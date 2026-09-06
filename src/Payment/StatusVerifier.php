@@ -264,7 +264,7 @@ final class StatusVerifier {
         if (!is_string($url) || $url === '' || strlen($url) > 500 || !is_string($track_id)) {
             return false;
         }
-        $parts = parse_url($url);
+        $parts = wp_parse_url($url);
         if (!is_array($parts)
             || !isset($parts['scheme'], $parts['host'], $parts['path'])
             || strtolower((string) $parts['scheme']) !== 'https'
