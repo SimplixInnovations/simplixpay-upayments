@@ -1,10 +1,10 @@
 <?php
 
-namespace Simplix\Pay\UPayments\Tests\Release;
+namespace Simplixi\SUCheckout\UPayments\Tests\Release;
 
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
-use Simplix\Pay\UPayments\Release\Identity;
+use Simplixi\SUCheckout\UPayments\Release\Identity;
 
 final class IdentityTest extends TestCase {
     public function test_canonical_public_brand_and_repository_are_exact(): void {
