@@ -53,7 +53,7 @@ class WCGatewayUPaymentsBlocks extends AbstractPaymentMethodType {
 
     public function get_payment_method_script_handles() {
         wp_register_script(
-            'upayments-block-checkout',
+            'sucheckout-upayments-block-checkout',
             plugins_url( 'assets/js/upayments-block.js', $this->pluginFile ),
             [
                 // 'wc-blocks-checkout-blocks',
@@ -67,7 +67,7 @@ class WCGatewayUPaymentsBlocks extends AbstractPaymentMethodType {
             '3.0.0',
             true
         );
-        return [ 'upayments-block-checkout' ];
+        return [ 'sucheckout-upayments-block-checkout' ];
     }
 
     public function get_payment_method_script_handles_for_admin() {
