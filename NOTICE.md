@@ -14,7 +14,8 @@ The complete Simplix pre-product fork/hardening history is preserved separately 
 
 The standalone canonical product repository is:
 
-- https://github.com/SimplixInnovations/simplixpay-upayments
+- current GitHub location pending owner/admin rename: https://github.com/SimplixInnovations/simplixpay-upayments
+- target canonical repository: https://github.com/SimplixInnovations/sucheckout-upayments
 
 Copyright in upstream portions remains with the respective upstream copyright holders. Simplix Innovations claims copyright only in its own original modifications and documentation to the extent applicable.
 
