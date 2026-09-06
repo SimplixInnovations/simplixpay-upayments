@@ -245,7 +245,7 @@ function release_inspect_zip_independently($root, $zip_path, $checksum_path, $ma
 
     $allowed_exact = array(
         'UPayments.php', 'index.php', 'uninstall.php', 'LICENSE',
-        'README.md', 'CHANGELOG.md', 'NOTICE.md', 'SECURITY.md',
+        'readme.txt', 'README.md', 'CHANGELOG.md', 'NOTICE.md', 'SECURITY.md',
     );
     $allowed_prefixes = array('src/', 'includes/', 'assets/', 'templates/');
     $allowlisted = true;
@@ -279,6 +279,7 @@ function release_inspect_zip_independently($root, $zip_path, $checksum_path, $ma
         'index.php',
         'uninstall.php',
         'LICENSE',
+        'readme.txt',
         'README.md',
         'CHANGELOG.md',
         'NOTICE.md',
@@ -334,9 +335,9 @@ function release_inspect_zip_independently($root, $zip_path, $checksum_path, $ma
     $identity_source = $zip->getFromName($prefix . 'src/Release/Identity.php');
     release_assert(
         is_string($plugin_source)
-            && strpos($plugin_source, 'Plugin Name: SimplixPay for UPayments') !== false
+            && strpos($plugin_source, 'Plugin Name: SUCheckout for UPayments') !== false
             && strpos($plugin_source, 'Version: ' . $version) !== false
-            && strpos($plugin_source, 'Text Domain: upayments') !== false,
+            && strpos($plugin_source, 'Text Domain: sucheckout-upayments') !== false,
         'independent inspector confirms packaged plugin name/version/text-domain identity'
     );
     release_assert(

@@ -78,7 +78,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          grep -Fq 'SimplixPay for UPayments' README.md
+          grep -Fq 'SUCheckout for UPayments' README.md
           grep -Fq 'Enterprise Release Candidate Closeout is **DONE / VERIFIED**.' README.md
           grep -Fq '| Enterprise Task 8 — release-candidate closeout | **DONE / VERIFIED** |' docs/project/PROJECT-STATUS.md
           grep -Fq '| Current engineering state | **Enterprise release candidate qualified — awaiting owner release decision** |' docs/project/PROJECT-STATUS.md
