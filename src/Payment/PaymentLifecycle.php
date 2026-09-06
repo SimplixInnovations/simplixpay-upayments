@@ -1,10 +1,10 @@
 <?php
 
-namespace Simplix\Pay\UPayments\Payment;
+namespace Simplixi\SUCheckout\UPayments\Payment;
 
 defined('ABSPATH') || exit;
 
-use Simplix\Pay\UPayments\Security\PublicOrderStatus;
+use Simplixi\SUCheckout\UPayments\Security\PublicOrderStatus;
 
 require_once dirname(__DIR__) . '/Security/PublicOrderStatus.php';
 require_once __DIR__ . '/ProviderResult.php';
