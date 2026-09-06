@@ -46,12 +46,12 @@ class Fields
         }
 
         if ($plan === '') {
-            wc_add_notice(__('Please select a payment type.', 'upayments'), 'error');
+            wc_add_notice(__('Please select a payment type.', 'sucheckout-upayments'), 'error');
             return;
         }
 
         if (!in_array($plan, self::$ALLOWED_PLANS, true)) {
-            wc_add_notice(__('Invalid payment type selected.', 'upayments'), 'error');
+            wc_add_notice(__('Invalid payment type selected.', 'sucheckout-upayments'), 'error');
             return;
         }
 
@@ -62,7 +62,7 @@ class Fields
         );
 
         if (!isset(self::$ALLOWED_INTERVALS[$plan]) || !in_array($interval, self::$ALLOWED_INTERVALS[$plan], true)) {
-            wc_add_notice(__('Invalid billing interval selected for the chosen plan.', 'upayments'), 'error');
+            wc_add_notice(__('Invalid billing interval selected for the chosen plan.', 'sucheckout-upayments'), 'error');
         }
     }
 
@@ -76,25 +76,25 @@ class Fields
 
         $fields['billing']['upay_subscription_plan'] = [
             'type'     => 'select',
-            'label'    => __('Purchase Type', 'upayments'),
+            'label'    => __('Purchase Type', 'sucheckout-upayments'),
             'required' => true,
             'options'  => [
-                'one_time' => __('One-time', 'upayments'),
-                'daily'    => __('Daily Subscription', 'upayments'),
-                'weekly'   => __('Weekly Subscription', 'upayments'),
-                'monthly'  => __('Monthly Subscription', 'upayments'),
-                'quarterly'   => __('Quarterly Subscription', 'upayments'),
-                'yearly'   => __('Yearly Subscription', 'upayments'),
+                'one_time' => __('One-time', 'sucheckout-upayments'),
+                'daily'    => __('Daily Subscription', 'sucheckout-upayments'),
+                'weekly'   => __('Weekly Subscription', 'sucheckout-upayments'),
+                'monthly'  => __('Monthly Subscription', 'sucheckout-upayments'),
+                'quarterly'   => __('Quarterly Subscription', 'sucheckout-upayments'),
+                'yearly'   => __('Yearly Subscription', 'sucheckout-upayments'),
             ],
             'priority' => 120,
         ];
 
         $fields['billing']['upay_subscription_interval'] = [
             'type'     => 'select',
-            'label'    => __('Billing Interval', 'upayments'),
+            'label'    => __('Billing Interval', 'sucheckout-upayments'),
             'required' => false,
             'options'  => [
-                ''  => __('Select interval', 'upayments'),
+                ''  => __('Select interval', 'sucheckout-upayments'),
             ],
             'priority' => 121,
         ];

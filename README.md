@@ -6,7 +6,7 @@
   </picture>
 </p>
 
-<h1 align="center">SimplixPay for UPayments</h1>
+<h1 align="center">SUCheckout for UPayments</h1>
 
 <p align="center"><strong>Independently engineered UPayments payment integration for WooCommerce</strong><br>maintained by <a href="https://simplixi.com">Simplix Innovations</a></p>
 
@@ -19,7 +19,7 @@
 </p>
 
 > [!IMPORTANT]
-> **SimplixPay for UPayments** is independently engineered and maintained by **Simplix Innovations**. UPayments is the payment-service provider and owns its respective names and trademarks. This repository does not imply endorsement or official distribution by UPayments.
+> **SUCheckout for UPayments** is independently engineered and maintained by **Simplix Innovations**. UPayments is the payment-service provider and owns its respective names and trademarks. This repository does not imply endorsement or official distribution by UPayments.
 
 ## Status
 
@@ -27,7 +27,7 @@ Repository Foundation, Phase 0, Phase 9I, Provider Payment Lifecycle, bounded Se
 
 Enterprise Release Candidate Closeout is **DONE / VERIFIED**. The repository is an **enterprise-qualified release-candidate engineering state** with no active engineering gate; publication is an explicit owner decision.
 
-The project is still **pre-release**. No public SimplixPay 1.0 tag, GitHub Release or WordPress.org release has been created. Task 8 qualified one exact release-candidate source/artifact state; publication remains a separate owner release action.
+The project is still **pre-release**. No public SUCheckout 1.0 tag, GitHub Release or WordPress.org release has been created. Task 8 qualified one exact release-candidate source/artifact state; publication remains a separate owner release action.
 
 | Area | Current verified position |
 |---|---|

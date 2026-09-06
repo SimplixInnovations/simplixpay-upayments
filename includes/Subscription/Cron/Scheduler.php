@@ -422,7 +422,7 @@ class Scheduler
                 return;
             }
 
-            $gateway->log(__('Auto-deduction request prepared.', $gateway->domain));
+            $gateway->log(__('Auto-deduction request prepared.', 'sucheckout-upayments'));
 
             // ---- Compute per-cycle identity and acquire claim ----
             $cycle_due_gmt = CycleClaim::format_gmt_datetime($next_billing_date);
@@ -895,7 +895,11 @@ class Scheduler
         $renewal_order->payment_complete($payment_id);
         $renewal_order->update_status(
             'completed',
-            __('Subscription renewal payment completed via UPayments Auto Deduction. PaymentID: ' . $payment_id, $gateway->domain)
+            sprintf(
+                /* translators: %s: UPayments payment ID. */
+                __('Subscription renewal payment completed via UPayments Auto Deduction. PaymentID: %s', 'sucheckout-upayments'),
+                $payment_id
+            )
         );
         $renewal_order->save();
 

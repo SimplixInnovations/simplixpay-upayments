@@ -1,10 +1,17 @@
 # Changelog
 
-All notable **SimplixPay for UPayments** product changes are documented here.
+All notable **SUCheckout for UPayments** product changes are documented here.
 
 The project is still in pre-release engineering hardening. Entries below are engineering milestones and do not imply a merchant-facing stable release. The independent Simplix development line is `0.x`; `1.0.0` remains reserved for the first release that satisfies the stable-release gates.
 
 ## [Unreleased]
+
+### SUCheckout identity migration — IN PROGRESS
+
+- Retires the pre-release SimplixPay first-party identity in favor of **SUCheckout for UPayments** and canonical technical slug `sucheckout-upayments`.
+- Preserves evidence-backed UPayments provider and historical WooCommerce compatibility identifiers while first-party package, namespace, metadata, i18n, frontend and release surfaces migrate under regression gates.
+- No public tag, GitHub Release, WordPress.org publication or repository rename is authorized by this migration work.
+
 
 ### Enterprise Release Candidate Closeout — DONE / VERIFIED
 

@@ -211,7 +211,7 @@ final class MigrationCliCommand {
     }
 
     private static function cliError($reason, $exit = true) {
-        $message = 'SimplixPay UPayments migration: ' . $reason;
+        $message = 'SUCheckout for UPayments migration: ' . $reason;
         \WP_CLI::error($message, $exit);
     }
 }

@@ -562,8 +562,8 @@ final class PaymentLifecycle {
         $order->update_meta_data('UPayments_Result', (string) $provider_result);
         if ((string) $order->get_status() !== $target_status) {
             $note = $target_status === 'failed'
-                ? __('UPayments authenticated payment result is terminal failure.', 'upayments')
-                : __('UPayments authenticated payment result is cancelled.', 'upayments');
+                ? __('UPayments authenticated payment result is terminal failure.', 'sucheckout-upayments')
+                : __('UPayments authenticated payment result is cancelled.', 'sucheckout-upayments');
             $order->update_status($target_status, $note);
         } else {
             $order->save();
@@ -621,7 +621,7 @@ final class PaymentLifecycle {
         $order->update_meta_data(self::RECONCILE_REASON_META, self::safe_code($reason));
         if (method_exists($order, 'add_order_note')) {
             $order->add_order_note(
-                __('SimplixPay UPayments reconciliation exhausted without authoritative terminal payment state. Manual review is required.', 'upayments')
+                __('SUCheckout for UPayments reconciliation exhausted without authoritative terminal payment state. Manual review is required.', 'sucheckout-upayments')
             );
         }
         $order->save();

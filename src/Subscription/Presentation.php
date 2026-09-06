@@ -22,7 +22,7 @@ final class Presentation {
 
     /** @param array $types @return array */
     public static function add_custom_product_type($types) {
-        $types['custom_type'] = __('Subscription Product', 'upayments');
+        $types['custom_type'] = __('Subscription Product', 'sucheckout-upayments');
         return $types;
     }
 
@@ -54,7 +54,7 @@ final class Presentation {
     /** @param array $tabs @return array */
     public static function add_custom_data_tab($tabs) {
         $tabs['custom_settings'] = array(
-            'label' => __('Custom Settings', 'upayments'),
+            'label' => __('Custom Settings', 'sucheckout-upayments'),
             'target' => 'custom_product_data_panel',
             'class' => array('show_if_custom_type'),
             'priority' => 25,
@@ -70,10 +70,10 @@ final class Presentation {
                 <?php
                 woocommerce_wp_text_input(array(
                     'id' => '_custom_field_id',
-                    'label' => __('Custom Field', 'upayments'),
+                    'label' => __('Custom Field', 'sucheckout-upayments'),
                     'placeholder' => 'Enter value here',
                     'desc_tip' => 'true',
-                    'description' => __('This is a description of the field.', 'upayments'),
+                    'description' => __('This is a description of the field.', 'sucheckout-upayments'),
                 ));
                 ?>
             </div>
@@ -142,7 +142,7 @@ final class Presentation {
         $custom_value = get_post_meta($product_id, '_custom_field_id', true);
         if (!empty($custom_value)) {
             $item_data[] = array(
-                'key' => __('Special Feature', 'upayments'),
+                'key' => __('Special Feature', 'sucheckout-upayments'),
                 'value' => $custom_value,
                 'display' => '',
             );
@@ -165,7 +165,7 @@ final class Presentation {
         }
         $custom_value = get_post_meta($product_id, '_custom_field_id', true);
         if (!empty($custom_value)) {
-            $item->add_meta_data(__('Special Feature', 'upayments'), $custom_value);
+            $item->add_meta_data(__('Special Feature', 'sucheckout-upayments'), $custom_value);
         }
     }
 
@@ -234,7 +234,7 @@ final class Presentation {
             $period = 'Day';
         }
         echo '<div class="upay-subscription-summary">';
-        echo '<h4>' . esc_html__('Subscription Details', 'upayments') . '</h4>';
+        echo '<h4>' . esc_html__('Subscription Details', 'sucheckout-upayments') . '</h4>';
         if ($auto_deduction === 'no') {
             echo '<p><strong>Subscription Status:</strong> ' . wp_kses_post($status) . '</p>';
         }
@@ -266,11 +266,11 @@ final class Presentation {
         $cart_has_subscription = Utils::cartHasCustomType();
         $cart_has_normal = Utils::cartHasNormalProduct();
         if ($cart_has_subscription && !$is_subscription_product) {
-            wc_add_notice(__('You can only add subscription products to the cart when a subscription item is present.', $domain), 'error');
+            wc_add_notice(__('You can only add subscription products to the cart when a subscription item is present.', 'sucheckout-upayments'), 'error');
             return false;
         }
         if ($cart_has_normal && $is_subscription_product) {
-            wc_add_notice(__('Subscription products cannot be added together with normal products. Please complete your current purchase first.', $domain), 'error');
+            wc_add_notice(__('Subscription products cannot be added together with normal products. Please complete your current purchase first.', 'sucheckout-upayments'), 'error');
             return false;
         }
         return $passed;
@@ -328,15 +328,15 @@ final class Presentation {
         );
         ?>
         <section class="woocommerce-subscription-details">
-            <h2><?php esc_html_e('Subscription Details', 'woocommerce'); ?></h2>
+            <h2><?php esc_html_e('Subscription Details', 'sucheckout-upayments'); ?></h2>
             <table class="shop_table shop_table_responsive" style="border: 1px solid;">
                 <tbody>
-                    <tr><th style="border: 1px solid;"><?php esc_html_e('Plan', 'woocommerce'); ?></th><td style="border: 1px solid;"><?php echo esc_html(isset($plan_labels[$plan]) ? $plan_labels[$plan] : ucfirst($plan)); ?></td></tr>
-                    <tr><th style="border: 1px solid;"><?php esc_html_e('Interval', 'woocommerce'); ?></th><td style="border: 1px solid;"><?php echo esc_html(isset($interval_labels[$plan][$interval]) ? $interval_labels[$plan][$interval] : $interval); ?></td></tr>
-                    <tr><th style="border: 1px solid;"><?php esc_html_e('Started On', 'woocommerce'); ?></th><td style="border: 1px solid;"><?php echo esc_html($started_at->format('Y-m-d H:i:s')); ?></td></tr>
+                    <tr><th style="border: 1px solid;"><?php esc_html_e('Plan', 'sucheckout-upayments'); ?></th><td style="border: 1px solid;"><?php echo esc_html(isset($plan_labels[$plan]) ? $plan_labels[$plan] : ucfirst($plan)); ?></td></tr>
+                    <tr><th style="border: 1px solid;"><?php esc_html_e('Interval', 'sucheckout-upayments'); ?></th><td style="border: 1px solid;"><?php echo esc_html(isset($interval_labels[$plan][$interval]) ? $interval_labels[$plan][$interval] : $interval); ?></td></tr>
+                    <tr><th style="border: 1px solid;"><?php esc_html_e('Started On', 'sucheckout-upayments'); ?></th><td style="border: 1px solid;"><?php echo esc_html($started_at->format('Y-m-d H:i:s')); ?></td></tr>
                     <?php if ($order->get_meta('UPayments_AutoDeduction') !== 'yes') { ?>
-                        <tr><th style="border: 1px solid;"><?php esc_html_e('Last Billed On', 'woocommerce'); ?></th><td style="border: 1px solid;"><?php echo esc_html($last_billed_dt ? $last_billed_dt->format('Y-m-d H:i:s') : '-'); ?></td></tr>
-                        <tr><th style="border: 1px solid;"><?php esc_html_e('Next Billing Date', 'woocommerce'); ?></th><td style="border: 1px solid;"><?php echo esc_html($next_billing_dt->format('Y-m-d H:i:s')); ?></td></tr>
+                        <tr><th style="border: 1px solid;"><?php esc_html_e('Last Billed On', 'sucheckout-upayments'); ?></th><td style="border: 1px solid;"><?php echo esc_html($last_billed_dt ? $last_billed_dt->format('Y-m-d H:i:s') : '-'); ?></td></tr>
+                        <tr><th style="border: 1px solid;"><?php esc_html_e('Next Billing Date', 'sucheckout-upayments'); ?></th><td style="border: 1px solid;"><?php echo esc_html($next_billing_dt->format('Y-m-d H:i:s')); ?></td></tr>
                     <?php } ?>
                 </tbody>
             </table>
@@ -354,7 +354,7 @@ final class Presentation {
             <input type="hidden" name="upay_action" value="unsubscribe" />
             <input type="hidden" name="order_id" value="<?php echo esc_attr($order->get_id()); ?>" />
             <?php wp_nonce_field('upay_unsubscribe_' . $order->get_id(), '_wpnonce', false); ?>
-            <button type="submit" class="button upay-unsubscribe-button" onclick="return confirm('<?php echo esc_js(__('Are you sure you want to unsubscribe?', 'woocommerce')); ?>');"><?php esc_html_e('Unsubscribe', 'woocommerce'); ?></button>
+            <button type="submit" class="button upay-unsubscribe-button" onclick="return confirm('<?php echo esc_js(__('Are you sure you want to unsubscribe?', 'sucheckout-upayments')); ?>');"><?php esc_html_e('Unsubscribe', 'sucheckout-upayments'); ?></button>
         </form>
         <form method="post" class="upay-subscription-actions" action="<?php echo esc_url($form_action); ?>">
             <input type="hidden" name="upay_action" value="<?php echo esc_attr($action); ?>" />
@@ -406,8 +406,8 @@ final class Presentation {
         foreach ($columns as $key => $label) {
             $new_columns[$key] = $label;
             if ($key === 'order-status') {
-                $new_columns['order_type'] = __('Type', 'woocommerce');
-                $new_columns['order_status'] = __('Status', 'woocommerce');
+                $new_columns['order_type'] = __('Type', 'sucheckout-upayments');
+                $new_columns['order_status'] = __('Status', 'sucheckout-upayments');
             }
         }
         return $new_columns;
@@ -419,8 +419,8 @@ final class Presentation {
             return;
         }
         echo $order->get_meta('UPayments_AutoDeduction') === 'yes'
-            ? esc_html__('Auto Deduction', 'woocommerce')
-            : esc_html__('Regular', 'woocommerce');
+            ? esc_html__('Auto Deduction', 'sucheckout-upayments')
+            : esc_html__('Regular', 'sucheckout-upayments');
     }
 
     /** @return void */

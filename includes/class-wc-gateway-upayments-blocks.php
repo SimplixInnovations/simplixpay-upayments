@@ -221,9 +221,9 @@ class WCGatewayUPaymentsBlocks extends AbstractPaymentMethodType {
             'upay_subscription_interval' => '0',        // Default value
             'plugin_url'                => plugin_dir_url( dirname( __FILE__ ) ),
             'translation'               => [
-                'save_card_label'       => __('For faster and more secure checkout. Save your card details.', 'upayments'),
-                'saved_cards_label'     => __('Saved Cards', 'upayments'),
-                'other_options_label'   => __('Other Options', 'upayments'),
+                'save_card_label'       => __('For faster and more secure checkout. Save your card details.', 'sucheckout-upayments'),
+                'saved_cards_label'     => __('Saved Cards', 'sucheckout-upayments'),
+                'other_options_label'   => __('Other Options', 'sucheckout-upayments'),
             ],
             'supports'    => [ 'products' ],
         ];

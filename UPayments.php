@@ -1,7 +1,7 @@
 <?php
 /**
- * Plugin Name: SimplixPay for UPayments
- * Plugin URI: https://github.com/SimplixInnovations/simplixpay-upayments
+ * Plugin Name: SUCheckout for UPayments
+ * Plugin URI: https://github.com/SimplixInnovations/sucheckout-upayments
  * Description: Independently engineered UPayments payment integration for WooCommerce by Simplix Innovations.
  * Version: 0.1.0
  * Author: Simplix Innovations
@@ -12,8 +12,7 @@
  * WC requires at least: 10.8
  * WC tested up to: 11.1
  * License: MIT
- * Text Domain: upayments
- * Domain Path: /languages
+ * Text Domain: sucheckout-upayments
  */
 
 // Exit if accessed directly.
@@ -187,9 +186,9 @@ function woocommerceUpaymentsInit() {
             // Define ID, title, description, and settings.
             $this->id                 = 'upayments';
             $this->icon = UP_PLUGIN_URL . "assets/images/logo.png";
-            $this->method_title       = __("UPayments", $this->domain);
+            $this->method_title       = __("UPayments", 'sucheckout-upayments');
             $this->method_description = __("UPayments payment integration for WooCommerce. Available payment methods depend on your UPayments account and provider configuration.
-            Supports Classic and Block Checkout. Subscription auto-deduction requires separately validated provider setup.", $this->domain);
+            Supports Classic and Block Checkout. Subscription auto-deduction requires separately validated provider setup.", 'sucheckout-upayments');
             $this->has_fields         = true; // Required for custom forms like Save Card/Design variations.
 
             // Define user set variables
@@ -248,7 +247,7 @@ function woocommerceUpaymentsInit() {
 
                 echo '<div class="checkout-my-account-link">';
                 echo '<a href="' . esc_url($account_url) . '" target="_blank">';
-                echo __('Go to My Account', 'woocommerce');
+                echo __('Go to My Account', 'sucheckout-upayments');
                 echo '</a>';
                 echo '</div>';
                 
@@ -269,7 +268,7 @@ function woocommerceUpaymentsInit() {
                 $normalized = GatewaySettings::normalize_dependencies($settings);
                 if ($normalized['forced_save_card']) {
                     wc_add_notice(
-                        __('Save Card must be enabled when Subscriptions are enabled.', 'woocommerce'),
+                        __('Save Card must be enabled when Subscriptions are enabled.', 'sucheckout-upayments'),
                         'error'
                     );
                 }
@@ -402,50 +401,50 @@ function woocommerceUpaymentsInit() {
                     }
                 </style>
                 <div class="payment-panel-wait">
-                    <h3><?php esc_html_e("We are retrieving your payment status from UPayments, please wait...", $this->domain); ?></h3>
+                    <h3><?php esc_html_e("We are retrieving your payment status from UPayments, please wait...", 'sucheckout-upayments'); ?></h3>
                     <div class="img-container"><img src="<?php echo UP_PLUGIN_PATH; ?>assets/images/loader.gif" /></div>
                 </div>
             <?php
             } 
             ?>
                 <div class="payment-panel-wait">
-                    <h3><?php esc_html_e('We are retrieving your payment status...', $this->domain ); ?></h3>
+                    <h3><?php esc_html_e('We are retrieving your payment status...', 'sucheckout-upayments' ); ?></h3>
                 </div>
                 <div class="payment-panel-pending" style="<?php echo $status == "pending" ? "display: block" : "display: none"; ?>">
                     <div style="<?php echo $style; ?>">
-                        <?php esc_html_e("Your payment status is pending, we will update the status as soon as we receive notification from UPayments.", $this->domain); ?>
+                        <?php esc_html_e("Your payment status is pending, we will update the status as soon as we receive notification from UPayments.", 'sucheckout-upayments'); ?>
                     </div>
                 </div>
                 <div class="payment-panel-completed" style="<?php echo $status == "completed" ? "display: block" : "display: none"; ?>">
                     <div style="<?php echo $style; ?>">
-                    <?php esc_html_e("Your payment is successful with UPayments.", $this->domain); ?>
+                    <?php esc_html_e("Your payment is successful with UPayments.", 'sucheckout-upayments'); ?>
                         <img style="width:100px" src="<?php echo esc_url(UP_PLUGIN_URL . 'assets/images/check.png'); ?>"/>
                     </div>
                 </div>
                 <div class="payment-panel-failed" style="<?php echo $status == "failed" ? "display: block" : "display: none"; ?>">
                     <div style="<?php echo $style; ?>">
-                    <?php esc_html_e("Your payment is failed with UPayments.", $this->domain); ?>
+                    <?php esc_html_e("Your payment is failed with UPayments.", 'sucheckout-upayments'); ?>
                     </div>
                 </div>
                 <div class="payment-panel-cancelled" style="<?php echo $status == "cancelled" ? "display: block" : "display: none"; ?>">
                     <div style="<?php echo $style; ?>">
-                        <?php esc_html_e("Your order is cancelled.", $this->domain); ?>
+                        <?php esc_html_e("Your order is cancelled.", 'sucheckout-upayments'); ?>
                     </div>
                 </div>
                 <div class="payment-panel-error" style="display: none">
                     <div class="message-holder">
-                        <?php esc_html_e("Something went wrong, please contact the merchant.", $this->domain); ?>
+                        <?php esc_html_e("Something went wrong, please contact the merchant.", 'sucheckout-upayments'); ?>
                     </div>
                 </div>
                 <div class="upayment-status-holder" style="display: none">
                     <li class="woocommerce-order-overview__payment-status status">
-                        <?php esc_html_e("Payment Status:", "woocommerce"); ?>
+                        <?php esc_html_e("Payment Status:", 'sucheckout-upayments'); ?>
                         <strong id="upayment-status-holder-strong"><?php echo esc_html($payment_status); ?></strong>
                     </li>
                 </div>
                 <div class="upayment-id-holder" style="display: none">
                     <li class="woocommerce-order-overview__payment-id payment-id">
-                        <?php esc_html_e("UPayment ID:", "woocommerce"); ?>
+                        <?php esc_html_e("UPayment ID:", 'sucheckout-upayments'); ?>
                         <strong id="upayment-id-holder-strong"><?php echo esc_html($upayment_id); ?></strong>
                     </li>
                 </div>
@@ -927,7 +926,7 @@ function woocommerceUpaymentsInit() {
                 if ($current_status !== $paid_order_status) {
                     $status_transition_ok = $order->update_status(
                         $paid_order_status,
-                        __('Payment successful with UPayments. PaymentID: ', $this->domain) . $verified_payment_id
+                        __('Payment successful with UPayments. PaymentID: ', 'sucheckout-upayments') . $verified_payment_id
                     );
                 }
 
@@ -1075,7 +1074,7 @@ function woocommerceUpaymentsInit() {
                 if ($current_status !== $paid_order_status) {
                     $status_transition_ok = $order->update_status(
                         $paid_order_status,
-                        __('Payment successful with UPayments. PaymentID: ', $this->domain) . $verified_payment_id
+                        __('Payment successful with UPayments. PaymentID: ', 'sucheckout-upayments') . $verified_payment_id
                     );
                 }
 
@@ -1214,14 +1213,14 @@ function woocommerceUpaymentsInit() {
                     <table class="wc-order-totals" style="border-top: 1px solid #999; margin-top:12px; padding-top:12px">
             <tbody>
                             <tr>
-                                <td class="label"><h3 style="margin:0"><?php esc_html_e('Payment Status', 'upayments'); ?>:</h3></td>
+                                <td class="label"><h3 style="margin:0"><?php esc_html_e('Payment Status', 'sucheckout-upayments'); ?>:</h3></td>
                 <td width="1%"></td>
                 <td class="total">
                                     <span class="woocommerce-Price-amount amount"><strong><?php echo esc_html($payment_status); ?></strong></span>
                                 </td>
                             </tr>
                             <tr>
-                <td class="label"><h3 style="margin:0"><?php esc_html_e('UPayment ID', 'upayments'); ?>:</h3></td>
+                <td class="label"><h3 style="margin:0"><?php esc_html_e('UPayment ID', 'sucheckout-upayments'); ?>:</h3></td>
                 <td width="1%"></td>
                 <td class="total">
                                     <span class="woocommerce-Price-amount amount">
@@ -1263,10 +1262,10 @@ function woocommerceUpaymentsInit() {
             $post_data = $prepared['post_data'];
 
             if ($prepared['api_key_missing']){
-                WC_Admin_Settings::add_error(__("Please enter UPayments API Key", $this->domain));
+                WC_Admin_Settings::add_error(__("Please enter UPayments API Key", 'sucheckout-upayments'));
             }else{
                 if ($prepared['multimerchant_missing']) {
-                    WC_Admin_Settings::add_error(__("Please enter Multimerchant Configuration", $this->domain));
+                    WC_Admin_Settings::add_error(__("Please enter Multimerchant Configuration", 'sucheckout-upayments'));
                 }
                 foreach ($this->get_form_fields() as $key => $field)
                 {
@@ -1378,7 +1377,7 @@ function woocommerceUpaymentsInit() {
 
         public function getSiteName()
         {
-            return __("Woocommerce", $this->domain);
+            return __("Woocommerce", 'sucheckout-upayments');
         }
 
         public function getIsOrderComplete() {  
@@ -1473,7 +1472,7 @@ function woocommerceUpaymentsInit() {
                 && $result['result'] === 'failure'
             ) {
                 wc_clear_notices();
-                wc_add_notice(__("Payment methods could not be loaded. Please try again.", $this->domain), "error");
+                wc_add_notice(__("Payment methods could not be loaded. Please try again.", 'sucheckout-upayments'), "error");
                 return array('result' => 'failure', 'redirect' => wc_get_checkout_url());
             }
 
@@ -1639,31 +1638,31 @@ function woocommerceUpaymentsInit() {
             // If ONLY normal products in cart → allow all methods
             if (!$isSubscriptionContext) {
                 if (isset($payment_methods['knet']) && $payment_methods['knet'] === 1) {
-                    $methods['payment']['knet'] = __('KNET', $this->domain);
+                    $methods['payment']['knet'] = __('KNET', 'sucheckout-upayments');
                 }
 
                 if (isset($payment_methods['apple_pay_knet']) && $payment_methods['apple_pay_knet'] === 1) {
-                    $methods['payment']['apple-pay-knet'] = __('Apple Pay KNET', $this->domain);
+                    $methods['payment']['apple-pay-knet'] = __('Apple Pay KNET', 'sucheckout-upayments');
                 }
 
                 if (isset($payment_methods['credit_card']) && $payment_methods['credit_card'] === 1) {
-                    $methods['payment']['cc'] = __('Credit Card', $this->domain);
+                    $methods['payment']['cc'] = __('Credit Card', 'sucheckout-upayments');
                 }
 
                 if (isset($payment_methods['apple_pay']) && $payment_methods['apple_pay'] === 1) {
-                    $methods['payment']['apple-pay'] = __('Apple Pay Credit Card', $this->domain);
+                    $methods['payment']['apple-pay'] = __('Apple Pay Credit Card', 'sucheckout-upayments');
                 }
 
                 if (isset($payment_methods['samsung_pay']) && $payment_methods['samsung_pay'] === 1) {
-                    $methods['payment']['samsung-pay'] = __('Samsung Pay', $this->domain);
+                    $methods['payment']['samsung-pay'] = __('Samsung Pay', 'sucheckout-upayments');
                 }
 
                 if (isset($payment_methods['google_pay']) && $payment_methods['google_pay'] === 1) {
-                    $methods['payment']['google-pay'] = __('Google Pay', $this->domain);
+                    $methods['payment']['google-pay'] = __('Google Pay', 'sucheckout-upayments');
                 }
             } else { // If subscription product in cart → ONLY CC allowed (per API requirement)
                 if (isset($payment_methods['credit_card']) && $payment_methods['credit_card'] === 1) {
-                    $methods['payment']['cc'] = __('Credit Card', $this->domain);
+                    $methods['payment']['cc'] = __('Credit Card', 'sucheckout-upayments');
                 }
             }
 
@@ -1797,7 +1796,7 @@ function woocommerceUpaymentsInit() {
 function upaymentsMissingWcNotice() {
     ?>
     <div class="error notice">
-        <p><?php _e( '<b>UPayments Gateway</b> requires WooCommerce to be installed and active!', 'upayments' ); ?></p>
+        <p><?php _e( '<b>UPayments Gateway</b> requires WooCommerce to be installed and active!', 'sucheckout-upayments' ); ?></p>
     </div>
     <?php
 }
@@ -1996,7 +1995,7 @@ add_action('init', function () {
 
     // Authorization: nonce is CSRF protection, never object authorization.
     if (!is_user_logged_in() || get_current_user_id() !== (int) $order->get_user_id()) {
-        wc_add_notice(__('Unauthorized request.', 'woocommerce'), 'error');
+        wc_add_notice(__('Unauthorized request.', 'sucheckout-upayments'), 'error');
         wp_safe_redirect(wc_get_account_endpoint_url('orders'));
         exit;
     }
@@ -2018,7 +2017,7 @@ add_action('init', function () {
         || !isset($allowed_intervals[$plan])
         || !in_array($interval, $allowed_intervals[$plan], true)
     ) {
-        wc_add_notice(__('Invalid subscription request.', 'woocommerce'), 'error');
+        wc_add_notice(__('Invalid subscription request.', 'sucheckout-upayments'), 'error');
         wp_safe_redirect(wc_get_account_endpoint_url('orders'));
         exit;
     }
@@ -2028,7 +2027,7 @@ add_action('init', function () {
         || ($action === 'pause' && $current_status === 'active')
         || ($action === 'resume' && $current_status === 'paused');
     if (!$transition_allowed) {
-        wc_add_notice(__('Invalid subscription state transition.', 'woocommerce'), 'error');
+        wc_add_notice(__('Invalid subscription state transition.', 'sucheckout-upayments'), 'error');
         wp_safe_redirect(wc_get_account_endpoint_url('view-order') . $order_id);
         exit;
     }
@@ -2045,20 +2044,20 @@ add_action('init', function () {
     }
 
     if (empty($nonce) || !wp_verify_nonce($nonce, $nonce_action)) {
-        wc_add_notice(__('Invalid request.', 'woocommerce'), 'error');
+        wc_add_notice(__('Invalid request.', 'sucheckout-upayments'), 'error');
         wp_safe_redirect(wc_get_account_endpoint_url('orders'));
         exit;
     }
 
     if ($action === 'unsubscribe') {
         $order->update_meta_data('_upay_subscription_status', 'cancelled');
-        wc_add_notice(__('Your subscription has been cancelled.', 'woocommerce'), 'success');
+        wc_add_notice(__('Your subscription has been cancelled.', 'sucheckout-upayments'), 'success');
     } elseif ($action === 'pause') {
         $order->update_meta_data('_upay_subscription_status', 'paused');
-        wc_add_notice(__('Subscription paused.', 'woocommerce'), 'success');
+        wc_add_notice(__('Subscription paused.', 'sucheckout-upayments'), 'success');
     } elseif ($action === 'resume') {
         $order->update_meta_data('_upay_subscription_status', 'active');
-        wc_add_notice(__('Subscription resumed.', 'woocommerce'), 'success');
+        wc_add_notice(__('Subscription resumed.', 'sucheckout-upayments'), 'success');
     }
 
     $order->save();
