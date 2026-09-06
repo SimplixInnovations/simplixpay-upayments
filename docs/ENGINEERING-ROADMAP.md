@@ -84,7 +84,7 @@ The reserved final whole-plugin Codex review produced one valid P2 governance fi
 
 PR #54 squash-merged as `2ddb1790fead37c6055256847dc7c827e165af4a`. Canonical `main` then passed Quality #553, Compatibility #81, Release Artifact #35, Provider Sandbox #13 and CodeQL/main-security #358.
 
-That pre-rebrand enterprise qualification is retained as historical evidence. The approved **SUCheckout identity migration is implemented** and remains protected by permanent exact-head certification. A public tag, GitHub Release, WordPress.org publication and repository rename remain separate owner/admin decisions after verified merge.
+That pre-rebrand enterprise qualification is retained as historical evidence. The approved **SUCheckout identity migration is DONE / VERIFIED** through PR #58 and fresh post-merge main certification. Repository rename, owner-local acceptance and any public tag/GitHub Release/WordPress.org publication are the remaining separate owner/admin track.
 
 ## External/manual evidence track
 
@@ -100,6 +100,20 @@ These items are not to be falsely converted into repository CI claims:
 - provider webhook signature verification until a stable published contract exists.
 
 Automatic Woo refunds and arbitrary marketplace multi-split remain intentionally unsupported unless separately designed and certified.
+
+## SUCheckout post-merge owner stage
+
+Engineering closeout is complete at merged runtime baseline `6aabc4fcb0606567a11637ea07fe081fed4c7f85` with post-merge Quality #764, Compatibility #292 (16/16), Release Artifact #243, Provider Sandbox #207, WordPress.org Submission Check #101 and CodeQL/main-security #579 successful.
+
+The next permitted track is documented in `docs/project/OWNER-HANDOFF.md`:
+
+1. remove obsolete remote branches;
+2. rename the repository to `SimplixInnovations/sucheckout-upayments`;
+3. reconcile repository-coordinate links and reverify;
+4. optionally perform independent local owner acceptance;
+5. make a separate explicit publication/version decision.
+
+No Q20 or invented engineering phase is justified by these administrative actions.
 
 ## Continuous maintenance after release-candidate closeout
 
