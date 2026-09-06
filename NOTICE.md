@@ -1,6 +1,6 @@
 # Notices and Provenance
 
-**SimplixPay for UPayments** is independently engineered and maintained by **Simplix Innovations**.
+**SUCheckout for UPayments** is independently engineered and maintained by **Simplix Innovations**.
 
 ## Source lineage
 
@@ -20,7 +20,7 @@ Copyright in upstream portions remains with the respective upstream copyright ho
 
 ## Trademarks and independence
 
-UPayments and related names, logos and trademarks belong to their respective owners. SimplixPay for UPayments does not imply UPayments sponsorship, endorsement or official maintenance status unless explicitly announced by the relevant parties.
+UPayments and related names, logos and trademarks belong to their respective owners. SUCheckout for UPayments does not imply UPayments sponsorship, endorsement or official maintenance status unless explicitly announced by the relevant parties.
 
 ## License
 
