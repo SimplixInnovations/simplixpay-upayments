@@ -38,7 +38,7 @@ The following engineering gates are **DONE / VERIFIED**:
 - Security Threat-Model Closure;
 - Architecture & Code-Quality Foundation A1-A5.
 
-Quality Platform Q1-Q18 are **DONE / VERIFIED**. The current program gate is **Full Automated Quality Platform — Q19**.
+Quality Platform Q1-Q19 are **DONE / VERIFIED**. The current program gate is **Enterprise Compatibility Certification**.
 
 The project remains in **pre-release engineering hardening**. It is not yet a broadly certified stable production release and has not yet been published to WordPress.org.
 
@@ -55,8 +55,8 @@ The project remains in **pre-release engineering hardening**. It is not yet a br
 | Provider Contract & Payment Lifecycle | **DONE / VERIFIED** |
 | Security Threat-Model Closure | **DONE / VERIFIED** |
 | Architecture & Code-Quality Foundation | **DONE / VERIFIED (A1-A5)** |
-| Quality Platform Q1-Q18 | **DONE / VERIFIED** |
-| Current engineering gate | **Full Automated Quality Platform — Q19** |
+| Quality Platform Q1-Q19 | **DONE / VERIFIED** |
+| Current engineering gate | **Enterprise Compatibility Certification** |
 | Stable SimplixPay release | **Not yet published** |
 | WordPress.org release | **Not yet published** |
 | Phase 0 release-identity harness | **35 PASS / 0 FAIL** |
@@ -170,11 +170,13 @@ Phase 9I remains DONE / VERIFIED through three independently reviewed tranches:
 
 Phase 9I system completion does not mean every merchant installation was automatically migrated. `BLOCKED` and `INDETERMINATE` site-specific outcomes remain valid fail-closed results.
 
-## Current engineering gate — Full Automated Quality Platform
+## Current engineering gate — Enterprise Compatibility Certification
 
-Architecture discovery/A1-A5 and Quality Platform Q1-Q18 are DONE / VERIFIED. Q18 closed through PR #44: final exact head `b9afcb5afc27ef41a0da8fc60e7b538df0b2c1e7`, tree `94a856f6e88b85edd5f453a76f4d0732e10738aa`, Quality Gates #441, CodeQL #237, squash merge `fe572d2bed5a7250ea98e5b5935c19f1cc6b3246`, post-merge Quality Gates #442 and main CodeQL #238; the branch was auto-deleted. Q19 is the current bounded subscription product-eligibility/opt-out consistency gate. After Q19, stop the numbered Quality Platform sequence unless a new enterprise-critical risk is independently demonstrated; otherwise move into named certification, product-readiness and release-engineering programs. None of these Quality Platform gates alone constitutes broad platform, feature, performance, PCI/compliance or production certification.
+Architecture discovery/A1-A5 and Quality Platform Q1-Q19 are DONE / VERIFIED. Q19 closed through PR #45: final exact head `1717f0c25da7140a7799c7db3a7f016abecec7e9`, tree `8230778e3313e4d201de48b1a5cf170c42f7178d`, Quality Gates #463, PHPUnit **174 tests / 1063 assertions**, Q19 **22/0**, Q18 **17/0**, Q17 **97/0**, H12 PHP **1927/0**, H12 Blocks **144/0**, and exact-head CodeQL success with no new alerts. It was squash-merged as `29ba16a1eabc00e25c3652ae838be9b9539b3a10` with the same tree; post-merge Quality Gates #464 and all post-merge CodeQL lanes succeeded, and the implementation branch was deleted.
 
-No big-bang rewrite, runtime branding rename, runtime Composer dependency or broad compatibility claim is authorized by this gate.
+The numbered Quality Platform is therefore closed at Q19; no Q20 is justified by current evidence. The current named program is **Enterprise Compatibility Certification**: real WordPress/WooCommerce/PHP runtime matrix testing, HPOS, Classic/Blocks, multilingual/multicurrency and related compatibility evidence before any support headers, badges or feature declarations are broadened. None of the completed engineering gates alone constitutes broad platform, feature, performance, PCI/compliance or production certification.
+
+No big-bang rewrite, runtime branding rename, runtime Composer dependency or broad compatibility claim is authorized by certification work without its own evidence.
 
 ## Transitional identities — deliberate compatibility choices
 

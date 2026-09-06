@@ -322,7 +322,7 @@ Verified A4 permits A5. A5 moves the characterized strict request/decimal/payloa
 - scheduler, CycleClaim, billing-attempt storage and auto-deduct dispatch remain outside A5 and byte/behavior protected by the existing suites;
 - `tests/harness/architecture-checkout-orchestration-harness.php` freezes the boundary and pure contracts, remains mandatory beside all prior architecture gates, and the full H12 PHP runtime continues to drive the public compatibility path.
 
-The full automated quality platform became permitted only after the independently reviewed exact A5 head was green, merged, post-merge verified and cleaned up. That entry condition is now satisfied; `QUALITY-PLATFORM.md` owns the current gate.
+The full automated quality platform became permitted only after the independently reviewed exact A5 head was green, merged, post-merge verified and cleaned up. That program is now DONE / VERIFIED through Q19; `QUALITY-PLATFORM.md` remains the permanent quality record and `PROJECT-STATUS.md` owns the current Enterprise Compatibility Certification state.
 
 ## Static/code-quality baseline sequence
 

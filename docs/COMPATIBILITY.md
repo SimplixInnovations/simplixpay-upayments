@@ -2,25 +2,25 @@
 
 This document separates **provider/upstream capability claims** from **SimplixPay UPayments verification**. A feature is not marked **Verified** until it has passed a documented reproducible environment and the supporting evidence has been reviewed.
 
-> Current project posture: **pre-release engineering hardening**. Repository readiness is being closed before Phase 0 release-identity/updater work. The runtime bootstrap still carries inherited upstream public metadata. Neither green H12 CI nor the absence of a known defect is a broad compatibility certification.
+> Current project posture: **pre-release Enterprise Compatibility Certification**. Repository readiness, Phase 0 release identity/updater ownership, Phase 9I historical token-identity migration, Provider Contract & Payment Lifecycle, Security Threat-Model Closure, Architecture A1-A5 and Quality Platform Q1-Q19 are DONE / VERIFIED. The runtime bootstrap still carries transitional physical basename/text-domain compatibility identities pending a separately proven distribution migration. Neither green Q1-Q19/H12 CI nor the absence of a known defect is a broad compatibility certification.
 
 | Area | Provider/upstream position | Simplix status | Notes |
 |---|---|---|---|
 | Classic WooCommerce Checkout | Supported upstream | Pending regression certification | Core integration path; broad certification pending. |
 | Cart/Checkout Blocks — standard products | UPayments documents support | Pending independent certification | Registration and real checkout behavior must both be tested. |
 | Blocks — subscription/tokenization | UPayments guidance has historically favored Classic for subscription reliability | Pending validation | Test separately from standard products and saved-card flows. |
-| HPOS | No current Simplix certification | Audit required | Direct post/order access must be reviewed and tested. |
+| HPOS | No current Simplix certification | Runtime certification required | Source/payment hardening is closed; HPOS enabled/disabled order behavior must still pass the executable certification matrix before any Woo feature declaration. |
 | WPML / String Translation | Historical upstream defect reproduced | Fix implemented — certification pending | Existing remediation remains subject to full WPML/WCML validation and planned text-domain identity migration. |
 | Multicurrency / WCML | Provider/platform dependent | Audit required | Currency amount/source/provider semantics and display/charge consistency require dedicated testing. |
 | RTL / Arabic | Platform/theme capability | Audit required | Admin/checkout/account UI and provider return/error flows require dedicated validation. |
 | My Account / theme interoperability | Historical generic CSS conflict reproduced | Fix implemented — certification pending | Cross-theme/device/accessibility validation remains open. |
-| PHP versions | No broad current Simplix certification | Audit required | Header claims do not substitute for runtime/static evidence. |
-| WordPress versions | No broad current Simplix certification | Audit required | Requires/tested metadata will be evidence-based in a later release gate. |
-| WooCommerce versions | No broad current Simplix certification | Audit required | Requires/tested metadata will be evidence-based in a later release gate. |
-| Saved cards / tokenization | Upstream feature | H12 identity hardening verified; migration/certification pending | Historical migration Phase 9I remains required for existing stores. |
-| Multi-merchant | Upstream feature | Pending regression certification | Provider contract/sum/routing behavior must be audited. |
+| PHP versions | WordPress 7.0/7.1 support PHP 7.4–8.5; WooCommerce recommends PHP 8.3+ | Runtime certification required | Current plugin header remains transitional until exact SimplixPay matrix cells prove a support floor and ceiling. |
+| WordPress versions | WordPress 7.1 is the current maintained release line | Runtime certification required | `Requires at least` / `Tested up to` remain unchanged until exact SimplixPay matrix cells pass. |
+| WooCommerce versions | WooCommerce 11.1.0 is the current stable release | Runtime certification required | `WC requires at least` / `WC tested up to` will be added only from exact SimplixPay matrix evidence. |
+| Saved cards / tokenization | Upstream feature | H12 identity hardening + Phase 9I migration engineering verified; runtime certification pending | Existing-store migration contracts are closed and permanent regressions; real WordPress/WooCommerce feature certification remains open. |
+| Multi-merchant | Upstream feature | Provider contract hardened; runtime certification pending | Current supported scope remains one additional merchant allocation with exact amount/routing rules; broader split routing is not certified. |
 | Webhook payment updates | `notificationUrl` documented by UPayments | Audit required | Validation, idempotency, order matching, replay/failure behavior pending. |
-| Payment status verification | UPayments status API exists | Audit required | Retry/rate-limit/reconciliation contract must be frozen. |
+| Payment status verification | UPayments status API exists | Provider/lifecycle contract verified; runtime/provider certification pending | Authenticated status binding, bounded reconciliation and fail-closed lifecycle semantics are permanent regressions; live environment behavior remains separately certifiable. |
 | Refunds | UPayments refund capability exists | Audit required | Full/partial/idempotency/reconciliation semantics pending. |
 | Subscriptions / auto deduction | Upstream feature | Targeted safety hardening exists; broad certification pending | Concurrency/idempotency/lifecycle/recovery matrix remains open. |
 | Wallet methods | Provider capability varies by environment/account | Audit required | Apple Pay/Google Pay/Samsung Pay and related method availability must be tested against real provider/account requirements. |

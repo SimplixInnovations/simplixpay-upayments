@@ -1,14 +1,28 @@
 # Full Automated Quality Platform
 
-**Status:** Q19 / IMPLEMENTATION
+**Status:** DONE / VERIFIED (Q1-Q19)
 
-**Current branch:** `quality/subscription-product-eligibility`
+**Final implementation head:** `1717f0c25da7140a7799c7db3a7f016abecec7e9`
 
-**Verified base `main`:** `fe572d2bed5a7250ea98e5b5935c19f1cc6b3246`
+**Verified closure `main`:** `29ba16a1eabc00e25c3652ae838be9b9539b3a10`
 
-**Verified base tree:** `94a856f6e88b85edd5f453a76f4d0732e10738aa`
+**Verified closure tree:** `8230778e3313e4d201de48b1a5cf170c42f7178d`
 
-## Entry evidence
+## Closure evidence
+
+Q19 is DONE / VERIFIED:
+
+- final exact head `1717f0c25da7140a7799c7db3a7f016abecec7e9`;
+- exact tree `8230778e3313e4d201de48b1a5cf170c42f7178d`;
+- Quality Gates #463: SUCCESS across all five jobs;
+- PHPUnit: **174 tests / 1063 assertions**;
+- Q19 **22/0**; Q18 **17/0**; Q17 **97/0**; Q16 **113/0**;
+- H12 PHP **1927/0** and Blocks **144/0**;
+- exact-head CodeQL: SUCCESS with no new alerts;
+- squash merge `29ba16a1eabc00e25c3652ae838be9b9539b3a10` with identical tree;
+- post-merge Quality Gates #464: SUCCESS;
+- post-merge CodeQL actions and JavaScript/TypeScript lanes: SUCCESS;
+- implementation branch deleted after verified merge.
 
 Q18 is DONE / VERIFIED:
 
@@ -250,11 +264,11 @@ The current sequence is:
 - Q16: migration core — **DONE / VERIFIED**;
 - Q17: payment runtime — **DONE / VERIFIED**;
 - Q18: Blocks availability enforcement — **DONE / VERIFIED**;
-- Q19: subscription product eligibility — **CURRENT**.
+- Q19: subscription product eligibility — **DONE / VERIFIED**.
 
 Q18 exists because a concrete WooCommerce Blocks defect was demonstrated: the PHP adapter could report the method active without faithfully enforcing the canonical gateway enabled state. Q18 is bounded to server activation/availability semantics, analyzer ownership, WooCommerce logging correction and permanent regression coverage. Missing `enabled` in an otherwise valid settings array must preserve the declared gateway default `yes`; malformed settings containers or malformed explicit enabled values fail closed.
 
-Q19 then closes the already demonstrated product-level subscription opt-out inconsistency across Classic and Store API payment orchestration. After Q19, terminate the numbered Quality Platform sequence unless a new enterprise-critical risk is independently demonstrated and is not better owned by certification/readiness/release engineering.
+Q19 closed the demonstrated product-level subscription opt-out inconsistency across Classic and Store API payment orchestration. The numbered Quality Platform sequence is now closed at Q19. No Q20 is justified by current evidence; new work belongs to named certification/readiness/release engineering unless a distinct enterprise-critical defect is independently demonstrated.
 
 ## Closed Q17 contract
 
@@ -273,20 +287,20 @@ Q18 was merged only after:
 7. living governance truth said Q1-Q17 DONE / VERIFIED and Q18 current;
 8. merge and post-merge CI/security verification completed before Q18 was marked DONE / VERIFIED.
 
-## Q19 acceptance
+## Closed Q19 acceptance
 
-Q19 may be merged only when:
+Q19 was merged only after:
 
-1. deterministic coverage proves arbitrary product IDs are never restrictions and only exact `_upay_disable_subscription = yes` opts a product out;
-2. Classic and Store API subscription attempts for opted-out products are rejected before provider transport;
-3. baseline-free PHPStan and risk-focused PHPCS/WPCS remain clean for Q19-owned sources;
-4. Composer validation/install/audit, every Q1-Q18 gate, provider/architecture/security regressions and H12 ledgers remain green;
-5. PHP 7.2 and PHP 8.2 distributed syntax remain green;
-6. exact-head CodeQL is clean;
-7. living governance truth says Q1-Q18 DONE / VERIFIED and Q19 current;
-8. merge and post-merge CI/security verification complete before Q19 is marked DONE / VERIFIED.
+1. deterministic coverage proved arbitrary product IDs are never restrictions and only exact `_upay_disable_subscription = yes` opts a product out;
+2. Classic and Store API subscription attempts for opted-out products were rejected before provider transport, including the cold availability-cache path;
+3. Classic plan and interval inputs were validated from exact unslashed scalar bytes before order metadata was accepted;
+4. baseline-free PHPStan and risk-focused PHPCS/WPCS remained clean for Q19-owned sources;
+5. Composer validation/install/audit, every Q1-Q18 gate, provider/architecture/security regressions and H12 ledgers remained green;
+6. PHP 7.2 and PHP 8.2 distributed syntax remained green;
+7. exact-head CodeQL was clean;
+8. exact-head Quality Gates #463 and post-merge Quality Gates #464 succeeded, post-merge CodeQL succeeded, and the implementation branch was deleted.
 ## Non-claims
 
 Q19 is a bounded subscription product-eligibility/opt-out consistency tranche. It does not by itself certify recurring billing, WordPress/WooCommerce/PHP versions, HPOS, full Blocks checkout behavior, WPML/WCML, refunds, MultiMerchant marketplace splits, browsers/devices, performance, penetration testing, PCI/compliance or production readiness.
 
-After Q19 closes, terminate the numbered Quality Platform sequence unless concrete new enterprise-critical evidence independently establishes another bounded gap; otherwise move to named certification/readiness/release programs.
+The numbered Quality Platform is closed at Q19. No Q20 is justified by current evidence. The current named owner is **Enterprise Compatibility Certification**; future numbered quality work requires an independently demonstrated enterprise-critical risk that is not better owned by certification/readiness/release engineering.
