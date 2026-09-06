@@ -145,6 +145,12 @@ q19_assert(
     'Classic checkout hides and rejects restricted subscription context'
 );
 q19_assert(
+    is_string($fields_source)
+    && substr_count($fields_source, "wp_unslash($post['upay_subscription_interval'])") >= 2
+    && strpos($fields_source, "sanitize_text_field(wp_unslash($post['upay_subscription_interval']))") === false,
+    'Classic subscription interval is strict-parsed from exact unslashed bytes before order metadata can be written'
+);
+q19_assert(
     is_string($checkout_source)
     && strpos($checkout_source, "_upay_disable_subscription") !== false
     && strpos($checkout_source, "Subscription plan rejected: product-level opt-out.") !== false,
