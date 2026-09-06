@@ -18,8 +18,8 @@ namespace UPayments\Subscription\Cron {
 }
 
 namespace {
-use Simplix\Pay\UPayments\Subscription\Composition;
-use Simplix\Pay\UPayments\Subscription\Presentation;
+use Simplixi\SUCheckout\UPayments\Subscription\Composition;
+use Simplixi\SUCheckout\UPayments\Subscription\Presentation;
 use UPayments\Subscription\Helpers\Utils;
 
 $a4_hooks = array();
