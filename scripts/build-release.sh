@@ -29,7 +29,7 @@ echo $m[1];
 ')"
 [[ -n "$VERSION" ]] || { echo "Invalid empty release version" >&2; exit 67; }
 
-SLUG="simplixpay-upayments"
+SLUG="sucheckout-upayments"
 ZIP="$OUT/$SLUG-$VERSION.zip"
 CHECKSUM="$ZIP.sha256"
 MANIFEST="$OUT/$SLUG-$VERSION.manifest.sha256"
@@ -48,7 +48,7 @@ root = pathlib.Path(os.environ["ROOT"])
 zip_path = pathlib.Path(os.environ["ZIP"])
 checksum_path = pathlib.Path(os.environ["CHECKSUM"])
 manifest_path = pathlib.Path(os.environ["MANIFEST"])
-slug = "simplixpay-upayments"
+slug = "sucheckout-upayments"
 
 patterns = []
 distignore = subprocess.check_output(
