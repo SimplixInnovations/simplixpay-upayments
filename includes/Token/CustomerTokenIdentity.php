@@ -1632,7 +1632,10 @@ class CustomerTokenIdentity {
             )
         );
 
-        if (!is_array($meta_keys)) {
+        if (
+            !is_array($meta_keys)
+            || (isset($wpdb->last_error) && is_string($wpdb->last_error) && $wpdb->last_error !== '')
+        ) {
             return array('state' => 'read_failure', 'reason' => 'db_query_failed');
         }
 
