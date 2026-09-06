@@ -1,4 +1,4 @@
-# SimplixPay for UPayments — Repository Agent Instructions
+# SUCheckout for UPayments — Repository Agent Instructions
 
 These instructions apply repository-wide. Nested `AGENTS.md` files may tighten but never weaken payment/security/release invariants.
 
@@ -17,14 +17,15 @@ Before substantive work read:
 
 ## Canonical identity
 
-- Repository: `SimplixInnovations/simplixpay-upayments`
-- Formal product: **SimplixPay for UPayments**
-- Short integration reference: **SimplixPay UPayments**
-- Reserved broader family: **SimplixPay**
-- Slug: `simplixpay-upayments`
-- New PHP namespace root: `Simplix\Pay\UPayments`
-- New global prefix: `simplixpay_upayments_`
-- New constants: `SIMPLIXPAY_UPAYMENTS_*`
+- Current GitHub repository pending approved owner/admin rename: `SimplixInnovations/simplixpay-upayments`
+- Target canonical repository: `SimplixInnovations/sucheckout-upayments`
+- Formal product: **SUCheckout for UPayments**
+- Short product reference: **SUCheckout**
+- Product family: **SUCheckout**
+- Slug / text domain: `sucheckout-upayments`
+- PHP namespace root: `Simplixi\SUCheckout\UPayments`
+- Global PHP prefix: `sucheckout_upayments_`
+- Constants: `SUCHECKOUT_UPAYMENTS_*`
 
 Do not invent alternate names/slugs/prefixes/namespaces.
 
@@ -47,11 +48,11 @@ Repository Foundation, Phase 0, Phase 9I, Provider Lifecycle, Security, Architec
 
 The numbered Quality Platform is closed at Q19. **Never invent Q20 for continuity.**
 
-Enterprise Release Candidate Closeout is **DONE / VERIFIED** through PR #54, final reviewed head `5a24944617f7ee482c381e5e899f687b77d81d09`, squash merge `2ddb1790fead37c6055256847dc7c827e165af4a`, and successful post-merge main Quality #553, Compatibility #81, Release Artifact #35, Provider Sandbox #13 and CodeQL/main-security #358.
+The former product identity reached Enterprise Release Candidate Closeout through PR #54, final reviewed head `5a24944617f7ee482c381e5e899f687b77d81d09`, squash merge `2ddb1790fead37c6055256847dc7c827e165af4a`, and successful post-merge main Quality #553, Compatibility #81, Release Artifact #35, Provider Sandbox #13 and CodeQL/main-security #358. That is retained historical evidence.
 
-There is no active engineering gate. The repository is in an **enterprise-qualified release-candidate engineering state** awaiting an explicit owner release decision.
+The active engineering work is the approved **SUCheckout identity migration and exact-head re-certification**. It is complete only when the current PR head passes all permanent Quality/H12, Compatibility, Release Artifact, Provider Sandbox and official WordPress.org Plugin Check gates with no unresolved critical/high review findings.
 
-Task 8 did not authorize a public 1.0 tag, GitHub Release or WordPress.org publication.
+No public tag, GitHub Release, WordPress.org publication or repository rename is authorized by this engineering migration. Those remain separate owner/admin actions after verified merge.
 
 ## Permanent quality controls
 
@@ -87,13 +88,12 @@ Automated provider traffic may use only explicitly documented public sandbox tes
 
 ## First-stable physical/text identity
 
-Task 7 proved a direct physical main-file rename does not preserve an already-active WordPress plugin identity. The first stable release therefore **must retain**:
+Task 7 proved a direct physical main-file rename does not preserve an already-active WordPress plugin identity. The SUCheckout package therefore **retains the physical main file** `UPayments.php` while migrating the first-party package/text identity:
 
-- main file `UPayments.php`;
-- basename `simplixpay-upayments/UPayments.php`;
-- text domain `upayments`.
-
-Frozen eventual targets `simplixpay-upayments.php` and `simplixpay-upayments` are future migrations requiring dedicated upgrade/i18n evidence.
+- canonical package basename: `sucheckout-upayments/UPayments.php`;
+- canonical text domain: `sucheckout-upayments`;
+- legacy pre-release basename `simplixpay-upayments/UPayments.php` is migration/rollback evidence only;
+- the eventual physical main-file target `sucheckout-upayments.php` remains a separately gated future migration.
 
 ## Protected compatibility identities
 
