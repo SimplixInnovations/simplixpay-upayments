@@ -181,7 +181,15 @@ class Phase9IWpdb {
         }
         return count($this->last_keys);
     }
-    public function get_col($sql = null) { return $this->last_keys; }
+    public function get_col($sql = null) {
+        if (is_string($sql) && $sql !== '') {
+            $result = $this->query($sql);
+            if ($result === false) {
+                return null;
+            }
+        }
+        return $this->last_keys;
+    }
     public function get_results($sql) {
         $s =& p9_state(); if ($s['db_failure']) return null;
         $rows = array();
