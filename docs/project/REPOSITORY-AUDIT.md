@@ -32,13 +32,13 @@ The repository remains a pre-release engineering codebase. It is not the intende
 
 Phase 0 took ownership of public release identity and removed inherited update authority. Phase 9I added isolated historical-identity migration tooling. The provider lifecycle gate then added an isolated `Simplix\Pay\UPayments\Payment` strangler for ordinary browser/webhook/status truth and WooCommerce payment-state transitions without broadly rewriting the inherited gateway bootstrap.
 
-Architecture discovery/A1-A5 and Quality Platform Q1-Q17 are **DONE / VERIFIED**. The current owner/gate is **Full Automated Quality Platform — Q18**. Q18 may harden only the WooCommerce Blocks server activation/availability boundary, including declared fresh-install enabled-default preservation, fail-closed malformed settings, analyzer ownership and WooCommerce logging correction, while preserving authenticated provider truth, Woo payment semantics, frozen identities and protected subscription/H12 contracts. Q19 follows for the already evidence-backed subscription product-eligibility contract. Neither gate authorizes a big-bang rewrite, provider API redesign, migration broadening, subscription scheduler/cycle-claim changes, protected-meta renames or broad certification claims.
+Architecture discovery/A1-A5 and Quality Platform Q1-Q18 are **DONE / VERIFIED**. The current owner/gate is **Full Automated Quality Platform — Q19**. Q18 may harden only the WooCommerce Blocks server activation/availability boundary, including declared fresh-install enabled-default preservation, fail-closed malformed settings, analyzer ownership and WooCommerce logging correction, while preserving authenticated provider truth, Woo payment semantics, frozen identities and protected subscription/H12 contracts. Q19 follows for the already evidence-backed subscription product-eligibility contract. Neither gate authorizes a big-bang rewrite, provider API redesign, migration broadening, subscription scheduler/cycle-claim changes, protected-meta renames or broad certification claims.
 
 ## Top-level inventory after Security Threat-Model closure
 
 | Area | Current state | Classification | Next owner/gate |
 |---|---|---|---|
-| `.github/` | CODEOWNERS, templates, Dependabot, protected Quality Gates | **KEEP / CONTROL PLANE** | Q18 preserves Q1-Q17 gating while closing bounded Blocks availability evidence |
+| `.github/` | CODEOWNERS, templates, Dependabot, protected Quality Gates | **KEEP / CONTROL PLANE** | Q19 preserves Q1-Q18 gating while closing bounded subscription product-eligibility evidence |
 | `AGENTS.md` | Permanent execution/review rules | **KEEP / CONTROL PLANE** | Mandatory before substantive work |
 | `README.md`, `CHANGELOG.md` | Simplix-led public/project records | **KEEP CURRENT** | Update at verified milestones |
 | `LICENSE`, `NOTICE.md`, `UPSTREAM.md` | MIT + provenance/trademark boundaries | **KEEP** | Re-review at publication gates |
@@ -213,7 +213,7 @@ The required custom harness stack now includes Phase 0, all Phase 9I suites, Pro
 
 ## Current next owner/gate
 
-**Full Automated Quality Platform — Q18**.
+**Full Automated Quality Platform — Q19**.
 
 The current tranche must preserve the verified architecture map while establishing:
 
@@ -223,7 +223,7 @@ The current tranche must preserve the verified architecture map while establishi
 - unchanged dependency-audit, distributed-syntax, required-check, Phase 9I, provider/payment, security, architecture and protected H12 controls;
 - permanent Q1/Q2/Q3/Q4/Q5/Q6/Q7/Q8/Q9/Q10/Q11/Q12/Q13/Q14/Q15/Q16/Q17 and historical regression gates.
 
-Q18 is the current bounded Blocks availability gate and Q19 is the next evidence-backed subscription product-eligibility gate. After Q19, stop the numbered Quality Platform sequence unless new enterprise-critical evidence independently demonstrates another bounded risk; otherwise move to named certification, product-readiness and release-engineering work.
+Q18 is DONE / VERIFIED. Q19 is the current and final presently justified numbered gate for subscription product eligibility. After Q19, stop the numbered Quality Platform sequence unless new enterprise-critical evidence independently demonstrates another bounded risk; otherwise move to named certification, product-readiness and release-engineering work.
 
 Do not reinterpret green tooling as platform certification or modify payment runtime to satisfy a tool. Closed Architecture/Security/Provider/H12/Phase 9I contracts remain required regressions throughout quality-platform work.
 
