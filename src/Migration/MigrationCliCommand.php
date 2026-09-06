@@ -1,5 +1,5 @@
 <?php
-namespace Simplix\Pay\UPayments\Migration;
+namespace Simplixi\SUCheckout\UPayments\Migration;
 
 defined('ABSPATH') || exit;
 
