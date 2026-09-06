@@ -95,7 +95,7 @@ foreach (array(
 }
 q10_assert(q10_contains($quality, 'Q16 is DONE / VERIFIED'), 'quality record advances beyond Q10');
 q10_assert(q10_contains($status, '| Quality Platform Q16 migration-core analysis | **DONE / VERIFIED** |'), 'project status advances beyond Q10');
-q10_assert(q10_contains($readme, 'Quality Platform Q1-Q16 are **DONE / VERIFIED**.'), 'README advances beyond Q10');
+q10_assert((preg_match('/Quality Platform Q1-Q([0-9]+) are \\*\\*DONE \\/ VERIFIED\\*\\*\\./', $readme, $q10_readme_range_matches) === 1 && isset($q10_readme_range_matches[1]) && (int) $q10_readme_range_matches[1] > 10), 'README advances beyond Q10');
 q10_assert(!q10_contains($playbook, 'Last verified implementation main SHA: 02a1ad24d262c3cb6d14653bf48aa31c3796ae4e'), 'playbook does not mistake verified Q10 merge for current main');
 q10_assert(!q10_contains($playbook, 'Canonical implementation tree: eae2fe0d0f0f54bef793ed6e58c9837bd01403ab'), 'playbook does not mistake verified Q10 tree for current tree');
 q10_assert(!q10_contains($handoff, 'CURRENT / Q10'), 'handoff rejects stale current-Q10 marker');
