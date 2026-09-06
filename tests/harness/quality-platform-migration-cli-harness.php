@@ -54,7 +54,7 @@ q13_assert(q13_contains($source, 'MigrationBatch::MAX_LIMIT'), 'maximum batch li
 q13_assert(q13_contains($source, 'MigrationSettings::resolve()'), 'credentials remain sourced only from existing settings');
 q13_assert(q13_contains($source, 'MigrationSettings::redact($settings)'), 'CLI output keeps settings redaction');
 q13_assert(q13_contains($source, "self::cliError('output_encode_failed')"), 'encoding failure remains fail closed');
-q13_assert(q13_contains($source, "'SimplixPay UPayments migration: ' . \$reason"), 'CLI error prefix remains exact');
+q13_assert(q13_contains($source, "'SUCheckout for UPayments migration: ' . \$reason"), 'CLI error prefix remains exact');
 q13_assert(!q13_contains($source, "['api-key']"), 'CLI adapter exposes no API-key input');
 q13_assert(!q13_contains($source, "array_key_exists('api-key'"), 'CLI adapter never parses API-key input');
 foreach (array('wp_remote_', 'curl_', 'CURLOPT_', 'update_user_meta', 'process_payment', 'Scheduler', 'CycleClaim') as $forbidden) {
