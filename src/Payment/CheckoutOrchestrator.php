@@ -14,6 +14,8 @@ class CheckoutOrchestrator {
     private $gateway;
     private $requestBodyReader;
     private $requestExecutor;
+    private $requestBodyLoaded = false;
+    private $requestBodyCache = null;
 
     public function __construct($gateway, callable $request_body_reader, callable $request_executor) {
         $this->gateway = $gateway;
@@ -22,7 +24,12 @@ class CheckoutOrchestrator {
     }
 
     private function read_request_body() {
-        return call_user_func($this->requestBodyReader);
+        if (!$this->requestBodyLoaded) {
+            $this->requestBodyCache = call_user_func($this->requestBodyReader);
+            $this->requestBodyLoaded = true;
+        }
+
+        return $this->requestBodyCache;
     }
 
     private function execute_request($route, $method, $body = null) {
@@ -176,6 +183,62 @@ class CheckoutOrchestrator {
             if (empty($productArrayNew)) {
                 wc_add_notice(__('Payment request could not be completed. Please try again.', $gateway->domain), 'error');
                 return array('result' => 'failure', 'redirect' => wc_get_checkout_url());
+            }
+
+            // Q19: product-level subscription opt-out is authoritative order data.
+            // A valid non-one_time subscription selection for a restricted product
+            // must be rejected before availability lookup, because a cold cache can
+            // make getPaymentIcons() perform provider transport. The full canonical
+            // request parser below remains authoritative for every other path.
+            if ($order_has_subscription_restricted_product) {
+                $preflight_subscription_plan = 'one_time';
+
+                if (CheckoutPayload::is_store_api_checkout_request()) {
+                    $preflight_raw_input = $this->read_request_body();
+                    $preflight_request_data = is_string($preflight_raw_input) && $preflight_raw_input !== ''
+                        ? json_decode($preflight_raw_input, true)
+                        : null;
+
+                    if (is_array($preflight_request_data)
+                        && isset($preflight_request_data['extensions'])
+                        && is_array($preflight_request_data['extensions'])
+                        && isset($preflight_request_data['extensions']['upayments'])
+                        && is_array($preflight_request_data['extensions']['upayments'])
+                    ) {
+                        $preflight_extension_data = $preflight_request_data['extensions']['upayments'];
+                        if (CheckoutPayload::field_present($preflight_extension_data, 'upay_subscription_plan')) {
+                            $preflight_parsed_plan = CheckoutPayload::parse_subscription_plan_strict(
+                                $preflight_extension_data['upay_subscription_plan']
+                            );
+                            if ($preflight_parsed_plan !== null
+                                && CheckoutPayload::is_valid_subscription_plan($preflight_parsed_plan)
+                            ) {
+                                $preflight_subscription_plan = $preflight_parsed_plan;
+                            }
+                        }
+                    }
+                } else {
+                    $preflight_classic_post = $_POST; // phpcs:ignore WordPress.Security.NonceVerification -- Woo checkout owns nonce verification.
+                    if (CheckoutPayload::field_present($preflight_classic_post, 'upay_subscription_plan')
+                        && is_scalar($preflight_classic_post['upay_subscription_plan'])
+                    ) {
+                        $preflight_parsed_plan = CheckoutPayload::parse_subscription_plan_strict(
+                            wp_unslash($preflight_classic_post['upay_subscription_plan'])
+                        );
+                        if ($preflight_parsed_plan !== null
+                            && CheckoutPayload::is_valid_subscription_plan($preflight_parsed_plan)
+                        ) {
+                            $preflight_subscription_plan = $preflight_parsed_plan;
+                        }
+                    }
+                }
+
+                if ($preflight_subscription_plan !== 'one_time') {
+                    $gateway->log('Subscription plan rejected: product-level opt-out.', 'warning');
+                    WC()->session->set("refresh_totals", true);
+                    wc_add_notice(__("Please select a valid payment type.", $gateway->domain), "error");
+                    return ["result" => "failure", "redirect" => wc_get_checkout_url()];
+                }
             }
 
             if($gateway->paymentData == null ) {
