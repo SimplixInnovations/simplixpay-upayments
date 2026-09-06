@@ -181,7 +181,7 @@ jobs:
         run: /tmp/wp-cli.phar eval-file "$GITHUB_WORKSPACE/tests/integration/OperationsRuntimeTest.php" --path="$RUNNER_TEMP/wordpress"
 
       - name: Execute non-destructive uninstall contract without deleting files
-        run: /tmp/wp-cli.phar plugin uninstall simplixpay-upayments --skip-delete --path="$RUNNER_TEMP/wordpress"
+        run: /tmp/wp-cli.phar plugin uninstall simplixpay-upayments --deactivate --skip-delete --path="$RUNNER_TEMP/wordpress"
 
       - name: Verify uninstall retention
         env:
