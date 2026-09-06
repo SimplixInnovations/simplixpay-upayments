@@ -312,10 +312,17 @@ jobs:
             tests/harness/wordpress-org-submission-harness.php
             tests/harness/phase-9g-h12-php-harness.php
           )
+          failures=0
           for harness in "${harnesses[@]}"; do
             echo "==> $harness"
-            php "$harness"
+            if ! php "$harness"; then
+              failures=$((failures + 1))
+            fi
           done
+          if [[ "$failures" -ne 0 ]]; then
+            echo "Permanent PHP regression harness failures: $failures"
+            exit 1
+          fi
 
       - name: Blocks harness syntax
         run: node --check tests/harness/phase-9g-h12-blocks-harness.js
