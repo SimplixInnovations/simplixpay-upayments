@@ -1,6 +1,6 @@
 {
-    "name": "simplix-innovations/simplixpay-upayments",
-    "description": "Development quality toolchain for SimplixPay for UPayments.",
+    "name": "simplix-innovations/sucheckout-upayments",
+    "description": "Development quality toolchain for SUCheckout for UPayments.",
     "type": "wordpress-plugin",
     "license": "MIT",
     "require": {
@@ -14,12 +14,12 @@
     },
     "autoload": {
         "psr-4": {
-            "Simplix\\Pay\\UPayments\\": "src/"
+            "Simplixi\\SUCheckout\\UPayments\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Simplix\\Pay\\UPayments\\Tests\\": "tests/unit/"
+            "Simplixi\\SUCheckout\\UPayments\\Tests\\": "tests/unit/"
         }
     },
     "scripts": {
