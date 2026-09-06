@@ -6,9 +6,11 @@
 
 **Verified support-declaration merge:** `bfcd572f4eb27945a98b158743a4826c9a8894ea`
 
-## Feature and operations certification — CANDIDATE
+## Feature and operations certification — DONE / VERIFIED
 
-Task 6 extends the permanent real-runtime matrix with four bounded certification surfaces on every WordPress/WooCommerce/PHP × legacy/HPOS cell:
+Task 6 permanently extends the real-runtime matrix with four bounded certification surfaces on every WordPress/WooCommerce/PHP × legacy/HPOS cell. Final Task 6 head `355a871636f2df00c0bd7357a810289be284b58c` passed Compatibility Certification #67 across all 16 cells, Quality Gates #539 including H12, Release Artifact #21 including packaged legacy/HPOS installs and CodeQL, then squash-merged as `6c19dbcfab607f81c4ff28f7bd088a87575adbf3`. Post-merge main repeated all permanent checks successfully.
+
+The certification covers:
 
 - **Saved cards/tokenization:** guest rejection before transport or identity creation; authenticated canonical identity establishment in the real WordPress user store; exact saved-card retrieval binding; exact selected-card membership; foreign-card rejection; malformed provenance fails closed before retrieval.
 - **Subscriptions:** real Woo subscription products and orders prove product-level opt-out, mixed-order rejection, guest rejection, strict plan/interval rejection, and that each invalid case stops before provider transport. A valid Classic subscription is permitted to advance to the bounded token-initialization seam, while the test intentionally prevents external mutation.
@@ -190,16 +192,28 @@ Still not certified by this platform-core tranche:
 - browser/device/theme interoperability;
 - accessibility;
 - performance/stability;
-- packaged ZIP installation/upgrade/rollback;
-- production operations or public stable-release readiness.
+- browser/device/theme interoperability;
+- accessibility;
+- performance/stability;
+- production merchant payment completion or public stable-release readiness.
 
-## Next certification actions
+## Existing-install upgrade / basename decision — VERIFIED
 
-1. finish exact-head support/HPOS declaration verification and merge/post-merge verification;
-2. UPayments public-sandbox transport/schema certification;
-3. feature-specific certification;
-4. multilingual/RTL/browser/accessibility/performance and operations certification;
-5. deterministic release packaging and packaged-artifact installation/upgrade certification.
+Task 7 runs two installed-package upgrade cells: current WP 7.1 / WC 11.1 / PHP 8.3 and floor WP 6.9.7 / WC 10.8.1 / PHP 8.3.
+
+The retained `simplixpay-upayments/UPayments.php` identity passes upgrade, deactivation/reactivation, rollback, data retention, callback retention, cron retention and duplicate-package characterization.
+
+The RED renamed-main candidate fails identically in both cells with:
+
+- `active_plugins` still containing `simplixpay-upayments/UPayments.php`;
+- target `simplixpay-upayments/simplixpay-upayments.php` inactive;
+- SimplixPay runtime not loaded.
+
+The first stable release therefore retains `UPayments.php` and text domain `upayments`. The eventual filename/text-domain targets remain deferred migration goals. The installable package currently contains 70 explicit translation calls bound to `upayments`.
+
+## Remaining certification actions
+
+Repository closeout must now reconcile living documents, classify genuinely manual/external UI, multilingual and production evidence, re-run all final automated certification including the bounded provider sandbox, and perform the reserved final whole-plugin review.
 
 
 ## Provider public-sandbox Charge initialization — VERIFIED

@@ -407,7 +407,43 @@ jobs:
       - name: Replace active install with hypothetical renamed-main package
         run: /tmp/wp-cli.phar plugin install "$RENAMED_ZIP" --force --path="$RUNNER_TEMP/wordpress"
 
-      - name: RED — require renamed basename to inherit active runtime automatically
+      - name: Verify renamed-main candidate fails the safe-upgrade contract
+        shell: bash
+        run: |
+          set -euo pipefail
+          RED_LOG="$RUNNER_TEMP/simplixpay-renamed-main-red.log"
+          set +e
+          SIMPLIXPAY_UPGRADE_PHASE=verify-renamed-red             /tmp/wp-cli.phar eval-file "$GITHUB_WORKSPACE/tests/integration/UpgradeCompatibilityTest.php"               --path="$RUNNER_TEMP/wordpress" >"$RED_LOG" 2>&1
+          RED_CODE=$?
+          set -e
+
+          cat "$RED_LOG"
+          test "$RED_CODE" -ne 0
+          grep -Fq 'CERT: renamed candidate active_plugins=["simplixpay-upayments\/UPayments.php","woocommerce\/woocommerce.php"]' "$RED_LOG"
+          grep -Fq 'CERT: renamed candidate old_active=yes target_active=no runtime_loaded=no' "$RED_LOG"
+          grep -Fq 'FAIL: RED: physical main-file migration transfers active identity to simplixpay-upayments.php without intervention' "$RED_LOG"
+
+      - name: Restore canonical transitional package after negative rename probe
+        shell: bash
+        run: |
+          set -euo pipefail
+          /tmp/wp-cli.phar plugin install "$CURRENT_ZIP" --force --path="$RUNNER_TEMP/wordpress"
+
+          if /tmp/wp-cli.phar plugin is-active simplixpay-upayments --path="$RUNNER_TEMP/wordpress"; then
+            RECOVERY_REQUIRED=no
+          else
+            RECOVERY_REQUIRED=yes
+            /tmp/wp-cli.phar plugin activate simplixpay-upayments --path="$RUNNER_TEMP/wordpress"
+          fi
+
+          /tmp/wp-cli.phar option update _simplixpay_upgrade_rename_recovery_required "$RECOVERY_REQUIRED"             --path="$RUNNER_TEMP/wordpress"
+
+      - name: Verify restored package identity and retained data
         env:
-          SIMPLIXPAY_UPGRADE_PHASE: verify-renamed-red
+          SIMPLIXPAY_UPGRADE_PHASE: verify-restored
+        run: /tmp/wp-cli.phar eval-file "$GITHUB_WORKSPACE/tests/integration/UpgradeCompatibilityTest.php" --path="$RUNNER_TEMP/wordpress"
+
+      - name: Clean upgrade certification fixtures
+        env:
+          SIMPLIXPAY_UPGRADE_PHASE: cleanup
         run: /tmp/wp-cli.phar eval-file "$GITHUB_WORKSPACE/tests/integration/UpgradeCompatibilityTest.php" --path="$RUNNER_TEMP/wordpress"

@@ -167,17 +167,40 @@ CI uploads one short-retention verification artifact named by exact source SHA c
 
 A public/stable GitHub Release asset must be created only from a separately approved release-candidate/tag workflow after all remaining enterprise certification and upgrade/identity decisions close.
 
+## Existing-install upgrade and release-identity decision — VERIFIED
+
+Task 7 characterizes an already-active prior release candidate against both the current and floor supported runtime cells.
+
+Verified safe with the retained package identity:
+
+- force-upgrade from prior candidate to current deterministic ZIP;
+- explicit deactivate/reactivate;
+- rollback to the prior candidate and return to current;
+- byte-stable merchant settings;
+- historical `upayments` gateway identity and provider/token/subscription order metadata;
+- historical `wc_upayments` callback registration;
+- unchanged canonical `upay_process_subscriptions` schedule;
+- duplicate-root package detection as a distinct WordPress plugin identity.
+
+The controlled hypothetical package that physically renamed `UPayments.php` to `simplixpay-upayments.php` failed the safe-upgrade RED contract in both runtime cells. WordPress retained `simplixpay-upayments/UPayments.php` in `active_plugins`; the target basename remained inactive and the plugin runtime did not load.
+
+**Release decision:** the first stable release retains:
+
+- main file: `UPayments.php`;
+- plugin basename: `simplixpay-upayments/UPayments.php`;
+- text domain: `upayments`.
+
+The eventual frozen targets remain future migration goals, not first-stable release requirements. Task 7 also observes 70 explicit packaged PHP translation calls still bound to `upayments`, so text-domain migration remains coupled to a separately certified i18n/WPML transition.
+
 ## Remaining release blockers
 
-This deterministic artifact foundation does not by itself establish stable-release readiness. Still required:
+Task 5 deterministic packaging, Task 6 feature/operations boundaries and Task 7 existing-install/identity characterization are complete. Remaining repository closeout work is:
 
-- feature/operations certification;
-- multilingual/RTL/browser/accessibility/performance work where applicable;
-- existing-install upgrade/rollback/duplicate-package characterization;
-- explicit decision on physical main-file/text-domain migration versus retaining transitional identity for first stable;
-- final release version/changelog/readme/publication readiness;
-- full source + packaged artifact final verification;
-- one final whole-plugin external AI/Codex challenge only after all primary evidence is complete.
+- reconcile living status/readiness/changelog/readme documentation to the verified enterprise state;
+- classify multilingual/RTL/browser/accessibility/performance/device evidence that cannot be honestly generalized from repository automation;
+- run the full final source + packaged-artifact + provider/security verification on one release-candidate head;
+- run one final whole-plugin external AI/Codex challenge after all primary evidence is complete;
+- make the final release version/changelog/publication decision without creating a public release asset prematurely.
 
 ## Merge gate
 

@@ -72,14 +72,24 @@ The frozen eventual target remains:
 
 Changing the main file/folder changes WordPress activation/update identity. It is therefore an explicit upgrade/package migration, not a cosmetic rebrand. No blind rename is authorized.
 
-Before a physical basename migration, tests must cover at least:
+### First stable release decision — retain `UPayments.php`
 
-- an already-active existing installation;
-- replacement/upgrade package behavior;
-- activation/deactivation state;
-- rollback/downgrade;
-- duplicate-package behavior;
-- conflict with another plugin owning the same historical UPayments identities.
+Task 7 has now executed the required existing-install characterization on two real supported environments:
+
+- WordPress 7.1 / WooCommerce 11.1.0 / PHP 8.3;
+- WordPress 6.9.7 / WooCommerce 10.8.1 / PHP 8.3.
+
+In both environments, an already-active prior `UPayments.php` package upgraded to the current same-basename package and rolled back without losing activation identity, merchant settings, historical payment/token/subscription metadata, the `wc_upayments` callback or the canonical `upay_process_subscriptions` schedule.
+
+A duplicate-root copy was independently visible to WordPress as a distinct plugin basename, proving that packaging identity is not cosmetic.
+
+The controlled RED renamed-main candidate then replaced `UPayments.php` with `simplixpay-upayments.php`. WordPress retained the historical active entry:
+
+`simplixpay-upayments/UPayments.php`
+
+while the target basename was inactive and the SimplixPay runtime did not load. Therefore a direct main-file rename does **not** preserve an already-active merchant installation.
+
+The first stable release must consequently retain `UPayments.php`. The eventual target remains frozen for a future explicit multi-release migration that can preserve activation across old/new basenames without merchant intervention. The negative rename behavior is now a permanent release regression proof.
 
 ## Text domain — deliberately transitional
 
@@ -87,7 +97,9 @@ Existing runtime translation calls still use `upayments`. Phase 0 therefore keep
 
 The frozen eventual target remains `simplixpay-upayments`.
 
-That transition requires a dedicated i18n/WPML/String Translation compatibility tranche and must not be performed by global search/replace.
+Task 7's installed-package scan still finds **70 explicit runtime translation calls** bound to `upayments`. No separately certified WPML/String Translation migration exists that can safely move those calls and existing string registrations in the same first-stable transition. The first stable release therefore also retains header/runtime text domain `upayments`.
+
+The eventual `simplixpay-upayments` text-domain target remains frozen for a later dedicated i18n/WPML/String Translation migration and must not be performed by global search/replace.
 
 ## Persisted/runtime compatibility identity — preserved
 

@@ -76,7 +76,9 @@ The canonical product history may be clean while the historical archive retains 
 
 ## Main plugin identity transition
 
-Target folder/file/text domain are frozen, but moving from the inherited packaging is an upgrade migration problem, not cosmetic cleanup. Before shipping to existing installations verify activation/update identity, settings retention, callbacks, scheduled events, rollback and conflicts with old/upstream packages.
+Target folder/file/text domain are frozen, but moving from the inherited packaging is an upgrade migration problem, not cosmetic cleanup. Task 7 verified activation/update identity, settings retention, callbacks, scheduled events, rollback and duplicate-package behavior on current and floor runtime cells.
+
+The direct main-file migration is **not authorized for the first stable release**: a controlled `simplixpay-upayments.php` candidate left WordPress's historical `simplixpay-upayments/UPayments.php` active entry pointing at a missing file, did not activate the target basename and did not load the runtime. The first stable release therefore retains `UPayments.php`; the target below remains a future migration target.
 
 Target plugin header identity:
 
@@ -188,6 +190,8 @@ Provider API fields (`customerUniqueToken`, `notificationUrl`, etc.) keep exact 
 ## Text domain/i18n
 
 Target text domain `simplixpay-upayments`, with language files/WordPress.org infrastructure aligned to that slug. Existing `upayments` translation usage requires a deliberate WPML/String Translation-tested migration, not blind global replacement.
+
+Task 7 observes 70 explicit translation calls still bound to `upayments` in the installable package. Because no coordinated WPML/String Translation migration has been certified, the first stable release retains `upayments`. This does not change the frozen future target.
 
 ## Agent/reviewer rule
 
