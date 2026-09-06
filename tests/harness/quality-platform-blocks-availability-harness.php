@@ -67,6 +67,9 @@ namespace {
     $probe->set_settings_for_test(array());
     q18_assert($probe->is_active() === false, 'missing enabled flag fails closed');
 
+    $probe->set_settings_for_test((object) array('enabled' => 'yes'));
+    q18_assert($probe->is_active() === false, 'object-valued gateway settings fail closed');
+
     $probe->set_settings_for_test(array('enabled' => true));
     q18_assert($probe->is_active() === false, 'malformed boolean enabled flag fails closed');
 
