@@ -51,6 +51,7 @@ jobs:
             tests/harness/sucheckout-residue-harness.php
             tests/harness/wordpress-org-runtime-harness.php
             tests/harness/sucheckout-http-transport-harness.php
+            tests/harness/sucheckout-provenance-db-failure-harness.php
             tests/provider/sandbox-charge-smoke.php
             tests/integration/bootstrap.php
             tests/integration/PluginActivationTest.php
