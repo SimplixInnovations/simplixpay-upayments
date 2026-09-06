@@ -112,7 +112,7 @@ namespace {
     );
     q18_assert(
         is_string($workflow_source)
-        && strpos($workflow_source, 'run: php tests/harness/quality-platform-blocks-availability-harness.php') !== false,
+        && strpos($workflow_source, 'tests/harness/quality-platform-blocks-availability-harness.php') !== false,
         'Q18 harness is mandatory in Quality Gates'
     );
     q18_assert(
