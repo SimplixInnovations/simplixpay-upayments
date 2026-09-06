@@ -35,11 +35,14 @@ class WCGatewayUPaymentsBlocks extends AbstractPaymentMethodType {
     }
 
     public function is_active() {
+        /** @var mixed $settings Runtime option storage may be malformed despite the upstream PHPDoc. */
+        $settings = $this->settings;
+
         return is_object($this->gateway)
-            && is_array($this->settings)
-            && isset($this->settings['enabled'])
-            && is_string($this->settings['enabled'])
-            && $this->settings['enabled'] === 'yes';
+            && is_array($settings)
+            && isset($settings['enabled'])
+            && is_string($settings['enabled'])
+            && $settings['enabled'] === 'yes';
     }
 
     public function get_supported_features() {
