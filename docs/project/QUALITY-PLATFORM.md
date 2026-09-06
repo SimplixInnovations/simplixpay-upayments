@@ -28,13 +28,20 @@ Q17 is DONE / VERIFIED:
 
 Q16 is DONE / VERIFIED:
 
-- PR #42 final verified head `3cff2fcc64053d79be7427696c86039f1b52bbfd`;
-- exact verified tree `b9cc6eafb3c7f8df36b9c5db8b2e45bb330688d2`;
+- PR #42 final reviewed head `3cff2fcc64053d79be7427696c86039f1b52bbfd`;
+- exact reviewed tree `b9cc6eafb3c7f8df36b9c5db8b2e45bb330688d2`;
 - exact-head Quality Gates run #315: SUCCESS across all five jobs;
+- PHPUnit: **160 tests / 987 assertions**;
+- PHPStan level 5/PHP 7.2 and PHPCS/WPCS: clean;
 - Q16 **120/0**;
-- squash merge `06a9ebd732c7cc3f062d4bb361aaef4054a1dfa3`;
-- post-merge Quality Gates run #316: SUCCESS;
-- main security run #84: SUCCESS.
+- H12 PHP **1927/0** and Blocks **144/0**;
+- CodeQL PR scan #83: SUCCESS with no new alerts in changed code;
+- final independent exact-head independent review was clean with zero unresolved valid findings;
+- squash merge `06a9ebd732c7cc3f062d4bb361aaef4054a1dfa3` on sole parent `a4bbb05021dbded73072c0ba108a18245b60ad88` with the identical reviewed tree and valid GitHub signature;
+- push-triggered post-merge Quality Gates run #316: SUCCESS;
+- main security run #84: SUCCESS;
+- implementation branch deleted after verified merge.
+
 Q15 is DONE / VERIFIED:
 
 - PR #41 final reviewed head `01a06d45fcc0bc3d08da8d58f6be177b232bb1d4`;
