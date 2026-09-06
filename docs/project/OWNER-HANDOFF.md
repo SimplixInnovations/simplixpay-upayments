@@ -46,7 +46,7 @@ After the rename, update the GitHub **About** metadata to the canonical product 
 - remove retired topic `simplixpay`;
 - recommended discovery topics: `checkout-blocks`, `ecommerce`, `hpos`, `payment-gateway`, `payments`, `php`, `sucheckout`, `sucheckout-upayments`, `upayments`, `woocommerce`, `woocommerce-payment-gateway`, `wordpress`;
 - do not use compatibility-claim topics such as `wpml-ready` unless separately certified.
-The metadata audit before rename found the old description `SimplixPay for UPayments — independently engineered WooCommerce payment integration by Simplix Innovations.` and the retired `simplixpay` topic; those must not survive the owner rename.
+The metadata audit before rename found a pre-rebrand product description and the retired `simplixpay` topic; both must be replaced during the owner rename.
 After the rename, verify rather than assume:
 - default branch is still `main`;
 - the default-branch ruleset still requires the intended checks and squash-only history policy;
