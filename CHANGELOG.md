@@ -106,20 +106,27 @@ The project is still in pre-release engineering hardening. Entries below are eng
 - Exact final PR #36 head `41b0d6d03af91b1e811562d609cf809345a221df` passed Quality Gates #226 and clean independent exact-head review; Q10 was **67/0** and PHPUnit **82 tests / 686 assertions**.
 - Squash-merged PR #36 as `02a1ad24d262c3cb6d14653bf48aa31c3796ae4e`, tree `eae2fe0d0f0f54bef793ed6e58c9837bd01403ab`; post-merge run #227 passed and the implementation branch was deleted.
 
-### Full Automated Quality Platform — Q17 Payment Runtime Analysis
+### Full Automated Quality Platform — Q18 Blocks Availability Enforcement
+
+- Q17 is **DONE / VERIFIED** through PR #43, squash merge `570dbf3501b359b16767d070d18c25a67a0c24fe`, post-merge Quality Gates #415 and main security #195.
+- Q18 enforces the canonical Woo gateway enabled state at the Blocks server activation boundary while preserving the declared fresh-install default `enabled=yes` for a missing key and failing closed for malformed storage or malformed explicit values.
+- Q18 adds permanent Blocks availability regression coverage, baseline-free analyzer ownership and WooCommerce logger usage without claiming broad Blocks/platform certification.
+- Q19 is the next evidence-backed subscription product-eligibility gate. After Q19, stop the numbered sequence unless a new enterprise-critical risk is demonstrated; otherwise move to named certification, product-readiness and release-engineering programs.
+
+### Full Automated Quality Platform — Q17 Payment Runtime Analysis — DONE / VERIFIED
 
 - Expands baseline-free PHPStan level 5/PHP 7.2 and risk-focused PHPCS ownership into `CheckoutOrchestrator.php` and `PaymentLifecycle.php`.
 - Adds process-isolated deterministic PHPUnit characterization for checkout/reconciliation order-ID boundaries, callback merge behavior and provider-bound payment-runtime inputs.
 - Hardens canonical Woo order IDs, terminal-newline currency/IBAN boundaries and same-second Charge-attempt identity while preserving the provider-facing 32-lowercase-hex order-ID shape.
 - Preserves authenticated status binding, lock/rebind TOCTOU protection, attempt-scoped cursor rotation, Woo `payment_complete()` semantics, no-resurrection rules and bounded reconciliation; legacy CAPTURED/payment metadata is now staged only after Woo paid-state + transaction-ID postconditions succeed.
-- Q17 is the current Quality Platform closeout; after it, run the enterprise-risk audit and move to Platform Certification unless a concrete separately bounded enterprise-critical risk justifies another Quality Platform gate.
+- Q17 closed the bounded payment-runtime tranche through PR #43 and verified merge `570dbf3501b359b16767d070d18c25a67a0c24fe`; Q18 is now current.
 
 ### Full Automated Quality Platform — Q16 Migration Core Analysis — DONE / VERIFIED
 
 - Expanded baseline-free PHPStan level 5/PHP 7.2 and risk-focused PHPCS ownership into `MigrationPreflight`, `MigrationBatch` and `MigrationExecutor`.
 - Added deterministic migration-core PHPUnit characterization while preserving every original Phase 9I preflight/executor/operations regression.
 - Hardened full-string numeric/generation/digest/reason parsing, preserved bounded scans/checkpoints and kept SQL preparation explicit without broadening migration eligibility.
-- Final reviewed PR #42 head `3cff2fcc64053d79be7427696c86039f1b52bbfd`, tree `b9cc6eafb3c7f8df36b9c5db8b2e45bb330688d2`, passed Quality Gates #315 with PHPUnit **160 tests / 987 assertions**, Q16 **120/0**, H12 PHP **1927/0**, H12 Blocks **144/0** and CodeQL #83; exact-head Codex review was clean.
+- Final reviewed PR #42 head `3cff2fcc64053d79be7427696c86039f1b52bbfd`, tree `b9cc6eafb3c7f8df36b9c5db8b2e45bb330688d2`, passed Quality Gates #315 with PHPUnit **160 tests / 987 assertions**, Q16 **120/0**, H12 PHP **1927/0**, H12 Blocks **144/0** and CodeQL #83; exact-head independent review was clean.
 - Squash-merged as `06a9ebd732c7cc3f062d4bb361aaef4054a1dfa3`; post-merge Quality Gates #316 and main security run #84 passed and the implementation branch was deleted.
 
 ### Full Automated Quality Platform — Q15 Subscription Presentation Analysis — DONE / VERIFIED
@@ -197,7 +204,7 @@ The project is still in pre-release engineering hardening. Entries below are eng
 
 ### Current program gate
 
-**Full Automated Quality Platform — Q17** is now the active gate. Architecture A1-A5 and Quality Platform Q1-Q16 are DONE / VERIFIED; Q17 is limited to payment-runtime checkout-orchestration/lifecycle characterization, baseline-free static-analysis expansion and test-proven hardening. It does not establish broad platform, feature, performance, PCI/compliance or production certification. After Q17, run the enterprise-risk audit and move to Platform Certification unless a concrete separately bounded enterprise-critical risk justifies another Quality Platform gate.
+**Full Automated Quality Platform — Q18** is now the active gate. Architecture A1-A5 and Quality Platform Q1-Q17 are DONE / VERIFIED. Q18 is limited to Blocks activation/availability enforcement, analyzer ownership, WooCommerce logging correction and permanent regression coverage. Q19 follows for the already evidence-backed subscription product-eligibility contract. After Q19, stop the numbered sequence unless a new enterprise-critical risk is demonstrated; otherwise move into named certification, product-readiness and release-engineering programs. These gates do not establish broad platform, feature, performance, PCI/compliance or production certification.
 
 ### Provider Contract & Payment Lifecycle — DONE / VERIFIED
 

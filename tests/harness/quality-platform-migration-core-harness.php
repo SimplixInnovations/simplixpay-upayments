@@ -100,9 +100,9 @@ foreach (array(
     q16_assert(q16_has($quality, $evidence), 'Q16 closure evidence pinned: ' . $evidence);
 }
 q16_assert(q16_has($quality, '## Closed Q16 contract'), 'quality record preserves closed Q16 contract');
-q16_assert(q16_has($quality, '**Status:** Q17 / IMPLEMENTATION'), 'quality record advances beyond Q16');
+q16_assert(preg_match('/\\*\\*Status:\\*\\* Q([0-9]+) \\/ IMPLEMENTATION/', $quality, $q16_quality_gate_matches) === 1 && isset($q16_quality_gate_matches[1]) && (int) $q16_quality_gate_matches[1] > 16, 'quality record advances beyond Q16 without pinning a later gate');
 q16_assert(q16_has($status, '| Quality Platform Q16 migration-core analysis | **DONE / VERIFIED** |'), 'project status preserves Q16 completion row');
-q16_assert(q16_has($status, '## Latest verified milestone — Quality Platform Q16 migration-core analysis'), 'project status names Q16 as latest verified milestone');
+q16_assert(preg_match('/## Latest verified milestone — Quality Platform Q([0-9]+)/', $status, $q16_status_latest_matches) === 1 && isset($q16_status_latest_matches[1]) && (int) $q16_status_latest_matches[1] > 16, 'project status advances latest verified milestone beyond Q16');
 foreach (array(
     '3cff2fcc64053d79be7427696c86039f1b52bbfd',
     'b9cc6eafb3c7f8df36b9c5db8b2e45bb330688d2',
@@ -119,16 +119,16 @@ q16_assert(q16_has($playbook, 'Quality Platform Q16: DONE / VERIFIED; PR #42; me
 q16_assert(q16_has($playbook, 'Last verified implementation main SHA: 06a9ebd732c7cc3f062d4bb361aaef4054a1dfa3'), 'playbook restart snapshot uses Q16 main SHA');
 q16_assert(q16_has($playbook, 'Canonical implementation tree: b9cc6eafb3c7f8df36b9c5db8b2e45bb330688d2'), 'playbook restart snapshot uses Q16 tree');
 q16_assert(q16_has($handoff, '- Quality Platform Q16 migration-core analysis: **DONE / VERIFIED**'), 'handoff preserves Q16 completion row');
-q16_assert(q16_has($handoff, '## Latest verified milestone — Quality Platform Q16'), 'handoff names Q16 as latest verified milestone');
-q16_assert(q16_has($readme, '| Quality Platform Q1-Q16 | **DONE / VERIFIED** |'), 'README completion table includes Q16');
+q16_assert(preg_match('/## Latest verified milestone — Quality Platform Q([0-9]+)/', $handoff, $q16_handoff_latest_matches) === 1 && isset($q16_handoff_latest_matches[1]) && (int) $q16_handoff_latest_matches[1] > 16, 'handoff advances latest verified milestone beyond Q16');
+q16_assert(preg_match('/\\| Quality Platform Q1-Q([0-9]+) \\| \\*\\*DONE \\/ VERIFIED\\*\\* \\|/', $readme, $q16_readme_range_matches) === 1 && isset($q16_readme_range_matches[1]) && (int) $q16_readme_range_matches[1] >= 16, 'README completion table includes Q16 or a later verified gate');
 q16_assert(q16_has($audit, '`src/Payment/CheckoutOrchestrator.php`') && q16_has($audit, '`src/Payment/PaymentLifecycle.php`'), 'repository audit advances to bounded Q17 owners');
 q16_assert(q16_has($audit, 'permanent Q1/Q2/Q3/Q4/Q5/Q6/Q7/Q8/Q9/Q10/Q11/Q12/Q13/Q14/Q15/Q16/Q17 and historical regression gates'), 'repository audit requires Q1-Q17 regressions');
-q16_assert(q16_has($status, '| Current program gate | **Full Automated Quality Platform — Q17** |'), 'project status advances beyond Q16');
-q16_assert(q16_has($readme, 'The current program gate is **Full Automated Quality Platform — Q17**.'), 'README advances beyond Q16');
+q16_assert(preg_match('/\\| Current program gate \\| \\*\\*Full Automated Quality Platform — Q([0-9]+)\\*\\* \\|/', $status, $q16_status_gate_matches) === 1 && isset($q16_status_gate_matches[1]) && (int) $q16_status_gate_matches[1] > 16, 'project status advances beyond Q16 without pinning a later gate');
+q16_assert(preg_match('/The current program gate is \\*\\*Full Automated Quality Platform — Q([0-9]+)\\*\\*\\./', $readme, $q16_readme_gate_matches) === 1 && isset($q16_readme_gate_matches[1]) && (int) $q16_readme_gate_matches[1] > 16, 'README advances beyond Q16 without pinning a later gate');
 q16_assert(q16_has($playbook, '- [x] Full Automated Quality Platform — **Q16 / DONE / VERIFIED** through PR #42 and post-merge Quality Gates #316.'), 'playbook preserves Q16 as completed');
-q16_assert(q16_has($playbook, '**Q17 / CURRENT GATE — PAYMENT-RUNTIME CLOSEOUT**'), 'playbook advances to Q17 current closeout');
+q16_assert(preg_match('/\\*\\*Q([0-9]+) \\/ CURRENT GATE/', $playbook, $q16_playbook_gate_matches) === 1 && isset($q16_playbook_gate_matches[1]) && (int) $q16_playbook_gate_matches[1] > 16, 'playbook advances beyond Q16 without pinning a later gate');
 q16_assert(!q16_has($audit, 'No Q18 is planned or authorized'), 'repository audit does not contradict the enterprise-risk extension policy');
-q16_assert(q16_has($audit, 'concrete separately bounded enterprise-critical risk remains'), 'repository audit preserves bounded enterprise-risk extension policy');
+q16_assert(q16_has($audit, 'new enterprise-critical evidence independently demonstrates another bounded risk'), 'repository audit preserves bounded enterprise-risk extension policy');
 
 echo "\nQ16 Migration Core Analysis: " . $pass . " PASS / " . $fail . " FAIL\n";
 exit($fail === 0 ? 0 : 1);

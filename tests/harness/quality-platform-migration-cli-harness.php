@@ -99,7 +99,7 @@ foreach (array(
 }
 q13_assert(q13_contains($quality, 'Q16 is DONE / VERIFIED'), 'quality record advances beyond Q13');
 q13_assert(q13_contains($status, '| Quality Platform Q16 migration-core analysis | **DONE / VERIFIED** |'), 'project status advances beyond Q13');
-q13_assert(q13_contains($readme, 'Quality Platform Q1-Q16 are **DONE / VERIFIED**.'), 'README advances beyond Q13');
+q13_assert((preg_match('/Quality Platform Q1-Q([0-9]+) are \\*\\*DONE \\/ VERIFIED\\*\\*\\./', $readme, $q13_readme_range_matches) === 1 && isset($q13_readme_range_matches[1]) && (int) $q13_readme_range_matches[1] > 13), 'README advances beyond Q13');
 q13_assert(q13_contains($playbook, 'Quality Platform Q13: DONE / VERIFIED; PR #39; merge a744417e1ec2f40b4f59706df84589d8b18638cb;'), 'playbook pins Q13 merge');
 q13_assert(q13_contains($playbook, 'tree be7c52143d2085550790b742d164ecbec413377f; Q13 77/0; post-merge Quality Gates #237 SUCCESS'), 'playbook pins Q13 tree');
 q13_assert(q13_contains($playbook, 'Quality Platform Q12: DONE / VERIFIED; PR #38; merge 6dc53bdaf60f12774d7516294d7004974be3874f;'), 'playbook pins Q12 merge');

@@ -2,7 +2,7 @@
 
 **Status document:** canonical living engineering state
 
-**Last updated:** 2026-09-05
+**Last updated:** 2026-09-06
 
 **Canonical repository:** `SimplixInnovations/simplixpay-upayments`
 
@@ -45,11 +45,36 @@
 | Quality Platform Q14 migration-admin analysis | **DONE / VERIFIED** |
 | Quality Platform Q15 subscription-presentation analysis | **DONE / VERIFIED** |
 | Quality Platform Q16 migration-core analysis | **DONE / VERIFIED** |
-| Current program gate | **Full Automated Quality Platform — Q17** |
+| Quality Platform Q17 payment-runtime analysis | **DONE / VERIFIED** |
+| Current program gate | **Full Automated Quality Platform — Q18** |
 
-The plugin remains a pre-release engineering project. Architecture discovery/A1-A5 and Quality Platform Q1-Q16 are DONE / VERIFIED; Q17 payment-runtime analysis is the current bounded closeout tranche. After Q17, run the enterprise-risk audit and proceed to named certification, product-readiness and release-engineering programs unless a concrete enterprise-critical quality risk justifies a separately bounded gate. None of these milestones constitutes broad provider-host, penetration-test, PCI/compliance, platform, feature, performance or release certification.
+The plugin remains a pre-release engineering project. Architecture discovery/A1-A5 and Quality Platform Q1-Q17 are DONE / VERIFIED; Q18 Blocks Availability Enforcement is the current bounded gate, followed by the already evidence-backed Q19 subscription product-eligibility gate. After Q19, stop the numbered sequence unless a new enterprise-critical risk is independently demonstrated; otherwise proceed to named certification, product-readiness and release-engineering programs. None of these milestones constitutes broad provider-host, penetration-test, PCI/compliance, platform, feature, performance or release certification.
 
-## Latest verified milestone — Quality Platform Q16 migration-core analysis
+## Latest verified milestone — Quality Platform Q17 payment-runtime analysis
+
+PR #43 final verified head:
+
+- `2c5d8e9213086c88147f5d1d26247d58f1cbc81b`
+- tree: `4dae7ad7db04fcd1466389d304e661ac0666983f`
+
+Verified squash merge on `main`:
+
+- merge: `570dbf3501b359b16767d070d18c25a67a0c24fe`
+- merge tree: `4dae7ad7db04fcd1466389d304e661ac0666983f`
+- implementation branch `quality/payment-runtime-analysis`: **deleted after verified merge**
+- exact-head Quality Gates run #414: **SUCCESS**
+- exact-head CodeQL PR scan #194: **SUCCESS**
+- post-merge Quality Gates run #415: **SUCCESS**
+- main security run #195: **SUCCESS**
+- PHPUnit: **172 tests / 1053 assertions**
+- Q17 Payment Runtime Analysis: **97/0**
+- Q16 Migration Core Analysis: **113/0**
+- H12 PHP: **1927/0**; Blocks: **144/0**
+- PHPStan/PHPCS: **clean**
+
+Q17 closed bounded payment-runtime characterization/hardening for checkout orchestration and lifecycle behavior while preserving authenticated provider truth, Woo payment semantics, compatibility identities and protected subscription/H12 contracts. It does not establish platform, feature, compliance, performance or production certification.
+
+## Previous verified milestone — Quality Platform Q16 migration-core analysis
 
 PR #42 final reviewed head:
 
@@ -69,7 +94,7 @@ Verified squash merge on `main`:
 - PHPUnit: **160 tests / 987 assertions**
 - Q16 Migration Core Analysis: **120/0**
 - H12 PHP: **1927/0**; Blocks: **144/0**
-- final independent exact-head Codex review: **clean**
+- final independent exact-head independent review: **clean**
 
 Q16 expanded baseline-free PHPStan level 5/PHP 7.2, risk-focused PHPCS and deterministic PHPUnit characterization into `MigrationPreflight.php`, `MigrationBatch.php` and `MigrationExecutor.php`. It hardened exact full-string migration inputs, bounded checkpoint/resume behavior and prepared-SQL boundaries while preserving the closed Phase 9I eligibility/provenance contract and protected payment/subscription identities. Q16 makes no merchant-fleet migration, platform, compliance, performance or production-certification claim.
 
@@ -638,17 +663,17 @@ Repository readiness remains DONE / VERIFIED:
 
 ## Current program gate — Full Automated Quality Platform
 
-**Status: Q17 — PAYMENT RUNTIME ANALYSIS / IMPLEMENTATION.**
+**Status: Q18 — BLOCKS AVAILABILITY ENFORCEMENT / IMPLEMENTATION.**
 
-Architecture discovery/A1-A5 and Quality Platform Q1-Q16 are complete. Q17 is limited to the existing payment-runtime boundaries:
+Architecture discovery/A1-A5 and Quality Platform Q1-Q17 are complete. Q18 is limited to the existing WooCommerce Blocks activation/availability boundary:
 
 - `src/Payment/CheckoutOrchestrator.php`: canonical Woo order-ID intake, Classic/Store API routing, exact provider-bound lexical/economic inputs, retry-unique Charge-attempt identity and response handling;
 - `src/Payment/PaymentLifecycle.php`: conflict-safe callback routing, authenticated status binding, order lock + fresh rebind, attempt-scoped cursor promotion/reset, deterministic terminal/capture transitions and bounded reconciliation;
 - baseline-free PHPStan level 5/PHP 7.2, risk-focused PHPCS/WPCS and process-isolated deterministic PHPUnit characterization across both files;
-- every original provider lifecycle/amount, Phase 9I, Q1-Q16, architecture, security and H12 regression remains mandatory;
+- every original provider lifecycle/amount, Phase 9I, Q1-Q17, architecture, security and H12 regression remains mandatory;
 - exact Scheduler/CycleClaim blobs and all persisted compatibility identities remain protected.
 
-Q17 may correct only analyzer- or test-proven payment-runtime defects and currently includes canonical order-ID hardening, terminal-newline currency/IBAN rejection and retry-unique 32-lowercase-hex provider Charge-attempt IDs. It does not authorize provider API redesign, migration broadening, subscription scheduler/cycle-claim changes or broad platform/feature/performance/security/compliance/production certification. After Q17, run the enterprise-risk audit and move to Platform Certification unless a concrete separately bounded enterprise-critical risk justifies another Quality Platform gate. `QUALITY-PLATFORM.md` is the current gate record.
+Q18 may correct only test- or analyzer-proven Blocks activation/availability defects. It preserves the declared fresh-install `enabled=yes` default when the settings array lacks the key, fails closed for malformed storage or malformed explicit values, retains gateway/option/client identities, and does not authorize provider API redesign, migration broadening, subscription scheduler/cycle-claim changes or broad platform/feature/performance/security/compliance/production certification. Q19 follows for the already evidence-backed subscription product-eligibility contract; after Q19, stop the numbered sequence unless new enterprise-critical evidence independently justifies another bounded gate.
 
 ## Later program blockers
 

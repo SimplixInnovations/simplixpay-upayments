@@ -38,7 +38,7 @@ The following engineering gates are **DONE / VERIFIED**:
 - Security Threat-Model Closure;
 - Architecture & Code-Quality Foundation A1-A5.
 
-Quality Platform Q1-Q16 are **DONE / VERIFIED**. The current program gate is **Full Automated Quality Platform — Q17**.
+Quality Platform Q1-Q17 are **DONE / VERIFIED**. The current program gate is **Full Automated Quality Platform — Q18**.
 
 The project remains in **pre-release engineering hardening**. It is not yet a broadly certified stable production release and has not yet been published to WordPress.org.
 
@@ -55,8 +55,8 @@ The project remains in **pre-release engineering hardening**. It is not yet a br
 | Provider Contract & Payment Lifecycle | **DONE / VERIFIED** |
 | Security Threat-Model Closure | **DONE / VERIFIED** |
 | Architecture & Code-Quality Foundation | **DONE / VERIFIED (A1-A5)** |
-| Quality Platform Q1-Q16 | **DONE / VERIFIED** |
-| Current engineering gate | **Full Automated Quality Platform — Q17** |
+| Quality Platform Q1-Q17 | **DONE / VERIFIED** |
+| Current engineering gate | **Full Automated Quality Platform — Q18** |
 | Stable SimplixPay release | **Not yet published** |
 | WordPress.org release | **Not yet published** |
 | Phase 0 release-identity harness | **35 PASS / 0 FAIL** |
@@ -172,7 +172,7 @@ Phase 9I system completion does not mean every merchant installation was automat
 
 ## Current engineering gate — Full Automated Quality Platform
 
-Architecture discovery/A1-A5 and Quality Platform Q1-Q16 are DONE / VERIFIED. Q16 closed through PR #42: final reviewed head `3cff2fcc64053d79be7427696c86039f1b52bbfd`, tree `b9cc6eafb3c7f8df36b9c5db8b2e45bb330688d2`, Quality Gates #315, CodeQL #83, squash merge `06a9ebd732c7cc3f062d4bb361aaef4054a1dfa3`, post-merge Quality Gates #316 and main security run #84; the implementation branch was deleted after verified merge. Q17 is the current bounded payment-runtime closeout for `CheckoutOrchestrator.php` and `PaymentLifecycle.php`. It does not constitute platform, feature, performance, PCI/compliance or production certification. After Q17, run the enterprise-risk audit and move to Platform Certification unless a concrete separately bounded enterprise-critical risk justifies another Quality Platform gate.
+Architecture discovery/A1-A5 and Quality Platform Q1-Q17 are DONE / VERIFIED. Q17 closed through PR #43: final verified head `2c5d8e9213086c88147f5d1d26247d58f1cbc81b`, tree `4dae7ad7db04fcd1466389d304e661ac0666983f`, Quality Gates #414, CodeQL #194, squash merge `570dbf3501b359b16767d070d18c25a67a0c24fe`, post-merge Quality Gates #415 and main security run #195; the implementation branch was deleted after verified merge. Q18 is the current bounded Blocks activation/availability enforcement gate. Q19 follows for the already evidence-backed subscription product-eligibility contract. After Q19, stop the numbered Quality Platform sequence unless a new enterprise-critical risk is independently demonstrated; otherwise move into named certification, product-readiness and release-engineering programs. None of these Quality Platform gates alone constitutes broad platform, feature, performance, PCI/compliance or production certification.
 
 No big-bang rewrite, runtime branding rename, runtime Composer dependency or broad compatibility claim is authorized by this gate.
 

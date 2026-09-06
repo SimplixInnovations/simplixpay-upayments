@@ -67,7 +67,7 @@ Keep `tests/harness/quality-platform-subscription-presentation-harness.php` mand
 
 Keep `tests/harness/quality-platform-migration-core-harness.php` mandatory after Q16.
 
-Keep `tests/harness/quality-platform-payment-runtime-harness.php` mandatory during and after Q17. Q17 is the planned Quality Platform closeout for payment runtime. Do not invent later Q gates merely to extend the sequence; an additional gate requires a concrete unresolved enterprise-critical risk and an explicitly bounded contract. The Q18 Blocks Availability Enforcement gate is separately justified by the concrete finding that the Blocks adapter previously reported itself active regardless of the canonical WooCommerce gateway enabled setting. Keep `tests/harness/quality-platform-blocks-availability-harness.php` mandatory during and after Q18; Q18 is limited to Blocks activation/availability enforcement and does not constitute Blocks/platform certification. The Q19 Subscription Product Eligibility Consistency gate is separately justified by the live arbitrary product-ID restriction and the Classic/Store API product opt-out consistency gap. Keep `tests/harness/quality-platform-subscription-product-eligibility-harness.php` mandatory during and after Q19. Q19 permits only subscription product eligibility/opt-out enforcement and bounded static ownership of `includes/Subscription/Checkout/Fields.php` and `includes/Subscription/Helpers/Utils.php`; it does not authorize Scheduler/CycleClaim/provider/payment redesign or broad subscription certification.
+Keep `tests/harness/quality-platform-payment-runtime-harness.php` mandatory during and after Q17. Q17 is DONE / VERIFIED. Q18 Blocks Availability Enforcement is DONE / VERIFIED and `tests/harness/quality-platform-blocks-availability-harness.php` remains mandatory. Q19 Subscription Product Eligibility Consistency is the current evidence-backed gate. Keep `tests/harness/quality-platform-subscription-product-eligibility-harness.php` mandatory during and after Q19. Q19 permits only subscription product eligibility/opt-out enforcement and bounded static ownership of `includes/Subscription/Checkout/Fields.php` and `includes/Subscription/Helpers/Utils.php`; it does not authorize Scheduler/CycleClaim/provider/payment redesign or broad subscription certification. After Q19, stop the numbered sequence unless a new enterprise-critical risk is independently demonstrated; otherwise move into named certification, product-readiness and release-engineering programs.
 
 ## Protected compatibility identities
 
@@ -120,7 +120,7 @@ Changing one requires an explicitly approved migration contract, old/new precede
 
 ## Review and merge
 
-Agent/bot reports are evidence requests, not proof. Independently verify source, diff, tests and checks. Pin approval to exact base/head SHAs.
+Agent/bot reports are evidence requests, not proof. Independently verify source, diff, tests and checks. Pin approval to exact base/head SHAs. External AI review is not an intermediate gate; reserve any such audit for the final enterprise-complete plugin review.
 
 If verification fails:
 

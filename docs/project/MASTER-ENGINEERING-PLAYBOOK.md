@@ -479,7 +479,7 @@ Requirements:
 | Payment lifecycle/state machine | **DONE / VERIFIED** | Critical |
 | Security threat-model audit | **DONE / VERIFIED** | Critical |
 | Architecture/code quality | **DONE / VERIFIED (A1-A5)** | High |
-| Full automated quality platform | **Q17 — CURRENT GATE; Q1-Q16 DONE / VERIFIED** | Critical before public stable |
+| Full automated quality platform | **Q18 — CURRENT GATE; Q1-Q17 DONE / VERIFIED** | Critical before public stable |
 | WooCommerce/WordPress/PHP certification | **PENDING** | Critical |
 | WPML/multilingual/multicurrency certification | **FIXES PARTIAL; CERTIFICATION PENDING** | High/product objective |
 | Saved cards/subscriptions/wallets/multi-merchant | **PARTIAL; MATRIX PENDING** | Critical per enabled feature |
@@ -492,7 +492,7 @@ Requirements:
 | WordPress.org publication | **DEFERRED UNTIL READY** | Strategic |
 | Continuous maintenance | **ONGOING AFTER FIRST STABLE** | Critical long-term |
 
-Provider Contract & Payment Lifecycle, the bounded Security Threat-Model Closure, Architecture discovery/A1-A5 and Quality Platform Q1-Q16 are **DONE / VERIFIED**. The current unified gate is **Full Automated Quality Platform — Q17**. Provider contract and lifecycle rows remain separated because they retain distinct closed contracts and regression evidence.
+Provider Contract & Payment Lifecycle, the bounded Security Threat-Model Closure, Architecture discovery/A1-A5 and Quality Platform Q1-Q17 are **DONE / VERIFIED**. The current unified gate is **Full Automated Quality Platform — Q18**. Provider contract and lifecycle rows remain separated because they retain distinct closed contracts and regression evidence.
 
 ## 18. Phase ordering
 
@@ -503,7 +503,7 @@ Recommended execution order:
 3. Provider Contract & Payment Lifecycle — **DONE / VERIFIED**.
 4. Security Threat-Model Closure — **DONE / VERIFIED**.
 5. Architecture & Code Quality Foundation — **DONE / VERIFIED (A1-A5)**.
-6. Full Test-Driven Quality Platform — **CURRENT / Q17**.
+6. Full Test-Driven Quality Platform — **CURRENT / Q18**.
 7. WooCommerce / WordPress / PHP Certification.
 8. WPML / i18n / multilingual / multicurrency / RTL.
 9. Feature-specific certification — saved cards, subscriptions, wallets, multi-merchant, refunds.
@@ -809,7 +809,7 @@ Model events such as:
 
 # SECURITY THREAT-MODEL AUDIT
 
-**Program status:** DONE / VERIFIED. This section retains the security phase scope as a historical engineering standard; the current program gate is **Full Automated Quality Platform — Q17**.
+**Program status:** DONE / VERIFIED. This section retains the security phase scope as a historical engineering standard; the current program gate is **Full Automated Quality Platform — Q18**.
 
 ## 30. Scope
 
@@ -928,7 +928,7 @@ Do not mechanically “clean” payment-critical logic without regression charac
 
 # FULL TEST-DRIVEN QUALITY PLATFORM
 
-**Program status:** Q17 / CURRENT GATE; Q1-Q16 DONE / VERIFIED. Q17 is the payment-runtime closeout for `CheckoutOrchestrator.php` and `PaymentLifecycle.php`. It may correct only analyzer- or test-proven checkout/lifecycle input, attempt-identity, callback, lock/rebind, cursor, idempotency and reconciliation defects while preserving authenticated provider truth, Woo payment semantics, frozen compatibility identities and protected subscription/H12 contracts. After Q17, run the enterprise-risk audit and move to Platform Certification unless a concrete separately bounded enterprise-critical risk requires another Quality Platform gate.
+**Program status:** Q18 / CURRENT GATE; Q1-Q17 DONE / VERIFIED. Q18 is the bounded Blocks activation/availability enforcement gate. It may correct only test- or analyzer-proven server activation/settings-shape/logging defects while preserving gateway/option/client identities and protected provider/subscription/H12 contracts. Q19 follows for the evidence-backed subscription product-eligibility contract. After Q19, stop the numbered sequence unless a new enterprise-critical risk is independently demonstrated; otherwise move to named certification, product-readiness and release-engineering programs.
 
 ## 35. Testing philosophy
 
@@ -1546,7 +1546,7 @@ Quality Platform Q15: DONE / VERIFIED; PR #41; merge a4bbb05021dbded73072c0ba108
 Quality Platform Q16: DONE / VERIFIED; PR #42; merge 06a9ebd732c7cc3f062d4bb361aaef4054a1dfa3; tree b9cc6eafb3c7f8df36b9c5db8b2e45bb330688d2; Q16 120/0; post-merge Quality Gates #316 SUCCESS; main security #84 SUCCESS
 Last verified implementation main SHA: 06a9ebd732c7cc3f062d4bb361aaef4054a1dfa3
 Canonical implementation tree: b9cc6eafb3c7f8df36b9c5db8b2e45bb330688d2
-Current program gate: Full Automated Quality Platform — Q17
+Current program gate: Full Automated Quality Platform — Q18
 Production readiness: R0 — engineering hardening
 Public stable release: NO
 WordPress.org release: NO
@@ -1606,7 +1606,8 @@ The security implementation anchor above is post-merge verified. `PROJECT-STATUS
 - [x] Full Automated Quality Platform — **Q14 / DONE / VERIFIED** through PR #40 and post-merge Quality Gates #248.
 - [x] Full Automated Quality Platform — **Q15 / DONE / VERIFIED** through PR #41 and post-merge Quality Gates #254.
 - [x] Full Automated Quality Platform — **Q16 / DONE / VERIFIED** through PR #42 and post-merge Quality Gates #316.
-- [ ] Full Automated Quality Platform — **Q17 / CURRENT GATE — PAYMENT-RUNTIME CLOSEOUT**; after Q17, run the enterprise-risk audit and move to certification/readiness/release work unless a separately bounded enterprise-critical risk justifies another Quality Platform gate.
+- [x] Full Automated Quality Platform — **Q17 / DONE / VERIFIED — PAYMENT-RUNTIME CLOSEOUT** through PR #43 and post-merge Quality Gates #415.
+- [ ] Full Automated Quality Platform — **Q18 / CURRENT GATE — BLOCKS AVAILABILITY ENFORCEMENT**; Q19 follows, then move to certification/readiness/release work unless new enterprise-critical evidence justifies another bounded gate.
 - [ ] WordPress/WooCommerce/PHP compatibility certification.
 - [ ] WPML/WCML certification.
 - [ ] Feature-specific certification: saved cards/subscriptions/wallets/multi-merchant/refunds.
