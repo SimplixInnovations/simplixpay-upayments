@@ -30,7 +30,9 @@ Quality Platform Q1-Q19 are **DONE / VERIFIED**. The historical Enterprise Relea
 | Historical program | Status |
 |---|---|
 | Quality Platform Q1-Q19 | **DONE / VERIFIED** |
-| Enterprise Tasks 1-8 | **DONE / VERIFIED** | The current pre-release work is the approved **SUCheckout identity migration and re-certification** before any public release.
+| Enterprise Tasks 1-8 | **DONE / VERIFIED** |
+
+The current pre-release work is the approved **SUCheckout identity migration and re-certification** before any public release.
 
 No public SUCheckout 1.0 tag, GitHub Release or WordPress.org publication exists yet. Publication remains a separate owner action after the exact merged source/artifact state is certified.
 
