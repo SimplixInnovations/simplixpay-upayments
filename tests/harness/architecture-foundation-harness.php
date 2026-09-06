@@ -431,7 +431,7 @@ arch_assert(
     || arch_contains($status, '| Quality Platform Q16 migration-core analysis | **DONE / VERIFIED** |'),
     'project status preserves verified Quality Platform progression through Q16'
 );
-arch_assert(arch_contains($naming, '**Canonical slug:** `simplixpay-upayments`'), 'canonical slug remains protected');
+arch_assert(arch_contains($naming, '**Canonical slug:** `sucheckout-upayments`'), 'canonical slug remains protected');
 
 $gatewayPath = $root . '/UPayments.php';
 $gatewaySize = is_file($gatewayPath) ? filesize($gatewayPath) : false;
