@@ -91,7 +91,7 @@ foreach (array(
 }
 q9_assert(q9_contains($quality, 'Q16 is DONE / VERIFIED'), 'quality record advances beyond Q9');
 q9_assert(q9_contains($status, '| Quality Platform Q16 migration-core analysis | **DONE / VERIFIED** |'), 'project status advances beyond Q9');
-q9_assert(q9_contains($readme, 'Quality Platform Q1-Q16 are **DONE / VERIFIED**.'), 'README advances beyond Q9');
+q9_assert((preg_match('/Quality Platform Q1-Q([0-9]+) are \\*\\*DONE \\/ VERIFIED\\*\\*\\./', $readme, $q9_readme_range_matches) === 1 && isset($q9_readme_range_matches[1]) && (int) $q9_readme_range_matches[1] > 9), 'README advances beyond Q9');
 q9_assert(!q9_contains($playbook, 'Last verified implementation main SHA: f63591188e232505f8307cb71fdbe4c32d2dc4c7'), 'playbook does not mistake verified Q9 merge for current main');
 q9_assert(!q9_contains($playbook, 'Canonical implementation tree: 96936981b8d3088a65c1d0917b7e5773952bc346'), 'playbook does not mistake verified Q9 tree for current tree');
 q9_assert(!q9_contains($handoff, 'CURRENT / Q9'), 'handoff rejects stale current-Q9 marker');

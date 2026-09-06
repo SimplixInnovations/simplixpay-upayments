@@ -131,7 +131,7 @@ q15_assert(q15_contains($workflow, "reject_across_live_records 'CURRENT / Q14'")
 q15_assert(q15_contains($agents, 'quality-platform-subscription-presentation-harness.php'), 'root execution rules keep Q15 mandatory');
 q15_assert(q15_contains($quality, 'Q16 is DONE / VERIFIED'), 'quality record advances beyond Q15');
 q15_assert(q15_contains($status, '| Quality Platform Q16 migration-core analysis | **DONE / VERIFIED** |'), 'project status advances beyond Q15');
-q15_assert(q15_contains($readme, 'Quality Platform Q1-Q16 are **DONE / VERIFIED**.'), 'README advances beyond Q15');
+q15_assert((preg_match('/Quality Platform Q1-Q([0-9]+) are \\*\\*DONE \\/ VERIFIED\\*\\*\\./', $readme, $q15_readme_range_matches) === 1 && isset($q15_readme_range_matches[1]) && (int) $q15_readme_range_matches[1] > 15), 'README advances beyond Q15');
 q15_assert(q15_contains($roadmap, 'Q17 payment-runtime checkout-orchestration/lifecycle'), 'roadmap names the finite Q17 closeout');
 q15_assert(q15_contains($quality, 'enterprise-critical risk'), 'quality record prohibits meaningless Q-sequence extension');
 

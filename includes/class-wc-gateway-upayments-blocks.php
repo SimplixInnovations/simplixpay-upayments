@@ -26,13 +26,25 @@ class WCGatewayUPaymentsBlocks extends AbstractPaymentMethodType {
         $this->settings = get_option( 'woocommerce_upayments_settings', [] );
         if ( class_exists( 'WC_Upayments' ) ) {
             $this->gateway = new WC_Upayments();
-        } else {
-            error_log( 'UPayments Error: WC_Upayments class not found during Blocks init.' );
+        } elseif ( function_exists( 'wc_get_logger' ) ) {
+            wc_get_logger()->warning(
+                'UPayments gateway class not found during Blocks initialization.',
+                array( 'source' => 'upayments' )
+            );
         }
     }
 
     public function is_active() {
-        return true;
+        /** @var mixed $settings Runtime option storage may be malformed despite the upstream PHPDoc. */
+        $settings = $this->settings;
+
+        if (!is_object($this->gateway) || !is_array($settings)) {
+            return false;
+        }
+
+        $enabled = array_key_exists('enabled', $settings) ? $settings['enabled'] : 'yes';
+
+        return is_string($enabled) && $enabled === 'yes';
     }
 
     public function get_supported_features() {

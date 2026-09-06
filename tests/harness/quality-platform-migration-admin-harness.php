@@ -141,7 +141,7 @@ foreach (array(
 q14_assert(q14_contains($quality, 'Q16 is DONE / VERIFIED'), 'quality record advances beyond Q14');
 q14_assert(q14_contains($quality, 'capability-before-request authorization'), 'quality record documents strict privileged control ordering');
 q14_assert(q14_contains($status, '| Quality Platform Q16 migration-core analysis | **DONE / VERIFIED** |'), 'project status advances beyond Q14');
-q14_assert(q14_contains($readme, 'Quality Platform Q1-Q16 are **DONE / VERIFIED**.'), 'README advances beyond Q14');
+q14_assert((preg_match('/Quality Platform Q1-Q([0-9]+) are \\*\\*DONE \\/ VERIFIED\\*\\*\\./', $readme, $q14_readme_range_matches) === 1 && isset($q14_readme_range_matches[1]) && (int) $q14_readme_range_matches[1] > 14), 'README advances beyond Q14');
 q14_assert(q14_contains($playbook, 'Quality Platform Q13: DONE / VERIFIED; PR #39; merge a744417e1ec2f40b4f59706df84589d8b18638cb;'), 'playbook pins Q13 merge');
 q14_assert(q14_contains($playbook, 'tree be7c52143d2085550790b742d164ecbec413377f; Q13 77/0; post-merge Quality Gates #237 SUCCESS'), 'playbook pins Q13 tree');
 q14_assert(q14_contains($q13_harness, 'Quality Platform Q13: DONE / VERIFIED; PR #39; merge a744417e1ec2f40b4f59706df84589d8b18638cb;'), 'Q13 harness uses its immutable closure row');

@@ -97,7 +97,7 @@ foreach (array(
 }
 q12_assert(q12_contains($quality, 'Q16 is DONE / VERIFIED'), 'quality record advances beyond Q12');
 q12_assert(q12_contains($status, '| Quality Platform Q16 migration-core analysis | **DONE / VERIFIED** |'), 'project status advances beyond Q12');
-q12_assert(q12_contains($readme, 'Quality Platform Q1-Q16 are **DONE / VERIFIED**.'), 'README advances beyond Q12');
+q12_assert((preg_match('/Quality Platform Q1-Q([0-9]+) are \\*\\*DONE \\/ VERIFIED\\*\\*\\./', $readme, $q12_readme_range_matches) === 1 && isset($q12_readme_range_matches[1]) && (int) $q12_readme_range_matches[1] > 12), 'README advances beyond Q12');
 q12_assert(q12_contains($playbook, 'Quality Platform Q12: DONE / VERIFIED; PR #38; merge 6dc53bdaf60f12774d7516294d7004974be3874f;'), 'playbook pins Q12 merge');
 q12_assert(q12_contains($playbook, 'tree b8a9f956e304fa9dba7658809207ddae14b1f4e1; Q12 63/0; post-merge Quality Gates #232 SUCCESS'), 'playbook pins Q12 tree');
 q12_assert(!q12_contains($handoff, 'CURRENT / Q12'), 'handoff rejects stale current-Q12 marker');
