@@ -110,7 +110,7 @@ Use:
    - provider fixtures and webhook/concurrency tests;
    - browser E2E/accessibility/performance regression coverage.
 
-7. **Enterprise Compatibility Certification — CURRENT GATE / CORE PLATFORM VERIFIED**
+7. **Enterprise Compatibility Certification — CURRENT GATE**
    - permanent 16-cell real WordPress/WooCommerce/PHP × legacy/HPOS runtime matrix: **DONE / VERIFIED through PR #47**;
    - Classic gateway registration and standard Cart/Checkout Blocks registration/availability: **VERIFIED**;
    - legacy and HPOS authoritative Woo order CRUD: **VERIFIED**;
