@@ -21,6 +21,13 @@ if (!function_exists('simplixpay_test_reset_wp_http')) {
     }
 }
 
+
+if (!function_exists('wp_parse_url')) {
+    function wp_parse_url($url, $component = -1) {
+        return parse_url((string) $url, $component);
+    }
+}
+
 if (!function_exists('wp_remote_get')) {
     function wp_remote_get($url, $args = array()) {
         $GLOBALS['simplixpay_test_http_calls'][] = array(
