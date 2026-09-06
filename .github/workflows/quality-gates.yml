@@ -306,6 +306,8 @@ jobs:
         run: php tests/harness/quality-platform-blocks-availability-harness.php
       - name: Quality platform subscription product-eligibility harness
         run: php tests/harness/quality-platform-subscription-product-eligibility-harness.php
+      - name: WordPress.org submission-readiness harness
+        run: php tests/harness/wordpress-org-submission-harness.php
       - name: H12 PHP harness
         run: php tests/harness/phase-9g-h12-php-harness.php
       - name: Blocks harness syntax
