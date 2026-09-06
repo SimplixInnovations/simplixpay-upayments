@@ -58,12 +58,14 @@ $workflow_relative = '.github/workflows/release-artifact.yml';
 $build = release_read($root, $build_relative);
 $verify = release_read($root, $verify_relative);
 $workflow = release_read($root, $workflow_relative);
+$installer = release_read($root, 'scripts/install-wp-test-environment.sh');
 $distignore = release_read($root, '.distignore');
 $identity = release_read($root, 'src/Release/Identity.php');
 
 release_assert($build !== '', 'canonical release builder exists');
 release_assert($verify !== '', 'canonical release verifier exists');
 release_assert($workflow !== '', 'release-artifact workflow exists');
+release_assert($installer !== '', 'real WordPress/WooCommerce installer exists');
 release_assert($distignore !== '', 'distribution exclusion contract exists');
 
 $required_exclusions = array(
@@ -110,6 +112,30 @@ release_assert(is_string($version) && $version !== '', 'release version is reada
 release_assert(
     strpos($workflow, 'php tests/harness/release-artifact-harness.php') !== false,
     'release workflow invokes the permanent artifact harness'
+);
+release_assert(
+    strpos($installer, 'SIMPLIXPAY_PLUGIN_ZIP') !== false
+        && strpos($installer, 'plugin install') !== false,
+    'runtime installer supports a real packaged ZIP instead of source symlink'
+);
+release_assert(
+    strpos($workflow, 'actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02') !== false,
+    'release workflow uploads the exact built artifact with an immutable action pin'
+);
+release_assert(
+    strpos($workflow, 'actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093') !== false,
+    'packaged runtime jobs download the exact built artifact with an immutable action pin'
+);
+release_assert(
+    strpos($workflow, 'storage: [legacy, hpos]') !== false,
+    'packaged runtime smoke covers legacy and HPOS authoritative storage'
+);
+release_assert(
+    strpos($workflow, 'Verify packaged activation and Classic registration') !== false
+        && strpos($workflow, 'Verify packaged release support metadata') !== false
+        && strpos($workflow, 'Verify packaged Blocks registration and availability') !== false
+        && strpos($workflow, 'Verify packaged order CRUD') !== false,
+    'packaged runtime smoke exercises activation, metadata, Blocks and order CRUD'
 );
 
 if ($build !== '' && $verify !== '' && is_string($version) && $version !== '') {
