@@ -130,6 +130,12 @@ function simplixpay_upgrade_assert_active_contract($old_basename, $target_basena
 if ('seed-existing' === $phase) {
     simplixpay_upgrade_assert_active_contract($old_basename, $target_basename);
 
+    // Prime WordPress's negative option cache deliberately. The raw
+    // certification persistence helper must make the subsequent insert visible
+    // in this same request, matching the real "active plugin read before seed"
+    // scenario that exposed the fixture bug.
+    get_option($settings_key, false);
+
     $settings = array(
         'enabled' => 'yes',
         'api_key' => 'upgrade-certification-secret',

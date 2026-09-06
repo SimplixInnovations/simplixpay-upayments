@@ -80,4 +80,16 @@ function simplixpay_cert_store_option_raw($name, $value) {
     simplixpay_cert_assert(false !== $result, 'raw certification option persistence succeeds: ' . $name);
     wp_cache_delete($name, 'options');
     wp_cache_delete('alloptions', 'options');
+
+    // Direct SQL intentionally bypasses update_option(), so WordPress does not
+    // remove a previously cached "option does not exist" entry for us. This
+    // matters when a real plugin has already read a missing option earlier in
+    // the request (for example an active gateway reading fresh-install
+    // settings). Clear that negative-cache entry explicitly so the raw fixture
+    // becomes observable immediately without relying on another request.
+    $notoptions = wp_cache_get('notoptions', 'options');
+    if (is_array($notoptions) && isset($notoptions[$name])) {
+        unset($notoptions[$name]);
+        wp_cache_set('notoptions', $notoptions, 'options');
+    }
 }
