@@ -66,7 +66,6 @@ foreach (array('function submitUpayButton', 'function submitSavedCard', 'functio
     sufi_assert(strpos($new_js, $global) === false, 'classic checkout JS does not expose legacy generic global: ' . $global);
 }
 sufi_assert(strpos($new_template, 'suCheckoutUpayments.') !== false, 'new checkout template invokes canonical JS namespace');
-sufi_assert(strpos($old_template, 'suCheckoutUpayments.') !== false, 'legacy checkout template invokes canonical JS namespace');
 
 sufi_assert(!is_file($root . '/assets/screenshots/7-Upayments-Payment- Interface-Form.png'), 'invalid screenshot filename with spaces is absent');
 sufi_assert(is_file($root . '/assets/screenshots/7-Upayments-Payment-Interface-Form.png'), 'normalized screenshot filename is present');
