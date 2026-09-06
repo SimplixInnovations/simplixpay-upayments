@@ -1,6 +1,6 @@
 <?php
 
-use Simplix\Pay\UPayments\Admin\GatewaySettings;
+use Simplixi\SUCheckout\UPayments\Admin\GatewaySettings;
 
 $a3_assets = array('styles' => array(), 'scripts' => array(), 'inline' => array());
 
