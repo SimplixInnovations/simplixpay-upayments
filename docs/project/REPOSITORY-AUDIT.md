@@ -32,13 +32,13 @@ The repository remains a pre-release engineering codebase. It is not the intende
 
 Phase 0 took ownership of public release identity and removed inherited update authority. Phase 9I added isolated historical-identity migration tooling. The provider lifecycle gate then added an isolated `Simplix\Pay\UPayments\Payment` strangler for ordinary browser/webhook/status truth and WooCommerce payment-state transitions without broadly rewriting the inherited gateway bootstrap.
 
-Architecture discovery/A1-A5 and Quality Platform Q1-Q18 are **DONE / VERIFIED**. The current owner/gate is **Full Automated Quality Platform — Q19**. Q18 may harden only the WooCommerce Blocks server activation/availability boundary, including declared fresh-install enabled-default preservation, fail-closed malformed settings, analyzer ownership and WooCommerce logging correction, while preserving authenticated provider truth, Woo payment semantics, frozen identities and protected subscription/H12 contracts. Q19 follows for the already evidence-backed subscription product-eligibility contract. Neither gate authorizes a big-bang rewrite, provider API redesign, migration broadening, subscription scheduler/cycle-claim changes, protected-meta renames or broad certification claims.
+Architecture discovery/A1-A5 and Quality Platform Q1-Q19 are **DONE / VERIFIED**. The current owner/gate is **Enterprise Compatibility Certification**. Q18 closed the WooCommerce Blocks server activation/availability boundary and Q19 closed the subscription product-eligibility/opt-out contract while preserving authenticated provider truth, Woo payment semantics, frozen identities and protected subscription/H12 contracts. Certification does not authorize a big-bang rewrite, provider API redesign, migration broadening, subscription scheduler/cycle-claim changes, protected-meta renames or evidence-free compatibility claims.
 
 ## Top-level inventory after Security Threat-Model closure
 
 | Area | Current state | Classification | Next owner/gate |
 |---|---|---|---|
-| `.github/` | CODEOWNERS, templates, Dependabot, protected Quality Gates | **KEEP / CONTROL PLANE** | Q19 preserves Q1-Q18 gating while closing bounded subscription product-eligibility evidence |
+| `.github/` | CODEOWNERS, templates, Dependabot, protected Quality Gates | **KEEP / CONTROL PLANE** | Preserve closed Q1-Q19 gating while adding evidence-backed certification workflows |
 | `AGENTS.md` | Permanent execution/review rules | **KEEP / CONTROL PLANE** | Mandatory before substantive work |
 | `README.md`, `CHANGELOG.md` | Simplix-led public/project records | **KEEP CURRENT** | Update at verified milestones |
 | `LICENSE`, `NOTICE.md`, `UPSTREAM.md` | MIT + provenance/trademark boundaries | **KEEP** | Re-review at publication gates |
@@ -213,19 +213,19 @@ The required custom harness stack now includes Phase 0, all Phase 9I suites, Pro
 
 ## Current next owner/gate
 
-**Full Automated Quality Platform — Q19**.
+**Enterprise Compatibility Certification**.
 
-The current tranche must preserve the verified architecture map while establishing:
+The current program must preserve the verified architecture map and every Q1-Q19 regression while establishing reproducible runtime evidence for:
 
-- deterministic PHPUnit characterization of checkout orchestration and payment lifecycle boundaries across `src/Payment/CheckoutOrchestrator.php` and `src/Payment/PaymentLifecycle.php`;
-- baseline-free PHPStan level 5 / PHP 7.2 and risk-focused PHPCS ownership of both payment-runtime classes beside the Q1-Q16 modules;
-- canonical order-ID parsing, exact provider-bound lexical boundaries and retry-unique Charge-attempt identity without changing compatibility IDs or provider truth;
-- unchanged dependency-audit, distributed-syntax, required-check, Phase 9I, provider/payment, security, architecture and protected H12 controls;
-- permanent Q1/Q2/Q3/Q4/Q5/Q6/Q7/Q8/Q9/Q10/Q11/Q12/Q13/Q14/Q15/Q16/Q17 and historical regression gates.
+- exact supported WordPress/WooCommerce/PHP version cells;
+- Classic Checkout and Cart/Checkout Blocks registration/runtime behavior;
+- HPOS enabled/disabled order behavior;
+- activation and later packaged-artifact install behavior;
+- feature declarations and public compatibility metadata only after their exact runtime evidence is green.
 
-Q18 is DONE / VERIFIED. Q19 is the current and final presently justified numbered gate for subscription product eligibility. After Q19, stop the numbered Quality Platform sequence unless new enterprise-critical evidence independently demonstrates another bounded risk; otherwise move to named certification, product-readiness and release-engineering work.
+Q18 and Q19 are DONE / VERIFIED. The numbered Quality Platform is closed at Q19; no Q20 is justified by current evidence. New numbered work requires a distinct independently demonstrated enterprise-critical defect that is not better owned by certification/readiness/release engineering.
 
-Do not reinterpret green tooling as platform certification or modify payment runtime to satisfy a tool. Closed Architecture/Security/Provider/H12/Phase 9I contracts remain required regressions throughout quality-platform work.
+Do not reinterpret green tooling as platform certification or modify payment runtime merely to satisfy a tool. Closed Architecture/Security/Provider/H12/Phase 9I contracts remain required regressions throughout certification work.
 
 See `PROJECT-STATUS.md` for live program state, `PHASE-9I-MIGRATION.md` for historical-identity migration, and `PROVIDER-PAYMENT-LIFECYCLE.md` for the closed ordinary-checkout lifecycle contract.
 
