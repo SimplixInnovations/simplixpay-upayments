@@ -28,10 +28,7 @@ function simplixpay_upgrade_verify_data($settings_key, $settings_snapshot_key, $
     $snapshot = get_option($settings_snapshot_key);
     $settings = get_option($settings_key);
 
-    simplixpay_cert_assert(
-        is_string($snapshot) && $snapshot !== '',
-        'upgrade settings snapshot exists'
-    );
+    simplixpay_cert_assert(is_string($snapshot) && $snapshot !== '', 'upgrade settings snapshot exists');
     simplixpay_cert_assert(
         is_string($snapshot) && hash_equals($snapshot, maybe_serialize($settings)),
         'merchant settings survive package transition byte-for-byte'
@@ -41,71 +38,48 @@ function simplixpay_upgrade_verify_data($settings_key, $settings_snapshot_key, $
     $order = wc_get_order($order_id);
     simplixpay_cert_assert($order instanceof WC_Order, 'historical payment order survives package transition');
     simplixpay_cert_assert('upayments' === $order->get_payment_method(), 'historical gateway ID remains upayments');
-    simplixpay_cert_assert(
-        'upgrade-provider-order' === $order->get_meta('UPayments_order_id'),
-        'historical provider order identity survives package transition'
-    );
-    simplixpay_cert_assert(
-        'upgrade-customer-token' === $order->get_meta('_upay_customer_unique_token'),
-        'historical customer-token metadata survives package transition'
-    );
-    simplixpay_cert_assert(
-        'monthly' === $order->get_meta('_upay_subscription_plan'),
-        'historical subscription plan metadata survives package transition'
-    );
-    simplixpay_cert_assert(
-        1 === (int) $order->get_meta('_upay_subscription_interval'),
-        'historical subscription interval metadata survives package transition'
-    );
+    simplixpay_cert_assert('upgrade-provider-order' === $order->get_meta('UPayments_order_id'), 'historical provider order identity survives package transition');
+    simplixpay_cert_assert('upgrade-customer-token' === $order->get_meta('_upay_customer_unique_token'), 'historical customer-token metadata survives package transition');
+    simplixpay_cert_assert('monthly' === $order->get_meta('_upay_subscription_plan'), 'historical subscription plan metadata survives package transition');
+    simplixpay_cert_assert(1 === (int) $order->get_meta('_upay_subscription_interval'), 'historical subscription interval metadata survives package transition');
 
     $expected_cron = (int) get_option($cron_key);
     $actual_cron = wp_next_scheduled('upay_process_subscriptions');
     simplixpay_cert_assert($expected_cron > 0, 'upgrade snapshot contains canonical subscription cron timestamp');
-    simplixpay_cert_assert(
-        is_int($actual_cron) && $actual_cron === $expected_cron,
-        'canonical subscription cron schedule survives package transition unchanged'
-    );
+    simplixpay_cert_assert(is_int($actual_cron) && $actual_cron === $expected_cron, 'canonical subscription cron schedule survives package transition unchanged');
 }
 
 function simplixpay_upgrade_assert_active_contract($old_basename, $target_basename) {
-    simplixpay_cert_assert(
-        file_exists(WP_PLUGIN_DIR . '/simplixpay-upayments/UPayments.php'),
-        'transitional main file UPayments.php exists'
-    );
-    simplixpay_cert_assert(
-        !file_exists(WP_PLUGIN_DIR . '/simplixpay-upayments/simplixpay-upayments.php'),
-        'target renamed main file is absent in retained-identity package'
-    );
+    global $phase;
+
+    $is_legacy_seed = 'seed-existing' === $phase;
+    $expected_text_domain = $is_legacy_seed ? 'upayments' : 'sucheckout-upayments';
+    $identity_label = $is_legacy_seed ? 'legacy existing-install' : 'canonical SUCheckout';
+
+    simplixpay_cert_assert(file_exists(WP_PLUGIN_DIR . '/simplixpay-upayments/UPayments.php'), 'transitional main file UPayments.php exists');
+    simplixpay_cert_assert(!file_exists(WP_PLUGIN_DIR . '/simplixpay-upayments/simplixpay-upayments.php'), 'target renamed main file is absent in retained-identity package');
     simplixpay_cert_assert(is_plugin_active($old_basename), 'transitional plugin basename remains active');
     simplixpay_cert_assert(!is_plugin_active($target_basename), 'target renamed basename is not separately active');
-    simplixpay_cert_assert(class_exists('WC_Upayments'), 'SUCheckout runtime loads after package transition');
+    simplixpay_cert_assert(class_exists('WC_Upayments'), 'gateway runtime loads after package transition');
 
     $gateways = WC()->payment_gateways()->payment_gateways();
-    simplixpay_cert_assert(
-        isset($gateways['upayments']) && $gateways['upayments'] instanceof WC_Upayments,
-        'WooCommerce gateway ID upayments remains registered after package transition'
-    );
-    simplixpay_cert_assert(
-        false !== has_action('woocommerce_api_wc_upayments'),
-        'historical WooCommerce API callback hook remains registered'
-    );
+    simplixpay_cert_assert(isset($gateways['upayments']) && $gateways['upayments'] instanceof WC_Upayments, 'WooCommerce gateway ID upayments remains registered after package transition');
+    simplixpay_cert_assert(false !== has_action('woocommerce_api_wc_upayments'), 'historical WooCommerce API callback hook remains registered');
 
     $headers = get_file_data(
         WP_PLUGIN_DIR . '/simplixpay-upayments/UPayments.php',
         array('text_domain' => 'Text Domain')
     );
     simplixpay_cert_assert(
-        isset($headers['text_domain']) && $headers['text_domain'] === 'sucheckout-upayments',
-        'retained-basename package exposes canonical SUCheckout text domain'
+        isset($headers['text_domain']) && $headers['text_domain'] === $expected_text_domain,
+        'retained-basename package exposes expected ' . $identity_label . ' text domain'
     );
 
     $translation_hits = 0;
     $iterator = new RecursiveIteratorIterator(
-        new RecursiveDirectoryIterator(
-            WP_PLUGIN_DIR . '/simplixpay-upayments',
-            FilesystemIterator::SKIP_DOTS
-        )
+        new RecursiveDirectoryIterator(WP_PLUGIN_DIR . '/simplixpay-upayments', FilesystemIterator::SKIP_DOTS)
     );
+    $domain_pattern = preg_quote($expected_text_domain, '/');
     foreach ($iterator as $file_info) {
         if (!$file_info->isFile() || strtolower($file_info->getExtension()) !== 'php') {
             continue;
@@ -115,25 +89,18 @@ function simplixpay_upgrade_assert_active_contract($old_basename, $target_basena
             continue;
         }
         $translation_hits += preg_match_all(
-            '/(?:__|_e|esc_html__|esc_html_e|esc_attr__|esc_attr_e)\s*\([^)]*[\'\"]sucheckout-upayments[\'\"]/s',
+            '/(?:__|_e|esc_html__|esc_html_e|esc_attr__|esc_attr_e)\s*\([^)]*[\'\"]' . $domain_pattern . '[\'\"]/s',
             $source,
             $matches
         );
     }
-    simplixpay_cert_assert(
-        $translation_hits > 0,
-        'runtime source contains explicit translation calls bound to canonical SUCheckout text domain'
-    );
-    simplixpay_cert_note('canonical SUCheckout text-domain translation call count=' . $translation_hits);
+    simplixpay_cert_assert($translation_hits > 0, 'runtime source contains explicit translation calls bound to expected ' . $identity_label . ' text domain');
+    simplixpay_cert_note($identity_label . ' text-domain translation call count=' . $translation_hits);
 }
 
 if ('seed-existing' === $phase) {
     simplixpay_upgrade_assert_active_contract($old_basename, $target_basename);
 
-    // Prime WordPress's negative option cache deliberately. The raw
-    // certification persistence helper must make the subsequent insert visible
-    // in this same request, matching the real "active plugin read before seed"
-    // scenario that exposed the fixture bug.
     get_option($settings_key, false);
 
     $settings = array(
@@ -201,32 +168,19 @@ if ('verify-duplicate' === $phase) {
     simplixpay_cert_assert(isset($plugins[$duplicate_basename]), 'duplicate-root package is visible as a distinct WordPress plugin');
     simplixpay_cert_assert(!is_plugin_active($duplicate_basename), 'duplicate-root package remains inactive');
     simplixpay_cert_assert(
-        hash_file('sha256', WP_PLUGIN_DIR . '/simplixpay-upayments/UPayments.php')
-            === hash_file('sha256', WP_PLUGIN_DIR . '/upayments-legacy/UPayments.php'),
+        hash_file('sha256', WP_PLUGIN_DIR . '/simplixpay-upayments/UPayments.php') === hash_file('sha256', WP_PLUGIN_DIR . '/upayments-legacy/UPayments.php'),
         'duplicate package owns byte-identical historical bootstrap code under a distinct basename'
     );
-    simplixpay_cert_assert(
-        $plugins[$old_basename]['Name'] === $plugins[$duplicate_basename]['Name'],
-        'duplicate package presents the same plugin identity under a distinct basename'
-    );
-
-    simplixpay_cert_note(
-        'duplicate package basenames=' . wp_json_encode(array($old_basename, $duplicate_basename))
-    );
+    simplixpay_cert_assert($plugins[$old_basename]['Name'] === $plugins[$duplicate_basename]['Name'], 'duplicate package presents the same plugin identity under a distinct basename');
+    simplixpay_cert_note('duplicate package basenames=' . wp_json_encode(array($old_basename, $duplicate_basename)));
     return;
 }
 
 if ('verify-renamed-red' === $phase) {
     simplixpay_upgrade_verify_data($settings_key, $settings_snapshot_key, $order_key, $cron_key);
 
-    simplixpay_cert_assert(
-        !file_exists(WP_PLUGIN_DIR . '/simplixpay-upayments/UPayments.php'),
-        'hypothetical renamed package removed transitional main file'
-    );
-    simplixpay_cert_assert(
-        file_exists(WP_PLUGIN_DIR . '/simplixpay-upayments/simplixpay-upayments.php'),
-        'hypothetical renamed package contains target main file'
-    );
+    simplixpay_cert_assert(!file_exists(WP_PLUGIN_DIR . '/simplixpay-upayments/UPayments.php'), 'hypothetical renamed package removed transitional main file');
+    simplixpay_cert_assert(file_exists(WP_PLUGIN_DIR . '/simplixpay-upayments/simplixpay-upayments.php'), 'hypothetical renamed package contains target main file');
 
     $active = simplixpay_upgrade_active_plugins();
     simplixpay_cert_note('renamed candidate active_plugins=' . wp_json_encode($active));
@@ -236,10 +190,6 @@ if ('verify-renamed-red' === $phase) {
         . ' runtime_loaded=' . (class_exists('WC_Upayments', false) ? 'yes' : 'no')
     );
 
-    // RED migration-safety assertion: a safe physical rename would have to
-    // transfer activation to the new exact plugin basename and load runtime
-    // without merchant intervention. This is intentionally expected to fail
-    // if WordPress preserves the historical active basename instead.
     simplixpay_cert_assert(
         is_plugin_active($target_basename) && class_exists('WC_Upayments', false),
         'RED: physical main-file migration transfers active identity to simplixpay-upayments.php without intervention'
@@ -252,10 +202,7 @@ if ('verify-restored' === $phase) {
     simplixpay_upgrade_verify_data($settings_key, $settings_snapshot_key, $order_key, $cron_key);
 
     $recovery = get_option($recovery_key, '');
-    simplixpay_cert_assert(
-        in_array($recovery, array('yes', 'no'), true),
-        'rename rollback recovery requirement was recorded'
-    );
+    simplixpay_cert_assert(in_array($recovery, array('yes', 'no'), true), 'rename rollback recovery requirement was recorded');
     simplixpay_cert_note('rename rollback required explicit reactivation=' . $recovery);
     return;
 }
@@ -270,13 +217,7 @@ if ('cleanup' === $phase) {
     if ($product_id > 0) {
         wp_delete_post($product_id, true);
     }
-    foreach (array(
-        $settings_snapshot_key,
-        $order_key,
-        $product_key,
-        $cron_key,
-        $recovery_key,
-    ) as $key) {
+    foreach (array($settings_snapshot_key, $order_key, $product_key, $cron_key, $recovery_key) as $key) {
         delete_option($key);
     }
     simplixpay_cert_note('upgrade certification fixtures cleaned');
