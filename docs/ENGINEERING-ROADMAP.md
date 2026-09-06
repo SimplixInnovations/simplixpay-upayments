@@ -11,6 +11,25 @@ This is the public high-level sequence. `docs/project/PROJECT-STATUS.md` owns th
 5. **Security Threat-Model Closure — DONE / VERIFIED**
 6. **Architecture & Code-Quality Foundation A1-A5 — DONE / VERIFIED**
 7. **Full Automated Quality Platform Q1-Q19 — DONE / VERIFIED**
+   - Q1 locked development-toolchain foundation: **DONE / VERIFIED** through PR #26 and post-merge Quality Gates #178;
+   - Q2 CheckoutPayload boundary characterization and baseline-free static-analysis expansion: **DONE / VERIFIED** through PR #28 and post-merge Quality Gates #183;
+   - Q3 payment-concurrency characterization and baseline-free analysis for StatusRateGate/OrderLock: **DONE / VERIFIED** through PR #29 and post-merge Quality Gates #189;
+   - Q4 authenticated status transport/binding characterization and baseline-free analysis for StatusVerifier: **DONE / VERIFIED** through PR #30 and post-merge Quality Gates #195;
+   - Q5 payment-method availability cache/lock/gate/provider normalization characterization and baseline-free analysis: **DONE / VERIFIED**;
+   - Q6 gateway settings schema/validation/sanitation/rendering/admin-asset characterization and baseline-free analysis: **DONE / VERIFIED**;
+   - Q7 public order-status parsing/authorization/response characterization and baseline-free analysis: **DONE / VERIFIED** through PR #33 and post-merge Quality Gates #213;
+   - Q8 release-identity/version/updater/legacy-and-target-identity characterization and baseline-free analysis: **DONE / VERIFIED** through PR #34 and post-merge Quality Gates #219;
+   - Q9 migration-settings option/credential/mode/redaction characterization and baseline-free analysis: **DONE / VERIFIED** through PR #35 and post-merge Quality Gates #224;
+   - Q10 migration-bootstrap context/dependency/registration characterization and baseline-free analysis: **DONE / VERIFIED** through PR #36 and post-merge Quality Gates #227;
+   - Q11 subscription-composition hook/dependency/initializer characterization and baseline-free analysis: **DONE / VERIFIED** through PR #37 and post-merge Quality Gates #230;
+   - Q12 guarded subscription-product-type load/parent/type characterization and baseline-free analysis: **DONE / VERIFIED** through PR #38 and post-merge Quality Gates #232;
+   - Q13 migration CLI parsing/confirmation/bounds/redaction/error characterization and baseline-free analysis: **DONE / VERIFIED** through PR #39 and post-merge Quality Gates #237;
+   - Q14 migration-admin authorization/nonce/form/bounds/redaction/escaping characterization and baseline-free analysis: **DONE / VERIFIED** through PR #40 and post-merge Quality Gates #248;
+   - Q15 subscription-presentation product/admin/cart/account characterization and baseline-free analysis: **DONE / VERIFIED** through PR #41 and post-merge Quality Gates #254;
+   - Q16 migration-core preflight/batch/executor characterization and baseline-free analysis: **DONE / VERIFIED** through PR #42 and post-merge Quality Gates #316;
+   - Q17 payment-runtime checkout-orchestration/lifecycle characterization and baseline-free analysis: **DONE / VERIFIED** through PR #43 and post-merge Quality Gates #415;
+   - Q18 Blocks activation/availability enforcement, analyzer ownership, Woo logging correction and permanent regression coverage: **DONE / VERIFIED** through PR #44 and post-merge Quality Gates #442;
+   - Q19 subscription product-eligibility consistency: **DONE / VERIFIED** through PR #45, exact-head Quality Gates #463, squash merge `29ba16a1eabc00e25c3652ae838be9b9539b3a10` and post-merge Quality Gates #464;
 
 The numbered Quality Platform is closed at Q19. No Q20 is justified by current evidence.
 

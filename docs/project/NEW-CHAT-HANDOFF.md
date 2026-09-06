@@ -22,6 +22,10 @@ Use this file with root `AGENTS.md`, `docs/project/PROJECT-STATUS.md`, `docs/pro
 - Security Threat-Model Closure — **DONE / VERIFIED**
 - Architecture A1-A5 — **DONE / VERIFIED**
 - Quality Platform Q1-Q19 — **DONE / VERIFIED; closed at Q19**
+- Quality Platform Q16 migration-core analysis: **DONE / VERIFIED**
+- Quality Platform Q17 payment-runtime analysis: **DONE / VERIFIED**
+- Quality Platform Q18 Blocks availability enforcement: **DONE / VERIFIED**
+- Quality Platform Q19 subscription product-eligibility consistency: **DONE / VERIFIED**
 - Enterprise Task 1 quality closeout — **DONE / VERIFIED**
 - Enterprise Task 2 real compatibility matrix — **DONE / VERIFIED**
 - Enterprise Task 3 declarations — **DONE / VERIFIED**

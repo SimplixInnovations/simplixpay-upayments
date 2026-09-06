@@ -32,6 +32,7 @@ The project is still **pre-release**. No public SimplixPay 1.0 tag, GitHub Relea
 | Area | Current verified position |
 |---|---|
 | Development version | `0.1.0` |
+| Quality Platform Q1-Q19 | **DONE / VERIFIED** |
 | WordPress | 6.9 series through 7.1 in exact certified cells |
 | WooCommerce | 10.8 series through 11.1 in exact certified cells |
 | PHP | 7.4, 8.3, 8.4 in exact certified cells |

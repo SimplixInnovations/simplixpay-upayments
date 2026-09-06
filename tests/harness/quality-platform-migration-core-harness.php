@@ -102,7 +102,7 @@ foreach (array(
 q16_assert(q16_has($quality, '## Closed Q16 contract'), 'quality record preserves closed Q16 contract');
 q16_assert(q16_has($quality, '**Status:** DONE / VERIFIED (Q1-Q19)') && q16_has($quality, 'Q19 is DONE / VERIFIED'), 'quality record advances beyond Q16 and closes the numbered platform');
 q16_assert(q16_has($status, '| Quality Platform Q16 migration-core analysis | **DONE / VERIFIED** |'), 'project status preserves Q16 completion row');
-q16_assert(q16_has($status, '## Latest verified milestone — Enterprise runtime certification foundation') && q16_has($status, '## Previous verified milestone — Quality Platform Q16 migration-core analysis'), 'project status advances latest verified milestone beyond Q16 into enterprise certification');
+q16_assert(q16_has($status, '| Quality Platform Q16 migration-core analysis | **DONE / VERIFIED** |') && q16_has($status, '## Task 8 — current closeout contract'), 'project status preserves Q16 completion while advancing into Task 8 closeout');
 foreach (array(
     '3cff2fcc64053d79be7427696c86039f1b52bbfd',
     'b9cc6eafb3c7f8df36b9c5db8b2e45bb330688d2',
@@ -119,12 +119,12 @@ q16_assert(q16_has($playbook, 'Quality Platform Q16: DONE / VERIFIED; PR #42; me
 q16_assert(q16_has($playbook, 'Last verified implementation main SHA: 29ba16a1eabc00e25c3652ae838be9b9539b3a10'), 'playbook restart snapshot advances to Q19 closure main');
 q16_assert(q16_has($playbook, 'Canonical implementation tree: 8230778e3313e4d201de48b1a5cf170c42f7178d'), 'playbook restart snapshot advances to Q19 closure tree');
 q16_assert(q16_has($handoff, '- Quality Platform Q16 migration-core analysis: **DONE / VERIFIED**'), 'handoff preserves Q16 completion row');
-q16_assert(preg_match('/## Latest verified milestone — Quality Platform Q([0-9]+)/', $handoff, $q16_handoff_latest_matches) === 1 && isset($q16_handoff_latest_matches[1]) && (int) $q16_handoff_latest_matches[1] > 16, 'handoff advances latest verified milestone beyond Q16');
+q16_assert(q16_has($handoff, '- Quality Platform Q1-Q19 — **DONE / VERIFIED; closed at Q19**') && q16_has($handoff, '- Current gate — **Enterprise Release Candidate Closeout — CURRENT / FINAL VERIFICATION**'), 'handoff preserves closed Q1-Q19 state and advances into Task 8 closeout');
 q16_assert(preg_match('/\\| Quality Platform Q1-Q([0-9]+) \\| \\*\\*DONE \\/ VERIFIED\\*\\* \\|/', $readme, $q16_readme_range_matches) === 1 && isset($q16_readme_range_matches[1]) && (int) $q16_readme_range_matches[1] >= 16, 'README completion table includes Q16 or a later verified gate');
 q16_assert(q16_has($audit, '**Enterprise Compatibility Certification**') && q16_has($audit, 'every Q1-Q19 regression'), 'repository audit advances beyond Q16 into certification while preserving closed quality ownership');
 q16_assert(q16_has($audit, 'every Q1-Q19 regression'), 'repository audit requires the complete closed Q1-Q19 regression platform');
-q16_assert(q16_has($status, '| Current program gate | **Enterprise Compatibility Certification** |'), 'project status advances beyond Q16 into named certification');
-q16_assert(q16_has($readme, 'The current program gate is **Enterprise Compatibility Certification**.'), 'README advances beyond Q16 into named certification');
+q16_assert(q16_has($status, '| Current program gate | **Enterprise Release Candidate Closeout — CURRENT / FINAL VERIFICATION** |'), 'project status advances beyond Q16 into release-candidate closeout');
+q16_assert(q16_has($readme, 'The current program gate is **Enterprise Release Candidate Closeout — CURRENT / FINAL VERIFICATION**.'), 'README advances beyond Q16 into release-candidate closeout');
 q16_assert(q16_has($playbook, '- [x] Full Automated Quality Platform — **Q16 / DONE / VERIFIED** through PR #42 and post-merge Quality Gates #316.'), 'playbook preserves Q16 as completed');
 q16_assert(q16_has($playbook, '7. Enterprise Compatibility Certification — **CURRENT**.'), 'playbook advances beyond Q16 into named certification');
 q16_assert(!q16_has($audit, 'No Q18 is planned or authorized'), 'repository audit does not contradict the enterprise-risk extension policy');

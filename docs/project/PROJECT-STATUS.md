@@ -23,6 +23,7 @@
 | Security Threat-Model Closure | **DONE / VERIFIED** |
 | Architecture & Code-Quality Foundation | **DONE / VERIFIED (A1-A5)** |
 | Quality Platform Q16 migration-core analysis | **DONE / VERIFIED** |
+| Quality Platform Q17 payment-runtime analysis | **DONE / VERIFIED** |
 | Quality Platform Q1-Q19 | **DONE / VERIFIED — numbered sequence closed** |
 | Enterprise Task 1 — quality closeout | **DONE / VERIFIED** |
 | Enterprise Task 2 — executable compatibility matrix | **DONE / VERIFIED** |
@@ -34,6 +35,29 @@
 | Current program gate | **Enterprise Release Candidate Closeout — CURRENT / FINAL VERIFICATION** |
 
 No Q20 is justified. The numbered Quality Platform remains permanently closed at Q19.
+
+## Preserved Quality Platform closure evidence
+
+These are historical closure checkpoints protected by the permanent Q16/Q17 regressions. They do not own the current program gate.
+
+### Q17 payment-runtime analysis
+
+- final head: `2c5d8e9213086c88147f5d1d26247d58f1cbc81b`;
+- tree: `4dae7ad7db04fcd1466389d304e661ac0666983f`;
+- squash merge: `570dbf3501b359b16767d070d18c25a67a0c24fe`;
+- Quality Gates run #414 and post-merge Quality Gates run #415: **SUCCESS**;
+- PHPUnit: **172 tests / 1053 assertions**;
+- Q17 Payment Runtime Analysis: **97/0**.
+
+### Q16 migration-core analysis
+
+- final head: `3cff2fcc64053d79be7427696c86039f1b52bbfd`;
+- tree: `b9cc6eafb3c7f8df36b9c5db8b2e45bb330688d2`;
+- squash merge: `06a9ebd732c7cc3f062d4bb361aaef4054a1dfa3`;
+- Quality Gates run #315 and post-merge Quality Gates run #316: **SUCCESS**;
+- PHPUnit: **160 tests / 987 assertions**;
+- Q16 Migration Core Analysis: **120/0**;
+- implementation branch `quality/migration-core-analysis`: **deleted after verified merge**.
 
 ## Verified enterprise evidence through Task 7
 

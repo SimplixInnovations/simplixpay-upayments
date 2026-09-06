@@ -67,6 +67,16 @@ Do not remove or weaken:
 - real integration fixtures for activation, metadata, Blocks, HPOS, saved cards, subscriptions, multi-merchant, operations and upgrade compatibility;
 - deterministic artifact builder/verifier/harness.
 
+Permanent numbered-platform harness ratchet:
+
+- keep `tests/harness/quality-platform-migration-cli-harness.php` mandatory after Q13;
+- keep `tests/harness/quality-platform-migration-admin-harness.php` mandatory after Q14;
+- keep `tests/harness/quality-platform-subscription-presentation-harness.php` mandatory after Q15;
+- keep `tests/harness/quality-platform-migration-core-harness.php` mandatory after Q16;
+- keep `tests/harness/quality-platform-payment-runtime-harness.php` mandatory after Q17;
+- keep `tests/harness/quality-platform-blocks-availability-harness.php` mandatory permanently after Q18;
+- keep `tests/harness/quality-platform-subscription-product-eligibility-harness.php` mandatory permanently after Q19.
+
 The protected H12 job must always run and must fail when required upstream quality/syntax prerequisites fail or skip.
 
 Compatibility headers and Woo declarations require real runtime evidence; static/unit/H12 success alone cannot broaden support claims.
