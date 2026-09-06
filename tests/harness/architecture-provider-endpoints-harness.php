@@ -233,8 +233,8 @@ $gatewaySource = file_get_contents(dirname(__DIR__, 2) . '/UPayments.php');
 arch4_assert(is_string($resolverSource), 'provider endpoint resolver source is readable');
 arch4_assert(is_string($gatewaySource), 'gateway source is readable');
 arch4_assert(
-    strpos($resolverSource, 'namespace Simplix\\Pay\\UPayments\\Provider;') !== false,
-    'resolver uses the Simplix Provider namespace'
+    strpos($resolverSource, 'namespace Simplixi\\SUCheckout\\UPayments\\Provider;') !== false,
+    'resolver uses the SUCheckout Provider namespace'
 );
 arch4_assert(arch4_purity_violations($resolverSource) === array(), 'resolver token stream has no global calls, superglobals or global imports');
 arch4_assert(
