@@ -43,7 +43,7 @@ $distignore = q1_read($q1_root, '.distignore');
 $gitignore = q1_read($q1_root, '.gitignore');
 $quality_record = q1_read($q1_root, 'docs/project/QUALITY-PLATFORM.md');
 
-q1_assert(isset($composer['name']) && $composer['name'] === 'simplix-innovations/simplixpay-upayments', 'Composer package identity is canonical');
+q1_assert(isset($composer['name']) && $composer['name'] === 'simplix-innovations/sucheckout-upayments', 'Composer package identity is canonical');
 q1_assert(isset($composer['type']) && $composer['type'] === 'wordpress-plugin', 'Composer package type is WordPress plugin');
 q1_assert(isset($composer['license']) && $composer['license'] === 'MIT', 'Composer license matches repository');
 q1_assert(isset($composer['require']) && $composer['require'] === array('php' => '>=7.2'), 'Composer has no production dependency beyond declared PHP floor');
