@@ -1,10 +1,9 @@
 <?php
 /**
- * Machine-readable SUCheckout legacy-identity residue contract.
+ * Machine-readable SUCheckout retired-identity residue contract.
  *
- * Old product identity is allowed only where it is explicit historical
- * evidence, the temporary pre-rename GitHub repository coordinate, or a
- * compatibility/migration fixture that intentionally proves the old package.
+ * This gate distinguishes current/shippable identity from historical,
+ * test-only and explicitly bounded migration compatibility evidence.
  */
 
 $root = dirname(__DIR__, 2);
@@ -22,16 +21,30 @@ function sur_assert($condition, $message) {
     echo "FAIL: {$message}\n";
 }
 
-$patterns = array(
-    'SimplixPay',
-    'simplixpay-upayments',
-    'Simplix\\Pay\\UPayments',
-    'sucheckout-for-upayments',
-);
+function sur_read($root, $path) {
+    $value = @file_get_contents($root . '/' . $path);
+    return is_string($value) ? $value : '';
+}
 
+function sur_is_text_path($path) {
+    $extension = strtolower(pathinfo($path, PATHINFO_EXTENSION));
+    return in_array($extension, array('php','js','css','md','txt','json','yml','yaml','xml','sh'), true)
+        || basename($path) === 'AGENTS.md';
+}
+
+$tracked_raw = shell_exec('cd ' . escapeshellarg($root) . ' && git ls-files -z');
+sur_assert(is_string($tracked_raw) && $tracked_raw !== '', 'tracked-file inventory is available');
+$tracked = array_values(array_filter(explode("\0", (string) $tracked_raw), 'strlen'));
+
+/*
+ * Tests deliberately exercise legacy names and old package roots. Immutable
+ * historical engineering records also preserve then-current identifiers.
+ * Neither surface is a current product-identity declaration.
+ */
 $historical_prefixes = array(
     'docs/history/',
     'docs/superpowers/',
+    'tests/',
 );
 $historical_files = array(
     'CHANGELOG.md',
@@ -46,34 +59,37 @@ $historical_files = array(
     'docs/project/REPOSITORY-READINESS.md',
     'docs/project/SECURITY-THREAT-MODEL.md',
 );
-$compatibility_files = array(
+
+/*
+ * The pre-rename repository coordinate and legacy package root are allowed
+ * only where a current migration, rollback, updater, workflow or provenance
+ * contract must refer to them explicitly.
+ */
+$legacy_slug_files = array(
+    '.github/ISSUE_TEMPLATE/config.yml',
+    '.github/workflows/compatibility-certification.yml',
+    '.github/workflows/provider-sandbox-certification.yml',
+    '.github/workflows/quality-gates.yml',
     '.github/workflows/release-artifact.yml',
+    '.github/workflows/wordpress-org-submission.yml',
+    'AGENTS.md',
+    'NOTICE.md',
     'README.md',
+    'UPSTREAM.md',
     'docs/COMPATIBILITY.md',
+    'docs/ENGINEERING-ROADMAP.md',
+    'docs/project/ENTERPRISE-CERTIFICATION.md',
+    'docs/project/NEW-CHAT-HANDOFF.md',
     'docs/project/PROJECT-STATUS.md',
     'docs/project/RELEASE-ENGINEERING.md',
     'scripts/install-wp-test-environment.sh',
-    'tests/integration/UpgradeCompatibilityTest.php',
+    'src/Migration/MigrationAdmin.php',
+    'src/Migration/MigrationBootstrap.php',
 );
 
-$tracked = shell_exec('cd ' . escapeshellarg($root) . ' && git ls-files -z');
-sur_assert(is_string($tracked) && $tracked !== '', 'tracked-file inventory is available');
 $unexpected = array();
-
-foreach (explode("\0", (string) $tracked) as $path) {
-    if ($path === '' || !is_file($root . '/' . $path)) {
-        continue;
-    }
-
-    $extension = strtolower(pathinfo($path, PATHINFO_EXTENSION));
-    if (!in_array($extension, array('php','js','css','md','txt','json','yml','yaml','xml','sh'), true)
-        && basename($path) !== 'AGENTS.md'
-    ) {
-        continue;
-    }
-
-    $source = @file_get_contents($root . '/' . $path);
-    if (!is_string($source)) {
+foreach ($tracked as $path) {
+    if (!is_file($root . '/' . $path) || !sur_is_text_path($path)) {
         continue;
     }
 
@@ -84,19 +100,37 @@ foreach (explode("\0", (string) $tracked) as $path) {
             break;
         }
     }
-    $is_compatibility = in_array($path, $compatibility_files, true);
+    if ($is_historical) {
+        continue;
+    }
 
-    foreach ($patterns as $pattern) {
-        if (strpos($source, $pattern) === false) {
-            continue;
+    $source = sur_read($root, $path);
+
+    // Retired human product names must not survive on current/live surfaces.
+    foreach (array('SimplixPay for UPayments', 'SimplixPay UPayments') as $retired_human) {
+        if (strpos($source, $retired_human) !== false) {
+            $unexpected[] = $path . ' :: ' . $retired_human;
         }
-        if ($is_historical) {
-            continue;
-        }
-        if ($is_compatibility && $pattern === 'simplixpay-upayments') {
-            continue;
-        }
-        $unexpected[] = $path . ' :: ' . $pattern;
+    }
+
+    // Retired first-party PHP namespace must not survive outside history/tests.
+    if (strpos($source, 'Simplix\\Pay\\UPayments') !== false) {
+        $unexpected[] = $path . ' :: Simplix\\Pay\\UPayments';
+    }
+
+    // The forbidden "for" technical form may appear only in the naming
+    // standard that declares it forbidden and in this regression harness.
+    if (strpos($source, 'sucheckout-for-upayments') !== false
+        && $path !== 'docs/project/NAMING-IDENTITY-STANDARD.md'
+        && $path !== 'tests/harness/sucheckout-residue-harness.php'
+    ) {
+        $unexpected[] = $path . ' :: sucheckout-for-upayments';
+    }
+
+    if (strpos($source, 'simplixpay-upayments') !== false
+        && !in_array($path, $legacy_slug_files, true)
+    ) {
+        $unexpected[] = $path . ' :: simplixpay-upayments';
     }
 }
 
@@ -104,7 +138,22 @@ $unexpected = array_values(array_unique($unexpected));
 foreach ($unexpected as $item) {
     echo "UNEXPLAINED: {$item}\n";
 }
-sur_assert($unexpected === array(), 'no unexplained retired first-party identity remains');
+sur_assert($unexpected === array(), 'no unexplained retired identity remains on live/shippable surfaces');
+
+$current_identity_contracts = array(
+    'README.md' => array('SUCheckout for UPayments', 'sucheckout-upayments'),
+    'AGENTS.md' => array('SUCheckout for UPayments', 'Simplixi\\SUCheckout\\UPayments'),
+    'docs/project/PROJECT-STATUS.md' => array('SUCheckout for UPayments', 'sucheckout-upayments'),
+    'docs/project/NAMING-IDENTITY-STANDARD.md' => array('SUCheckout for UPayments', 'Simplixi\\SUCheckout\\UPayments'),
+    'composer.json' => array('simplix-innovations/sucheckout-upayments', 'Simplixi\\\\SUCheckout\\\\UPayments\\\\'),
+);
+foreach ($current_identity_contracts as $contract_path => $needles) {
+    $source = sur_read($root, $contract_path);
+    sur_assert($source !== '', 'current identity source readable: ' . $contract_path);
+    foreach ($needles as $needle) {
+        sur_assert(strpos($source, $needle) !== false, $contract_path . ' contains canonical identity: ' . $needle);
+    }
+}
 
 echo "\nSUCheckout Residue: {$pass} PASS / {$fail} FAIL\n";
 exit($fail === 0 ? 0 : 1);
