@@ -1154,7 +1154,7 @@ function woocommerceUpaymentsInit() {
          */
         public function enqueue_scripts() {
             $plugin_url = plugin_dir_url( __FILE__ );
-            wp_enqueue_style('customer-new-style', $plugin_url . 'assets/css/customer.css', array(), '3.0.0' );
+            wp_enqueue_style('sucheckout-upayments-customer', $plugin_url . 'assets/css/customer.css', array(), '3.0.0' );
             // Check if we are on the checkout page AND the gateway is active
             if ( ! is_checkout() || ! $this->is_available() ) {
                 return;
@@ -1166,14 +1166,14 @@ function woocommerceUpaymentsInit() {
             if (is_checkout() && !is_wc_endpoint_url()) {
                 if ($this->get_option('use_new_design') == 'yes') {
                     // Load New Design specific resources (Modal handling, modern API SDK)
-                    wp_enqueue_style('custom-checkout-new-style', $plugin_url . 'assets/css/new-design.css', array(), '3.0.0' );
-                    wp_enqueue_script('custom-checkout-script', $plugin_url . 'assets/js/new-upay.js', array('jquery'), '3.0.0', true );
+                    wp_enqueue_style('sucheckout-upayments-checkout-new-style', $plugin_url . 'assets/css/new-design.css', array(), '3.0.0' );
+                    wp_enqueue_script('sucheckout-upayments-checkout-new-script', $plugin_url . 'assets/js/new-upay.js', array('jquery'), '3.0.0', true );
                 } else {
                     // Load Old Design specific resources (Inline form handling, legacy API SDK)
-                    wp_enqueue_style('custom-checkout-old-style', $plugin_url . 'assets/css/old-design.css', array(), '3.0.0' );
-                    wp_enqueue_script('custom-checkout-old-script', $plugin_url . 'assets/js/old-upay.js', array('jquery'), '3.0.0', true );
+                    wp_enqueue_style('sucheckout-upayments-checkout-legacy-style', $plugin_url . 'assets/css/old-design.css', array(), '3.0.0' );
+                    wp_enqueue_script('sucheckout-upayments-checkout-legacy-script', $plugin_url . 'assets/js/old-upay.js', array('jquery'), '3.0.0', true );
                 }
-                wp_enqueue_script('upayments-subscription-checkout', $plugin_url. 'assets/js/subscription-checkout.js', array('jquery'),'3.0.0',true);
+                wp_enqueue_script('sucheckout-upayments-subscription-checkout', $plugin_url. 'assets/js/subscription-checkout.js', array('jquery'),'3.0.0',true);
                 wp_localize_script('upayments-subscription-checkout', 'wcUser', [
                     'isLoggedIn' => is_user_logged_in(),
                     'userId'     => get_current_user_id(),
