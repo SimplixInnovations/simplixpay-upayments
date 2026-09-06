@@ -1624,12 +1624,13 @@ class CustomerTokenIdentity {
         $meta_prefix = '_upay_customer_token_v2_b' . $blog_id . '_';
         $escaped_prefix = $wpdb->esc_like($meta_prefix);
 
-        $prepared_query = $wpdb->prepare(
-            "SELECT meta_key FROM {$wpdb->usermeta} WHERE user_id = %d AND meta_key LIKE %s",
-            $user_id,
-            $escaped_prefix . '%'
+        $meta_keys = $wpdb->get_col(
+            $wpdb->prepare(
+                "SELECT meta_key FROM {$wpdb->usermeta} WHERE user_id = %d AND meta_key LIKE %s",
+                $user_id,
+                $escaped_prefix . '%'
+            )
         );
-        $meta_keys = $wpdb->get_col($prepared_query);
 
         if (!is_array($meta_keys)) {
             return array('state' => 'read_failure', 'reason' => 'db_query_failed');
