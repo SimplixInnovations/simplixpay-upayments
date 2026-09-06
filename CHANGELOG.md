@@ -125,7 +125,7 @@ The project is still in pre-release engineering hardening. Entries below are eng
 - Adds process-isolated deterministic PHPUnit characterization for checkout/reconciliation order-ID boundaries, callback merge behavior and provider-bound payment-runtime inputs.
 - Hardens canonical Woo order IDs, terminal-newline currency/IBAN boundaries and same-second Charge-attempt identity while preserving the provider-facing 32-lowercase-hex order-ID shape.
 - Preserves authenticated status binding, lock/rebind TOCTOU protection, attempt-scoped cursor rotation, Woo `payment_complete()` semantics, no-resurrection rules and bounded reconciliation; legacy CAPTURED/payment metadata is now staged only after Woo paid-state + transaction-ID postconditions succeed.
-- Q17 closed the bounded payment-runtime tranche through PR #43 and verified merge `570dbf3501b359b16767d070d18c25a67a0c24fe`; Q18 is now current.
+- Q17 closed the bounded payment-runtime tranche through PR #43 and verified merge `570dbf3501b359b16767d070d18c25a67a0c24fe`; Q18 subsequently closed through PR #44 and verified merge `fe572d2bed5a7250ea98e5b5935c19f1cc6b3246`.
 
 ### Full Automated Quality Platform — Q16 Migration Core Analysis — DONE / VERIFIED
 
