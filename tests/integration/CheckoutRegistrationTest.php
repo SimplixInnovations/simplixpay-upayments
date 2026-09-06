@@ -40,7 +40,7 @@ $cases = array(
 );
 
 foreach ($cases as $label => $case) {
-    update_option('woocommerce_upayments_settings', $case['settings']);
+    simplixpay_cert_store_option_raw('woocommerce_upayments_settings', $case['settings']);
 
     $registry = new Automattic\WooCommerce\Blocks\Payments\PaymentMethodRegistry();
     $registry->initialize();
@@ -56,5 +56,5 @@ foreach ($cases as $label => $case) {
     );
 }
 
-update_option('woocommerce_upayments_settings', $original_settings);
+simplixpay_cert_store_option_raw('woocommerce_upayments_settings', $original_settings);
 simplixpay_cert_note('Blocks registration and availability certification complete');
