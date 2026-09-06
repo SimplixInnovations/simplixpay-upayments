@@ -1,59 +1,89 @@
 # Compatibility Matrix
 
-This document separates **provider/upstream capability claims** from **SimplixPay UPayments verification**. A feature is not marked **Verified** until it has passed a documented reproducible environment and the supporting evidence has been reviewed.
+This document separates **provider/upstream capability claims** from **SimplixPay UPayments verification**. A feature is marked **Verified** only when it has passed a documented reproducible environment and the supporting evidence has been reviewed.
 
-> Current project posture: **pre-release Enterprise Compatibility Certification**. Repository readiness, Phase 0 release identity/updater ownership, Phase 9I historical token-identity migration, Provider Contract & Payment Lifecycle, Security Threat-Model Closure, Architecture A1-A5 and Quality Platform Q1-Q19 are DONE / VERIFIED. The runtime bootstrap still carries transitional physical basename/text-domain compatibility identities pending a separately proven distribution migration. Neither green Q1-Q19/H12 CI nor the absence of a known defect is a broad compatibility certification.
+> Current project posture: **pre-release Enterprise Compatibility Certification**. Repository readiness, Phase 0, Phase 9I, Provider Contract & Payment Lifecycle, Security Threat-Model Closure, Architecture A1-A5 and Quality Platform Q1-Q19 are DONE / VERIFIED. The core WordPress/WooCommerce/PHP runtime matrix, Classic gateway registration, standard Cart/Checkout Blocks registration/availability and HPOS order CRUD are now independently verified on the exact matrix below. This is not broad feature, provider, multilingual, browser, performance or production certification.
 
 | Area | Provider/upstream position | Simplix status | Notes |
 |---|---|---|---|
-| Classic WooCommerce Checkout | Supported upstream | Pending regression certification | Core integration path; broad certification pending. |
-| Cart/Checkout Blocks — standard products | UPayments documents support | Pending independent certification | Registration and real checkout behavior must both be tested. |
-| Blocks — subscription/tokenization | UPayments guidance has historically favored Classic for subscription reliability | Pending validation | Test separately from standard products and saved-card flows. |
-| HPOS | No current Simplix certification | Runtime certification required | Source/payment hardening is closed; HPOS enabled/disabled order behavior must still pass the executable certification matrix before any Woo feature declaration. |
+| Classic WooCommerce Checkout registration/runtime bootstrap | Supported upstream | **Verified** | Real WooCommerce gateway registry contains exact ID `upayments` in every certified matrix cell. Provider payment completion remains separately governed by the closed Payment Lifecycle contract and provider sandbox certification. |
+| Cart/Checkout Blocks — standard payment-method registration/availability | UPayments documents support | **Verified** | Real Woo Blocks registry loads `upayments`; enabled/disabled/fresh-default/malformed-settings behavior passes the Q18 contract in every certified matrix cell. |
+| Blocks — subscription/tokenization end-to-end | Provider/account behavior dependent | Pending feature certification | Registration is verified, but recurring/tokenized end-to-end payment behavior is a separate feature matrix. |
+| HPOS | WooCommerce stable feature | **Verified / declared compatible** | Legacy and HPOS authoritative storage both pass real Woo order create/reload/delete CRUD while preserving payment method identity and protected UPayments metadata across every certified matrix cell. |
 | WPML / String Translation | Historical upstream defect reproduced | Fix implemented — certification pending | Existing remediation remains subject to full WPML/WCML validation and planned text-domain identity migration. |
 | Multicurrency / WCML | Provider/platform dependent | Audit required | Currency amount/source/provider semantics and display/charge consistency require dedicated testing. |
 | RTL / Arabic | Platform/theme capability | Audit required | Admin/checkout/account UI and provider return/error flows require dedicated validation. |
 | My Account / theme interoperability | Historical generic CSS conflict reproduced | Fix implemented — certification pending | Cross-theme/device/accessibility validation remains open. |
-| PHP versions | WordPress 7.0/7.1 support PHP 7.4–8.5; WooCommerce recommends PHP 8.3+ | Runtime certification required | Current plugin header remains transitional until exact SimplixPay matrix cells prove a support floor and ceiling. |
-| WordPress versions | WordPress 7.1 is the current maintained release line | Runtime certification required | `Requires at least` / `Tested up to` remain unchanged until exact SimplixPay matrix cells pass. |
-| WooCommerce versions | WooCommerce 11.1.0 is the current stable release | Runtime certification required | `WC requires at least` / `WC tested up to` will be added only from exact SimplixPay matrix evidence. |
-| Saved cards / tokenization | Upstream feature | H12 identity hardening + Phase 9I migration engineering verified; runtime certification pending | Existing-store migration contracts are closed and permanent regressions; real WordPress/WooCommerce feature certification remains open. |
-| Multi-merchant | Upstream feature | Provider contract hardened; runtime certification pending | Current supported scope remains one additional merchant allocation with exact amount/routing rules; broader split routing is not certified. |
-| Webhook payment updates | `notificationUrl` documented by UPayments | Audit required | Validation, idempotency, order matching, replay/failure behavior pending. |
-| Payment status verification | UPayments status API exists | Provider/lifecycle contract verified; runtime/provider certification pending | Authenticated status binding, bounded reconciliation and fail-closed lifecycle semantics are permanent regressions; live environment behavior remains separately certifiable. |
-| Refunds | UPayments refund capability exists | Audit required | Full/partial/idempotency/reconciliation semantics pending. |
-| Subscriptions / auto deduction | Upstream feature | Targeted safety hardening exists; broad certification pending | Concurrency/idempotency/lifecycle/recovery matrix remains open. |
-| Wallet methods | Provider capability varies by environment/account | Audit required | Apple Pay/Google Pay/Samsung Pay and related method availability must be tested against real provider/account requirements. |
+| PHP versions | WordPress/WooCommerce version-dependent | **Verified: PHP 7.4, 8.3, 8.4 in exact cells below** | PHP 7.4 is EOL and is a compatibility floor, not the recommended production runtime. PHP 8.3+ remains the recommended modern target. |
+| WordPress versions | Current maintained line 7.1 | **Verified: 6.9.7, 7.0.4, 7.1** | Public metadata: `Requires at least: 6.9`; `Tested up to: 7.1`. |
+| WooCommerce versions | Current stable line 11.1 | **Verified: 10.8.1, 11.0.1, 11.1.0 in exact cells below** | Public metadata: `WC requires at least: 10.8`; `WC tested up to: 11.1`. |
+| Saved cards / tokenization | Upstream feature | H12 identity hardening verified; end-to-end certification pending | H12/Phase 9I protect identity/provenance; live provider retrieval/charge feature matrix remains separate. |
+| Multi-merchant | Upstream feature | Bounded contract verified; provider certification pending | Current support remains one additional merchant allocation only; end-to-end sandbox/provider validation remains open. |
+| Webhook payment updates | `notificationUrl` documented by UPayments | Authenticated-status lifecycle verified; provider signature unresolved | Browser/webhook payload remains non-authoritative; authenticated Get Payment Status is financial truth. |
+| Payment status verification | UPayments status API exists | Local lifecycle contract verified; sandbox certification pending | Host/TLS/schema/binding/retry/rate semantics are permanently regression-tested. |
+| Refunds | UPayments refund capability exists | **Unsupported** | Automatic Woo refunds remain intentionally unsupported pending durable idempotency/reconciliation design. |
+| Subscriptions / auto deduction | Upstream feature | Targeted safety hardening exists; broad certification pending | Concurrency/idempotency/lifecycle/recovery provider matrix remains open. |
+| Wallet methods | Provider capability varies by environment/account | Audit required | UPayments sandbox does not provide full Apple Pay/Google Pay/Samsung Pay completion coverage; availability and production-account behavior require separate evidence. |
 | Accessibility | WooCommerce/theme/browser dependent | Audit required | Keyboard, focus, screen-reader, contrast and error-state testing pending. |
 | Browser/device matrix | Platform dependent | Audit required | Desktop/mobile and supported browser/device matrix not yet certified. |
 | Performance/stability | Platform/store dependent | Audit required | No public performance badge/claim until repeatable regression thresholds exist. |
 
-## H12 baseline scope
+## Verified core runtime matrix
 
-Current CI reproduces the custom H12 regression baseline:
+Every row below runs in a fresh real WordPress/WooCommerce/MySQL installation. Each combination is executed with both **legacy posts/order storage** and **HPOS authoritative storage**.
 
-- PHP: **1927 PASS / 0 FAIL**;
-- Blocks: **144 PASS / 0 FAIL**.
+The certification asserts:
 
-That baseline protects specific payment/token/harness contracts already characterized. It does **not** establish general WordPress/WooCommerce/PHP/HPOS/Blocks/WPML/browser/device/performance support.
+- SimplixPay activation succeeds with malformed pre-existing gateway settings and does not mutate the complete serialized protected option;
+- the activation callback actually executes;
+- Classic gateway ID `upayments` registers;
+- the real Woo Blocks payment registry registers `upayments` and enforces exact availability semantics;
+- the public support metadata matches the matrix-derived values;
+- WooCommerce reports both `cart_checkout_blocks` and `custom_order_tables` as compatible features;
+- a real Woo order can be created, saved, reloaded and deleted through CRUD while preserving SimplixPay payment identity and protected UPayments order metadata.
+
+| WordPress | WooCommerce | PHP | Legacy storage | HPOS |
+|---|---|---:|---|---|
+| 7.1 | 11.1.0 | 8.4 | **Verified** | **Verified** |
+| 7.1 | 11.1.0 | 8.3 | **Verified** | **Verified** |
+| 7.0.4 | 11.1.0 | 8.3 | **Verified** | **Verified** |
+| 7.0.4 | 11.0.1 | 8.3 | **Verified** | **Verified** |
+| 7.0.4 | 10.8.1 | 8.3 | **Verified** | **Verified** |
+| 7.1 | 10.8.1 | 8.3 | **Verified** | **Verified** |
+| 6.9.7 | 10.8.1 | 8.3 | **Verified** | **Verified** |
+| 6.9.7 | 10.8.1 | 7.4 | **Verified** | **Verified** |
+
+WooCommerce 11.1 requires WordPress 7.0+, so WordPress 6.9 / WooCommerce 11.1 is intentionally not a certification cell.
+
+## Permanent regression baseline
+
+The custom Q1-Q19/H12 platform remains mandatory beside the real compatibility matrix:
+
+- H12 PHP: **1927 PASS / 0 FAIL**;
+- H12 Blocks: **144 PASS / 0 FAIL**;
+- Quality Platform Q1-Q19: **DONE / VERIFIED**.
+
+That baseline protects specific payment/token/migration/security contracts. It does not substitute for the separate feature/provider/browser/performance/release certification still listed as pending above.
 
 ## Evidence rule
 
-A Simplix **Verified** entry must identify exact WordPress, WooCommerce and PHP versions plus checkout mode, HPOS state, multilingual/multicurrency state, relevant plugin/theme/browser versions and the payment feature exercised. Validation must be reproducible and linked to test/CI/review evidence where practical.
+A Simplix **Verified** entry must identify exact WordPress, WooCommerce and PHP versions plus checkout mode, HPOS state and the feature exercised. Validation must be reproducible and linked to CI/review evidence where practical.
 
-Compatibility status values should mean:
+Compatibility status values mean:
 
 - **Verified** — independently tested against a documented environment and evidence set;
 - **Known issue** — reproducible defect tracked for remediation;
 - **Fix implemented — certification pending** — source remediation exists but required runtime matrix is incomplete;
 - **Provider/upstream claim** — documented externally but not independently certified here;
-- **Audit required / Pending validation** — no Simplix certification yet.
+- **Audit required / Pending validation** — no Simplix certification yet;
+- **Unsupported** — intentionally not implemented/advertised.
 
 ## Primary documentation
 
 ### UPayments
 
 - WooCommerce integration: https://developers.upayments.com/reference/woocommerce
+- Test environment: https://developers.upayments.com/reference/test-environment-details
 - Webhooks: https://developers.upayments.com/reference/webhook
 - Payment status: https://developers.upayments.com/reference/checkpaymentstatus
 - Saved cards: https://developers.upayments.com/reference/retrievecustomercards
@@ -66,4 +96,4 @@ Compatibility status values should mean:
 
 ## Public-claim rule
 
-Do not add WordPress/WooCommerce/PHP/HPOS/Blocks/WPML/performance compatibility badges merely because the plugin loads or H12 CI is green. Public badges must correspond to an independently verified matrix recorded here.
+Do not broaden WordPress/WooCommerce/PHP/HPOS/Blocks/WPML/performance claims beyond the exact verified evidence above. A green neighboring version, static analyzer or H12 run is not evidence for an untested environment or feature.
