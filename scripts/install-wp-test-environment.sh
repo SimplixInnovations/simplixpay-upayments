@@ -35,7 +35,29 @@ mkdir -p "$WP_PATH"
 
 PLUGIN_PATH="$WP_PATH/wp-content/plugins/simplixpay-upayments"
 rm -rf "$PLUGIN_PATH"
-ln -s "$GITHUB_WORKSPACE" "$PLUGIN_PATH"
+
+if [[ -n "${SIMPLIXPAY_PLUGIN_ZIP:-}" ]]; then
+  [[ -f "$SIMPLIXPAY_PLUGIN_ZIP" ]] || {
+    echo "SimplixPay release ZIP not found: $SIMPLIXPAY_PLUGIN_ZIP" >&2
+    exit 68
+  }
+
+  "$WP_CLI_BIN" plugin install "$SIMPLIXPAY_PLUGIN_ZIP" \
+    --path="$WP_PATH" \
+    --force \
+    --quiet
+
+  [[ -d "$PLUGIN_PATH" && ! -L "$PLUGIN_PATH" ]] || {
+    echo "Packaged plugin was not installed as a real directory: $PLUGIN_PATH" >&2
+    exit 69
+  }
+  [[ -f "$PLUGIN_PATH/UPayments.php" ]] || {
+    echo "Packaged plugin is missing transitional main file UPayments.php" >&2
+    exit 70
+  }
+else
+  ln -s "$GITHUB_WORKSPACE" "$PLUGIN_PATH"
+fi
 
 ACTUAL_WP="$("$WP_CLI_BIN" core version --path="$WP_PATH")"
 ACTUAL_WC="$("$WP_CLI_BIN" plugin get woocommerce --field=version --path="$WP_PATH")"
