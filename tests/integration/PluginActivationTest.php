@@ -14,7 +14,7 @@ if ('seed' === $phase) {
         'enable_block_checkout' => 'no',
     );
 
-    update_option('woocommerce_upayments_settings', $sentinel);
+    simplixpay_cert_store_option_raw('woocommerce_upayments_settings', $sentinel);
 
     $stored = get_option('woocommerce_upayments_settings');
     simplixpay_cert_assert(is_object($stored), 'malformed object-valued gateway settings are persisted before activation');
