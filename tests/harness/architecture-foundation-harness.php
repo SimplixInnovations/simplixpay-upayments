@@ -618,7 +618,7 @@ arch_assert(is_file($root . '/tests/harness/architecture-payment-method-availabi
 
 $gatewaySettings = arch_read($root, 'src/Admin/GatewaySettings.php');
 arch_assert($gatewaySettings !== '', 'A3 gateway settings service exists');
-arch_assert(arch_contains($gatewaySettings, 'namespace Simplix\Pay\UPayments\Admin;'), 'A3 settings service uses the Simplix Admin namespace');
+arch_assert(arch_contains($gatewaySettings, 'namespace Simplixi\SUCheckout\UPayments\Admin;'), 'A3 settings service uses the Simplix Admin namespace');
 arch_assert(is_file($root . '/tests/harness/architecture-gateway-settings-harness.php'), 'A3 gateway settings harness exists');
 
 printf("\nArchitecture Foundation: %d PASS / %d FAIL\n", $pass, $fail);
