@@ -27,6 +27,7 @@ use Simplix\Pay\UPayments\Payment\CheckoutOrchestrator;
 final class CheckoutOrchestratorGateway {
     public $domain = 'upayments';
     public $paymentData = array('whitelabled' => false);
+    public $paymentIconCalls = 0;
     public $autoDeduction = 'no';
     public $saveCardEnabled = 'no';
     public $multiMerchant = 'no';
@@ -39,6 +40,7 @@ final class CheckoutOrchestratorGateway {
     public $logs = array();
 
     public function getPaymentIcons() {
+        $this->paymentIconCalls++;
         return $this->paymentData;
     }
 
@@ -179,6 +181,7 @@ final class CheckoutOrchestratorTest extends TestCase {
         );
 
         $gateway = new CheckoutOrchestratorGateway();
+        $gateway->paymentData = null;
         $product = new \WC_Product('custom_type', 789);
         $order = new \WC_Order(
             42,
@@ -207,6 +210,7 @@ final class CheckoutOrchestratorTest extends TestCase {
 
         self::assertSame('failure', $result['result']);
         self::assertSame(0, $request_body_calls);
+        self::assertSame(0, $gateway->paymentIconCalls);
         self::assertSame(array(), $provider_requests);
         self::assertContains(
             array('warning', 'Subscription plan rejected: product-level opt-out.'),
@@ -222,6 +226,7 @@ final class CheckoutOrchestratorTest extends TestCase {
         $_SERVER['REQUEST_URI'] = '/wp-json/wc/store/v1/checkout';
 
         $gateway = new CheckoutOrchestratorGateway();
+        $gateway->paymentData = null;
         $product = new \WC_Product('custom_type', 789);
         $order = new \WC_Order(
             42,
@@ -257,6 +262,7 @@ final class CheckoutOrchestratorTest extends TestCase {
 
         self::assertSame('failure', $result['result']);
         self::assertSame(1, $request_body_calls);
+        self::assertSame(0, $gateway->paymentIconCalls);
         self::assertSame(array(), $provider_requests);
         self::assertContains(
             array('warning', 'Subscription plan rejected: product-level opt-out.'),
