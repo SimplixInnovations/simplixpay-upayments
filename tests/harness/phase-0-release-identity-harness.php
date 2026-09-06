@@ -58,9 +58,10 @@ require_once $identity_path;
 use Simplix\Pay\UPayments\Release\Identity;
 
 // Public product header: Simplix-owned, independent 0.x version line.
-p0_assert(p0_header_value($bootstrap, 'Plugin Name') === Identity::PRODUCT_NAME, 'plugin name is canonical SimplixPay product name');
-p0_assert(p0_header_value($bootstrap, 'Plugin URI') === 'https://github.com/' . Identity::REPOSITORY, 'plugin URI is canonical Simplix repository');
-p0_assert(p0_header_value($bootstrap, 'Description') === 'Independently engineered UPayments payment integration for WooCommerce by Simplix Innovations.', 'plugin description is canonical public positioning');
+// Header/public metadata migration is intentionally deferred to the dedicated i18n/metadata tranche.
+p0_assert(p0_header_value($bootstrap, 'Plugin Name') === 'SimplixPay for UPayments', 'legacy public header remains until metadata migration tranche');
+p0_assert(p0_header_value($bootstrap, 'Plugin URI') === 'https://github.com/SimplixInnovations/simplixpay-upayments', 'legacy plugin URI remains until metadata migration tranche');
+p0_assert(p0_header_value($bootstrap, 'Description') === 'Independently engineered UPayments payment integration for WooCommerce by Simplix Innovations.', 'plugin description remains provider-accurate during identity transition');
 p0_assert(p0_header_value($bootstrap, 'Version') === Identity::VERSION, 'header version matches canonical release identity');
 p0_assert(p0_header_value($bootstrap, 'Author') === 'Simplix Innovations', 'plugin author is Simplix Innovations');
 p0_assert(p0_header_value($bootstrap, 'Author URI') === 'https://simplixi.com', 'author URI is Simplix');
