@@ -12,7 +12,7 @@
 | WordPress text domain | `sucheckout-upayments` |
 | Composer namespace | `Simplixi\SUCheckout\UPayments` |
 | Current development version | **0.1.0** |
-| Production maturity | **Pre-release / identity migration and exact-head re-certification** |
+| Production maturity | **Pre-release / SUCheckout migration implemented; exact-head certification required** |
 | Public stable release | **NO** |
 | WordPress.org release | **NO** |
 | Historical Quality Platform Q1-Q19 | **DONE / VERIFIED — numbered sequence permanently closed** |
@@ -24,7 +24,7 @@
 | Official WordPress Plugin Check gate | **IMPLEMENTED — CI certification required on exact head** |
 | Repository rename | **OWNER/ADMIN ACTION AFTER MERGE** |
 | GitHub Release / tag / WordPress.org publication | **NOT AUTHORIZED BY THIS ENGINEERING MIGRATION** |
-No Q20 is justified. The numbered Quality Platform remains closed at Q19. The active work is a bounded pre-release product-identity migration and re-certification, not a new Q phase.
+No Q20 is justified. The numbered Quality Platform remains closed at Q19. The SUCheckout identity migration is implemented; remaining pre-release work is bounded exact-head certification and owner-controlled release administration, not a new Q phase.
 ## Canonical first-party identity
 The approved SUCheckout identity is:
 - human name: **SUCheckout for UPayments**;
