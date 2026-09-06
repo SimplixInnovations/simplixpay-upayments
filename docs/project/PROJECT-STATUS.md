@@ -1,16 +1,10 @@
 # SimplixPay for UPayments — Project Status
 
 **Status document:** canonical living engineering state
-
 **Last updated:** 2026-09-06
-
 **Canonical repository:** `SimplixInnovations/simplixpay-upayments`
 
-**Historical audit archive:** `SimplixInnovations/upayments-woocommerce`
-
-**Provider upstream:** `upaymentskwt/woocommerce`
-
-> Live GitHub/source evidence always wins over recorded SHAs. Recorded SHAs are verified milestone anchors, not substitutes for a fresh remote check.
+> Live GitHub/source evidence wins over recorded SHAs. Historical phase records preserve what was true at their close; this file owns the current state.
 
 ## Current program state
 
@@ -19,744 +13,140 @@
 | Product | **SimplixPay for UPayments** |
 | Canonical slug | `simplixpay-upayments` |
 | Current development version | **0.1.0** |
-| Production maturity | **Pre-release engineering hardening** |
-| Stable SimplixPay release | **NO** |
+| Production maturity | **Pre-release / release-candidate qualification** |
+| Stable SimplixPay release | **NO — no public 1.0/tag/release yet** |
 | WordPress.org release | **NO** |
-| H12 token-identity hardening | **DONE / VERIFIED** |
-| Repository foundation/readiness | **DONE / VERIFIED** |
+| Repository Foundation & Readiness | **DONE / VERIFIED** |
 | Phase 0 — release identity/updater ownership | **DONE / VERIFIED** |
 | Phase 9I — historical token-identity migration | **DONE / VERIFIED** |
 | Provider Contract & Payment Lifecycle | **DONE / VERIFIED** |
 | Security Threat-Model Closure | **DONE / VERIFIED** |
-| Architecture & Code-Quality Foundation | **DONE / VERIFIED (DISCOVERY + A1-A5)** |
-| Quality Platform Q1 foundation | **DONE / VERIFIED** |
-| Quality Platform Q2 CheckoutPayload analysis | **DONE / VERIFIED** |
-| Quality Platform Q3 payment-concurrency analysis | **DONE / VERIFIED** |
-| Quality Platform Q4 authenticated-status analysis | **DONE / VERIFIED** |
-| Quality Platform Q5 payment-method availability analysis | **DONE / VERIFIED** |
-| Quality Platform Q6 gateway-settings analysis | **DONE / VERIFIED** |
-| Quality Platform Q7 public-order-status analysis | **DONE / VERIFIED** |
-| Quality Platform Q8 release-identity analysis | **DONE / VERIFIED** |
-| Quality Platform Q9 migration-settings analysis | **DONE / VERIFIED** |
-| Quality Platform Q10 migration-bootstrap analysis | **DONE / VERIFIED** |
-| Quality Platform Q11 subscription-composition analysis | **DONE / VERIFIED** |
-| Quality Platform Q12 subscription-product-type analysis | **DONE / VERIFIED** |
-| Quality Platform Q13 migration-CLI analysis | **DONE / VERIFIED** |
-| Quality Platform Q14 migration-admin analysis | **DONE / VERIFIED** |
-| Quality Platform Q15 subscription-presentation analysis | **DONE / VERIFIED** |
+| Architecture & Code-Quality Foundation | **DONE / VERIFIED (A1-A5)** |
 | Quality Platform Q16 migration-core analysis | **DONE / VERIFIED** |
 | Quality Platform Q17 payment-runtime analysis | **DONE / VERIFIED** |
-| Quality Platform Q18 Blocks availability enforcement | **DONE / VERIFIED** |
-| Quality Platform Q19 subscription product eligibility | **DONE / VERIFIED** |
-| Enterprise runtime certification foundation (PR #47) | **DONE / VERIFIED** |
-| Core WP/Woo/PHP runtime matrix | **VERIFIED — 16/16 real runtime/storage cells** |
-| Classic + standard Blocks registration/availability | **VERIFIED** |
-| HPOS legacy/on authoritative storage CRUD | **VERIFIED** |
-| Current program gate | **Enterprise Compatibility Certification** |
+| Quality Platform Q1-Q19 | **DONE / VERIFIED — numbered sequence closed** |
+| Enterprise Task 1 — quality closeout | **DONE / VERIFIED** |
+| Enterprise Task 2 — executable compatibility matrix | **DONE / VERIFIED** |
+| Enterprise Task 3 — support metadata + Woo declarations | **DONE / VERIFIED** |
+| Enterprise Task 4 — bounded provider sandbox | **DONE / VERIFIED** |
+| Enterprise Task 5 — deterministic release artifact | **DONE / VERIFIED** |
+| Enterprise Task 6 — feature/operations boundaries | **DONE / VERIFIED** |
+| Enterprise Task 7 — existing-install identity decision | **DONE / VERIFIED** |
+| Current program gate | **Enterprise Release Candidate Closeout — CURRENT / FINAL VERIFICATION** |
 
-The plugin remains a pre-release engineering project. Architecture discovery/A1-A5 and Quality Platform Q1-Q19 are DONE / VERIFIED, and the real-runtime Enterprise Compatibility foundation is DONE / VERIFIED through PR #47. The numbered Quality Platform remains closed at Q19; no Q20 is justified by current evidence. Enterprise Compatibility Certification continues with evidence-derived public declarations plus provider/feature/multilingual/browser/performance certification before Product Readiness and Release Engineering. None of these completed milestones constitutes broad provider-host, penetration-test, PCI/compliance, feature, performance or release certification.
+No Q20 is justified. The numbered Quality Platform remains permanently closed at Q19.
 
-## Latest verified milestone — Enterprise runtime certification foundation
+## Preserved Quality Platform closure evidence
 
-PR #47 exact final head:
+These are historical closure checkpoints protected by the permanent Q16/Q17 regressions. They do not own the current program gate.
 
-- `d46abc86f329a2b0ae24e79c18c371db2083a43a`
-- exact-head Quality Gates #490: **SUCCESS**
-- exact-head Compatibility Certification #18: **SUCCESS**
-- all 16 real WordPress/WooCommerce/PHP × legacy/HPOS cells: **SUCCESS**
-- exact-head CodeQL: **SUCCESS**
-- squash merge: `5e4f33d24bcaed1032691c564b570e60c95a9483`
-- post-merge Quality Gates #491: **SUCCESS**
-- post-merge Compatibility Certification #19: **SUCCESS**
-- post-merge all 16 runtime/storage cells: **SUCCESS**
-- post-merge CodeQL actions + JavaScript/TypeScript lanes: **SUCCESS**
-- implementation branch: **auto-deleted after verified merge**
+### Q17 payment-runtime analysis
 
-The tranche introduced a permanent real-runtime matrix and independently reproduced a malformed persisted-settings activation fatal before the minimal `is_array($settings)` guard fixed it. It certifies activation, Classic gateway registration, standard Blocks registration/availability, and real Woo order CRUD under both legacy and HPOS authoritative storage for the recorded matrix. It does not certify provider sandbox/card completion, subscription/tokenization end-to-end, wallets, WPML/WCML, browser/accessibility/performance or release packaging.
+- final head: `2c5d8e9213086c88147f5d1d26247d58f1cbc81b`;
+- tree: `4dae7ad7db04fcd1466389d304e661ac0666983f`;
+- squash merge: `570dbf3501b359b16767d070d18c25a67a0c24fe`;
+- Quality Gates run #414 and post-merge Quality Gates run #415: **SUCCESS**;
+- PHPUnit: **172 tests / 1053 assertions**;
+- Q17 Payment Runtime Analysis: **97/0**.
 
-## Previous verified milestone — Quality Platform Q19 Subscription Product Eligibility Consistency
+### Q16 migration-core analysis
 
-PR #45 final exact head:
+- final head: `3cff2fcc64053d79be7427696c86039f1b52bbfd`;
+- tree: `b9cc6eafb3c7f8df36b9c5db8b2e45bb330688d2`;
+- squash merge: `06a9ebd732c7cc3f062d4bb361aaef4054a1dfa3`;
+- Quality Gates run #315 and post-merge Quality Gates run #316: **SUCCESS**;
+- PHPUnit: **160 tests / 987 assertions**;
+- Q16 Migration Core Analysis: **120/0**;
+- implementation branch `quality/migration-core-analysis`: **deleted after verified merge**.
 
-- `1717f0c25da7140a7799c7db3a7f016abecec7e9`
-- tree: `8230778e3313e4d201de48b1a5cf170c42f7178d`
-- exact-head Quality Gates #463: **SUCCESS across all five jobs**
-- PHPUnit: **174 tests / 1063 assertions**
-- Q19: **22/0**; Q18: **17/0**; Q17: **97/0**; Q16: **113/0**
-- H12 PHP: **1927/0**; H12 Blocks: **144/0**
-- exact-head CodeQL: **SUCCESS / no new alerts**
-- squash merge: `29ba16a1eabc00e25c3652ae838be9b9539b3a10`
-- merge tree: `8230778e3313e4d201de48b1a5cf170c42f7178d`
-- post-merge Quality Gates #464: **SUCCESS**
-- post-merge CodeQL actions and JavaScript/TypeScript lanes: **SUCCESS**
-- implementation branch `quality/subscription-product-eligibility`: **deleted after verified merge**
+## Verified enterprise evidence through Task 7
 
-Q19 removed arbitrary product-ID restriction semantics, preserved only exact `_upay_disable_subscription = yes` opt-out behavior, rejected opted-out subscription attempts before provider transport even with a cold availability cache, and aligned Classic plan/interval parsing with exact unslashed-token semantics. It does not constitute broad recurring-billing, platform, compatibility or production certification.
+### Runtime compatibility
 
-The numbered Quality Platform is closed at Q19. No Q20 is justified by current evidence.
+The permanent compatibility workflow has verified **16/16** real WordPress/WooCommerce/PHP × legacy/HPOS cells:
 
-## Previous verified milestone — Quality Platform Q18 Blocks availability enforcement
+- WordPress: 6.9.7, 7.0.4, 7.1 in the exact supported combinations;
+- WooCommerce: 10.8.1, 11.0.1, 11.1.0;
+- PHP runtime cells: 7.4, 8.3, 8.4;
+- Classic gateway ID `upayments`;
+- Cart/Checkout Blocks registration/availability;
+- legacy and HPOS authoritative Woo order CRUD;
+- declared compatibility for `cart_checkout_blocks` and `custom_order_tables`.
 
-PR #44 final exact head:
+Public support headers remain matrix-derived: WordPress 6.9 minimum / 7.1 tested, WooCommerce 10.8 minimum / 11.1 tested, PHP 7.4 minimum.
 
-- `b9afcb5afc27ef41a0da8fc60e7b538df0b2c1e7`
-- tree: `94a856f6e88b85edd5f453a76f4d0732e10738aa`
-- exact-head Quality Gates #441: **SUCCESS**
-- exact-head CodeQL #237: **SUCCESS**
-- PHPUnit: **172 tests / 1053 assertions**
-- Q18: **17/0**; Q17: **97/0**; Q16: **113/0**
-- H12 PHP: **1927/0**; H12 Blocks: **144/0**
-- squash merge: `fe572d2bed5a7250ea98e5b5935c19f1cc6b3246`
-- merge tree: `94a856f6e88b85edd5f453a76f4d0732e10738aa`
-- post-merge Quality Gates #442: **SUCCESS**
-- main CodeQL #238: **SUCCESS**
-- implementation branch: **auto-deleted after verified merge**
+### Provider sandbox
 
-Q18 closed the bounded Blocks activation/availability contract, including declared fresh-install enabled-default preservation, malformed-settings fail-closed behavior, analyzer ownership and forward-safe historical gates. It does not constitute broad platform or production certification.
+PR #49 established one bounded public UPayments sandbox Charge-initialization smoke using the provider-documented public test token only. It verifies HTTPS endpoint, transport, HTTP 201/schema and normalized HTTPS payment-link output. It **does not** follow the payment link, enter card data, capture a payment, poll status, refund, save/retrieve a card, auto-deduct, or use production credentials.
 
-## Previous verified milestone — Quality Platform Q17 payment-runtime analysis
+### Deterministic release artifact
 
+PR #50 established a Git-HEAD-bound deterministic ZIP, SHA-256 sidecar, per-file manifest, independent ZIP/source verification, dirty-worktree/index isolation, tamper rejection, and packaged real WordPress/WooCommerce legacy+HPOS smoke.
 
-PR #43 final verified head:
+### Feature and operations certification
 
-- `2c5d8e9213086c88147f5d1d26247d58f1cbc81b`
-- tree: `4dae7ad7db04fcd1466389d304e661ac0666983f`
+PR #51 permanently verifies bounded real-runtime behavior for saved-card/token provenance, subscription eligibility/pre-dispatch, the existing one-additional-merchant allocation, and non-destructive activation/deactivation/uninstall retention. It also fixed a real `inspect_bootstrap_history()` pagination defect discovered by the runtime matrix.
 
-Verified squash merge on `main`:
+Live saved-card mutation, recurring provider deduction, arbitrary marketplace split routing and destructive data erasure remain outside automated certification.
 
-- merge: `570dbf3501b359b16767d070d18c25a67a0c24fe`
-- merge tree: `4dae7ad7db04fcd1466389d304e661ac0666983f`
-- implementation branch `quality/payment-runtime-analysis`: **deleted after verified merge**
-- exact-head Quality Gates run #414: **SUCCESS**
-- exact-head CodeQL PR scan #194: **SUCCESS**
-- post-merge Quality Gates run #415: **SUCCESS**
-- main security run #195: **SUCCESS**
-- PHPUnit: **172 tests / 1053 assertions**
-- Q17 Payment Runtime Analysis: **97/0**
-- Q16 Migration Core Analysis: **113/0**
-- H12 PHP: **1927/0**; Blocks: **144/0**
-- PHPStan/PHPCS: **clean**
+### Existing-install / release identity
 
-Q17 closed bounded payment-runtime characterization/hardening for checkout orchestration and lifecycle behavior while preserving authenticated provider truth, Woo payment semantics, compatibility identities and protected subscription/H12 contracts. It does not establish platform, feature, compliance, performance or production certification.
+PR #52 proved safe same-basename upgrade, rollback, deactivate/reactivate, data retention, callback/cron continuity and duplicate-package characterization in current and floor runtime cells.
 
-## Previous verified milestone — Quality Platform Q16 migration-core analysis
-
-PR #42 final reviewed head:
-
-- `3cff2fcc64053d79be7427696c86039f1b52bbfd`
-- tree: `b9cc6eafb3c7f8df36b9c5db8b2e45bb330688d2`
-
-Verified squash merge on `main`:
-
-- merge: `06a9ebd732c7cc3f062d4bb361aaef4054a1dfa3`
-- parent: `a4bbb05021dbded73072c0ba108a18245b60ad88`
-- GitHub signature: **VERIFIED**
-- implementation branch `quality/migration-core-analysis`: **deleted after verified merge**
-- exact-head Quality Gates run #315: **SUCCESS across all five jobs**
-- CodeQL PR scan #83: **SUCCESS**
-- push-triggered post-merge Quality Gates run #316: **SUCCESS across all five jobs**
-- main security run #84: **SUCCESS**
-- PHPUnit: **160 tests / 987 assertions**
-- Q16 Migration Core Analysis: **120/0**
-- H12 PHP: **1927/0**; Blocks: **144/0**
-- final independent exact-head independent review: **clean**
-
-Q16 expanded baseline-free PHPStan level 5/PHP 7.2, risk-focused PHPCS and deterministic PHPUnit characterization into `MigrationPreflight.php`, `MigrationBatch.php` and `MigrationExecutor.php`. It hardened exact full-string migration inputs, bounded checkpoint/resume behavior and prepared-SQL boundaries while preserving the closed Phase 9I eligibility/provenance contract and protected payment/subscription identities. Q16 makes no merchant-fleet migration, platform, compliance, performance or production-certification claim.
-
-## Previous verified milestone — Quality Platform Q15 subscription-presentation analysis
-
-PR #41 final reviewed head:
-
-- `01a06d45fcc0bc3d08da8d58f6be177b232bb1d4`
-- tree: `ea5b0b3880a99999577d51a9ed5f6a8c77a52cf0`
-
-Verified squash merge on `main`:
-
-- merge: `a4bbb05021dbded73072c0ba108a18245b60ad88`
-- parent: `22857f6304d4b4f19ec1cb6303a80d120173bcd1`
-- implementation branch `quality/subscription-presentation-analysis`: **deleted after verified merge**
-- exact-head Quality Gates run #253: **SUCCESS across all five jobs**
-- push-triggered post-merge Quality Gates run #254: **SUCCESS across all five jobs**
-- PHPUnit: **144 tests / 899 assertions**
-- Q15 Subscription Presentation Analysis: **107/0**
-- H12 PHP: **1927/0**; Blocks: **144/0**
-
-Q15 expanded baseline-free PHPStan level 5/PHP 7.2, risk-focused PHPCS and deterministic PHPUnit characterization into `Subscription/Presentation.php`. It hardened malformed product/admin/cart/account/date input handling while preserving protected hook, gateway, scheduler, billing, provider and payment-runtime contracts. The exact reviewed tree was squash-merged, post-merge CI passed and the implementation branch was deleted. Q15 makes no broad platform, recurring-billing, browser, compliance or production-certification claim.
-
-## Previous verified milestone — Quality Platform Q14 migration-admin analysis
-
-PR #40 final reviewed head:
-
-- `b2d8630a5903af8f26a7f770a2a80547c871f7c6`
-
-Verified squash merge on `main`:
-
-- merge: `22857f6304d4b4f19ec1cb6303a80d120173bcd1`
-- tree: `53107c93c8756985461a8d75e2009c91b89ee851`
-- parent: `a744417e1ec2f40b4f59706df84589d8b18638cb`
-- implementation branch `quality/migration-admin-analysis`: **deleted after verified merge**
-- exact-head Quality Gates run #247: **SUCCESS across all five jobs**
-- push-triggered post-merge Quality Gates run #248: **SUCCESS across all five jobs**
-- PHPUnit: **129 tests / 825 assertions**
-- Q14 Migration Admin Analysis: **109/0**
-- H12 PHP: **1927/0**; Blocks: **144/0**
-
-Q14 expanded baseline-free PHPStan level 5/PHP 7.2, PHPCS and PHPUnit into the privileged Phase 9I migration-admin adapter. It freezes capability-before-request authorization, exact method/action handling, nonce verification, credential-free bounded forms, strict integers, confirmation, redaction and escaping. The signed squash merge preserved the clean-reviewed tree, post-merge CI passed and the branch was deleted. Q14 makes no platform or production-certification claim.
-
-## Previous verified milestone — Quality Platform Q11 subscription-composition analysis
-
-PR #37 final reviewed head:
-
-- `2a03537723ec937e58337dfa3432500c2ce85728`
-
-Verified squash merge on `main`:
-
-- merge: `e544a65130d4b009efea179038dd03275cd46897`
-- tree: `f27880f5f2a93f1dfd6428619e5bffa75e0bd4aa`
-- parent: `02a1ad24d262c3cb6d14653bf48aa31c3796ae4e`
-- implementation branch `quality/subscription-composition-analysis`: **deleted after verified merge**
-- exact-head Quality Gates run #229: **SUCCESS across all five jobs**
-- push-triggered post-merge Quality Gates run #230: **SUCCESS across all five jobs**
-- PHPUnit: **87 tests / 708 assertions**
-- Q11 Subscription Composition Analysis: **84/0**
-- H12 PHP: **1927/0**; Blocks: **144/0**
-
-Q11 expanded baseline-free PHPStan level 5/PHP 7.2, PHPCS and PHPUnit into `Subscription\Composition`. It freezes the exact presentation/gateway hook topology, legacy dependency paths, module initialization, ownership exclusions and non-instantiability. The initial review finding identified missing Q9 closure evidence; the restored evidence passed exact-head and post-merge CI. The signed squash merge preserved the reviewed tree and the branch was deleted. Q11 makes no live-provider, platform or production-certification claim.
-
-## Previous verified milestone — Quality Platform Q10 migration-bootstrap analysis
-
-PR #36 final reviewed head:
-
-- `41b0d6d03af91b1e811562d609cf809345a221df`
-
-Verified squash merge on `main`:
-
-- merge: `02a1ad24d262c3cb6d14653bf48aa31c3796ae4e`
-- tree: `eae2fe0d0f0f54bef793ed6e58c9837bd01403ab`
-- parent: `f63591188e232505f8307cb71fdbe4c32d2dc4c7`
-- implementation branch `quality/migration-bootstrap-analysis`: **deleted after verified merge**
-- exact-head Quality Gates run #226: **SUCCESS across all five jobs**
-- push-triggered post-merge Quality Gates run #227: **SUCCESS across all five jobs**
-- PHPUnit: **82 tests / 686 assertions**
-- Q10 Migration Bootstrap Analysis: **67/0**
-- H12 PHP: **1927/0**; Blocks: **144/0**
-
-Q10 expanded baseline-free PHPStan level 5/PHP 7.2, PHPCS and PHPUnit into `MigrationBootstrap`. It protects frontend inertness, exact admin/CLI contexts, bounded dependencies, canonical registrations and non-instantiability. The valid initial review finding exposed a Q1/Q10 governance substring collision; the delimiter-aware correction passed exact-head and post-merge CI. The signed squash merge preserved the reviewed tree and the branch was deleted. Q10 makes no live-provider, platform or production-certification claim.
-
-## Previous verified milestone — Quality Platform Q9 migration-settings analysis
-
-PR #35 final reviewed head:
-
-- `01ca31ec3bf55f60dbec5f8293c73ab5bfbdc9a5`
-
-Verified squash merge on `main`:
-
-- merge: `f63591188e232505f8307cb71fdbe4c32d2dc4c7`
-- tree: `96936981b8d3088a65c1d0917b7e5773952bc346`
-- parent: `b59eb2d50b86a38d8ea130de63c38a672db86d32`
-- implementation branch `quality/migration-settings-analysis`: **deleted after verified merge**
-- exact-head Quality Gates run #223: **SUCCESS across all five jobs**
-- push-triggered post-merge Quality Gates run #224: **SUCCESS across all five jobs**
-- PHPUnit: **76 tests / 663 assertions**
-- Q9 Migration Settings Analysis: **62/0**
-- H12 PHP: **1927/0**; Blocks: **144/0**
-
-Q9 expanded baseline-free PHPStan level 5/PHP 7.2, PHPCS and PHPUnit into `MigrationSettings`. It protects the sole historical Woo settings source, strict byte-preserved credentials and mode parsing, no option mutation, and canonical secret-free reporting. Two valid review findings hardened malformed redaction inputs before the final clean exact-head review. The signed squash merge preserved the reviewed tree, post-merge CI passed and the branch was deleted. Q9 makes no live-provider, platform or production-certification claim.
-
-## Earlier verified milestone — Quality Platform Q8 release-identity analysis
-
-PR #34 final reviewed head:
-
-- `458bf35b0cc60d78dc8f32d28605d1f60cbc501c`
-
-Verified squash merge on `main`:
-
-- merge: `b59eb2d50b86a38d8ea130de63c38a672db86d32`
-- tree: `109415fa6a4bc04bba60bb23275bc192dd232559`
-- parent: `e00a80147d4f6267d137e1bdfa0b2d1211e00f6a`
-- implementation branch `quality/release-identity-analysis`: **deleted after verified merge**
-- exact-head Quality Gates run #218: **SUCCESS across all five jobs**
-- push-triggered post-merge Quality Gates run #219: **SUCCESS across all five jobs**
-- PHPUnit: **69 tests / 604 assertions**
-- Q8 Release Identity Analysis: **46/0**
-- H12 PHP: **1927/0**; Blocks: **144/0**
-
-Q8 expanded baseline-free PHPStan level 5/PHP 7.2, PHPCS and PHPUnit into Release Identity. It freezes exact public product/version/repository ownership, disabled external updates, historical installed identities, distinct future migration targets and non-instantiability without changing production source. Final independent exact-head review found no major issues, all four earlier valid P1 ledger findings were fixed, the reviewed tree was preserved by the signed squash merge, post-merge CI passed and the branch was deleted. Q8 makes no live-provider, platform or production-certification claim.
-
-## Previous verified milestone — Quality Platform Q7 public-order-status analysis
-
-PR #33 final reviewed head:
-
-- `48de59414c952d6f90ce90c4f462dde67fcbdabc`
-
-Verified squash merge on `main`:
-
-- merge: `e00a80147d4f6267d137e1bdfa0b2d1211e00f6a`
-- tree: `6ef43632a4868a1114b5468a38ad45138e41c393`
-- parent: `651e604659d1891e0f7d05b8e684edb4aa31c2b1`
-- implementation branch `quality/public-order-status-analysis`: **deleted after verified merge**
-- exact-head Quality Gates run #212: **SUCCESS across all five jobs**
-- push-triggered post-merge Quality Gates run #213: **SUCCESS across all five jobs**
-- PHPUnit: **63 tests / 588 assertions**
-- Q7 Public Order Status Analysis: **69/0**
-- H12 PHP: **1927/0**; Blocks: **144/0**
-
-Q7 expanded baseline-free PHPStan level 5/PHP 7.2, PHPCS and PHPUnit into PublicOrderStatus. It freezes byte-exact GET handling, strict positive decimal order IDs, UPayments-only disclosure, exact owner/order-key authority, generic failures and minimal allowlisted responses. Final independent exact-head review found no major issues, the reviewed tree was preserved by the signed squash merge, post-merge CI passed and the branch was deleted. Q7 makes no live-provider, platform or production-certification claim.
-
-## Previous verified milestone — Quality Platform Q6 gateway-settings analysis
-
-PR #32 final reviewed head:
-
-- `85de7a009205e6bb810fad8ab8a0634ca91d1fa8`
-
-Verified squash merge on `main`:
-
-- merge: `651e604659d1891e0f7d05b8e684edb4aa31c2b1`
-- tree: `07f944a3adbbdbf6953ea96512555cb6b16286fe`
-- parent: `984053aee6bb50e62e457a639f44307e461f5e38`
-- implementation branch `quality/gateway-settings-analysis`: **deleted after verified merge**
-- exact-head Quality Gates run #201: **SUCCESS across all five jobs**
-- push-triggered post-merge Quality Gates run #202: **SUCCESS across all five jobs**
-- PHPUnit: **55 tests / 498 assertions**
-- Q6 Gateway Settings Analysis: **83/0**
-- H12 PHP: **1927/0**; Blocks: **144/0**
-
-Q6 expanded baseline-free PHPStan level 5/PHP 7.2, PHPCS and PHPUnit into GatewaySettings, preserving its exact schema, dependency, validation, sanitation, rendering and admin-asset contracts. Final independent exact-head review was clean, the reviewed tree was preserved by the signed squash merge, post-merge CI passed and the branch was deleted. Q6 makes no live-provider, platform or production-certification claim.
-
-## Previous verified milestone — Quality Platform Q5 payment-method availability analysis
-
-PR #31 final reviewed head:
-
-- `d4132b0caccaa6edc6d7421afcfd8e9694563224`
-
-Verified squash merge on `main`:
-
-- merge: `984053aee6bb50e62e457a639f44307e461f5e38`
-- tree: `dee657b03f8d44670b0ae2501a40dabf718d4bb2`
-- parent: `4b3db92b0ded0c598bad0ab677babab9e6102811`
-- implementation branch `quality/payment-method-availability-analysis`: **deleted after verified merge**
-- exact-head Quality Gates run #197: **SUCCESS**
-- push-triggered post-merge Quality Gates run #198: **SUCCESS**
-- PHPUnit: **47 tests / 444 assertions**
-- Quality Platform Foundation: **74/0**
-- Q2 Checkout Payload Analysis: **64/0**
-- Q3 Payment Concurrency Analysis: **69/0**
-- Q4 Authenticated Status Analysis: **68/0**
-- Q5 Payment-Method Availability Analysis: **83/0**
-
-Q5 expanded baseline-free PHPStan level 5/PHP 7.2, PHPCS and PHPUnit into PaymentMethodAvailability without changing executable production statements. It characterizes exact cache/gate/lock identities, strict schema-3 cache shapes, lock contention, the durable 65-second gate, provider failure caching and normalized known-button results. Every historical/architecture/H12 regression remained green; the valid living-state P2 was resolved, and final independent exact-head review found no major issues. Q5 makes no live-provider, platform or production-certification claim.
-
-## Earlier verified milestone — Quality Platform Q4 authenticated-status analysis
-
-PR #30 final reviewed head:
-
-- `8543bdfce1a4e216200791dc5637b646f49bcb59`
-
-Verified squash merge on `main`:
-
-- merge: `4b3db92b0ded0c598bad0ab677babab9e6102811`
-- tree: `ad5ae98d5e935bb48d1441f94e130f5d3adb3ca9`
-- parent: `30e99a6a456b72709c87e442b8437301ba64e99b`
-- implementation branch `quality/authenticated-status-analysis`: **deleted after verified merge**
-- exact-head Quality Gates run #194: **SUCCESS**
-- push-triggered post-merge Quality Gates run #195: **SUCCESS**
-- PHPUnit: **39 tests / 327 assertions**
-- Quality Platform Foundation: **74/0**
-- Q2 Checkout Payload Analysis: **64/0**
-- Q3 Payment Concurrency Analysis: **69/0**
-- Q4 Authenticated Status Analysis: **68/0**
-
-Q4 expanded baseline-free PHPStan level 5/PHP 7.2, PHPCS and PHPUnit into StatusVerifier without changing executable production statements. It characterizes exact sandbox/live destination allowlisting before Bearer/rate use, hardened HTTP failures and authenticated transaction/order binding. Every historical/architecture/H12 regression remained green; all valid P2 findings were resolved, and final independent exact-head review found no major issues. Q4 makes no live-provider, platform or production-certification claim.
-
-## Previous verified milestone — Quality Platform Q3 payment-concurrency analysis
-
-PR #29 final reviewed head:
-
-- `e08be468b5453524996c525860c12d5619081132`
-
-Verified squash merge on `main`:
-
-- merge: `30e99a6a456b72709c87e442b8437301ba64e99b`
-- tree: `703a56c03e95862b8b4807d9a1ea28e2e3e201dd`
-- parent: `356680b9fe8a2724e778d40386ca182247715249`
-- implementation branch `quality/payment-concurrency-analysis`: **deleted after verified merge**
-- exact-head Quality Gates run #188: **SUCCESS**
-- push-triggered post-merge Quality Gates run #189: **SUCCESS**
-- PHPUnit: **31 tests / 220 assertions**
-- Quality Platform Foundation: **74/0**
-- Q2 Checkout Payload Analysis: **64/0**
-- Q3 Payment Concurrency Analysis: **69/0**
-
-Q3 expanded baseline-free PHPStan level 5/PHP 7.2, PHPCS and PHPUnit into the StatusRateGate and OrderLock concurrency boundaries without changing executable production statements. Every historical/architecture/H12 regression remained green; all valid P1/P2 findings were resolved, and final independent exact-head review found no major issues. Q3 makes no platform, real-database concurrency or production-certification claim.
-
-## Previous verified milestone — Quality Platform Q2 CheckoutPayload analysis
-
-PR #28 final reviewed head:
-
-- `c2c30f90688747a523301cb776ed920ef39063f3`
-
-Verified squash merge on `main`:
-
-- merge: `356680b9fe8a2724e778d40386ca182247715249`
-- tree: `3550fdbb0810af26808851e24e39a6130725e8db`
-- parent: `9b3ead774a5a9bc2ac0f3b3ad754b2d99053f362`
-- implementation branch `quality/static-analysis-expansion`: **deleted after verified merge**
-- exact-head Quality Gates run #182: **SUCCESS**
-- push-triggered post-merge Quality Gates run #183: **SUCCESS**
-- PHPUnit: **21 tests / 126 assertions**
-- Quality Platform Foundation: **74/0**
-- Q2 Checkout Payload Analysis: **64/0**
-
-Q2 expanded baseline-free PHPStan level 5/PHP 7.2 and PHPUnit characterization into the pure CheckoutPayload decision boundary. PHPStan, PHPCS/WPCS, Composer audit, every historical/architecture harness and H12 remained green. The final independent re-review found no major issues on the exact head; PR #27 remains closed unmerged as evidence-only. Q2 makes no platform or production-certification claim.
-
-## Previous verified milestone — Quality Platform Q1 foundation
-
-PR #26 final reviewed head:
-
-- `936e4630c83f7a92cbc4c77f061626e2b0c0c800`
-
-Verified squash merge on `main`:
-
-- merge: `9b3ead774a5a9bc2ac0f3b3ad754b2d99053f362`
-- tree: `473543cd08515eedd764a4b1ef7b6581590d13a1`
-- parent: `3223a882867634a2ba7588d7afbd2b2e4b4c21e4`
-- implementation branch `quality/platform-foundation`: **deleted after verified merge**
-- exact-head Quality Gates run #177: **SUCCESS**
-- push-triggered post-merge Quality Gates run #178: **SUCCESS**
-- Quality Platform Foundation harness: **73/0**
-- PHPUnit: **8 tests / 30 assertions**
-
-Q1 established the locked development-only Composer/PHPUnit/PHPStan/PHPCS platform, dependency audit, PHP 7.2/8.2 distributed-source syntax evidence and a protected always-running H12 prerequisite aggregator. The final independent review was clean after its valid required-check P1 was fixed, and Q1 makes no platform or production-certification claim.
-
-## Previous verified milestone — Architecture A5 checkout orchestration
-
-PR #25 final reviewed head:
-
-- `997e18d8eb6264a84c6a9a35158213d3d655e6b3`
-
-Verified squash merge on `main`:
-
-- merge: `3223a882867634a2ba7588d7afbd2b2e4b4c21e4`
-- tree: `392b73425fa3219b6414a0984136b92c8ef77576`
-- parent: `d24b83356cc766f82c3ad9e529d3ec3f4194e887`
-- GitHub signature: **VERIFIED**
-- implementation branch `architecture/a5-checkout-orchestration`: **deleted after verified merge**
-- exact-head Quality Gates run #173: **SUCCESS**
-- push-triggered post-merge Quality Gates run #174: **SUCCESS**
-- Checkout Orchestration harness: **67/0**
-
-A5 moved strict checkout request/decimal/payload construction and the checkout-to-Charge workflow to `src/Payment/CheckoutPayload.php` and `CheckoutOrchestrator.php`, reduced the exact `UPayments.php` ratchet to **88,839 bytes**, preserved the public `process_payment()` and protected request/transport seams, and left scheduler/attempt/auto-deduct behavior unchanged.
-
-## Previous verified milestone — Architecture A4 subscription presentation
-
-PR #24 final reviewed head:
-
-- `2a2c6a4c67775b6614297d2c0150f3ca61220498`
-
-Verified squash merge on `main`:
-
-- merge: `d24b83356cc766f82c3ad9e529d3ec3f4194e887`
-- tree: `f74899b93f493be872e0ce993e30079d0223dc7b`
-- parent: `6291196b35a952ea974549d1aa6d6ae9bbcc64dc`
-- GitHub signature: **VERIFIED**
-- implementation branch `architecture/a4-subscription-presentation`: **deleted after verified merge**
-- exact-head Quality Gates run #164: **SUCCESS**
-- push-triggered post-merge Quality Gates run #165: **SUCCESS**
-- Subscription Presentation harness: **75/0**
-
-A4 moved subscription hook composition, product/admin fields and My Account presentation to `src/Subscription/Composition.php` and `src/Subscription/Presentation.php`, reduced the exact `UPayments.php` ratchet to **205,702 bytes**, retained every named global/public compatibility wrapper and left customer mutation, scheduler, cycle claims, billing attempts, checkout and provider dispatch unchanged.
-
-## Previous verified milestone — Architecture A2 payment-method availability
-
-PR #22 final reviewed head:
-
-- `bdb627520aa28e71b69a91f8ef71d04d257a3ad8`
-
-Verified squash merge on `main`:
-
-- merge: `f85894271e8f991e77a8e6a2b306f4d191483bbd`
-- tree: `1addbcc02e0d30f57a948cafd8111fb94e60c4da`
-- parent: `d43d175a1443709d42efabfbe78519a5a84f4dc9`
-- GitHub signature: **VERIFIED**
-- implementation branch `architecture/a2-payment-method-availability`: **deleted after verified merge**
-- exact-head Quality Gates run #155: **SUCCESS**
-- push-triggered post-merge Quality Gates run #156: **SUCCESS**
-
-A2 moved availability cache/lock/gate/provider normalization to `src/Provider/PaymentMethodAvailability.php` behind public `getUpayPaymentMethods()`, reduced the exact `UPayments.php` ratchet to **238,714 bytes**, and made Payment-Method Availability **102/0** mandatory alongside the complete historical and architecture stack.
-
-## Previous verified milestone — Architecture A1 provider endpoint/mode resolution
-
-PR #21 final reviewed head:
-
-- `baed693964556120dc7ad07dbc740d3acc1af20f`
-
-Verified squash merge on `main`:
-
-- merge: `d43d175a1443709d42efabfbe78519a5a84f4dc9`
-- tree: `ddb2ac7cd8b2d4f454867e10bc361fee94dbcf4b`
-- parent: `596ffb433813cdc06e81d67162617b3019af686b`
-- GitHub signature: **VERIFIED**
-- implementation branch `architecture/a1-provider-endpoints`: **deleted after verified merge**
-- exact-head Quality Gates run #152: **SUCCESS**
-- push-triggered post-merge Quality Gates run #153: **SUCCESS**
-
-A1 preserved the inherited live/sandbox URL bytes behind all four public gateway wrappers, reduced the exact `UPayments.php` ratchet to **257,298 bytes**, and made Provider Endpoints **49/0** mandatory alongside the complete historical and architecture stack. The official provider production-host difference remains a separately reviewed future migration.
-
-## Previous verified milestone — Architecture discovery
-
-PR #19 final reviewed head:
-
-- `6e51b1c1c5649313acf86943e30793c38bc71f14`
-
-Verified squash merge on `main`:
-
-- merge: `596ffb433813cdc06e81d67162617b3019af686b`
-- tree: `3fcaed35546a6b1407d2a46797630e46301e65ef`
-- parent: `ddb3fc901c5dc949c634f745c4c3a7ec2a72414c`
-- GitHub signature: **VERIFIED**
-- implementation branch `architecture/discovery`: **deleted after verified merge**
-- exact PR merge-ref Quality Gates run #147: **SUCCESS**
-- push-triggered post-merge Quality Gates run #148: **SUCCESS**
-
-The verified discovery milestone froze the exact responsibility/dependency map, public compatibility surfaces, A1-A5 extraction order, monolith size ratchet, bootstrap reachability checks and mandatory architecture regression platform. Its final counters were Architecture Foundation **67/0**, Runtime Bindings **138/0** and Bootstrap Paths **153/0**, alongside the complete historical stack.
-
-## Previous verified implementation milestone — Security Threat-Model Closure
-
-PR #17 final reviewed head:
-
-- `fba12225899c3e01d6b23a6bba2f757a3b5f6a4a`
-
-Verified squash merge on `main`:
-
-- merge: `01f3fc59eed8641b3e5372558f61a7a0f0cdfac9`
-- tree: `e0027005f059fad03d8c08273b7aac6553c45f53`
-- parent: `08054a93c619f3c34fef747a6e530abce1e8986e`
-- GitHub signature: **VERIFIED**
-- implementation branch `security/threat-model-discovery`: **deleted after verified merge**
-- exact PR merge-ref Quality Gates run #88: **SUCCESS**
-- push-triggered post-merge Quality Gates run #89: **SUCCESS**
-
-Exact final implementation-head regression evidence:
-
-- Governance: **SUCCESS**
-- tracked PHP syntax: **SUCCESS**
-- Phase 0 release identity: **35 PASS / 0 FAIL**
-- Phase 9I preflight: **123 PASS / 0 FAIL**
-- Phase 9I executor: **59 PASS / 0 FAIL**
-- Phase 9I operations: **81 PASS / 0 FAIL**
-- Provider Payment Lifecycle: **141 PASS / 0 FAIL**
-- Provider Exact Amount Binding: **4 PASS / 0 FAIL**
-- Security Threat-Model: **81 PASS / 0 FAIL**
-- H12 PHP: **1927 PASS / 0 FAIL**
-- Blocks syntax: **SUCCESS**
-- H12 Blocks: **144 PASS / 0 FAIL**
-
-The final security implementation closed five bounded findings: public status-poll IDOR, state-changing subscription GET actions, checkout third-party font/icon trust, overly broad plain-data output trust, and product-meta save defense in depth. A valid P2 automated review finding on Checkout Blocks chevrons was fixed before merge and added to the permanent security harness.
-
-## Closed security threat-model contract
-
-The verified bounded security closure now has these frozen properties:
-
-- numeric order ID is never authority for public status polling; exact logged-in ownership or exact Woo order key is required, and only UPayments orders are eligible;
-- customer subscription pause/resume/unsubscribe mutations are POST-only, exact-owner-bound, action-nonced, object-preflighted and transition-validated;
-- classic and Checkout Blocks no longer depend on Google Fonts/cdnjs Font Awesome for checkout presentation;
-- plain provider/order values are escaped as text and stored settings use attribute-context escaping;
-- checkout display markers no longer consume `$_REQUEST`;
-- product custom-meta writes mirror WooCommerce nonce, posted-ID and `edit_post` authorization preconditions locally;
-- existing payment lifecycle host/TLS/redirect/Bearer, H12 identity, Phase 9I capability/nonce, no-blind-retry and immutable Actions-pin controls remain regression-protected;
-- the permanent security harness is part of required Quality Gates.
-
-Explicitly unresolved boundaries remain explicit: provider webhook HMAC/signature details are provider-document unresolved; subscription auto-deduction is not promoted to broad recurring-billing certification; automatic refunds remain unsupported pending durable idempotency/reconciliation design; H12 token/provenance and Phase 9I migration contracts remain frozen.
-
-## Previous verified implementation milestone — Provider Contract & Payment Lifecycle
-
-PR #15 final reviewed head:
-
-- `d2b08ebe1e65ad4ea8f4e06b41423e7bd9904fc3`
-
-Verified squash merge on `main`:
-
-- merge: `9569e39973a9e94926087738eae06c3846361943`
-- tree: `40ec562674361624c2764263ba55cfba84594955`
-- parent: `8e5a93ceb4f133663fdf433cc1a10b8b36c13d97`
-- GitHub signature: **VERIFIED**
-- implementation branch `provider-lifecycle/discovery`: **deleted after verified merge**
-- push-triggered post-merge Quality Gates run #71: **SUCCESS**
-
-Exact final implementation-head regression evidence:
-
-- Governance: **SUCCESS**
-- tracked PHP syntax: **SUCCESS**
-- Phase 0 release identity: **35 PASS / 0 FAIL**
-- Phase 9I preflight: **123 PASS / 0 FAIL**
-- Phase 9I executor: **59 PASS / 0 FAIL**
-- Phase 9I operations: **81 PASS / 0 FAIL**
-- Provider Payment Lifecycle: **141 PASS / 0 FAIL**
-- Provider Exact Amount Binding: **4 PASS / 0 FAIL**
-- H12 PHP: **1927 PASS / 0 FAIL**
-- Blocks syntax: **SUCCESS**
-- H12 Blocks: **144 PASS / 0 FAIL**
-
-The exact PR merge-ref was tested by Quality Gates run #70 before merge. The complete workflow passed again on merged `main` in run #71.
-
-## Closed provider/payment lifecycle contract
-
-The verified ordinary-checkout lifecycle now has these frozen properties:
-
-- provider/browser/webhook payload fields are non-authoritative;
-- financial truth requires Bearer-authenticated Get Payment Status plus strict order binding;
-- status transport accepts only exact HTTPS UPayments status endpoints, with redirects disabled, TLS verification enabled and finite timeout;
-- status-query automation is capped at the stricter documented 30/minute contract;
-- `track_id`, provider order identity, Woo reference, currency and amount bind before mutation;
-- amount equality is canonical decimal-string equality, not display-precision rounding;
-- `CAPTURED` uses WooCommerce `payment_complete($verified_payment_id)`;
-- Woo's standard transaction ID and payment-complete lifecycle are preserved;
-- paid/refunded orders cannot be resurrected or downgraded;
-- `PENDING`, `AUTHORIZED`, `APPROVED`, provider `NULL`, Processing-style and unknown future outcomes remain unpaid and reconcile boundedly;
-- authenticated `FAILED`/`ERROR`/`NOT CAPTURED` and `CANCELED` affect only unverified/unpaid orders;
-- an unverified first-callback cursor may be retained only for retry routing and is promoted to trusted only after authenticated rebinding;
-- cursor/reconciliation state is paired with the current `UPayments_order_id` so later Charge attempts on the same Woo order cannot inherit stale attempt state;
-- reconciliation is bounded to 60/120/240/480 seconds and never creates/retries a Charge;
-- per-order lifecycle locking uses compare-and-swap stale takeover/release semantics;
-- callback routing excludes cookies and `$_REQUEST` and rejects conflicting GET/POST values.
-
-See `PROVIDER-PAYMENT-LIFECYCLE.md` for the complete closed contract.
-
-### Explicit unresolved provider/feature boundaries
-
-These were deliberately **not** guessed into support:
-
-- UPayments webhook HMAC/signature verification remains provider-document unresolved because the public documentation reviewed did not provide a complete stable header/canonicalization/key contract;
-- automatic WooCommerce refunds remain unsupported because UPayments documents asynchronous completion, status polling, no refund webhook and no idempotency keys;
-- arbitrary multi-entry marketplace splitting is not certified; current support remains one additional merchant allocation only;
-- subscription auto-deduction retains its separate characterized scheduler/attempt-journal path.
-
-These boundaries become inputs to security and later feature-certification gates rather than hidden lifecycle assumptions.
-
-## Phase 9I — verified closed state
-
-Phase 9I remains **DONE / VERIFIED** through PRs #11, #12 and #13:
-
-- preflight merge `8cca32819dd165e35efa0fcc5a48bdd551757d8c`, tree `c0af8a2ab1fbd2494f961ee9f924c00aaf519ab0`;
-- executor merge `708253bd9d0daf217735fbb087b360e8b848136c`, tree `e222a18c9808229fdde79efb42268d8c3fbd33ae`;
-- operations merge `db1c4ea4dab45bc1ffaf4529e0ccb940153cd999`, tree `5bec24ad26c66a504cd0dd609f4311f9e70add76`.
-
-The contract remains:
-
-- exact read-only `CLEAN` / `MIGRATABLE` / `BLOCKED` / `INDETERMINATE` classification;
-- all 13 historical blocker families fail closed;
-- executor acts only on fresh `MIGRATABLE` evidence;
-- historical provenance can become only `legacy_compat` / `legacy_verified_capture`;
-- no fabricated canonical/Create-201 provenance;
-- historical order metadata remains immutable;
-- bounded admin/CLI operations with durable redacted per-user result checkpoints and credential/mode/list-scoped resume.
-
-Phase 9I closure certifies the migration system, not automatic migration of every merchant installation.
-
-## Phase 0 release identity — verified state
-
-Public header remains:
-
-- Plugin Name: **SimplixPay for UPayments**
-- Plugin URI: `https://github.com/SimplixInnovations/simplixpay-upayments`
-- Version: `0.1.0`
-- Author: **Simplix Innovations**
-- License: MIT
-- Text Domain: `upayments` — transitional by design
-
-External self-updates remain intentionally disabled until a separately tested physical package/basename migration establishes a safe Simplix distribution identity. The inherited Plugin Update Checker and upstream update authority remain removed.
-
-## Transitional install/i18n identities
-
-Current transitional identities remain:
+The controlled direct rename from `UPayments.php` to `simplixpay-upayments.php` **failed** the active-install migration contract: WordPress retained the historical basename in `active_plugins`, the target basename was inactive, and the runtime did not load. Therefore the first stable release intentionally retains:
 
 - main file: `UPayments.php`;
-- runtime/header text domain: `upayments`.
+- plugin basename: `simplixpay-upayments/UPayments.php`;
+- text domain: `upayments`.
 
-Frozen eventual targets remain:
+The eventual canonical filename/text-domain targets remain future migrations requiring their own upgrade/i18n evidence.
 
-- `simplixpay-upayments.php`;
-- text domain `simplixpay-upayments`.
+## Canonical Task 7 merge and post-merge evidence
 
-These require explicit package/upgrade and i18n/WPML migrations rather than cosmetic replacement.
+Task 7 PR #52 final head: `dd550eb6af86262aabfd50479407903172327726`
+Squash merge: `02b8d1c2851faabe020f23bbe84ebcca43a4827d`
 
-## Protected compatibility/runtime identities
+Post-merge `main` passed:
 
-Do not rename merely for branding:
+- Quality Gates #545 — **SUCCESS**;
+- Compatibility Certification #73 — **SUCCESS**;
+- Release Artifact #27 — **SUCCESS**;
+- CodeQL main analysis #349 — **SUCCESS**.
 
-- gateway/payment method ID `upayments`;
-- `woocommerce_upayments_settings`;
-- Blocks/Store API identity `upayments`;
-- callback route `wc_upayments`;
-- existing `_upay_*` metadata;
-- `upayments_token_identity_secret_v2` and H12 provenance/scope/generation state;
-- subscription scheduler/historical cleanup identities;
-- billing-attempt table/schema state;
-- historical order payment-method values;
-- existing UPayments classes/namespaces unless separately characterized.
+## Task 8 — current closeout contract
 
-`NAMING-IDENTITY-STANDARD.md` remains authoritative.
+Enterprise Release Candidate Closeout must complete on one immutable candidate head:
 
-## Retained H12 / Phase 0 evidence
+1. reconcile all living state/readiness/public documentation;
+2. verify repository hygiene and remove/supersede unjustified work;
+3. pass full Quality/H12, 16-cell Compatibility, deterministic Release Artifact including upgrade cells, bounded Provider Sandbox, CodeQL and locked dependency audit;
+4. classify all evidence that is genuinely external/manual rather than pretending repository automation proves it;
+5. run the reserved **one final whole-plugin Codex review** after primary evidence is green and resolve every valid finding;
+6. squash-merge the exact verified head and repeat required verification on canonical `main`.
 
-Initial Phase 0 characterization before implementation: **22 PASS / 13 FAIL**.
+Task 8 does **not** itself publish a public 1.0, GitHub Release or WordPress.org package. Publication/version promotion is a separate owner release action after the release-candidate closeout is verified.
 
-Final Phase 0 implementation evidence: **35 PASS / 0 FAIL** with H12 PHP **1927/0** and H12 Blocks **144/0**.
+## Explicit external/manual or unsupported boundaries
 
-Historical H12 implementation anchors outside deliberately changed later surfaces remain evidence anchors, not permanent prohibitions:
+These are not repository blockers that should be faked away:
 
-- `includes/Token/CustomerTokenIdentity.php` — `85430d37e9baf540842f5655b86ccf0eca3e6aea`
-- `includes/class-wc-gateway-upayments-blocks.php` — `813d192d69c069eb7ee11df93acc9dbdf03e270a`
-- `includes/Subscription/Cron/Scheduler.php` — `5251866d4df2d1326e7c09f0c8ec1d146c0bb325`
-- `includes/Subscription/Cron/CycleClaim.php` — `c34d83e2d77cc65024fe663e4c378cecb2b17347`
+- **Production merchant payment completion:** external/manual merchant-account evidence; repository CI uses no production credential.
+- **Wallet completion (Apple Pay / Google Pay / Samsung Pay):** provider/account/device dependent; not broadly certified.
+- **WPML/WCML, multilingual, multicurrency and RTL:** dedicated commercial-plugin/runtime validation still required before public claims.
+- **Browser/device/theme/accessibility:** manual/real-browser matrix remains separate from server-side certification.
+- **Store-specific performance/stability thresholds:** require representative production-like load/data; no universal performance badge is authorized.
+- **Penetration testing / PCI / legal/compliance attestation:** organizational/external evidence, not created by source CI.
+- **Provider webhook signature:** non-authoritative until UPayments publishes and we implement a stable signature contract.
+- **Automatic Woo refunds:** intentionally unsupported pending durable idempotency/reconciliation design.
+- **Arbitrary marketplace multi-split:** unsupported; only the existing single additional-merchant allocation is certified.
+- **Live subscription auto-deduction:** non-idempotent provider mutation remains fixture-backed/external.
 
-## Repository/governance state
+These limitations must remain explicit in release notes and public compatibility claims.
 
-Repository readiness remains DONE / VERIFIED:
+## Canonical records
 
-- standalone canonical repository;
-- protected `main`;
-- squash-only merge policy;
-- PR/review-thread workflow;
-- required Governance and H12 Regression Harness checks;
-- linear history and deletion/non-fast-forward restrictions;
-- automatic merged-branch deletion;
-- secret scanning + push protection;
-- Dependabot security updates;
-- private vulnerability reporting;
-- MIT recognized.
-
-## Current program gate — Enterprise Compatibility Certification
-
-**Status: CORE PLATFORM VERIFIED / DECLARATIONS + BROADER CERTIFICATION IN PROGRESS.**
-
-Quality Platform Q1-Q19 is closed and remains a permanent regression platform. PR #47 permanently established the real WordPress/WooCommerce/PHP matrix, Classic/standard Blocks registration and legacy/HPOS order-storage evidence. The current test-first declaration tranche is consuming that evidence to publish only:
-
-- `Requires at least: 6.9` and `Tested up to: 7.1`;
-- `Requires PHP: 7.4`;
-- `WC requires at least: 10.8` and `WC tested up to: 11.1`;
-- Woo `cart_checkout_blocks` compatibility retained;
-- Woo `custom_order_tables` compatibility added only after a separate RED→GREEN real-registry test.
-
-Still required inside Enterprise Compatibility Certification:
-
-- activation/install behavior from the eventual packaged release artifact;
-- UPayments public-sandbox transport/schema certification;
-- saved-card/subscription/wallet/multi-merchant feature evidence;
-- WPML/WCML/multicurrency/RTL;
-- browser/device/accessibility/performance;
-- no compatibility claim beyond exact tested evidence.
-
-The current program may correct only test-proven compatibility defects while preserving every closed provider/payment, security, Phase 9I, Q1-Q19, Scheduler/CycleClaim and H12 contract.
-
-## Later program blockers
-
-After Enterprise Compatibility Certification:
-
-- feature/product-readiness certification;
-- performance/UX/operations/diagnostics;
-- release packaging/distribution and eventual WordPress.org publication.
-
-## Update rule
-
-Update this file after every independently verified milestone merge or program-state change. Never mark a gate DONE from an implementation report alone; verify exact source, diff/tree, checks, review state, merged `main`, post-merge CI and branch cleanup first.
+- `docs/project/ENTERPRISE-CERTIFICATION.md` — exact platform/provider/feature certification;
+- `docs/project/RELEASE-ENGINEERING.md` — artifact/upgrade/release-candidate evidence;
+- `docs/COMPATIBILITY.md` — public verified/unsupported/external matrix;
+- `docs/superpowers/plans/2026-09-06-enterprise-completion.md` — Tasks 1–8 execution plan;
+- historical Phase 0/9I/provider/security/architecture/Quality Platform records remain immutable evidence, not current-gate owners.

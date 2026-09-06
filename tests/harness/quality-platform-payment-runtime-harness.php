@@ -189,16 +189,16 @@ foreach (array(
 
 q17_assert(q17_has($quality, '## Closed Q17 contract') && q17_has($quality, '**Status:** DONE / VERIFIED (Q1-Q19)'), 'quality record closes Q17 and advances into closed Q1-Q19 state');
 q17_assert(q17_has($status, '| Quality Platform Q17 payment-runtime analysis | **DONE / VERIFIED** |'), 'project status preserves Q17 completion row');
-q17_assert(q17_has($status, '| Current program gate | **Enterprise Compatibility Certification** |'), 'project status advances beyond Q17 into named certification');
-q17_assert(q17_has($status, '## Latest verified milestone — Enterprise runtime certification foundation') && q17_has($status, '| Quality Platform Q17 payment-runtime analysis | **DONE / VERIFIED** |'), 'project status keeps Q17 closure evidence while advancing latest milestone into enterprise certification');
+q17_assert(q17_has($status, '| Current program gate | **Enterprise Release Candidate Closeout — CURRENT / FINAL VERIFICATION** |'), 'project status advances beyond Q17 into release-candidate closeout');
+q17_assert(q17_has($status, '## Task 8 — current closeout contract') && q17_has($status, '| Quality Platform Q17 payment-runtime analysis | **DONE / VERIFIED** |'), 'project status keeps Q17 closure evidence while advancing into Task 8 closeout');
 q17_assert(preg_match('/\\| Quality Platform Q1-Q([0-9]+) \\| \\*\\*DONE \\/ VERIFIED\\*\\* \\|/', $readme, $q17_readme_range_matches) === 1 && isset($q17_readme_range_matches[1]) && (int) $q17_readme_range_matches[1] >= 17, 'README completion table includes Q17 or a later verified gate');
-q17_assert(q17_has($readme, 'The current program gate is **Enterprise Compatibility Certification**.'), 'README advances beyond Q17 into named certification');
+q17_assert(q17_has($readme, 'The current program gate is **Enterprise Release Candidate Closeout — CURRENT / FINAL VERIFICATION**.'), 'README advances beyond Q17 into release-candidate closeout');
 q17_assert(q17_has($playbook, '**Q17 / DONE / VERIFIED — PAYMENT-RUNTIME CLOSEOUT**') && q17_has($playbook, '7. Enterprise Compatibility Certification — **CURRENT**.'), 'playbook closes Q17 and advances into named certification');
 q17_assert(!q17_has($playbook, '**Q17 / PLANNED PAYMENT-RUNTIME CLOSEOUT**'), 'playbook removes stale planned-Q17 marker');
 q17_assert(!q17_has($playbook, 'current program gate is **Full Automated Quality Platform — Q16**'), 'playbook removes lowercase stale Q16 current-gate marker');
 q17_assert(q17_has($audit, 'new enterprise-critical evidence independently demonstrates another bounded risk'), 'repository audit preserves bounded post-Q17 extension policy');
 q17_assert(q17_has($handoff, 'Quality Platform Q17 payment-runtime analysis: **DONE / VERIFIED**'), 'handoff preserves Q17 completion');
-q17_assert(q17_has($handoff, '- Current program gate: **Enterprise Compatibility Certification**'), 'handoff advances beyond Q17 into named certification');
+q17_assert(q17_has($handoff, '- Current gate — **Enterprise Release Candidate Closeout — CURRENT / FINAL VERIFICATION**'), 'handoff advances beyond Q17 into release-candidate closeout');
 
 echo "\nQ17 Payment Runtime Analysis: " . $pass . " PASS / " . $fail . " FAIL\n";
 exit($fail === 0 ? 0 : 1);

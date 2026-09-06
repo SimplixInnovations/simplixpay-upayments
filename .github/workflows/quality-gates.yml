@@ -30,45 +30,16 @@ jobs:
         run: |
           set -euo pipefail
           required=(
-            AGENTS.md
-            README.md
-            CHANGELOG.md
-            LICENSE
-            NOTICE.md
-            SECURITY.md
-            SUPPORT.md
-            .distignore
-            .github/CODEOWNERS
-            composer.json
-            composer.lock
-            phpcs.xml.dist
-            phpstan.neon.dist
-            phpunit.xml.dist
-            tests/harness/quality-platform-foundation-harness.php
-            tests/harness/quality-platform-static-analysis-harness.php
-            tests/harness/quality-platform-payment-concurrency-harness.php
-            tests/harness/quality-platform-authenticated-status-harness.php
-            tests/harness/quality-platform-payment-method-availability-harness.php
-            tests/harness/quality-platform-gateway-settings-harness.php
-            tests/harness/quality-platform-public-order-status-harness.php
-            tests/harness/quality-platform-release-identity-harness.php
-            tests/harness/quality-platform-migration-settings-harness.php
-            tests/harness/quality-platform-migration-bootstrap-harness.php
-            tests/harness/quality-platform-subscription-composition-harness.php
-            tests/harness/quality-platform-subscription-product-type-harness.php
-            tests/harness/quality-platform-migration-cli-harness.php
-            tests/harness/quality-platform-migration-admin-harness.php
-            tests/harness/quality-platform-subscription-presentation-harness.php
-            tests/harness/quality-platform-migration-core-harness.php
-            tests/harness/quality-platform-payment-runtime-harness.php
+            AGENTS.md README.md CHANGELOG.md LICENSE NOTICE.md SECURITY.md SUPPORT.md
+            .distignore .github/CODEOWNERS
+            composer.json composer.lock phpcs.xml.dist phpstan.neon.dist phpunit.xml.dist
+            .github/workflows/quality-gates.yml
             .github/workflows/compatibility-certification.yml
             .github/workflows/provider-sandbox-certification.yml
             .github/workflows/release-artifact.yml
-            scripts/build-release.sh
-            scripts/verify-release.sh
+            scripts/build-release.sh scripts/verify-release.sh scripts/install-wp-test-environment.sh
             tests/harness/release-artifact-harness.php
             tests/provider/sandbox-charge-smoke.php
-            scripts/install-wp-test-environment.sh
             tests/integration/bootstrap.php
             tests/integration/PluginActivationTest.php
             tests/integration/CheckoutRegistrationTest.php
@@ -79,242 +50,96 @@ jobs:
             tests/integration/MultiMerchantRuntimeTest.php
             tests/integration/OperationsRuntimeTest.php
             tests/integration/UpgradeCompatibilityTest.php
+            docs/COMPATIBILITY.md docs/ENGINEERING-ROADMAP.md
+            docs/history/H12-ENGINEERING-CHANGELOG.md
+            docs/project/PROJECT-STATUS.md
             docs/project/ENTERPRISE-CERTIFICATION.md
             docs/project/RELEASE-ENGINEERING.md
-            docs/project/PROJECT-STATUS.md
+            docs/project/NEW-CHAT-HANDOFF.md
+            docs/project/NAMING-IDENTITY-STANDARD.md
             docs/project/PHASE-0-RELEASE-IDENTITY.md
             docs/project/PHASE-9I-MIGRATION.md
             docs/project/PROVIDER-PAYMENT-LIFECYCLE.md
             docs/project/SECURITY-THREAT-MODEL.md
             docs/project/ARCHITECTURE-CODE-QUALITY.md
             docs/project/QUALITY-PLATFORM.md
-            docs/project/REPOSITORY-READINESS.md
-            docs/project/REPOSITORY-AUDIT.md
-            docs/project/NAMING-IDENTITY-STANDARD.md
-            docs/project/MASTER-ENGINEERING-PLAYBOOK.md
-            docs/project/NEW-CHAT-HANDOFF.md
             docs/project/BASELINE-H12.md
-            docs/history/H12-ENGINEERING-CHANGELOG.md
+            docs/project/REPOSITORY-AUDIT.md
+            docs/project/REPOSITORY-READINESS.md
+            docs/superpowers/plans/2026-09-06-enterprise-completion.md
           )
           for path in "${required[@]}"; do
             test -s "$path" || { echo "Missing or empty required control file: $path"; exit 1; }
           done
 
-      - name: Repository identity invariants
+      - name: Current living-state invariants
         shell: bash
         run: |
           set -euo pipefail
           grep -Fq 'SimplixPay for UPayments' README.md
-          grep -Fq '**Canonical slug:** `simplixpay-upayments`' docs/project/NAMING-IDENTITY-STANDARD.md
-          grep -Fq 'SimplixInnovations/simplixpay-upayments' AGENTS.md
-          grep -Fq 'upayments' docs/project/NAMING-IDENTITY-STANDARD.md
+          grep -Fq 'The current program gate is **Enterprise Release Candidate Closeout — CURRENT / FINAL VERIFICATION**.' README.md
+          grep -Fq '| Current program gate | **Enterprise Release Candidate Closeout — CURRENT / FINAL VERIFICATION** |' docs/project/PROJECT-STATUS.md
+          grep -Fq 'Task 7 — existing-install upgrade / release identity — DONE / VERIFIED' docs/ENGINEERING-ROADMAP.md
+          grep -Fq 'Task 8 — Enterprise Release Candidate Closeout — CURRENT / FINAL VERIFICATION' docs/ENGINEERING-ROADMAP.md
+          grep -Fq '**Status:** TASKS 1–7 DONE / VERIFIED; TASK 8 RELEASE-CANDIDATE CLOSEOUT CURRENT' docs/project/ENTERPRISE-CERTIFICATION.md
+          grep -Fq '**Status:** TASKS 5 & 7 DONE / VERIFIED; TASK 8 RELEASE-CANDIDATE CLOSEOUT CURRENT' docs/project/RELEASE-ENGINEERING.md
+          grep -Fq -- '- Current gate — **Enterprise Release Candidate Closeout — CURRENT / FINAL VERIFICATION**' docs/project/NEW-CHAT-HANDOFF.md
+          grep -Fq 'The current named gate is **Enterprise Release Candidate Closeout**.' AGENTS.md
+          grep -Fq 'main file: `UPayments.php`' docs/project/PROJECT-STATUS.md
+          grep -Fq 'text domain: `upayments`' docs/project/PROJECT-STATUS.md
+          grep -Fq '**Unsupported**' docs/COMPATIBILITY.md
+          grep -Fq '**External/manual**' docs/COMPATIBILITY.md
           grep -Fq '**Status:** DONE / VERIFIED' docs/project/PHASE-0-RELEASE-IDENTITY.md
           grep -Fq '**Status:** DONE / VERIFIED' docs/project/PHASE-9I-MIGRATION.md
           grep -Fq '**Status:** DONE / VERIFIED' docs/project/PROVIDER-PAYMENT-LIFECYCLE.md
           grep -Fq '**Status:** DONE / VERIFIED' docs/project/SECURITY-THREAT-MODEL.md
           grep -Fq '**Status:** DONE / VERIFIED (DISCOVERY + A1-A5)' docs/project/ARCHITECTURE-CODE-QUALITY.md
           grep -Fq '**Status:** DONE / VERIFIED (Q1-Q19)' docs/project/QUALITY-PLATFORM.md
-          grep -Fq '| Phase 0 — release identity/updater ownership | **DONE / VERIFIED** |' docs/project/PROJECT-STATUS.md
-          grep -Fq '| Phase 9I — historical token-identity migration | **DONE / VERIFIED** |' docs/project/PROJECT-STATUS.md
-          grep -Fq '| Provider Contract & Payment Lifecycle | **DONE / VERIFIED** |' docs/project/PROJECT-STATUS.md
-          grep -Fq '| Security Threat-Model Closure | **DONE / VERIFIED** |' docs/project/PROJECT-STATUS.md
-          grep -Fq '| Quality Platform Q19 subscription product eligibility | **DONE / VERIFIED** |' docs/project/PROJECT-STATUS.md
-          grep -Fq '| Current program gate | **Enterprise Compatibility Certification** |' docs/project/PROJECT-STATUS.md
-          grep -Fq 'The current program gate is **Enterprise Compatibility Certification**.' README.md
-          grep -Fq '**Enterprise Compatibility Certification** is now the active gate.' CHANGELOG.md
-          grep -Fq '6. **Full Automated Quality Platform — DONE / VERIFIED (Q1-Q19)**' docs/ENGINEERING-ROADMAP.md
-          grep -Fq '7. **Enterprise Compatibility Certification — CURRENT GATE**' docs/ENGINEERING-ROADMAP.md
-          grep -Fq '| Security threat-model audit | **DONE / VERIFIED** | Critical |' docs/project/MASTER-ENGINEERING-PLAYBOOK.md
-          grep -Fq '| Architecture/code quality | **DONE / VERIFIED (A1-A5)** | High |' docs/project/MASTER-ENGINEERING-PLAYBOOK.md
-          grep -Fq '| Full automated quality platform | **DONE / VERIFIED (Q1-Q19)** | Critical before public stable |' docs/project/MASTER-ENGINEERING-PLAYBOOK.md
-          grep -Fq 'The current owner/gate is **Enterprise Compatibility Certification**' docs/project/REPOSITORY-AUDIT.md
-          grep -Fq 'the current permitted program gate is **Enterprise Compatibility Certification**' docs/project/REPOSITORY-READINESS.md
-          grep -Fq 'the current permitted gate is **Enterprise Compatibility Certification**' docs/project/PHASE-0-RELEASE-IDENTITY.md
-          grep -Fq 'The current program gate is **Enterprise Compatibility Certification**' docs/project/PHASE-9I-MIGRATION.md
-          grep -Fq 'The current permitted program gate is **Enterprise Compatibility Certification**' docs/project/PROVIDER-PAYMENT-LIFECYCLE.md
-          grep -Fq -- '- Current program gate: **Enterprise Compatibility Certification**' docs/project/NEW-CHAT-HANDOFF.md
+          grep -Fq '**Canonical slug:** `simplixpay-upayments`' docs/project/NAMING-IDENTITY-STANDARD.md
 
-      - name: Reject stale gate ownership markers
+      - name: Reject stale current-gate ownership in living records
         shell: bash
         run: |
           set -euo pipefail
-
-          live_gate_files=(
-            AGENTS.md
-            README.md
-            CHANGELOG.md
-            docs/ENGINEERING-ROADMAP.md
-            docs/project/PROJECT-STATUS.md
-            docs/project/MASTER-ENGINEERING-PLAYBOOK.md
-            docs/project/NEW-CHAT-HANDOFF.md
-            docs/project/PHASE-0-RELEASE-IDENTITY.md
-            docs/project/PHASE-9I-MIGRATION.md
-            docs/project/PROVIDER-PAYMENT-LIFECYCLE.md
-            docs/project/REPOSITORY-AUDIT.md
-            docs/project/REPOSITORY-READINESS.md
-            docs/project/SECURITY-THREAT-MODEL.md
-            docs/project/ARCHITECTURE-CODE-QUALITY.md
-            docs/project/QUALITY-PLATFORM.md
+          living=(
+            AGENTS.md README.md docs/ENGINEERING-ROADMAP.md docs/COMPATIBILITY.md
+            docs/project/PROJECT-STATUS.md docs/project/ENTERPRISE-CERTIFICATION.md
+            docs/project/RELEASE-ENGINEERING.md docs/project/NEW-CHAT-HANDOFF.md
           )
 
           reject_across_live_records() {
             local marker="$1"
-            if grep -FnH -F -- "$marker" "${live_gate_files[@]}"; then
-              echo "Obsolete live gate marker detected: ${marker}"
+            if grep -FnH -F -- "$marker" "${living[@]}"; then
+              echo "Stale current-gate marker in living record: $marker"
               exit 1
             fi
           }
 
-          reject_across_live_records 'Security Threat-Model Closure — DISCOVERY'
-          reject_across_live_records 'Security Threat-Model Closure — CURRENT GATE / DISCOVERY'
-          reject_across_live_records 'Security Threat-Model Closure — **CURRENT / DISCOVERY**'
-          reject_across_live_records 'Security threat-model audit | **DISCOVERY — CURRENT GATE**'
-          reject_across_live_records 'Security Threat-Model Closure — **DISCOVERY / CURRENT GATE**'
-          reject_across_live_records '## Current program gate — Security Threat-Model Closure'
-          reject_across_live_records '## Current engineering gate — Security Threat-Model Closure'
-          reject_across_live_records '## Next gate — Security Threat-Model Closure'
-          reject_across_live_records '| Current program gate | **Architecture & Code-Quality Foundation — A5** |'
-          reject_across_live_records 'Architecture & Code-Quality Foundation — CURRENT GATE / A5'
-          reject_across_live_records 'Architecture/code quality | **A5 — CURRENT GATE**'
-          reject_across_live_records 'Current program gate: Architecture & Code-Quality Foundation — A5'
-          reject_across_live_records '| Current program gate | **Full Automated Quality Platform — Q1** |'
-          reject_across_live_records 'Full Automated Quality Platform — CURRENT GATE / Q1**'
-          reject_across_live_records 'Full automated quality platform | **Q1 — CURRENT GATE**'
-          reject_across_live_records 'Current program gate: **Full Automated Quality Platform — Q1**'
+          reject_across_live_records 'Enterprise Compatibility Certification — CURRENT GATE'
+          reject_across_live_records 'current program gate is **Enterprise Compatibility Certification**'
+          reject_across_live_records 'Current program gate: **Enterprise Compatibility Certification**'
+          reject_across_live_records 'Full Automated Quality Platform — CURRENT GATE'
+          reject_across_live_records 'Security Threat-Model Closure — CURRENT GATE'
+          reject_across_live_records 'Architecture & Code-Quality Foundation — CURRENT GATE'
           reject_across_live_records 'CURRENT / Q1**'
-          reject_across_live_records '| Current program gate | **Full Automated Quality Platform — Q2** |'
-          reject_across_live_records 'Full Automated Quality Platform — CURRENT GATE / Q2'
-          reject_across_live_records 'Full automated quality platform | **Q2 — CURRENT GATE'
-          reject_across_live_records 'Current program gate: **Full Automated Quality Platform — Q2**'
           reject_across_live_records 'CURRENT / Q2'
-          reject_across_live_records '**Status:** Q2 / IMPLEMENTATION'
-          reject_across_live_records '| Current program gate | **Full Automated Quality Platform — Q3** |'
-          reject_across_live_records 'Full Automated Quality Platform — CURRENT GATE / Q3'
-          reject_across_live_records 'Full automated quality platform | **Q3 — CURRENT GATE'
-          reject_across_live_records 'Current program gate: **Full Automated Quality Platform — Q3**'
           reject_across_live_records 'CURRENT / Q3'
-          reject_across_live_records '**Status:** Q3 / IMPLEMENTATION'
-          reject_across_live_records '| Current program gate | **Full Automated Quality Platform — Q4** |'
-          reject_across_live_records 'Full Automated Quality Platform — CURRENT GATE / Q4'
-          reject_across_live_records 'Full automated quality platform | **Q4 — CURRENT GATE'
-          reject_across_live_records 'Current program gate: **Full Automated Quality Platform — Q4**'
           reject_across_live_records 'CURRENT / Q4'
-          reject_across_live_records '**Status:** Q4 / IMPLEMENTATION'
-          reject_across_live_records '| Current program gate | **Full Automated Quality Platform — Q5** |'
-          reject_across_live_records 'Full Automated Quality Platform — CURRENT GATE / Q5'
-          reject_across_live_records 'Full automated quality platform | **Q5 — CURRENT GATE'
-          reject_across_live_records 'Current program gate: **Full Automated Quality Platform — Q5**'
           reject_across_live_records 'CURRENT / Q5'
-          reject_across_live_records '**Status:** Q5 / IMPLEMENTATION'
-          reject_across_live_records '| Current program gate | **Full Automated Quality Platform — Q6** |'
-          reject_across_live_records 'Full Automated Quality Platform — CURRENT GATE / Q6'
-          reject_across_live_records 'Full automated quality platform | **Q6 — CURRENT GATE'
-          reject_across_live_records 'Current program gate: **Full Automated Quality Platform — Q6**'
           reject_across_live_records 'CURRENT / Q6'
-          reject_across_live_records '**Status:** Q6 / IMPLEMENTATION'
-          reject_across_live_records '| Current program gate | **Full Automated Quality Platform — Q7** |'
-          reject_across_live_records 'Full Automated Quality Platform — CURRENT GATE / Q7'
-          reject_across_live_records 'Full automated quality platform | **Q7 — CURRENT GATE'
-          reject_across_live_records 'Current program gate: **Full Automated Quality Platform — Q7**'
           reject_across_live_records 'CURRENT / Q7'
-          reject_across_live_records '**Status:** Q7 / IMPLEMENTATION'
-          reject_across_live_records '| Current program gate | **Full Automated Quality Platform — Q8** |'
-          reject_across_live_records 'Full Automated Quality Platform — CURRENT GATE / Q8'
-          reject_across_live_records 'Full automated quality platform | **Q8 — CURRENT GATE'
-          reject_across_live_records 'Current program gate: **Full Automated Quality Platform — Q8**'
           reject_across_live_records 'CURRENT / Q8'
-          reject_across_live_records '**Status:** Q8 / IMPLEMENTATION'
-          reject_across_live_records '| Current program gate | **Full Automated Quality Platform — Q9** |'
-          reject_across_live_records 'Full Automated Quality Platform — CURRENT GATE / Q9'
-          reject_across_live_records 'Full automated quality platform | **Q9 — CURRENT GATE'
-          reject_across_live_records 'Current program gate: **Full Automated Quality Platform — Q9**'
           reject_across_live_records 'CURRENT / Q9'
-          reject_across_live_records '**Status:** Q9 / IMPLEMENTATION'
-          reject_across_live_records '| Current program gate | **Full Automated Quality Platform — Q10** |'
-          reject_across_live_records 'Full Automated Quality Platform — CURRENT GATE / Q10'
-          reject_across_live_records 'Full automated quality platform | **Q10 — CURRENT GATE'
-          reject_across_live_records 'Current program gate: **Full Automated Quality Platform — Q10**'
           reject_across_live_records 'CURRENT / Q10'
-          reject_across_live_records '**Status:** Q10 / IMPLEMENTATION'
-          reject_across_live_records '| Current program gate | **Full Automated Quality Platform — Q11** |'
-          reject_across_live_records 'Full Automated Quality Platform — CURRENT GATE / Q11'
-          reject_across_live_records 'Full automated quality platform | **Q11 — CURRENT GATE'
-          reject_across_live_records 'Current program gate: **Full Automated Quality Platform — Q11**'
           reject_across_live_records 'CURRENT / Q11'
-          reject_across_live_records '**Status:** Q11 / IMPLEMENTATION'
-          reject_across_live_records '| Current program gate | **Full Automated Quality Platform — Q12** |'
-          reject_across_live_records 'Full Automated Quality Platform — CURRENT GATE / Q12'
-          reject_across_live_records 'Full automated quality platform | **Q12 — CURRENT GATE'
-          reject_across_live_records 'Current program gate: **Full Automated Quality Platform — Q12**'
           reject_across_live_records 'CURRENT / Q12'
-          reject_across_live_records '**Status:** Q12 / IMPLEMENTATION'
-          reject_across_live_records '| Current program gate | **Full Automated Quality Platform — Q13** |'
-          reject_across_live_records 'Full Automated Quality Platform — CURRENT GATE / Q13'
-          reject_across_live_records 'Full automated quality platform | **Q13 — CURRENT GATE'
-          reject_across_live_records 'Current program gate: **Full Automated Quality Platform — Q13**'
           reject_across_live_records 'CURRENT / Q13'
-          reject_across_live_records '**Status:** Q13 / IMPLEMENTATION'
-          reject_across_live_records '| Current program gate | **Full Automated Quality Platform — Q14** |'
-          reject_across_live_records 'Full Automated Quality Platform — CURRENT GATE / Q14'
-          reject_across_live_records 'Full automated quality platform | **Q14 — CURRENT GATE'
-          reject_across_live_records 'Current program gate: **Full Automated Quality Platform — Q14**'
           reject_across_live_records 'CURRENT / Q14'
-          reject_across_live_records '**Status:** Q14 / IMPLEMENTATION'
-          reject_across_live_records '| Current program gate | **Full Automated Quality Platform — Q15** |'
-          reject_across_live_records 'Full Automated Quality Platform — CURRENT GATE / Q15'
-          reject_across_live_records 'Full automated quality platform | **Q15 — CURRENT GATE'
-          reject_across_live_records 'Current program gate: **Full Automated Quality Platform — Q15**'
           reject_across_live_records 'CURRENT / Q15'
-          reject_across_live_records '**Status:** Q15 / IMPLEMENTATION'
-          reject_across_live_records '| Current program gate | **Full Automated Quality Platform — Q16** |'
-          reject_across_live_records 'Full Automated Quality Platform — CURRENT GATE / Q16'
-          reject_across_live_records 'Full automated quality platform | **Q16 — CURRENT GATE'
-          reject_across_live_records 'Current program gate: **Full Automated Quality Platform — Q16**'
           reject_across_live_records 'CURRENT / Q16'
-          reject_across_live_records '**Status:** Q16 / IMPLEMENTATION'
-          reject_across_live_records 'current program gate is **Full Automated Quality Platform — Q16**'
-          reject_across_live_records '| Current program gate | **Full Automated Quality Platform — Q17** |'
-          reject_across_live_records 'Full Automated Quality Platform — CURRENT GATE / Q17'
           reject_across_live_records 'CURRENT / Q17'
-          reject_across_live_records '**Status:** Q17 / IMPLEMENTATION'
-          reject_across_live_records '| Current program gate | **Full Automated Quality Platform — Q18** |'
-          reject_across_live_records 'Full Automated Quality Platform — CURRENT GATE / Q18'
           reject_across_live_records 'CURRENT / Q18'
-          reject_across_live_records '**Status:** Q18 / IMPLEMENTATION'
-          reject_across_live_records '| Current program gate | **Full Automated Quality Platform — Q19** |'
-          reject_across_live_records 'Full Automated Quality Platform — CURRENT GATE / Q19'
-          reject_across_live_records 'Full automated quality platform | **Q19 — CURRENT GATE'
-          reject_across_live_records 'Current program gate: **Full Automated Quality Platform — Q19**'
           reject_across_live_records 'CURRENT / Q19'
-          reject_across_live_records '**Status:** Q19 / IMPLEMENTATION'
-          reject_across_live_records 'current program gate is **Full Automated Quality Platform — Q19**'
-
-          if grep -FnH -F -- '**Current program status:** DISCOVERY / CURRENT GATE.' docs/project/MASTER-ENGINEERING-PLAYBOOK.md; then
-            echo 'Obsolete Security program-status marker detected in Master Playbook.'
-            exit 1
-          fi
-
-          if grep -FnH -F -- '**Status:** IMPLEMENTATION / REVIEW' docs/project/SECURITY-THREAT-MODEL.md; then
-            echo 'Security record regressed to an in-flight status.'
-            exit 1
-          fi
-          if grep -FnH -F -- '**Current branch:** `security/threat-model-discovery`' docs/project/SECURITY-THREAT-MODEL.md; then
-            echo 'Security record regressed to the deleted implementation branch.'
-            exit 1
-          fi
-
-          if grep -FnH -F -- 'The next permitted implementation gate is **Phase 9I — Historical token-identity migration**' docs/project/PHASE-0-RELEASE-IDENTITY.md; then
-            echo 'Phase 0 record regressed to a stale next-gate instruction.'
-            exit 1
-          fi
-          if grep -FnH -F -- "Phase 0 is now permitted under the repository's normal PR/CI/review controls." docs/project/REPOSITORY-READINESS.md; then
-            echo 'Repository Readiness record regressed to stale live Phase 0 wording.'
-            exit 1
-          fi
-          if grep -FnH -F -- 'The next permitted runtime-changing work is **Phase 0 — SimplixPay release identity and updater ownership**.' docs/project/REPOSITORY-READINESS.md; then
-            echo 'Repository Readiness record regressed to a stale next-gate instruction.'
-            exit 1
-          fi
 
       - name: Whitespace errors
         shell: bash
@@ -334,22 +159,17 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
-
       - uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # v2.37.2
         with:
           php-version: '8.2'
           coverage: none
           tools: composer:2.10.3
-
       - name: Validate Composer metadata
         run: composer validate --strict
-
       - name: Install locked development toolchain
         run: composer install --no-interaction --prefer-dist --no-progress
-
       - name: Audit locked dependencies
         run: composer audit --locked --no-interaction
-
       - name: Unit and static quality gates
         run: composer quality
 
@@ -365,13 +185,11 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
-
       - uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # v2.37.2
         with:
           php-version: ${{ matrix.php }}
           coverage: none
           tools: none
-
       - name: Distributed PHP syntax
         shell: bash
         run: |
@@ -394,139 +212,95 @@ jobs:
           PHP_SYNTAX_RESULT: ${{ needs.php-syntax-compatibility.result }}
         run: |
           set -euo pipefail
-          if [[ "${QUALITY_PLATFORM_RESULT}" != "success" || "${PHP_SYNTAX_RESULT}" != "success" ]]; then
-            echo "Required quality prerequisite failed: quality-platform=${QUALITY_PLATFORM_RESULT}, php-syntax-compatibility=${PHP_SYNTAX_RESULT}"
+          if [[ "$QUALITY_PLATFORM_RESULT" != success || "$PHP_SYNTAX_RESULT" != success ]]; then
+            echo "Required quality prerequisite failed: quality-platform=$QUALITY_PLATFORM_RESULT php-syntax=$PHP_SYNTAX_RESULT"
             exit 1
           fi
-
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
-
       - uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # v2.37.2
         with:
           php-version: '8.2'
           coverage: none
           tools: none
-
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version: '24'
           package-manager-cache: false
-
       - name: Tracked PHP syntax
-        shell: bash
-        run: |
-          set -euo pipefail
-          git ls-files -z '*.php' | xargs -0 -r -n1 php -l
-
+        run: git ls-files -z '*.php' | xargs -0 -r -n1 php -l
       - name: Phase 0 release identity harness
         run: php tests/harness/phase-0-release-identity-harness.php
-
       - name: Phase 9I migration preflight harness
         run: php tests/harness/phase-9i-preflight-harness.php
-
       - name: Phase 9I migration executor harness
         run: php tests/harness/phase-9i-executor-harness.php
-
       - name: Phase 9I operations harness
         run: php tests/harness/phase-9i-operations-harness.php
-
       - name: Provider payment lifecycle harness
         run: php tests/harness/provider-payment-lifecycle-harness.php
-
       - name: Provider exact amount binding harness
         run: php tests/harness/provider-payment-amount-binding-harness.php
-
       - name: Security threat-model harness
         run: php tests/harness/security-threat-model-harness.php
-
       - name: Architecture foundation harness
         run: php tests/harness/architecture-foundation-harness.php
-
       - name: Architecture runtime bindings harness
         run: php tests/harness/architecture-runtime-bindings-harness.php
-
       - name: Architecture bootstrap paths harness
         run: php tests/harness/architecture-bootstrap-path-harness.php
-
       - name: Architecture provider endpoints harness
         run: php tests/harness/architecture-provider-endpoints-harness.php
-
       - name: Architecture payment-method availability harness
         run: php tests/harness/architecture-payment-method-availability-harness.php
-
       - name: Architecture gateway settings harness
         run: php tests/harness/architecture-gateway-settings-harness.php
-
       - name: Architecture subscription presentation harness
         run: php tests/harness/architecture-subscription-presentation-harness.php
-
       - name: Architecture checkout orchestration harness
         run: php tests/harness/architecture-checkout-orchestration-harness.php
-
       - name: Quality platform foundation harness
         run: php tests/harness/quality-platform-foundation-harness.php
-
       - name: Quality platform static-analysis harness
         run: php tests/harness/quality-platform-static-analysis-harness.php
-
       - name: Quality platform payment-concurrency harness
         run: php tests/harness/quality-platform-payment-concurrency-harness.php
-
       - name: Quality platform authenticated-status harness
         run: php tests/harness/quality-platform-authenticated-status-harness.php
-
       - name: Quality platform payment-method availability harness
         run: php tests/harness/quality-platform-payment-method-availability-harness.php
-
       - name: Quality platform gateway-settings harness
         run: php tests/harness/quality-platform-gateway-settings-harness.php
-
       - name: Quality platform public-order-status harness
         run: php tests/harness/quality-platform-public-order-status-harness.php
-
       - name: Quality platform release-identity harness
         run: php tests/harness/quality-platform-release-identity-harness.php
-
       - name: Quality platform migration-settings harness
         run: php tests/harness/quality-platform-migration-settings-harness.php
-
       - name: Quality platform migration-bootstrap harness
         run: php tests/harness/quality-platform-migration-bootstrap-harness.php
-
       - name: Quality platform subscription-composition harness
         run: php tests/harness/quality-platform-subscription-composition-harness.php
-
       - name: Quality platform subscription-product-type harness
         run: php tests/harness/quality-platform-subscription-product-type-harness.php
-
       - name: Quality platform migration-CLI harness
         run: php tests/harness/quality-platform-migration-cli-harness.php
-
       - name: Quality platform migration-admin harness
         run: php tests/harness/quality-platform-migration-admin-harness.php
-
       - name: Quality platform subscription-presentation harness
         run: php tests/harness/quality-platform-subscription-presentation-harness.php
-
       - name: Quality platform migration-core harness
         run: php tests/harness/quality-platform-migration-core-harness.php
-
       - name: Quality platform payment-runtime harness
         run: php tests/harness/quality-platform-payment-runtime-harness.php
-
       - name: Quality platform Blocks availability harness
         run: php tests/harness/quality-platform-blocks-availability-harness.php
-
       - name: Quality platform subscription product-eligibility harness
         run: php tests/harness/quality-platform-subscription-product-eligibility-harness.php
-
       - name: H12 PHP harness
         run: php tests/harness/phase-9g-h12-php-harness.php
-
       - name: Blocks harness syntax
         run: node --check tests/harness/phase-9g-h12-blocks-harness.js
-
       - name: H12 Blocks harness
         run: node tests/harness/phase-9g-h12-blocks-harness.js

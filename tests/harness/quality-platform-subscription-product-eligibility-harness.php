@@ -203,5 +203,34 @@ q19_assert(
     'AGENTS keeps Q19 permanent gate mandatory'
 );
 
+$closed_quality_current_markers = array(
+    'CURRENT / Q1**',
+    'CURRENT / Q2',
+    'CURRENT / Q3',
+    'CURRENT / Q4',
+    'CURRENT / Q5',
+    'CURRENT / Q6',
+    'CURRENT / Q7',
+    'CURRENT / Q8',
+    'CURRENT / Q9',
+    'CURRENT / Q10',
+    'CURRENT / Q11',
+    'CURRENT / Q12',
+    'CURRENT / Q13',
+    'CURRENT / Q14',
+    'CURRENT / Q15',
+    'CURRENT / Q16',
+    'CURRENT / Q17',
+    'CURRENT / Q18',
+    'CURRENT / Q19',
+);
+foreach ($closed_quality_current_markers as $marker) {
+    q19_assert(
+        is_string($workflow_source)
+        && strpos($workflow_source, "reject_across_live_records '{$marker}'") !== false,
+        "Governance rejects closed Quality Platform marker: {$marker}"
+    );
+}
+
 echo "\nQ19 Subscription Product Eligibility: " . $pass . " PASS / " . $fail . " FAIL\n";
 exit($fail === 0 ? 0 : 1);

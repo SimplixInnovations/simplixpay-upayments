@@ -8,241 +8,151 @@
 
 <h1 align="center">SimplixPay for UPayments</h1>
 
-<p align="center">
-  <strong>Independently engineered UPayments payment integration for WooCommerce</strong><br>
-  maintained by <a href="https://simplixi.com">Simplix Innovations</a>
-</p>
+<p align="center"><strong>Independently engineered UPayments payment integration for WooCommerce</strong><br>maintained by <a href="https://simplixi.com">Simplix Innovations</a></p>
 
 <p align="center">
   <a href="https://github.com/SimplixInnovations/simplixpay-upayments/actions/workflows/quality-gates.yml"><img alt="Quality Gates" src="https://github.com/SimplixInnovations/simplixpay-upayments/actions/workflows/quality-gates.yml/badge.svg?branch=main"></a>
-  <a href="https://woocommerce.com/development-services/simplix-innovations-woocommerce-full-service-agency/232995338/"><img alt="Woo Agency Partner" src="https://img.shields.io/badge/Woo-Agency%20Partner-96588A?style=flat-square&logo=woocommerce&logoColor=white"></a>
-  <a href="https://simplixi.com"><img alt="Maintained by Simplix Innovations" src="https://img.shields.io/badge/Maintained%20by-Simplix%20Innovations-111111?style=flat-square"></a>
   <a href="LICENSE"><img alt="MIT License" src="https://img.shields.io/badge/License-MIT-2ea44f?style=flat-square"></a>
   <a href="SECURITY.md"><img alt="Security Policy" src="https://img.shields.io/badge/Security-Private%20Reporting-2ea44f?style=flat-square"></a>
-  <a href="https://developers.upayments.com/reference/woocommerce"><img alt="Provider: UPayments" src="https://img.shields.io/badge/Provider-UPayments-4b5563?style=flat-square"></a>
   <img alt="Version 0.1.0" src="https://img.shields.io/badge/Version-0.1.0-2563eb?style=flat-square">
-  <img alt="Maturity: Pre-release engineering" src="https://img.shields.io/badge/Maturity-Pre--release%20engineering-f59e0b?style=flat-square">
+  <img alt="Maturity: Release candidate qualification" src="https://img.shields.io/badge/Maturity-Release%20candidate%20qualification-f59e0b?style=flat-square">
 </p>
 
 > [!IMPORTANT]
-> **SimplixPay for UPayments** is independently engineered and maintained by **Simplix Innovations**. **UPayments is the payment-service provider** and owns its respective names and trademarks. This repository is not represented as the official UPayments plugin distribution unless explicitly stated by UPayments.
+> **SimplixPay for UPayments** is independently engineered and maintained by **Simplix Innovations**. UPayments is the payment-service provider and owns its respective names and trademarks. This repository does not imply endorsement or official distribution by UPayments.
 
-## Project status
+## Status
 
-The following engineering gates are **DONE / VERIFIED**:
+Repository Foundation, Phase 0, Phase 9I, Provider Payment Lifecycle, bounded Security Threat-Model Closure, Architecture A1-A5 and Quality Platform Q1-Q19 are **DONE / VERIFIED**. Enterprise Tasks 1–7 are also **DONE / VERIFIED**: executable platform compatibility, support declarations, bounded public-provider sandbox, deterministic installable artifact, feature/operations boundaries and existing-install upgrade/identity certification.
 
-- Repository Foundation & Readiness;
-- Phase 0 — SimplixPay release identity/updater ownership;
-- Phase 9I — historical token-identity migration;
-- Provider Contract & Payment Lifecycle;
-- Security Threat-Model Closure;
-- Architecture & Code-Quality Foundation A1-A5.
+The current program gate is **Enterprise Release Candidate Closeout — CURRENT / FINAL VERIFICATION**.
 
-Quality Platform Q1-Q19 are **DONE / VERIFIED**. The current program gate is **Enterprise Compatibility Certification**. Its core WordPress/WooCommerce/PHP runtime, Classic/Blocks registration and HPOS storage tranche is independently verified; provider/feature/multilingual/browser/performance/release certification remains in progress.
+The project is still **pre-release**. No public SimplixPay 1.0 tag, GitHub Release or WordPress.org release has been created. Task 8 qualifies one exact release-candidate source/artifact state; publication remains a separate owner release action.
 
-The project remains in **pre-release engineering hardening**. It is not yet a broadly certified stable production release and has not yet been published to WordPress.org.
-
-| Item | Current position |
+| Area | Current verified position |
 |---|---|
-| Canonical repository | `SimplixInnovations/simplixpay-upayments` |
-| Formal product | **SimplixPay for UPayments** |
-| Current development version | **0.1.0** |
-| Maintainer | **Simplix Innovations** |
-| Payment provider | **UPayments** |
-| Repository foundation/readiness | **DONE / VERIFIED** |
-| Phase 0 release identity/updater ownership | **DONE / VERIFIED** |
-| Phase 9I historical token-identity migration | **DONE / VERIFIED** |
-| Provider Contract & Payment Lifecycle | **DONE / VERIFIED** |
-| Security Threat-Model Closure | **DONE / VERIFIED** |
-| Architecture & Code-Quality Foundation | **DONE / VERIFIED (A1-A5)** |
+| Development version | `0.1.0` |
 | Quality Platform Q1-Q19 | **DONE / VERIFIED** |
-| Current engineering gate | **Enterprise Compatibility Certification — core platform verified; broader certification in progress** |
-| Verified WordPress range | **6.9 series through 7.1 tested cells** |
-| Verified WooCommerce range | **10.8 series through 11.1 tested cells** |
-| Verified PHP runtime cells | **7.4, 8.3, 8.4** |
-| Classic / standard Blocks registration | **VERIFIED** |
-| HPOS legacy/on authoritative storage | **VERIFIED / declared compatible** |
-| Stable SimplixPay release | **Not yet published** |
-| WordPress.org release | **Not yet published** |
-| Phase 0 release-identity harness | **35 PASS / 0 FAIL** |
-| Phase 9I preflight | **123 PASS / 0 FAIL** |
-| Phase 9I executor | **59 PASS / 0 FAIL** |
-| Phase 9I operations | **81 PASS / 0 FAIL** |
-| Provider lifecycle harness | **141 PASS / 0 FAIL** |
-| Provider exact-amount harness | **4 PASS / 0 FAIL** |
-| Security threat-model harness | **82 PASS / 0 FAIL** |
-| Quality-platform foundation harness | **74 PASS / 0 FAIL** |
-| Q2 CheckoutPayload analysis harness | **64 PASS / 0 FAIL** |
-| Q3 payment-concurrency analysis harness | **69 PASS / 0 FAIL** |
-| Q4 authenticated-status analysis harness | **68 PASS / 0 FAIL** |
-| Q5 payment-method availability analysis harness | **83 PASS / 0 FAIL** |
-| Q6 gateway-settings analysis harness | **83 PASS / 0 FAIL** |
-| Q7 public-order-status analysis harness | **69 PASS / 0 FAIL** |
-| Q8 release-identity analysis harness | **46 PASS / 0 FAIL** |
-| Q9 migration-settings analysis harness | **62 PASS / 0 FAIL** |
-| Q10 migration-bootstrap analysis harness | **67 PASS / 0 FAIL** |
-| H12 regression baseline | **PHP 1927 PASS / 0 FAIL; Blocks 144 PASS / 0 FAIL** |
-| Bounded Security Threat-Model Closure | **DONE / VERIFIED** |
-| Broad penetration-test/PCI/platform/feature certification | **Pending** |
+| WordPress | 6.9 series through 7.1 in exact certified cells |
+| WooCommerce | 10.8 series through 11.1 in exact certified cells |
+| PHP | 7.4, 8.3, 8.4 in exact certified cells |
+| Classic checkout | **Verified** |
+| Cart / Checkout Blocks registration & availability | **Verified** |
+| HPOS | **Verified / declared compatible** |
+| Provider public-sandbox Charge initialization | **Verified, bounded** |
+| Saved-card/token identity boundaries | **Verified, bounded runtime** |
+| Subscription eligibility/pre-dispatch | **Verified, bounded runtime** |
+| Single additional-merchant allocation | **Verified, bounded runtime** |
+| Activation/deactivation/uninstall retention | **Verified** |
+| Deterministic ZIP + checksum + manifest | **Verified** |
+| Existing-install same-basename upgrade/rollback | **Verified** |
+| Physical main file for first stable | `UPayments.php` — intentionally retained |
+| Text domain for first stable | `upayments` — intentionally retained |
+| Automatic Woo refunds | **Unsupported** |
+| Arbitrary marketplace multi-split | **Unsupported** |
+| Stable public release | **Not yet published** |
 
-These harness counts are targeted regression evidence, not a substitute for the planned broader WordPress/WooCommerce integration, security, browser, performance and compatibility certification suites.
+See [`docs/COMPATIBILITY.md`](docs/COMPATIBILITY.md) for the exact verified/external/unsupported matrix and [`docs/project/PROJECT-STATUS.md`](docs/project/PROJECT-STATUS.md) for the living engineering ledger.
 
-For exact engineering state, see [`docs/project/PROJECT-STATUS.md`](docs/project/PROJECT-STATUS.md).
+## Why the transitional basename remains
 
-Closed evidence records:
+Task 7 tested an already-active historical installation in real current and floor WordPress/WooCommerce environments. Same-basename upgrade, rollback, deactivate/reactivate, settings/order/token/subscription/cron/callback retention all passed.
 
-- [`docs/project/PHASE-0-RELEASE-IDENTITY.md`](docs/project/PHASE-0-RELEASE-IDENTITY.md)
-- [`docs/project/PHASE-9I-MIGRATION.md`](docs/project/PHASE-9I-MIGRATION.md)
-- [`docs/project/PROVIDER-PAYMENT-LIFECYCLE.md`](docs/project/PROVIDER-PAYMENT-LIFECYCLE.md)
-- [`docs/project/SECURITY-THREAT-MODEL.md`](docs/project/SECURITY-THREAT-MODEL.md)
-- [`docs/project/ARCHITECTURE-CODE-QUALITY.md`](docs/project/ARCHITECTURE-CODE-QUALITY.md)
-- [`docs/project/QUALITY-PLATFORM.md`](docs/project/QUALITY-PLATFORM.md)
+A controlled candidate that changed only:
 
-## Verified Security Threat-Model Closure outcome
+`UPayments.php` → `simplixpay-upayments.php`
 
-PR #17 closed five bounded security findings without broad architectural cleanup: public order-status IDOR, state-changing subscription GET actions, checkout third-party font/icon trust, overly broad plain-data output trust, and product-meta write defense in depth.
+failed the active-install migration contract: WordPress kept `simplixpay-upayments/UPayments.php` in `active_plugins`, the target basename was inactive, and the SimplixPay runtime did not load. The first stable release therefore keeps the historical physical basename. The text domain also remains `upayments`; the package still has 70 explicit PHP translation calls bound to it and no coordinated WPML/String Translation migration has been certified.
 
-Verified evidence:
+This is a compatibility decision, not unfinished branding cleanup.
 
-- final reviewed head: `fba12225899c3e01d6b23a6bba2f757a3b5f6a4a`;
-- squash merge: `01f3fc59eed8641b3e5372558f61a7a0f0cdfac9`;
-- merge tree: `e0027005f059fad03d8c08273b7aac6553c45f53`;
-- sole parent: `08054a93c619f3c34fef747a6e530abce1e8986e`;
-- GitHub signature: **VERIFIED**;
-- exact PR merge-ref Quality Gates run #88: **SUCCESS**;
-- post-merge `main` Quality Gates run #89: **SUCCESS**;
-- implementation branch deleted;
-- Security Threat-Model harness: **81 PASS / 0 FAIL**;
-- all Phase 0, Phase 9I, Provider Lifecycle, H12 PHP and H12 Blocks regression gates remained green.
+## Release artifact
 
-One valid automated P2 review finding—remaining Font Awesome chevrons in Checkout Blocks after removing the CDN stylesheet—was fixed before merge and made a permanent security regression.
+The canonical build is produced by:
 
-The closure remains intentionally bounded: webhook HMAC/signature details are provider-document unresolved, automatic refunds remain unsupported pending durable idempotency/reconciliation design, subscription auto-deduction is not broadly recurring-billing certified, and this gate is not a penetration-test/PCI/platform/feature/performance/production certification.
+```bash
+bash scripts/build-release.sh dist
+bash scripts/verify-release.sh dist/simplixpay-upayments-0.1.0.zip
+```
 
-## Verified Provider Contract & Payment Lifecycle outcome
+The release system guarantees, within the defined toolchain:
 
-PR #15 established a small, testable `Simplix\Pay\UPayments\Payment` lifecycle layer rather than broadly rewriting the inherited gateway bootstrap.
+- one `simplixpay-upayments/` ZIP root;
+- exact file set and bytes from Git `HEAD` tree/blobs;
+- fixed archive timestamps/modes and deterministic ordering;
+- SHA-256 ZIP sidecar and sorted per-file manifest;
+- independent ZIP/source-byte verification;
+- rejection of a self-consistent but source-divergent tampered ZIP;
+- dirty worktree/index isolation;
+- real packaged WordPress/WooCommerce activation, Blocks and legacy/HPOS smoke;
+- current/floor existing-install upgrade and rollback certification.
 
-Verified final evidence:
+Development/test/control files are excluded by `.distignore`.
 
-- reviewed head: `d2b08ebe1e65ad4ea8f4e06b41423e7bd9904fc3`;
-- squash merge: `9569e39973a9e94926087738eae06c3846361943`;
-- merge tree: `40ec562674361624c2764263ba55cfba84594955`;
-- sole parent: `8e5a93ceb4f133663fdf433cc1a10b8b36c13d97`;
-- GitHub signature: **VERIFIED**;
-- implementation branch deleted;
-- exact PR merge-ref Quality Gates run #70: **SUCCESS**;
-- post-merge `main` Quality Gates run #71: **SUCCESS**.
+## Compatibility and evidence boundaries
 
-The verified ordinary-checkout contract includes:
+A green repository does **not** justify claims that require external systems or organizations. The following remain external/manual or explicitly unsupported unless separately certified:
 
-- browser/webhook payload fields are non-authoritative;
-- paid state requires Bearer-authenticated Get Payment Status plus strict transaction/order binding;
-- exact UPayments HTTPS status host/path validation, no redirects, TLS verification and finite timeout;
-- credential/mode-scoped 30/minute automated status-query ceiling until provider documentation resolves its conflicting limits;
-- exact provider-order/reference/currency/amount binding with canonical decimal equality;
-- `CAPTURED` uses WooCommerce `payment_complete($verified_payment_id)` and standard Woo transaction-ID semantics;
-- duplicate/replayed captures do not re-complete payment;
-- paid/refunded orders cannot be downgraded or resurrected;
-- pending/authorized/approved/provider-NULL/processing/unknown states remain unpaid and reconcile boundedly;
-- terminal authenticated failure/cancellation affects only unverified/unpaid orders;
-- first-query transient failures can retry using a separate unverified cursor that becomes trusted only after authenticated rebinding;
-- reconciliation cursors are paired with the current `UPayments_order_id`, so a later Charge attempt on the same Woo order cannot inherit stale attempt state;
-- reconciliation is bounded to four attempts at 60/120/240/480 seconds and never retries Charge;
-- order lifecycle locking uses compare-and-swap stale takeover/release semantics;
-- callback routing rejects GET/POST conflicts, excludes cookies and never uses `$_REQUEST`.
+- production merchant payment completion and production credentials;
+- Apple Pay / Google Pay / Samsung Pay completion across real devices/accounts;
+- WPML/WCML, multilingual, multicurrency and RTL certification;
+- broad browser/device/theme/accessibility certification;
+- store-specific performance/load thresholds;
+- penetration-test, PCI or legal/compliance attestation;
+- UPayments webhook signature trust until a stable published signature contract exists;
+- live subscription auto-deduction;
+- automatic Woo refunds;
+- arbitrary marketplace multi-split routing.
 
-Four valid automated review findings were fixed before merge: rate-gate runtime/test seam, first-query transient reconciliation, stale-lock takeover race, and amount-rounding mismatch.
+The repository intentionally does not fabricate these claims.
 
-Exact final regression counts: Phase 0 **35/0**; Phase 9I preflight **123/0**; executor **59/0**; operations **81/0**; Provider Lifecycle **141/0**; Provider Exact Amount **4/0**; H12 PHP **1927/0**; H12 Blocks **144/0**, with Governance and syntax checks green.
+## Protected compatibility identities
 
-### Deliberate non-claims
+Do not mechanically rename historical runtime/persisted identities. Protected contracts include:
 
-The lifecycle gate does not pretend unresolved provider/feature boundaries are solved:
+- gateway/payment method ID `upayments`;
+- `woocommerce_upayments_settings`;
+- Blocks / Store API identity `upayments`;
+- callback `wc_upayments`;
+- `_upay_*` metadata;
+- `upayments_token_identity_secret_v2` and token provenance/scope/generation state;
+- `upay_process_subscriptions` and billing-attempt state;
+- historical order payment-method values.
 
-- exact webhook HMAC/signature verification remains provider-document unresolved because UPayments' public documentation reviewed on 2026-08-25 did not publish a complete stable verification contract;
-- automatic WooCommerce refunds remain unsupported because safe asynchronous refund idempotency/reconciliation needs its own durable design;
-- current multi-merchant behavior remains one additional merchant allocation only; arbitrary multi-split marketplace routing is not certified;
-- subscription auto-deduction keeps its separately characterized path.
+Changing any of these requires an explicit migration, precedence, rollback and regression contract.
 
-## Verified Phase 9I outcome
+## Security and payment truth
 
-Phase 9I remains DONE / VERIFIED through three independently reviewed tranches:
+- Browser redirects and webhook bodies are not financial truth.
+- Paid state requires provider-authenticated status verification and exact order/transaction/economics binding.
+- Non-idempotent Charge/refund/recurring operations are never blindly retried.
+- Checkout does not depend on third-party font/icon CDNs.
+- Uninstall is non-destructive by default.
+- Merchant secrets, card data and token-provenance secrets must never be exposed in diagnostics or CI.
 
-1. **Preflight — PR #11** — exact `CLEAN` / `MIGRATABLE` / `BLOCKED` / `INDETERMINATE` classification, no provider calls or identity writes, all 13 blocker families fail closed.
-2. **Executor — PR #12** — acts only on fresh `MIGRATABLE` evidence under lock; creates only `legacy_compat` / `legacy_verified_capture`; never fabricates canonical/Create-201 history; historical order metadata remains immutable.
-3. **Operations — PR #13** — bounded admin/CLI dry-run and confirmed execute, durable redacted per-user checkpoints, credential/mode/list-scoped resume, and no provider/checkout/frontend migration hooks.
+See [`SECURITY.md`](SECURITY.md), [`docs/project/PROVIDER-PAYMENT-LIFECYCLE.md`](docs/project/PROVIDER-PAYMENT-LIFECYCLE.md) and [`docs/project/SECURITY-THREAT-MODEL.md`](docs/project/SECURITY-THREAT-MODEL.md).
 
-Phase 9I system completion does not mean every merchant installation was automatically migrated. `BLOCKED` and `INDETERMINATE` site-specific outcomes remain valid fail-closed results.
+## Engineering records
 
-## Current engineering gate — Enterprise Compatibility Certification
+- [`docs/project/PROJECT-STATUS.md`](docs/project/PROJECT-STATUS.md) — current canonical state
+- [`docs/project/ENTERPRISE-CERTIFICATION.md`](docs/project/ENTERPRISE-CERTIFICATION.md) — platform/provider/feature evidence
+- [`docs/project/RELEASE-ENGINEERING.md`](docs/project/RELEASE-ENGINEERING.md) — artifact/upgrade/release-candidate evidence
+- [`docs/project/QUALITY-PLATFORM.md`](docs/project/QUALITY-PLATFORM.md) — permanent Q1-Q19 record
+- [`docs/project/PHASE-9I-MIGRATION.md`](docs/project/PHASE-9I-MIGRATION.md) — historical identity migration
+- [`docs/project/PROVIDER-PAYMENT-LIFECYCLE.md`](docs/project/PROVIDER-PAYMENT-LIFECYCLE.md) — financial-state contract
+- [`docs/ENGINEERING-ROADMAP.md`](docs/ENGINEERING-ROADMAP.md) — high-level program sequence
 
-Architecture discovery/A1-A5 and Quality Platform Q1-Q19 are DONE / VERIFIED. Q19 closed through PR #45: final exact head `1717f0c25da7140a7799c7db3a7f016abecec7e9`, tree `8230778e3313e4d201de48b1a5cf170c42f7178d`, Quality Gates #463, PHPUnit **174 tests / 1063 assertions**, Q19 **22/0**, Q18 **17/0**, Q17 **97/0**, H12 PHP **1927/0**, H12 Blocks **144/0**, and exact-head CodeQL success with no new alerts. It was squash-merged as `29ba16a1eabc00e25c3652ae838be9b9539b3a10` with the same tree; post-merge Quality Gates #464 and all post-merge CodeQL lanes succeeded, and the implementation branch was deleted.
+## Development
 
-The numbered Quality Platform is therefore closed at Q19; no Q20 is justified by current evidence. Enterprise Compatibility Certification now has a permanent real-runtime matrix. PR #47 established activation/Classic/Blocks/legacy-storage/HPOS evidence and fixed a real malformed-settings activation fatal through RED→GREEN. The current declaration tranche derives only the matrix-proven support metadata (WordPress 6.9/7.1, WooCommerce 10.8/11.1, PHP 7.4 floor) and HPOS `custom_order_tables` declaration, with the full matrix rerun after each change. Broader provider, saved-card/subscription/wallet/multi-merchant, WPML/WCML/RTL, browser/accessibility/performance and release certification remains open. None of the completed engineering gates alone constitutes broad feature, performance, PCI/compliance or production certification.
+The production plugin has no runtime Composer dependency. Composer tooling is development-only.
 
-No big-bang rewrite, runtime branding rename, runtime Composer dependency or broad compatibility claim is authorized by certification work without its own evidence.
+```bash
+composer install
+composer quality
+```
 
-## Transitional identities — deliberate compatibility choices
+CI also runs distributed PHP syntax, every permanent architecture/Quality/H12 harness, real compatibility certification, release-artifact certification and CodeQL.
 
-The physical main file remains `UPayments.php` and the runtime/header text domain remains `upayments`.
+## License
 
-Frozen eventual targets:
-
-- `simplixpay-upayments.php`
-- text domain `simplixpay-upayments`
-
-Those are explicit upgrade/i18n migrations, not cosmetic search/replace work.
-
-Persisted/runtime identities such as gateway ID `upayments`, `woocommerce_upayments_settings`, callback `wc_upayments`, `_upay_*` metadata, H12 token/provenance state, scheduler/table identities and historical order method values remain protected unless a dedicated tested migration changes them.
-
-## Why this project exists
-
-Payment extensions are business-critical infrastructure. Simplix Innovations is engineering this integration around deterministic financial state, independent release ownership, saved-card/customer-token identity safety, historical migration without guessing, WooCommerce lifecycle semantics, Classic/Blocks interoperability, multilingual commerce, subscriptions/refunds/multi-merchant boundaries, diagnostics, performance and evidence-based release controls.
-
-These are engineering targets unless [`docs/COMPATIBILITY.md`](docs/COMPATIBILITY.md) explicitly marks a capability **Verified**.
-
-## Verified repository controls
-
-The project uses protected `main` with squash-only merge policy, PR/review-thread workflow, required Governance and H12 Regression Harness checks, linear history, merged-branch cleanup, secret scanning/push protection, Dependabot security updates and private vulnerability reporting.
-
-Current CI validates all tracked PHP syntax, Phase 0, all Phase 9I suites, Provider Payment Lifecycle, Provider Exact Amount Binding, Security Threat-Model, Q1-Q19, H12 PHP and H12 Blocks behavior. A separate permanent Compatibility Certification workflow installs real WordPress/WooCommerce/MySQL environments and exercises activation, Classic/Blocks registration, release metadata, legacy/HPOS order CRUD and Woo feature declarations across the supported matrix. The protected H12 job remains an always-running aggregator that fails when prerequisite quality/syntax jobs are not successful.
-
-## Simplix Innovations and WooCommerce
-
-**Simplix Innovations is listed by WooCommerce as a Woo Agency Partner** and serves WooCommerce clients internationally from the United Arab Emirates.
-
-- [Official WooCommerce Agency Partner profile](https://woocommerce.com/development-services/simplix-innovations-woocommerce-full-service-agency/232995338/)
-- [Simplix Innovations](https://simplixi.com)
-- Contact: **info@simplixi.com**
-
-The Woo Agency Partner listing reflects Simplix Innovations' broader WooCommerce practice. It is not an endorsement by WooCommerce or UPayments of this specific plugin.
-
-## Engineering control plane
-
-Read in this order for engineering work:
-
-1. [`AGENTS.md`](AGENTS.md)
-2. [`docs/project/PROJECT-STATUS.md`](docs/project/PROJECT-STATUS.md)
-3. [`docs/project/NAMING-IDENTITY-STANDARD.md`](docs/project/NAMING-IDENTITY-STANDARD.md)
-4. [`docs/project/NEW-CHAT-HANDOFF.md`](docs/project/NEW-CHAT-HANDOFF.md)
-5. [`docs/project/PHASE-0-RELEASE-IDENTITY.md`](docs/project/PHASE-0-RELEASE-IDENTITY.md)
-6. [`docs/project/PHASE-9I-MIGRATION.md`](docs/project/PHASE-9I-MIGRATION.md)
-7. [`docs/project/PROVIDER-PAYMENT-LIFECYCLE.md`](docs/project/PROVIDER-PAYMENT-LIFECYCLE.md)
-8. [`docs/project/SECURITY-THREAT-MODEL.md`](docs/project/SECURITY-THREAT-MODEL.md)
-9. [`docs/project/MASTER-ENGINEERING-PLAYBOOK.md`](docs/project/MASTER-ENGINEERING-PLAYBOOK.md)
-10. [`docs/project/REPOSITORY-AUDIT.md`](docs/project/REPOSITORY-AUDIT.md)
-11. [`docs/project/REPOSITORY-READINESS.md`](docs/project/REPOSITORY-READINESS.md)
-12. [`docs/project/BASELINE-H12.md`](docs/project/BASELINE-H12.md)
-
-Additional policies: [`SECURITY.md`](SECURITY.md), [`SUPPORT.md`](SUPPORT.md), [`CONTRIBUTING.md`](CONTRIBUTING.md), [`MAINTAINERS.md`](MAINTAINERS.md), [`UPSTREAM.md`](UPSTREAM.md), [`NOTICE.md`](NOTICE.md), and [`CHANGELOG.md`](CHANGELOG.md).
-
-## Issues, security and support
-
-Use GitHub Issues for reproducible bugs, compatibility reports and feature requests. Security-sensitive findings must follow [`SECURITY.md`](SECURITY.md), including the repository's private reporting path.
-
-Simplix Innovations maintains the WooCommerce integration layer. UPayments remains responsible for merchant/provider-platform operations.
-
-## License and provenance
-
-This repository is distributed under the [MIT License](LICENSE). Upstream provenance, independent maintenance and trademark boundaries are documented in [`NOTICE.md`](NOTICE.md) and [`UPSTREAM.md`](UPSTREAM.md). Historical engineering-only changelog material is retained under [`docs/history/`](docs/history/) rather than presented as SimplixPay product releases.
+MIT. See [`LICENSE`](LICENSE) and [`NOTICE.md`](NOTICE.md).

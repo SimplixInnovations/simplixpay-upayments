@@ -1,215 +1,147 @@
 # SimplixPay for UPayments — Release Engineering
 
-**Status:** IMPLEMENTATION / FINAL PR VERIFICATION
-
+**Status:** TASKS 5 & 7 DONE / VERIFIED; TASK 8 RELEASE-CANDIDATE CLOSEOUT CURRENT
 **Canonical repository:** `SimplixInnovations/simplixpay-upayments`
 
-**Release-engineering base:** provider-certified `main` `949c3fcbc69ba12bee66be3906eb48af0e344e79`
+## First-stable package contract
 
-**Current branch:** `enterprise/release-artifact`
+The first stable release candidate intentionally uses:
 
-## Purpose
-
-Establish a reproducible, independently verifiable, installable SimplixPay release artifact without changing the frozen Phase 0 physical plugin identity.
-
-This tranche does **not** migrate the main file from `UPayments.php` to `simplixpay-upayments.php` and does **not** migrate the text domain from `upayments` to `simplixpay-upayments`. Those remain a separate evidence-driven upgrade decision.
-
-## Frozen package contract
-
-- canonical ZIP root: `simplixpay-upayments/`;
-- current version source: `Simplix\\Pay\\UPayments\\Release\\Identity::VERSION`;
-- current candidate filename: `simplixpay-upayments-0.1.0.zip`;
-- transitional main file retained: `UPayments.php`;
-- transitional text domain retained: `upayments`;
-- package policy, file set and bytes come from the Git **HEAD tree/blobs**, never mutable working-tree or staged-index state;
-- archive paths are sorted;
-- archive timestamps are fixed to 1980-01-01 00:00:00;
-- archived regular-file mode is fixed to 0644;
-- deterministic DEFLATE level 9 is used within the defined CI toolchain;
-- every build emits a ZIP SHA-256 sidecar and a sorted per-file SHA-256 manifest.
-
-## Distribution exclusions
-
-The release artifact excludes development/control surfaces including:
-
-- `.github/`;
-- `tests/`;
-- `vendor/`;
-- `docs/`;
-- `scripts/`;
-- Composer development metadata/lock;
-- PHPUnit/PHPStan/PHPCS configuration;
-- caches;
-- `AGENTS.md`;
-- repository/editor control files;
-- contributor/maintainer/internal support/provenance control files.
-
-The artifact retains the runtime plugin, `src/`, `includes/`, `assets/`, `templates/`, public README/changelog/license/notice/security material, `index.php`, and non-destructive `uninstall.php`.
-
-## TDD evidence
-
-### RED 1 — no deterministic builder/verifier
-
-Test-only release contract on PR #50 produced:
-
-- **16 PASS / 9 FAIL**;
-- missing canonical builder;
-- missing canonical verifier;
-- missing stronger distribution exclusions;
-- Quality Gates and the permanent compatibility platform remained green.
-
-### GREEN 1 — deterministic Git-blob artifact
-
-After `scripts/build-release.sh`, `scripts/verify-release.sh`, and the stronger `.distignore` were introduced, the release harness passed deterministic double-build, ZIP checksum, manifest and verifier checks.
-
-### RED 2 — no packaged runtime proof
-
-The permanent harness was then strengthened before implementation and produced:
-
-- **36 PASS / 5 FAIL**;
-- no packaged-ZIP installer mode;
-- no immutable artifact upload;
-- no immutable artifact download;
-- no packaged legacy/HPOS matrix;
-- no packaged activation/metadata/Blocks/order-CRUD smoke.
-
-### GREEN 2 — packaged runtime certification
-
-The existing real WordPress/WooCommerce installer gained an optional `SIMPLIXPAY_PLUGIN_ZIP` mode. Source-mode compatibility certification remains unchanged.
-
-Release Artifact CI now:
-
-1. builds one exact artifact;
-2. independently verifies it;
-3. uploads the ZIP/checksum/manifest through immutable `actions/upload-artifact`;
-4. downloads the same artifact through immutable `actions/download-artifact`;
-5. independently verifies the downloaded ZIP again;
-6. installs the ZIP through WP-CLI into fresh WordPress 7.1 / WooCommerce 11.1.0 / PHP 8.3;
-7. verifies packaged activation and Classic registration;
-8. verifies packaged support metadata and Woo feature declarations;
-9. verifies packaged Blocks registration/availability;
-10. verifies real order CRUD with legacy storage;
-11. repeats real order CRUD with HPOS authoritative storage.
-
-### RED 3 — synthetic PR merge-ref source
-
-Independent review of the first green artifact found that GitHub PR checkout packaged the synthetic merge ref rather than the exact branch head.
-
-A test-only harness assertion then failed:
-
-- **41 PASS / 1 FAIL**;
-- exact failure: release checkout was not pinned to the candidate source SHA.
-
-The release workflow now defines one `RELEASE_SOURCE_SHA`:
-- pull request: exact `github.event.pull_request.head.sha`;
-- push/main: exact `github.sha`.
-
-Both artifact-build and packaged-runtime checkouts use that exact SHA, and artifact upload/download naming is keyed to it.
-
-### Independent archive-verification hardening
-
-Two independently reproducible test-harness weaknesses were fixed before merge:
-
-- the harness now opens the ZIP itself with PHP `ZipArchive` rather than trusting `verify-release.sh` as its only archive oracle;
-- the harness now requires the second ZIP, second checksum sidecar and second manifest to exist before reproducibility comparisons.
-
-The independent harness validates:
-- one canonical root;
-- sorted unique safe archive paths;
-- required runtime files/subtrees;
-- absence of development/control paths;
-- an explicit release-path allowlist;
-- exact equality between ZIP paths and the Git HEAD distribution set;
-- byte-for-byte equality between every packaged file and its Git HEAD blob;
-- packaged product/version/text-domain/main-file identity;
-- ZIP checksum sidecar;
-- manifest path-set equality;
-- every packaged file's SHA-256.
-
-### Provenance hardening — worktree/index isolation and source binding
-
-A final provenance challenge closes two false-certification classes:
-
-- the builder may not read version, distribution policy, file membership, or file bytes from the mutable worktree/index;
-- a ZIP with internally consistent checksum/manifest evidence must still fail verification if any packaged byte differs from Git HEAD.
-
-The permanent harness now creates an isolated detached worktree, mutates and stages release identity/policy plus a staged-only file, and requires the resulting build to remain byte-identical to the clean Git HEAD build. It also creates a self-consistent tampered ZIP with regenerated sidecars and requires the verifier to reject it because the artifact bytes no longer match source.
-
-## Recorded candidate evidence
-
-The evidence below intentionally records a completed candidate rather than claiming that a Markdown file can embed its own commit SHA. Final merge-head truth is taken from the GitHub checks attached to the exact PR head.
-
-Recorded candidate:
-
-`4d501fc021846b585cec6c17e1e371296c24d174`
-
-Release Artifact #12 artifact-build evidence:
-
-- permanent release harness: **57 PASS / 0 FAIL**;
-- exact release source: `4d501fc021846b585cec6c17e1e371296c24d174`;
-- ZIP: `simplixpay-upayments-0.1.0.zip`;
-- ZIP SHA-256: `75db8cefdc73bb6de032ec464cd21d49cd80ea80d8ee1d077a7f2e405d6b57b2`;
-- packaged files: **74**;
-- independent verifier: **SUCCESS**;
-- independent PHP archive inspection: **SUCCESS**;
-- packaged legacy runtime: **SUCCESS**;
-- packaged HPOS runtime: **SUCCESS**.
-
-The unchanged ZIP hash across release-tooling-only commits is expected: release tooling, tests, CI and engineering documents are excluded from the artifact, while runtime package blobs remained unchanged.
-
-## Release evidence artifacts
-
-CI uploads one short-retention verification artifact named by exact source SHA containing:
-
-- versioned release ZIP;
-- ZIP SHA-256 sidecar;
-- sorted per-file SHA-256 manifest.
-
-A public/stable GitHub Release asset must be created only from a separately approved release-candidate/tag workflow after all remaining enterprise certification and upgrade/identity decisions close.
-
-## Existing-install upgrade and release-identity decision — VERIFIED
-
-Task 7 characterizes an already-active prior release candidate against both the current and floor supported runtime cells.
-
-Verified safe with the retained package identity:
-
-- force-upgrade from prior candidate to current deterministic ZIP;
-- explicit deactivate/reactivate;
-- rollback to the prior candidate and return to current;
-- byte-stable merchant settings;
-- historical `upayments` gateway identity and provider/token/subscription order metadata;
-- historical `wc_upayments` callback registration;
-- unchanged canonical `upay_process_subscriptions` schedule;
-- duplicate-root package detection as a distinct WordPress plugin identity.
-
-The controlled hypothetical package that physically renamed `UPayments.php` to `simplixpay-upayments.php` failed the safe-upgrade RED contract in both runtime cells. WordPress retained `simplixpay-upayments/UPayments.php` in `active_plugins`; the target basename remained inactive and the plugin runtime did not load.
-
-**Release decision:** the first stable release retains:
-
+- package root: `simplixpay-upayments/`;
 - main file: `UPayments.php`;
 - plugin basename: `simplixpay-upayments/UPayments.php`;
-- text domain: `upayments`.
+- text domain: `upayments`;
+- version source: `Simplix\Pay\UPayments\Release\Identity::VERSION`;
+- current development artifact: `simplixpay-upayments-0.1.0.zip`.
 
-The eventual frozen targets remain future migration goals, not first-stable release requirements. Task 7 also observes 70 explicit packaged PHP translation calls still bound to `upayments`, so text-domain migration remains coupled to a separately certified i18n/WPML transition.
+Task 7 proved that a direct physical rename to `simplixpay-upayments.php` does not preserve an already-active installation. The filename/text-domain targets remain future tested migrations, not cosmetic release cleanup.
 
-## Remaining release blockers
+## Deterministic artifact contract — VERIFIED
 
-Task 5 deterministic packaging, Task 6 feature/operations boundaries and Task 7 existing-install/identity characterization are complete. Remaining repository closeout work is:
+Task 5 / PR #50 established the permanent build system:
 
-- reconcile living status/readiness/changelog/readme documentation to the verified enterprise state;
-- classify multilingual/RTL/browser/accessibility/performance/device evidence that cannot be honestly generalized from repository automation;
-- run the full final source + packaged-artifact + provider/security verification on one release-candidate head;
-- run one final whole-plugin external AI/Codex challenge after all primary evidence is complete;
-- make the final release version/changelog/publication decision without creating a public release asset prematurely.
+```bash
+bash scripts/build-release.sh dist
+bash scripts/verify-release.sh dist/simplixpay-upayments-0.1.0.zip
+```
 
-## Merge gate
+The builder/verifier contract requires:
 
-PR #50 may merge only when one exact final head passes:
+- distribution policy, path set and bytes from the exact Git `HEAD` tree/blobs;
+- no dependence on mutable worktree or staged-index state;
+- sorted archive paths;
+- fixed 1980-01-01 timestamps;
+- fixed regular-file mode 0644;
+- deterministic DEFLATE level 9 within the defined CI toolchain;
+- ZIP SHA-256 sidecar;
+- sorted per-file SHA-256 manifest;
+- explicit release-path allowlist;
+- exactly one canonical ZIP root;
+- independent PHP `ZipArchive` inspection;
+- exact path equality to the HEAD distribution set;
+- byte-for-byte equality to source blobs;
+- rejection of a self-consistent/rehashed ZIP whose bytes diverge from HEAD;
+- dirty worktree/staged-index reproduction of the same artifact.
 
-- Release Artifact including deterministic build and packaged legacy+HPOS smoke;
-- Quality Gates including H12;
-- permanent 16-cell Compatibility Certification;
-- CodeQL;
-- zero unresolved valid review threads.
+Development/control surfaces such as `.github/`, `tests/`, `docs/`, `scripts/`, `vendor/`, Composer development metadata, analysis configs and repository-agent/control files are excluded. Runtime plugin code/assets/templates and public license/readme/changelog/notice/security material are retained.
 
-After merge, all of those required workflows must pass again on canonical `main` before this tranche becomes **DONE / VERIFIED**.
+## Packaged runtime certification — VERIFIED
+
+Release Artifact CI builds one exact artifact, independently verifies it, transfers it through immutable upload/download actions, verifies it again, then installs that ZIP into real WordPress/WooCommerce.
+
+Permanent package smoke includes:
+
+- activation and Classic gateway registration;
+- support metadata and Woo feature declarations;
+- Blocks registration/availability;
+- real Woo order CRUD with legacy authoritative storage;
+- real Woo order CRUD with HPOS authoritative storage.
+
+Task 5 final PR head `27fb42b32051e4cd18db0c0231f782d3b4a8e932` passed Release Artifact #15 with the permanent release harness at **76 PASS / 0 FAIL**, Quality #533/H12, Compatibility #61 (16/16) and CodeQL. It squash-merged as `54b1fbcc280b92372bd93baf929d6a746cfd3959` and repeated required checks on `main`.
+
+## Existing-install upgrade / rollback — VERIFIED
+
+Task 7 / PR #52 permanently extends Release Artifact certification with two installed-package upgrade cells:
+
+- WordPress 7.1 / WooCommerce 11.1.0 / PHP 8.3;
+- WordPress 6.9.7 / WooCommerce 10.8.1 / PHP 8.3.
+
+Each cell begins from prior verified candidate `54b1fbcc280b92372bd93baf929d6a746cfd3959` as an already-active merchant installation and verifies:
+
+- force-upgrade to the current same-basename package keeps the plugin active;
+- merchant settings remain byte-for-byte unchanged;
+- historical payment method `upayments` remains intact;
+- provider order identity, customer-token and subscription metadata remain intact;
+- canonical `upay_process_subscriptions` timestamp remains unchanged;
+- historical `wc_upayments` callback remains registered;
+- explicit deactivate/reactivate is non-destructive;
+- rollback to the prior package and return to current are safe;
+- a duplicate-root package is a distinct inactive WordPress plugin identity.
+
+### Unsafe-rename negative proof
+
+The controlled candidate replaced only:
+
+`simplixpay-upayments/UPayments.php`
+
+with:
+
+`simplixpay-upayments/simplixpay-upayments.php`.
+
+In both upgrade cells WordPress retained the old basename in `active_plugins`, the target basename remained inactive and SimplixPay runtime did not load. The workflow permanently expects this negative result, restores the canonical package and re-verifies retained state.
+
+The first stable therefore retains `UPayments.php`. Restoration after the negative probe did not require explicit reactivation when the historical main file returned.
+
+### Text-domain decision
+
+The package still contains 70 explicit PHP translation calls bound to `upayments`. There is no certified coordinated WPML/String Translation migration. The first stable therefore also retains text domain `upayments`.
+
+Task 7 final head `dd550eb6af86262aabfd50479407903172327726` passed:
+
+- Release Artifact #26 including both upgrade cells;
+- Quality #544/H12;
+- Compatibility #72 (16/16);
+- CodeQL with no new alerts;
+- zero unresolved review threads.
+
+It squash-merged as `02b8d1c2851faabe020f23bbe84ebcca43a4827d`. Post-merge `main` passed Release Artifact #27, Quality #545, Compatibility #73 and CodeQL #349.
+
+## Release evidence boundary
+
+CI artifacts are verification artifacts, not public releases. A stable GitHub Release asset, public tag, WordPress.org upload or version promotion must be a separate owner release action after Task 8 is DONE / VERIFIED.
+
+Do not publish an artifact from an unverified PR merge-ref, mutable worktree or unreviewed commit.
+
+## Task 8 release-candidate closeout
+
+The final engineering candidate must pass on one exact head:
+
+1. current living documentation/governance reconciliation;
+2. zero unjustified open issues/PRs and clean branch topology to the extent supported by repository controls;
+3. Quality Gates including Composer validation/audit, analyzers, distributed syntax and H12;
+4. permanent 16-cell Compatibility Certification;
+5. Release Artifact including deterministic build, packaged legacy/HPOS and current/floor upgrade cells;
+6. bounded Provider Sandbox Charge initialization;
+7. CodeQL/security analysis;
+8. zero unresolved valid review findings;
+9. the reserved final whole-plugin Codex challenge after primary evidence is green;
+10. exact-head squash merge followed by post-merge verification on `main`.
+
+## External/manual release evidence
+
+The repository must not claim these are automated release blockers already solved:
+
+- production merchant payment completion / production credentials;
+- real wallet completion;
+- commercial WPML/WCML/multicurrency/RTL validation;
+- browser/device/theme/accessibility matrix;
+- representative-store performance/load thresholds;
+- external penetration-test/PCI/legal-compliance evidence;
+- live non-idempotent subscription auto-deduction;
+- provider webhook signature trust without a stable provider contract.
+
+Automatic Woo refunds and arbitrary marketplace multi-split remain unsupported unless separately designed/certified.
+
+## Publication rule
+
+**Task 8 DONE / VERIFIED means the repository has an enterprise-qualified release-candidate engineering state. It does not itself mean 1.0 has been publicly released.**
