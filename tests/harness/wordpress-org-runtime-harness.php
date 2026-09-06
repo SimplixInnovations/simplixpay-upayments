@@ -41,8 +41,8 @@ wporgr_assert(!preg_match('/\\bcurl_(?:init|setopt|exec|errno|error|getinfo|clos
 wporgr_assert(strpos($gateway, 'wp_remote_request(') !== false, 'gateway transport uses WordPress HTTP API');
 wporgr_assert(strpos($scheduler, 'wp_remote_request(') !== false, 'subscription transport uses WordPress HTTP API');
 
-wporgr_assert(strpos($status, 'parse_url(') === false && strpos($status, 'wp_parse_url(') !== false, 'status URL validation uses wp_parse_url');
-wporgr_assert(strpos($payload, 'parse_url(') === false && strpos($payload, 'wp_parse_url(') !== false, 'checkout redirect validation uses wp_parse_url');
+wporgr_assert(!preg_match('/(?<!wp_)\\bparse_url\\s*\\(/', $status) && strpos($status, 'wp_parse_url(') !== false, 'status URL validation uses wp_parse_url');
+wporgr_assert(!preg_match('/(?<!wp_)\\bparse_url\\s*\\(/', $payload) && strpos($payload, 'wp_parse_url(') !== false, 'checkout redirect validation uses wp_parse_url');
 
 wporgr_assert(strpos($order_template, "defined( 'ABSPATH' ) || exit;") !== false, 'order-details template blocks direct access');
 wporgr_assert(strpos($product_type, "defined( 'ABSPATH' ) || exit;") !== false, 'product-type compatibility file blocks direct access');
