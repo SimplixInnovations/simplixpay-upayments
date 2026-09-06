@@ -1,31 +1,40 @@
 # Full Automated Quality Platform
 
-**Status:** Q17 / IMPLEMENTATION
+**Status:** Q18 / IMPLEMENTATION
 
-**Current branch:** `quality/payment-runtime-analysis`
+**Current branch:** `quality/blocks-availability-enforcement`
 
-**Verified base `main`:** `06a9ebd732c7cc3f062d4bb361aaef4054a1dfa3`
+**Verified base `main`:** `570dbf3501b359b16767d070d18c25a67a0c24fe`
 
-**Verified base tree:** `b9cc6eafb3c7f8df36b9c5db8b2e45bb330688d2`
+**Verified base tree:** `4dae7ad7db04fcd1466389d304e661ac0666983f`
 
 ## Entry evidence
 
-Q16 is DONE / VERIFIED:
+Q17 is DONE / VERIFIED:
 
-- PR #42 final reviewed head `3cff2fcc64053d79be7427696c86039f1b52bbfd`;
-- exact reviewed tree `b9cc6eafb3c7f8df36b9c5db8b2e45bb330688d2`;
-- exact-head Quality Gates run #315: SUCCESS across all five jobs;
-- PHPUnit: **160 tests / 987 assertions**;
+- PR #43 final verified head `2c5d8e9213086c88147f5d1d26247d58f1cbc81b`;
+- exact verified tree `4dae7ad7db04fcd1466389d304e661ac0666983f`;
+- exact-head Quality Gates run #414: SUCCESS;
+- PHPUnit: **172 tests / 1053 assertions**;
 - PHPStan level 5/PHP 7.2 and PHPCS/WPCS: clean;
-- Q16 **120/0**;
+- Q17 **97/0**;
+- Q16 **113/0**;
 - H12 PHP **1927/0** and Blocks **144/0**;
-- CodeQL PR scan #83: SUCCESS with no new alerts in changed code;
-- final independent exact-head Codex review was clean with zero unresolved valid findings;
-- squash merge `06a9ebd732c7cc3f062d4bb361aaef4054a1dfa3` on sole parent `a4bbb05021dbded73072c0ba108a18245b60ad88` with the identical reviewed tree and valid GitHub signature;
-- push-triggered post-merge Quality Gates run #316: SUCCESS;
-- main security run #84: SUCCESS;
+- CodeQL PR scan #194: SUCCESS;
+- squash merge `570dbf3501b359b16767d070d18c25a67a0c24fe` with identical tree;
+- post-merge Quality Gates run #415: SUCCESS;
+- main security run #195: SUCCESS;
 - implementation branch deleted after verified merge.
 
+Q16 is DONE / VERIFIED:
+
+- PR #42 final verified head `3cff2fcc64053d79be7427696c86039f1b52bbfd`;
+- exact verified tree `b9cc6eafb3c7f8df36b9c5db8b2e45bb330688d2`;
+- exact-head Quality Gates run #315: SUCCESS across all five jobs;
+- Q16 **120/0**;
+- squash merge `06a9ebd732c7cc3f062d4bb361aaef4054a1dfa3`;
+- post-merge Quality Gates run #316: SUCCESS;
+- main security run #84: SUCCESS.
 Q15 is DONE / VERIFIED:
 
 - PR #41 final reviewed head `01a06d45fcc0bc3d08da8d58f6be177b232bb1d4`;
@@ -218,65 +227,33 @@ Q16 closure evidence is pinned in Entry evidence above.
 
 The current sequence is:
 
-- Q15: subscription presentation — **DONE / VERIFIED**;
 - Q16: migration core — **DONE / VERIFIED**;
-- Q17: payment runtime — **CURRENT CLOSEOUT**.
+- Q17: payment runtime — **DONE / VERIFIED**;
+- Q18: Blocks availability enforcement — **CURRENT**;
+- Q19: subscription product eligibility — **NEXT / EVIDENCE-BACKED**.
 
-Q17 is the planned Quality Platform closeout. After Q17, run an explicit enterprise-risk audit. Move to Platform Certification unless a concrete unresolved **enterprise-critical risk** is separately bounded and is not better owned by Platform Certification, Feature Certification, Product Readiness or Release Engineering. Do not extend the Q sequence merely to add another number.
+Q18 exists because a concrete WooCommerce Blocks defect was demonstrated: the PHP adapter could report the method active without faithfully enforcing the canonical gateway enabled state. Q18 is bounded to server activation/availability semantics, analyzer ownership, WooCommerce logging correction and permanent regression coverage. Missing `enabled` in an otherwise valid settings array must preserve the declared gateway default `yes`; malformed settings containers or malformed explicit enabled values fail closed.
 
-## Q17 purpose
+Q19 then closes the already demonstrated product-level subscription opt-out inconsistency across Classic and Store API payment orchestration. After Q19, terminate the numbered Quality Platform sequence unless a new enterprise-critical risk is independently demonstrated and is not better owned by certification/readiness/release engineering.
 
-Expand baseline-free PHPStan level 5/PHP 7.2, risk-focused PHPCS/WPCS and process-isolated deterministic PHPUnit characterization into the existing payment-runtime boundaries:
+## Closed Q17 contract
 
-- `src/Payment/CheckoutOrchestrator.php`;
-- `src/Payment/PaymentLifecycle.php`.
+Q17 is DONE / VERIFIED. It expanded deterministic PHPUnit, baseline-free PHPStan level 5/PHP 7.2 and risk-focused PHPCS/WPCS into `src/Payment/CheckoutOrchestrator.php` and `src/Payment/PaymentLifecycle.php`, hardened canonical order/provider-bound inputs and Charge-attempt identity, and made capture completion metadata atomic around Woo paid-state/transaction-ID postconditions while preserving authenticated provider truth and protected compatibility identities.
 
-The goal is to close the remaining payment-runtime static-analysis and deterministic-regression gap without redesigning provider APIs, changing persisted compatibility identities, broadening subscription ownership or claiming platform certification.
+## Q18 acceptance
 
-## Q17 scope
+Q18 may be merged only when:
 
-Q17 may characterize and harden only the existing checkout-orchestration and lifecycle boundaries:
-
-- canonical positive Woo order-ID intake for checkout and reconciliation, with malformed/signed/decimal/exponent/whitespace/leading-zero forms rejected before Woo order lookup;
-- Classic vs Store API request-source isolation and presence-aware security-sensitive field parsing;
-- provider-bound currency, amount, product, callback, MultiMerchant and identifier lexical/economic boundaries;
-- retry-unique provider Charge-attempt identity while preserving the established 32-lowercase-hex provider `order.id` shape;
-- callback GET/POST conflict-safe merge with cookies excluded and provider callback values treated only as routing evidence;
-- authenticated status verification, exact fresh-order binding, order lock acquisition/release and TOCTOU rebind;
-- trusted/unverified cursor promotion, provider-order pairing, stale-attempt reset and bounded reconciliation;
-- canonical Woo `payment_complete($payment_id)`, transaction-ID conflict handling, replay/idempotency barriers and no downgrade/resurrection of paid/refunded state;
-- analyzer- or test-proven corrections inside the two named payment-runtime files only.
-
-Q17 may not rename gateway/options/routes/H12 identities, redesign the provider contract, add blind Charge/refund/auto-deduct retries, broaden migration eligibility, change protected Scheduler/CycleClaim behavior, certify recurring billing, or claim WordPress/WooCommerce/PHP/HPOS/Blocks/WPML/browser/performance/penetration-test/PCI/compliance/production readiness.
-
-## Q17 test-proven hardening
-
-The characterization has already proven and corrected bounded defects:
-
-- checkout and reconciliation previously accepted a terminal-newline numeric order ID through permissive numeric/end-anchor handling; the red characterization reached `wc_get_order(42)` for `"42\n"`, and the correction now uses canonical positive integer parsing with absolute `\z`;
-- provider currency and MultiMerchant IBAN lexical checks now use absolute `\z` boundaries so terminal-newline values fail before provider transport;
-- two Charge attempts for the same Woo order in the same second previously reused the same `md5(order_id * time())` provider identity; the red characterization proved identical outbound IDs. Q17 now derives each attempt from a fresh WordPress UUID and hashes it to preserve the established 32-lowercase-hex shape;
-- a failed Woo `payment_complete()` postcondition could durably expose false legacy `UPayments_Result = CAPTURED` / payment metadata. Q17 now stages authenticated legacy provider metadata before `payment_complete()` so Woo completion/status hooks observe it, snapshots the exact prior legacy values, restores that snapshot if completion throws or the paid-state + transaction-ID postcondition fails, and writes `_upay_verified_capture` / `UPayments_webhook_triggered` only after the postcondition succeeds.
-
-The MultiMerchant charge-number terminal-newline case was also characterized and already failed closed through downstream exact number-token validation, so no redundant production change was made.
-
-## Q17 acceptance
-
-Q17 may be merged only when:
-
-1. deterministic, process-isolated PHPUnit covers checkout/reconciliation order-ID boundaries, provider-bound lexical boundaries, retry-unique attempt identity and callback merge behavior;
-2. PHPStan level 5 passes on all Q1-Q17 owned modules against PHP 7.2 with no baseline or `ignoreErrors` entries;
-3. PHPCS/WPCS, Composer validation, locked install and dependency audit remain clean;
-4. every Q1-Q16 permanent harness and the new Q17 payment-runtime harness are green;
-5. provider lifecycle, exact-amount and Architecture checkout-orchestration suites remain green without weakened expectations;
-6. PHP 7.2 and PHP 8.2 distributed-source syntax jobs remain green;
-7. the protected H12 prerequisite aggregator and every historical/architecture regression remain green;
-8. protected Scheduler/CycleClaim blobs and compatibility identities remain exact;
-9. exact-head CodeQL and independent review are clean with zero unresolved valid findings;
-10. merge, post-merge CI/security verification and implementation-branch cleanup are independently verified before Q17 is marked DONE / VERIFIED.
-
+1. deterministic Q18 coverage proves canonical `enabled=yes`, declared fresh-install default behavior, explicit disabled/malformed values and malformed settings containers;
+2. PHPStan level 5/PHP 7.2 and PHPCS/WPCS remain clean with no baseline or ignored errors;
+3. Composer validation/locked install/dependency audit remain clean;
+4. every Q1-Q17 permanent harness, provider/architecture/security suites and H12 prerequisite aggregator remain green;
+5. PHP 7.2 and PHP 8.2 distributed-source syntax remain green;
+6. exact-head CodeQL is clean;
+7. living governance truth says Q1-Q17 DONE / VERIFIED and Q18 current;
+8. merge and post-merge CI/security verification complete before Q18 is marked DONE / VERIFIED.
 ## Non-claims
 
-Q17 is a bounded payment-runtime static-analysis, deterministic-characterization and test-proven-hardening tranche. It does not by itself certify WordPress/WooCommerce/PHP versions, HPOS, Blocks, WPML/WCML, subscriptions, refunds, MultiMerchant marketplace splits, browsers/devices, performance, penetration testing, PCI/compliance or production readiness.
+Q18 is a bounded Blocks activation/availability enforcement tranche. It does not by itself certify WordPress/WooCommerce/PHP versions, HPOS, full Blocks checkout behavior, WPML/WCML, subscriptions, refunds, MultiMerchant marketplace splits, browsers/devices, performance, penetration testing, PCI/compliance or production readiness.
 
-After Q17 closes, the next action is an explicit enterprise-risk audit followed by the named certification/readiness/release programs unless concrete evidence establishes a separately bounded enterprise-critical Quality Platform gap.
+Q19 is the next evidence-backed gate. After Q19 closes, move to named certification/readiness/release programs unless concrete new enterprise-critical evidence independently establishes another bounded Quality Platform gap.
