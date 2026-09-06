@@ -163,8 +163,8 @@ require_once $root . '/includes/Token/CustomerTokenIdentity.php';
 require_once $root . '/src/Migration/MigrationPreflight.php';
 require_once $root . '/src/Migration/MigrationExecutor.php';
 use UPayments\Token\CustomerTokenIdentity;
-use Simplix\Pay\UPayments\Migration\MigrationPreflight;
-use Simplix\Pay\UPayments\Migration\MigrationExecutor;
+use Simplixi\SUCheckout\UPayments\Migration\MigrationPreflight;
+use Simplixi\SUCheckout\UPayments\Migration\MigrationExecutor;
 
 $pass = 0; $fail = 0;
 function p9e_assert($c, $label) { global $pass, $fail; if ($c) { $pass++; echo "PASS: $label\n"; } else { $fail++; echo "FAIL: $label\n"; } }
