@@ -46,11 +46,32 @@
 | Quality Platform Q15 subscription-presentation analysis | **DONE / VERIFIED** |
 | Quality Platform Q16 migration-core analysis | **DONE / VERIFIED** |
 | Quality Platform Q17 payment-runtime analysis | **DONE / VERIFIED** |
-| Current program gate | **Full Automated Quality Platform — Q18** |
+| Quality Platform Q18 Blocks availability enforcement | **DONE / VERIFIED** |
+| Current program gate | **Full Automated Quality Platform — Q19** |
 
-The plugin remains a pre-release engineering project. Architecture discovery/A1-A5 and Quality Platform Q1-Q17 are DONE / VERIFIED; Q18 Blocks Availability Enforcement is the current bounded gate, followed by the already evidence-backed Q19 subscription product-eligibility gate. After Q19, stop the numbered sequence unless a new enterprise-critical risk is independently demonstrated; otherwise proceed to named certification, product-readiness and release-engineering programs. None of these milestones constitutes broad provider-host, penetration-test, PCI/compliance, platform, feature, performance or release certification.
+The plugin remains a pre-release engineering project. Architecture discovery/A1-A5 and Quality Platform Q1-Q18 are DONE / VERIFIED; Q19 Subscription Product Eligibility Consistency is the current and final evidence-backed numbered gate. After Q19, stop the numbered sequence unless a new enterprise-critical risk is independently demonstrated; otherwise proceed to named certification, product-readiness and release-engineering programs. None of these milestones constitutes broad provider-host, penetration-test, PCI/compliance, platform, feature, performance or release certification.
 
-## Latest verified milestone — Quality Platform Q17 payment-runtime analysis
+## Latest verified milestone — Quality Platform Q18 Blocks availability enforcement
+
+PR #44 final exact head:
+
+- `b9afcb5afc27ef41a0da8fc60e7b538df0b2c1e7`
+- tree: `94a856f6e88b85edd5f453a76f4d0732e10738aa`
+- exact-head Quality Gates #441: **SUCCESS**
+- exact-head CodeQL #237: **SUCCESS**
+- PHPUnit: **172 tests / 1053 assertions**
+- Q18: **17/0**; Q17: **97/0**; Q16: **113/0**
+- H12 PHP: **1927/0**; H12 Blocks: **144/0**
+- squash merge: `fe572d2bed5a7250ea98e5b5935c19f1cc6b3246`
+- merge tree: `94a856f6e88b85edd5f453a76f4d0732e10738aa`
+- post-merge Quality Gates #442: **SUCCESS**
+- main CodeQL #238: **SUCCESS**
+- implementation branch: **auto-deleted after verified merge**
+
+Q18 closed the bounded Blocks activation/availability contract, including declared fresh-install enabled-default preservation, malformed-settings fail-closed behavior, analyzer ownership and forward-safe historical gates. It does not constitute broad platform or production certification.
+
+## Previous verified milestone — Quality Platform Q17 payment-runtime analysis
+
 
 PR #43 final verified head:
 
@@ -663,9 +684,9 @@ Repository readiness remains DONE / VERIFIED:
 
 ## Current program gate — Full Automated Quality Platform
 
-**Status: Q18 — BLOCKS AVAILABILITY ENFORCEMENT / IMPLEMENTATION.**
+**Status: Q19 — SUBSCRIPTION PRODUCT ELIGIBILITY CONSISTENCY / IMPLEMENTATION.**
 
-Architecture discovery/A1-A5 and Quality Platform Q1-Q17 are complete. Q18 is limited to the existing WooCommerce Blocks activation/availability boundary:
+Architecture discovery/A1-A5 and Quality Platform Q1-Q18 are complete. Q19 is limited to subscription product eligibility/opt-out consistency across Classic and Store API payment orchestration:
 
 - `src/Payment/CheckoutOrchestrator.php`: canonical Woo order-ID intake, Classic/Store API routing, exact provider-bound lexical/economic inputs, retry-unique Charge-attempt identity and response handling;
 - `src/Payment/PaymentLifecycle.php`: conflict-safe callback routing, authenticated status binding, order lock + fresh rebind, attempt-scoped cursor promotion/reset, deterministic terminal/capture transitions and bounded reconciliation;
@@ -673,7 +694,7 @@ Architecture discovery/A1-A5 and Quality Platform Q1-Q17 are complete. Q18 is li
 - every original provider lifecycle/amount, Phase 9I, Q1-Q17, architecture, security and H12 regression remains mandatory;
 - exact Scheduler/CycleClaim blobs and all persisted compatibility identities remain protected.
 
-Q18 may correct only test- or analyzer-proven Blocks activation/availability defects. It preserves the declared fresh-install `enabled=yes` default when the settings array lacks the key, fails closed for malformed storage or malformed explicit values, retains gateway/option/client identities, and does not authorize provider API redesign, migration broadening, subscription scheduler/cycle-claim changes or broad platform/feature/performance/security/compliance/production certification. Q19 follows for the already evidence-backed subscription product-eligibility contract; after Q19, stop the numbered sequence unless new enterprise-critical evidence independently justifies another bounded gate.
+Q19 may correct only test- or analyzer-proven product eligibility/opt-out consistency defects. It preserves the exact `_upay_disable_subscription = yes` merchant contract, rejects opted-out subscription attempts before provider transport, retains one-time purchase behavior and does not authorize Scheduler/CycleClaim/provider API/payment lifecycle redesign or broad certification. After Q19, terminate the numbered Quality Platform sequence unless new enterprise-critical evidence independently justifies another bounded gate.
 
 ## Later program blockers
 
