@@ -28,6 +28,7 @@ function q6_contains($source, $needle) {
 $phpstan = q6_read($q6_root, 'phpstan.neon.dist');
 $phpcs = q6_read($q6_root, 'phpcs.xml.dist');
 $settings = q6_read($q6_root, 'src/Admin/GatewaySettings.php');
+$gateway = q6_read($q6_root, 'UPayments.php');
 $tests = q6_read($q6_root, 'tests/unit/Admin/GatewaySettingsTest.php');
 $fixture = q6_read($q6_root, 'tests/support/wordpress-gateway-settings.php');
 $analysis_stubs = q6_read($q6_root, 'tests/phpstan/wordpress-option-stubs.php');
@@ -78,6 +79,23 @@ q6_assert(q6_contains($settings, "\$query['section'] == \$gateway_id"), 'multime
 q6_assert(q6_contains($settings, "\$screen_id === 'woocommerce_page_wc-settings'"), 'admin logic remains Woo settings-screen scoped');
 q6_assert(q6_contains($settings, "\$query['tab'] === 'checkout'"), 'admin logic remains checkout-tab scoped');
 q6_assert(q6_contains($settings, "'3.0.0'"), 'admin asset version remains frozen');
+
+q6_assert(
+    !q6_contains($gateway, 'allows merchants to accept KNET, Cards, Samsung Pay, Apple Pay, Google Pay Payments.'),
+    'merchant-facing gateway description does not overclaim wallet completion'
+);
+q6_assert(
+    !q6_contains($gateway, 'Supports Block Checkout, Auto Deduction for Subscriptions.'),
+    'merchant-facing gateway description does not overclaim live subscription auto-deduction'
+);
+q6_assert(
+    q6_contains($gateway, 'Available payment methods depend on your UPayments account and provider configuration.'),
+    'merchant-facing gateway description binds payment-method claims to provider/account configuration'
+);
+q6_assert(
+    q6_contains($gateway, 'Subscription auto-deduction requires separately validated provider setup.'),
+    'merchant-facing gateway description preserves the external-validation boundary for auto-deduction'
+);
 
 q6_assert(substr_count($tests, 'public function test_') >= 8, 'GatewaySettings has focused PHPUnit characterization');
 foreach (array(

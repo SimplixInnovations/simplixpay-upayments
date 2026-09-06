@@ -188,8 +188,8 @@ function woocommerceUpaymentsInit() {
             $this->id                 = 'upayments';
             $this->icon = UP_PLUGIN_URL . "assets/images/logo.png";
             $this->method_title       = __("UPayments", $this->domain);
-            $this->method_description = __("UPayments Plugin allows merchants to accept KNET, Cards, Samsung Pay, Apple Pay, Google Pay Payments. 
-            Supports Block Checkout, Auto Deduction for Subscriptions.", $this->domain);
+            $this->method_description = __("UPayments payment integration for WooCommerce. Available payment methods depend on your UPayments account and provider configuration.
+            Supports Classic and Block Checkout. Subscription auto-deduction requires separately validated provider setup.", $this->domain);
             $this->has_fields         = true; // Required for custom forms like Save Card/Design variations.
 
             // Define user set variables

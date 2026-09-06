@@ -13,6 +13,7 @@ The project is still in pre-release engineering hardening. Entries below are eng
 - PR #54 squash-merged exactly as `2ddb1790fead37c6055256847dc7c827e165af4a`.
 - Canonical `main` then passed Quality #553, Compatibility #81 (**16/16**), Release Artifact #35, Provider Sandbox #13 and CodeQL/main-security #358 with no non-success checks.
 - Task 8 establishes an enterprise-qualified release-candidate engineering state. It does not publish 1.0, create a public GitHub Release or publish to WordPress.org.
+- Release-claim hardening narrows the merchant-facing WooCommerce gateway description to the certified boundary: wallet/payment-method availability depends on the merchant's UPayments account/provider configuration, and subscription auto-deduction requires separately validated provider setup.
 
 ### Enterprise Compatibility Certification — core runtime foundation — DONE / VERIFIED
 
