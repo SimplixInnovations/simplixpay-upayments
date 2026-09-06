@@ -78,7 +78,7 @@ function simplixpay_upgrade_assert_active_contract($old_basename, $target_basena
     );
     simplixpay_cert_assert(is_plugin_active($old_basename), 'transitional plugin basename remains active');
     simplixpay_cert_assert(!is_plugin_active($target_basename), 'target renamed basename is not separately active');
-    simplixpay_cert_assert(class_exists('WC_Upayments'), 'SimplixPay runtime loads after package transition');
+    simplixpay_cert_assert(class_exists('WC_Upayments'), 'SUCheckout runtime loads after package transition');
 
     $gateways = WC()->payment_gateways()->payment_gateways();
     simplixpay_cert_assert(
@@ -95,8 +95,8 @@ function simplixpay_upgrade_assert_active_contract($old_basename, $target_basena
         array('text_domain' => 'Text Domain')
     );
     simplixpay_cert_assert(
-        isset($headers['text_domain']) && $headers['text_domain'] === 'upayments',
-        'retained package header text domain remains upayments'
+        isset($headers['text_domain']) && $headers['text_domain'] === 'sucheckout-upayments',
+        'retained-basename package exposes canonical SUCheckout text domain'
     );
 
     $translation_hits = 0;
@@ -115,16 +115,16 @@ function simplixpay_upgrade_assert_active_contract($old_basename, $target_basena
             continue;
         }
         $translation_hits += preg_match_all(
-            '/(?:__|_e|esc_html__|esc_html_e|esc_attr__|esc_attr_e)\s*\([^)]*[\'\"]upayments[\'\"]/s',
+            '/(?:__|_e|esc_html__|esc_html_e|esc_attr__|esc_attr_e)\s*\([^)]*[\'\"]sucheckout-upayments[\'\"]/s',
             $source,
             $matches
         );
     }
     simplixpay_cert_assert(
         $translation_hits > 0,
-        'runtime source still contains explicit translation calls bound to text domain upayments'
+        'runtime source contains explicit translation calls bound to canonical SUCheckout text domain'
     );
-    simplixpay_cert_note('legacy text-domain translation call count=' . $translation_hits);
+    simplixpay_cert_note('canonical SUCheckout text-domain translation call count=' . $translation_hits);
 }
 
 if ('seed-existing' === $phase) {
@@ -186,7 +186,7 @@ if ('verify-active' === $phase) {
 if ('verify-inactive' === $phase) {
     simplixpay_cert_assert(!is_plugin_active($old_basename), 'explicit deactivation removes transitional basename from active set');
     simplixpay_cert_assert(!is_plugin_active($target_basename), 'target renamed basename remains inactive');
-    simplixpay_cert_assert(!class_exists('WC_Upayments', false), 'SimplixPay runtime is not loaded while explicitly inactive');
+    simplixpay_cert_assert(!class_exists('WC_Upayments', false), 'SUCheckout runtime is not loaded while explicitly inactive');
     simplixpay_upgrade_verify_data($settings_key, $settings_snapshot_key, $order_key, $cron_key);
     simplixpay_cert_note('deactivation preserves settings/order/cron state');
     return;
