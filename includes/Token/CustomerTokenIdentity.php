@@ -1573,6 +1573,17 @@ class CustomerTokenIdentity {
             }
 
             $page++;
+
+            // Stop once the exact total reported by the current in-range
+            // pagination snapshot has been scanned. WooCommerce may report
+            // total=0/max_pages=0 for an out-of-range page, so probing page
+            // N+1 after already scanning the complete result set creates a
+            // false "total_changed" blocker for legitimate customers with
+            // clean UPayments order history. This mirrors the established
+            // bounded-pagination termination used by inspect_customer_history().
+            if ($expected_total !== null && $scanned_unique_count >= $expected_total) {
+                break;
+            }
         }
 
         // Bootstrap completion: scan must be complete (not just the cap).
