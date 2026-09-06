@@ -1,5 +1,7 @@
 # Repository Audit Ledger
 
+> **Historical audit snapshot.** This ledger preserves debt/gate classification from its dated reconciliation and intentionally retains then-current SimplixPay identity and program ownership statements. It is not the current-state authority; use `PROJECT-STATUS.md`, `NAMING-IDENTITY-STANDARD.md` and `OWNER-HANDOFF.md`.
+
 **Repository:** `SimplixInnovations/simplixpay-upayments`
 
 **Original audit base:** `c6e8c32044da254654e7a928e80900d943843e7a`

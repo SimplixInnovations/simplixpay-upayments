@@ -1,5 +1,7 @@
 # Provider Contract & Payment Lifecycle
 
+> **Historical closed-gate record.** This file preserves the verified provider/payment-lifecycle milestone and its then-current program wording. Current SUCheckout program/repository state is owned by `PROJECT-STATUS.md`; the payment invariants remain permanent unless separately superseded by reviewed evidence.
+
 **Status:** DONE / VERIFIED
 
 **Repository:** `SimplixInnovations/simplixpay-upayments`

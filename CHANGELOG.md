@@ -6,7 +6,14 @@ The project is still in pre-release engineering hardening. Entries below are eng
 
 ## [Unreleased]
 
-### SUCheckout identity migration — IMPLEMENTED / PRE-RELEASE
+### SUCheckout identity migration — DONE / VERIFIED / PRE-RELEASE
+
+- PR #58 final certified head `5bf84dccb880733da45c1f922d43554af69a33dc` passed Quality #763/H12, Compatibility #291 (**16/16**), Release Artifact #242, Provider Sandbox #206, WordPress.org Submission Check #100 and CodeQL.
+- PR #58 squash-merged as `6aabc4fcb0606567a11637ea07fe081fed4c7f85`; post-merge `main` passed Quality #764, Compatibility #292 (**16/16**), Release Artifact #243, Provider Sandbox #207, WordPress.org Submission Check #101 and CodeQL/main-security #579.
+- Official packaged Plugin Check closed with **0 blocking errors**; non-blocking warnings remain classified rather than blanket-suppressed.
+- Direct gateway/status/subscription cURL transport was replaced with the WordPress HTTP API under a permanent **27/27** production transport regression.
+- A whole-PR review found and fixed a fail-closed provenance DB ambiguity; the permanent regression closes at **3/3**.
+- Repository residue contract closes at **17/17**, while protected provider/persisted compatibility identifiers and historical evidence remain intentionally preserved.
 
 - Retires the pre-release SimplixPay first-party identity in favor of **SUCheckout for UPayments** and canonical technical slug `sucheckout-upayments`.
 - Preserves evidence-backed UPayments provider and historical WooCommerce compatibility identifiers while first-party package, namespace, metadata, i18n, frontend and release surfaces migrate under regression gates.

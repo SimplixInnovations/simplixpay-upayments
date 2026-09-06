@@ -11,9 +11,10 @@ Before substantive work read:
 3. `docs/project/NEW-CHAT-HANDOFF.md`
 4. `docs/project/ENTERPRISE-CERTIFICATION.md`
 5. `docs/project/RELEASE-ENGINEERING.md`
-6. relevant immutable historical records: Phase 0, Phase 9I, Provider Lifecycle, Security, Architecture, Quality Platform
-7. `docs/project/BASELINE-H12.md` when token/saved-card/subscription identity is relevant
-8. `docs/superpowers/plans/2026-09-06-enterprise-completion.md` for the enterprise Tasks 1–8 contract
+6. `docs/project/OWNER-HANDOFF.md` for rename/local acceptance/release-administration actions
+7. relevant immutable historical records: Phase 0, Phase 9I, Provider Lifecycle, Security, Architecture, Quality Platform
+8. `docs/project/BASELINE-H12.md` when token/saved-card/subscription identity is relevant
+9. `docs/superpowers/plans/2026-09-06-enterprise-completion.md` for the enterprise Tasks 1–8 contract
 
 ## Canonical identity
 
@@ -50,9 +51,11 @@ The numbered Quality Platform is closed at Q19. **Never invent Q20 for continuit
 
 The former product identity reached Enterprise Release Candidate Closeout through PR #54, final reviewed head `5a24944617f7ee482c381e5e899f687b77d81d09`, squash merge `2ddb1790fead37c6055256847dc7c827e165af4a`, and successful post-merge main Quality #553, Compatibility #81, Release Artifact #35, Provider Sandbox #13 and CodeQL/main-security #358. That is retained historical evidence.
 
-The approved **SUCheckout identity migration is implemented**. Every candidate must still pass permanent exact-head Quality/H12, Compatibility, Release Artifact, Provider Sandbox and official WordPress.org Plugin Check gates, with no unresolved critical/high review findings, before merge or release.
+The approved **SUCheckout identity migration is DONE / VERIFIED** through PR #58. Certified head `5bf84dccb880733da45c1f922d43554af69a33dc` squash-merged as `6aabc4fcb0606567a11637ea07fe081fed4c7f85`; post-merge Quality #764, Compatibility #292 (16/16), Release Artifact #243, Provider Sandbox #207, WordPress.org Submission Check #101 and CodeQL/main-security #579 all succeeded.
 
-No public tag, GitHub Release, WordPress.org publication or repository rename is authorized by this engineering migration. Those remain separate owner/admin actions after verified merge.
+Every future candidate must still pass the permanent exact-head gates appropriate to its scope before merge or release.
+
+No public tag, GitHub Release or WordPress.org publication exists yet. Repository rename to `SimplixInnovations/sucheckout-upayments`, local owner acceptance and any publication are separate owner/admin actions documented in `docs/project/OWNER-HANDOFF.md`.
 
 ## Permanent quality controls
 

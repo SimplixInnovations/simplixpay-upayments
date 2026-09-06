@@ -2,7 +2,20 @@
 
 This document is the public compatibility truth. A capability is **Verified** only when exact reproducible evidence exists; external/manual requirements and unsupported features are named explicitly.
 
-**Current posture:** pre-release SUCheckout identity migration and exact-head re-certification. Historical enterprise platform/provider evidence remains preserved, while identity-sensitive release/package claims must pass the current SUCheckout gates before publication.
+**Current posture:** pre-release SUCheckout engineering migration merged and post-merge certified. Historical enterprise evidence remains preserved, and all identity-sensitive package/migration claims below passed fresh merged-main certification. Publication still requires a separate owner decision.
+
+## Current SUCheckout certification anchor
+
+- merged runtime baseline: `6aabc4fcb0606567a11637ea07fe081fed4c7f85`;
+- Quality #764 / H12 — **SUCCESS**;
+- Compatibility #292 — **16/16 SUCCESS**;
+- Release Artifact #243 — **SUCCESS**;
+- Provider Sandbox #207 — **SUCCESS**;
+- WordPress.org Submission Check #101 — **SUCCESS**;
+- CodeQL/main-security #579 — **SUCCESS**;
+- official packaged Plugin Check — **0 blocking errors**.
+
+The matrix remains a permanent regression requirement for future candidates.
 
 ## Platform matrix
 

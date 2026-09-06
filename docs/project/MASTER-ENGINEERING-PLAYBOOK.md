@@ -1,5 +1,7 @@
 # SimplixPay for UPayments — Master Engineering Playbook
 
+> **SUPERSEDED AS CURRENT-STATE AUTHORITY — HISTORICAL PROGRAM PLAYBOOK.** This document preserves the original SimplixPay-era program, decisions and sequencing. Do not treat its product name, repository coordinate, “current posture,” current-gate language or pending-work lists as present state. Current authority order is `AGENTS.md` → `PROJECT-STATUS.md` → `OWNER-HANDOFF.md` → `NAMING-IDENTITY-STANDARD.md` / `RELEASE-ENGINEERING.md`.
+
 **Repository:** `SimplixInnovations/simplixpay-upayments`  
 **Upstream:** `upaymentskwt/woocommerce`  
 **Document purpose:** authoritative project plan, engineering standard, status ledger, clean-chat handoff, and Agent execution guide  

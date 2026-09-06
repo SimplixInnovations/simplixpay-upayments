@@ -1,7 +1,23 @@
 # SUCheckout for UPayments — Release Engineering
-**Current status:** pre-release SUCheckout identity migration and exact-head re-certification
+**Current status:** pre-release SUCheckout engineering migration merged and post-merge certified; owner release administration pending
 **Current repository:** `SimplixInnovations/simplixpay-upayments`
 **Planned repository after owner/admin rename:** `SimplixInnovations/sucheckout-upayments`
+## Latest certified release-engineering baseline
+
+PR #58 certified head `5bf84dccb880733da45c1f922d43554af69a33dc` and merged main `6aabc4fcb0606567a11637ea07fe081fed4c7f85` both passed the complete release-sensitive stack.
+
+Post-merge evidence:
+
+- Release Artifact #243 — **SUCCESS**;
+- packaged WordPress 7.1 / WooCommerce 11.1.0 / PHP 8.3 legacy — **SUCCESS**;
+- packaged WordPress 7.1 / WooCommerce 11.1.0 / PHP 8.3 HPOS — **SUCCESS**;
+- legacy-root migration WordPress 7.1 / WooCommerce 11.1.0 — **SUCCESS**;
+- legacy-root migration WordPress 6.9.7 / WooCommerce 10.8.1 — **SUCCESS**;
+- WordPress.org Submission Check #101 — **SUCCESS**;
+- Provider Sandbox #207 and CodeQL/main-security #579 — **SUCCESS**.
+
+This evidence certifies the engineering artifact and migration contract. It does not create a public tag, GitHub Release or WordPress.org publication.
+
 ## Canonical package contract
 The approved first-party release identity is:
 - package root: `sucheckout-upayments/`;
@@ -81,9 +97,9 @@ A green submission check is necessary evidence but does not publish anything.
 Historical Task 5 established the deterministic Git-HEAD-bound packaging model. Historical Task 7 established same-basename data continuity and, crucially, the negative proof that an active physical bootstrap rename is unsafe. Historical Task 8 closed the pre-rebrand enterprise release-candidate program.
 Those records remain historical truth. They are not rewritten to claim that the old `simplixpay-upayments` package/text-domain was already SUCheckout.
 ## Release evidence boundary
-CI artifacts are verification artifacts, not public releases. The following remain separate owner/admin actions after a verified merge and post-merge certification:
+CI artifacts are verification artifacts, not public releases. The following remain separate owner/admin actions now that verified merge and post-merge certification are complete:
 - repository rename to `SimplixInnovations/sucheckout-upayments`;
 - public version/tag promotion;
 - GitHub Release creation;
 - WordPress.org submission/publication.
-Do not publish an artifact from a synthetic PR merge ref, mutable worktree, unreviewed commit or a source head whose mandatory gates are not all green.
+Do not publish an artifact from a synthetic PR merge ref, mutable worktree, unreviewed commit or a source head whose mandatory gates are not all green. Follow `OWNER-HANDOFF.md` for rename/local acceptance/release-administration order.

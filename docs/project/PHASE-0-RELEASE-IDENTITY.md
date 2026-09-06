@@ -1,5 +1,7 @@
 # Phase 0 — Release Identity and Updater Ownership
 
+> **Historical phase record.** Product names, repository coordinates, text domain, support headers and “current gate” statements below are preserved as Phase 0 evidence. The approved current identity is SUCheckout for UPayments; see `PROJECT-STATUS.md` and `NAMING-IDENTITY-STANDARD.md`.
+
 **Status:** DONE / VERIFIED
 
 **Canonical repository:** `SimplixInnovations/simplixpay-upayments`

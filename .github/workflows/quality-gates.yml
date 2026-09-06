@@ -66,6 +66,7 @@ jobs:
             docs/COMPATIBILITY.md docs/ENGINEERING-ROADMAP.md
             docs/history/H12-ENGINEERING-CHANGELOG.md
             docs/project/PROJECT-STATUS.md
+            docs/project/OWNER-HANDOFF.md
             docs/project/ENTERPRISE-CERTIFICATION.md
             docs/project/RELEASE-ENGINEERING.md
             docs/project/NEW-CHAT-HANDOFF.md
@@ -93,6 +94,7 @@ jobs:
           grep -Fq '<h1 align="center">SUCheckout for UPayments</h1>' README.md
           grep -Fq '| Canonical technical slug | `sucheckout-upayments` |' docs/project/PROJECT-STATUS.md
           grep -Fq '| WordPress text domain | `sucheckout-upayments` |' docs/project/PROJECT-STATUS.md
+          grep -Fq '**Engineering migration:** DONE / VERIFIED' docs/project/OWNER-HANDOFF.md
           grep -Fq '`sucheckout-upayments/UPayments.php`' docs/project/PROJECT-STATUS.md
           grep -Fq 'No Q20 is justified.' docs/project/PROJECT-STATUS.md
           grep -Fq '**Canonical slug:** `sucheckout-upayments`' docs/project/NAMING-IDENTITY-STANDARD.md
@@ -114,7 +116,7 @@ jobs:
           set -euo pipefail
           living=(
             AGENTS.md README.md CHANGELOG.md docs/ENGINEERING-ROADMAP.md docs/COMPATIBILITY.md
-            docs/project/PROJECT-STATUS.md docs/project/ENTERPRISE-CERTIFICATION.md
+            docs/project/PROJECT-STATUS.md docs/project/OWNER-HANDOFF.md docs/project/ENTERPRISE-CERTIFICATION.md
             docs/project/RELEASE-ENGINEERING.md docs/project/NEW-CHAT-HANDOFF.md
           )
 

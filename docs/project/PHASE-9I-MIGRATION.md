@@ -1,5 +1,7 @@
 # Phase 9I — Historical Token-Identity Migration
 
+> **Historical closed-phase record.** Namespace/repository/product references below are preserved as Phase 9I evidence and may use pre-rebrand SimplixPay identities. Current SUCheckout state is owned by `PROJECT-STATUS.md`; protected persisted/provider identities remain governed by `NAMING-IDENTITY-STANDARD.md`.
+
 **Status:** DONE / VERIFIED
 
 **Canonical repository:** `SimplixInnovations/simplixpay-upayments`

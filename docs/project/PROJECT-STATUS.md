@@ -1,6 +1,6 @@
 # SUCheckout for UPayments — Project Status
 **Status document:** canonical living engineering state
-**Last updated:** 2026-09-06
+**Last updated:** 2026-09-07
 **Current repository:** `SimplixInnovations/simplixpay-upayments`
 **Planned canonical repository after owner/admin rename:** `SimplixInnovations/sucheckout-upayments`
 > Live GitHub/source evidence wins over recorded SHAs. Historical phase records preserve what was true at their close; this file owns the current state.
@@ -12,19 +12,39 @@
 | WordPress text domain | `sucheckout-upayments` |
 | Composer namespace | `Simplixi\SUCheckout\UPayments` |
 | Current development version | **0.1.0** |
-| Production maturity | **Pre-release / SUCheckout migration implemented; exact-head certification required** |
+| Production maturity | **Pre-release / SUCheckout migration merged and post-merge certified** |
 | Public stable release | **NO** |
 | WordPress.org release | **NO** |
 | Historical Quality Platform Q1-Q19 | **DONE / VERIFIED — numbered sequence permanently closed** |
 | Historical Enterprise Tasks 1-8 | **DONE / VERIFIED evidence retained** |
 | SUCheckout identity design | **APPROVED** |
-| Namespace / metadata / text-domain migration | **IMPLEMENTED** |
-| Deterministic canonical `sucheckout-upayments` package | **IMPLEMENTED — CI certification required on exact head** |
-| Legacy-root → canonical-root migration regression | **IMPLEMENTED — CI certification required on exact head** |
-| Official WordPress Plugin Check gate | **IMPLEMENTED — CI certification required on exact head** |
-| Repository rename | **OWNER/ADMIN ACTION AFTER MERGE** |
-| GitHub Release / tag / WordPress.org publication | **NOT AUTHORIZED BY THIS ENGINEERING MIGRATION** |
-No Q20 is justified. The numbered Quality Platform remains closed at Q19. The SUCheckout identity migration is implemented; remaining pre-release work is bounded exact-head certification and owner-controlled release administration, not a new Q phase.
+| Namespace / metadata / text-domain migration | **DONE / VERIFIED** |
+| Deterministic canonical `sucheckout-upayments` package | **DONE / VERIFIED — permanent exact-head gate** |
+| Legacy-root → canonical-root migration regression | **DONE / VERIFIED — permanent exact-head gate** |
+| Official WordPress Plugin Check gate | **DONE / VERIFIED — 0 blocking errors on certified merged main** |
+| Repository rename | **OWNER/ADMIN ACTION — READY** |
+| GitHub Release / tag / WordPress.org publication | **NOT PERFORMED — separate owner release decision** |
+No Q20 is justified. The numbered Quality Platform remains closed at Q19. The SUCheckout engineering migration is complete; remaining pre-release work is owner-controlled repository cleanup/rename, optional local acceptance, and a separate release/publication decision.
+## SUCheckout post-merge certification
+
+Engineering identity migration is **DONE / VERIFIED**.
+
+- PR #58 certified head: `5bf84dccb880733da45c1f922d43554af69a33dc`;
+- squash merge on `main`: `6aabc4fcb0606567a11637ea07fe081fed4c7f85`;
+- post-merge Quality Gates #764 — **SUCCESS**;
+- Compatibility Certification #292 — **16/16 SUCCESS**;
+- Release Artifact #243 — **SUCCESS**;
+- Provider Sandbox Certification #207 — **SUCCESS**;
+- WordPress.org Submission Check #101 — **SUCCESS**;
+- CodeQL/main-security #579 — **SUCCESS**;
+- official packaged Plugin Check — **0 blocking errors**;
+- SUCheckout Production HTTP Transport — **27 PASS / 0 FAIL**;
+- SUCheckout Provenance DB Failure — **3 PASS / 0 FAIL**;
+- SUCheckout Residue — **17 PASS / 0 FAIL**;
+- post-closeout open issues / open PRs / unresolved review threads — **0 / 0 / 0**.
+
+The two older remote branches `release/wordpress-org-submission-readiness` and `enterprise/release-identity-migration-decision` remain owner cleanup because the available automation connector cannot delete branches. Their earlier work is superseded by certified `main`.
+
 ## Canonical first-party identity
 The approved SUCheckout identity is:
 - human name: **SUCheckout for UPayments**;
@@ -34,7 +54,7 @@ The approved SUCheckout identity is:
 - deterministic ZIP: `sucheckout-upayments-X.Y.Z.zip`;
 - deterministic package root: `sucheckout-upayments/`;
 - physical bootstrap: `UPayments.php` retained as a bounded compatibility exception.
-The repository itself remains under its old GitHub name until a separate owner/admin rename after merge. That temporary repository URL does not redefine the product/package identity.
+The repository itself remains under its old GitHub name until the owner/admin rename. That temporary repository URL does not redefine the product/package identity.
 ## Protected compatibility identities
 The rebrand must not mechanically rename provider-facing or persisted merchant identities. The protected set includes:
 - WooCommerce gateway/payment-method ID `upayments`;
@@ -80,7 +100,7 @@ The historical enterprise evidence remains authoritative for the protected runti
 - one additional-merchant allocation boundary;
 - non-destructive activation/deactivation/uninstall retention;
 - deterministic source-bound release packaging.
-The SUCheckout PR must rerun the permanent gates at its exact final head before this migration can be considered complete.
+PR #58 and the resulting merged `main` independently reran the permanent gates successfully; those gates remain mandatory for future candidates.
 ## Canonical release engineering contract
 The current release tooling must produce only:
 - `sucheckout-upayments-0.1.0.zip` for the current development version;
@@ -134,7 +154,7 @@ Historical Q16 closure evidence retained verbatim for permanent regression owner
 
 ## Task 8 — DONE / VERIFIED (historical pre-rebrand release-candidate closeout)
 
-Enterprise Task 8 qualified the former product identity as an enterprise release candidate before the approved SUCheckout identity migration. That qualification remains historical evidence; the current SUCheckout candidate must be independently re-certified at its own exact head.
+Enterprise Task 8 qualified the former product identity as an enterprise release candidate before the approved SUCheckout identity migration. That qualification remains historical evidence; SUCheckout was later independently certified through PR #58 and merged-main verification recorded above.
 
 ## Historical evidence
 The former SimplixPay engineering records remain history, not current identity. In particular:
@@ -143,15 +163,14 @@ The former SimplixPay engineering records remain history, not current identity. 
 - earlier same-basename upgrade evidence remains the reason `UPayments.php` is retained;
 - historical SHAs and workflow runs in phase records are not rewritten to pretend they were SUCheckout certifications.
 ## Current completion rule
-The SUCheckout identity migration is complete only when the exact final PR head has:
-- all permanent Quality/H12 gates green;
-- Compatibility Certification green;
-- deterministic Release Artifact certification green;
-- legacy-root migration/rollback cells green;
-- Provider Sandbox Certification green where applicable;
-- official WordPress.org Plugin Check green with no blocking errors;
-- CodeQL/security checks green;
-- no unresolved critical/high review findings;
-- living documentation reconciled with canonical SUCheckout identity;
-- no unintended first-party SimplixPay residue outside historical/contextual records.
-After a verified merge, the same required checks must pass on canonical `main`. Repository rename, public tag/release and WordPress.org publication remain separate owner/admin actions.
+The SUCheckout engineering identity migration has satisfied its completion rule: exact-head PR certification, squash merge, fresh merged-main verification, whole-PR review, living-identity reconciliation and zero unresolved critical/high review findings.
+
+Future code candidates must repeat the permanent gates appropriate to their scope. The remaining actions are explicitly outside this engineering migration:
+
+1. delete the two obsolete remote branches;
+2. rename the GitHub repository to `SimplixInnovations/sucheckout-upayments`;
+3. reconcile repository-coordinate links after the rename;
+4. optionally run the documented owner-local acceptance suite;
+5. make a separate explicit version/tag/GitHub Release/WordPress.org publication decision.
+
+See `docs/project/OWNER-HANDOFF.md`.
