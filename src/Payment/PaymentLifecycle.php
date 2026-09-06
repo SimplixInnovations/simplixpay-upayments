@@ -826,7 +826,7 @@ final class PaymentLifecycle {
             return;
         }
         $message = 'Payment lifecycle: ' . self::safe_code($code);
-        $context = array('source' => 'simplixpay-upayments-lifecycle');
+        $context = array('source' => 'sucheckout-upayments-lifecycle');
         if ($level === 'warning' && method_exists($logger, 'warning')) {
             $logger->warning($message, $context);
         } elseif (method_exists($logger, 'info')) {
