@@ -20,7 +20,7 @@ This gate does **not** mean the plugin is broadly production-certified. It close
 
 ## Verified public plugin identity
 
-The active `UPayments.php` header is:
+At Phase 0 closure, the active `UPayments.php` header was:
 
 - Plugin Name: **SimplixPay for UPayments**
 - Plugin URI: `https://github.com/SimplixInnovations/simplixpay-upayments`
@@ -28,11 +28,13 @@ The active `UPayments.php` header is:
 - Version: `0.1.0`
 - Author: **Simplix Innovations**
 - Author URI: `https://simplixi.com`
-- Requires at least: `5.6`
-- Requires PHP: `7.2`
+- Requires at least: `5.6` — Phase 0 historical value; later Enterprise Compatibility Certification raises this only from real matrix evidence
+- Requires PHP: `7.2` — Phase 0 historical value; later Enterprise Compatibility Certification raises this only from real matrix evidence
 - License: MIT
 - Text Domain: `upayments` — intentionally transitional
 - Domain Path: `/languages`
+
+The current Enterprise Compatibility declaration tranche has since independently verified a real WordPress/WooCommerce/PHP matrix and derives the current public support headers from that evidence. See `docs/project/ENTERPRISE-CERTIFICATION.md` and `docs/COMPATIBILITY.md` for the living compatibility truth; the values above remain the Phase 0 historical release-identity evidence.
 
 The Simplix code-side identity is defined by `Simplix\Pay\UPayments\Release\Identity` and exposes canonical product/version/slug/repository/update-channel constants.
 
