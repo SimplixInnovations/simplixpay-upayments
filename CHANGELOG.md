@@ -106,18 +106,21 @@ The project is still in pre-release engineering hardening. Entries below are eng
 - Exact final PR #36 head `41b0d6d03af91b1e811562d609cf809345a221df` passed Quality Gates #226 and clean independent exact-head review; Q10 was **67/0** and PHPUnit **82 tests / 686 assertions**.
 - Squash-merged PR #36 as `02a1ad24d262c3cb6d14653bf48aa31c3796ae4e`, tree `eae2fe0d0f0f54bef793ed6e58c9837bd01403ab`; post-merge run #227 passed and the implementation branch was deleted.
 
-### Full Automated Quality Platform — Q19 Subscription Product Eligibility Consistency
+### Full Automated Quality Platform — Q19 Subscription Product Eligibility Consistency — DONE / VERIFIED
 
 - Q18 is **DONE / VERIFIED** through PR #44, squash merge `fe572d2bed5a7250ea98e5b5935c19f1cc6b3246`, post-merge Quality Gates #442 and main CodeQL #238.
 - Q19 removes arbitrary product-ID restriction semantics and enforces only exact `_upay_disable_subscription = yes` across Classic/Store API before provider transport.
-- Q19 is the final currently justified numbered Quality Platform gate; after it, move to named certification, product-readiness and release-engineering programs unless new enterprise-critical evidence independently demonstrates another bounded defect.
+- Q19 also preserves exact unslashed Classic subscription plan/interval tokens before strict parsing and rejects valid opted-out subscription plans before any cold-cache payment-availability/provider transport.
+- Final PR #45 head `1717f0c25da7140a7799c7db3a7f016abecec7e9`, tree `8230778e3313e4d201de48b1a5cf170c42f7178d`, passed Quality Gates #463, PHPUnit **174/1063**, Q19 **22/0**, H12 PHP **1927/0**, H12 Blocks **144/0** and exact-head CodeQL with no new alerts.
+- Squash merge `29ba16a1eabc00e25c3652ae838be9b9539b3a10` passed post-merge Quality Gates #464 and all post-merge CodeQL lanes; the implementation branch was deleted.
+- Q19 closes the numbered Quality Platform. No Q20 is justified by current evidence; further work is owned by named certification, product-readiness and release-engineering programs.
 
 ### Full Automated Quality Platform — Q18 Blocks Availability Enforcement — DONE / VERIFIED
 
 - Q17 is **DONE / VERIFIED** through PR #43, squash merge `570dbf3501b359b16767d070d18c25a67a0c24fe`, post-merge Quality Gates #415 and main security #195.
 - Q18 enforces the canonical Woo gateway enabled state at the Blocks server activation boundary while preserving the declared fresh-install default `enabled=yes` for a missing key and failing closed for malformed storage or malformed explicit values.
 - Q18 adds permanent Blocks availability regression coverage, baseline-free analyzer ownership and WooCommerce logger usage without claiming broad Blocks/platform certification.
-- Q19 is the next evidence-backed subscription product-eligibility gate. After Q19, stop the numbered sequence unless a new enterprise-critical risk is demonstrated; otherwise move to named certification, product-readiness and release-engineering programs.
+- Q19 subsequently closed the evidence-backed subscription product-eligibility gate through PR #45. The numbered sequence is now closed at Q19; further work moves to named certification, product-readiness and release-engineering programs unless new enterprise-critical evidence independently demonstrates a distinct bounded defect.
 
 ### Full Automated Quality Platform — Q17 Payment Runtime Analysis — DONE / VERIFIED
 
@@ -210,7 +213,7 @@ The project is still in pre-release engineering hardening. Entries below are eng
 
 ### Current program gate
 
-**Full Automated Quality Platform — Q19** is now the active gate. Architecture A1-A5 and Quality Platform Q1-Q18 are DONE / VERIFIED. Q19 is limited to subscription product-eligibility/opt-out consistency across Classic and Store API before provider transport. After Q19, stop the numbered sequence unless a new enterprise-critical risk is demonstrated; otherwise move into named certification, product-readiness and release-engineering programs. These gates do not establish broad platform, feature, performance, PCI/compliance or production certification.
+**Enterprise Compatibility Certification** is now the active gate. Architecture A1-A5 and Quality Platform Q1-Q19 are DONE / VERIFIED. The certification program must establish reproducible WordPress/WooCommerce/PHP, HPOS and checkout-mode evidence before changing compatibility headers, Woo feature declarations or public support claims. The completed engineering gates do not establish broad platform, feature, performance, PCI/compliance or production certification.
 
 ### Provider Contract & Payment Lifecycle — DONE / VERIFIED
 
