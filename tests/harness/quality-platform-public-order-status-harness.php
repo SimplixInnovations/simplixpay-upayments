@@ -91,7 +91,7 @@ foreach (array(
 }
 q7_assert(q7_contains($quality, 'Q16 is DONE / VERIFIED'), 'quality record advances beyond Q7');
 q7_assert(q7_contains($status, '| Quality Platform Q16 migration-core analysis | **DONE / VERIFIED** |'), 'project status advances beyond Q7');
-q7_assert(q7_contains($readme, 'Quality Platform Q1-Q16 are **DONE / VERIFIED**.'), 'README advances beyond Q7');
+q7_assert((preg_match('/Quality Platform Q1-Q([0-9]+) are \\*\\*DONE \\/ VERIFIED\\*\\*\\./', $readme, $q7_readme_range_matches) === 1 && isset($q7_readme_range_matches[1]) && (int) $q7_readme_range_matches[1] > 7), 'README advances beyond Q7');
 q7_assert(!q7_contains($playbook, 'Last verified implementation main SHA: e00a80147d4f6267d137e1bdfa0b2d1211e00f6a'), 'playbook does not mistake verified Q7 merge for current main');
 q7_assert(!q7_contains($playbook, 'Canonical implementation tree: 6ef43632a4868a1114b5468a38ad45138e41c393'), 'playbook does not mistake verified Q7 tree for current tree');
 q7_assert(!q7_contains($handoff, 'CURRENT / Q7'), 'handoff rejects stale current-Q7 marker');
