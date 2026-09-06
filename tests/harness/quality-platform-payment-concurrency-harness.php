@@ -122,7 +122,7 @@ q3_assert(
     'quality record closes Q3 and advances beyond it'
 );
 q3_assert(q3_contains($status, '| Quality Platform Q16 migration-core analysis | **DONE / VERIFIED** |'), 'project status advances beyond Quality Platform Q3');
-q3_assert(q3_contains($readme, 'Quality Platform Q1-Q16 are **DONE / VERIFIED**.'), 'README advances beyond Quality Platform Q3');
+q3_assert((preg_match('/Quality Platform Q1-Q([0-9]+) are \\*\\*DONE \\/ VERIFIED\\*\\*\\./', $readme, $q3_readme_range_matches) === 1 && isset($q3_readme_range_matches[1]) && (int) $q3_readme_range_matches[1] > 3), 'README advances beyond Quality Platform Q3');
 q3_assert(!q3_contains($handoff, 'CURRENT / Q2'), 'handoff rejects the stale current-Q2 marker');
 q3_assert(!q3_contains($playbook, 'CURRENT / Q2'), 'master playbook rejects the stale current-Q2 marker');
 q3_assert(q3_contains($workflow, "reject_across_live_records 'CURRENT / Q2'"), 'Governance rejects stale current-Q2 markers');
