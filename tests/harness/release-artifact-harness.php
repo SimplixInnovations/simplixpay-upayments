@@ -462,7 +462,7 @@ release_assert(
     'release artifact retains transitional main-file identity'
 );
 release_assert(
-    strpos($identity, "public const TARGET_MAIN_FILE = 'simplixpay-upayments.php';") !== false,
+    strpos($identity, "public const TARGET_MAIN_FILE = 'sucheckout-upayments.php';") !== false,
     'future main-file target remains distinct and is not silently migrated'
 );
 
