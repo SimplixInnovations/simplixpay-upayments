@@ -12,6 +12,8 @@ final class IdentityTest extends TestCase {
         self::assertSame('SUCheckout', Identity::SHORT_NAME);
         self::assertSame('sucheckout-upayments', Identity::SLUG);
         self::assertSame('SimplixInnovations/sucheckout-upayments', Identity::REPOSITORY);
+        self::assertSame('sucheckout-upayments', Identity::TEXT_DOMAIN);
+        self::assertSame('Simplixi\\\\SUCheckout\\\\UPayments', Identity::NAMESPACE_ROOT);
     }
 
     public function test_version_remains_an_independent_pre_one_release(): void {
@@ -26,6 +28,12 @@ final class IdentityTest extends TestCase {
     public function test_historical_install_identities_remain_exact(): void {
         self::assertSame('UPayments.php', Identity::LEGACY_MAIN_FILE);
         self::assertSame('upayments', Identity::LEGACY_TEXT_DOMAIN);
+        self::assertSame('upayments', Identity::LEGACY_GATEWAY_ID);
+        self::assertSame('woocommerce_upayments_settings', Identity::LEGACY_SETTINGS_OPTION);
+        self::assertSame('wc_upayments', Identity::LEGACY_CALLBACK_ROUTE);
+        self::assertSame('upay_process_subscriptions', Identity::LEGACY_SUBSCRIPTION_HOOK);
+        self::assertSame('upayments_token_identity_secret_v2', Identity::LEGACY_TOKEN_SECRET_OPTION);
+        self::assertSame('upayments_billing_attempts', Identity::LEGACY_BILLING_ATTEMPT_TABLE_SUFFIX);
     }
 
     public function test_future_targets_are_frozen_but_not_current_identity(): void {
