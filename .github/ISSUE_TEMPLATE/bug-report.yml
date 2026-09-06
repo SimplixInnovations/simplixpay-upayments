@@ -1,5 +1,5 @@
 name: Bug report
-description: Report a reproducible defect in SimplixPay for UPayments.
+description: Report a reproducible defect in SUCheckout for UPayments.
 title: "[Bug]: "
 labels: []
 body:
@@ -10,7 +10,7 @@ body:
   - type: input
     id: plugin-version
     attributes:
-      label: SimplixPay version or commit
+      label: SUCheckout version or commit
       placeholder: "Version or full commit SHA"
     validations:
       required: true
