@@ -427,9 +427,9 @@ arch_assert(arch_contains($architecture, 'exact accepted `UPayments.php` byte si
 arch_assert(arch_contains($architecture, 'Composer only with an explicit distribution rule'), 'Composer introduction is gated by distribution contract');
 arch_assert(arch_contains($architecture, 'PHPCS/WPCS and PHPStan incrementally'), 'static-analysis rollout is incremental');
 arch_assert(
-    arch_contains($status, '| Current program gate | **Full Automated Quality Platform — Q16** |')
-    || arch_contains($status, '| Quality Platform Q16 migration-core analysis | **DONE / VERIFIED** |'),
-    'project status preserves verified Quality Platform progression through Q16'
+    arch_contains($status, '| Historical Quality Platform Q1-Q19 | **DONE / VERIFIED — numbered sequence permanently closed** |')
+    || arch_contains($status, 'Historical Quality Platform Q1-Q19'),
+    'project status preserves verified Quality Platform progression through Q19'
 );
 arch_assert(arch_contains($naming, '**Canonical slug:** `sucheckout-upayments`'), 'canonical slug remains protected');
 
