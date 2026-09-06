@@ -36,6 +36,7 @@ class WCGatewayUPaymentsBlocks extends AbstractPaymentMethodType {
 
     public function is_active() {
         return is_object($this->gateway)
+            && is_array($this->settings)
             && isset($this->settings['enabled'])
             && is_string($this->settings['enabled'])
             && $this->settings['enabled'] === 'yes';
