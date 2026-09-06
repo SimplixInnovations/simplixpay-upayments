@@ -1,15 +1,15 @@
 <?php
 
-namespace Simplix\Pay\UPayments\Tests\Migration;
+namespace Simplixi\SUCheckout\UPayments\Tests\Migration;
 
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 use ReflectionMethod;
 use RuntimeException;
-use Simplix\Pay\UPayments\Migration\MigrationAdmin;
-use Simplix\Pay\UPayments\Migration\MigrationBatch;
-use Simplix\Pay\UPayments\Migration\MigrationSettings;
+use Simplixi\SUCheckout\UPayments\Migration\MigrationAdmin;
+use Simplixi\SUCheckout\UPayments\Migration\MigrationBatch;
+use Simplixi\SUCheckout\UPayments\Migration\MigrationSettings;
 
 final class MigrationAdminTest extends TestCase {
     protected function setUp(): void {
