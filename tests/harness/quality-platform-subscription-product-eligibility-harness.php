@@ -83,6 +83,24 @@ q19_assert(Utils::cartHasRestrictedProducts() === false, 'ordinary product remai
 
 q19_set_cart(array(789));
 $GLOBALS['q19_meta'] = array(
+    789 => array('_upay_disable_subscription' => 'no'),
+);
+q19_assert(Utils::cartHasRestrictedProducts() === false, 'canonical no value does not opt a product out');
+
+q19_set_cart(array(789));
+$GLOBALS['q19_meta'] = array(
+    789 => array('_upay_disable_subscription' => true),
+);
+q19_assert(Utils::cartHasRestrictedProducts() === false, 'boolean true does not masquerade as canonical opt-out');
+
+q19_set_cart(array(789));
+$GLOBALS['q19_meta'] = array(
+    789 => array('_upay_disable_subscription' => 'YES'),
+);
+q19_assert(Utils::cartHasRestrictedProducts() === false, 'noncanonical uppercase YES does not opt a product out');
+
+q19_set_cart(array(789));
+$GLOBALS['q19_meta'] = array(
     789 => array('_upay_disable_subscription' => 'yes'),
 );
 q19_assert(Utils::cartHasRestrictedProducts() === true, 'explicit product-level opt-out remains restrictive');
