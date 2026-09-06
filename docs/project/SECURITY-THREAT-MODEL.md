@@ -1,5 +1,7 @@
 # Security Threat-Model Closure
 
+> **Historical closed-gate record with permanent security invariants.** Repository/product/current-gate wording below reflects the verified security closure at that time. Current SUCheckout state is owned by `PROJECT-STATUS.md`; the security rules remain binding unless a later reviewed contract explicitly supersedes them.
+
 **Status:** DONE / VERIFIED
 
 **Canonical repository:** `SimplixInnovations/simplixpay-upayments`
