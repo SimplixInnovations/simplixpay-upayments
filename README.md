@@ -32,9 +32,9 @@ Quality Platform Q1-Q19 are **DONE / VERIFIED**. The historical Enterprise Relea
 | Quality Platform Q1-Q19 | **DONE / VERIFIED** |
 | Enterprise Tasks 1-8 | **DONE / VERIFIED** |
 
-The approved **SUCheckout identity migration is implemented**. Exact-head Quality/H12, compatibility, artifact, provider-sandbox, security and WordPress.org checks remain mandatory before merge or public release.
+The approved **SUCheckout identity migration is merged and post-merge certified**. Permanent Quality/H12, compatibility, artifact, provider-sandbox, security and WordPress.org gates remain mandatory for every future candidate before release.
 
-No public SUCheckout 1.0 tag, GitHub Release or WordPress.org publication exists yet. Publication remains a separate owner action after the exact merged source/artifact state is certified.
+No public SUCheckout tag, GitHub Release or WordPress.org publication exists yet. Repository rename and publication remain separate owner/admin actions after the certified engineering merge.
 
 | Area | Current verified / target position |
 |---|---|
@@ -56,11 +56,20 @@ No public SUCheckout 1.0 tag, GitHub Release or WordPress.org publication exists
 | Cart / Checkout Blocks registration & availability | **Verified** |
 | HPOS | **Verified / declared compatible** |
 | Provider public-sandbox Charge initialization | **Verified, bounded** |
-| Deterministic ZIP + checksum + manifest | **Canonical SUCheckout contract under exact-head CI** |
-| Official WordPress Plugin Check | **Permanent packaged-artifact gate** |
+| Deterministic ZIP + checksum + manifest | **Verified on merged SUCheckout main; permanent exact-head gate** |
+| Official WordPress Plugin Check | **Verified with 0 blocking errors on certified merged main; permanent packaged-artifact gate** |
 | Automatic Woo refunds | **Unsupported** |
 | Arbitrary marketplace multi-split | **Unsupported** |
 | Stable public release | **Not yet published** |
+
+Latest runtime-bearing SUCheckout engineering closeout:
+
+- PR #58 certified head: `5bf84dccb880733da45c1f922d43554af69a33dc`;
+- squash merge on `main`: `6aabc4fcb0606567a11637ea07fe081fed4c7f85`;
+- post-merge Quality #764, Compatibility #292 (**16/16**), Release Artifact #243, Provider Sandbox #207, WordPress.org Submission Check #101 and CodeQL/main-security #579: **SUCCESS**;
+- official Plugin Check: **0 blocking errors**;
+- open issues / open PRs / unresolved review threads after closeout: **0 / 0 / 0**.
+
 
 See [`docs/COMPATIBILITY.md`](docs/COMPATIBILITY.md) for verified/external/unsupported boundaries and [`docs/project/PROJECT-STATUS.md`](docs/project/PROJECT-STATUS.md) for the living engineering ledger.
 
