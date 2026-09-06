@@ -53,6 +53,18 @@ function sut_assert($condition, $message) {
     echo "FAIL: {$message}\n";
 }
 
+$gateway_source = file_get_contents(dirname(__DIR__, 2) . '/UPayments.php');
+sut_assert(
+    is_string($gateway_source)
+        && strpos($gateway_source, 'wp_remote_request(') !== false
+        && !preg_match('/\\bcurl_(?:init|setopt|exec|errno|error|getinfo|close)\\s*\\(/', $gateway_source),
+    'production gateway transport is WordPress HTTP API before behavioral dispatch'
+);
+if ($fail !== 0) {
+    echo "\nSUCheckout Production HTTP Transport: {$pass} PASS / {$fail} FAIL\n";
+    exit(1);
+}
+
 $gateway = new SUCheckout_Production_Transport_Testable();
 $gateway->apiKey = 'test-secret';
 
