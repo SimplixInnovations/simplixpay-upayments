@@ -83,6 +83,12 @@ q19_assert(Utils::cartHasRestrictedProducts() === false, 'ordinary product remai
 
 q19_set_cart(array(789));
 $GLOBALS['q19_meta'] = array(
+    789 => array('_upay_disable_subscription' => ''),
+);
+q19_assert(Utils::cartHasRestrictedProducts() === false, 'present but empty opt-out metadata remains eligible');
+
+q19_set_cart(array(789));
+$GLOBALS['q19_meta'] = array(
     789 => array('_upay_disable_subscription' => 'no'),
 );
 q19_assert(Utils::cartHasRestrictedProducts() === false, 'canonical no value does not opt a product out');
