@@ -2,7 +2,7 @@
 
 ## Simplix Innovations
 
-**Simplix Innovations** owns and maintains the canonical **SimplixPay for UPayments** repository.
+**Simplix Innovations** owns and maintains the canonical **SUCheckout for UPayments** repository.
 
 - Website: https://simplixi.com
 - GitHub organization: https://github.com/SimplixInnovations
@@ -15,7 +15,7 @@ WooCommerce currently lists Simplix Innovations as a Woo Agency Partner. That ex
 
 ## Responsibilities
 
-Simplix Innovations owns the modifications, release process, compatibility evidence, testing strategy, security response, documentation and support policy for **SimplixPay for UPayments**.
+Simplix Innovations owns the modifications, release process, compatibility evidence, testing strategy, security response, documentation and support policy for **SUCheckout for UPayments**.
 
 UPayments remains responsible for its payment platform, merchant accounts, settlements, commercial services, API availability and official provider policies.
 

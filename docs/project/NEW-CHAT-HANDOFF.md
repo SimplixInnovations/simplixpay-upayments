@@ -1,14 +1,15 @@
-# SimplixPay for UPayments — Clean Chat Handoff
+# SUCheckout for UPayments — Clean Chat Handoff
 
 Use this file with root `AGENTS.md`, `docs/project/PROJECT-STATUS.md`, `docs/project/ENTERPRISE-CERTIFICATION.md`, `docs/project/RELEASE-ENGINEERING.md`, the naming standard and the immutable historical phase records.
 
 ## Identity
 
-- Repository: `SimplixInnovations/simplixpay-upayments`
-- Formal product: **SimplixPay for UPayments**
-- Short integration reference: **SimplixPay UPayments**
-- Reserved broader family: **SimplixPay**
-- Canonical slug: `simplixpay-upayments`
+- Current GitHub repository pending owner/admin rename: `SimplixInnovations/simplixpay-upayments`
+- Target canonical repository: `SimplixInnovations/sucheckout-upayments`
+- Formal product: **SUCheckout for UPayments**
+- Short product reference / family: **SUCheckout**
+- Canonical slug / text domain: `sucheckout-upayments`
+- PHP namespace root: `Simplixi\SUCheckout\UPayments`
 - Maintainer: **Simplix Innovations**
 - Provider: **UPayments**
 - Development version: **0.1.0**
@@ -34,7 +35,7 @@ Use this file with root `AGENTS.md`, `docs/project/PROJECT-STATUS.md`, `docs/pro
 - Enterprise Task 6 feature/operations boundaries — **DONE / VERIFIED**
 - Enterprise Task 7 existing-install/release identity — **DONE / VERIFIED**
 - Enterprise Task 8 release-candidate closeout — **DONE / VERIFIED**
-- Current engineering state — **Enterprise release candidate qualified; awaiting owner release decision**
+- Current engineering state — **SUCheckout identity migration implemented; exact-head certification required before merge/release**
 - Public stable release — **NO**
 - WordPress.org release — **NO**
 
@@ -55,13 +56,14 @@ Task 8 branch should descend from that canonical merge or a later independently 
 
 ## First-stable identity decision
 
-Task 7 proves the first stable must retain:
+Task 7 proves the physical main file must not be renamed casually. The approved SUCheckout package therefore uses:
 
-- main file `UPayments.php`;
-- basename `simplixpay-upayments/UPayments.php`;
-- text domain `upayments`.
+- physical main file `UPayments.php`;
+- canonical basename `sucheckout-upayments/UPayments.php`;
+- canonical text domain `sucheckout-upayments`;
+- legacy basename `simplixpay-upayments/UPayments.php` only as migration/rollback evidence.
 
-Direct rename to `simplixpay-upayments.php` does not transfer WordPress active-plugin identity. The eventual filename/text-domain targets remain explicit future migrations. Do not search/replace protected `upayments` identities.
+A future physical rename to `sucheckout-upayments.php` remains separately gated. Do not search/replace protected provider/persisted `upayments` identities.
 
 Protected runtime/persisted identities include gateway/payment method `upayments`, settings `woocommerce_upayments_settings`, Blocks/Store API identity `upayments`, callback `wc_upayments`, `_upay_*` metadata, token identity secret/provenance/scope/generation, scheduler/billing identities and historical order payment-method values.
 

@@ -1,11 +1,11 @@
 <?php
 
-namespace Simplix\Pay\UPayments\Tests\Migration;
+namespace Simplixi\SUCheckout\UPayments\Tests\Migration;
 
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 use ReflectionMethod;
-use Simplix\Pay\UPayments\Migration\MigrationBatch;
+use Simplixi\SUCheckout\UPayments\Migration\MigrationBatch;
 
 final class MigrationBatchTest extends TestCase {
     protected function setUp(): void {

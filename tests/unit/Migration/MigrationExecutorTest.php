@@ -1,12 +1,12 @@
 <?php
 
-namespace Simplix\Pay\UPayments\Tests\Migration;
+namespace Simplixi\SUCheckout\UPayments\Tests\Migration;
 
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 use ReflectionMethod;
-use Simplix\Pay\UPayments\Migration\MigrationExecutor;
-use Simplix\Pay\UPayments\Migration\MigrationPreflight;
+use Simplixi\SUCheckout\UPayments\Migration\MigrationExecutor;
+use Simplixi\SUCheckout\UPayments\Migration\MigrationPreflight;
 use UPayments\Token\CustomerTokenIdentity;
 
 final class MigrationExecutorTest extends TestCase {

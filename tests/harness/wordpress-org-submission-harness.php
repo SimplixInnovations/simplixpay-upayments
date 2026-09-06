@@ -1,0 +1,75 @@
+<?php
+/**
+ * Permanent WordPress.org submission-readiness contract for SUCheckout.
+ */
+
+$root = dirname(__DIR__, 2);
+$pass = 0;
+$fail = 0;
+
+function wporg_assert($condition, $label) {
+    global $pass, $fail;
+    if ($condition) {
+        ++$pass;
+        echo "PASS: {$label}\n";
+        return;
+    }
+    ++$fail;
+    echo "FAIL: {$label}\n";
+}
+
+function wporg_read($root, $relative) {
+    $value = @file_get_contents($root . '/' . $relative);
+    wporg_assert(is_string($value) && $value !== '', 'submission control file exists: ' . $relative);
+    return is_string($value) ? $value : '';
+}
+
+$readme = wporg_read($root, 'readme.txt');
+$plugin = wporg_read($root, 'UPayments.php');
+$identity = wporg_read($root, 'src/Release/Identity.php');
+$build = wporg_read($root, 'scripts/build-release.sh');
+$verify = wporg_read($root, 'scripts/verify-release.sh');
+$release_workflow = wporg_read($root, '.github/workflows/release-artifact.yml');
+$submission_workflow = wporg_read($root, '.github/workflows/wordpress-org-submission-check.yml');
+
+$version = '';
+if (preg_match("/public const VERSION = '([^']+)';/", $identity, $matches) === 1) {
+    $version = $matches[1];
+}
+wporg_assert($version !== '', 'submission harness reads canonical release version');
+
+wporg_assert(strpos($readme, '=== SUCheckout for UPayments ===') !== false, 'WordPress.org readme uses canonical human-facing product name');
+wporg_assert(strlen($readme) > 0 && strlen($readme) < 10000, 'WordPress.org readme remains below 10 KB directory guidance');
+wporg_assert($version !== '' && strpos($readme, 'Stable tag: ' . $version) !== false, 'readme Stable Tag matches canonical release version');
+wporg_assert(strpos($readme, 'Requires at least: 6.9') !== false, 'readme preserves verified WordPress floor');
+wporg_assert(strpos($readme, 'Tested up to: 7.1') !== false, 'readme preserves verified WordPress ceiling');
+wporg_assert(strpos($readme, 'Requires PHP: 7.4') !== false, 'readme preserves verified PHP floor');
+wporg_assert(strpos($readme, 'License: MIT') !== false, 'readme declares repository license consistently');
+wporg_assert(strpos($readme, 'UPayments terms and policies: https://upayments.com/en/terms-of-service') !== false, 'readme documents external service terms');
+wporg_assert(strpos($readme, 'independently engineered and maintained by Simplix Innovations') !== false, 'readme clearly discloses independent integration status');
+wporg_assert(strpos($readme, 'does not imply endorsement or official distribution by UPayments') !== false, 'readme avoids provider-affiliation ambiguity');
+wporg_assert(strpos($readme, 'Stable tag: trunk') === false, 'new-plugin readme never uses trunk as stable tag');
+wporg_assert(stripos($readme, 'guaranteed PCI') === false && stripos($readme, 'PCI compliant plugin') === false, 'readme makes no plugin-level PCI compliance guarantee');
+
+wporg_assert(strpos($plugin, 'Plugin Name: SUCheckout for UPayments') !== false, 'plugin header uses canonical product name');
+wporg_assert(strpos($plugin, 'Text Domain: sucheckout-upayments') !== false, 'plugin header uses canonical WordPress.org text domain');
+wporg_assert(strpos($build, 'SLUG="sucheckout-upayments"') !== false, 'release builder emits canonical WordPress.org slug');
+wporg_assert(strpos($verify, 'slug = "sucheckout-upayments"') !== false, 'release verifier requires canonical WordPress.org slug');
+wporg_assert(strpos($release_workflow, "-name 'sucheckout-upayments-*.zip'") !== false, 'release workflow produces canonical submission ZIP');
+
+wporg_assert(
+    strpos($submission_workflow, 'WordPress/plugin-check-action@10857da14b6c2246d15402b3e69f777edcf8c12e') !== false
+        && strpos($submission_workflow, 'build-dir: ${{ runner.temp }}/plugin-check/sucheckout-upayments') !== false
+        && strpos($submission_workflow, 'slug: sucheckout-upayments') !== false
+        && strpos($submission_workflow, 'categories: plugin_repo') !== false,
+    'official Plugin Check runs on unpacked canonical package with immutable action pin'
+);
+wporg_assert(
+    strpos($submission_workflow, 'bash scripts/build-release.sh submission-output') !== false
+        && strpos($submission_workflow, 'bash scripts/verify-release.sh "$ZIP"') !== false,
+    'submission gate consumes deterministic verified release artifact'
+);
+wporg_assert(strpos($submission_workflow, "simplixpay-upayments-*.zip") === false, 'submission workflow contains no retired release ZIP slug');
+
+echo "\nWordPress.org Submission Readiness: {$pass} PASS / {$fail} FAIL\n";
+exit($fail === 0 ? 0 : 1);

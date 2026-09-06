@@ -5,7 +5,7 @@
 
 require_once __DIR__ . '/bootstrap.php';
 
-use Simplix\Pay\UPayments\Payment\CheckoutOrchestrator;
+use Simplixi\SUCheckout\UPayments\Payment\CheckoutOrchestrator;
 
 if (!WC()->session) {
     WC()->session = new WC_Session_Handler();

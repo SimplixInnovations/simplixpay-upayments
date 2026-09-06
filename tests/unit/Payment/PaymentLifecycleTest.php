@@ -1,11 +1,11 @@
 <?php
 
-namespace Simplix\Pay\UPayments\Tests\Payment;
+namespace Simplixi\SUCheckout\UPayments\Tests\Payment;
 
 use PHPUnit\Framework\Attributes\PreserveGlobalState;
 use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
 use PHPUnit\Framework\TestCase;
-use Simplix\Pay\UPayments\Payment\PaymentLifecycle;
+use Simplixi\SUCheckout\UPayments\Payment\PaymentLifecycle;
 
 final class PaymentLifecycleCompletionFailureOrder {
     private $id = 42;

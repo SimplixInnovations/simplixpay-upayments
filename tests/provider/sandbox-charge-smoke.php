@@ -10,13 +10,20 @@
 
 declare(strict_types=1);
 
+if (!function_exists('wp_parse_url')) {
+    function wp_parse_url($url, $component = -1) {
+        return parse_url((string) $url, $component);
+    }
+}
+
+
 $root = dirname(__DIR__, 2);
 
 require_once $root . '/src/Provider/EndpointResolver.php';
 require_once $root . '/src/Payment/CheckoutPayload.php';
 
-use Simplix\Pay\UPayments\Payment\CheckoutPayload;
-use Simplix\Pay\UPayments\Provider\EndpointResolver;
+use Simplixi\SUCheckout\UPayments\Payment\CheckoutPayload;
+use Simplixi\SUCheckout\UPayments\Provider\EndpointResolver;
 
 function simplixpay_provider_assert(bool $condition, string $message): void {
     if ($condition) {

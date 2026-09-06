@@ -1,6 +1,6 @@
 <?php
 
-namespace Simplix\Pay\UPayments\Admin;
+namespace Simplixi\SUCheckout\UPayments\Admin;
 
 /**
  * Gateway settings schema, validation and admin presentation adapter.
@@ -21,82 +21,82 @@ final class GatewaySettings {
     public static function fields($domain, $method_title, $method_description) {
         return array(
             'enabled' => array(
-                'title' => __('Active', $domain),
+                'title' => __('Active', 'sucheckout-upayments'),
                 'type' => 'checkbox',
-                'label' => __(' ', $domain),
+                'label' => ' ',
                 'default' => 'yes',
             ),
             'make_default_gateway' => array(
-                'title' => __('Default Gateway', $domain),
+                'title' => __('Default Gateway', 'sucheckout-upayments'),
                 'type' => 'checkbox',
-                'label' => __('Make UPayments the default payment method at checkout', $domain),
+                'label' => __('Make UPayments the default payment method at checkout', 'sucheckout-upayments'),
                 'default' => 'no',
-                'description' => __('If enabled, UPayments will be preselected at checkout. Merchants can still reorder gateways.', $domain),
+                'description' => __('If enabled, UPayments will be preselected at checkout. Merchants can still reorder gateways.', 'sucheckout-upayments'),
             ),
             'title' => array(
-                'title' => __('Title', $domain),
+                'title' => __('Title', 'sucheckout-upayments'),
                 'type' => 'text',
-                'description' => __('This controls the title which the user sees during checkout.', $domain),
+                'description' => __('This controls the title which the user sees during checkout.', 'sucheckout-upayments'),
                 'default' => $method_title,
                 'desc_tip' => true,
             ),
             'description' => array(
-                'title' => __('Description', $domain),
+                'title' => __('Description', 'sucheckout-upayments'),
                 'type' => 'textarea',
-                'description' => __('Instructions that the customer will see on your checkout.', $domain),
+                'description' => __('Instructions that the customer will see on your checkout.', 'sucheckout-upayments'),
                 'default' => $method_description,
                 'desc_tip' => true,
             ),
             'api_key' => array(
-                'title' => __('Api Key', $domain),
+                'title' => __('Api Key', 'sucheckout-upayments'),
                 'type' => 'text',
-                'description' => __('Copy/paste values from UPayments dashboard', $domain),
+                'description' => __('Copy/paste values from UPayments dashboard', 'sucheckout-upayments'),
                 'default' => '',
                 'desc_tip' => true,
             ),
             'debug' => array(
-                'title' => __('Debug logging', $domain),
+                'title' => __('Debug logging', 'sucheckout-upayments'),
                 'type' => 'checkbox',
-                'label' => __('Log non-sensitive UPayments diagnostic events to WooCommerce logs.', $domain),
+                'label' => __('Log non-sensitive UPayments diagnostic events to WooCommerce logs.', 'sucheckout-upayments'),
                 'default' => 'no',
             ),
             'test_mode' => array(
-                'title' => __('Test Mode', $domain),
+                'title' => __('Test Mode', 'sucheckout-upayments'),
                 'type' => 'checkbox',
-                'label' => __(' ', $domain),
+                'label' => ' ',
                 'default' => 'no',
             ),
             'is_order_complete' => array(
-                'title' => __('Show paid orders as "Completed"?', $domain),
+                'title' => __('Show paid orders as "Completed"?', 'sucheckout-upayments'),
                 'type' => 'checkbox',
-                'label' => __(' ', $domain),
+                'label' => ' ',
                 'default' => 'yes',
             ),
             'save_card_section_title' => array(
-                'title' => __('Card Tokenization & Design', $domain),
+                'title' => __('Card Tokenization & Design', 'sucheckout-upayments'),
                 'type' => 'title',
                 'description' => '',
             ),
             'use_new_design' => array(
-                'title' => __('Use New Design', $domain),
+                'title' => __('Use New Design', 'sucheckout-upayments'),
                 'type' => 'checkbox',
-                'label' => __('Use the modern design (if unchecked uses classic design)', $domain),
+                'label' => __('Use the modern design (if unchecked uses classic design)', 'sucheckout-upayments'),
                 'default' => 'yes',
             ),
             'enable_save_card' => array(
-                'title' => __('Enable Save Card', $domain),
+                'title' => __('Enable Save Card', 'sucheckout-upayments'),
                 'type' => 'checkbox',
-                'label' => __('Allow customers to save card details (Tokenization)', $domain),
+                'label' => __('Allow customers to save card details (Tokenization)', 'sucheckout-upayments'),
                 'default' => 'yes',
             ),
             'multimerchant_section_title' => array(
-                'title' => __('Multimerchant Configuration', $domain),
+                'title' => __('Multimerchant Configuration', 'sucheckout-upayments'),
                 'type' => 'title',
             ),
             'enable_multimerchant' => array(
-                'title' => __('Enable Multimerchant', $domain),
+                'title' => __('Enable Multimerchant', 'sucheckout-upayments'),
                 'type' => 'checkbox',
-                'label' => __('Handle Merchant Account & Charges', $domain),
+                'label' => __('Handle Merchant Account & Charges', 'sucheckout-upayments'),
                 'default' => 'no',
             ),
             'iban_number' => array(
@@ -120,21 +120,21 @@ final class GatewaySettings {
                 'css' => 'display:none;',
             ),
             'multimerchant_accounts' => array(
-                'title' => __('Multimerchant Accounts', $domain),
+                'title' => __('Multimerchant Accounts', 'sucheckout-upayments'),
                 'type' => 'multimerchant_repeater',
-                'description' => __('Manage IBAN and charges for Main-Merchant.', $domain),
+                'description' => __('Manage IBAN and charges for Main-Merchant.', 'sucheckout-upayments'),
             ),
             'autodeduction_section_title' => array(
-                'title' => __('Subscription Configuration', $domain),
+                'title' => __('Subscription Configuration', 'sucheckout-upayments'),
                 'type' => 'title',
             ),
             'enable_subscriptions' => array(
-                'title' => __('Enable Subscriptions', $domain),
+                'title' => __('Enable Subscriptions', 'sucheckout-upayments'),
                 'type' => 'checkbox',
-                'label' => __('Enable subscription payments', $domain),
+                'label' => __('Enable subscription payments', 'sucheckout-upayments'),
                 'default' => 'no',
                 'desc_tip' => true,
-                'description' => __('Only Subscription Products are allowed at checkout If Subscription is enabled.', $domain),
+                'description' => __('Only Subscription Products are allowed at checkout If Subscription is enabled.', 'sucheckout-upayments'),
             ),
         );
     }
@@ -245,8 +245,8 @@ final class GatewaySettings {
         $default = array_key_exists('default', $data) ? $data['default'] : null;
         $settings = call_user_func($get_option, $key, $default);
         $conditions = array(
-            'fixed' => __('Fixed', $domain),
-            'percentage' => __('Percentage', $domain),
+            'fixed' => __('Fixed', 'sucheckout-upayments'),
+            'percentage' => __('Percentage', 'sucheckout-upayments'),
         );
 
         ob_start();
@@ -259,29 +259,29 @@ final class GatewaySettings {
                     <table class="widefat wc_input_multimerchant_repeater" cellspacing="0">
                         <thead>
                             <tr>
-                                <th><?php esc_html_e('IBAN Number', $domain); ?></th>
-                                <th><?php esc_html_e('Knet Charge', $domain); ?></th>
-                                <th><?php esc_html_e('Knet Charge Type', $domain); ?></th>
-                                <th><?php esc_html_e('CC Charge', $domain); ?></th>
-                                <th><?php esc_html_e('CC Charge Type', $domain); ?></th>
+                                <th><?php esc_html_e('IBAN Number', 'sucheckout-upayments'); ?></th>
+                                <th><?php esc_html_e('Knet Charge', 'sucheckout-upayments'); ?></th>
+                                <th><?php esc_html_e('Knet Charge Type', 'sucheckout-upayments'); ?></th>
+                                <th><?php esc_html_e('CC Charge', 'sucheckout-upayments'); ?></th>
+                                <th><?php esc_html_e('CC Charge Type', 'sucheckout-upayments'); ?></th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
-                                <td><input type="text" name="woocommerce_upayments_iban_number" data-field="iban_number" value="<?php echo esc_attr(call_user_func($get_option, 'iban_number')); ?>" placeholder="<?php esc_html_e('KWK00445...', $domain); ?>" style="width: 400px;"/></td>
-                                <td><input type="number" name="woocommerce_upayments_knet_charge" data-field="knet_charge" value="<?php echo esc_attr(call_user_func($get_option, 'knet_charge')); ?>" placeholder="<?php esc_html_e('0.000', $domain); ?>" min="0.000" max="10.000" step="0.010"/></td>
+                                <td><input type="text" name="woocommerce_upayments_iban_number" data-field="iban_number" value="<?php echo esc_attr(call_user_func($get_option, 'iban_number')); ?>" placeholder="<?php esc_html_e('KWK00445...', 'sucheckout-upayments'); ?>" style="width: 400px;"/></td>
+                                <td><input type="number" name="woocommerce_upayments_knet_charge" data-field="knet_charge" value="<?php echo esc_attr(call_user_func($get_option, 'knet_charge')); ?>" placeholder="<?php esc_html_e('0.000', 'sucheckout-upayments'); ?>" min="0.000" max="10.000" step="0.010"/></td>
                                 <td>
                                     <select data-field="knet_charge_type" name="woocommerce_upayments_knet_charge_type">
-                                        <option value=""><?php esc_html_e('Select', $domain); ?></option>
+                                        <option value=""><?php esc_html_e('Select', 'sucheckout-upayments'); ?></option>
                                         <?php foreach ($conditions as $value => $label) : ?>
                                             <option value="<?php echo esc_attr($value); ?>" <?php selected($value, call_user_func($get_option, 'knet_charge_type')); ?>><?php echo esc_html($label); ?></option>
                                         <?php endforeach; ?>
                                     </select>
                                 </td>
-                                <td><input type="number" name="woocommerce_upayments_cc_charge" data-field="cc_charge" value="<?php echo esc_attr(call_user_func($get_option, 'cc_charge')); ?>" placeholder="<?php esc_html_e('0.000', $domain); ?>" min="0.000" max="10.000" step="0.010"/></td>
+                                <td><input type="number" name="woocommerce_upayments_cc_charge" data-field="cc_charge" value="<?php echo esc_attr(call_user_func($get_option, 'cc_charge')); ?>" placeholder="<?php esc_html_e('0.000', 'sucheckout-upayments'); ?>" min="0.000" max="10.000" step="0.010"/></td>
                                 <td>
                                     <select data-field="cc_charge_type" name="woocommerce_upayments_cc_charge_type">
-                                        <option value=""><?php esc_html_e('Select', $domain); ?></option>
+                                        <option value=""><?php esc_html_e('Select', 'sucheckout-upayments'); ?></option>
                                         <?php foreach ($conditions as $value => $label) : ?>
                                             <option value="<?php echo esc_attr($value); ?>" <?php selected($value, call_user_func($get_option, 'cc_charge_type')); ?>><?php echo esc_html($label); ?></option>
                                         <?php endforeach; ?>

@@ -10,6 +10,9 @@ on:
 permissions:
   contents: read
 
+env:
+  QUALITY_SOURCE_SHA: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || github.sha }}
+
 concurrency:
   group: quality-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
@@ -22,6 +25,7 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
+          ref: ${{ env.QUALITY_SOURCE_SHA }}
           fetch-depth: 0
           persist-credentials: false
 
@@ -37,8 +41,17 @@ jobs:
             .github/workflows/compatibility-certification.yml
             .github/workflows/provider-sandbox-certification.yml
             .github/workflows/release-artifact.yml
+            .github/workflows/wordpress-org-submission-check.yml
             scripts/build-release.sh scripts/verify-release.sh scripts/install-wp-test-environment.sh
             tests/harness/release-artifact-harness.php
+            tests/harness/wordpress-org-submission-harness.php
+            tests/harness/sucheckout-identity-migration-harness.php
+            tests/harness/sucheckout-namespace-migration-harness.php
+            tests/harness/sucheckout-frontend-identity-harness.php
+            tests/harness/sucheckout-residue-harness.php
+            tests/harness/wordpress-org-runtime-harness.php
+            tests/harness/sucheckout-http-transport-harness.php
+            tests/harness/sucheckout-provenance-db-failure-harness.php
             tests/provider/sandbox-charge-smoke.php
             tests/integration/bootstrap.php
             tests/integration/PluginActivationTest.php
@@ -66,39 +79,34 @@ jobs:
             docs/project/BASELINE-H12.md
             docs/project/REPOSITORY-AUDIT.md
             docs/project/REPOSITORY-READINESS.md
-            docs/superpowers/plans/2026-09-06-enterprise-completion.md
+            docs/superpowers/specs/2026-09-06-sucheckout-upayments-identity-migration-design.md
+            docs/superpowers/plans/2026-09-06-sucheckout-upayments-identity-migration.md
           )
           for path in "${required[@]}"; do
             test -s "$path" || { echo "Missing or empty required control file: $path"; exit 1; }
           done
 
-      - name: Current living-state invariants
+      - name: Current SUCheckout living-state invariants
         shell: bash
         run: |
           set -euo pipefail
-          grep -Fq 'SimplixPay for UPayments' README.md
-          grep -Fq 'Enterprise Release Candidate Closeout is **DONE / VERIFIED**.' README.md
-          grep -Fq '| Enterprise Task 8 — release-candidate closeout | **DONE / VERIFIED** |' docs/project/PROJECT-STATUS.md
-          grep -Fq '| Current engineering state | **Enterprise release candidate qualified — awaiting owner release decision** |' docs/project/PROJECT-STATUS.md
-          grep -Fq 'Task 7 — existing-install upgrade / release identity — DONE / VERIFIED' docs/ENGINEERING-ROADMAP.md
-          grep -Fq 'Task 8 — Enterprise Release Candidate Closeout — DONE / VERIFIED' docs/ENGINEERING-ROADMAP.md
-          grep -Fq '**Status:** TASKS 1–8 DONE / VERIFIED; ENTERPRISE RELEASE CANDIDATE QUALIFIED' docs/project/ENTERPRISE-CERTIFICATION.md
-          grep -Fq '**Status:** TASKS 5, 7 & 8 DONE / VERIFIED; ENTERPRISE RELEASE CANDIDATE QUALIFIED' docs/project/RELEASE-ENGINEERING.md
-          grep -Fq -- '- Enterprise Task 8 release-candidate closeout — **DONE / VERIFIED**' docs/project/NEW-CHAT-HANDOFF.md
-          grep -Fq 'Enterprise Tasks 1–8 are **DONE / VERIFIED**.' AGENTS.md
-          grep -Fq '### Enterprise Release Candidate Closeout — DONE / VERIFIED' CHANGELOG.md
-          grep -Fq '**Current posture:** Enterprise release-candidate qualification — **DONE / VERIFIED**.' docs/COMPATIBILITY.md
-          grep -Fq 'main file: `UPayments.php`' docs/project/PROJECT-STATUS.md
-          grep -Fq 'text domain: `upayments`' docs/project/PROJECT-STATUS.md
-          grep -Fq '**Unsupported**' docs/COMPATIBILITY.md
-          grep -Fq '**External/manual**' docs/COMPATIBILITY.md
+          grep -Fq '<h1 align="center">SUCheckout for UPayments</h1>' README.md
+          grep -Fq '| Canonical technical slug | `sucheckout-upayments` |' docs/project/PROJECT-STATUS.md
+          grep -Fq '| WordPress text domain | `sucheckout-upayments` |' docs/project/PROJECT-STATUS.md
+          grep -Fq '`sucheckout-upayments/UPayments.php`' docs/project/PROJECT-STATUS.md
+          grep -Fq 'No Q20 is justified.' docs/project/PROJECT-STATUS.md
+          grep -Fq '**Canonical slug:** `sucheckout-upayments`' docs/project/NAMING-IDENTITY-STANDARD.md
+          grep -Fq '=== SUCheckout for UPayments ===' readme.txt
+          grep -Fq 'Text Domain: sucheckout-upayments' UPayments.php
+          grep -Fq 'SLUG="sucheckout-upayments"' scripts/build-release.sh
+          grep -Fq 'slug = "sucheckout-upayments"' scripts/verify-release.sh
+          grep -Fq 'slug: sucheckout-upayments' .github/workflows/wordpress-org-submission-check.yml
           grep -Fq '**Status:** DONE / VERIFIED' docs/project/PHASE-0-RELEASE-IDENTITY.md
           grep -Fq '**Status:** DONE / VERIFIED' docs/project/PHASE-9I-MIGRATION.md
           grep -Fq '**Status:** DONE / VERIFIED' docs/project/PROVIDER-PAYMENT-LIFECYCLE.md
           grep -Fq '**Status:** DONE / VERIFIED' docs/project/SECURITY-THREAT-MODEL.md
           grep -Fq '**Status:** DONE / VERIFIED (DISCOVERY + A1-A5)' docs/project/ARCHITECTURE-CODE-QUALITY.md
           grep -Fq '**Status:** DONE / VERIFIED (Q1-Q19)' docs/project/QUALITY-PLATFORM.md
-          grep -Fq '**Canonical slug:** `simplixpay-upayments`' docs/project/NAMING-IDENTITY-STANDARD.md
 
       - name: Reject stale current-gate ownership in living records
         shell: bash
@@ -119,16 +127,11 @@ jobs:
           }
 
           reject_across_live_records 'Enterprise Compatibility Certification — CURRENT GATE'
-          reject_across_live_records 'current program gate is **Enterprise Compatibility Certification**'
-          reject_across_live_records 'Current program gate: **Enterprise Compatibility Certification**'
           reject_across_live_records 'Full Automated Quality Platform — CURRENT GATE'
           reject_across_live_records 'Security Threat-Model Closure — CURRENT GATE'
           reject_across_live_records 'Architecture & Code-Quality Foundation — CURRENT GATE'
           reject_across_live_records 'Enterprise Release Candidate Closeout — CURRENT / FINAL VERIFICATION'
           reject_across_live_records 'TASK 8 RELEASE-CANDIDATE CLOSEOUT CURRENT'
-          reject_across_live_records 'The current named gate is **Enterprise Release Candidate Closeout**.'
-          reject_across_live_records 'The current program gate is **Enterprise Release Candidate Closeout'
-          reject_across_live_records 'Current final gate:'
           reject_across_live_records 'CURRENT / Q1**'
           reject_across_live_records 'CURRENT / Q2'
           reject_across_live_records 'CURRENT / Q3'
@@ -149,6 +152,21 @@ jobs:
           reject_across_live_records 'CURRENT / Q18'
           reject_across_live_records 'CURRENT / Q19'
 
+      - name: Reject retired first-party identity in canonical release controls
+        shell: bash
+        run: |
+          set -euo pipefail
+          if grep -FnH -F 'simplixpay-upayments-*.zip' \
+            scripts/build-release.sh scripts/verify-release.sh \
+            .github/workflows/wordpress-org-submission-check.yml; then
+            echo 'Retired first-party release ZIP identity detected.'
+            exit 1
+          fi
+          if grep -FnH -F 'Text Domain: upayments' UPayments.php readme.txt; then
+            echo 'Retired first-party text domain detected in canonical metadata.'
+            exit 1
+          fi
+
       - name: Whitespace errors
         shell: bash
         run: |
@@ -166,6 +184,7 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
+          ref: ${{ env.QUALITY_SOURCE_SHA }}
           persist-credentials: false
       - uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # v2.37.2
         with:
@@ -192,6 +211,7 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
+          ref: ${{ env.QUALITY_SOURCE_SHA }}
           persist-credentials: false
       - uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # v2.37.2
         with:
@@ -211,7 +231,7 @@ jobs:
       - php-syntax-compatibility
     if: ${{ always() }}
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 20
     steps:
       - name: Require upstream quality prerequisites
         shell: bash
@@ -224,91 +244,92 @@ jobs:
             echo "Required quality prerequisite failed: quality-platform=$QUALITY_PLATFORM_RESULT php-syntax=$PHP_SYNTAX_RESULT"
             exit 1
           fi
+
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
+          ref: ${{ env.QUALITY_SOURCE_SHA }}
+          fetch-depth: 0
           persist-credentials: false
+
       - uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # v2.37.2
         with:
           php-version: '8.2'
+          extensions: zip
           coverage: none
           tools: none
+
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version: '24'
           package-manager-cache: false
+
       - name: Tracked PHP syntax
         run: git ls-files -z '*.php' | xargs -0 -r -n1 php -l
-      - name: Phase 0 release identity harness
-        run: php tests/harness/phase-0-release-identity-harness.php
-      - name: Phase 9I migration preflight harness
-        run: php tests/harness/phase-9i-preflight-harness.php
-      - name: Phase 9I migration executor harness
-        run: php tests/harness/phase-9i-executor-harness.php
-      - name: Phase 9I operations harness
-        run: php tests/harness/phase-9i-operations-harness.php
-      - name: Provider payment lifecycle harness
-        run: php tests/harness/provider-payment-lifecycle-harness.php
-      - name: Provider exact amount binding harness
-        run: php tests/harness/provider-payment-amount-binding-harness.php
-      - name: Security threat-model harness
-        run: php tests/harness/security-threat-model-harness.php
-      - name: Architecture foundation harness
-        run: php tests/harness/architecture-foundation-harness.php
-      - name: Architecture runtime bindings harness
-        run: php tests/harness/architecture-runtime-bindings-harness.php
-      - name: Architecture bootstrap paths harness
-        run: php tests/harness/architecture-bootstrap-path-harness.php
-      - name: Architecture provider endpoints harness
-        run: php tests/harness/architecture-provider-endpoints-harness.php
-      - name: Architecture payment-method availability harness
-        run: php tests/harness/architecture-payment-method-availability-harness.php
-      - name: Architecture gateway settings harness
-        run: php tests/harness/architecture-gateway-settings-harness.php
-      - name: Architecture subscription presentation harness
-        run: php tests/harness/architecture-subscription-presentation-harness.php
-      - name: Architecture checkout orchestration harness
-        run: php tests/harness/architecture-checkout-orchestration-harness.php
-      - name: Quality platform foundation harness
-        run: php tests/harness/quality-platform-foundation-harness.php
-      - name: Quality platform static-analysis harness
-        run: php tests/harness/quality-platform-static-analysis-harness.php
-      - name: Quality platform payment-concurrency harness
-        run: php tests/harness/quality-platform-payment-concurrency-harness.php
-      - name: Quality platform authenticated-status harness
-        run: php tests/harness/quality-platform-authenticated-status-harness.php
-      - name: Quality platform payment-method availability harness
-        run: php tests/harness/quality-platform-payment-method-availability-harness.php
-      - name: Quality platform gateway-settings harness
-        run: php tests/harness/quality-platform-gateway-settings-harness.php
-      - name: Quality platform public-order-status harness
-        run: php tests/harness/quality-platform-public-order-status-harness.php
-      - name: Quality platform release-identity harness
-        run: php tests/harness/quality-platform-release-identity-harness.php
-      - name: Quality platform migration-settings harness
-        run: php tests/harness/quality-platform-migration-settings-harness.php
-      - name: Quality platform migration-bootstrap harness
-        run: php tests/harness/quality-platform-migration-bootstrap-harness.php
-      - name: Quality platform subscription-composition harness
-        run: php tests/harness/quality-platform-subscription-composition-harness.php
-      - name: Quality platform subscription-product-type harness
-        run: php tests/harness/quality-platform-subscription-product-type-harness.php
-      - name: Quality platform migration-CLI harness
-        run: php tests/harness/quality-platform-migration-cli-harness.php
-      - name: Quality platform migration-admin harness
-        run: php tests/harness/quality-platform-migration-admin-harness.php
-      - name: Quality platform subscription-presentation harness
-        run: php tests/harness/quality-platform-subscription-presentation-harness.php
-      - name: Quality platform migration-core harness
-        run: php tests/harness/quality-platform-migration-core-harness.php
-      - name: Quality platform payment-runtime harness
-        run: php tests/harness/quality-platform-payment-runtime-harness.php
-      - name: Quality platform Blocks availability harness
-        run: php tests/harness/quality-platform-blocks-availability-harness.php
-      - name: Quality platform subscription product-eligibility harness
-        run: php tests/harness/quality-platform-subscription-product-eligibility-harness.php
-      - name: H12 PHP harness
-        run: php tests/harness/phase-9g-h12-php-harness.php
+
+      - name: Permanent PHP regression harnesses
+        shell: bash
+        run: |
+          set -euo pipefail
+          harnesses=(
+            tests/harness/sucheckout-identity-migration-harness.php
+            tests/harness/sucheckout-namespace-migration-harness.php
+            tests/harness/sucheckout-frontend-identity-harness.php
+            tests/harness/sucheckout-residue-harness.php
+            tests/harness/wordpress-org-runtime-harness.php
+            tests/harness/sucheckout-http-transport-harness.php
+            tests/harness/sucheckout-provenance-db-failure-harness.php
+            tests/harness/phase-0-release-identity-harness.php
+            tests/harness/phase-9i-preflight-harness.php
+            tests/harness/phase-9i-executor-harness.php
+            tests/harness/phase-9i-operations-harness.php
+            tests/harness/provider-payment-lifecycle-harness.php
+            tests/harness/provider-payment-amount-binding-harness.php
+            tests/harness/security-threat-model-harness.php
+            tests/harness/architecture-foundation-harness.php
+            tests/harness/architecture-runtime-bindings-harness.php
+            tests/harness/architecture-bootstrap-path-harness.php
+            tests/harness/architecture-provider-endpoints-harness.php
+            tests/harness/architecture-payment-method-availability-harness.php
+            tests/harness/architecture-gateway-settings-harness.php
+            tests/harness/architecture-subscription-presentation-harness.php
+            tests/harness/architecture-checkout-orchestration-harness.php
+            tests/harness/quality-platform-foundation-harness.php
+            tests/harness/quality-platform-static-analysis-harness.php
+            tests/harness/quality-platform-payment-concurrency-harness.php
+            tests/harness/quality-platform-authenticated-status-harness.php
+            tests/harness/quality-platform-payment-method-availability-harness.php
+            tests/harness/quality-platform-gateway-settings-harness.php
+            tests/harness/quality-platform-public-order-status-harness.php
+            tests/harness/quality-platform-release-identity-harness.php
+            tests/harness/quality-platform-migration-settings-harness.php
+            tests/harness/quality-platform-migration-bootstrap-harness.php
+            tests/harness/quality-platform-subscription-composition-harness.php
+            tests/harness/quality-platform-subscription-product-type-harness.php
+            tests/harness/quality-platform-migration-cli-harness.php
+            tests/harness/quality-platform-migration-admin-harness.php
+            tests/harness/quality-platform-subscription-presentation-harness.php
+            tests/harness/quality-platform-migration-core-harness.php
+            tests/harness/quality-platform-payment-runtime-harness.php
+            tests/harness/quality-platform-blocks-availability-harness.php
+            tests/harness/quality-platform-subscription-product-eligibility-harness.php
+            tests/harness/release-artifact-harness.php
+            tests/harness/wordpress-org-submission-harness.php
+            tests/harness/phase-9g-h12-php-harness.php
+          )
+          failures=0
+          for harness in "${harnesses[@]}"; do
+            echo "==> $harness"
+            if ! php "$harness"; then
+              failures=$((failures + 1))
+            fi
+          done
+          if [[ "$failures" -ne 0 ]]; then
+            echo "Permanent PHP regression harness failures: $failures"
+            exit 1
+          fi
+
       - name: Blocks harness syntax
         run: node --check tests/harness/phase-9g-h12-blocks-harness.js
+
       - name: H12 Blocks harness
         run: node tests/harness/phase-9g-h12-blocks-harness.js

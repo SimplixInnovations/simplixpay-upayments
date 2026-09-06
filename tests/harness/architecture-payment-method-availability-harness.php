@@ -3,7 +3,7 @@
  * A2 payment-method availability client/cache characterization harness.
  */
 
-use Simplix\Pay\UPayments\Provider\PaymentMethodAvailability;
+use Simplixi\SUCheckout\UPayments\Provider\PaymentMethodAvailability;
 
 $a2_state = array();
 
@@ -373,7 +373,7 @@ $service_source = file_get_contents(dirname(__DIR__, 2) . '/src/Provider/Payment
 $gateway_source = file_get_contents(dirname(__DIR__, 2) . '/UPayments.php');
 a2_assert(is_string($service_source), 'availability service source is readable');
 a2_assert(is_string($gateway_source), 'gateway source is readable');
-a2_assert(strpos($service_source, 'namespace Simplix\\Pay\\UPayments\\Provider;') !== false, 'availability service uses Simplix Provider namespace');
+a2_assert(strpos($service_source, 'namespace Simplixi\\SUCheckout\\UPayments\\Provider;') !== false, 'availability service uses SUCheckout Provider namespace');
 a2_assert(strpos($service_source, 'wc_add_notice') === false && strpos($service_source, 'wc_get_checkout_url') === false, 'provider/cache service has no WooCommerce presentation dependency');
 a2_assert(strpos($gateway_source, "require_once __DIR__ . '/src/Provider/PaymentMethodAvailability.php';") !== false, 'plugin bootstrap explicitly loads availability service');
 a2_assert(strpos($gateway_source, 'new PaymentMethodAvailability(') !== false, 'legacy gateway entry point delegates to availability service');

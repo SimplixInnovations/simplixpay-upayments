@@ -35,16 +35,18 @@ q8_assert(!q8_contains($phpstan, 'baseline'), 'Q8 remains baseline-free');
 q8_assert(!q8_contains($phpstan, 'ignoreErrors'), 'Q8 introduces no ignored analyzer errors');
 
 foreach (array(
-    "PRODUCT_NAME = 'SimplixPay for UPayments'",
-    "SHORT_NAME = 'SimplixPay UPayments'",
+    "PRODUCT_NAME = 'SUCheckout for UPayments'",
+    "SHORT_NAME = 'SUCheckout'",
     "VERSION = '0.1.0'",
-    "SLUG = 'simplixpay-upayments'",
-    "REPOSITORY = 'SimplixInnovations/simplixpay-upayments'",
+    "SLUG = 'sucheckout-upayments'",
+    "REPOSITORY = 'SimplixInnovations/sucheckout-upayments'",
     "UPDATE_CHANNEL = 'disabled'",
     "LEGACY_MAIN_FILE = 'UPayments.php'",
     "LEGACY_TEXT_DOMAIN = 'upayments'",
-    "TARGET_MAIN_FILE = 'simplixpay-upayments.php'",
-    "TARGET_TEXT_DOMAIN = 'simplixpay-upayments'",
+    "TARGET_MAIN_FILE = 'sucheckout-upayments.php'",
+    "TEXT_DOMAIN = 'sucheckout-upayments'",
+    "NAMESPACE_ROOT = 'Simplixi\\\\SUCheckout\\\\UPayments'",
+    "TARGET_TEXT_DOMAIN = 'sucheckout-upayments'",
 ) as $identity) {
     q8_assert(q8_contains($source, $identity), "release identity remains exact: {$identity}");
 }

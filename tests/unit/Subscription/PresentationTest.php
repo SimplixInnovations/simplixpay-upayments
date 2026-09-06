@@ -1,13 +1,13 @@
 <?php
 
-namespace Simplix\Pay\UPayments\Tests\Subscription;
+namespace Simplixi\SUCheckout\UPayments\Tests\Subscription;
 
 use PHPUnit\Framework\Attributes\PreserveGlobalState;
 use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 use ReflectionMethod;
-use Simplix\Pay\UPayments\Subscription\Presentation;
+use Simplixi\SUCheckout\UPayments\Subscription\Presentation;
 use UPayments\Subscription\Helpers\Utils;
 
 #[RunTestsInSeparateProcesses]

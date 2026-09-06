@@ -1,149 +1,89 @@
-# SimplixPay for UPayments — Release Engineering
-
-**Status:** TASKS 5, 7 & 8 DONE / VERIFIED; ENTERPRISE RELEASE CANDIDATE QUALIFIED
-**Canonical repository:** `SimplixInnovations/simplixpay-upayments`
-
-## First-stable package contract
-
-The first stable release candidate intentionally uses:
-
-- package root: `simplixpay-upayments/`;
-- main file: `UPayments.php`;
-- plugin basename: `simplixpay-upayments/UPayments.php`;
-- text domain: `upayments`;
-- version source: `Simplix\Pay\UPayments\Release\Identity::VERSION`;
-- current development artifact: `simplixpay-upayments-0.1.0.zip`.
-
-Task 7 proved that a direct physical rename to `simplixpay-upayments.php` does not preserve an already-active installation. The filename/text-domain targets remain future tested migrations, not cosmetic release cleanup.
-
-## Deterministic artifact contract — VERIFIED
-
-Task 5 / PR #50 established the permanent build system:
-
+# SUCheckout for UPayments — Release Engineering
+**Current status:** pre-release SUCheckout identity migration and exact-head re-certification
+**Current repository:** `SimplixInnovations/simplixpay-upayments`
+**Planned repository after owner/admin rename:** `SimplixInnovations/sucheckout-upayments`
+## Canonical package contract
+The approved first-party release identity is:
+- package root: `sucheckout-upayments/`;
+- physical main file: `UPayments.php`;
+- plugin basename: `sucheckout-upayments/UPayments.php`;
+- text domain: `sucheckout-upayments`;
+- namespace: `Simplixi\SUCheckout\UPayments`;
+- current development artifact: `sucheckout-upayments-0.1.0.zip`.
+The retained `UPayments.php` filename is deliberate. Earlier real-install qualification proved that directly renaming an already-active physical main file could strand WordPress's persisted plugin basename. The SUCheckout migration therefore changes the first-party package root, metadata, namespace and text domain while retaining that qualified bootstrap filename.
+## Deterministic artifact contract
+Build and verify the canonical artifact with:
 ```bash
 bash scripts/build-release.sh dist
-bash scripts/verify-release.sh dist/simplixpay-upayments-0.1.0.zip
+bash scripts/verify-release.sh dist/sucheckout-upayments-0.1.0.zip
 ```
-
 The builder/verifier contract requires:
-
 - distribution policy, path set and bytes from the exact Git `HEAD` tree/blobs;
 - no dependence on mutable worktree or staged-index state;
 - sorted archive paths;
-- fixed 1980-01-01 timestamps;
-- fixed regular-file mode 0644;
-- deterministic DEFLATE level 9 within the defined CI toolchain;
+- fixed archive timestamps and regular-file modes;
+- deterministic DEFLATE settings within the defined toolchain;
 - ZIP SHA-256 sidecar;
 - sorted per-file SHA-256 manifest;
 - explicit release-path allowlist;
-- exactly one canonical ZIP root;
-- independent PHP `ZipArchive` inspection;
-- exact path equality to the HEAD distribution set;
-- byte-for-byte equality to source blobs;
-- rejection of a self-consistent/rehashed ZIP whose bytes diverge from HEAD;
-- dirty worktree/staged-index reproduction of the same artifact.
-
-Development/control surfaces such as `.github/`, `tests/`, `docs/`, `scripts/`, `vendor/`, Composer development metadata, analysis configs and repository-agent/control files are excluded. Runtime plugin code/assets/templates and public license/readme/changelog/notice/security material are retained.
-
-## Packaged runtime certification — VERIFIED
-
-Release Artifact CI builds one exact artifact, independently verifies it, transfers it through immutable upload/download actions, verifies it again, then installs that ZIP into real WordPress/WooCommerce.
-
+- exactly one `sucheckout-upayments/` ZIP root;
+- exact source-byte verification;
+- rejection of a self-consistent/rehashed ZIP whose bytes diverge from Git HEAD;
+- reproducible byte-identical output from the same source commit.
+Development/control surfaces such as `.github/`, `tests/`, `docs/`, `scripts/`, `vendor/`, Composer development metadata and analysis configs are excluded.
+## Packaged runtime certification
+Release Artifact CI builds one exact candidate artifact, verifies it, transfers it through pinned upload/download actions, verifies it again, then installs that ZIP into real WordPress/WooCommerce.
 Permanent package smoke includes:
-
 - activation and Classic gateway registration;
-- support metadata and Woo feature declarations;
+- release support metadata and Woo feature declarations;
 - Blocks registration/availability;
 - real Woo order CRUD with legacy authoritative storage;
 - real Woo order CRUD with HPOS authoritative storage.
-
-Task 5 final PR head `27fb42b32051e4cd18db0c0231f782d3b4a8e932` passed Release Artifact #15 with the permanent release harness at **76 PASS / 0 FAIL**, Quality #533/H12, Compatibility #61 (16/16) and CodeQL. It squash-merged as `54b1fbcc280b92372bd93baf929d6a746cfd3959` and repeated required checks on `main`.
-
-## Existing-install upgrade / rollback — VERIFIED
-
-Task 7 / PR #52 permanently extends Release Artifact certification with two installed-package upgrade cells:
-
+The canonical packaged plugin is activated by WordPress slug `sucheckout-upayments` while the protected WooCommerce gateway/payment identity remains `upayments`.
+## Pre-release legacy-root migration certification
+Changing the package root from `simplixpay-upayments/` to `sucheckout-upayments/` changes the WordPress plugin basename. The release workflow therefore does not classify this as an invisible same-basename upgrade.
+Two real-runtime migration cells are permanent:
 - WordPress 7.1 / WooCommerce 11.1.0 / PHP 8.3;
 - WordPress 6.9.7 / WooCommerce 10.8.1 / PHP 8.3.
-
-Each cell begins from prior verified candidate `54b1fbcc280b92372bd93baf929d6a746cfd3959` as an already-active merchant installation and verifies:
-
-- force-upgrade to the current same-basename package keeps the plugin active;
-- merchant settings remain byte-for-byte unchanged;
-- historical payment method `upayments` remains intact;
-- provider order identity, customer-token and subscription metadata remain intact;
-- canonical `upay_process_subscriptions` timestamp remains unchanged;
-- historical `wc_upayments` callback remains registered;
-- explicit deactivate/reactivate is non-destructive;
-- rollback to the prior package and return to current are safe;
-- a duplicate-root package is a distinct inactive WordPress plugin identity.
-
-### Unsafe-rename negative proof
-
-The controlled candidate replaced only:
-
-`simplixpay-upayments/UPayments.php`
-
-with:
-
-`simplixpay-upayments/simplixpay-upayments.php`.
-
-In both upgrade cells WordPress retained the old basename in `active_plugins`, the target basename remained inactive and SimplixPay runtime did not load. The workflow permanently expects this negative result, restores the canonical package and re-verifies retained state.
-
-The first stable therefore retains `UPayments.php`. Restoration after the negative probe did not require explicit reactivation when the historical main file returned.
-
-### Text-domain decision
-
-The package still contains 70 explicit PHP translation calls bound to `upayments`. There is no certified coordinated WPML/String Translation migration. The first stable therefore also retains text domain `upayments`.
-
-Task 7 final head `dd550eb6af86262aabfd50479407903172327726` passed:
-
-- Release Artifact #26 including both upgrade cells;
-- Quality #544/H12;
-- Compatibility #72 (16/16);
-- CodeQL with no new alerts;
-- zero unresolved review threads.
-
-It squash-merged as `02b8d1c2851faabe020f23bbe84ebcca43a4827d`. Post-merge `main` passed Release Artifact #27, Quality #545, Compatibility #73 and CodeQL #349.
-
+Each cell:
+1. builds the prior certified pre-rebrand package from historical source `54b1fbcc280b92372bd93baf929d6a746cfd3959`;
+2. installs/activates it as `simplixpay-upayments/UPayments.php`;
+3. seeds protected merchant settings, historical payment/order/token/subscription metadata and cron state;
+4. deactivates the legacy plugin;
+5. installs and activates canonical `sucheckout-upayments/UPayments.php`;
+6. proves settings/data/provider IDs/callback/cron continuity;
+7. proves rollback to the legacy package is non-destructive;
+8. returns to canonical SUCheckout;
+9. removes the inactive legacy package;
+10. re-verifies canonical runtime and retained data.
+This is the release path being certified for any internal/pre-release installation that used the old root. It is not represented as a transparent WordPress auto-update across plugin basenames.
+## Protected compatibility contracts
+Release identity migration must preserve:
+- gateway/payment method ID `upayments`;
+- settings option `woocommerce_upayments_settings`;
+- callback route `wc_upayments`;
+- Blocks / Store API identity `upayments`;
+- historical `_upay_*` metadata;
+- provider order/token provenance identities;
+- cron hook `upay_process_subscriptions` and billing-attempt state;
+- historical order payment-method values.
+These are provider/data compatibility contracts, not first-party brand residue.
+## WordPress.org submission gate
+`.github/workflows/wordpress-org-submission-check.yml` is a permanent pre-submission gate. It:
+- checks out the exact candidate head;
+- runs the permanent submission harness;
+- builds the deterministic canonical ZIP;
+- verifies the ZIP before inspection;
+- unpacks `sucheckout-upayments/`;
+- runs the pinned official `WordPress/plugin-check-action` with slug `sucheckout-upayments` and `plugin_repo` categories.
+A green submission check is necessary evidence but does not publish anything.
+## Historical engineering evidence
+Historical Task 5 established the deterministic Git-HEAD-bound packaging model. Historical Task 7 established same-basename data continuity and, crucially, the negative proof that an active physical bootstrap rename is unsafe. Historical Task 8 closed the pre-rebrand enterprise release-candidate program.
+Those records remain historical truth. They are not rewritten to claim that the old `simplixpay-upayments` package/text-domain was already SUCheckout.
 ## Release evidence boundary
-
-CI artifacts are verification artifacts, not public releases. A stable GitHub Release asset, public tag, WordPress.org upload or version promotion must be a separate owner release action after Task 8 is DONE / VERIFIED.
-
-Do not publish an artifact from an unverified PR merge-ref, mutable worktree or unreviewed commit.
-
-## Task 8 release-candidate closeout — DONE / VERIFIED
-
-Final reviewed candidate `5a24944617f7ee482c381e5e899f687b77d81d09` passed:
-
-1. living documentation/governance reconciliation;
-2. zero open issues/PRs and zero unresolved valid review findings;
-3. Quality Gates #552 including Composer validation/audit, analyzers, distributed syntax and H12;
-4. Compatibility Certification #80 — **16/16**;
-5. Release Artifact #34 — deterministic build, packaged legacy/HPOS and current/floor upgrade cells;
-6. bounded Provider Sandbox #12;
-7. CodeQL/security analysis;
-8. the reserved final whole-plugin Codex review and its independently verified P2 remediation.
-
-The exact candidate squash-merged as `2ddb1790fead37c6055256847dc7c827e165af4a`. Canonical `main` then passed Quality #553, Compatibility #81, Release Artifact #35, Provider Sandbox #13 and CodeQL/main-security #358.
-
-PR #53 remains closed unmerged and explicitly superseded by Task 7 PR #52; its non-protected branch is not canonical release work.
-
-## External/manual release evidence
-
-The repository must not claim these are automated release blockers already solved:
-
-- production merchant payment completion / production credentials;
-- real wallet completion;
-- commercial WPML/WCML/multicurrency/RTL validation;
-- browser/device/theme/accessibility matrix;
-- representative-store performance/load thresholds;
-- external penetration-test/PCI/legal-compliance evidence;
-- live non-idempotent subscription auto-deduction;
-- provider webhook signature trust without a stable provider contract.
-
-Automatic Woo refunds and arbitrary marketplace multi-split remain unsupported unless separately designed/certified.
-
-## Publication rule
-
-**Task 8 DONE / VERIFIED means the repository has an enterprise-qualified release-candidate engineering state. It does not itself mean 1.0 has been publicly released.**
+CI artifacts are verification artifacts, not public releases. The following remain separate owner/admin actions after a verified merge and post-merge certification:
+- repository rename to `SimplixInnovations/sucheckout-upayments`;
+- public version/tag promotion;
+- GitHub Release creation;
+- WordPress.org submission/publication.
+Do not publish an artifact from a synthetic PR merge ref, mutable worktree, unreviewed commit or a source head whose mandatory gates are not all green.

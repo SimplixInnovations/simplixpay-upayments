@@ -3,7 +3,7 @@
 defined('WP_UNINSTALL_PLUGIN') || exit;
 
 /**
- * SimplixPay UPayments intentionally preserves merchant/payment data on
+ * SUCheckout for UPayments intentionally preserves merchant/payment data on
  * uninstall. Settings, historical compatibility options, subscription state,
  * payment/token identity, and legacy tables are not silently erased.
  *

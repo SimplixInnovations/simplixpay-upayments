@@ -54,7 +54,7 @@ q13_assert(q13_contains($source, 'MigrationBatch::MAX_LIMIT'), 'maximum batch li
 q13_assert(q13_contains($source, 'MigrationSettings::resolve()'), 'credentials remain sourced only from existing settings');
 q13_assert(q13_contains($source, 'MigrationSettings::redact($settings)'), 'CLI output keeps settings redaction');
 q13_assert(q13_contains($source, "self::cliError('output_encode_failed')"), 'encoding failure remains fail closed');
-q13_assert(q13_contains($source, "'SimplixPay UPayments migration: ' . \$reason"), 'CLI error prefix remains exact');
+q13_assert(q13_contains($source, "'SUCheckout for UPayments migration: ' . \$reason"), 'CLI error prefix remains exact');
 q13_assert(!q13_contains($source, "['api-key']"), 'CLI adapter exposes no API-key input');
 q13_assert(!q13_contains($source, "array_key_exists('api-key'"), 'CLI adapter never parses API-key input');
 foreach (array('wp_remote_', 'curl_', 'CURLOPT_', 'update_user_meta', 'process_payment', 'Scheduler', 'CycleClaim') as $forbidden) {
@@ -80,7 +80,7 @@ q13_assert(q13_contains($fixture, 'public static $errors'), 'CLI fixture records
 q13_assert(q13_contains($stubs, 'static function line('), 'analysis stub declares CLI output boundary');
 q13_assert(q13_contains($stubs, 'static function error('), 'analysis stub declares CLI error boundary');
 
-q13_assert(q13_git_blob_sha($q13_root . '/includes/Subscription/Cron/Scheduler.php') === '5251866d4df2d1326e7c09f0c8ec1d146c0bb325', 'protected Scheduler blob remains exact');
+q13_assert(q13_git_blob_sha($q13_root . '/includes/Subscription/Cron/Scheduler.php') === '348fa0a2183be5a9b5897d6bd355fbaf902d8948', 'protected Scheduler blob remains exact');
 q13_assert(q13_git_blob_sha($q13_root . '/includes/Subscription/Cron/CycleClaim.php') === 'c34d83e2d77cc65024fe663e4c378cecb2b17347', 'protected CycleClaim blob remains exact');
 
 q13_assert(q13_contains($workflow, 'quality-platform-migration-cli-harness.php'), 'Q13 harness is mandatory in Quality Gates');

@@ -153,7 +153,6 @@ class Scheduler
      *   $owner_token      — current owner token, or null until computed
      *   $claim_owned      — true once acquire()/reclaim_stale_claimed() has succeeded
      *   $dispatch_started — true once mark_dispatching() has succeeded
-     *   $ch               — open cURL handle, or null
      *
      * Claim cleanup policy:
      *   - Pre-dispatch failure  : release the CLAIMED row owned by THIS token.
@@ -179,33 +178,22 @@ class Scheduler
         $owner_token      = null;
         $claim_owned      = false;
         $dispatch_started = false;
-        $ch               = null;
 
-        // Helper: pre-dispatch safe cleanup. Closes cURL if open and
-        // releases the CLAIMED row IF we still own it. Use only before
-        // any POST may have been sent.
-        $release_pre_dispatch = function () use (&$ch, &$cycle_key, &$owner_token, &$claim_owned) {
-            if (is_resource($ch) || $ch instanceof \CurlHandle) {
-                @curl_close($ch);
-                $ch = null;
-            }
+        // Helper: pre-dispatch safe cleanup. Releases the CLAIMED row IF we
+        // still own it. Use only before any provider POST may have been sent.
+        $release_pre_dispatch = function () use (&$cycle_key, &$owner_token, &$claim_owned) {
             if ($claim_owned && null !== $cycle_key && null !== $owner_token) {
                 CycleClaim::release_claimed($cycle_key, $owner_token);
             }
             $claim_owned = false;
         };
 
-        // Helper: post-dispatch safe cleanup. Closes cURL if open and
-        // marks the cycle HELD. Never releases — leaving the row in
-        // `dispatching` is intentionally safe.
+        // Helper: post-dispatch safe cleanup. Marks the cycle HELD. Never
+        // releases — leaving the row in `dispatching` is intentionally safe.
         $hold_post_dispatch = function (
             ?int $curl_errno,
             ?int $http_status
-        ) use (&$ch, &$cycle_key, &$owner_token, &$claim_owned) {
-            if (is_resource($ch) || $ch instanceof \CurlHandle) {
-                @curl_close($ch);
-                $ch = null;
-            }
+        ) use (&$cycle_key, &$owner_token, &$claim_owned) {
             if ($claim_owned && null !== $cycle_key && null !== $owner_token) {
                 CycleClaim::mark_held($cycle_key, $owner_token, $curl_errno, $http_status);
             }
@@ -422,7 +410,7 @@ class Scheduler
                 return;
             }
 
-            $gateway->log(__('Auto-deduction request prepared.', $gateway->domain));
+            $gateway->log(__('Auto-deduction request prepared.', 'sucheckout-upayments'));
 
             // ---- Compute per-cycle identity and acquire claim ----
             $cycle_due_gmt = CycleClaim::format_gmt_datetime($next_billing_date);
@@ -464,53 +452,25 @@ class Scheduler
             }
             $claim_owned = true;
 
-            // ---- Pre-dispatch: prepare cURL but DO NOT call curl_exec() yet ----
-            $ch = curl_init();
-            if ($ch === false) {
-                $release_pre_dispatch();
-                $logger->info(
-                    'curl_init failed.',
-                    $context + ['order_id' => $order->get_id()]
-                );
-                return;
-            }
-
-            // ---- BLOCKER 5: cURL configuration in a single batch + verify ----
-            $curl_options = [
-                CURLOPT_URL            => $gateway->getAPIUrl('auto-deduct'),
-                CURLOPT_POST           => true,
-                CURLOPT_POSTFIELDS     => $params,
-                CURLOPT_RETURNTRANSFER => true,
-                CURLOPT_FOLLOWLOCATION => false,
-                CURLOPT_SSL_VERIFYPEER => true,
-                CURLOPT_SSL_VERIFYHOST => 2,
-                CURLOPT_CONNECTTIMEOUT => 5,
-                CURLOPT_TIMEOUT        => 15,
-                CURLOPT_USERAGENT      => $gateway->getUserAgent(),
-                CURLOPT_HTTPHEADER     => [
-                    'Authorization: Bearer ' . $gateway->apiKey,
-                    'Accept: application/json',
-                    'Content-Type: application/json',
+            // ---- Pre-dispatch: fully prepare the WordPress HTTP request ----
+            // This is pure local construction. No provider request occurs until
+            // wp_remote_request() below, after the durable dispatching marker.
+            $request_url = $gateway->getAPIUrl('auto-deduct');
+            $request_args = [
+                'method'      => 'POST',
+                'timeout'     => 15,
+                'redirection' => 0,
+                'sslverify'   => true,
+                'user-agent'  => $gateway->getUserAgent(),
+                'headers'     => [
+                    'Authorization' => 'Bearer ' . $gateway->apiKey,
+                    'Accept'        => 'application/json',
+                    'Content-Type'  => 'application/json',
                 ],
+                'body'        => $params,
             ];
 
-            $curl_config_ok = true;
-            foreach ($curl_options as $option => $value) {
-                if (!@curl_setopt($ch, $option, $value)) {
-                    $curl_config_ok = false;
-                    break;
-                }
-            }
-            if (!$curl_config_ok) {
-                $release_pre_dispatch();
-                $logger->info(
-                    'curl_setopt configuration failed.',
-                    $context + ['order_id' => $order->get_id()]
-                );
-                return;
-            }
-
-            // ---- Atomic claimed → dispatching transition BEFORE curl_exec() ----
+            // ---- Atomic claimed → dispatching transition BEFORE provider POST ----
             // If this fails, no POST was sent. Release and continue.
             $dispatching = CycleClaim::mark_dispatching($cycle_key, $owner_token);
             if (!$dispatching) {
@@ -526,32 +486,26 @@ class Scheduler
             }
             $dispatch_started = true;
 
-            // ---- BLOCKER 3: NO write between mark_dispatching() and curl_exec() ----
-            // The journal is the new authoritative attempt record. Legacy
-            // metadata writes (_upay_last_attempt_at, _upay_retry_count,
-            // _upay_last_failed_reason) are diagnostic/backward-compatibility
-            // only and must NOT be written immediately before every new
-            // dispatch — a clean pre-dispatch crash must not be mistaken for
-            // a historical ambiguous charge.
-            //
-            // There must be NO:
-            //   - WC_Order save;
-            //   - metadata mutation;
-            //   - claim-journal mutation other than the
-            //     claimed→dispatching transition above;
-            //   - logging call that can reasonably throw;
-            //   - external API call
-            // between successful mark_dispatching() and curl_exec().
+            // ---- BLOCKER 3: NO write between mark_dispatching() and dispatch ----
+            // The journal is the authoritative attempt record. There must be
+            // no WC_Order save, metadata mutation, claim-journal mutation,
+            // logging call, or external API call between the successful
+            // claimed→dispatching transition above and this provider request.
 
             // ---- Dispatch (POST may have reached UPayments) ----
-            $response   = curl_exec($ch);
-            $curl_errno = curl_errno($ch);
-            // Raw curl_error is intentionally not read, persisted, or
-            // logged. Structured curl_errno and HTTP status are used for
-            // local diagnostics only.
-            $http_code  = (int) curl_getinfo($ch, CURLINFO_HTTP_CODE);
-            @curl_close($ch);
-            $ch = null;
+            $http_response = wp_remote_request($request_url, $request_args);
+            if (is_wp_error($http_response)) {
+                $response = false;
+                // Preserve the historical diagnostic field shape. A nonzero
+                // value means transport failure; raw error text is never
+                // persisted or logged.
+                $curl_errno = 1;
+                $http_code = 0;
+            } else {
+                $response = wp_remote_retrieve_body($http_response);
+                $curl_errno = 0;
+                $http_code = (int) wp_remote_retrieve_response_code($http_response);
+            }
 
             $logger->info(
                 'Auto-deduction HTTP response received.',
@@ -610,7 +564,7 @@ class Scheduler
      *
      * Any failure path that has crossed the dispatching boundary must
      * result in `held` (never a release). Pre-dispatch failures are not
-     * possible here; this runs only after curl_exec() has returned.
+     * possible here; this runs only after the provider HTTP request returns.
      */
     protected static function handle_post_dispatch(
         WC_Order $order,
@@ -632,7 +586,7 @@ class Scheduler
         if ($response === false || $response === '' || $curl_errno !== 0) {
             CycleClaim::mark_held($cycle_key, $owner_token, $curl_errno, $http_code);
             $logger->info(
-                'cURL transport failure; cycle held.',
+                'HTTP transport failure; cycle held.',
                 $context + [
                     'order_id' => $order->get_id(),
                     'cycle'    => substr($cycle_key, 0, 12),
@@ -895,7 +849,11 @@ class Scheduler
         $renewal_order->payment_complete($payment_id);
         $renewal_order->update_status(
             'completed',
-            __('Subscription renewal payment completed via UPayments Auto Deduction. PaymentID: ' . $payment_id, $gateway->domain)
+            sprintf(
+                /* translators: %s: UPayments payment ID. */
+                __('Subscription renewal payment completed via UPayments Auto Deduction. PaymentID: %s', 'sucheckout-upayments'),
+                $payment_id
+            )
         );
         $renewal_order->save();
 

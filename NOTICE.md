@@ -1,6 +1,6 @@
 # Notices and Provenance
 
-**SimplixPay for UPayments** is independently engineered and maintained by **Simplix Innovations**.
+**SUCheckout for UPayments** is independently engineered and maintained by **Simplix Innovations**.
 
 ## Source lineage
 
@@ -14,13 +14,14 @@ The complete Simplix pre-product fork/hardening history is preserved separately 
 
 The standalone canonical product repository is:
 
-- https://github.com/SimplixInnovations/simplixpay-upayments
+- current GitHub location pending owner/admin rename: https://github.com/SimplixInnovations/simplixpay-upayments
+- target canonical repository: https://github.com/SimplixInnovations/sucheckout-upayments
 
 Copyright in upstream portions remains with the respective upstream copyright holders. Simplix Innovations claims copyright only in its own original modifications and documentation to the extent applicable.
 
 ## Trademarks and independence
 
-UPayments and related names, logos and trademarks belong to their respective owners. SimplixPay for UPayments does not imply UPayments sponsorship, endorsement or official maintenance status unless explicitly announced by the relevant parties.
+UPayments and related names, logos and trademarks belong to their respective owners. SUCheckout for UPayments does not imply UPayments sponsorship, endorsement or official maintenance status unless explicitly announced by the relevant parties.
 
 ## License
 

@@ -21,7 +21,7 @@ import zipfile
 
 root = pathlib.Path(os.environ["ROOT"])
 zip_path = pathlib.Path(os.environ["ZIP"])
-slug = "simplixpay-upayments"
+slug = "sucheckout-upayments"
 
 identity = subprocess.check_output(
     ["git", "-C", str(root), "show", "HEAD:src/Release/Identity.php"],
@@ -84,7 +84,7 @@ with zipfile.ZipFile(zip_path, "r") as archive:
 
     allowed_exact = {
         "UPayments.php", "index.php", "uninstall.php", "LICENSE",
-        "README.md", "CHANGELOG.md", "NOTICE.md", "SECURITY.md",
+        "readme.txt", "README.md", "CHANGELOG.md", "NOTICE.md", "SECURITY.md",
     }
     allowed_prefixes = ("src/", "includes/", "assets/", "templates/")
     for rel in rel_names:
@@ -147,7 +147,7 @@ with zipfile.ZipFile(zip_path, "r") as archive:
 
     required = {
         "UPayments.php", "index.php", "uninstall.php", "LICENSE",
-        "README.md", "CHANGELOG.md", "NOTICE.md", "SECURITY.md",
+        "readme.txt", "README.md", "CHANGELOG.md", "NOTICE.md", "SECURITY.md",
         "src/Release/Identity.php",
         "includes/class-wc-gateway-upayments-blocks.php",
     }
@@ -160,12 +160,12 @@ with zipfile.ZipFile(zip_path, "r") as archive:
 
     plugin_source = archive.read(prefix + "UPayments.php").decode("utf-8")
     identity_source = archive.read(prefix + "src/Release/Identity.php").decode("utf-8")
-    if "Plugin Name: SimplixPay for UPayments" not in plugin_source:
+    if "Plugin Name: SUCheckout for UPayments" not in plugin_source:
         raise SystemExit("Packaged plugin name is invalid")
     if f"Version: {version}" not in plugin_source:
         raise SystemExit("Packaged plugin version mismatches canonical identity")
-    if "Text Domain: upayments" not in plugin_source:
-        raise SystemExit("Transitional text domain changed during packaging")
+    if "Text Domain: sucheckout-upayments" not in plugin_source:
+        raise SystemExit("Canonical SUCheckout text domain changed during packaging")
     if "public const LEGACY_MAIN_FILE = 'UPayments.php';" not in identity_source:
         raise SystemExit("Transitional main-file identity changed during packaging")
 

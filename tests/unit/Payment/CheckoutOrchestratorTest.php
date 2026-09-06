@@ -1,6 +1,6 @@
 <?php
 
-namespace Simplix\Pay\UPayments\Payment;
+namespace Simplixi\SUCheckout\UPayments\Payment;
 
 function time() {
     return isset($GLOBALS['simplixpay_test_payment_runtime_time'])
@@ -17,12 +17,12 @@ function wp_generate_uuid4() {
     return sprintf('00000000-0000-4000-8000-%012x', $next);
 }
 
-namespace Simplix\Pay\UPayments\Tests\Payment;
+namespace Simplixi\SUCheckout\UPayments\Tests\Payment;
 
 use PHPUnit\Framework\Attributes\PreserveGlobalState;
 use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
 use PHPUnit\Framework\TestCase;
-use Simplix\Pay\UPayments\Payment\CheckoutOrchestrator;
+use Simplixi\SUCheckout\UPayments\Payment\CheckoutOrchestrator;
 
 final class CheckoutOrchestratorGateway {
     public $domain = 'upayments';

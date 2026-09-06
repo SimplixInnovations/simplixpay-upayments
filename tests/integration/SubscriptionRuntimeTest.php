@@ -5,8 +5,8 @@
 
 require_once __DIR__ . '/bootstrap.php';
 
-use Simplix\Pay\UPayments\Payment\CheckoutOrchestrator;
-use Simplix\Pay\UPayments\Subscription\Presentation;
+use Simplixi\SUCheckout\UPayments\Payment\CheckoutOrchestrator;
+use Simplixi\SUCheckout\UPayments\Subscription\Presentation;
 use UPayments\Token\CustomerTokenIdentity;
 
 simplixpay_cert_assert(class_exists(CheckoutOrchestrator::class), 'checkout orchestrator is loaded for subscription certification');

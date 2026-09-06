@@ -119,8 +119,10 @@ function site_url($path = '', $scheme = null) {
     return 'https://example.test' . (string) $path;
 }
 
-function wp_parse_url($url, $component = -1) {
-    return parse_url((string) $url, $component);
+if (!function_exists('wp_parse_url')) {
+    function wp_parse_url($url, $component = -1) {
+        return parse_url((string) $url, $component);
+    }
 }
 
 simplixpay_test_reset_payment_runtime();

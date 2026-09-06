@@ -174,20 +174,20 @@ if ('seed' === $phase) {
     update_option($order_key, $order->get_id(), false);
 
     simplixpay_cert_assert(
-        class_exists('Simplix\\Pay\\UPayments\\Migration\\MigrationCliCommand'),
+        class_exists('Simplixi\\SUCheckout\\UPayments\\Migration\\MigrationCliCommand'),
         'migration CLI module boots in WP-CLI context'
     );
     simplixpay_cert_assert(
-        !class_exists('Simplix\\Pay\\UPayments\\Migration\\MigrationAdmin'),
+        !class_exists('Simplixi\\SUCheckout\\UPayments\\Migration\\MigrationAdmin'),
         'migration admin module does not boot in non-admin WP-CLI context'
     );
 
     ob_start();
     set_current_screen('dashboard');
-    \Simplix\Pay\UPayments\Migration\MigrationBootstrap::boot();
+    \Simplixi\SUCheckout\UPayments\Migration\MigrationBootstrap::boot();
     $boot_output = ob_get_clean();
     simplixpay_cert_assert(
-        class_exists('Simplix\\Pay\\UPayments\\Migration\\MigrationAdmin'),
+        class_exists('Simplixi\\SUCheckout\\UPayments\\Migration\\MigrationAdmin'),
         'migration admin module boots only after an explicit admin context exists'
     );
     simplixpay_cert_assert(

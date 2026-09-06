@@ -1,5 +1,5 @@
 <?php
-namespace Simplix\Pay\UPayments\Migration;
+namespace Simplixi\SUCheckout\UPayments\Migration;
 
 defined('ABSPATH') || exit;
 
@@ -13,8 +13,8 @@ final class MigrationAdmin {
     public static function register() {
         add_submenu_page(
             'woocommerce',
-            'SimplixPay UPayments Migration',
-            'SimplixPay Migration',
+            'SUCheckout for UPayments Migration',
+            'SUCheckout Migration',
             self::CAPABILITY,
             self::PAGE_SLUG,
             array(__CLASS__, 'render')
@@ -23,7 +23,7 @@ final class MigrationAdmin {
 
     public static function render() {
         if (!current_user_can(self::CAPABILITY)) {
-            wp_die(esc_html__('You do not have permission to run SimplixPay migration tools.', 'upayments'));
+            wp_die(esc_html__('You do not have permission to run SUCheckout migration tools.', 'sucheckout-upayments'));
         }
 
         $result = null;
@@ -104,9 +104,9 @@ final class MigrationAdmin {
         }
 
         echo '<div class="wrap">';
-        echo '<h1>' . esc_html__('SimplixPay UPayments — Historical Identity Migration', 'upayments') . '</h1>';
-        echo '<p>' . esc_html__('Run a bounded identity-nonmutating preflight first. Dry-run records only redacted operations-result checkpoints; execute mode creates only verified legacy provenance. Neither path contacts UPayments.', 'upayments') . '</p>';
-        echo '<p><strong>' . esc_html__('Credentials are read from the existing UPayments gateway settings and are never displayed or submitted by this form.', 'upayments') . '</strong></p>';
+        echo '<h1>' . esc_html__('SUCheckout for UPayments — Historical Identity Migration', 'sucheckout-upayments') . '</h1>';
+        echo '<p>' . esc_html__('Run a bounded identity-nonmutating preflight first. Dry-run records only redacted operations-result checkpoints; execute mode creates only verified legacy provenance. Neither path contacts UPayments.', 'sucheckout-upayments') . '</p>';
+        echo '<p><strong>' . esc_html__('Credentials are read from the existing UPayments gateway settings and are never displayed or submitted by this form.', 'sucheckout-upayments') . '</strong></p>';
 
         if ($error !== null) {
             echo '<div class="notice notice-error"><p>' . esc_html('Migration request rejected: ' . $error) . '</p></div>';
@@ -114,7 +114,7 @@ final class MigrationAdmin {
         if (is_array($result)) {
             $encoded = function_exists('wp_json_encode') ? wp_json_encode($result, JSON_PRETTY_PRINT) : json_encode($result, JSON_PRETTY_PRINT);
             if (is_string($encoded)) {
-                echo '<h2>' . esc_html__('Result', 'upayments') . '</h2>';
+                echo '<h2>' . esc_html__('Result', 'sucheckout-upayments') . '</h2>';
                 echo '<pre style="max-width:100%;overflow:auto;background:#fff;padding:12px;border:1px solid #ccd0d4">' . esc_html($encoded) . '</pre>';
             }
         }
@@ -122,24 +122,24 @@ final class MigrationAdmin {
         echo '<form method="post">';
         wp_nonce_field(self::NONCE_ACTION, self::NONCE_FIELD);
         echo '<table class="form-table" role="presentation"><tbody>';
-        echo '<tr><th scope="row"><label for="simplixpay-user-ids">' . esc_html__('User IDs', 'upayments') . '</label></th><td>';
-        echo '<textarea id="simplixpay-user-ids" name="user_ids" rows="5" cols="60" class="large-text code" required>' . esc_textarea($form['user_ids']) . '</textarea>';
-        echo '<p class="description">' . esc_html__('Comma or whitespace separated positive customer IDs. Maximum 500 IDs per submitted list.', 'upayments') . '</p></td></tr>';
-        echo '<tr><th scope="row"><label for="simplixpay-offset">' . esc_html__('Explicit offset', 'upayments') . '</label></th><td>';
-        echo '<input id="simplixpay-offset" name="offset" type="number" min="0" step="1" value="' . esc_attr($form['offset']) . '">';
-        echo '<p class="description">' . esc_html__('Use an explicit offset to deliberately re-evaluate a known position. Leave at 0 when using durable resume.', 'upayments') . '</p></td></tr>';
-        echo '<tr><th scope="row">' . esc_html__('Durable resume', 'upayments') . '</th><td>';
-        echo '<label><input type="checkbox" name="resume" value="yes" ' . checked($form['resume'], 'yes', false) . '> ' . esc_html__('Resume from the first user without a matching durable operations-result checkpoint.', 'upayments') . '</label>';
-        echo '<p class="description">' . esc_html__('Resume is credential/mode/list scoped and cannot be combined with a nonzero explicit offset.', 'upayments') . '</p></td></tr>';
-        echo '<tr><th scope="row"><label for="simplixpay-limit">' . esc_html__('Batch limit', 'upayments') . '</label></th><td>';
-        echo '<input id="simplixpay-limit" name="limit" type="number" min="1" max="' . esc_attr((string) MigrationBatch::MAX_LIMIT) . '" step="1" value="' . esc_attr($form['limit']) . '"></td></tr>';
-        echo '<tr><th scope="row">' . esc_html__('Mode', 'upayments') . '</th><td>';
-        echo '<label><input type="radio" name="migration_action" value="preflight" ' . checked($form['migration_action'], 'preflight', false) . '> ' . esc_html__('Dry-run preflight + result checkpoint', 'upayments') . '</label><br>';
-        echo '<label><input type="radio" name="migration_action" value="execute" ' . checked($form['migration_action'], 'execute', false) . '> ' . esc_html__('Execute verified migrations', 'upayments') . '</label><br>';
-        echo '<label><input type="checkbox" name="confirm_execute" value="yes"> ' . esc_html__('I explicitly confirm execute mode. This is required only when Execute is selected.', 'upayments') . '</label>';
+        echo '<tr><th scope="row"><label for="sucheckout-user-ids">' . esc_html__('User IDs', 'sucheckout-upayments') . '</label></th><td>';
+        echo '<textarea id="sucheckout-user-ids" name="user_ids" rows="5" cols="60" class="large-text code" required>' . esc_textarea($form['user_ids']) . '</textarea>';
+        echo '<p class="description">' . esc_html__('Comma or whitespace separated positive customer IDs. Maximum 500 IDs per submitted list.', 'sucheckout-upayments') . '</p></td></tr>';
+        echo '<tr><th scope="row"><label for="sucheckout-offset">' . esc_html__('Explicit offset', 'sucheckout-upayments') . '</label></th><td>';
+        echo '<input id="sucheckout-offset" name="offset" type="number" min="0" step="1" value="' . esc_attr($form['offset']) . '">';
+        echo '<p class="description">' . esc_html__('Use an explicit offset to deliberately re-evaluate a known position. Leave at 0 when using durable resume.', 'sucheckout-upayments') . '</p></td></tr>';
+        echo '<tr><th scope="row">' . esc_html__('Durable resume', 'sucheckout-upayments') . '</th><td>';
+        echo '<label><input type="checkbox" name="resume" value="yes" ' . checked($form['resume'], 'yes', false) . '> ' . esc_html__('Resume from the first user without a matching durable operations-result checkpoint.', 'sucheckout-upayments') . '</label>';
+        echo '<p class="description">' . esc_html__('Resume is credential/mode/list scoped and cannot be combined with a nonzero explicit offset.', 'sucheckout-upayments') . '</p></td></tr>';
+        echo '<tr><th scope="row"><label for="sucheckout-limit">' . esc_html__('Batch limit', 'sucheckout-upayments') . '</label></th><td>';
+        echo '<input id="sucheckout-limit" name="limit" type="number" min="1" max="' . esc_attr((string) MigrationBatch::MAX_LIMIT) . '" step="1" value="' . esc_attr($form['limit']) . '"></td></tr>';
+        echo '<tr><th scope="row">' . esc_html__('Mode', 'sucheckout-upayments') . '</th><td>';
+        echo '<label><input type="radio" name="migration_action" value="preflight" ' . checked($form['migration_action'], 'preflight', false) . '> ' . esc_html__('Dry-run preflight + result checkpoint', 'sucheckout-upayments') . '</label><br>';
+        echo '<label><input type="radio" name="migration_action" value="execute" ' . checked($form['migration_action'], 'execute', false) . '> ' . esc_html__('Execute verified migrations', 'sucheckout-upayments') . '</label><br>';
+        echo '<label><input type="checkbox" name="confirm_execute" value="yes"> ' . esc_html__('I explicitly confirm execute mode. This is required only when Execute is selected.', 'sucheckout-upayments') . '</label>';
         echo '</td></tr>';
         echo '</tbody></table>';
-        submit_button(__('Run migration batch', 'upayments'));
+        submit_button(__('Run migration batch', 'sucheckout-upayments'));
         echo '</form></div>';
     }
 

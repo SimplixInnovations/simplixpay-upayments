@@ -1,6 +1,6 @@
 <?php
 
-namespace Simplix\Pay\UPayments\Payment {
+namespace Simplixi\SUCheckout\UPayments\Payment {
     \define('ABSPATH', __DIR__ . '/');
 
     $GLOBALS['splx_state'] = array();
@@ -73,6 +73,7 @@ namespace Simplix\Pay\UPayments\Payment {
         return true;
     }
     function wp_salt($scheme = 'auth') { return 'unit-test-wordpress-salt'; }
+    function wp_parse_url($url, $component = -1) { return \parse_url((string) $url, $component); }
 
     function wp_remote_get($url, $args = array()) {
         state()['remote_get_calls']++;
@@ -237,7 +238,7 @@ namespace Simplix\Pay\UPayments\Payment {
 }
 
 namespace {
-    function WC() { return new \Simplix\Pay\UPayments\Payment\FakeWooRuntime(); }
+    function WC() { return new \Simplixi\SUCheckout\UPayments\Payment\FakeWooRuntime(); }
     function wp_cache_delete($key, $group = '') { return true; }
     function wc_get_price_decimals() { return 3; }
 
@@ -247,13 +248,13 @@ namespace {
     require_once __DIR__ . '/../../src/Payment/StatusVerifier.php';
     require_once __DIR__ . '/../../src/Payment/PaymentLifecycle.php';
 
-    use Simplix\Pay\UPayments\Payment\FakeGateway;
-    use Simplix\Pay\UPayments\Payment\FakeOrder;
-    use Simplix\Pay\UPayments\Payment\OrderLock;
-    use Simplix\Pay\UPayments\Payment\PaymentLifecycle;
-    use Simplix\Pay\UPayments\Payment\ProviderResult;
-    use Simplix\Pay\UPayments\Payment\StatusRateGate;
-    use Simplix\Pay\UPayments\Payment\StatusVerifier;
+    use Simplixi\SUCheckout\UPayments\Payment\FakeGateway;
+    use Simplixi\SUCheckout\UPayments\Payment\FakeOrder;
+    use Simplixi\SUCheckout\UPayments\Payment\OrderLock;
+    use Simplixi\SUCheckout\UPayments\Payment\PaymentLifecycle;
+    use Simplixi\SUCheckout\UPayments\Payment\ProviderResult;
+    use Simplixi\SUCheckout\UPayments\Payment\StatusRateGate;
+    use Simplixi\SUCheckout\UPayments\Payment\StatusVerifier;
 
     $pass = 0;
     $fail = 0;
@@ -267,11 +268,11 @@ namespace {
         ok($actual === $expected, $description . ' expected=' . var_export($expected, true) . ' got=' . var_export($actual, true));
     }
     function reset_fixture($id = 501) {
-        \Simplix\Pay\UPayments\Payment\reset_state();
+        \Simplixi\SUCheckout\UPayments\Payment\reset_state();
         $order = new FakeOrder($id, 'merchant-order-' . $id);
         $gateway = new FakeGateway();
-        \Simplix\Pay\UPayments\Payment\state()['orders'][$id] = $order;
-        \Simplix\Pay\UPayments\Payment\state()['gateway'] = $gateway;
+        \Simplixi\SUCheckout\UPayments\Payment\state()['orders'][$id] = $order;
+        \Simplixi\SUCheckout\UPayments\Payment\state()['gateway'] = $gateway;
         return array($gateway, $order);
     }
     function transaction_for(FakeOrder $order, $result = 'CAPTURED', $track = 'track-abc', $payment_id = 'pay-123') {
@@ -288,7 +289,7 @@ namespace {
         return $tx;
     }
     function set_provider_transaction(array $tx, $code = 201) {
-        \Simplix\Pay\UPayments\Payment\state()['remote_response'] = array(
+        \Simplixi\SUCheckout\UPayments\Payment\state()['remote_response'] = array(
             'code' => $code,
             'body' => json_encode(array('status' => true, 'data' => array('transaction' => $tx))),
         );
@@ -373,8 +374,8 @@ namespace {
     $gateway->host = 'attacker.example'; set_provider_transaction(transaction_for($order));
     $r = StatusVerifier::verify($gateway, $order, 'track-abc');
     same($r['reason'], 'status_url_invalid', 'non-UPayments host rejected');
-    same(\Simplix\Pay\UPayments\Payment\state()['remote_get_calls'], 0, 'invalid host makes zero HTTP calls');
-    same(count(\Simplix\Pay\UPayments\Payment\state()['options']), 0, 'invalid host consumes zero rate slots');
+    same(\Simplixi\SUCheckout\UPayments\Payment\state()['remote_get_calls'], 0, 'invalid host makes zero HTTP calls');
+    same(count(\Simplixi\SUCheckout\UPayments\Payment\state()['options']), 0, 'invalid host consumes zero rate slots');
     list($gateway, $order) = reset_fixture(521);
     $gateway->url_suffix = '?leak=1'; set_provider_transaction(transaction_for($order));
     same(StatusVerifier::verify($gateway, $order, 'track-abc')['reason'], 'status_url_invalid', 'query-bearing status URL rejected');
@@ -396,11 +397,11 @@ namespace {
     same($order->get_meta('UPayments_PaymentID'), 'pay-123', 'legacy payment ID retained');
     same($order->get_meta('UPayments_TrackID'), 'track-abc', 'legacy track retained');
     same($order->get_meta('_simplixpay_upayments_status_track_v1'), 'track-abc', 'trusted cursor retained');
-    $calls = \Simplix\Pay\UPayments\Payment\state()['remote_get_calls'];
+    $calls = \Simplixi\SUCheckout\UPayments\Payment\state()['remote_get_calls'];
     $out2 = PaymentLifecycle::process_order_status($gateway, $order, 'track-abc', 'webhook');
     same($out2['state'], 'captured', 'duplicate CAPTURED sees verified state');
     same($order->payment_complete_calls, 1, 'duplicate does not re-fire payment_complete');
-    same(\Simplix\Pay\UPayments\Payment\state()['remote_get_calls'], $calls, 'duplicate makes zero provider calls');
+    same(\Simplixi\SUCheckout\UPayments\Payment\state()['remote_get_calls'], $calls, 'duplicate makes zero provider calls');
 
     // Merchant force-complete still uses Woo filter.
     list($gateway, $order) = reset_fixture(531); $gateway->force_complete = true;
@@ -438,14 +439,14 @@ namespace {
     same($out['state'], 'pending', 'PENDING remains unresolved');
     same($order->get_status(), 'pending', 'PENDING stays unpaid');
     same((int) $order->get_meta('_simplixpay_upayments_reconcile_attempt_v1'), 1, 'PENDING schedules first reconciliation');
-    ok(\Simplix\Pay\UPayments\Payment\wp_next_scheduled('simplixpay_upayments_reconcile_order', array(542)) !== false, 'PENDING event scheduled');
-    \Simplix\Pay\UPayments\Payment\clear_scheduled_for_order(542);
+    ok(\Simplixi\SUCheckout\UPayments\Payment\wp_next_scheduled('simplixpay_upayments_reconcile_order', array(542)) !== false, 'PENDING event scheduled');
+    \Simplixi\SUCheckout\UPayments\Payment\clear_scheduled_for_order(542);
     set_provider_transaction(transaction_for($order, 'CAPTURED', 'track-pending', 'pay-final'));
     PaymentLifecycle::reconcile_order(542);
     same($order->get_status(), 'processing', 'reconciliation CAPTURED reaches paid state');
     same($order->get_transaction_id(), 'pay-final', 'reconciliation stores final payment ID');
     same((string) $order->get_meta('_upay_verified_capture'), '1', 'reconciliation sets verified capture');
-    ok(\Simplix\Pay\UPayments\Payment\wp_next_scheduled('simplixpay_upayments_reconcile_order', array(542)) === false, 'terminal capture clears reconciliation');
+    ok(\Simplixi\SUCheckout\UPayments\Payment\wp_next_scheduled('simplixpay_upayments_reconcile_order', array(542)) === false, 'terminal capture clears reconciliation');
 
     // NULL result is persisted as non-terminal evidence and reconciled.
     list($gateway, $order) = reset_fixture(543); set_provider_transaction(transaction_for($order, null, 'track-null', null));
@@ -465,19 +466,19 @@ namespace {
     set_provider_transaction(transaction_for($order));
     $out = PaymentLifecycle::process_order_status($gateway, $order, 'track-abc', 'webhook');
     same($out['reason'], 'refunded', 'refunded preflight result');
-    same(\Simplix\Pay\UPayments\Payment\state()['remote_get_calls'], 0, 'refunded order makes zero provider calls');
+    same(\Simplixi\SUCheckout\UPayments\Payment\state()['remote_get_calls'], 0, 'refunded order makes zero provider calls');
 
     // Initial transient status failure survives via separate unverified cursor.
     list($gateway, $order) = reset_fixture(546);
     ok(private_call(PaymentLifecycle::class, 'remember_unverified_cursor', array($order, 'track-transient', $order->get_meta('UPayments_order_id'))), 'locally preflighted callback cursor can be remembered');
-    \Simplix\Pay\UPayments\Payment\state()['remote_response'] = array('code' => 500, 'body' => '');
+    \Simplixi\SUCheckout\UPayments\Payment\state()['remote_response'] = array('code' => 500, 'body' => '');
     $out = PaymentLifecycle::process_order_status($gateway, $order, 'track-transient', 'webhook');
     same($out['reason'], 'unexpected_http_500', 'initial transient status failure remains unpaid');
     same($order->get_meta('_simplixpay_upayments_unverified_track_v1'), 'track-transient', 'unverified cursor retained for retry');
     same($order->get_meta('_simplixpay_upayments_unverified_requested_v1'), $order->get_meta('UPayments_order_id'), 'unverified cursor is paired to current provider order identity');
     same((int) $order->get_meta('_simplixpay_upayments_reconcile_attempt_v1'), 1, 'transient failure schedules reconciliation');
-    ok(\Simplix\Pay\UPayments\Payment\wp_next_scheduled('simplixpay_upayments_reconcile_order', array(546)) !== false, 'transient failure has scheduled retry');
-    \Simplix\Pay\UPayments\Payment\clear_scheduled_for_order(546);
+    ok(\Simplixi\SUCheckout\UPayments\Payment\wp_next_scheduled('simplixpay_upayments_reconcile_order', array(546)) !== false, 'transient failure has scheduled retry');
+    \Simplixi\SUCheckout\UPayments\Payment\clear_scheduled_for_order(546);
     set_provider_transaction(transaction_for($order, 'CAPTURED', 'track-transient', 'pay-recovered'));
     PaymentLifecycle::reconcile_order(546);
     same($order->get_status(), 'processing', 'unverified cursor reconciliation can recover capture');
@@ -494,7 +495,7 @@ namespace {
     $out = PaymentLifecycle::process_order_status($gateway, $order, 'track-bad', 'webhook');
     same($out['reason'], 'binding_reference', 'authenticated binding mismatch rejected');
     same($order->get_meta('_simplixpay_upayments_unverified_track_v1'), '', 'binding mismatch clears unverified cursor');
-    ok(\Simplix\Pay\UPayments\Payment\wp_next_scheduled('simplixpay_upayments_reconcile_order', array(547)) === false, 'binding mismatch leaves no retry event');
+    ok(\Simplixi\SUCheckout\UPayments\Payment\wp_next_scheduled('simplixpay_upayments_reconcile_order', array(547)) === false, 'binding mismatch leaves no retry event');
 
     // A new Charge attempt on the same Woo order rotates provider order identity.
     // Stale unpaid cursor state must not pin the new attempt to the old track.
@@ -516,9 +517,9 @@ namespace {
 
     // TOCTOU: provider binds original snapshot, fresh order changes under lock.
     list($gateway, $order) = reset_fixture(550); set_provider_transaction(transaction_for($order));
-    \Simplix\Pay\UPayments\Payment\state()['remote_mutator'] = function () use ($order) {
+    \Simplixi\SUCheckout\UPayments\Payment\state()['remote_mutator'] = function () use ($order) {
         $fresh = clone $order; $fresh->total = '11.000';
-        \Simplix\Pay\UPayments\Payment\state()['orders'][$order->get_id()] = $fresh;
+        \Simplixi\SUCheckout\UPayments\Payment\state()['orders'][$order->get_id()] = $fresh;
     };
     $out = PaymentLifecycle::process_order_status($gateway, $order, 'track-abc', 'webhook');
     same($out['reason'], 'binding_changed_under_lock', 'fresh-order rebind catches TOCTOU total change');
@@ -527,42 +528,42 @@ namespace {
     // Atomic lock contention and stale-lock CAS recovery.
     list($gateway, $order) = reset_fixture(551); set_provider_transaction(transaction_for($order));
     $lock_record = private_call(OrderLock::class, 'encode_record', array(str_repeat('a', 32), time() + 30));
-    \Simplix\Pay\UPayments\Payment\state()['options']['simplixpay_upay_order_lock_v1_551'] = $lock_record;
+    \Simplixi\SUCheckout\UPayments\Payment\state()['options']['simplixpay_upay_order_lock_v1_551'] = $lock_record;
     $out = PaymentLifecycle::process_order_status($gateway, $order, 'track-abc', 'webhook');
     same($out['reason'], 'order_lock_contention', 'live order lock contention fails closed');
     same($order->payment_complete_calls, 0, 'lock contention prevents completion');
 
-    \Simplix\Pay\UPayments\Payment\reset_state();
+    \Simplixi\SUCheckout\UPayments\Payment\reset_state();
     $stale_name = 'simplixpay_upay_order_lock_v1_570';
     $stale_record = private_call(OrderLock::class, 'encode_record', array(str_repeat('b', 32), time() - 5));
-    \Simplix\Pay\UPayments\Payment\state()['options'][$stale_name] = $stale_record;
+    \Simplixi\SUCheckout\UPayments\Payment\state()['options'][$stale_name] = $stale_record;
     $token = OrderLock::acquire(570);
     ok(is_string($token) && $token !== '', 'stale lock is recovered atomically');
     OrderLock::release(570, $token);
-    ok(!array_key_exists($stale_name, \Simplix\Pay\UPayments\Payment\state()['options']), 'owner releases exact recovered lock');
+    ok(!array_key_exists($stale_name, \Simplixi\SUCheckout\UPayments\Payment\state()['options']), 'owner releases exact recovered lock');
 
-    \Simplix\Pay\UPayments\Payment\reset_state();
+    \Simplixi\SUCheckout\UPayments\Payment\reset_state();
     $race_name = 'simplixpay_upay_order_lock_v1_571';
     $old = private_call(OrderLock::class, 'encode_record', array(str_repeat('c', 32), time() - 5));
     $new = private_call(OrderLock::class, 'encode_record', array(str_repeat('d', 32), time() + 30));
-    \Simplix\Pay\UPayments\Payment\state()['options'][$race_name] = $old;
-    \Simplix\Pay\UPayments\Payment\state()['db_query_mutator'] = function () use ($race_name, $new) {
-        \Simplix\Pay\UPayments\Payment\state()['options'][$race_name] = $new;
+    \Simplixi\SUCheckout\UPayments\Payment\state()['options'][$race_name] = $old;
+    \Simplixi\SUCheckout\UPayments\Payment\state()['db_query_mutator'] = function () use ($race_name, $new) {
+        \Simplixi\SUCheckout\UPayments\Payment\state()['options'][$race_name] = $new;
     };
     same(OrderLock::acquire(571), null, 'stale recovery loses CAS when newer owner wins');
-    same(\Simplix\Pay\UPayments\Payment\state()['options'][$race_name], $new, 'stale recovery never deletes newer owner lock');
+    same(\Simplixi\SUCheckout\UPayments\Payment\state()['options'][$race_name], $new, 'stale recovery never deletes newer owner lock');
 
     // Bounded retry/exhaustion: initial schedule + four cron opportunities max.
     list($gateway, $order) = reset_fixture(560); set_provider_transaction(transaction_for($order, 'PENDING', 'track-retry', null));
     PaymentLifecycle::process_order_status($gateway, $order, 'track-retry', 'webhook');
     for ($attempt = 1; $attempt <= 4; $attempt++) {
-        \Simplix\Pay\UPayments\Payment\clear_scheduled_for_order(560);
+        \Simplixi\SUCheckout\UPayments\Payment\clear_scheduled_for_order(560);
         PaymentLifecycle::reconcile_order(560);
     }
     same((int) $order->get_meta('_simplixpay_upayments_reconcile_attempt_v1'), 4, 'reconciliation attempts capped at four');
     same((string) $order->get_meta('_simplixpay_upayments_reconcile_exhausted_v1'), '1', 'reconciliation exhaustion is durable');
     ok(count($order->notes) === 1, 'reconciliation exhaustion note emitted once');
-    ok(\Simplix\Pay\UPayments\Payment\wp_next_scheduled('simplixpay_upayments_reconcile_order', array(560)) === false, 'no event remains after exhaustion');
+    ok(\Simplixi\SUCheckout\UPayments\Payment\wp_next_scheduled('simplixpay_upayments_reconcile_order', array(560)) === false, 'no event remains after exhaustion');
 
     // Static architecture/safety guards.
     $root = dirname(__DIR__, 2);

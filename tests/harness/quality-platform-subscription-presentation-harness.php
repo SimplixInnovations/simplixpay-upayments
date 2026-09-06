@@ -46,7 +46,7 @@ q15_assert(!q15_contains($phpstan, 'baseline'), 'Q15 remains baseline-free');
 q15_assert(!q15_contains($phpstan, 'ignoreErrors'), 'Q15 introduces no ignored analyzer errors');
 
 foreach (array(
-    "\$types['custom_type'] = __('Subscription Product', 'upayments')",
+    "\$types['custom_type'] = __('Subscription Product', 'sucheckout-upayments')",
     "if (\$product_type === 'custom_type')",
     "\$classname = 'WCProductCustomType'",
     "'target' => 'custom_product_data_panel'",
@@ -77,7 +77,7 @@ q15_assert(q15_contains($source, "!isset(\$request['subscription_filter']) || !i
 q15_assert(q15_contains($source, "\$raw_filter = wp_unslash(\$request['subscription_filter'])"), 'account status input is unslashed before validation');
 q15_assert(q15_contains($source, 'if ($filter !== $raw_filter)'), 'account status rejects lossy sanitation before its allowlist');
 q15_assert(q15_contains($source, "self::request_text(\$_GET, 'page_id', '12')"), 'account page identity is normalized through one request boundary');
-q15_assert(q15_contains($source, "esc_html__('Auto Deduction', 'woocommerce')"), 'account type label is escaped');
+q15_assert(q15_contains($source, "esc_html__('Auto Deduction', 'sucheckout-upayments')"), 'account type label is escaped');
 q15_assert(q15_contains($source, "esc_attr(\$status)") && q15_contains($source, "esc_html(ucfirst(\$status))"), 'account status is escaped in attribute and HTML contexts');
 
 foreach (array(
@@ -122,10 +122,10 @@ foreach (array(
     q15_assert(!q15_contains($source, $forbidden), "presentation excludes unrelated runtime ownership: {$forbidden}");
 }
 
-q15_assert(q15_git_blob_sha($q15_root . '/includes/Subscription/Cron/Scheduler.php') === '5251866d4df2d1326e7c09f0c8ec1d146c0bb325', 'protected Scheduler blob remains exact');
+q15_assert(q15_git_blob_sha($q15_root . '/includes/Subscription/Cron/Scheduler.php') === '348fa0a2183be5a9b5897d6bd355fbaf902d8948', 'protected Scheduler blob remains exact');
 q15_assert(q15_git_blob_sha($q15_root . '/includes/Subscription/Cron/CycleClaim.php') === 'c34d83e2d77cc65024fe663e4c378cecb2b17347', 'protected CycleClaim blob remains exact');
 
-q15_assert(q15_contains($workflow, 'run: php tests/harness/quality-platform-subscription-presentation-harness.php'), 'Q15 harness has an exact mandatory Quality Gates invocation');
+q15_assert(q15_contains($workflow, 'tests/harness/quality-platform-subscription-presentation-harness.php'), 'Q15 harness remains mandatory in Quality Gates');
 q15_assert(q15_contains($workflow, 'if: ${{ always() }}'), 'protected H12 aggregator still always runs');
 q15_assert(q15_contains($workflow, "reject_across_live_records 'CURRENT / Q14'"), 'Governance rejects stale current-Q14 markers');
 q15_assert(q15_contains($agents, 'quality-platform-subscription-presentation-harness.php'), 'root execution rules keep Q15 mandatory');

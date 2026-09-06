@@ -17,7 +17,7 @@ body:
     id: versions
     attributes:
       label: Exact environment
-      description: WordPress, WooCommerce, PHP, SimplixPay commit/version, relevant plugins/theme/browser.
+      description: WordPress, WooCommerce, PHP, SUCheckout commit/version, relevant plugins/theme/browser.
     validations:
       required: true
   - type: textarea

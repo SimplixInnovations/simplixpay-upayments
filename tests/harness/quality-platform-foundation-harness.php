@@ -43,12 +43,12 @@ $distignore = q1_read($q1_root, '.distignore');
 $gitignore = q1_read($q1_root, '.gitignore');
 $quality_record = q1_read($q1_root, 'docs/project/QUALITY-PLATFORM.md');
 
-q1_assert(isset($composer['name']) && $composer['name'] === 'simplix-innovations/simplixpay-upayments', 'Composer package identity is canonical');
+q1_assert(isset($composer['name']) && $composer['name'] === 'simplix-innovations/sucheckout-upayments', 'Composer package identity is canonical');
 q1_assert(isset($composer['type']) && $composer['type'] === 'wordpress-plugin', 'Composer package type is WordPress plugin');
 q1_assert(isset($composer['license']) && $composer['license'] === 'MIT', 'Composer license matches repository');
 q1_assert(isset($composer['require']) && $composer['require'] === array('php' => '>=7.2'), 'Composer has no production dependency beyond declared PHP floor');
-q1_assert(isset($composer['autoload']['psr-4']['Simplix\\Pay\\UPayments\\']) && $composer['autoload']['psr-4']['Simplix\\Pay\\UPayments\\'] === 'src/', 'Composer maps the canonical namespace to src');
-q1_assert(isset($composer['autoload-dev']['psr-4']['Simplix\\Pay\\UPayments\\Tests\\']) && $composer['autoload-dev']['psr-4']['Simplix\\Pay\\UPayments\\Tests\\'] === 'tests/unit/', 'Composer maps only test namespace in autoload-dev');
+q1_assert(isset($composer['autoload']['psr-4']['Simplixi\\SUCheckout\\UPayments\\']) && $composer['autoload']['psr-4']['Simplixi\\SUCheckout\\UPayments\\'] === 'src/', 'Composer maps the canonical namespace to src');
+q1_assert(isset($composer['autoload-dev']['psr-4']['Simplixi\\SUCheckout\\UPayments\\Tests\\']) && $composer['autoload-dev']['psr-4']['Simplixi\\SUCheckout\\UPayments\\Tests\\'] === 'tests/unit/', 'Composer maps only test namespace in autoload-dev');
 q1_assert(isset($composer['config']['allow-plugins']) && $composer['config']['allow-plugins'] === false, 'Composer plugin execution is disabled');
 
 $required_dev = array(

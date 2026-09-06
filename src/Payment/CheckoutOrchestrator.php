@@ -1,6 +1,6 @@
 <?php
 
-namespace Simplix\Pay\UPayments\Payment;
+namespace Simplixi\SUCheckout\UPayments\Payment;
 
 use UPayments\Token\CustomerTokenIdentity;
 
@@ -43,14 +43,14 @@ class CheckoutOrchestrator {
             // Section Y: Defensive order boundary.
             $parsed_order_id = self::parse_order_id($order_id);
             if ($parsed_order_id === null) {
-                wc_add_notice(__('Payment request could not be completed. Please try again.', $gateway->domain), 'error');
+                wc_add_notice(__('Payment request could not be completed. Please try again.', 'sucheckout-upayments'), 'error');
                 return array('result' => 'failure', 'redirect' => wc_get_checkout_url());
             }
             $order_id = $parsed_order_id;
 
             $order = wc_get_order($order_id);
             if (!$order || !($order instanceof \WC_Order)) {
-                wc_add_notice(__('Payment request could not be completed. Please try again.', $gateway->domain), 'error');
+                wc_add_notice(__('Payment request could not be completed. Please try again.', 'sucheckout-upayments'), 'error');
                 return array('result' => 'failure', 'redirect' => wc_get_checkout_url());
             }
 
@@ -82,7 +82,7 @@ class CheckoutOrchestrator {
                 // Section J: Product boundary — fail, do not skip.
                 if (!$item || !($item instanceof \WC_Order_Item_Product)) {
                     $gateway->log('Invalid line item in order.', 'warning');
-                    wc_add_notice(__('Payment request could not be completed. Please try again.', $gateway->domain), 'error');
+                    wc_add_notice(__('Payment request could not be completed. Please try again.', 'sucheckout-upayments'), 'error');
                     return array('result' => 'failure', 'redirect' => wc_get_checkout_url());
                 }
 
@@ -90,7 +90,7 @@ class CheckoutOrchestrator {
                 $product = $item->get_product();
                 if (!$product || !($product instanceof \WC_Product)) {
                     $gateway->log('Unloadable product in order.', 'warning');
-                    wc_add_notice(__('Payment request could not be completed. Please try again.', $gateway->domain), 'error');
+                    wc_add_notice(__('Payment request could not be completed. Please try again.', 'sucheckout-upayments'), 'error');
                     return array('result' => 'failure', 'redirect' => wc_get_checkout_url());
                 }
 
@@ -101,7 +101,7 @@ class CheckoutOrchestrator {
                 $qty = $item->get_quantity();
                 if (!is_int($qty) || $qty <= 0 || $qty > 9999999) {
                     $gateway->log('Invalid product quantity.', 'warning');
-                    wc_add_notice(__('Payment request could not be completed. Please try again.', $gateway->domain), 'error');
+                    wc_add_notice(__('Payment request could not be completed. Please try again.', 'sucheckout-upayments'), 'error');
                     return array('result' => 'failure', 'redirect' => wc_get_checkout_url());
                 }
 
@@ -120,14 +120,14 @@ class CheckoutOrchestrator {
                 $raw_line_total = $item->get_total();
                 if (is_float($raw_line_total)) {
                     $gateway->log('Rejecting float line total for product economics.', 'warning');
-                    wc_add_notice(__('Payment request could not be completed. Please try again.', $gateway->domain), 'error');
+                    wc_add_notice(__('Payment request could not be completed. Please try again.', 'sucheckout-upayments'), 'error');
                     return array('result' => 'failure', 'redirect' => wc_get_checkout_url());
                 }
                 $line_total_canonical = CheckoutPayload::canonicalize_provider_decimal_string($raw_line_total);
                 $line_total_validation = CheckoutPayload::validate_provider_nonnegative_decimal($line_total_canonical, 'line_total');
                 if ($line_total_validation === null) {
                     $gateway->log('Invalid line total.', 'warning');
-                    wc_add_notice(__('Payment request could not be completed. Please try again.', $gateway->domain), 'error');
+                    wc_add_notice(__('Payment request could not be completed. Please try again.', 'sucheckout-upayments'), 'error');
                     return array('result' => 'failure', 'redirect' => wc_get_checkout_url());
                 }
                 $line_total = $line_total_validation;
@@ -141,7 +141,7 @@ class CheckoutOrchestrator {
                     // (e.g. line_total/qty is not a clean fraction at the captured
                     // precision). Fail closed rather than silently truncating.
                     $gateway->log('Invalid unit price derivation.', 'warning');
-                    wc_add_notice(__('Payment request could not be completed. Please try again.', $gateway->domain), 'error');
+                    wc_add_notice(__('Payment request could not be completed. Please try again.', 'sucheckout-upayments'), 'error');
                     return array('result' => 'failure', 'redirect' => wc_get_checkout_url());
                 }
 
@@ -181,7 +181,7 @@ class CheckoutOrchestrator {
             }
 
             if (empty($productArrayNew)) {
-                wc_add_notice(__('Payment request could not be completed. Please try again.', $gateway->domain), 'error');
+                wc_add_notice(__('Payment request could not be completed. Please try again.', 'sucheckout-upayments'), 'error');
                 return array('result' => 'failure', 'redirect' => wc_get_checkout_url());
             }
 
@@ -236,7 +236,7 @@ class CheckoutOrchestrator {
                 if ($preflight_subscription_plan !== 'one_time') {
                     $gateway->log('Subscription plan rejected: product-level opt-out.', 'warning');
                     WC()->session->set("refresh_totals", true);
-                    wc_add_notice(__("Please select a valid payment type.", $gateway->domain), "error");
+                    wc_add_notice(__("Please select a valid payment type.", 'sucheckout-upayments'), "error");
                     return ["result" => "failure", "redirect" => wc_get_checkout_url()];
                 }
             }
@@ -255,7 +255,7 @@ class CheckoutOrchestrator {
             ) {
                 $gateway->log('Payment methods availability unavailable or malformed.', 'warning');
                 WC()->session->set("refresh_totals", true);
-                wc_add_notice(__("Payment methods could not be loaded. Please try again.", $gateway->domain), "error");
+                wc_add_notice(__("Payment methods could not be loaded. Please try again.", 'sucheckout-upayments'), "error");
                 return ["result" => "failure", "redirect" => wc_get_checkout_url()];
             }
 
@@ -285,19 +285,19 @@ class CheckoutOrchestrator {
                 }
                 if (!is_array($request_data)) {
                     // Malformed JSON in Store API context — reject.
-                    wc_add_notice(__('Payment request could not be completed. Please try again.', $gateway->domain), 'error');
+                    wc_add_notice(__('Payment request could not be completed. Please try again.', 'sucheckout-upayments'), 'error');
                     return array('result' => 'failure', 'redirect' => wc_get_checkout_url());
                 }
                 if (array_key_exists('extensions', $request_data)) {
                     if (!is_array($request_data['extensions'])) {
                         // Malformed extensions container — fail closed.
-                        wc_add_notice(__('Payment request could not be completed. Please try again.', $gateway->domain), 'error');
+                        wc_add_notice(__('Payment request could not be completed. Please try again.', 'sucheckout-upayments'), 'error');
                         return array('result' => 'failure', 'redirect' => wc_get_checkout_url());
                     }
                     if (array_key_exists('upayments', $request_data['extensions'])) {
                         if (!is_array($request_data['extensions']['upayments'])) {
                             // Malformed upayments extension data — fail closed.
-                            wc_add_notice(__('Payment request could not be completed. Please try again.', $gateway->domain), 'error');
+                            wc_add_notice(__('Payment request could not be completed. Please try again.', 'sucheckout-upayments'), 'error');
                             return array('result' => 'failure', 'redirect' => wc_get_checkout_url());
                         }
                         $extension_data = $request_data['extensions']['upayments'];
@@ -327,18 +327,18 @@ class CheckoutOrchestrator {
                         if ($raw === '') {
                             $cardToken = null;
                         } elseif (preg_match('/\s/', $raw)) {
-                            wc_add_notice(__('Payment request could not be completed. Please try again.', $gateway->domain), 'error');
+                            wc_add_notice(__('Payment request could not be completed. Please try again.', 'sucheckout-upayments'), 'error');
                             return array('result' => 'failure', 'redirect' => wc_get_checkout_url());
                         } else {
                             $cardToken = $raw;
                         }
                     } elseif (is_int($raw)) {
                         // Strict: integer token not supported by the existing frozen contract.
-                        wc_add_notice(__('Payment request could not be completed. Please try again.', $gateway->domain), 'error');
+                        wc_add_notice(__('Payment request could not be completed. Please try again.', 'sucheckout-upayments'), 'error');
                         return array('result' => 'failure', 'redirect' => wc_get_checkout_url());
                     } else {
                         // Arrays, objects, bools, floats are invalid.
-                        wc_add_notice(__('Payment request could not be completed. Please try again.', $gateway->domain), 'error');
+                        wc_add_notice(__('Payment request could not be completed. Please try again.', 'sucheckout-upayments'), 'error');
                         return array('result' => 'failure', 'redirect' => wc_get_checkout_url());
                     }
                 }
@@ -349,7 +349,7 @@ class CheckoutOrchestrator {
                     // 'true', 2, arrays, objects, etc.
                     $parsed_save = CheckoutPayload::parse_save_card_strict($extension_data['save_card']);
                     if ($parsed_save === null) {
-                        wc_add_notice(__('Payment request could not be completed. Please try again.', $gateway->domain), 'error');
+                        wc_add_notice(__('Payment request could not be completed. Please try again.', 'sucheckout-upayments'), 'error');
                         return array('result' => 'failure', 'redirect' => wc_get_checkout_url());
                     }
                     $isSaveCardRequested = $parsed_save;
@@ -358,18 +358,18 @@ class CheckoutOrchestrator {
                 if (CheckoutPayload::field_present($extension_data, 'upay_subscription_plan')) {
                     $parsed_plan = CheckoutPayload::parse_subscription_plan_strict($extension_data['upay_subscription_plan']);
                     if ($parsed_plan === null) {
-                        wc_add_notice(__('Payment request could not be completed. Please try again.', $gateway->domain), 'error');
+                        wc_add_notice(__('Payment request could not be completed. Please try again.', 'sucheckout-upayments'), 'error');
                         return array('result' => 'failure', 'redirect' => wc_get_checkout_url());
                     }
                     if (!CheckoutPayload::is_valid_subscription_plan($parsed_plan)) {
-                        wc_add_notice(__('Payment request could not be completed. Please try again.', $gateway->domain), 'error');
+                        wc_add_notice(__('Payment request could not be completed. Please try again.', 'sucheckout-upayments'), 'error');
                         return array('result' => 'failure', 'redirect' => wc_get_checkout_url());
                     }
                     $subscription_plan = $parsed_plan;
                 }
                 if (CheckoutPayload::field_present($extension_data, 'upay_subscription_interval')) {
                     if (!is_scalar($extension_data['upay_subscription_interval'])) {
-                        wc_add_notice(__('Payment request could not be completed. Please try again.', $gateway->domain), 'error');
+                        wc_add_notice(__('Payment request could not be completed. Please try again.', 'sucheckout-upayments'), 'error');
                         return array('result' => 'failure', 'redirect' => wc_get_checkout_url());
                     }
                     $subscription_interval = CheckoutPayload::parse_interval($extension_data['upay_subscription_interval']);
@@ -384,12 +384,12 @@ class CheckoutOrchestrator {
 
                 if (CheckoutPayload::field_present($classic_post, 'save_card')) {
                     if (!is_scalar($classic_post['save_card'])) {
-                        wc_add_notice(__('Payment request could not be completed. Please try again.', $gateway->domain), 'error');
+                        wc_add_notice(__('Payment request could not be completed. Please try again.', 'sucheckout-upayments'), 'error');
                         return array('result' => 'failure', 'redirect' => wc_get_checkout_url());
                     }
                     $parsed_save = CheckoutPayload::parse_save_card_strict(wp_unslash($classic_post['save_card']));
                     if ($parsed_save === null) {
-                        wc_add_notice(__('Payment request could not be completed. Please try again.', $gateway->domain), 'error');
+                        wc_add_notice(__('Payment request could not be completed. Please try again.', 'sucheckout-upayments'), 'error');
                         return array('result' => 'failure', 'redirect' => wc_get_checkout_url());
                     }
                     $isSaveCardRequested = $parsed_save;
@@ -402,12 +402,12 @@ class CheckoutOrchestrator {
                     // rejects, and would mask a malformed request. Strings only,
                     // no leading/trailing whitespace.
                     if (!is_string($classic_post['card_token'])) {
-                        wc_add_notice(__('Payment request could not be completed. Please try again.', $gateway->domain), 'error');
+                        wc_add_notice(__('Payment request could not be completed. Please try again.', 'sucheckout-upayments'), 'error');
                         return array('result' => 'failure', 'redirect' => wc_get_checkout_url());
                     }
                     $raw_card = wp_unslash($classic_post['card_token']);
                     if (!is_string($raw_card) || preg_match('/\s/', $raw_card)) {
-                        wc_add_notice(__('Payment request could not be completed. Please try again.', $gateway->domain), 'error');
+                        wc_add_notice(__('Payment request could not be completed. Please try again.', 'sucheckout-upayments'), 'error');
                         return array('result' => 'failure', 'redirect' => wc_get_checkout_url());
                     }
                     // Section AT: Strict no-trim card token handling (Classic path too).
@@ -418,18 +418,18 @@ class CheckoutOrchestrator {
                     $plan_raw = wp_unslash($classic_post['upay_subscription_plan']);
                     $parsed_plan = CheckoutPayload::parse_subscription_plan_strict($plan_raw);
                     if ($parsed_plan === null) {
-                        wc_add_notice(__('Payment request could not be completed. Please try again.', $gateway->domain), 'error');
+                        wc_add_notice(__('Payment request could not be completed. Please try again.', 'sucheckout-upayments'), 'error');
                         return array('result' => 'failure', 'redirect' => wc_get_checkout_url());
                     }
                     if (!CheckoutPayload::is_valid_subscription_plan($parsed_plan)) {
-                        wc_add_notice(__('Payment request could not be completed. Please try again.', $gateway->domain), 'error');
+                        wc_add_notice(__('Payment request could not be completed. Please try again.', 'sucheckout-upayments'), 'error');
                         return array('result' => 'failure', 'redirect' => wc_get_checkout_url());
                     }
                     $subscription_plan = $parsed_plan;
                 }
                 if (CheckoutPayload::field_present($classic_post, 'upay_subscription_interval')) {
                     if (!is_scalar($classic_post['upay_subscription_interval'])) {
-                        wc_add_notice(__('Payment request could not be completed. Please try again.', $gateway->domain), 'error');
+                        wc_add_notice(__('Payment request could not be completed. Please try again.', 'sucheckout-upayments'), 'error');
                         return array('result' => 'failure', 'redirect' => wc_get_checkout_url());
                     }
                     $subscription_interval = CheckoutPayload::parse_interval(wp_unslash($classic_post['upay_subscription_interval']));
@@ -447,26 +447,26 @@ class CheckoutOrchestrator {
                 if ($is_blocks_request) {
                     if (CheckoutPayload::field_present($extension_data, 'upayment_payment_type')) {
                         if (!is_scalar($extension_data['upayment_payment_type'])) {
-                            wc_add_notice(__('Payment request could not be completed. Please try again.', $gateway->domain), 'error');
+                            wc_add_notice(__('Payment request could not be completed. Please try again.', 'sucheckout-upayments'), 'error');
                             return array('result' => 'failure', 'redirect' => wc_get_checkout_url());
                         }
                         $raw_src = CheckoutPayload::parse_payment_source_strict($extension_data['upayment_payment_type']);
                         if ($raw_src === null) {
                             WC()->session->set("refresh_totals", true);
-                            wc_add_notice(__("Please select a valid UPayments payment method.", $gateway->domain), "error");
+                            wc_add_notice(__("Please select a valid UPayments payment method.", 'sucheckout-upayments'), "error");
                             return ["result" => "failure", "redirect" => wc_get_checkout_url()];
                         }
                     }
                 } else {
                     if (CheckoutPayload::field_present($classic_post, 'upayment_payment_type')) {
                         if (!is_scalar($classic_post['upayment_payment_type'])) {
-                            wc_add_notice(__('Payment request could not be completed. Please try again.', $gateway->domain), 'error');
+                            wc_add_notice(__('Payment request could not be completed. Please try again.', 'sucheckout-upayments'), 'error');
                             return array('result' => 'failure', 'redirect' => wc_get_checkout_url());
                         }
                         $raw_src = CheckoutPayload::parse_payment_source_strict(wp_unslash($classic_post['upayment_payment_type']));
                         if ($raw_src === null) {
                             WC()->session->set("refresh_totals", true);
-                            wc_add_notice(__("Please select a valid UPayments payment method.", $gateway->domain), "error");
+                            wc_add_notice(__("Please select a valid UPayments payment method.", 'sucheckout-upayments'), "error");
                             return ["result" => "failure", "redirect" => wc_get_checkout_url()];
                         }
                     }
@@ -475,7 +475,7 @@ class CheckoutOrchestrator {
                 // Whitelabel source must be explicit: missing/empty/array → reject.
                 if ($raw_src === null || $raw_src === '') {
                     WC()->session->set("refresh_totals", true);
-                    wc_add_notice(__("Please select a valid UPayments payment method.", $gateway->domain), "error");
+                    wc_add_notice(__("Please select a valid UPayments payment method.", 'sucheckout-upayments'), "error");
                     return ["result" => "failure", "redirect" => wc_get_checkout_url()];
                 }
 
@@ -494,7 +494,7 @@ class CheckoutOrchestrator {
                 if (!CheckoutPayload::is_valid_payment_source($src)) {
                     $gateway->log('Invalid payment source rejected.', 'warning');
                     WC()->session->set("refresh_totals", true);
-                    wc_add_notice(__("Please select a valid UPayments payment method.", $gateway->domain), "error");
+                    wc_add_notice(__("Please select a valid UPayments payment method.", 'sucheckout-upayments'), "error");
                     return ["result" => "failure", "redirect" => wc_get_checkout_url()];
                 }
 
@@ -504,13 +504,13 @@ class CheckoutOrchestrator {
                 ) {
                     $gateway->log('Whitelabel: payment method map unavailable.', 'warning');
                     WC()->session->set("refresh_totals", true);
-                    wc_add_notice(__("Please select a valid UPayments payment method.", $gateway->domain), "error");
+                    wc_add_notice(__("Please select a valid UPayments payment method.", 'sucheckout-upayments'), "error");
                     return ["result" => "failure", "redirect" => wc_get_checkout_url()];
                 }
                 if (!isset($payment_data['payment'][$src])) {
                     $gateway->log('Disabled payment source rejected: ' . $src, 'warning');
                     WC()->session->set("refresh_totals", true);
-                    wc_add_notice(__("Please select a valid UPayments payment method.", $gateway->domain), "error");
+                    wc_add_notice(__("Please select a valid UPayments payment method.", 'sucheckout-upayments'), "error");
                     return ["result" => "failure", "redirect" => wc_get_checkout_url()];
                 }
             }
@@ -519,7 +519,7 @@ class CheckoutOrchestrator {
             if (!CheckoutPayload::is_valid_subscription_plan($subscription_plan)) {
                 $gateway->log('Invalid subscription plan rejected: ' . $subscription_plan, 'warning');
                 WC()->session->set("refresh_totals", true);
-                wc_add_notice(__("Please select a valid payment type.", $gateway->domain), "error");
+                wc_add_notice(__("Please select a valid payment type.", 'sucheckout-upayments'), "error");
                 return ["result" => "failure", "redirect" => wc_get_checkout_url()];
             }
 
@@ -529,7 +529,7 @@ class CheckoutOrchestrator {
                 if ($order_has_subscription_restricted_product) {
                     $gateway->log('Subscription plan rejected: product-level opt-out.', 'warning');
                     WC()->session->set("refresh_totals", true);
-                    wc_add_notice(__("Please select a valid payment type.", $gateway->domain), "error");
+                    wc_add_notice(__("Please select a valid payment type.", 'sucheckout-upayments'), "error");
                     return ["result" => "failure", "redirect" => wc_get_checkout_url()];
                 }
                 if ($gateway->autoDeduction !== 'yes'
@@ -538,40 +538,40 @@ class CheckoutOrchestrator {
                 ) {
                     $gateway->log('Subscription plan rejected: mixed order or invalid context.', 'warning');
                     WC()->session->set("refresh_totals", true);
-                    wc_add_notice(__("Please select a valid payment type.", $gateway->domain), "error");
+                    wc_add_notice(__("Please select a valid payment type.", 'sucheckout-upayments'), "error");
                     return ["result" => "failure", "redirect" => wc_get_checkout_url()];
                 }
                 // Guest subscriptions must fail server-side.
                 if (!is_user_logged_in()) {
                     $gateway->log('Subscription checkout rejected for guest.');
-                    wc_add_notice(__("Please log in to purchase a subscription.", $gateway->domain), "error");
+                    wc_add_notice(__("Please log in to purchase a subscription.", 'sucheckout-upayments'), "error");
                     return ["result" => "failure", "redirect" => wc_get_checkout_url()];
                 }
                 // Subscription checkout requires cc.
                 if ($src !== 'cc') {
                     $gateway->log('Subscription checkout requires cc payment source.', 'warning');
                     WC()->session->set("refresh_totals", true);
-                    wc_add_notice(__("Subscription payments require Credit Card.", $gateway->domain), "error");
+                    wc_add_notice(__("Subscription payments require Credit Card.", 'sucheckout-upayments'), "error");
                     return ["result" => "failure", "redirect" => wc_get_checkout_url()];
                 }
                 // Save-card feature must be enabled for subscriptions.
                 if ($gateway->saveCardEnabled !== 'yes') {
                     $gateway->log('Subscription checkout requires save-card feature enabled.');
-                    wc_add_notice(__("Please select a valid payment type.", $gateway->domain), "error");
+                    wc_add_notice(__("Please select a valid payment type.", 'sucheckout-upayments'), "error");
                     return ["result" => "failure", "redirect" => wc_get_checkout_url()];
                 }
                 // For new card (no existing saved card token), require explicit save-card opt-in.
                 // For existing saved card (cardToken present), do NOT require save-card toggle.
                 if (!$has_selected_card && !$isSaveCardRequested) {
                     $gateway->log("Subscription checkout with new card requires save-card opt-in.");
-                    wc_add_notice(__("Please Enable Save Card Toggle to Proceed with Subscription Purchase.", $gateway->domain), "error");
+                    wc_add_notice(__("Please Enable Save Card Toggle to Proceed with Subscription Purchase.", 'sucheckout-upayments'), "error");
                     return ["result" => "failure", "redirect" => wc_get_checkout_url()];
                 }
             }
 
             // Interval validation (uses strict parser).
             if (!CheckoutPayload::is_valid_subscription_interval($subscription_plan, $subscription_interval)) {
-                wc_add_notice(__("Please select a valid Billing Interval.", $gateway->domain), "error");
+                wc_add_notice(__("Please select a valid Billing Interval.", 'sucheckout-upayments'), "error");
                 return ["result" => "failure", "redirect" => wc_get_checkout_url()];
             }
 
@@ -589,7 +589,7 @@ class CheckoutOrchestrator {
                     || $src !== 'cc'
                     || $has_selected_card
                 ) {
-                    wc_add_notice(__('Payment request could not be completed. Please try again.', 'upayments'), 'error');
+                    wc_add_notice(__('Payment request could not be completed. Please try again.', 'sucheckout-upayments'), 'error');
                     return array('result' => 'failure', 'redirect' => wc_get_checkout_url());
                 }
             }
@@ -658,7 +658,7 @@ class CheckoutOrchestrator {
                 $currency = strtoupper((string) $order_data["currency"]);
             }
             if (!preg_match('/^[A-Z]{3}\\z/', $currency)) {
-                wc_add_notice(__('Payment request could not be completed. Please try again.', $gateway->domain), 'error');
+                wc_add_notice(__('Payment request could not be completed. Please try again.', 'sucheckout-upayments'), 'error');
                 return array('result' => 'failure', 'redirect' => wc_get_checkout_url());
             }
 
@@ -669,7 +669,7 @@ class CheckoutOrchestrator {
             if (!preg_match('/^[0-9]+(?:\.[0-9]+)?$/', $amount_str)
                 || strlen($amount_str) > 22
             ) {
-                wc_add_notice(__('Payment request could not be completed. Please try again.', $gateway->domain), 'error');
+                wc_add_notice(__('Payment request could not be completed. Please try again.', 'sucheckout-upayments'), 'error');
                 return array('result' => 'failure', 'redirect' => wc_get_checkout_url());
             }
             // Positivity check via decimal-string semantics: at least one character
@@ -683,7 +683,7 @@ class CheckoutOrchestrator {
                 }
             }
             if (!$is_positive) {
-                wc_add_notice(__('Payment request could not be completed. Please try again.', $gateway->domain), 'error');
+                wc_add_notice(__('Payment request could not be completed. Please try again.', 'sucheckout-upayments'), 'error');
                 return array('result' => 'failure', 'redirect' => wc_get_checkout_url());
             }
 
@@ -700,14 +700,14 @@ class CheckoutOrchestrator {
             // PHP's float formatting entirely.
             $amount_json_token = CheckoutPayload::build_amount_json_token($amount_str);
             if ($amount_json_token === null) {
-                wc_add_notice(__('Payment request could not be completed. Please try again.', $gateway->domain), 'error');
+                wc_add_notice(__('Payment request could not be completed. Please try again.', 'sucheckout-upayments'), 'error');
                 return array('result' => 'failure', 'redirect' => wc_get_checkout_url());
             }
 
             // Reference.
             $reference_id = (string) $order_id;
             if ($reference_id === '' || strlen($reference_id) > 35) {
-                wc_add_notice(__('Payment request could not be completed. Please try again.', $gateway->domain), 'error');
+                wc_add_notice(__('Payment request could not be completed. Please try again.', 'sucheckout-upayments'), 'error');
                 return array('result' => 'failure', 'redirect' => wc_get_checkout_url());
             }
 
@@ -719,7 +719,7 @@ class CheckoutOrchestrator {
             );
             foreach ($callback_urls as $cb_url) {
                 if (strlen($cb_url) > 250) {
-                    wc_add_notice(__('Payment request could not be completed. Please try again.', $gateway->domain), 'error');
+                    wc_add_notice(__('Payment request could not be completed. Please try again.', 'sucheckout-upayments'), 'error');
                     return array('result' => 'failure', 'redirect' => wc_get_checkout_url());
                 }
                 $parsed = wp_parse_url($cb_url);
@@ -729,7 +729,7 @@ class CheckoutOrchestrator {
                     || ($parsed['scheme'] !== 'http' && $parsed['scheme'] !== 'https')
                     || $parsed['host'] === ''
                 ) {
-                    wc_add_notice(__('Payment request could not be completed. Please try again.', $gateway->domain), 'error');
+                    wc_add_notice(__('Payment request could not be completed. Please try again.', 'sucheckout-upayments'), 'error');
                     return array('result' => 'failure', 'redirect' => wc_get_checkout_url());
                 }
             }
@@ -775,7 +775,7 @@ class CheckoutOrchestrator {
                 // over-rejecting while still catching wholesale garbage.
                 if (!preg_match('/^[A-Z]{2}[0-9]{2}[A-Z0-9]{11,30}\\z/', $iban)) {
                     $gateway->log('MultiMerchant: invalid IBAN format.', 'warning');
-                    wc_add_notice(__('Payment request could not be completed. Please try again.', $gateway->domain), 'error');
+                    wc_add_notice(__('Payment request could not be completed. Please try again.', 'sucheckout-upayments'), 'error');
                     return array('result' => 'failure', 'redirect' => wc_get_checkout_url());
                 }
 
@@ -787,24 +787,24 @@ class CheckoutOrchestrator {
                 // 01.50, .5) and exponent/scientific notation (1e2) are rejected. ===
                 if (!preg_match('/^(?:0|[1-9][0-9]*)(?:\.[0-9]+)?$/', $knet_charge_raw)) {
                     $gateway->log('MultiMerchant: invalid knetCharge format.', 'warning');
-                    wc_add_notice(__('Payment request could not be completed. Please try again.', $gateway->domain), 'error');
+                    wc_add_notice(__('Payment request could not be completed. Please try again.', 'sucheckout-upayments'), 'error');
                     return array('result' => 'failure', 'redirect' => wc_get_checkout_url());
                 }
                 if (!preg_match('/^(?:0|[1-9][0-9]*)(?:\.[0-9]+)?$/', $cc_charge_raw)) {
                     $gateway->log('MultiMerchant: invalid ccCharge format.', 'warning');
-                    wc_add_notice(__('Payment request could not be completed. Please try again.', $gateway->domain), 'error');
+                    wc_add_notice(__('Payment request could not be completed. Please try again.', 'sucheckout-upayments'), 'error');
                     return array('result' => 'failure', 'redirect' => wc_get_checkout_url());
                 }
                 // Reject non-canonical charge-type forms exactly.
                 $valid_charge_types = array('fixed', 'percentage');
                 if (!in_array($knet_charge_type, $valid_charge_types, true)) {
                     $gateway->log('MultiMerchant: invalid knetChargeType.', 'warning');
-                    wc_add_notice(__('Payment request could not be completed. Please try again.', $gateway->domain), 'error');
+                    wc_add_notice(__('Payment request could not be completed. Please try again.', 'sucheckout-upayments'), 'error');
                     return array('result' => 'failure', 'redirect' => wc_get_checkout_url());
                 }
                 if (!in_array($cc_charge_type, $valid_charge_types, true)) {
                     $gateway->log('MultiMerchant: invalid ccChargeType.', 'warning');
-                    wc_add_notice(__('Payment request could not be completed. Please try again.', $gateway->domain), 'error');
+                    wc_add_notice(__('Payment request could not be completed. Please try again.', 'sucheckout-upayments'), 'error');
                     return array('result' => 'failure', 'redirect' => wc_get_checkout_url());
                 }
                 // Pure-PHP positive-decimal validation (no BCMath, no float, no upper bound).
@@ -814,12 +814,12 @@ class CheckoutOrchestrator {
                 // provider documentation and the existing admin UI maximum.
                 if (CheckoutPayload::compare_nonnegative_decimal_strings($knet_charge_raw, '0') <= 0) {
                     $gateway->log('MultiMerchant: invalid knetCharge value.', 'warning');
-                    wc_add_notice(__('Payment request could not be completed. Please try again.', $gateway->domain), 'error');
+                    wc_add_notice(__('Payment request could not be completed. Please try again.', 'sucheckout-upayments'), 'error');
                     return array('result' => 'failure', 'redirect' => wc_get_checkout_url());
                 }
                 if (CheckoutPayload::compare_nonnegative_decimal_strings($cc_charge_raw, '0') <= 0) {
                     $gateway->log('MultiMerchant: invalid ccCharge value.', 'warning');
-                    wc_add_notice(__('Payment request could not be completed. Please try again.', $gateway->domain), 'error');
+                    wc_add_notice(__('Payment request could not be completed. Please try again.', 'sucheckout-upayments'), 'error');
                     return array('result' => 'failure', 'redirect' => wc_get_checkout_url());
                 }
                 $knet_charge = $knet_charge_raw;
@@ -848,7 +848,7 @@ class CheckoutOrchestrator {
                 $mm_cc_charge_token = CheckoutPayload::build_amount_json_token($cc_charge);
                 if ($mm_knet_charge_token === null || $mm_cc_charge_token === null) {
                     $gateway->log('MultiMerchant: invalid charge JSON encoding.', 'warning');
-                    wc_add_notice(__('Payment request could not be completed. Please try again.', $gateway->domain), 'error');
+                    wc_add_notice(__('Payment request could not be completed. Please try again.', 'sucheckout-upayments'), 'error');
                     return array('result' => 'failure', 'redirect' => wc_get_checkout_url());
                 }
                 $mm_amount_for_injection = $mm_amount_token;
@@ -926,7 +926,7 @@ class CheckoutOrchestrator {
             $preflight_raw = wp_json_encode($payload);
             if (!is_string($preflight_raw) || $preflight_raw === '') {
                 $gateway->log('Deterministic payload encoding failed.', 'warning');
-                wc_add_notice(__('Payment request could not be completed. Please try again.', $gateway->domain), 'error');
+                wc_add_notice(__('Payment request could not be completed. Please try again.', 'sucheckout-upayments'), 'error');
                 return array('result' => 'failure', 'redirect' => wc_get_checkout_url());
             }
             // The MM amount sentinel is only present when MultiMerchant is enabled and valid.
@@ -946,7 +946,7 @@ class CheckoutOrchestrator {
             );
             if (!is_string($preflight_json) || $preflight_json === '') {
                 $gateway->log('Deterministic amount injection failed.', 'warning');
-                wc_add_notice(__('Payment request could not be completed. Please try again.', $gateway->domain), 'error');
+                wc_add_notice(__('Payment request could not be completed. Please try again.', 'sucheckout-upayments'), 'error');
                 return array('result' => 'failure', 'redirect' => wc_get_checkout_url());
             }
 
@@ -956,13 +956,13 @@ class CheckoutOrchestrator {
             // Clear stale token-attempt metadata before token work.
             // Preserve legacy/unscoped evidence for Phase 9I migration.
             if (!CustomerTokenIdentity::clear_stale_attempt_metadata($order)) {
-                wc_add_notice(__('Payment request could not be completed. Please try again.', 'upayments'), 'error');
+                wc_add_notice(__('Payment request could not be completed. Please try again.', 'sucheckout-upayments'), 'error');
                 return array('result' => 'failure', 'redirect' => wc_get_checkout_url());
             }
 
             // Section I: Force-fresh current order metadata after cleanup.
             if (!CustomerTokenIdentity::force_refresh_order_meta($order)) {
-                wc_add_notice(__('Payment request could not be completed. Please try again.', 'upayments'), 'error');
+                wc_add_notice(__('Payment request could not be completed. Please try again.', 'sucheckout-upayments'), 'error');
                 return array('result' => 'failure', 'redirect' => wc_get_checkout_url());
             }
 
@@ -995,7 +995,7 @@ class CheckoutOrchestrator {
                     }
                 }
                 if ($has_residual_evidence) {
-                    wc_add_notice(__('Payment request could not be completed. Please try again.', 'upayments'), 'error');
+                    wc_add_notice(__('Payment request could not be completed. Please try again.', 'sucheckout-upayments'), 'error');
                     return array('result' => 'failure', 'redirect' => wc_get_checkout_url());
                 }
             }
@@ -1009,17 +1009,17 @@ class CheckoutOrchestrator {
             // CASE: Selected saved card requires membership validation.
             if ($has_selected_card) {
                 if ($user_id <= 0) {
-                    wc_add_notice(__('Please log in to use a saved card.', 'upayments'), 'error');
+                    wc_add_notice(__('Please log in to use a saved card.', 'sucheckout-upayments'), 'error');
                     return array('result' => 'failure', 'redirect' => wc_get_checkout_url());
                 }
 
                 if ($gateway->saveCardEnabled !== 'yes') {
-                    wc_add_notice(__('Please select a valid payment type.', 'upayments'), 'error');
+                    wc_add_notice(__('Please select a valid payment type.', 'sucheckout-upayments'), 'error');
                     return array('result' => 'failure', 'redirect' => wc_get_checkout_url());
                 }
 
                 if (!$whitelabled || $src !== 'cc') {
-                    wc_add_notice(__('Please select a valid payment method.', 'upayments'), 'error');
+                    wc_add_notice(__('Please select a valid payment method.', 'sucheckout-upayments'), 'error');
                     return array('result' => 'failure', 'redirect' => wc_get_checkout_url());
                 }
 
@@ -1036,7 +1036,7 @@ class CheckoutOrchestrator {
                     || $selected_ctx['scope'] === null
                     || $selected_ctx['generation_id'] === null
                 ) {
-                    wc_add_notice(__('Payment request could not be completed. Please try again.', 'upayments'), 'error');
+                    wc_add_notice(__('Payment request could not be completed. Please try again.', 'sucheckout-upayments'), 'error');
                     return array('result' => 'failure', 'redirect' => wc_get_checkout_url());
                 }
                 $scope = $selected_ctx['scope'];
@@ -1044,7 +1044,7 @@ class CheckoutOrchestrator {
 
                 $provenance = CustomerTokenIdentity::read_provenance($user_id, $scope, $existing_generation);
                 if ($provenance['state'] !== CustomerTokenIdentity::STATE_VALID) {
-                    wc_add_notice(__('Please log in to use a saved card.', 'upayments'), 'error');
+                    wc_add_notice(__('Please log in to use a saved card.', 'sucheckout-upayments'), 'error');
                     return array('result' => 'failure', 'redirect' => wc_get_checkout_url());
                 }
 
@@ -1065,7 +1065,7 @@ class CheckoutOrchestrator {
                 );
 
                 if (!$membership_valid) {
-                    wc_add_notice(__('Please select a valid payment method.', 'upayments'), 'error');
+                    wc_add_notice(__('Please select a valid payment method.', 'sucheckout-upayments'), 'error');
                     return array('result' => 'failure', 'redirect' => wc_get_checkout_url());
                 }
 
@@ -1074,12 +1074,12 @@ class CheckoutOrchestrator {
             // CASE: Save Card or subscription requires canonical token.
             elseif ($requires_token) {
                 if ($user_id <= 0) {
-                    wc_add_notice(__('Please log in to save a card or purchase a subscription.', 'upayments'), 'error');
+                    wc_add_notice(__('Please log in to save a card or purchase a subscription.', 'sucheckout-upayments'), 'error');
                     return array('result' => 'failure', 'redirect' => wc_get_checkout_url());
                 }
 
                 if ($gateway->saveCardEnabled !== 'yes') {
-                    wc_add_notice(__('Please select a valid payment type.', 'upayments'), 'error');
+                    wc_add_notice(__('Please select a valid payment type.', 'sucheckout-upayments'), 'error');
                     return array('result' => 'failure', 'redirect' => wc_get_checkout_url());
                 }
 
@@ -1096,7 +1096,7 @@ class CheckoutOrchestrator {
 
                 if (!$token_result['success']) {
                     $gateway->log('Token establishment failed: ' . $token_result['reason'], 'warning');
-                    wc_add_notice(__('Payment request could not be completed. Please try again.', 'upayments'), 'error');
+                    wc_add_notice(__('Payment request could not be completed. Please try again.', 'sucheckout-upayments'), 'error');
                     return array('result' => 'failure', 'redirect' => wc_get_checkout_url());
                 }
 
@@ -1133,7 +1133,7 @@ class CheckoutOrchestrator {
                     || $expected_ctx['generation_id'] === null
                 ) {
                     $gateway->log('Runtime token context: identity context not in SECRET_VALID state.', 'warning');
-                    wc_add_notice(__('Payment request could not be completed. Please try again.', 'upayments'), 'error');
+                    wc_add_notice(__('Payment request could not be completed. Please try again.', 'sucheckout-upayments'), 'error');
                     return array('result' => 'failure', 'redirect' => wc_get_checkout_url());
                 }
                 $expected_scope = $expected_ctx['scope'];
@@ -1148,7 +1148,7 @@ class CheckoutOrchestrator {
                     $expected_generation
                 )) {
                     $gateway->log('Runtime token context validation failed.', 'warning');
-                    wc_add_notice(__('Payment request could not be completed. Please try again.', 'upayments'), 'error');
+                    wc_add_notice(__('Payment request could not be completed. Please try again.', 'sucheckout-upayments'), 'error');
                     return array('result' => 'failure', 'redirect' => wc_get_checkout_url());
                 }
             }
@@ -1177,13 +1177,13 @@ class CheckoutOrchestrator {
                 $verify_order = wc_get_order($order_id);
                 if (!$verify_order) {
                     $gateway->log('Persistence verification: unable to reload order.', 'warning');
-                    wc_add_notice(__('Payment request could not be completed. Please try again.', 'upayments'), 'error');
+                    wc_add_notice(__('Payment request could not be completed. Please try again.', 'sucheckout-upayments'), 'error');
                     return array('result' => 'failure', 'redirect' => wc_get_checkout_url());
                 }
 
                 if (!CustomerTokenIdentity::force_refresh_order_meta($verify_order)) {
                     $gateway->log('Persistence verification: force refresh failed.', 'warning');
-                    wc_add_notice(__('Payment request could not be completed. Please try again.', 'upayments'), 'error');
+                    wc_add_notice(__('Payment request could not be completed. Please try again.', 'sucheckout-upayments'), 'error');
                     return array('result' => 'failure', 'redirect' => wc_get_checkout_url());
                 }
 
@@ -1202,12 +1202,12 @@ class CheckoutOrchestrator {
                     $v_card = CustomerTokenIdentity::get_historical_meta_cardinality($verify_order, $vkey);
                     if ($v_card['status'] !== CustomerTokenIdentity::META_EXACTLY_ONE) {
                         $gateway->log('Persistence verification failed: ' . $vkey, 'warning');
-                        wc_add_notice(__('Payment request could not be completed. Please try again.', 'upayments'), 'error');
+                        wc_add_notice(__('Payment request could not be completed. Please try again.', 'sucheckout-upayments'), 'error');
                         return array('result' => 'failure', 'redirect' => wc_get_checkout_url());
                     }
                     if ((string) $v_card['value'] !== (string) $expected_value) {
                         $gateway->log('Persistence verification value mismatch: ' . $vkey, 'warning');
-                        wc_add_notice(__('Payment request could not be completed. Please try again.', 'upayments'), 'error');
+                        wc_add_notice(__('Payment request could not be completed. Please try again.', 'sucheckout-upayments'), 'error');
                         return array('result' => 'failure', 'redirect' => wc_get_checkout_url());
                     }
                 }
@@ -1227,7 +1227,7 @@ class CheckoutOrchestrator {
             $final_raw = wp_json_encode($payload);
             if (!is_string($final_raw) || $final_raw === '') {
                 $gateway->log('Final payload encoding failed.', 'warning');
-                wc_add_notice(__('Payment request could not be completed. Please try again.', $gateway->domain), 'error');
+                wc_add_notice(__('Payment request could not be completed. Please try again.', 'sucheckout-upayments'), 'error');
                 return array('result' => 'failure', 'redirect' => wc_get_checkout_url());
             }
             $params = CheckoutPayload::inject_amount_token_into_payload_json(
@@ -1247,7 +1247,7 @@ class CheckoutOrchestrator {
             );
             if (!is_string($params) || $params === '') {
                 $gateway->log('Final amount injection failed.', 'warning');
-                wc_add_notice(__('Payment request could not be completed. Please try again.', $gateway->domain), 'error');
+                wc_add_notice(__('Payment request could not be completed. Please try again.', 'sucheckout-upayments'), 'error');
                 return array('result' => 'failure', 'redirect' => wc_get_checkout_url());
             }
 
@@ -1264,19 +1264,19 @@ class CheckoutOrchestrator {
                     || $final_ctx['generation_id'] === null
                 ) {
                     $gateway->log('Charge: identity context invalidated before Charge.', 'warning');
-                    wc_add_notice(__('Payment request could not be completed. Please try again.', $gateway->domain), 'error');
+                    wc_add_notice(__('Payment request could not be completed. Please try again.', 'sucheckout-upayments'), 'error');
                     return array('result' => 'failure', 'redirect' => wc_get_checkout_url());
                 }
                 if (!hash_equals((string) $final_ctx['scope'], (string) $expected_scope)
                     || !hash_equals((string) $final_ctx['generation_id'], (string) $expected_generation)
                 ) {
                     $gateway->log('Charge: identity context changed between token establish and Charge.', 'warning');
-                    wc_add_notice(__('Payment request could not be completed. Please try again.', $gateway->domain), 'error');
+                    wc_add_notice(__('Payment request could not be completed. Please try again.', 'sucheckout-upayments'), 'error');
                     return array('result' => 'failure', 'redirect' => wc_get_checkout_url());
                 }
             }
 
-            $gateway->log(__("Create payment request prepared.", $gateway->domain));
+            $gateway->log(__("Create payment request prepared.", 'sucheckout-upayments'));
 
             // === PHASE E: CHARGE ===
             $transport = $this->execute_request('charge', 'POST', $params);
@@ -1290,7 +1290,7 @@ class CheckoutOrchestrator {
             ) {
                 $gateway->log('UPayments charge request failed.', 'warning');
                 WC()->session->set("refresh_totals", true);
-                wc_add_notice(__("Payment request could not be completed. Please try again.", $gateway->domain), "error");
+                wc_add_notice(__("Payment request could not be completed. Please try again.", 'sucheckout-upayments'), "error");
                 return ["result" => "failure", "redirect" => wc_get_checkout_url()];
             }
 
@@ -1304,18 +1304,18 @@ class CheckoutOrchestrator {
                 if (!$response){
                     $gateway->log('Charge response: empty body.', 'warning');
                     WC()->session->set("refresh_totals", true);
-                    wc_add_notice(__("Payment request could not be completed. Please try again.", $gateway->domain), "error");
+                    wc_add_notice(__("Payment request could not be completed. Please try again.", 'sucheckout-upayments'), "error");
                     return ["result" => "failure", "redirect" => wc_get_checkout_url()];
                 }
 
                 $result = json_decode($response, true);
-                $gateway->log(__("Create payment response received.", $gateway->domain));
+                $gateway->log(__("Create payment response received.", 'sucheckout-upayments'));
 
                 // A. json_decode result MUST be array.
                 if (!is_array($result)){
                     $gateway->log('Charge response: malformed JSON.', 'warning');
                     WC()->session->set("refresh_totals", true);
-                    wc_add_notice(__("Payment request could not be completed. Please try again.", $gateway->domain), "error");
+                    wc_add_notice(__("Payment request could not be completed. Please try again.", 'sucheckout-upayments'), "error");
                     return ["result" => "failure", "redirect" => wc_get_checkout_url()];
                 }
 
@@ -1323,14 +1323,14 @@ class CheckoutOrchestrator {
                 if (!array_key_exists('status', $result) || !is_bool($result['status'])) {
                     $gateway->log('Charge response: status not boolean.', 'warning');
                     WC()->session->set("refresh_totals", true);
-                    wc_add_notice(__("Payment request could not be completed. Please try again.", $gateway->domain), "error");
+                    wc_add_notice(__("Payment request could not be completed. Please try again.", 'sucheckout-upayments'), "error");
                     return ["result" => "failure", "redirect" => wc_get_checkout_url()];
                 }
 
                 if ($result['status'] === false) {
                     $gateway->log('Charge response: provider declared failure.', 'warning');
                     WC()->session->set("refresh_totals", true);
-                    wc_add_notice(__("Payment request could not be completed. Please try again.", $gateway->domain), "error");
+                    wc_add_notice(__("Payment request could not be completed. Please try again.", 'sucheckout-upayments'), "error");
                     return ["result" => "failure", "redirect" => wc_get_checkout_url()];
                 }
 
@@ -1339,7 +1339,7 @@ class CheckoutOrchestrator {
                     if (!isset($result['data']) || !is_array($result['data'])) {
                         $gateway->log('Charge response: status=true but data missing/invalid.', 'warning');
                         WC()->session->set("refresh_totals", true);
-                        wc_add_notice(__("Payment request could not be completed. Please try again.", $gateway->domain), "error");
+                        wc_add_notice(__("Payment request could not be completed. Please try again.", 'sucheckout-upayments'), "error");
                         return ["result" => "failure", "redirect" => wc_get_checkout_url()];
                     }
 
@@ -1363,7 +1363,7 @@ class CheckoutOrchestrator {
                     if ($redirect_url === null) {
                         $gateway->log('Charge response: no valid redirect URL found.', 'warning');
                         WC()->session->set("refresh_totals", true);
-                        wc_add_notice(__("Payment request could not be completed. Please try again.", $gateway->domain), "error");
+                        wc_add_notice(__("Payment request could not be completed. Please try again.", 'sucheckout-upayments'), "error");
                         return ["result" => "failure", "redirect" => wc_get_checkout_url()];
                     }
 
@@ -1391,7 +1391,7 @@ class CheckoutOrchestrator {
                 // Do NOT log $e->getMessage() — may contain internal/provider details.
                 $gateway->log('Charge response: unexpected error during processing.', 'warning');
                 WC()->session->set("refresh_totals", true);
-                wc_add_notice(__("Payment request could not be completed. Please try again.", $gateway->domain), "error");
+                wc_add_notice(__("Payment request could not be completed. Please try again.", 'sucheckout-upayments'), "error");
                 return ["result" => "failure", "redirect" => wc_get_checkout_url()];
             }
         }

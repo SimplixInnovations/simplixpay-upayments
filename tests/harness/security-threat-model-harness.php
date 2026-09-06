@@ -35,7 +35,7 @@ function sec_source($relative) {
 
 require_once dirname(__DIR__, 2) . '/src/Security/PublicOrderStatus.php';
 
-use Simplix\Pay\UPayments\Security\PublicOrderStatus;
+use Simplixi\SUCheckout\UPayments\Security\PublicOrderStatus;
 
 final class SecurityHarnessOrder {
     private $payment_method;
@@ -104,7 +104,7 @@ $security_doc = sec_source('docs/project/SECURITY-THREAT-MODEL.md');
 // Public route must be intercepted before the inherited priority-10 dispatcher.
 sec_assert(strpos($lifecycle, "require_once dirname(__DIR__) . '/Security/PublicOrderStatus.php';") !== false, 'payment lifecycle loads hardened public status boundary');
 sec_assert(strpos($lifecycle, 'PublicOrderStatus::handle();') !== false, 'priority-5 lifecycle handles legacy status poll');
-sec_assert(strpos($gateway, '\\Simplix\\Pay\\UPayments\\Security\\PublicOrderStatus::handle();') !== false, 'legacy gateway status method delegates to hardened boundary');
+sec_assert(strpos($gateway, '\\Simplixi\\SUCheckout\\UPayments\\Security\\PublicOrderStatus::handle();') !== false, 'legacy gateway status method delegates to hardened boundary');
 sec_assert(strpos($gateway, 'get_post_meta($order_id, "UPayments_WHS"') === false, 'legacy poll no longer reads arbitrary post meta by numeric id');
 
 // SEC-02: subscription mutations must be POST + owner + nonce + subscription preflight.

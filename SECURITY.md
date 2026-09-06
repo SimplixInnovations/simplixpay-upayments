@@ -9,13 +9,13 @@ Do **not** open a public GitHub issue for a suspected vulnerability.
 Preferred channels:
 
 1. GitHub Private Vulnerability Reporting, when enabled for this repository; or
-2. **info@simplixi.com** with subject **`[Security] SimplixPay for UPayments`**.
+2. **info@simplixi.com** with subject **`[Security] SUCheckout for UPayments`**.
 
 Include only what is required to reproduce the issue. Never send live API keys, bearer tokens, full card data, customer unique/card tokens, token-identity secrets/provenance material, customer databases or unnecessary personal information. If a secret is directly involved, describe its role and coordinate a secure exchange method first.
 
 ## Useful details
 
-- affected SimplixPay version or exact commit;
+- affected SUCheckout version or exact commit;
 - WordPress/WooCommerce/PHP versions;
 - checkout/HPOS/multilingual state where relevant;
 - concise reproduction;

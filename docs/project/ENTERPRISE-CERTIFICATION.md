@@ -1,9 +1,11 @@
-# SimplixPay for UPayments — Enterprise Certification
+# SUCheckout for UPayments — Historical Enterprise Foundation & Re-certification Context
 
-**Status:** TASKS 1–8 DONE / VERIFIED; ENTERPRISE RELEASE CANDIDATE QUALIFIED
-**Canonical repository:** `SimplixInnovations/simplixpay-upayments`
+**Historical status:** TASKS 1–8 DONE / VERIFIED under the former pre-rebrand product identity
+**Current engineering state:** SUCheckout identity migration implemented; permanent exact-head certification required before merge/release
+**Current GitHub repository pending owner/admin rename:** `SimplixInnovations/simplixpay-upayments`
+**Target canonical repository:** `SimplixInnovations/sucheckout-upayments`
 
-This record owns the reproducible enterprise certification evidence. It does not convert external/manual evidence into repository claims.
+This record preserves the reproducible enterprise certification foundation established before the approved SUCheckout rebrand. Historical package names, basenames, text domains, SHAs and run numbers below remain evidence of what was certified then; they are not current SUCheckout identity declarations. Current state is owned by `PROJECT-STATUS.md`.
 
 ## Certified platform foundation
 
@@ -29,7 +31,7 @@ Every cell installs real WordPress/WooCommerce and verifies:
 - standard Cart/Checkout Blocks registration and exact availability semantics;
 - declared public support metadata;
 - Woo feature registry compatibility for `cart_checkout_blocks` and `custom_order_tables`;
-- real Woo order CRUD through the requested authoritative storage with protected SimplixPay/UPayments metadata.
+- real Woo order CRUD through the requested authoritative storage with protected historical plugin/UPayments metadata.
 
 Public declarations authorized by this matrix:
 
@@ -102,11 +104,11 @@ No arbitrary marketplace split-routing claim is made.
 - boot/runtime evidence exposes no merchant credential material;
 - uninstall remains non-destructive by default.
 
-## Deterministic artifact certification — DONE / VERIFIED
+## Deterministic artifact certification — DONE / VERIFIED (historical package identity)
 
-Task 5 / PR #50 established:
+Task 5 / PR #50 established the then-canonical pre-rebrand artifact contract:
 
-- canonical `simplixpay-upayments-0.1.0.zip`;
+- historical `simplixpay-upayments-0.1.0.zip`;
 - exact distribution set and file bytes from Git `HEAD` tree/blobs;
 - deterministic paths/timestamps/modes/compression within the defined toolchain;
 - ZIP SHA-256 sidecar and sorted per-file manifest;
@@ -135,13 +137,13 @@ Task 7 / PR #52 final head `dd550eb6af86262aabfd50479407903172327726` ran curren
 
 A controlled hypothetical package that changed only `UPayments.php` to `simplixpay-upayments.php` failed the safe active-upgrade contract in both cells: `active_plugins` retained the old basename, the target basename was inactive, and the runtime did not load.
 
-First-stable decision:
+Historical Task 7 decision at that time:
 
 - main file `UPayments.php`;
-- basename `simplixpay-upayments/UPayments.php`;
-- text domain `upayments`.
+- historical basename `simplixpay-upayments/UPayments.php`;
+- historical text domain `upayments`.
 
-The eventual targets remain deferred migrations. The installable package still contains 70 explicit PHP translation calls bound to `upayments`; no coordinated WPML/String Translation migration has been certified.
+The approved SUCheckout migration later superseded the package/text identity while retaining the physical `UPayments.php` compatibility decision. Current canonical package basename is `sucheckout-upayments/UPayments.php` and current text domain is `sucheckout-upayments`; the legacy root remains only for migration/rollback evidence.
 
 Task 7 merged as `02b8d1c2851faabe020f23bbe84ebcca43a4827d`. Post-merge `main` passed Quality #545, Compatibility #73, Release Artifact #27 and CodeQL #349.
 
@@ -173,6 +175,6 @@ The reserved final whole-plugin Codex challenge identified one valid P2 in stale
 
 PR #54 squash-merged as `2ddb1790fead37c6055256847dc7c827e165af4a`. Post-merge canonical `main` passed Quality #553, Compatibility #81, Release Artifact #35, Provider Sandbox #13 and CodeQL/main-security #358.
 
-The enterprise engineering program is therefore **DONE / VERIFIED through Task 8**. The repository is an enterprise-qualified release candidate. External/manual classifications and unsupported features below remain honest boundaries, not fabricated repository certifications.
+The historical enterprise engineering program is therefore **DONE / VERIFIED through Task 8**. The SUCheckout identity migration implementation is complete, and every candidate must independently satisfy the permanent exact-head certification gates before merge or release. External/manual classifications and unsupported features remain honest boundaries, not fabricated repository certifications.
 
-No public 1.0/tag/GitHub Release/WordPress.org publication is created by this engineering closeout alone.
+No public tag, GitHub Release, WordPress.org publication or repository rename is created or authorized by this engineering closeout alone.

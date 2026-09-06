@@ -181,7 +181,15 @@ class Phase9IWpdb {
         }
         return count($this->last_keys);
     }
-    public function get_col($sql = null) { return $this->last_keys; }
+    public function get_col($sql = null) {
+        if (is_string($sql) && $sql !== '') {
+            $result = $this->query($sql);
+            if ($result === false) {
+                return null;
+            }
+        }
+        return $this->last_keys;
+    }
     public function get_results($sql) {
         $s =& p9_state(); if ($s['db_failure']) return null;
         $rows = array();
@@ -205,7 +213,7 @@ $GLOBALS['wpdb'] = new Phase9IWpdb();
 require_once $root . '/includes/Token/CustomerTokenIdentity.php';
 require_once $root . '/src/Migration/MigrationPreflight.php';
 
-use Simplix\Pay\UPayments\Migration\MigrationPreflight;
+use Simplixi\SUCheckout\UPayments\Migration\MigrationPreflight;
 use UPayments\Token\CustomerTokenIdentity;
 
 $pass = 0; $fail = 0;

@@ -1,6 +1,6 @@
 <?php
 
-namespace Simplix\Pay\UPayments\Provider;
+namespace Simplixi\SUCheckout\UPayments\Provider;
 
 /**
  * Pure resolver for the legacy UPayments API mode and endpoint contract.

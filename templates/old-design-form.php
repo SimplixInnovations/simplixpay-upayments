@@ -10,13 +10,13 @@
 
 defined( 'ABSPATH' ) || exit;
 ?>
-<div class="form-row form-row-wide">
+<div class="sucheckout-upayments form-row form-row-wide">
     <?php 
     echo wp_kses_post($gateway->description);
     if (isset($_GET["cancelled"]))
     {
         $notice_html = '<div class="woocommerce-NoticeGroup woocommerce-NoticeGroup-checkout"><div class="woocommerce-error alert-color">'
-            . esc_html__('Payment canceled by customer', $gateway->domain)
+            . esc_html__('Payment canceled by customer', 'sucheckout-upayments')
             . '</div></div>';
     ?>
     <script>
@@ -28,7 +28,7 @@ defined( 'ABSPATH' ) || exit;
     <?php
     } elseif (isset($_GET["failed"])) {
         $notice_html = '<div class="woocommerce-NoticeGroup woocommerce-NoticeGroup-checkout"><div class="woocommerce-error alert-color">'
-            . esc_html__('Payment error from UPayments', $gateway->domain)
+            . esc_html__('Payment error from UPayments', 'sucheckout-upayments')
             . '</div></div>';
     ?>
     <script>
@@ -40,7 +40,7 @@ defined( 'ABSPATH' ) || exit;
     <?php
     } elseif (isset($_GET["suspected"])){
         $notice_html = '<div class="woocommerce-NoticeGroup woocommerce-NoticeGroup-checkout"><div class="woocommerce-error alert-color">'
-            . esc_html__('Payment failed for suspected fraud.', $gateway->domain)
+            . esc_html__('Payment failed for suspected fraud.', 'sucheckout-upayments')
             . '</div></div>';
     ?>
     <script>
@@ -76,7 +76,7 @@ defined( 'ABSPATH' ) || exit;
     {
     ?>
         <ul style="list-style: none outside;">
-            <p style="display: inline"><?php esc_html_e('Select Payment Type:', 'upayments'); ?></p>
+            <p style="display: inline"><?php esc_html_e('Select Payment Type:', 'sucheckout-upayments'); ?></p>
             <?php 
             foreach ($icons as $key => $value) {
                 if (!is_scalar($value)) {
@@ -100,12 +100,12 @@ defined( 'ABSPATH' ) || exit;
                         
             ?>
                 <li>
-                    <span class="<?php echo $key_attr; ?>-upayments-button">
-                    <input id="upayment_payment_type_<?php echo $key_attr; ?>" type="radio" class="input-radio"
-                            name="upayment_payment_type" value="<?php echo $key_attr; ?>"/>
-                    <label for="upayment_payment_type_<?php echo $key_attr; ?>"
+                    <span class="<?php echo esc_attr($key_string); ?>-upayments-button">
+                    <input id="upayment_payment_type_<?php echo esc_attr($key_string); ?>" type="radio" class="input-radio"
+                            name="upayment_payment_type" value="<?php echo esc_attr($key_string); ?>"/>
+                    <label for="upayment_payment_type_<?php echo esc_attr($key_string); ?>"
                             style='display: inline-block; font-family: -apple-system,blinkmacsystemfont,"Helvetica Neue",helvetica,sans-serif;'>
-                        <span class="upayment_payment_type_label_text"><?php echo $value_text; ?></span>
+                        <span class="upayment_payment_type_label_text"><?php echo esc_html($value_string); ?></span>
                         <span class="upayment_payment_type_label_logo"><?php echo wp_kses_post($icon); ?></span>
                     </label>
                     </span>

@@ -1,9 +1,9 @@
 <?php
 
-namespace Simplix\Pay\UPayments\Tests\Admin;
+namespace Simplixi\SUCheckout\UPayments\Tests\Admin;
 
 use PHPUnit\Framework\TestCase;
-use Simplix\Pay\UPayments\Admin\GatewaySettings;
+use Simplixi\SUCheckout\UPayments\Admin\GatewaySettings;
 
 final class GatewaySettingsTest extends TestCase {
     protected function setUp(): void {

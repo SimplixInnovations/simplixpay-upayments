@@ -1,4 +1,4 @@
-# SimplixPay for UPayments — Engineering Roadmap
+# SUCheckout for UPayments — Engineering Roadmap
 
 This is the public high-level sequence. `docs/project/PROJECT-STATUS.md` owns the current verified state; historical phase records preserve their closeout evidence.
 
@@ -65,13 +65,16 @@ Permanent real-runtime evidence for saved-card/token provenance, subscription el
 
 Current and floor runtime cells prove safe same-basename upgrade, rollback, deactivate/reactivate, data/callback/cron continuity and duplicate-package characterization.
 
-Direct `UPayments.php` → `simplixpay-upayments.php` migration fails the active-install contract. The first stable release therefore retains:
+The historical Task 7 experiment proved that changing the physical main filename alone does not transfer WordPress active-plugin identity. That evidence is why the approved SUCheckout migration retains `UPayments.php` as the physical bootstrap.
 
-- `UPayments.php`;
-- plugin basename `simplixpay-upayments/UPayments.php`;
-- text domain `upayments`.
+The SUCheckout package identity is now:
 
-The eventual canonical filename/text-domain targets remain future tested migrations.
+- physical main file `UPayments.php`;
+- canonical package basename `sucheckout-upayments/UPayments.php`;
+- canonical text domain `sucheckout-upayments`;
+- legacy pre-release basename `simplixpay-upayments/UPayments.php` retained only for migration/rollback certification.
+
+A future physical rename to `sucheckout-upayments.php` remains separately gated.
 
 ### Task 8 — Enterprise Release Candidate Closeout — DONE / VERIFIED
 
@@ -81,7 +84,7 @@ The reserved final whole-plugin Codex review produced one valid P2 governance fi
 
 PR #54 squash-merged as `2ddb1790fead37c6055256847dc7c827e165af4a`. Canonical `main` then passed Quality #553, Compatibility #81, Release Artifact #35, Provider Sandbox #13 and CodeQL/main-security #358.
 
-The repository is now an **enterprise-qualified release-candidate engineering state**. No active engineering gate is open. A public 1.0 tag, GitHub Release or WordPress.org publication remains a separate owner release decision.
+That pre-rebrand enterprise qualification is retained as historical evidence. The approved **SUCheckout identity migration is implemented** and remains protected by permanent exact-head certification. A public tag, GitHub Release, WordPress.org publication and repository rename remain separate owner/admin decisions after verified merge.
 
 ## External/manual evidence track
 

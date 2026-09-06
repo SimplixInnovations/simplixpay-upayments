@@ -1,6 +1,6 @@
 <?php
 
-use Simplix\Pay\UPayments\Admin\GatewaySettings;
+use Simplixi\SUCheckout\UPayments\Admin\GatewaySettings;
 
 $a3_assets = array('styles' => array(), 'scripts' => array(), 'inline' => array());
 
@@ -293,7 +293,7 @@ $checkout_orchestrator_source = file_get_contents($root . '/src/Payment/Checkout
 $checkout_runtime_source = $gateway_source . "\n" . $checkout_orchestrator_source;
 a3_assert(is_string($module_source), 'gateway settings module source is readable');
 a3_assert(is_string($gateway_source), 'gateway source is readable');
-a3_assert(strpos($module_source, 'namespace Simplix\\Pay\\UPayments\\Admin;') !== false, 'settings module uses canonical Simplix Admin namespace');
+a3_assert(strpos($module_source, 'namespace Simplixi\\SUCheckout\\UPayments\\Admin;') !== false, 'settings module uses canonical SUCheckout Admin namespace');
 a3_assert(strpos($module_source, 'process_payment') === false, 'settings module does not own checkout orchestration');
 a3_assert(strpos($module_source, 'execute_upayments_request') === false, 'settings module does not own provider transport');
 a3_assert(strpos($module_source, 'UPayments_order_id') === false, 'settings module does not own payment/order truth');

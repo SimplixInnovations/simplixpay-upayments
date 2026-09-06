@@ -1,42 +1,51 @@
 <?php
 
-namespace Simplix\Pay\UPayments\Release;
+namespace Simplixi\SUCheckout\UPayments\Release;
 
 defined('ABSPATH') || exit;
 
 /**
- * Canonical product/release identity for the Simplix-maintained integration.
+ * Canonical product/release identity for SUCheckout for UPayments.
  *
- * Persisted payment identity is deliberately not defined here. Historical
- * gateway IDs, options, metadata, callbacks, cron hooks, tables, and H12
- * provenance remain compatibility contracts under the naming standard.
+ * The first-party PSR-4 namespace has migrated to the canonical SUCheckout
+ * root. NAMESPACE_ROOT is the permanent machine-readable namespace contract.
+ *
+ * Persisted payment/provider identities are explicit compatibility contracts,
+ * not product branding. They must not be destroyed by a rebrand.
  */
 final class Identity {
-    public const PRODUCT_NAME = 'SimplixPay for UPayments';
-    public const SHORT_NAME = 'SimplixPay UPayments';
+    public const PRODUCT_NAME = 'SUCheckout for UPayments';
+    public const SHORT_NAME = 'SUCheckout';
     public const VERSION = '0.1.0';
-    public const SLUG = 'simplixpay-upayments';
-    public const REPOSITORY = 'SimplixInnovations/simplixpay-upayments';
+    public const SLUG = 'sucheckout-upayments';
+    public const REPOSITORY = 'SimplixInnovations/sucheckout-upayments';
+    public const TEXT_DOMAIN = 'sucheckout-upayments';
+    public const NAMESPACE_ROOT = 'Simplixi\\SUCheckout\\UPayments';
 
-    /** External self-updates stay disabled until package/basename migration is proven. */
+    /** External self-updates stay disabled until release authority is explicitly enabled. */
     public const UPDATE_CHANNEL = 'disabled';
 
-    /** Transitional install identities retained during Phase 0. */
+    /** Historical install/runtime identities retained for compatibility. */
     public const LEGACY_MAIN_FILE = 'UPayments.php';
     public const LEGACY_TEXT_DOMAIN = 'upayments';
+    public const LEGACY_GATEWAY_ID = 'upayments';
+    public const LEGACY_SETTINGS_OPTION = 'woocommerce_upayments_settings';
+    public const LEGACY_CALLBACK_ROUTE = 'wc_upayments';
+    public const LEGACY_SUBSCRIPTION_HOOK = 'upay_process_subscriptions';
+    public const LEGACY_TOKEN_SECRET_OPTION = 'upayments_token_identity_secret_v2';
+    public const LEGACY_BILLING_ATTEMPT_TABLE_SUFFIX = 'upayments_billing_attempts';
 
-    /** Frozen eventual targets; changing to them requires an upgrade migration. */
-    public const TARGET_MAIN_FILE = 'simplixpay-upayments.php';
-    public const TARGET_TEXT_DOMAIN = 'simplixpay-upayments';
+    /** Canonical packaging/i18n targets; bootstrap migration is qualified separately. */
+    public const TARGET_MAIN_FILE = 'sucheckout-upayments.php';
+    public const TARGET_TEXT_DOMAIN = 'sucheckout-upayments';
 
     private function __construct() {
     }
 }
 
-// Incremental payment-lifecycle strangler. The Phase 0 identity harness loads
-// this file in deliberate isolation, outside a WordPress hook environment, so
-// runtime registration is conditional on the real WordPress hook API existing.
+// Incremental payment-lifecycle bootstrap. The identity harness loads this file
+// in deliberate isolation, outside a WordPress hook environment.
 if (function_exists('add_action')) {
     require_once dirname(__DIR__) . '/Payment/PaymentLifecycle.php';
-    \Simplix\Pay\UPayments\Payment\PaymentLifecycle::bootstrap();
+    \Simplixi\SUCheckout\UPayments\Payment\PaymentLifecycle::bootstrap();
 }

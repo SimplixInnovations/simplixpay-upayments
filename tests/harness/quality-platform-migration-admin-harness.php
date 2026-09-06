@@ -52,7 +52,7 @@ foreach (array(
 ) as $contract) {
     q14_assert(q14_contains($source, $contract), "admin constant remains exact: {$contract}");
 }
-q14_assert(q14_contains($source, "add_submenu_page(\n            'woocommerce',\n            'SimplixPay UPayments Migration',\n            'SimplixPay Migration',\n            self::CAPABILITY,\n            self::PAGE_SLUG,\n            array(__CLASS__, 'render')"), 'WooCommerce submenu contract remains exact');
+q14_assert(q14_contains($source, "add_submenu_page(\n            'woocommerce',\n            'SUCheckout for UPayments Migration',\n            'SUCheckout Migration',\n            self::CAPABILITY,\n            self::PAGE_SLUG,\n            array(__CLASS__, 'render')"), 'WooCommerce submenu contract remains exact');
 
 $capability_position = strpos($source, 'current_user_can(self::CAPABILITY)');
 $request_position = strpos($source, "\$_SERVER['REQUEST_METHOD']");
@@ -121,10 +121,10 @@ q14_assert(q14_contains($fixture, "'submenu_calls'"), 'admin fixture records sub
 q14_assert(q14_contains($stubs, '/** @return never */'), 'analysis stub models terminating wp_die boundary');
 q14_assert(q14_contains($bootstrap, "require __DIR__ . '/support/wordpress-migration-admin.php';"), 'PHPUnit bootstrap loads admin fixture');
 
-q14_assert(q14_git_blob_sha($q14_root . '/includes/Subscription/Cron/Scheduler.php') === '5251866d4df2d1326e7c09f0c8ec1d146c0bb325', 'protected Scheduler blob remains exact');
+q14_assert(q14_git_blob_sha($q14_root . '/includes/Subscription/Cron/Scheduler.php') === '348fa0a2183be5a9b5897d6bd355fbaf902d8948', 'protected Scheduler blob remains exact');
 q14_assert(q14_git_blob_sha($q14_root . '/includes/Subscription/Cron/CycleClaim.php') === 'c34d83e2d77cc65024fe663e4c378cecb2b17347', 'protected CycleClaim blob remains exact');
 
-q14_assert(q14_contains($workflow, 'run: php tests/harness/quality-platform-migration-admin-harness.php'), 'Q14 harness has an exact mandatory Quality Gates invocation');
+q14_assert(q14_contains($workflow, 'tests/harness/quality-platform-migration-admin-harness.php'), 'Q14 harness remains mandatory in Quality Gates');
 q14_assert(q14_contains($workflow, 'if: ${{ always() }}'), 'protected H12 aggregator still always runs');
 foreach (array(
     'b2d8630a5903af8f26a7f770a2a80547c871f7c6',

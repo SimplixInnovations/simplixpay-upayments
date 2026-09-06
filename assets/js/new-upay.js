@@ -1,129 +1,113 @@
-jQuery(function($) {
+(function ($, window, document) {
+    'use strict';
+
+    const api = window.suCheckoutUpayments = window.suCheckoutUpayments || {};
+
     function hidePlaceOrderButtonIfNeeded() {
-        let selectedPaymentMethod = $('input[name="payment_method"]:checked').val();
-        if (selectedPaymentMethod === 'upayments') { // Replace 'upayments' with the ID of your custom payment method
+        const selectedPaymentMethod = $('input[name="payment_method"]:checked').val();
+        if (selectedPaymentMethod === 'upayments') {
             $('button#place_order').hide();
         } else {
             $('button#place_order').show();
         }
     }
 
-    function handlePaymentMethodChange() {
-        hidePlaceOrderButtonIfNeeded();
-    }
-
-    $('form.checkout').on('change', 'input[name="payment_method"]', function() {
-        handlePaymentMethodChange();
-    });
-
-    // Listen for page load and DOM ready
-    $(document).ready(function() {
-        hidePlaceOrderButtonIfNeeded(); // Check on DOM ready
-        checkApplePayAvailability();
-        // Check after a short delay to handle redirection (if needed)
-        setTimeout(function() {
-            hidePlaceOrderButtonIfNeeded();
-            checkApplePayAvailability();
-        }, 500); // Adjust the delay time if needed
-    });
-
-    // Listen for AJAX Complete event (to handle cases like redirection)
-    $(document).ajaxComplete(function() {
-        hidePlaceOrderButtonIfNeeded();
-        checkApplePayAvailability();
-    });
-
-    let customPaymentMethodId = 'upayments';
-
-    // Check if the form exists and the chosen payment method is not already set
-    if ($('form.checkout').length > 0 && $('input[name="payment_method"]:checked').val() !== customPaymentMethodId) {
-        // Trigger click event on the desired payment method
-        $('input[name="payment_method"][value="' + customPaymentMethodId + '"]').click();
-    }
-
-});
-function checkApplePayAvailability() {
-    justEat = {
-        applePay: {
+    function checkApplePayAvailability() {
+        const applePay = {
             supportedByDevice: function () {
-                return "ApplePaySession" in window;
+                return 'ApplePaySession' in window;
             },
             getMerchantIdentifier: function () {
-                return "merchant.com.upayments.ustore";
+                return 'merchant.com.upayments.ustore';
+            }
+        };
+
+        const merchantIdentifier = applePay.getMerchantIdentifier();
+        if (!merchantIdentifier || !applePay.supportedByDevice()) {
+            return;
+        }
+
+        if (window.ApplePaySession.canMakePayments()) {
+            return;
+        }
+
+        window.ApplePaySession.canMakePaymentsWithActiveCard(merchantIdentifier).catch(function () {
+            // Availability probing is advisory only; checkout remains provider-driven.
+        });
+    }
+
+    api.submitPaymentMethod = function (buttonValue) {
+        $('#upayment_payment_type').val(buttonValue);
+        $('#card_token').val('');
+        if (buttonValue !== 'cc') {
+            $('#save_card').val('0');
+            const checkbox = document.getElementById('chkSaveCard');
+            if (checkbox) {
+                checkbox.checked = false;
             }
         }
+        $('form.checkout').submit();
     };
-        
-    let merchantIdentifier = justEat.applePay.getMerchantIdentifier();
-    if (merchantIdentifier && justEat.applePay.supportedByDevice()) {        
-        // Determine whether to display the Apple Pay button. See this link for details
-        // on the two different approaches: https://developer.apple.com/documentation/applepayjs/checking_if_apple_pay_is_available
-        if (ApplePaySession.canMakePayments()) {            
-        console.log('apple pay available');
-        }else{
-            ApplePaySession.canMakePaymentsWithActiveCard(merchantIdentifier).then(function (canMakePayments) {
-                if (canMakePayments) {
-                    console.log('apple pay available');
-                } else {
-                    console.log('apple not available');
-                }
-            });
-        }
-    }else{
-        console.log('apple not available');
-    } 
-}
 
-function submitUpayButton(buttonValue) {
-    jQuery('#upayment_payment_type').val(buttonValue);
-    jQuery('#card_token').val('');
-    if (buttonValue !== 'cc') {
-        jQuery('#save_card').val('0');
-        let checkbox = document.getElementById('chkSaveCard');
+    api.submitSavedCard = function (button) {
+        $('#upayment_payment_type').val('cc');
+        $('#card_token').val(button.value);
+        $('#save_card').val('0');
+        const checkbox = document.getElementById('chkSaveCard');
         if (checkbox) {
             checkbox.checked = false;
         }
-    }
-    jQuery('form.checkout').submit();
-}
+        $('form.checkout').submit();
+    };
 
-function submitSavedCard(objButton) {
-    jQuery('#upayment_payment_type').val('cc');
-    jQuery('#card_token').val(objButton.value);
-    jQuery('#save_card').val('0');
-    let checkbox = document.getElementById('chkSaveCard');
-    if (checkbox) {
-        checkbox.checked = false;
-    }
-    jQuery('form.checkout').submit();
-}
+    api.toggleSaveCard = function (loggedUser) {
+        const checkbox = document.getElementById('chkSaveCard');
+        const saveCardInput = $('#save_card');
 
-function toggleSaveCard(loggedUser) {
-    let checkbox = document.getElementById('chkSaveCard');
-    let saveCardInput = jQuery('#save_card');
-
-    if (loggedUser === false || !checkbox) {
-        if (checkbox) {
-            checkbox.checked = false;
+        if (loggedUser === false || !checkbox) {
+            if (checkbox) {
+                checkbox.checked = false;
+            }
+            saveCardInput.val('0');
+            if (loggedUser === false) {
+                api.showToast('Please log in to save or use a saved card.', 3000);
+            }
+            return;
         }
-        saveCardInput.val('0');
-        if (loggedUser === false) {
-            showToast('Please log in to save or use a saved card.', 3000);
+
+        saveCardInput.val(checkbox.checked ? '1' : '0');
+    };
+
+    api.showToast = function (message, duration) {
+        const toast = document.getElementById('wc-toast');
+        if (!toast) {
+            return;
         }
-        return;
-    }
 
-    // User logged in
-    saveCardInput.val(checkbox.checked ? '1' : '0');
-}
+        toast.textContent = String(message);
+        toast.classList.add('show');
 
-function showToast(message, duration = 3000) {
-    const toast = document.getElementById('wc-toast');
+        window.setTimeout(function () {
+            toast.classList.remove('show');
+        }, typeof duration === 'number' ? duration : 3000);
+    };
 
-    toast.innerHTML = message;
-    toast.classList.add('show');
+    $(function () {
+        function refreshCheckoutUi() {
+            hidePlaceOrderButtonIfNeeded();
+            checkApplePayAvailability();
+        }
 
-    setTimeout(() => {
-        toast.classList.remove('show');
-    }, duration);
-}
+        $('form.checkout').on('change', 'input[name="payment_method"]', refreshCheckoutUi);
+
+        refreshCheckoutUi();
+        window.setTimeout(refreshCheckoutUi, 500);
+
+        $(document).ajaxComplete(refreshCheckoutUi);
+
+        const paymentMethodId = 'upayments';
+        if ($('form.checkout').length > 0 && $('input[name="payment_method"]:checked').val() !== paymentMethodId) {
+            $('input[name="payment_method"][value="' + paymentMethodId + '"]').trigger('click');
+        }
+    });
+})(jQuery, window, document);

@@ -1,6 +1,6 @@
 # Contribution Policy
 
-Thank you for helping improve **SimplixPay for UPayments**.
+Thank you for helping improve **SUCheckout for UPayments**.
 
 ## Current contribution model
 
