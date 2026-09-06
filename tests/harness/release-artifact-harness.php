@@ -123,6 +123,11 @@ release_assert(
     'release workflow uploads the exact built artifact with an immutable action pin'
 );
 release_assert(
+    strpos($workflow, "github.event_name == 'pull_request' && github.event.pull_request.head.sha || github.sha") !== false
+        && strpos($workflow, 'ref: ${{ env.RELEASE_SOURCE_SHA }}') !== false,
+    'release artifact checkout is pinned to the exact candidate source SHA instead of a synthetic PR merge ref'
+);
+release_assert(
     strpos($workflow, 'actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093') !== false,
     'packaged runtime jobs download the exact built artifact with an immutable action pin'
 );
