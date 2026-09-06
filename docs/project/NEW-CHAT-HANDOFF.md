@@ -333,21 +333,33 @@ Do not globally rename:
 
 ## Current tranche — Enterprise Compatibility Certification
 
-**Status: DISCOVERY / IMPLEMENTATION.**
+**Status: CORE PLATFORM VERIFIED / SUPPORT DECLARATION CANDIDATE.**
 
-Quality Platform Q1-Q19 is DONE / VERIFIED. Q19 final head `1717f0c25da7140a7799c7db3a7f016abecec7e9`, tree `8230778e3313e4d201de48b1a5cf170c42f7178d`, passed Quality Gates #463, PHPUnit **174/1063**, Q19 **22/0**, H12 PHP **1927/0**, H12 Blocks **144/0** and exact-head CodeQL. It was squash-merged as `29ba16a1eabc00e25c3652ae838be9b9539b3a10`; post-merge Quality Gates #464 and all CodeQL lanes passed, and the Q19 branch was deleted.
+Quality Platform Q1-Q19 is DONE / VERIFIED and remains permanent. The real-runtime certification foundation is also DONE / VERIFIED through PR #47:
 
-Required current sequence:
+- final head `d46abc86f329a2b0ae24e79c18c371db2083a43a`;
+- exact-head Quality Gates #490 and Compatibility Certification #18: **SUCCESS**;
+- all 16 WordPress/WooCommerce/PHP × legacy/HPOS jobs: **SUCCESS**;
+- exact-head CodeQL: **SUCCESS**;
+- squash merge `5e4f33d24bcaed1032691c564b570e60c95a9483`;
+- post-merge Quality Gates #491 and Compatibility Certification #19: **SUCCESS**;
+- all 16 post-merge runtime jobs and both CodeQL lanes: **SUCCESS**;
+- implementation branch auto-deleted.
 
-1. Keep every historical/architecture/provider/security/Q1-Q19/H12 regression mandatory.
-2. Build real WordPress/WooCommerce integration evidence rather than expanding compatibility claims from custom harnesses.
-3. Test exact WordPress/WooCommerce/PHP matrix cells, Classic checkout, Cart/Checkout Blocks and HPOS on/off.
-4. Add compatibility headers and Woo feature declarations only after the corresponding exact runtime matrix passes.
-5. Preserve protected gateway/options/routes/meta/H12/Scheduler/CycleClaim identities.
-6. Record unsupported or externally blocked cells explicitly instead of guessing them green.
-7. Move next into feature/product readiness and deterministic release engineering only from verified certification evidence.
+PR #47 also independently reproduced a real malformed-settings activation fatal before the minimal `is_array($settings)` guard fixed it. The permanent runtime matrix proves full protected-settings preservation, activation-hook execution, Classic gateway registration, standard Blocks registration/availability and Woo order CRUD in both legacy and HPOS authoritative storage.
 
-The numbered Quality Platform is closed at Q19; do not create Q20 for continuity. Certification may fix test-proven compatibility defects but may not reinterpret provider truth, weaken authorization, broaden migration eligibility or silently broaden certified feature/platform claims.
+Current declaration branch: `enterprise/compatibility-declarations`.
+
+Current RED→GREEN declaration evidence:
+
+1. **Support metadata RED-A:** test-only head `92d6f21ccde6795c8a9b97915f3c66d8d005e581` failed real runtime because the old WordPress minimum was 5.6.
+2. **Support metadata GREEN-A:** headers now derive only from matrix evidence — WP minimum 6.9 / tested 7.1, WC minimum 10.8 / tested 11.1, PHP minimum 7.4. Candidate `b247965c2ff7e98c00b394b2672b5ef2ba14fba6` passed Quality Gates #495 and Compatibility Certification #23 across all 16 cells.
+3. **HPOS declaration RED-B:** `e5e1a324970cf98c4c0218d5996b954f6cc04729` failed the real Woo feature registry exactly because `custom_order_tables` was absent.
+4. **HPOS GREEN-B:** `1849ee900a0da21c3c39fa85975417063a8b4a12` adds only the guarded `custom_order_tables` declaration beside the already-existing Blocks declaration; real cells pass the declaration assertion. The exact `UPayments.php` ratchet is now 89,102 bytes.
+5. Final full Quality Gates + all 16 compatibility cells + CodeQL must be green on one exact declaration head before merge.
+6. After merge/post-merge verification, proceed directly to UPayments public-sandbox transport/schema certification, then feature/multilingual/browser/performance/operations and release engineering.
+
+Do not create Q20. Do not broaden compatibility beyond exact evidence. Preserve all provider/payment/Scheduler/CycleClaim/H12 contracts and protected identities.
 
 ## Permanent control plane
 
@@ -363,10 +375,11 @@ Read in this order:
 8. `docs/project/SECURITY-THREAT-MODEL.md`
 9. `docs/project/ARCHITECTURE-CODE-QUALITY.md`
 10. `docs/project/QUALITY-PLATFORM.md`
-11. relevant sections of `docs/project/MASTER-ENGINEERING-PLAYBOOK.md`
-12. `docs/project/REPOSITORY-AUDIT.md`
-13. `docs/project/REPOSITORY-READINESS.md`
-14. `docs/project/BASELINE-H12.md`
+11. `docs/project/ENTERPRISE-CERTIFICATION.md`
+12. relevant sections of `docs/project/MASTER-ENGINEERING-PLAYBOOK.md`
+13. `docs/project/REPOSITORY-AUDIT.md`
+14. `docs/project/REPOSITORY-READINESS.md`
+15. `docs/project/BASELINE-H12.md`
 
 ## Required working method
 
@@ -390,7 +403,7 @@ Read in this order:
 4. Security Threat-Model Closure — **DONE / VERIFIED**
 5. Architecture & Code-Quality Foundation — **DONE / VERIFIED (A1-A5)**
 6. Full automated quality platform — **DONE / VERIFIED (Q1-Q19)**
-7. Enterprise Compatibility Certification: Woo/WP/PHP/HPOS/Blocks/WPML — **CURRENT**
+7. Enterprise Compatibility Certification — **CURRENT; CORE PLATFORM VERIFIED, BROADER CERTIFICATION IN PROGRESS**
 8. Feature certification
 9. Performance/UX/operations/diagnostics
 10. Release engineering/distribution/WordPress.org when eligible
@@ -405,9 +418,9 @@ Read AGENTS.md first, then docs/project/PROJECT-STATUS.md, docs/project/NAMING-I
 
 Treat recorded SHAs/status as verified milestone anchors, not substitutes for live GitHub. Freshly verify current main, open PRs/branches, checks, review state and current source before acting; reconcile any drift first.
 
-Repository readiness, Phase 0, Phase 9I, Provider Contract & Payment Lifecycle, Security Threat-Model Closure, Architecture discovery/A1-A5 and Quality Platform Q1-Q19 are DONE / VERIFIED. Q19 was squash-merged from PR #45 as main `29ba16a1eabc00e25c3652ae838be9b9539b3a10`, tree `8230778e3313e4d201de48b1a5cf170c42f7178d`; exact-head Quality Gates #463, exact-head CodeQL, post-merge Quality Gates #464 and all main CodeQL lanes passed. The current permitted gate is Enterprise Compatibility Certification.
+Repository readiness, Phase 0, Phase 9I, Provider Contract & Payment Lifecycle, Security Threat-Model Closure, Architecture discovery/A1-A5 and Quality Platform Q1-Q19 are DONE / VERIFIED. Enterprise runtime certification foundation PR #47 is also DONE / VERIFIED and squash-merged as main `5e4f33d24bcaed1032691c564b570e60c95a9483`; exact-head and post-merge Quality Gates, Compatibility Certification, all 16 runtime/storage cells and CodeQL passed. The current permitted gate remains Enterprise Compatibility Certification, with support/HPOS declarations in final verification and provider sandbox certification next.
 
-Build reproducible WordPress/WooCommerce/PHP, HPOS and Classic/Blocks runtime evidence before changing compatibility headers, feature declarations or public claims. Preserve exact `_upay_disable_subscription = yes`, every closed provider/payment/Scheduler/CycleClaim/H12 contract and all protected compatibility identities. Do not create Q20 merely to continue numbering.
+Use `docs/project/ENTERPRISE-CERTIFICATION.md` as the current compatibility evidence record. Do not redo the core matrix or broaden claims beyond its exact cells. Preserve exact `_upay_disable_subscription = yes`, every closed provider/payment/Scheduler/CycleClaim/H12 contract and all protected compatibility identities. Do not create Q20 merely to continue numbering.
 
 Do not claim broad security, PCI/compliance, platform, feature, performance or production certification from the bounded security closure. UPayments webhook signature details remain provider-document unresolved, automatic refunds remain unsupported pending durable idempotency/reconciliation design, and subscription auto-deduction remains separately characterized rather than broadly certified.
 
