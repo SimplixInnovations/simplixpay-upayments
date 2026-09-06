@@ -162,6 +162,18 @@ q19_assert(
     && strpos($checkout_source, "Subscription plan rejected: product-level opt-out.") !== false,
     'payment orchestrator enforces product opt-out server-side'
 );
+$preflight_position = is_string($checkout_source)
+    ? strpos($checkout_source, "if (\$order_has_subscription_restricted_product) {")
+    : false;
+$availability_position = is_string($checkout_source)
+    ? strpos($checkout_source, "\$payment_data = \$gateway->getPaymentIcons();")
+    : false;
+q19_assert(
+    $preflight_position !== false
+    && $availability_position !== false
+    && $preflight_position < $availability_position,
+    'product opt-out preflight remains ordered before availability lookup/provider transport'
+);
 q19_assert(
     is_string($checkout_test_source)
     && strpos($checkout_test_source, 'test_store_api_rejects_explicitly_opted_out_subscription_product_before_provider_request') !== false
