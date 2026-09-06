@@ -39,6 +39,7 @@ jobs:
             .github/workflows/release-artifact.yml
             scripts/build-release.sh scripts/verify-release.sh scripts/install-wp-test-environment.sh
             tests/harness/release-artifact-harness.php
+            tests/harness/sucheckout-identity-migration-harness.php
             tests/provider/sandbox-charge-smoke.php
             tests/integration/bootstrap.php
             tests/integration/PluginActivationTest.php
@@ -98,7 +99,7 @@ jobs:
           grep -Fq '**Status:** DONE / VERIFIED' docs/project/SECURITY-THREAT-MODEL.md
           grep -Fq '**Status:** DONE / VERIFIED (DISCOVERY + A1-A5)' docs/project/ARCHITECTURE-CODE-QUALITY.md
           grep -Fq '**Status:** DONE / VERIFIED (Q1-Q19)' docs/project/QUALITY-PLATFORM.md
-          grep -Fq '**Canonical slug:** `simplixpay-upayments`' docs/project/NAMING-IDENTITY-STANDARD.md
+          grep -Fq '**Canonical slug:** `sucheckout-upayments`' docs/project/NAMING-IDENTITY-STANDARD.md
 
       - name: Reject stale current-gate ownership in living records
         shell: bash
@@ -238,6 +239,8 @@ jobs:
           package-manager-cache: false
       - name: Tracked PHP syntax
         run: git ls-files -z '*.php' | xargs -0 -r -n1 php -l
+      - name: SUCheckout identity migration harness
+        run: php tests/harness/sucheckout-identity-migration-harness.php
       - name: Phase 0 release identity harness
         run: php tests/harness/phase-0-release-identity-harness.php
       - name: Phase 9I migration preflight harness
