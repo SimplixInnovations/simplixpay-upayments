@@ -42,7 +42,7 @@ class Fields
         $post = self::checkout_post();
         $plan = '';
         if (isset($post['upay_subscription_plan']) && is_scalar($post['upay_subscription_plan'])) {
-            $plan = sanitize_text_field(wp_unslash($post['upay_subscription_plan']));
+            $plan = wp_unslash($post['upay_subscription_plan']);
         }
 
         if ($plan === '') {
@@ -57,7 +57,7 @@ class Fields
 
         $interval = self::parse_interval(
             isset($post['upay_subscription_interval']) && is_scalar($post['upay_subscription_interval'])
-                ? sanitize_text_field(wp_unslash($post['upay_subscription_interval']))
+                ? wp_unslash($post['upay_subscription_interval'])
                 : null
         );
 
@@ -113,14 +113,14 @@ class Fields
             return;
         }
 
-        $plan = sanitize_text_field(wp_unslash($post['upay_subscription_plan']));
+        $plan = wp_unslash($post['upay_subscription_plan']);
         if (!in_array($plan, self::$ALLOWED_PLANS, true)) {
             return;
         }
 
         $interval = self::parse_interval(
             isset($post['upay_subscription_interval']) && is_scalar($post['upay_subscription_interval'])
-                ? sanitize_text_field(wp_unslash($post['upay_subscription_interval']))
+                ? wp_unslash($post['upay_subscription_interval'])
                 : null
         );
 
@@ -182,14 +182,14 @@ class Fields
      *
      * WooCommerce verifies the checkout nonce before invoking the checkout
      * validation/order-creation hooks used by this class. Individual fields
-     * remain presence-checked, scalar-checked, unslashed and sanitized or
-     * strict-parsed by their consumers.
+     * remain presence-checked, scalar-checked and unslashed before their exact
+     * allowlist or strict parser is applied by the consumer.
      *
      * @return array
      */
     private static function checkout_post(): array
     {
-        // phpcs:ignore WordPress.Security.NonceVerification.Missing,WordPress.Security.ValidatedSanitizedInput.InputNotSanitized,WordPress.Security.ValidatedSanitizedInput.MissingUnslash -- WooCommerce owns checkout nonce verification; consumers sanitize exact allowlisted fields.
+        // phpcs:ignore WordPress.Security.NonceVerification.Missing,WordPress.Security.ValidatedSanitizedInput.InputNotSanitized,WordPress.Security.ValidatedSanitizedInput.MissingUnslash -- WooCommerce owns checkout nonce verification; consumers unslash and strictly allowlist exact fields.
         return $_POST;
     }
 
