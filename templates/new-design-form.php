@@ -36,7 +36,7 @@ defined( 'ABSPATH' ) || exit;
     <?php 
     if (isset($_GET["cancelled"])){
         $notice_html = '<div class="woocommerce-NoticeGroup woocommerce-NoticeGroup-checkout"><div class="woocommerce-error alert-color">'
-            . esc_html__('Payment canceled by customer', $gateway->domain)
+            . esc_html__('Payment canceled by customer', 'sucheckout-upayments')
             . '</div></div>';
     ?>
         <script>
@@ -48,7 +48,7 @@ defined( 'ABSPATH' ) || exit;
     <?php
     } elseif (isset($_GET["failed"])){
         $notice_html = '<div class="woocommerce-NoticeGroup woocommerce-NoticeGroup-checkout"><div class="woocommerce-error alert-color">'
-            . esc_html__('Payment error from UPayments', $gateway->domain)
+            . esc_html__('Payment error from UPayments', 'sucheckout-upayments')
             . '</div></div>';
     ?>
         <script>
@@ -60,7 +60,7 @@ defined( 'ABSPATH' ) || exit;
     <?php
     } elseif (isset($_GET["suspected"])) {
         $notice_html = '<div class="woocommerce-NoticeGroup woocommerce-NoticeGroup-checkout"><div class="woocommerce-error alert-color">'
-            . esc_html__('Payment failed for suspected fraud.', $gateway->domain)
+            . esc_html__('Payment failed for suspected fraud.', 'sucheckout-upayments')
             . '</div></div>';
     ?>
         <script>
@@ -157,7 +157,7 @@ defined( 'ABSPATH' ) || exit;
                 {
                     $cardList = $savedCards['data'];
                 ?>
-                    <span class="payment-method-label"><?php esc_html_e('Saved Cards', 'upayments'); ?></span>
+                    <span class="payment-method-label"><?php esc_html_e('Saved Cards', 'sucheckout-upayments'); ?></span>
                     <?php
                     foreach ($cardList as $cardkey => $cardValue) {
                         if (!is_array($cardValue)) {
@@ -182,7 +182,7 @@ defined( 'ABSPATH' ) || exit;
                     <?php
                     }
                     ?>
-                    <span class="payment-method-label"><?php esc_html_e('Other Options', 'upayments'); ?></span>
+                    <span class="payment-method-label"><?php esc_html_e('Other Options', 'sucheckout-upayments'); ?></span>
                 <?php
                 }
             } else {
