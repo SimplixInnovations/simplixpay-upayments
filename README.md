@@ -38,7 +38,7 @@ The following engineering gates are **DONE / VERIFIED**:
 - Security Threat-Model Closure;
 - Architecture & Code-Quality Foundation A1-A5.
 
-Quality Platform Q1-Q19 are **DONE / VERIFIED**. The current program gate is **Enterprise Compatibility Certification**.
+Quality Platform Q1-Q19 are **DONE / VERIFIED**. The current program gate is **Enterprise Compatibility Certification**. Its core WordPress/WooCommerce/PHP runtime, Classic/Blocks registration and HPOS storage tranche is independently verified; provider/feature/multilingual/browser/performance/release certification remains in progress.
 
 The project remains in **pre-release engineering hardening**. It is not yet a broadly certified stable production release and has not yet been published to WordPress.org.
 
@@ -56,7 +56,12 @@ The project remains in **pre-release engineering hardening**. It is not yet a br
 | Security Threat-Model Closure | **DONE / VERIFIED** |
 | Architecture & Code-Quality Foundation | **DONE / VERIFIED (A1-A5)** |
 | Quality Platform Q1-Q19 | **DONE / VERIFIED** |
-| Current engineering gate | **Enterprise Compatibility Certification** |
+| Current engineering gate | **Enterprise Compatibility Certification — core platform verified; broader certification in progress** |
+| Verified WordPress range | **6.9 series through 7.1 tested cells** |
+| Verified WooCommerce range | **10.8 series through 11.1 tested cells** |
+| Verified PHP runtime cells | **7.4, 8.3, 8.4** |
+| Classic / standard Blocks registration | **VERIFIED** |
+| HPOS legacy/on authoritative storage | **VERIFIED / declared compatible** |
 | Stable SimplixPay release | **Not yet published** |
 | WordPress.org release | **Not yet published** |
 | Phase 0 release-identity harness | **35 PASS / 0 FAIL** |
@@ -174,7 +179,7 @@ Phase 9I system completion does not mean every merchant installation was automat
 
 Architecture discovery/A1-A5 and Quality Platform Q1-Q19 are DONE / VERIFIED. Q19 closed through PR #45: final exact head `1717f0c25da7140a7799c7db3a7f016abecec7e9`, tree `8230778e3313e4d201de48b1a5cf170c42f7178d`, Quality Gates #463, PHPUnit **174 tests / 1063 assertions**, Q19 **22/0**, Q18 **17/0**, Q17 **97/0**, H12 PHP **1927/0**, H12 Blocks **144/0**, and exact-head CodeQL success with no new alerts. It was squash-merged as `29ba16a1eabc00e25c3652ae838be9b9539b3a10` with the same tree; post-merge Quality Gates #464 and all post-merge CodeQL lanes succeeded, and the implementation branch was deleted.
 
-The numbered Quality Platform is therefore closed at Q19; no Q20 is justified by current evidence. The current named program is **Enterprise Compatibility Certification**: real WordPress/WooCommerce/PHP runtime matrix testing, HPOS, Classic/Blocks, multilingual/multicurrency and related compatibility evidence before any support headers, badges or feature declarations are broadened. None of the completed engineering gates alone constitutes broad platform, feature, performance, PCI/compliance or production certification.
+The numbered Quality Platform is therefore closed at Q19; no Q20 is justified by current evidence. Enterprise Compatibility Certification now has a permanent real-runtime matrix. PR #47 established activation/Classic/Blocks/legacy-storage/HPOS evidence and fixed a real malformed-settings activation fatal through RED→GREEN. The current declaration tranche derives only the matrix-proven support metadata (WordPress 6.9/7.1, WooCommerce 10.8/11.1, PHP 7.4 floor) and HPOS `custom_order_tables` declaration, with the full matrix rerun after each change. Broader provider, saved-card/subscription/wallet/multi-merchant, WPML/WCML/RTL, browser/accessibility/performance and release certification remains open. None of the completed engineering gates alone constitutes broad feature, performance, PCI/compliance or production certification.
 
 No big-bang rewrite, runtime branding rename, runtime Composer dependency or broad compatibility claim is authorized by certification work without its own evidence.
 
@@ -201,7 +206,7 @@ These are engineering targets unless [`docs/COMPATIBILITY.md`](docs/COMPATIBILIT
 
 The project uses protected `main` with squash-only merge policy, PR/review-thread workflow, required Governance and H12 Regression Harness checks, linear history, merged-branch cleanup, secret scanning/push protection, Dependabot security updates and private vulnerability reporting.
 
-Current CI validates all tracked PHP syntax, Phase 0, all Phase 9I suites, Provider Payment Lifecycle, Provider Exact Amount Binding, Security Threat-Model, H12 PHP and H12 Blocks behavior. The protected H12 job is also an always-running aggregator that fails when either the Composer quality job or distributed-PHP syntax matrix is not successful.
+Current CI validates all tracked PHP syntax, Phase 0, all Phase 9I suites, Provider Payment Lifecycle, Provider Exact Amount Binding, Security Threat-Model, Q1-Q19, H12 PHP and H12 Blocks behavior. A separate permanent Compatibility Certification workflow installs real WordPress/WooCommerce/MySQL environments and exercises activation, Classic/Blocks registration, release metadata, legacy/HPOS order CRUD and Woo feature declarations across the supported matrix. The protected H12 job remains an always-running aggregator that fails when prerequisite quality/syntax jobs are not successful.
 
 ## Simplix Innovations and WooCommerce
 
