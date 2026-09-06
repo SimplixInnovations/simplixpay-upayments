@@ -14,6 +14,8 @@ class CheckoutOrchestrator {
     private $gateway;
     private $requestBodyReader;
     private $requestExecutor;
+    private $requestBodyLoaded = false;
+    private $requestBodyCache = null;
 
     public function __construct($gateway, callable $request_body_reader, callable $request_executor) {
         $this->gateway = $gateway;
@@ -22,7 +24,12 @@ class CheckoutOrchestrator {
     }
 
     private function read_request_body() {
-        return call_user_func($this->requestBodyReader);
+        if (!$this->requestBodyLoaded) {
+            $this->requestBodyCache = call_user_func($this->requestBodyReader);
+            $this->requestBodyLoaded = true;
+        }
+
+        return $this->requestBodyCache;
     }
 
     private function execute_request($route, $method, $body = null) {
@@ -176,6 +183,64 @@ class CheckoutOrchestrator {
             if (empty($productArrayNew)) {
                 wc_add_notice(__('Payment request could not be completed. Please try again.', $gateway->domain), 'error');
                 return array('result' => 'failure', 'redirect' => wc_get_checkout_url());
+            }
+
+            // Q19: product-level subscription opt-out is authoritative order data.
+            // When an order already contains an explicitly restricted subscription
+            // product, parse only the subscription-plan token before availability.
+            // A valid non-one_time plan must be rejected before getPaymentIcons(),
+            // because a cold availability cache may otherwise perform provider I/O.
+            // Full request validation remains below as defense-in-depth. The Store
+            // API body reader is memoized so one_time/invalid preflight paths do not
+            // consume the body before the canonical parser runs.
+            if ($order_has_subscription_restricted_product) {
+                $preflight_subscription_plan = 'one_time';
+                if (CheckoutPayload::is_store_api_checkout_request()) {
+                    $preflight_raw_input = $this->read_request_body();
+                    $preflight_request_data = null;
+                    if (is_string($preflight_raw_input) && $preflight_raw_input !== '') {
+                        $preflight_request_data = json_decode($preflight_raw_input, true);
+                    }
+                    if (is_array($preflight_request_data)
+                        && isset($preflight_request_data['extensions'])
+                        && is_array($preflight_request_data['extensions'])
+                        && isset($preflight_request_data['extensions']['upayments'])
+                        && is_array($preflight_request_data['extensions']['upayments'])
+                    ) {
+                        $preflight_extension_data = $preflight_request_data['extensions']['upayments'];
+                        if (CheckoutPayload::field_present($preflight_extension_data, 'upay_subscription_plan')) {
+                            $preflight_parsed_plan = CheckoutPayload::parse_subscription_plan_strict(
+                                $preflight_extension_data['upay_subscription_plan']
+                            );
+                            if ($preflight_parsed_plan !== null
+                                && CheckoutPayload::is_valid_subscription_plan($preflight_parsed_plan)
+                            ) {
+                                $preflight_subscription_plan = $preflight_parsed_plan;
+                            }
+                        }
+                    }
+                } else {
+                    $preflight_classic_post = $_POST; // phpcs:ignore WordPress.Security.NonceVerification -- Woo checkout owns nonce verification.
+                    if (CheckoutPayload::field_present($preflight_classic_post, 'upay_subscription_plan')
+                        && is_scalar($preflight_classic_post['upay_subscription_plan'])
+                    ) {
+                        $preflight_parsed_plan = CheckoutPayload::parse_subscription_plan_strict(
+                            wp_unslash($preflight_classic_post['upay_subscription_plan'])
+                        );
+                        if ($preflight_parsed_plan !== null
+                            && CheckoutPayload::is_valid_subscription_plan($preflight_parsed_plan)
+                        ) {
+                            $preflight_subscription_plan = $preflight_parsed_plan;
+                        }
+                    }
+                }
+
+                if ($preflight_subscription_plan !== 'one_time') {
+                    $gateway->log('Subscription plan rejected: product-level opt-out.', 'warning');
+                    WC()->session->set("refresh_totals", true);
+                    wc_add_notice(__("Please select a valid payment type.", $gateway->domain), "error");
+                    return ["result" => "failure", "redirect" => wc_get_checkout_url()];
+                }
             }
 
             if($gateway->paymentData == null ) {
@@ -716,12 +781,6 @@ class CheckoutOrchestrator {
                     return array('result' => 'failure', 'redirect' => wc_get_checkout_url());
                 }
 
-                // === Canonical JSON number grammar: no exponent, no sign, no leading
-                // zero, no whitespace, no comma, no other variation. Trailing-zero
-                // fractions such as 0.900 or 0.750 are accepted (matches first-party
-                // UPayments examples and the plugin's existing admin UI which uses
-                // step="0.010" and max="10.000"). Leading-zero invalid forms (01,
-                // 01.50, .5) and exponent/scientific notation (1e2) are rejected. ===
                 if (!preg_match('/^(?:0|[1-9][0-9]*)(?:\.[0-9]+)?$/', $knet_charge_raw)) {
                     $gateway->log('MultiMerchant: invalid knetCharge format.', 'warning');
                     wc_add_notice(__('Payment request could not be completed. Please try again.', $gateway->domain), 'error');
@@ -732,7 +791,6 @@ class CheckoutOrchestrator {
                     wc_add_notice(__('Payment request could not be completed. Please try again.', $gateway->domain), 'error');
                     return array('result' => 'failure', 'redirect' => wc_get_checkout_url());
                 }
-                // Reject non-canonical charge-type forms exactly.
                 $valid_charge_types = array('fixed', 'percentage');
                 if (!in_array($knet_charge_type, $valid_charge_types, true)) {
                     $gateway->log('MultiMerchant: invalid knetChargeType.', 'warning');
@@ -744,11 +802,6 @@ class CheckoutOrchestrator {
                     wc_add_notice(__('Payment request could not be completed. Please try again.', $gateway->domain), 'error');
                     return array('result' => 'failure', 'redirect' => wc_get_checkout_url());
                 }
-                // Pure-PHP positive-decimal validation (no BCMath, no float, no upper bound).
-                // The plugin UI's max="10.000" is a UI hint only; the runtime accepts
-                // any canonical positive plain-decimal per UPayments examples (25, 18, 15,
-                // 10, 0.900, 0.750, etc.). Server-side rejection here would conflict with
-                // provider documentation and the existing admin UI maximum.
                 if (CheckoutPayload::compare_nonnegative_decimal_strings($knet_charge_raw, '0') <= 0) {
                     $gateway->log('MultiMerchant: invalid knetCharge value.', 'warning');
                     wc_add_notice(__('Payment request could not be completed. Please try again.', $gateway->domain), 'error');
@@ -762,14 +815,6 @@ class CheckoutOrchestrator {
                 $knet_charge = $knet_charge_raw;
                 $cc_charge = $cc_charge_raw;
 
-                // All checks passed: build the deterministic provider-bound structure.
-                // The amount field uses a sentinel that is later replaced by the validated
-                // JSON number token. No float conversion happens here.
-                // Per the provider contract, the sum of extraMerchantData.amount values
-                // must equal order.amount. For this plugin's single-entry implementation,
-                // we assign the same validated amount token to both order.amount and
-                // extraMerchantData[0].amount, and the post-injection verification
-                // in inject_amount_token_into_payload_json() enforces exact equality.
                 $extraMerchantData = array(
                     array(
                         'amount'         => '__UPAY_MM_AMOUNT_SENTINEL__',
@@ -797,12 +842,6 @@ class CheckoutOrchestrator {
                 $mm_cc_charge_for_injection = null;
             }
 
-            // Build deterministic base payload (token fields are null placeholders).
-            // The order.amount field uses a placeholder so we can inject the
-            // validated plain decimal JSON token without float conversion.
-            // extraMerchantData is a real PHP array (not a string sentinel) so it is
-            // encoded naturally by wp_json_encode(); only its 'amount' value is replaced
-            // by the validated amount token via the MM amount sentinel below.
             $payload = array(
                 'returnUrl'       => $success_url,
                 'cancelUrl'       => $error_url,
@@ -843,30 +882,16 @@ class CheckoutOrchestrator {
                 'extraMerchantData' => $extraMerchantData,
             );
 
-            // Whitelabel: add paymentGateway.
             if ($whitelabled) {
-                // Section AS: Source string is sent verbatim — no invented length
-                // ceiling. Provider documents the field but does not bound it.
-                // Future invariants can be added explicitly if documentation confirms a bound.
                 $payload['paymentGateway'] = array('src' => $src);
             }
 
-            // The MM amount equality (per provider contract) is enforced after
-            // sentinel injection in the raw JSON (not by trying to add sentinel
-            // strings). The injection substitutes the same validated amount token
-            // for both order.amount and extraMerchantData[0].amount, so the raw-JSON
-            // equality check in inject_amount_token_into_payload_json() is the
-            // authoritative verification.
-
-            // Pre-token JSON dry-run: encode the deterministic payload and
-            // inject the validated amount JSON tokens in place of the sentinels.
             $preflight_raw = wp_json_encode($payload);
             if (!is_string($preflight_raw) || $preflight_raw === '') {
                 $gateway->log('Deterministic payload encoding failed.', 'warning');
                 wc_add_notice(__('Payment request could not be completed. Please try again.', $gateway->domain), 'error');
                 return array('result' => 'failure', 'redirect' => wc_get_checkout_url());
             }
-            // The MM amount sentinel is only present when MultiMerchant is enabled and valid.
             $mm_amount_for_injection = ($extraMerchantData !== null) ? $amount_json_token : null;
             $preflight_json = CheckoutPayload::inject_amount_token_into_payload_json(
                 $preflight_raw,
@@ -888,23 +913,16 @@ class CheckoutOrchestrator {
             }
 
             // === PHASE B: TOKEN / SELECTED-CARD IDENTITY WORK ===
-            // Only after Phase A passes.
-
-            // Clear stale token-attempt metadata before token work.
-            // Preserve legacy/unscoped evidence for Phase 9I migration.
             if (!CustomerTokenIdentity::clear_stale_attempt_metadata($order)) {
                 wc_add_notice(__('Payment request could not be completed. Please try again.', 'upayments'), 'error');
                 return array('result' => 'failure', 'redirect' => wc_get_checkout_url());
             }
 
-            // Section I: Force-fresh current order metadata after cleanup.
             if (!CustomerTokenIdentity::force_refresh_order_meta($order)) {
                 wc_add_notice(__('Payment request could not be completed. Please try again.', 'upayments'), 'error');
                 return array('result' => 'failure', 'redirect' => wc_get_checkout_url());
             }
 
-            // Section K: Check for residual migration evidence on current order (cardinality helper).
-            // Token-dependent operations must not proceed alongside preserved legacy/corrupt evidence.
             $token_dependent_operation = $isSaveCard || $subscription_plan !== 'one_time' || $has_selected_card;
 
             if ($token_dependent_operation) {
@@ -919,7 +937,6 @@ class CheckoutOrchestrator {
                 foreach ($residual_keys as $rkey) {
                     $r_card = CustomerTokenIdentity::get_historical_meta_cardinality($order, $rkey);
                     if ($r_card['status'] === CustomerTokenIdentity::META_EXACTLY_ONE) {
-                        // Empty string card token is not usable evidence.
                         if ($rkey === '_upay_credit_card_token' && (string) $r_card['value'] === '') {
                             continue;
                         }
@@ -937,13 +954,11 @@ class CheckoutOrchestrator {
                 }
             }
 
-            // Section J: Stage UPayments_Checkout_Selected AFTER cleanup/refresh/residual gate.
             if ($whitelabled) {
                 $order->delete_meta_data("UPayments_Checkout_Selected");
                 $order->add_meta_data("UPayments_Checkout_Selected", $src);
             }
 
-            // CASE: Selected saved card requires membership validation.
             if ($has_selected_card) {
                 if ($user_id <= 0) {
                     wc_add_notice(__('Please log in to use a saved card.', 'upayments'), 'error');
@@ -960,11 +975,6 @@ class CheckoutOrchestrator {
                     return array('result' => 'failure', 'redirect' => wc_get_checkout_url());
                 }
 
-                // Section Q: Use read-only identity scope for selected-card path.
-// Section #14: SINGLE atomic context read — derive scope AND generation
-// from the same secret-option snapshot. The previous implementation did
-// two independent reads (scope, then generation), which produced a torn
-// scope(A)+generation(B) snapshot when a credential rotated in between.
                 $selected_ctx = CustomerTokenIdentity::read_existing_identity_context(
                     $gateway->apiKey,
                     $gateway->getMode()
@@ -1008,7 +1018,6 @@ class CheckoutOrchestrator {
 
                 $isSaveCard = false;
             }
-            // CASE: Save Card or subscription requires canonical token.
             elseif ($requires_token) {
                 if ($user_id <= 0) {
                     wc_add_notice(__('Please log in to save a card or purchase a subscription.', 'upayments'), 'error');
@@ -1042,7 +1051,6 @@ class CheckoutOrchestrator {
                 $token_scope = isset($token_result['scope']) ? $token_result['scope'] : null;
                 $token_generation = isset($token_result['secret_generation_id']) ? $token_result['secret_generation_id'] : null;
             }
-            // CASE: Ordinary payment — no canonical token required.
             else {
                 $canonical_token = null;
                 $token_kind = null;
@@ -1051,16 +1059,9 @@ class CheckoutOrchestrator {
                 $isSaveCard = false;
             }
 
-            // Write current attempt snapshots.
-            // Section J: Ordinary payment (null tuple) must NOT initialize token identity.
             $is_ordinary_payment = ($canonical_token === null && $token_kind === null && $token_scope === null && $token_generation === null);
 
             if (!$is_ordinary_payment) {
-                // Section S: Use read-only authoritative expected scope/generation.
-                // For freshly established tokens, these are already known from the result.
-                // For selected-card tokens, they were already validated above.
-                // Section #14: single atomic read of scope + generation so they
-                // cannot drift relative to each other.
                 $expected_ctx = CustomerTokenIdentity::read_existing_identity_context(
                     $gateway->apiKey,
                     $gateway->getMode()
@@ -1090,7 +1091,6 @@ class CheckoutOrchestrator {
                 }
             }
 
-            // Section H: Unique snapshot writes.
             if ($has_selected_card) {
                 $order->delete_meta_data("_upay_credit_card_token");
                 $order->add_meta_data("_upay_credit_card_token", $credit_card_token, true);
@@ -1109,7 +1109,6 @@ class CheckoutOrchestrator {
 
             $order->save_meta_data();
 
-            // Section M: Durable persistence verification before Charge.
             if (!$is_ordinary_payment || $has_selected_card) {
                 $verify_order = wc_get_order($order_id);
                 if (!$verify_order) {
@@ -1150,17 +1149,11 @@ class CheckoutOrchestrator {
                 }
             }
 
-            // === PHASE D: FINAL CHARGE PAYLOAD COMPLETION ===
-            // MultiMerchant structure was already authoritatively constructed during
-            // the deterministic pre-token phase above. It is provider payload data
-            // here, not a re-derivable input. Inject token-dependent fields into the
-            // already-validated deterministic payload.
             $payload['tokens'] = array(
                 'creditCard'          => $credit_card_token,
                 'customerUniqueToken' => $canonical_token,
             );
 
-            // Final JSON encode (re-encode + re-inject amount token).
             $final_raw = wp_json_encode($payload);
             if (!is_string($final_raw) || $final_raw === '') {
                 $gateway->log('Final payload encoding failed.', 'warning');
@@ -1176,8 +1169,6 @@ class CheckoutOrchestrator {
                     '__UPAY_MM_CC_CHARGE_SENTINEL__' => $mm_cc_charge_for_injection,
                 ),
                 array(
-                    // Each product's price sentinel is indexed. Identity is preserved
-                    // so the injection step can verify each per-product token.
                     'product_price_sent_substring' => '__UPAY_PRODUCT_PRICE_SENTINEL_',
                     'product_price_tokens' => $product_price_tokens,
                 )
@@ -1188,12 +1179,6 @@ class CheckoutOrchestrator {
                 return array('result' => 'failure', 'redirect' => wc_get_checkout_url());
             }
 
-            // === PHASE C+: FINAL IDENTITY CONTEXT GATE ===
-            // For non-ordinary payments, revalidate the atomic identity context
-            // one last time and require exact match against the scope+generation
-            // that authorized token establishment. Any identity rotation that
-            // landed between the token establishment and the Charge call must
-            // fail closed rather than persist a Charge under the wrong root.
             if (!$is_ordinary_payment) {
                 $final_ctx = CustomerTokenIdentity::read_existing_identity_context($gateway->apiKey, $gateway->getMode());
                 if ($final_ctx['state'] !== CustomerTokenIdentity::SECRET_VALID
@@ -1215,10 +1200,8 @@ class CheckoutOrchestrator {
 
             $gateway->log(__("Create payment request prepared.", $gateway->domain));
 
-            // === PHASE E: CHARGE ===
             $transport = $this->execute_request('charge', 'POST', $params);
 
-            // Section S: Strict HTTP 201 check for Charge.
             if (!is_array($transport)
                 || !isset($transport['transport_ok']) || !$transport['transport_ok']
                 || !isset($transport['http_status']) || (int) $transport['http_status'] !== 201
@@ -1234,8 +1217,6 @@ class CheckoutOrchestrator {
             $response = (string) $transport['body'];
             $gateway->log('Create payment HTTP response received.');
 
-            // Charge response processing — hardened structural validation.
-            // Use \Throwable to catch TypeError from PHP 8+ malformed structures.
             try
             {
                 if (!$response){
@@ -1248,7 +1229,6 @@ class CheckoutOrchestrator {
                 $result = json_decode($response, true);
                 $gateway->log(__("Create payment response received.", $gateway->domain));
 
-                // A. json_decode result MUST be array.
                 if (!is_array($result)){
                     $gateway->log('Charge response: malformed JSON.', 'warning');
                     WC()->session->set("refresh_totals", true);
@@ -1256,7 +1236,6 @@ class CheckoutOrchestrator {
                     return ["result" => "failure", "redirect" => wc_get_checkout_url()];
                 }
 
-                // B. Status must be boolean true/false. Reject non-boolean.
                 if (!array_key_exists('status', $result) || !is_bool($result['status'])) {
                     $gateway->log('Charge response: status not boolean.', 'warning');
                     WC()->session->set("refresh_totals", true);
@@ -1271,8 +1250,6 @@ class CheckoutOrchestrator {
                     return ["result" => "failure", "redirect" => wc_get_checkout_url()];
                 }
 
-                // C/D. Status=true is the only remaining boolean state.
-                // Require data to be an array.
                     if (!isset($result['data']) || !is_array($result['data'])) {
                         $gateway->log('Charge response: status=true but data missing/invalid.', 'warning');
                         WC()->session->set("refresh_totals", true);
@@ -1280,7 +1257,6 @@ class CheckoutOrchestrator {
                         return ["result" => "failure", "redirect" => wc_get_checkout_url()];
                     }
 
-                    // E. Determine redirect URL: prefer data.link, fallback to data.transactionData.redirect_url.
                     $redirect_url = null;
 
                     if (isset($result['data']['link']) && is_string($result['data']['link'])) {
@@ -1296,7 +1272,6 @@ class CheckoutOrchestrator {
                         $redirect_url = CheckoutPayload::normalize_upayments_redirect_url($result['data']['transactionData']['redirect_url']);
                     }
 
-                    // Require a valid redirect URL.
                     if ($redirect_url === null) {
                         $gateway->log('Charge response: no valid redirect URL found.', 'warning');
                         WC()->session->set("refresh_totals", true);
@@ -1304,7 +1279,6 @@ class CheckoutOrchestrator {
                         return ["result" => "failure", "redirect" => wc_get_checkout_url()];
                     }
 
-                    // Valid success path.
                     if($subscription_plan && $subscription_plan !== 'one_time') {
                         $order->delete_meta_data('_upay_subscription_plan');
                         $order->add_meta_data('_upay_subscription_plan', $subscription_plan);
@@ -1324,8 +1298,6 @@ class CheckoutOrchestrator {
                     return ["result" => "success", "redirect" => $redirect_url];
 
             } catch (\Throwable $e) {
-                // Fail-closed: catch TypeError (PHP 8+) and Exception (PHP 7.2+).
-                // Do NOT log $e->getMessage() — may contain internal/provider details.
                 $gateway->log('Charge response: unexpected error during processing.', 'warning');
                 WC()->session->set("refresh_totals", true);
                 wc_add_notice(__("Payment request could not be completed. Please try again.", $gateway->domain), "error");
