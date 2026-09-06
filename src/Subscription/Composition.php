@@ -1,6 +1,6 @@
 <?php
 
-namespace Simplix\Pay\UPayments\Subscription;
+namespace Simplixi\SUCheckout\UPayments\Subscription;
 
 use UPayments\Subscription\Checkout\Fields;
 use UPayments\Subscription\Manager;
