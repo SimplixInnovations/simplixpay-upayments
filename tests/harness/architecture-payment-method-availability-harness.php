@@ -3,7 +3,7 @@
  * A2 payment-method availability client/cache characterization harness.
  */
 
-use Simplix\Pay\UPayments\Provider\PaymentMethodAvailability;
+use Simplixi\SUCheckout\UPayments\Provider\PaymentMethodAvailability;
 
 $a2_state = array();
 
