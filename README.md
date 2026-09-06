@@ -154,6 +154,7 @@ See [`SECURITY.md`](SECURITY.md), [`docs/project/PROVIDER-PAYMENT-LIFECYCLE.md`]
 ## Engineering records
 
 - [`docs/project/PROJECT-STATUS.md`](docs/project/PROJECT-STATUS.md) — current canonical state
+- [`docs/project/OWNER-HANDOFF.md`](docs/project/OWNER-HANDOFF.md) — owner branch cleanup, repository rename, local acceptance and release-administration checklist
 - [`docs/project/NAMING-IDENTITY-STANDARD.md`](docs/project/NAMING-IDENTITY-STANDARD.md) — SUCheckout identity contract
 - [`docs/project/ENTERPRISE-CERTIFICATION.md`](docs/project/ENTERPRISE-CERTIFICATION.md) — platform/provider/feature evidence
 - [`docs/project/RELEASE-ENGINEERING.md`](docs/project/RELEASE-ENGINEERING.md) — artifact/upgrade evidence
