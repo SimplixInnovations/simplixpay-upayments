@@ -178,7 +178,9 @@ jobs:
 
   h12-regression:
     name: H12 Regression Harness
-    needs: [quality-platform, php-syntax-compatibility]
+    needs:
+      - quality-platform
+      - php-syntax-compatibility
     if: ${{ always() }}
     runs-on: ubuntu-latest
     timeout-minutes: 15
