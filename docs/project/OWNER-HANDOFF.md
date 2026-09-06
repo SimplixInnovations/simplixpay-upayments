@@ -40,6 +40,13 @@ GitHub UI:
 2. Under **General → Repository name**, enter `sucheckout-upayments`.
 3. Confirm the rename.
 4. Re-open the repository from the new URL before making additional changes.
+After the rename, update the GitHub **About** metadata to the canonical product identity:
+- repository description: `SUCheckout for UPayments — independently engineered WooCommerce payment integration by Simplix Innovations.`;
+- homepage: keep `https://simplixi.com` until a dedicated canonical SUCheckout product page exists;
+- remove retired topic `simplixpay`;
+- recommended discovery topics: `checkout-blocks`, `ecommerce`, `hpos`, `payment-gateway`, `payments`, `php`, `sucheckout`, `sucheckout-upayments`, `upayments`, `woocommerce`, `woocommerce-payment-gateway`, `wordpress`;
+- do not use compatibility-claim topics such as `wpml-ready` unless separately certified.
+The metadata audit before rename found the old description `SimplixPay for UPayments — independently engineered WooCommerce payment integration by Simplix Innovations.` and the retired `simplixpay` topic; those must not survive the owner rename.
 After the rename, verify rather than assume:
 - default branch is still `main`;
 - the default-branch ruleset still requires the intended checks and squash-only history policy;
@@ -66,7 +73,12 @@ Start with:
 git grep -n "SimplixInnovations/simplixpay-upayments"
 git grep -n "github.com/SimplixInnovations/simplixpay-upayments"
 ```
-Expected living surfaces include README workflow badges/links, `AGENTS.md`, `PROJECT-STATUS.md`, this handoff, `NOTICE.md`, `UPSTREAM.md`, and any current issue-template links.
+Expected living surfaces include README workflow badges/links, `AGENTS.md`, `PROJECT-STATUS.md`, this handoff, `NOTICE.md`, `UPSTREAM.md`, and current issue-template links such as `.github/ISSUE_TEMPLATE/config.yml`.
+Also re-run:
+```bash
+git grep -n "simplixpay" -- ':!docs/history/**' ':!docs/superpowers/**'
+```
+Classify every hit. Historical evidence, the explicit legacy package-root migration, and protected persisted/provider compatibility contracts may remain; current first-party branding must not.
 Do **not** blindly replace the token `simplixpay-upayments` repository-wide. It is still intentionally required in historical/pre-release package-root migration evidence such as:
 - legacy package basename `simplixpay-upayments/UPayments.php`;
 - migration/rollback test fixtures;
