@@ -97,3 +97,10 @@ Compatibility status values mean:
 ## Public-claim rule
 
 Do not broaden WordPress/WooCommerce/PHP/HPOS/Blocks/WPML/performance claims beyond the exact verified evidence above. A green neighboring version, static analyzer or H12 run is not evidence for an untested environment or feature.
+
+
+## Feature/operations certification status
+
+The permanent compatibility matrix is being extended with installed-runtime evidence for saved-card/token identity, subscription pre-dispatch eligibility, the existing single additional-merchant allocation, and non-destructive activation/deactivation/uninstall behavior.
+
+This does **not** broaden support to automatic refunds, arbitrary marketplace split routing, unattended live subscription deductions, provider webhook trust, or destructive uninstall cleanup. Those remain outside the certified contract unless separately implemented and proven.

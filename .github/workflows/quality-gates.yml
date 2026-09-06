@@ -74,6 +74,10 @@ jobs:
             tests/integration/CheckoutRegistrationTest.php
             tests/integration/HposCompatibilityTest.php
             tests/integration/ReleaseMetadataTest.php
+            tests/integration/SavedCardRuntimeTest.php
+            tests/integration/SubscriptionRuntimeTest.php
+            tests/integration/MultiMerchantRuntimeTest.php
+            tests/integration/OperationsRuntimeTest.php
             docs/project/ENTERPRISE-CERTIFICATION.md
             docs/project/RELEASE-ENGINEERING.md
             docs/project/PROJECT-STATUS.md

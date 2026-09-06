@@ -6,6 +6,19 @@
 
 **Verified support-declaration merge:** `bfcd572f4eb27945a98b158743a4826c9a8894ea`
 
+## Feature and operations certification — CANDIDATE
+
+Task 6 extends the permanent real-runtime matrix with four bounded certification surfaces on every WordPress/WooCommerce/PHP × legacy/HPOS cell:
+
+- **Saved cards/tokenization:** guest rejection before transport or identity creation; authenticated canonical identity establishment in the real WordPress user store; exact saved-card retrieval binding; exact selected-card membership; foreign-card rejection; malformed provenance fails closed before retrieval.
+- **Subscriptions:** real Woo subscription products and orders prove product-level opt-out, mixed-order rejection, guest rejection, strict plan/interval rejection, and that each invalid case stops before provider transport. A valid Classic subscription is permitted to advance to the bounded token-initialization seam, while the test intentionally prevents external mutation.
+- **Multi-merchant:** only the inherited single additional-merchant allocation is certified. The real checkout orchestrator must emit exactly one `extraMerchantData` allocation whose amount equals the order amount; malformed allocation configuration must reject before Charge.
+- **Operations/data retention:** merchant settings and payment/token metadata must survive deactivation, reactivation, and WordPress uninstall-hook execution. The migration CLI module is required in WP-CLI context, the admin module is absent outside admin, and explicit admin boot must not expose credentials.
+
+These tests are fixture/boundary certification only. They do **not** execute live saved-card mutations, subscription auto-deduction, arbitrary marketplace splits, or destructive data erasure.
+
+Exact candidate run evidence is recorded only after the new matrix completes on one immutable head.
+
 ## Evidence rule
 
 A matrix cell becomes **VERIFIED** only after the exact WordPress, WooCommerce and PHP versions run the real plugin inside an installed WordPress/WooCommerce site and the required activation, checkout-registration, declaration and order-storage assertions all pass. Source inspection, syntax-only jobs, Q1-Q19 or H12 do not substitute for this evidence.
