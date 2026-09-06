@@ -82,7 +82,7 @@ Use:
    - static analysis/coding standards/dead-code/complexity cleanup;
    - no big-bang runtime rename.
 
-6. **Full Automated Quality Platform — CURRENT GATE / Q17; PAYMENT-RUNTIME CLOSEOUT**
+6. **Full Automated Quality Platform — CURRENT GATE / Q18; BLOCKS AVAILABILITY ENFORCEMENT**
    - Q1 locked development-toolchain foundation: **DONE / VERIFIED** through PR #26 and post-merge Quality Gates #178;
    - Q2 CheckoutPayload boundary characterization and baseline-free static-analysis expansion: **DONE / VERIFIED** through PR #28 and post-merge Quality Gates #183;
    - Q3 payment-concurrency characterization and baseline-free analysis for StatusRateGate/OrderLock: **DONE / VERIFIED** through PR #29 and post-merge Quality Gates #189;
@@ -99,8 +99,10 @@ Use:
    - Q14 migration-admin authorization/nonce/form/bounds/redaction/escaping characterization and baseline-free analysis: **DONE / VERIFIED** through PR #40 and post-merge Quality Gates #248;
    - Q15 subscription-presentation product/admin/cart/account characterization and baseline-free analysis: **DONE / VERIFIED** through PR #41 and post-merge Quality Gates #254;
    - Q16 migration-core preflight/batch/executor characterization and baseline-free analysis: **DONE / VERIFIED** through PR #42 and post-merge Quality Gates #316;
-   - Q17 payment-runtime checkout-orchestration/lifecycle characterization and baseline-free analysis: **CURRENT CLOSEOUT**;
-   - after Q17, run the enterprise-risk audit and move to Platform Certification unless a concrete separately bounded enterprise-critical risk justifies an additional Quality Platform gate; do not extend the sequence for numbering alone;
+   - Q17 payment-runtime checkout-orchestration/lifecycle characterization and baseline-free analysis: **DONE / VERIFIED** through PR #43 and post-merge Quality Gates #415;
+   - Q18 Blocks activation/availability enforcement, analyzer ownership, Woo logging correction and permanent regression coverage: **CURRENT**;
+   - Q19 subscription product-eligibility consistency: **NEXT / EVIDENCE-BACKED**;
+   - after Q19, terminate the numbered Quality Platform sequence unless a new enterprise-critical risk is independently demonstrated; otherwise move to named Platform/Feature Certification, Product Readiness and Release Engineering programs;
    - PHPUnit;
    - WordPress/WooCommerce integration tests;
    - PHPStan and PHPCS/WPCS/Woo standards;
