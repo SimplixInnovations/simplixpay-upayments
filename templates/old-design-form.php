@@ -100,12 +100,12 @@ defined( 'ABSPATH' ) || exit;
                         
             ?>
                 <li>
-                    <span class="<?php echo $key_attr; ?>-upayments-button">
-                    <input id="upayment_payment_type_<?php echo $key_attr; ?>" type="radio" class="input-radio"
-                            name="upayment_payment_type" value="<?php echo $key_attr; ?>"/>
-                    <label for="upayment_payment_type_<?php echo $key_attr; ?>"
+                    <span class="<?php echo esc_attr($key_string); ?>-upayments-button">
+                    <input id="upayment_payment_type_<?php echo esc_attr($key_string); ?>" type="radio" class="input-radio"
+                            name="upayment_payment_type" value="<?php echo esc_attr($key_string); ?>"/>
+                    <label for="upayment_payment_type_<?php echo esc_attr($key_string); ?>"
                             style='display: inline-block; font-family: -apple-system,blinkmacsystemfont,"Helvetica Neue",helvetica,sans-serif;'>
-                        <span class="upayment_payment_type_label_text"><?php echo $value_text; ?></span>
+                        <span class="upayment_payment_type_label_text"><?php echo esc_html($value_string); ?></span>
                         <span class="upayment_payment_type_label_logo"><?php echo wp_kses_post($icon); ?></span>
                     </label>
                     </span>
