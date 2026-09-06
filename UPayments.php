@@ -468,23 +468,17 @@ function woocommerceUpaymentsInit() {
          * reviewed transport policy.
          *
          * Transport policy:
-         *   - explicit TLS verification (defense in depth; even where libcurl
-         *     defaults are already secure, we set both flags explicitly);
+         *   - explicit TLS verification through the WordPress HTTP API;
          *   - redirects disabled (no redirect requirement is established;
          *     preserve endpoint identity; avoid method/body ambiguity on
          *     cross-host hops);
-         *   - finite connect (5s) and total (15s) timeouts;
+         *   - finite 15-second request timeout;
          *   - Bearer Authorization applied for the entire call.
          *
          * SECURITY: This helper does NOT log raw request bodies, raw response
-         * bodies, raw curl_error text, the Authorization header, or any token.
+         * bodies, raw transport-error text, the Authorization header, or any token.
          * Callers classify the structured outcome and remain responsible for
          * redacting provider messages before showing them to customers.
-         *
-         * PHP 8.5 deprecates curl_close(). On PHP 8.0+ the handle is a
-         * \CurlHandle object that is released when the last reference is
-         * dropped; we therefore skip curl_close() on PHP 8.0+ and only fall
-         * back to it on PHP < 8.0 (the plugin's minimum supported version).
          *
          * @param string      $route   API route relative to the API base.
          * @param string      $method  Uppercase HTTP method: 'GET' or 'POST'.
@@ -505,67 +499,38 @@ function woocommerceUpaymentsInit() {
                 return $outcome;
             }
 
-            $ch = curl_init();
-            if ($ch === false) {
-                return $outcome;
-            }
-
-            $options = array(
-                CURLOPT_URL            => $this->getAPIUrl($route),
-                CURLOPT_RETURNTRANSFER => true,
-                CURLOPT_FOLLOWLOCATION => false,
-                CURLOPT_SSL_VERIFYPEER => true,
-                CURLOPT_SSL_VERIFYHOST => 2,
-                CURLOPT_CONNECTTIMEOUT => 5,
-                CURLOPT_TIMEOUT        => 15,
-                CURLOPT_USERAGENT      => $this->getUserAgent(),
-                CURLOPT_ENCODING       => '',
-                CURLOPT_HTTPHEADER     => array(
-                    'Accept: application/json',
-                    'Content-Type: application/json',
-                    'Authorization: Bearer ' . $this->apiKey,
+            $request_args = array(
+                'method'      => $method,
+                'timeout'     => 15,
+                'redirection' => 0,
+                'sslverify'   => true,
+                'user-agent'  => $this->getUserAgent(),
+                'headers'     => array(
+                    'Accept'        => 'application/json',
+                    'Content-Type'  => 'application/json',
+                    'Authorization' => 'Bearer ' . $this->apiKey,
                 ),
             );
 
             if ($method === 'POST') {
-                $options[CURLOPT_POST]       = true;
-                $options[CURLOPT_POSTFIELDS] = (string) $body;
-            } else {
-                $options[CURLOPT_HTTPGET] = true;
+                $request_args['body'] = (string) $body;
             }
 
-            $configured = true;
-            foreach ($options as $option => $value) {
-                if (!@curl_setopt($ch, $option, $value)) {
-                    $configured = false;
-                    break;
-                }
-            }
-
-            if (!$configured) {
-                if (PHP_VERSION_ID < 80000) {
-                    @curl_close($ch);
-                }
-                $ch = null;
+            $response = wp_remote_request($this->getAPIUrl($route), $request_args);
+            if (is_wp_error($response)) {
+                // Keep the historical field for internal compatibility. A
+                // nonzero value means transport failure; raw error text is
+                // intentionally not persisted or logged.
+                $outcome['curl_errno'] = 1;
                 return $outcome;
             }
 
-            $response = curl_exec($ch);
-            $errno    = curl_errno($ch);
-            $status   = (int) curl_getinfo($ch, CURLINFO_HTTP_CODE);
-
-            if (PHP_VERSION_ID < 80000) {
-                @curl_close($ch);
-            }
-            $ch = null;
+            $status = (int) wp_remote_retrieve_response_code($response);
+            $response_body = wp_remote_retrieve_body($response);
 
             $outcome['http_status']  = $status;
-            $outcome['curl_errno']   = $errno;
-            $outcome['body']         = ($response === false) ? null : (string) $response;
-            $outcome['transport_ok'] = ($response !== false)
-                && ($errno === 0)
-                && ($status >= 200)
-                && ($status < 300);
+            $outcome['body']         = is_string($response_body) ? $response_body : '';
+            $outcome['transport_ok'] = ($status >= 200) && ($status < 300);
 
             return $outcome;
         }
@@ -617,30 +582,14 @@ function woocommerceUpaymentsInit() {
                     return $result;
                 }
 
-                $url = $this->getAPIUrl('get-payment-status/' . rawurlencode($track_id));
+                $transport = $this->execute_upayments_request(
+                    'get-payment-status/' . rawurlencode($track_id),
+                    'GET'
+                );
+                $response_body = $transport['body'];
+                $http_code = (int) $transport['http_status'];
 
-                $ch = curl_init();
-                curl_setopt($ch, CURLOPT_URL, $url);
-                curl_setopt($ch, CURLOPT_HTTPGET, true);
-                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-                curl_setopt($ch, CURLOPT_FOLLOWLOCATION, false);
-                curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
-                curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
-                curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
-                curl_setopt($ch, CURLOPT_TIMEOUT, 15);
-                curl_setopt($ch, CURLOPT_USERAGENT, $this->getUserAgent());
-                curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-                    'Accept: application/json',
-                    'Authorization: Bearer ' . $this->apiKey,
-                ));
-
-                $response_body = curl_exec($ch);
-                $curl_errno    = curl_errno($ch);
-                $curl_error    = curl_error($ch);
-                $http_code     = (int) curl_getinfo($ch, CURLINFO_HTTP_CODE);
-                curl_close($ch);
-
-                if ($response_body === false || $curl_errno !== 0) {
+                if ($response_body === null || (int) $transport['curl_errno'] !== 0) {
                     $result['reason'] = 'network_error';
                     $this->log('UPayments payment status verification failed (network).', 'warning');
                     return $result;
