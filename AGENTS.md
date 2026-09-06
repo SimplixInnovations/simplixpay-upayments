@@ -1,78 +1,91 @@
 # SimplixPay for UPayments — Repository Agent Instructions
 
-These instructions apply to the entire repository. A nested `AGENTS.md` may tighten them for a subtree but may not weaken payment/security invariants.
+These instructions apply repository-wide. Nested `AGENTS.md` files may tighten but never weaken payment/security/release invariants.
 
 ## Read first
 
-Before substantive work, read in this order:
+Before substantive work read:
 
 1. `docs/project/PROJECT-STATUS.md`
 2. `docs/project/NAMING-IDENTITY-STANDARD.md`
 3. `docs/project/NEW-CHAT-HANDOFF.md`
-4. `docs/project/PHASE-0-RELEASE-IDENTITY.md`
-5. `docs/project/PHASE-9I-MIGRATION.md`
-6. `docs/project/PROVIDER-PAYMENT-LIFECYCLE.md`
-7. `docs/project/SECURITY-THREAT-MODEL.md`
-8. `docs/project/ARCHITECTURE-CODE-QUALITY.md`
-9. `docs/project/QUALITY-PLATFORM.md` as the permanent Q1-Q19 quality record
-10. `docs/project/ENTERPRISE-CERTIFICATION.md` when Enterprise Compatibility Certification or later compatibility claims are relevant
-11. relevant living sections of `docs/project/MASTER-ENGINEERING-PLAYBOOK.md`
-12. `docs/project/BASELINE-H12.md` when token/saved-card/subscription identity is relevant
-13. `docs/project/REPOSITORY-READINESS.md` for historical repository-foundation evidence when relevant
+4. `docs/project/ENTERPRISE-CERTIFICATION.md`
+5. `docs/project/RELEASE-ENGINEERING.md`
+6. relevant immutable historical records: Phase 0, Phase 9I, Provider Lifecycle, Security, Architecture, Quality Platform
+7. `docs/project/BASELINE-H12.md` when token/saved-card/subscription identity is relevant
+8. `docs/superpowers/plans/2026-09-06-enterprise-completion.md` for the enterprise Tasks 1–8 contract
 
 ## Canonical identity
 
 - Repository: `SimplixInnovations/simplixpay-upayments`
 - Formal product: **SimplixPay for UPayments**
 - Short integration reference: **SimplixPay UPayments**
-- Product family reserved for broader use: **SimplixPay**
-- Canonical slug: `simplixpay-upayments`
+- Reserved broader family: **SimplixPay**
+- Slug: `simplixpay-upayments`
 - New PHP namespace root: `Simplix\Pay\UPayments`
 - New global prefix: `simplixpay_upayments_`
 - New constants: `SIMPLIXPAY_UPAYMENTS_*`
 
-`SimplixPay` alone is reserved for the future broader/multi-provider payment product. Do not use it as the short name for this provider-specific plugin when ambiguity matters.
+Do not invent alternate names/slugs/prefixes/namespaces.
 
-Do not invent alternate product names, slugs, prefixes or namespace schemes.
+## Freshness rule
 
-## Mandatory freshness rule
-
-Never assume a documented SHA/status is current. Before implementation or review:
+Live evidence beats recorded status. Before implementation/review:
 
 - verify live `main`;
-- inspect open PRs and relevant branches;
-- inspect the exact current source/diff;
-- inspect CI/check state;
+- inspect open PRs/issues/branches;
+- inspect exact source/diff;
+- inspect exact-head CI/check state;
 - reconcile `PROJECT-STATUS.md` with reality;
 - use current official provider/platform documentation when behavior depends on it.
 
-Live evidence beats stale project text. Do not rewrite historical facts merely to make a status document look current.
+Historical records preserve milestone truth and may contain then-current gate wording. They are not current-gate owners.
 
-## Phase gate rule
+## Current phase gate
 
-If `PROJECT-STATUS.md` says **pre-Phase-0 repository readiness** is open, finish `REPOSITORY-READINESS.md` before changing plugin/runtime identity, updater behavior, main plugin file, text domain or protected payment identifiers.
+Repository Foundation, Phase 0, Phase 9I, Provider Lifecycle, Security, Architecture A1-A5, Quality Platform Q1-Q19 and Enterprise Tasks 1–7 are **DONE / VERIFIED**.
 
-Do not start a later phase because code has been drafted. Phase progression requires independent verification and an explicit current-state update.
+The numbered Quality Platform is closed at Q19. **Never invent Q20 for continuity.**
 
-When **Architecture & Code-Quality Foundation** is current, `ARCHITECTURE-CODE-QUALITY.md` is mandatory. Characterize a responsibility before extracting it, keep legacy public entry points as compatibility wrappers where required, and follow the frozen extraction order unless new evidence justifies a separately reviewed change.
+The current named gate is **Enterprise Release Candidate Closeout**. It is complete only after one exact head passes final primary evidence, the reserved whole-plugin Codex review has been independently resolved, the exact head is squash-merged and required checks pass again on `main`.
 
-For A5 and every later architecture tranche, keep `tests/harness/architecture-foundation-harness.php`, `tests/harness/architecture-runtime-bindings-harness.php`, `tests/harness/architecture-bootstrap-path-harness.php`, `tests/harness/architecture-provider-endpoints-harness.php`, `tests/harness/architecture-payment-method-availability-harness.php`, `tests/harness/architecture-gateway-settings-harness.php`, `tests/harness/architecture-subscription-presentation-harness.php` and `tests/harness/architecture-checkout-orchestration-harness.php` mandatory in Quality Gates.
+Task 8 does not itself authorize a public 1.0 tag, GitHub Release or WordPress.org publication.
 
-The **Full Automated Quality Platform** is closed through Q19 and `QUALITY-PLATFORM.md` remains a mandatory permanent record. Introduce tools progressively against named risks, commit dependency locks, keep Composer development-only until an explicit packaging migration exists, and do not convert green tooling into platform-certification claims. Keep every historical/architecture harness, `tests/harness/quality-platform-foundation-harness.php`, `tests/harness/quality-platform-static-analysis-harness.php`, `tests/harness/quality-platform-payment-concurrency-harness.php`, `tests/harness/quality-platform-authenticated-status-harness.php`, `tests/harness/quality-platform-payment-method-availability-harness.php`, `tests/harness/quality-platform-gateway-settings-harness.php`, `tests/harness/quality-platform-public-order-status-harness.php`, `tests/harness/quality-platform-release-identity-harness.php`, `tests/harness/quality-platform-migration-settings-harness.php`, `tests/harness/quality-platform-migration-bootstrap-harness.php`, `tests/harness/quality-platform-subscription-composition-harness.php` and `tests/harness/quality-platform-subscription-product-type-harness.php` mandatory after Q12. The protected H12 job must always run and explicitly fail when any prerequisite quality job is not successful; dependency-skipped required checks are not acceptable gates.
+## Permanent quality controls
 
-Keep `tests/harness/quality-platform-migration-cli-harness.php` mandatory after Q13.
+Do not remove or weaken:
 
-Keep `tests/harness/quality-platform-migration-admin-harness.php` mandatory after Q14.
+- `.github/workflows/quality-gates.yml`;
+- `.github/workflows/compatibility-certification.yml`;
+- `.github/workflows/provider-sandbox-certification.yml`;
+- `.github/workflows/release-artifact.yml`;
+- all permanent architecture harnesses;
+- all Q1-Q19 quality harnesses;
+- Security Threat-Model harness;
+- Phase 0 / Phase 9I / Provider Lifecycle harnesses;
+- H12 PHP and Blocks harnesses;
+- real integration fixtures for activation, metadata, Blocks, HPOS, saved cards, subscriptions, multi-merchant, operations and upgrade compatibility;
+- deterministic artifact builder/verifier/harness.
 
-Keep `tests/harness/quality-platform-subscription-presentation-harness.php` mandatory after Q15.
+The protected H12 job must always run and must fail when required upstream quality/syntax prerequisites fail or skip.
 
-Keep `tests/harness/quality-platform-migration-core-harness.php` mandatory after Q16.
+Compatibility headers and Woo declarations require real runtime evidence; static/unit/H12 success alone cannot broaden support claims.
 
-Keep `tests/harness/quality-platform-payment-runtime-harness.php` mandatory after Q17. Q17 Payment Runtime Analysis, Q18 Blocks Availability Enforcement and Q19 Subscription Product Eligibility Consistency are all DONE / VERIFIED. Keep `tests/harness/quality-platform-blocks-availability-harness.php` and `tests/harness/quality-platform-subscription-product-eligibility-harness.php` mandatory permanently. The numbered Quality Platform is closed at Q19; do not invent Q20 for continuity. The current named program is **Enterprise Compatibility Certification**. Compatibility headers, Woo feature declarations and public support claims require reproducible WordPress/WooCommerce/PHP runtime evidence and may not be inferred from green static/custom harnesses alone. Keep `.github/workflows/compatibility-certification.yml` and its real-runtime activation/Classic/Blocks/legacy-storage/HPOS matrix mandatory once merged; a later change may expand or update its supported matrix but may not silently remove runtime certification. Keep `.github/workflows/provider-sandbox-certification.yml` and `tests/provider/sandbox-charge-smoke.php` mandatory once merged. Automated provider traffic may use only explicitly documented public sandbox test credentials or separately authorized repository test secrets; never substitute production merchant credentials. The ordinary provider smoke remains one bounded Charge initialization with no payment completion, status-poll loop, refund, saved-card mutation or auto-deduction.
+Automated provider traffic may use only explicitly documented public sandbox test credentials or separately authorized repository test secrets. Never use production merchant credentials. Ordinary automated provider certification remains one bounded Charge initialization with no payment completion, polling loop, refund, saved-card mutation or auto-deduction.
+
+## First-stable physical/text identity
+
+Task 7 proved a direct physical main-file rename does not preserve an already-active WordPress plugin identity. The first stable release therefore **must retain**:
+
+- main file `UPayments.php`;
+- basename `simplixpay-upayments/UPayments.php`;
+- text domain `upayments`.
+
+Frozen eventual targets `simplixpay-upayments.php` and `simplixpay-upayments` are future migrations requiring dedicated upgrade/i18n evidence.
 
 ## Protected compatibility identities
 
-Rebranding must never silently change persisted payment identity. Do not globally rename `upayments` or `_upay_*`.
+Never mechanically/global-replace `upayments` or `_upay_*`.
 
 Protected by default:
 
@@ -85,100 +98,63 @@ Protected by default:
 - `upayments_token_identity_secret_v2`;
 - H12 provenance/scope/generation keys;
 - `upay_process_subscriptions`;
-- existing billing-attempt tables/state;
+- billing-attempt tables/state;
 - historical order payment-method identity.
 
 Changing one requires an explicitly approved migration contract, old/new precedence, fallback/rollback semantics and tests.
 
-## Payment/security engineering
+## Payment/security rules
 
 - Evidence before claims.
-- Characterize before refactoring.
+- Characterize before changing behavior.
 - Fail closed on ambiguous security/payment identity.
-- Do not blindly retry non-idempotent charges/refunds/auto-deduct operations.
-- Do not infer provider success from browser/user-facing prose.
-- Browser redirects are not the sole payment source of truth.
-- Preserve H12 token/provenance contracts unless a later approved phase explicitly supersedes them.
-- Never expose private/merchant API secrets or bearer tokens, card data, customer/card tokens, H12 identity secrets/provenance, unnecessary PII or production database exports. A provider-documented public sandbox test credential is not a merchant secret and may appear only in test-only certification surfaces governed by the explicit provider-automation rule above; it must never be presented as or substituted for a production credential.
+- Never blindly retry non-idempotent Charge/refund/auto-deduct operations.
+- Browser redirects/webhook prose are not financial truth.
+- Preserve authenticated provider-status binding and Woo payment semantics.
+- Preserve H12 token/provenance contracts unless an approved later migration supersedes them.
+- Never expose merchant API secrets/bearer tokens, card data, customer/card tokens, H12 secrets/provenance, unnecessary PII or production database exports.
+- Uninstall remains non-destructive by default.
+
+## Explicit unsupported/external boundaries
+
+Do not mislabel these as green repository features:
+
+- automatic Woo refunds — **unsupported**;
+- arbitrary marketplace multi-split — **unsupported**, one additional merchant only;
+- live subscription auto-deduction — external/non-idempotent provider evidence;
+- provider webhook signature trust — deferred until stable provider documentation exists;
+- production merchant payment completion — external/manual;
+- wallets, WPML/WCML/multilingual/multicurrency/RTL, browser/device/theme/accessibility, store-specific performance and penetration/PCI/compliance — external/manual evidence tracks.
 
 ## Public claims
 
-- A green H12 workflow is a regression baseline, not broad production certification.
-- Do not add WooCommerce/WordPress/PHP/HPOS/Blocks/WPML/performance compatibility badges until the corresponding matrix is independently verified.
-- External credentials such as the Simplix Innovations Woo Agency Partner listing may be shown only while the official source remains verifiable.
-- Do not imply WooCommerce or UPayments endorses this plugin.
+Do not add compatibility/security/performance/compliance badges or prose beyond `docs/COMPATIBILITY.md` exact evidence. Do not imply WooCommerce or UPayments endorsement.
 
 ## Change discipline
 
-- Work on a dedicated branch from a freshly verified base.
-- Keep changes phase-scoped; avoid drive-by cleanup in payment-critical files.
-- Add regression evidence for defects.
-- Do not mechanically rename/refactor payment code without characterization tests.
-- During architecture work, prefer strangler/delegation seams over moving large blocks wholesale.
-- Do not grow `UPayments.php` with new responsibilities; new responsibilities require an explicit module boundary.
-- Update project status/docs when a verified milestone changes project truth.
-- Do not claim compatibility/security/performance/production readiness without evidence.
+- Dedicated branch from freshly verified base.
+- TDD for production behavior/bug fixes: test RED first, minimal GREEN, rerun affected and permanent regression evidence.
+- Keep release-closeout changes phase-scoped; no drive-by payment refactors.
+- Do not grow `UPayments.php` with new responsibilities.
+- Update living state/docs when verified project truth changes.
+- Preserve historical records rather than rewriting their milestone facts.
 
-## Review and merge
+## Final review and merge
 
-Agent/bot reports are evidence requests, not proof. Independently verify source, diff, tests and checks. Pin approval to exact base/head SHAs. External AI review is not an intermediate gate; reserve any such audit for the final enterprise-complete plugin review.
+External AI/bot reports are evidence requests, not proof. The **one final whole-plugin Codex review is reserved for Task 8 after all primary automated evidence is green**. Independently reproduce/inspect every material finding; fix valid findings and add regression evidence where appropriate.
 
-If verification fails:
+Final merge requires:
 
-`NOT APPROVED.`  
-`DO NOT MERGE.`
+- exact immutable head;
+- Quality/H12 green;
+- Compatibility 16/16 green;
+- Release Artifact including packaged + upgrade cells green;
+- bounded Provider Sandbox green;
+- CodeQL/security green;
+- locked dependency audit green;
+- zero unresolved valid review threads;
+- exact-head mergeability;
+- squash-only merge;
+- post-merge verification on `main`.
 
-External implementation reports end:
-
-`STOP. DO NOT MERGE.`  
-`Awaiting reviewer verification.`
-
-Merge-only reports end:
-
-`STOP.`  
-`Awaiting reviewer verification of merge.`
-
-After merge, independently verify `main`, expected topology for the chosen merge method, critical files/checks and branch cleanup before marking DONE / VERIFIED.
-
-## Initial validation commands
-
-Until the standard quality platform replaces them:
-
-```bash
-php tests/harness/architecture-foundation-harness.php
-php tests/harness/architecture-runtime-bindings-harness.php
-php tests/harness/architecture-bootstrap-path-harness.php
-php tests/harness/architecture-provider-endpoints-harness.php
-php tests/harness/architecture-payment-method-availability-harness.php
-php tests/harness/architecture-gateway-settings-harness.php
-php tests/harness/architecture-subscription-presentation-harness.php
-php tests/harness/architecture-checkout-orchestration-harness.php
-php tests/harness/quality-platform-foundation-harness.php
-php tests/harness/quality-platform-static-analysis-harness.php
-php tests/harness/quality-platform-payment-concurrency-harness.php
-php tests/harness/quality-platform-authenticated-status-harness.php
-php tests/harness/quality-platform-payment-method-availability-harness.php
-php tests/harness/quality-platform-gateway-settings-harness.php
-php tests/harness/quality-platform-public-order-status-harness.php
-php tests/harness/quality-platform-release-identity-harness.php
-php tests/harness/quality-platform-migration-settings-harness.php
-php tests/harness/quality-platform-migration-bootstrap-harness.php
-php tests/harness/quality-platform-subscription-composition-harness.php
-php tests/harness/quality-platform-subscription-product-type-harness.php
-php tests/harness/quality-platform-migration-cli-harness.php
-php tests/harness/quality-platform-migration-admin-harness.php
-php tests/harness/quality-platform-subscription-presentation-harness.php
-php tests/harness/quality-platform-migration-core-harness.php
-php tests/harness/quality-platform-payment-runtime-harness.php
-php tests/harness/quality-platform-blocks-availability-harness.php
-php tests/harness/quality-platform-subscription-product-eligibility-harness.php
-php tests/harness/security-threat-model-harness.php
-php tests/harness/phase-9g-h12-php-harness.php
-node --check tests/harness/phase-9g-h12-blocks-harness.js
-node tests/harness/phase-9g-h12-blocks-harness.js
-composer validate --strict
-composer audit --locked --no-interaction
-composer quality
-```
-
-Also run repository CI and phase-specific tests.
+If verification fails: **NOT APPROVED. DO NOT MERGE.**
