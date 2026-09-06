@@ -84,7 +84,7 @@ with zipfile.ZipFile(zip_path, "r") as archive:
 
     allowed_exact = {
         "UPayments.php", "index.php", "uninstall.php", "LICENSE",
-        "README.md", "CHANGELOG.md", "NOTICE.md", "SECURITY.md",
+        "README.md", "readme.txt", "CHANGELOG.md", "NOTICE.md", "SECURITY.md",
     }
     allowed_prefixes = ("src/", "includes/", "assets/", "templates/")
     for rel in rel_names:
@@ -147,7 +147,7 @@ with zipfile.ZipFile(zip_path, "r") as archive:
 
     required = {
         "UPayments.php", "index.php", "uninstall.php", "LICENSE",
-        "README.md", "CHANGELOG.md", "NOTICE.md", "SECURITY.md",
+        "README.md", "readme.txt", "CHANGELOG.md", "NOTICE.md", "SECURITY.md",
         "src/Release/Identity.php",
         "includes/class-wc-gateway-upayments-blocks.php",
     }

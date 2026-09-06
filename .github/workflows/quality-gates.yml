@@ -30,15 +30,17 @@ jobs:
         run: |
           set -euo pipefail
           required=(
-            AGENTS.md README.md CHANGELOG.md LICENSE NOTICE.md SECURITY.md SUPPORT.md
+            AGENTS.md README.md readme.txt CHANGELOG.md LICENSE NOTICE.md SECURITY.md SUPPORT.md
             .distignore .github/CODEOWNERS
             composer.json composer.lock phpcs.xml.dist phpstan.neon.dist phpunit.xml.dist
             .github/workflows/quality-gates.yml
             .github/workflows/compatibility-certification.yml
             .github/workflows/provider-sandbox-certification.yml
             .github/workflows/release-artifact.yml
+            .github/workflows/wordpress-org-submission-check.yml
             scripts/build-release.sh scripts/verify-release.sh scripts/install-wp-test-environment.sh
             tests/harness/release-artifact-harness.php
+            tests/harness/wordpress-org-submission-harness.php
             tests/provider/sandbox-charge-smoke.php
             tests/integration/bootstrap.php
             tests/integration/PluginActivationTest.php

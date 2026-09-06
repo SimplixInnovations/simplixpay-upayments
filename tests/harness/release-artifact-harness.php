@@ -245,7 +245,7 @@ function release_inspect_zip_independently($root, $zip_path, $checksum_path, $ma
 
     $allowed_exact = array(
         'UPayments.php', 'index.php', 'uninstall.php', 'LICENSE',
-        'README.md', 'CHANGELOG.md', 'NOTICE.md', 'SECURITY.md',
+        'README.md', 'readme.txt', 'CHANGELOG.md', 'NOTICE.md', 'SECURITY.md',
     );
     $allowed_prefixes = array('src/', 'includes/', 'assets/', 'templates/');
     $allowlisted = true;
@@ -280,6 +280,7 @@ function release_inspect_zip_independently($root, $zip_path, $checksum_path, $ma
         'uninstall.php',
         'LICENSE',
         'README.md',
+        'readme.txt',
         'CHANGELOG.md',
         'NOTICE.md',
         'SECURITY.md',

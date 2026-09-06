@@ -1,0 +1,103 @@
+name: WordPress.org Submission Check
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'UPayments.php'
+      - 'readme.txt'
+      - 'LICENSE'
+      - 'README.md'
+      - 'CHANGELOG.md'
+      - 'NOTICE.md'
+      - 'SECURITY.md'
+      - 'src/**'
+      - 'includes/**'
+      - 'assets/**'
+      - 'templates/**'
+      - 'index.php'
+      - 'uninstall.php'
+      - '.distignore'
+      - 'scripts/build-release.sh'
+      - 'scripts/verify-release.sh'
+      - 'tests/harness/release-artifact-harness.php'
+      - 'tests/harness/wordpress-org-submission-harness.php'
+      - '.github/workflows/wordpress-org-submission-check.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'UPayments.php'
+      - 'readme.txt'
+      - 'LICENSE'
+      - 'README.md'
+      - 'CHANGELOG.md'
+      - 'NOTICE.md'
+      - 'SECURITY.md'
+      - 'src/**'
+      - 'includes/**'
+      - 'assets/**'
+      - 'templates/**'
+      - 'index.php'
+      - 'uninstall.php'
+      - '.distignore'
+      - 'scripts/build-release.sh'
+      - 'scripts/verify-release.sh'
+      - 'tests/harness/release-artifact-harness.php'
+      - 'tests/harness/wordpress-org-submission-harness.php'
+      - '.github/workflows/wordpress-org-submission-check.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  SUBMISSION_SOURCE_SHA: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || github.sha }}
+
+concurrency:
+  group: wporg-submission-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  plugin-check:
+    name: Plugin Check — packaged plugin_repo
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ env.SUBMISSION_SOURCE_SHA }}
+          fetch-depth: 0
+          persist-credentials: false
+
+      - uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # v2.37.2
+        with:
+          php-version: '8.3'
+          extensions: zip
+          coverage: none
+          tools: none
+
+      - name: Verify permanent submission contract
+        run: php tests/harness/wordpress-org-submission-harness.php
+
+      - name: Build and unpack canonical verified package
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf submission-output "${RUNNER_TEMP}/plugin-check"
+          mkdir -p submission-output "${RUNNER_TEMP}/plugin-check"
+          bash scripts/build-release.sh submission-output
+          ZIP="$(find submission-output -maxdepth 1 -type f -name 'simplixpay-upayments-*.zip' -print -quit)"
+          test -n "$ZIP"
+          bash scripts/verify-release.sh "$ZIP"
+          unzip -q "$ZIP" -d "${RUNNER_TEMP}/plugin-check"
+          test -s "${RUNNER_TEMP}/plugin-check/simplixpay-upayments/UPayments.php"
+          test -s "${RUNNER_TEMP}/plugin-check/simplixpay-upayments/readme.txt"
+
+      - name: Run official WordPress Plugin Check against packaged artifact
+        uses: WordPress/plugin-check-action@10857da14b6c2246d15402b3e69f777edcf8c12e # v1.1.9
+        with:
+          build-dir: ${{ runner.temp }}/plugin-check/simplixpay-upayments
+          slug: simplixpay-upayments
+          categories: plugin_repo
+          include-experimental: false
+          strict: false

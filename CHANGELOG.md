@@ -6,6 +6,12 @@ The project is still in pre-release engineering hardening. Entries below are eng
 
 ## [Unreleased]
 
+### WordPress.org submission-readiness gate
+
+- Add the canonical WordPress.org `readme.txt` to the deterministic package and bind its Stable Tag/support metadata/external-service boundaries to the verified release contract.
+- Add the official WordPress Plugin Check action, pinned to v1.1.9 commit `10857da14b6c2246d15402b3e69f777edcf8c12e`, against the unpacked canonical artifact with the blocking `plugin_repo` category.
+- No WordPress.org contributor identity, version promotion, tag, public release, or license change is invented by this engineering tranche.
+
 ### Enterprise Release Candidate Closeout — DONE / VERIFIED
 
 - PR #54 final reviewed head `5a24944617f7ee482c381e5e899f687b77d81d09` passed Quality #552/H12, Compatibility #80 (**16/16**), Release Artifact #34 including packaged legacy/HPOS plus current/floor upgrade cells, Provider Sandbox #12, locked dependency audit and CodeQL.
