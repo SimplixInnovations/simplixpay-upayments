@@ -207,3 +207,243 @@ jobs:
         env:
           SIMPLIXPAY_HPOS_MODE: ${{ matrix.storage }}
         run: /tmp/wp-cli.phar eval-file "$GITHUB_WORKSPACE/tests/integration/HposCompatibilityTest.php" --path="$RUNNER_TEMP/wordpress"
+
+
+  upgrade-identity:
+    name: Upgrade identity WP ${{ matrix.wordpress }} / WC ${{ matrix.woocommerce }} / PHP ${{ matrix.php }}
+    needs: artifact-build
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - wordpress: '7.1'
+            woocommerce: '11.1.0'
+            php: '8.3'
+          - wordpress: '6.9.7'
+            woocommerce: '10.8.1'
+            php: '8.3'
+
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: wordpress
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h 127.0.0.1 -proot"
+          --health-interval=5s
+          --health-timeout=5s
+          --health-retries=20
+
+    env:
+      UPGRADE_BASE_SHA: 54b1fbcc280b92372bd93baf929d6a746cfd3959
+
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ env.RELEASE_SOURCE_SHA }}
+          fetch-depth: 0
+          persist-credentials: false
+
+      - uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # v2.37.2
+        with:
+          php-version: ${{ matrix.php }}
+          extensions: curl, mbstring, mysqli, zip
+          coverage: none
+          tools: none
+
+      - name: Download current canonical artifact
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        with:
+          name: simplixpay-release-${{ env.RELEASE_SOURCE_SHA }}
+          path: release-output
+
+      - name: Verify current canonical artifact
+        shell: bash
+        run: |
+          set -euo pipefail
+          CURRENT_ZIP="$(find "$GITHUB_WORKSPACE/release-output" -maxdepth 1 -type f -name 'simplixpay-upayments-*.zip' -print -quit)"
+          test -n "$CURRENT_ZIP"
+          bash scripts/verify-release.sh "$CURRENT_ZIP"
+
+      - name: Build prior same-basename release candidate
+        shell: bash
+        run: |
+          set -euo pipefail
+          PREVIOUS_SOURCE="$RUNNER_TEMP/simplixpay-previous-source"
+          PREVIOUS_OUTPUT="$RUNNER_TEMP/simplixpay-previous-output"
+          rm -rf "$PREVIOUS_SOURCE" "$PREVIOUS_OUTPUT"
+          git worktree add --detach "$PREVIOUS_SOURCE" "$UPGRADE_BASE_SHA"
+          mkdir -p "$PREVIOUS_OUTPUT"
+          (
+            cd "$PREVIOUS_SOURCE"
+            bash scripts/build-release.sh "$PREVIOUS_OUTPUT"
+          )
+          git worktree remove --force "$PREVIOUS_SOURCE"
+          git worktree prune
+          PREVIOUS_ZIP="$(find "$PREVIOUS_OUTPUT" -maxdepth 1 -type f -name 'simplixpay-upayments-*.zip' -print -quit)"
+          test -n "$PREVIOUS_ZIP"
+          echo "PREVIOUS_ZIP=$PREVIOUS_ZIP" >> "$GITHUB_ENV"
+
+      - name: Build characterization packages
+        shell: bash
+        run: |
+          set -euo pipefail
+          CURRENT_ZIP="$(find "$GITHUB_WORKSPACE/release-output" -maxdepth 1 -type f -name 'simplixpay-upayments-*.zip' -print -quit)"
+          test -n "$CURRENT_ZIP"
+          CURRENT_ZIP="$CURRENT_ZIP" RUNNER_TEMP="$RUNNER_TEMP" python3 <<'PY'
+          import os
+          import pathlib
+          import zipfile
+
+          source = pathlib.Path(os.environ["CURRENT_ZIP"])
+          temp = pathlib.Path(os.environ["RUNNER_TEMP"])
+          renamed = temp / "simplixpay-renamed-main.zip"
+          duplicate = temp / "simplixpay-duplicate-root.zip"
+
+          def write_variant(destination, transform):
+              with zipfile.ZipFile(source, "r") as src, zipfile.ZipFile(
+                  destination, "w", compression=zipfile.ZIP_DEFLATED
+              ) as out:
+                  for info in src.infolist():
+                      if info.is_dir():
+                          continue
+                      name = transform(info.filename)
+                      data = src.read(info.filename)
+                      new_info = zipfile.ZipInfo(name, date_time=(1980, 1, 1, 0, 0, 0))
+                      new_info.create_system = 3
+                      new_info.external_attr = (0o100644 << 16)
+                      new_info.compress_type = zipfile.ZIP_DEFLATED
+                      out.writestr(new_info, data, compress_type=zipfile.ZIP_DEFLATED, compresslevel=9)
+
+          def renamed_name(name):
+              if name == "simplixpay-upayments/UPayments.php":
+                  return "simplixpay-upayments/simplixpay-upayments.php"
+              return name
+
+          def duplicate_name(name):
+              prefix = "simplixpay-upayments/"
+              if not name.startswith(prefix):
+                  raise SystemExit("unexpected package root: " + name)
+              return "upayments-legacy/" + name[len(prefix):]
+
+          write_variant(renamed, renamed_name)
+          write_variant(duplicate, duplicate_name)
+          print(renamed)
+          print(duplicate)
+          PY
+          echo "RENAMED_ZIP=$RUNNER_TEMP/simplixpay-renamed-main.zip" >> "$GITHUB_ENV"
+          echo "DUPLICATE_ZIP=$RUNNER_TEMP/simplixpay-duplicate-root.zip" >> "$GITHUB_ENV"
+          echo "CURRENT_ZIP=$CURRENT_ZIP" >> "$GITHUB_ENV"
+
+      - name: Install pinned WP-CLI
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl -fsSL             https://github.com/wp-cli/wp-cli/releases/download/v2.12.0/wp-cli-2.12.0.phar             -o /tmp/wp-cli.phar
+          echo 'ce34ddd838f7351d6759068d09793f26755463b4a4610a5a5c0a97b68220d85c  /tmp/wp-cli.phar' | sha256sum -c -
+          chmod +x /tmp/wp-cli.phar
+          /tmp/wp-cli.phar --version
+
+      - name: Install prior candidate as existing active installation
+        shell: bash
+        run: |
+          set -euo pipefail
+          SIMPLIXPAY_PLUGIN_ZIP="$PREVIOUS_ZIP"           WP_CLI_BIN=/tmp/wp-cli.phar           bash scripts/install-wp-test-environment.sh             "${{ matrix.wordpress }}"             "${{ matrix.woocommerce }}"             "$RUNNER_TEMP/wordpress"
+          /tmp/wp-cli.phar plugin activate simplixpay-upayments --path="$RUNNER_TEMP/wordpress"
+
+      - name: Seed existing-install state
+        env:
+          SIMPLIXPAY_UPGRADE_PHASE: seed-existing
+        run: /tmp/wp-cli.phar eval-file "$GITHUB_WORKSPACE/tests/integration/UpgradeCompatibilityTest.php" --path="$RUNNER_TEMP/wordpress"
+
+      - name: Upgrade existing active install to current same-basename package
+        run: /tmp/wp-cli.phar plugin install "$CURRENT_ZIP" --force --path="$RUNNER_TEMP/wordpress"
+
+      - name: Verify current upgrade preserves active identity and data
+        env:
+          SIMPLIXPAY_UPGRADE_PHASE: verify-active
+        run: /tmp/wp-cli.phar eval-file "$GITHUB_WORKSPACE/tests/integration/UpgradeCompatibilityTest.php" --path="$RUNNER_TEMP/wordpress"
+
+      - name: Verify explicit deactivation is non-destructive
+        shell: bash
+        run: |
+          set -euo pipefail
+          /tmp/wp-cli.phar plugin deactivate simplixpay-upayments --path="$RUNNER_TEMP/wordpress"
+          SIMPLIXPAY_UPGRADE_PHASE=verify-inactive             /tmp/wp-cli.phar eval-file "$GITHUB_WORKSPACE/tests/integration/UpgradeCompatibilityTest.php" --path="$RUNNER_TEMP/wordpress"
+          /tmp/wp-cli.phar plugin activate simplixpay-upayments --path="$RUNNER_TEMP/wordpress"
+
+      - name: Verify reactivation restores same compatibility identity
+        env:
+          SIMPLIXPAY_UPGRADE_PHASE: verify-active
+        run: /tmp/wp-cli.phar eval-file "$GITHUB_WORKSPACE/tests/integration/UpgradeCompatibilityTest.php" --path="$RUNNER_TEMP/wordpress"
+
+      - name: Roll back to prior same-basename candidate
+        run: /tmp/wp-cli.phar plugin install "$PREVIOUS_ZIP" --force --path="$RUNNER_TEMP/wordpress"
+
+      - name: Verify rollback preserves active identity and data
+        env:
+          SIMPLIXPAY_UPGRADE_PHASE: verify-active
+        run: /tmp/wp-cli.phar eval-file "$GITHUB_WORKSPACE/tests/integration/UpgradeCompatibilityTest.php" --path="$RUNNER_TEMP/wordpress"
+
+      - name: Return to current package
+        run: /tmp/wp-cli.phar plugin install "$CURRENT_ZIP" --force --path="$RUNNER_TEMP/wordpress"
+
+      - name: Install duplicate-root characterization package
+        run: /tmp/wp-cli.phar plugin install "$DUPLICATE_ZIP" --force --path="$RUNNER_TEMP/wordpress"
+
+      - name: Verify duplicate package is a distinct conflicting identity
+        env:
+          SIMPLIXPAY_UPGRADE_PHASE: verify-duplicate
+        run: /tmp/wp-cli.phar eval-file "$GITHUB_WORKSPACE/tests/integration/UpgradeCompatibilityTest.php" --path="$RUNNER_TEMP/wordpress"
+
+      - name: Remove inactive duplicate package
+        run: /tmp/wp-cli.phar plugin delete upayments-legacy --path="$RUNNER_TEMP/wordpress"
+
+      - name: Replace active install with hypothetical renamed-main package
+        run: /tmp/wp-cli.phar plugin install "$RENAMED_ZIP" --force --path="$RUNNER_TEMP/wordpress"
+
+      - name: Verify renamed-main candidate fails the safe-upgrade contract
+        shell: bash
+        run: |
+          set -euo pipefail
+          RED_LOG="$RUNNER_TEMP/simplixpay-renamed-main-red.log"
+          set +e
+          SIMPLIXPAY_UPGRADE_PHASE=verify-renamed-red             /tmp/wp-cli.phar eval-file "$GITHUB_WORKSPACE/tests/integration/UpgradeCompatibilityTest.php"               --path="$RUNNER_TEMP/wordpress" >"$RED_LOG" 2>&1
+          RED_CODE=$?
+          set -e
+
+          cat "$RED_LOG"
+          test "$RED_CODE" -ne 0
+          grep -Fq 'CERT: renamed candidate active_plugins=["simplixpay-upayments\/UPayments.php","woocommerce\/woocommerce.php"]' "$RED_LOG"
+          grep -Fq 'CERT: renamed candidate old_active=yes target_active=no runtime_loaded=no' "$RED_LOG"
+          grep -Fq 'FAIL: RED: physical main-file migration transfers active identity to simplixpay-upayments.php without intervention' "$RED_LOG"
+
+      - name: Restore canonical transitional package after negative rename probe
+        shell: bash
+        run: |
+          set -euo pipefail
+          /tmp/wp-cli.phar plugin install "$CURRENT_ZIP" --force --path="$RUNNER_TEMP/wordpress"
+
+          if /tmp/wp-cli.phar plugin is-active simplixpay-upayments --path="$RUNNER_TEMP/wordpress"; then
+            RECOVERY_REQUIRED=no
+          else
+            RECOVERY_REQUIRED=yes
+            /tmp/wp-cli.phar plugin activate simplixpay-upayments --path="$RUNNER_TEMP/wordpress"
+          fi
+
+          /tmp/wp-cli.phar option update _simplixpay_upgrade_rename_recovery_required "$RECOVERY_REQUIRED"             --path="$RUNNER_TEMP/wordpress"
+
+      - name: Verify restored package identity and retained data
+        env:
+          SIMPLIXPAY_UPGRADE_PHASE: verify-restored
+        run: /tmp/wp-cli.phar eval-file "$GITHUB_WORKSPACE/tests/integration/UpgradeCompatibilityTest.php" --path="$RUNNER_TEMP/wordpress"
+
+      - name: Clean upgrade certification fixtures
+        env:
+          SIMPLIXPAY_UPGRADE_PHASE: cleanup
+        run: /tmp/wp-cli.phar eval-file "$GITHUB_WORKSPACE/tests/integration/UpgradeCompatibilityTest.php" --path="$RUNNER_TEMP/wordpress"

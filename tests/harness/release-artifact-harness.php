@@ -501,7 +501,7 @@ release_assert(
 );
 release_assert(
     strpos($workflow, "github.event_name == 'pull_request' && github.event.pull_request.head.sha || github.sha") !== false
-        && substr_count($workflow, 'ref: ${{ env.RELEASE_SOURCE_SHA }}') === 2,
+        && substr_count($workflow, 'ref: ${{ env.RELEASE_SOURCE_SHA }}') === 3,
     'release artifact checkout is pinned to the exact candidate source SHA instead of a synthetic PR merge ref'
 );
 release_assert(
