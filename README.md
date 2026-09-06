@@ -25,14 +25,14 @@
 
 The historical enterprise engineering program through Quality Platform Q1-Q19 and Enterprise Tasks 1-8 is preserved as completed evidence.
 
-Quality Platform Q1-Q19 are **DONE / VERIFIED**. The historical Enterprise Release Candidate Closeout is **DONE / VERIFIED**. These are retained closure records; the active work remains the SUCheckout migration and exact-head re-certification described below.
+Quality Platform Q1-Q19 are **DONE / VERIFIED**. The historical Enterprise Release Candidate Closeout is **DONE / VERIFIED**. These are retained closure records; the current pre-release line is SUCheckout and every candidate remains subject to exact-head certification.
 
 | Historical program | Status |
 |---|---|
 | Quality Platform Q1-Q19 | **DONE / VERIFIED** |
 | Enterprise Tasks 1-8 | **DONE / VERIFIED** |
 
-The current pre-release work is the approved **SUCheckout identity migration and re-certification** before any public release.
+The approved **SUCheckout identity migration is implemented**. Exact-head Quality/H12, compatibility, artifact, provider-sandbox, security and WordPress.org checks remain mandatory before merge or public release.
 
 No public SUCheckout 1.0 tag, GitHub Release or WordPress.org publication exists yet. Publication remains a separate owner action after the exact merged source/artifact state is certified.
 
