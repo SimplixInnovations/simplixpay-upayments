@@ -73,6 +73,7 @@ namespace Simplixi\SUCheckout\UPayments\Payment {
         return true;
     }
     function wp_salt($scheme = 'auth') { return 'unit-test-wordpress-salt'; }
+    function wp_parse_url($url, $component = -1) { return \parse_url((string) $url, $component); }
 
     function wp_remote_get($url, $args = array()) {
         state()['remote_get_calls']++;
