@@ -3,7 +3,7 @@
  * A1 provider endpoint/mode resolver characterization harness.
  */
 
-use Simplix\Pay\UPayments\Provider\EndpointResolver;
+use Simplixi\SUCheckout\UPayments\Provider\EndpointResolver;
 
 // Exercise the pure service before the shared bootstrap defines any WP/Woo stubs.
 require_once dirname(__DIR__, 2) . '/src/Provider/EndpointResolver.php';
