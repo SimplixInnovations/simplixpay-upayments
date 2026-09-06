@@ -6,7 +6,7 @@ The project is still in pre-release engineering hardening. Entries below are eng
 
 ## [Unreleased]
 
-### SUCheckout identity migration — IN PROGRESS
+### SUCheckout identity migration — IMPLEMENTED / PRE-RELEASE
 
 - Retires the pre-release SimplixPay first-party identity in favor of **SUCheckout for UPayments** and canonical technical slug `sucheckout-upayments`.
 - Preserves evidence-backed UPayments provider and historical WooCommerce compatibility identifiers while first-party package, namespace, metadata, i18n, frontend and release surfaces migrate under regression gates.
