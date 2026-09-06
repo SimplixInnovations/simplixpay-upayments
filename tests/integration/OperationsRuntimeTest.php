@@ -97,7 +97,13 @@ if ('seed' === $phase) {
         'enable_save_card' => 'yes',
         'enable_subscriptions' => 'no',
     );
-    update_option($settings_key, $settings, false);
+    // The activation fixture intentionally leaves a malformed object-valued
+    // gateway option in place. Older WooCommerce versions cannot run their
+    // payment-gateway option-change observer against that malformed *old* value,
+    // so transition this certification fixture through the raw persistence seam
+    // used by PluginActivationTest rather than invoking unrelated Woo observers.
+    // The lifecycle assertions below still exercise the real stored option.
+    simplixpay_cert_store_option_raw($settings_key, $settings);
     update_option($snapshot_key, maybe_serialize($settings), false);
 
     $identity_user_id = wp_insert_user(array(
