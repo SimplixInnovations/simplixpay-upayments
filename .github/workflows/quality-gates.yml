@@ -62,6 +62,8 @@ jobs:
             tests/harness/quality-platform-migration-core-harness.php
             tests/harness/quality-platform-payment-runtime-harness.php
             .github/workflows/compatibility-certification.yml
+            .github/workflows/provider-sandbox-certification.yml
+            tests/provider/sandbox-charge-smoke.php
             scripts/install-wp-test-environment.sh
             tests/integration/bootstrap.php
             tests/integration/PluginActivationTest.php
