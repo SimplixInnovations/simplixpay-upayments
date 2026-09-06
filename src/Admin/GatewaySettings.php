@@ -1,6 +1,6 @@
 <?php
 
-namespace Simplix\Pay\UPayments\Admin;
+namespace Simplixi\SUCheckout\UPayments\Admin;
 
 /**
  * Gateway settings schema, validation and admin presentation adapter.
