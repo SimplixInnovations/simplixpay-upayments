@@ -8,10 +8,10 @@ use Simplix\Pay\UPayments\Release\Identity;
 
 final class IdentityTest extends TestCase {
     public function test_canonical_public_brand_and_repository_are_exact(): void {
-        self::assertSame('SimplixPay for UPayments', Identity::PRODUCT_NAME);
-        self::assertSame('SimplixPay UPayments', Identity::SHORT_NAME);
-        self::assertSame('simplixpay-upayments', Identity::SLUG);
-        self::assertSame('SimplixInnovations/simplixpay-upayments', Identity::REPOSITORY);
+        self::assertSame('SUCheckout for UPayments', Identity::PRODUCT_NAME);
+        self::assertSame('SUCheckout', Identity::SHORT_NAME);
+        self::assertSame('sucheckout-upayments', Identity::SLUG);
+        self::assertSame('SimplixInnovations/sucheckout-upayments', Identity::REPOSITORY);
     }
 
     public function test_version_remains_an_independent_pre_one_release(): void {
@@ -29,8 +29,8 @@ final class IdentityTest extends TestCase {
     }
 
     public function test_future_targets_are_frozen_but_not_current_identity(): void {
-        self::assertSame('simplixpay-upayments.php', Identity::TARGET_MAIN_FILE);
-        self::assertSame('simplixpay-upayments', Identity::TARGET_TEXT_DOMAIN);
+        self::assertSame('sucheckout-upayments.php', Identity::TARGET_MAIN_FILE);
+        self::assertSame('sucheckout-upayments', Identity::TARGET_TEXT_DOMAIN);
         self::assertNotSame(Identity::LEGACY_MAIN_FILE, Identity::TARGET_MAIN_FILE);
         self::assertNotSame(Identity::LEGACY_TEXT_DOMAIN, Identity::TARGET_TEXT_DOMAIN);
     }
