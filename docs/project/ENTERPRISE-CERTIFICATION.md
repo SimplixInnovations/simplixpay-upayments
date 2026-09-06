@@ -1,6 +1,6 @@
 # SimplixPay for UPayments — Enterprise Certification
 
-**Status:** TASKS 1–7 DONE / VERIFIED; TASK 8 RELEASE-CANDIDATE CLOSEOUT CURRENT  
+**Status:** TASKS 1–7 DONE / VERIFIED; TASK 8 RELEASE-CANDIDATE CLOSEOUT CURRENT
 **Canonical repository:** `SimplixInnovations/simplixpay-upayments`
 
 This record owns the reproducible enterprise certification evidence. It does not convert external/manual evidence into repository claims.

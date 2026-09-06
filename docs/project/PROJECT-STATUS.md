@@ -1,7 +1,7 @@
 # SimplixPay for UPayments — Project Status
 
-**Status document:** canonical living engineering state  
-**Last updated:** 2026-09-06  
+**Status document:** canonical living engineering state
+**Last updated:** 2026-09-06
 **Canonical repository:** `SimplixInnovations/simplixpay-upayments`
 
 > Live GitHub/source evidence wins over recorded SHAs. Historical phase records preserve what was true at their close; this file owns the current state.
@@ -22,6 +22,7 @@
 | Provider Contract & Payment Lifecycle | **DONE / VERIFIED** |
 | Security Threat-Model Closure | **DONE / VERIFIED** |
 | Architecture & Code-Quality Foundation | **DONE / VERIFIED (A1-A5)** |
+| Quality Platform Q16 migration-core analysis | **DONE / VERIFIED** |
 | Quality Platform Q1-Q19 | **DONE / VERIFIED — numbered sequence closed** |
 | Enterprise Task 1 — quality closeout | **DONE / VERIFIED** |
 | Enterprise Task 2 — executable compatibility matrix | **DONE / VERIFIED** |
@@ -78,7 +79,7 @@ The eventual canonical filename/text-domain targets remain future migrations req
 
 ## Canonical Task 7 merge and post-merge evidence
 
-Task 7 PR #52 final head: `dd550eb6af86262aabfd50479407903172327726`  
+Task 7 PR #52 final head: `dd550eb6af86262aabfd50479407903172327726`
 Squash merge: `02b8d1c2851faabe020f23bbe84ebcca43a4827d`
 
 Post-merge `main` passed:

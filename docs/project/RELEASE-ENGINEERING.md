@@ -1,6 +1,6 @@
 # SimplixPay for UPayments — Release Engineering
 
-**Status:** TASKS 5 & 7 DONE / VERIFIED; TASK 8 RELEASE-CANDIDATE CLOSEOUT CURRENT  
+**Status:** TASKS 5 & 7 DONE / VERIFIED; TASK 8 RELEASE-CANDIDATE CLOSEOUT CURRENT
 **Canonical repository:** `SimplixInnovations/simplixpay-upayments`
 
 ## First-stable package contract
