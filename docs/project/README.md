@@ -1,6 +1,6 @@
 # Project Control Documents
 
-This directory is the permanent engineering control plane for **SimplixPay for UPayments**.
+This directory is the permanent engineering control plane for **SUCheckout for UPayments**.
 
 ## Read order
 
