@@ -256,8 +256,8 @@ foreach (array('process_payment', 'auto-deduct', 'upay_process_subscriptions', '
 }
 a4_assert(strpos($composition, 'register_presentation_hooks') !== false && strpos($composition, 'register_gateway_hooks') !== false, 'composition explicitly owns global and gateway hook registration');
 
-// Exact protected scheduler/cycle-claim blobs remain unchanged from H12.
-a4_same('5251866d4df2d1326e7c09f0c8ec1d146c0bb325', a4_git_blob_sha($root . '/includes/Subscription/Cron/Scheduler.php'), 'protected Scheduler blob remains exact');
+// Exact protected scheduler/cycle-claim blobs remain unchanged except for the approved SUCheckout i18n migration.
+a4_same('88dc245a195752bc5bc3f01962c72b8b0c57793d', a4_git_blob_sha($root . '/includes/Subscription/Cron/Scheduler.php'), 'protected Scheduler blob matches approved SUCheckout i18n migration');
 a4_same('c34d83e2d77cc65024fe663e4c378cecb2b17347', a4_git_blob_sha($root . '/includes/Subscription/Cron/CycleClaim.php'), 'protected CycleClaim blob remains exact');
 
 echo "\nArchitecture Subscription Presentation: {$pass} PASS / {$fail} FAIL\n";
