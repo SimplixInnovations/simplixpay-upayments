@@ -1,10 +1,10 @@
 # SUCheckout for UPayments — Identity Migration Design
 
-**Status:** APPROVED / CANONICAL TARGET  
-**Approved:** 2026-09-06  
-**Maintainer:** Simplix Innovations  
-**Product brand:** SUCheckout  
-**Formal integration name:** SUCheckout for UPayments  
+**Status:** APPROVED / CANONICAL TARGET
+**Approved:** 2026-09-06
+**Maintainer:** Simplix Innovations
+**Product brand:** SUCheckout
+**Formal integration name:** SUCheckout for UPayments
 **Canonical technical slug:** `sucheckout-upayments`
 
 ## Decision
@@ -165,4 +165,3 @@ The migration is complete only when:
 ## Branding boundary
 
 Engineering identity can proceed without the visual brand package. Before final UI/WordPress.org visual assets are locked, the latest Simplixi branding should be applied to typography, color, spacing, radii, iconography, logos, screenshots, banners, and admin/checkout visual presentation.
-
