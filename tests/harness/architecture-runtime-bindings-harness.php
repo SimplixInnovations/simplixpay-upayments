@@ -1069,7 +1069,7 @@ arch2_assert(
 
 $gatewayClass = arch2_class_body_tokens($gatewayTokens, 'WC_Upayments');
 $statusMethod = arch2_direct_public_method($gatewayClass, 'get_payment_staus');
-$statusDelegation = '\\Simplix\\Pay\\UPayments\\Security\\PublicOrderStatus::handle();';
+$statusDelegation = '\\Simplixi\\SUCheckout\\UPayments\\Security\\PublicOrderStatus::handle();';
 arch2_assert($statusMethod['found'], 'historical public status-poll wrapper remains executable');
 arch2_assert(
     $statusMethod['found'] && arch2_code_without_strings($statusMethod['body']) === $statusDelegation,
