@@ -1174,7 +1174,7 @@ function woocommerceUpaymentsInit() {
                     wp_enqueue_script('sucheckout-upayments-checkout-legacy-script', $plugin_url . 'assets/js/old-upay.js', array('jquery'), '3.0.0', true );
                 }
                 wp_enqueue_script('sucheckout-upayments-subscription-checkout', $plugin_url. 'assets/js/subscription-checkout.js', array('jquery'),'3.0.0',true);
-                wp_localize_script('upayments-subscription-checkout', 'wcUser', [
+                wp_localize_script('sucheckout-upayments-subscription-checkout', 'wcUser', [
                     'isLoggedIn' => is_user_logged_in(),
                     'userId'     => get_current_user_id(),
                 ]);
