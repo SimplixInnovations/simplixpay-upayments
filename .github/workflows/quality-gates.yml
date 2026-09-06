@@ -40,6 +40,7 @@ jobs:
             scripts/build-release.sh scripts/verify-release.sh scripts/install-wp-test-environment.sh
             tests/harness/release-artifact-harness.php
             tests/harness/sucheckout-identity-migration-harness.php
+            tests/harness/sucheckout-namespace-migration-harness.php
             tests/provider/sandbox-charge-smoke.php
             tests/integration/bootstrap.php
             tests/integration/PluginActivationTest.php
@@ -241,6 +242,8 @@ jobs:
         run: git ls-files -z '*.php' | xargs -0 -r -n1 php -l
       - name: SUCheckout identity migration harness
         run: php tests/harness/sucheckout-identity-migration-harness.php
+      - name: SUCheckout namespace migration harness
+        run: php tests/harness/sucheckout-namespace-migration-harness.php
       - name: Phase 0 release identity harness
         run: php tests/harness/phase-0-release-identity-harness.php
       - name: Phase 9I migration preflight harness
