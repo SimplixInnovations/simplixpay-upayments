@@ -1,5 +1,7 @@
 # H12 Baseline and Canonical Repository Root
 
+> **Historical baseline record.** SimplixPay-era repository/product wording and original blob anchors below are preserved as H12 provenance. Later reviewed changes establish newer exact ratchets; current SUCheckout identity/state is defined by `NAMING-IDENTITY-STANDARD.md` and `PROJECT-STATUS.md`.
+
 ## Canonical root
 
 On 2026-08-24, `SimplixInnovations/simplixpay-upayments` was established as a standalone canonical repository with a clean parentless root commit.
