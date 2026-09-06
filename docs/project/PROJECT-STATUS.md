@@ -47,11 +47,33 @@
 | Quality Platform Q16 migration-core analysis | **DONE / VERIFIED** |
 | Quality Platform Q17 payment-runtime analysis | **DONE / VERIFIED** |
 | Quality Platform Q18 Blocks availability enforcement | **DONE / VERIFIED** |
-| Current program gate | **Full Automated Quality Platform — Q19** |
+| Quality Platform Q19 subscription product eligibility | **DONE / VERIFIED** |
+| Current program gate | **Enterprise Compatibility Certification** |
 
-The plugin remains a pre-release engineering project. Architecture discovery/A1-A5 and Quality Platform Q1-Q18 are DONE / VERIFIED; Q19 Subscription Product Eligibility Consistency is the current and final evidence-backed numbered gate. After Q19, stop the numbered sequence unless a new enterprise-critical risk is independently demonstrated; otherwise proceed to named certification, product-readiness and release-engineering programs. None of these milestones constitutes broad provider-host, penetration-test, PCI/compliance, platform, feature, performance or release certification.
+The plugin remains a pre-release engineering project. Architecture discovery/A1-A5 and Quality Platform Q1-Q19 are DONE / VERIFIED. Q19 is the final evidence-backed numbered gate and the numbered sequence is closed; no Q20 is justified by current evidence. The current named program is Enterprise Compatibility Certification, followed by feature/product readiness and release engineering. None of these completed milestones constitutes broad provider-host, penetration-test, PCI/compliance, platform, feature, performance or release certification.
 
-## Latest verified milestone — Quality Platform Q18 Blocks availability enforcement
+## Latest verified milestone — Quality Platform Q19 Subscription Product Eligibility Consistency
+
+PR #45 final exact head:
+
+- `1717f0c25da7140a7799c7db3a7f016abecec7e9`
+- tree: `8230778e3313e4d201de48b1a5cf170c42f7178d`
+- exact-head Quality Gates #463: **SUCCESS across all five jobs**
+- PHPUnit: **174 tests / 1063 assertions**
+- Q19: **22/0**; Q18: **17/0**; Q17: **97/0**; Q16: **113/0**
+- H12 PHP: **1927/0**; H12 Blocks: **144/0**
+- exact-head CodeQL: **SUCCESS / no new alerts**
+- squash merge: `29ba16a1eabc00e25c3652ae838be9b9539b3a10`
+- merge tree: `8230778e3313e4d201de48b1a5cf170c42f7178d`
+- post-merge Quality Gates #464: **SUCCESS**
+- post-merge CodeQL actions and JavaScript/TypeScript lanes: **SUCCESS**
+- implementation branch `quality/subscription-product-eligibility`: **deleted after verified merge**
+
+Q19 removed arbitrary product-ID restriction semantics, preserved only exact `_upay_disable_subscription = yes` opt-out behavior, rejected opted-out subscription attempts before provider transport even with a cold availability cache, and aligned Classic plan/interval parsing with exact unslashed-token semantics. It does not constitute broad recurring-billing, platform, compatibility or production certification.
+
+The numbered Quality Platform is closed at Q19. No Q20 is justified by current evidence.
+
+## Previous verified milestone — Quality Platform Q18 Blocks availability enforcement
 
 PR #44 final exact head:
 
@@ -682,25 +704,26 @@ Repository readiness remains DONE / VERIFIED:
 - private vulnerability reporting;
 - MIT recognized.
 
-## Current program gate — Full Automated Quality Platform
+## Current program gate — Enterprise Compatibility Certification
 
-**Status: Q19 — SUBSCRIPTION PRODUCT ELIGIBILITY CONSISTENCY / IMPLEMENTATION.**
+**Status: DISCOVERY / IMPLEMENTATION.**
 
-Architecture discovery/A1-A5 and Quality Platform Q1-Q18 are complete. Q19 is limited to subscription product eligibility/opt-out consistency across Classic and Store API payment orchestration:
+Quality Platform Q1-Q19 is closed and remains a permanent regression platform. The current program must establish real WordPress/WooCommerce/PHP runtime evidence before any compatibility claim changes:
 
-- `src/Payment/CheckoutOrchestrator.php`: canonical Woo order-ID intake, Classic/Store API routing, exact provider-bound lexical/economic inputs, retry-unique Charge-attempt identity and response handling;
-- `src/Payment/PaymentLifecycle.php`: conflict-safe callback routing, authenticated status binding, order lock + fresh rebind, attempt-scoped cursor promotion/reset, deterministic terminal/capture transitions and bounded reconciliation;
-- baseline-free PHPStan level 5/PHP 7.2, risk-focused PHPCS/WPCS and process-isolated deterministic PHPUnit characterization across both files;
-- every original provider lifecycle/amount, Phase 9I, Q1-Q17, architecture, security and H12 regression remains mandatory;
-- exact Scheduler/CycleClaim blobs and all persisted compatibility identities remain protected.
+- exact supported WordPress, WooCommerce and PHP version cells;
+- Classic checkout and Cart/Checkout Blocks registration/runtime behavior;
+- HPOS enabled/disabled order behavior;
+- activation/install behavior from the eventual packaged artifact;
+- multilingual/multicurrency/RTL and feature-specific certification as separately evidenced;
+- no compatibility header, badge or Woo feature declaration before its exact matrix is green.
 
-Q19 may correct only test- or analyzer-proven product eligibility/opt-out consistency defects. It preserves the exact `_upay_disable_subscription = yes` merchant contract, rejects opted-out subscription attempts before provider transport, retains one-time purchase behavior and does not authorize Scheduler/CycleClaim/provider API/payment lifecycle redesign or broad certification. After Q19, terminate the numbered Quality Platform sequence unless new enterprise-critical evidence independently justifies another bounded gate.
+The current program may correct only test-proven compatibility defects while preserving every closed provider/payment, security, Phase 9I, Q1-Q19, Scheduler/CycleClaim and H12 contract.
 
 ## Later program blockers
 
-After the Full Automated Quality Platform:
+After Enterprise Compatibility Certification:
 
-- platform and feature certification;
+- feature/product-readiness certification;
 - performance/UX/operations/diagnostics;
 - release packaging/distribution and eventual WordPress.org publication.
 
