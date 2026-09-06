@@ -1,0 +1,71 @@
+name: Release Artifact
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - '.distignore'
+      - 'UPayments.php'
+      - 'src/**'
+      - 'includes/**'
+      - 'assets/**'
+      - 'templates/**'
+      - 'index.php'
+      - 'uninstall.php'
+      - 'LICENSE'
+      - 'README.md'
+      - 'CHANGELOG.md'
+      - 'NOTICE.md'
+      - 'SECURITY.md'
+      - 'scripts/build-release.sh'
+      - 'scripts/verify-release.sh'
+      - 'tests/harness/release-artifact-harness.php'
+      - '.github/workflows/release-artifact.yml'
+  push:
+    branches: [main]
+    paths:
+      - '.distignore'
+      - 'UPayments.php'
+      - 'src/**'
+      - 'includes/**'
+      - 'assets/**'
+      - 'templates/**'
+      - 'index.php'
+      - 'uninstall.php'
+      - 'LICENSE'
+      - 'README.md'
+      - 'CHANGELOG.md'
+      - 'NOTICE.md'
+      - 'SECURITY.md'
+      - 'scripts/build-release.sh'
+      - 'scripts/verify-release.sh'
+      - 'tests/harness/release-artifact-harness.php'
+      - '.github/workflows/release-artifact.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release-artifact-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  red-artifact-contract:
+    name: Deterministic release artifact
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # v2.37.2
+        with:
+          php-version: '8.3'
+          coverage: none
+          tools: none
+
+      - name: Release artifact contract
+        run: php tests/harness/release-artifact-harness.php
