@@ -50,6 +50,9 @@ on:
 permissions:
   contents: read
 
+env:
+  RELEASE_SOURCE_SHA: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || github.sha }}
+
 concurrency:
   group: release-artifact-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
@@ -62,6 +65,7 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
+          ref: ${{ env.RELEASE_SOURCE_SHA }}
           fetch-depth: 0
           persist-credentials: false
 
@@ -87,7 +91,7 @@ jobs:
       - name: Upload canonical release evidence
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
-          name: simplixpay-release-${{ github.sha }}
+          name: simplixpay-release-${{ env.RELEASE_SOURCE_SHA }}
           path: |
             release-output/simplixpay-upayments-*.zip
             release-output/simplixpay-upayments-*.zip.sha256
@@ -135,7 +139,7 @@ jobs:
       - name: Download exact built release evidence
         uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
         with:
-          name: simplixpay-release-${{ github.sha }}
+          name: simplixpay-release-${{ env.RELEASE_SOURCE_SHA }}
           path: release-output
 
       - name: Verify downloaded release artifact
