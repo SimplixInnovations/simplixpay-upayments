@@ -7,9 +7,8 @@ defined('ABSPATH') || exit;
 /**
  * Canonical product/release identity for SUCheckout for UPayments.
  *
- * The class remains under the pre-migration PHP namespace for this first
- * identity tranche. NAMESPACE_ROOT records the approved destination; Task 2
- * migrates the first-party PSR-4 namespace under its own regression gate.
+ * The first-party PSR-4 namespace has migrated to the canonical SUCheckout
+ * root. NAMESPACE_ROOT is the permanent machine-readable namespace contract.
  *
  * Persisted payment/provider identities are explicit compatibility contracts,
  * not product branding. They must not be destroyed by a rebrand.
