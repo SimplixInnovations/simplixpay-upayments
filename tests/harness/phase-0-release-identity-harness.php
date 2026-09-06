@@ -55,7 +55,7 @@ if (!defined('ABSPATH')) {
 }
 require_once $identity_path;
 
-use Simplix\Pay\UPayments\Release\Identity;
+use Simplixi\SUCheckout\UPayments\Release\Identity;
 
 // Public product header: Simplix-owned, independent 0.x version line.
 // Header/public metadata migration is intentionally deferred to the dedicated i18n/metadata tranche.
