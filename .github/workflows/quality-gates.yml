@@ -51,6 +51,7 @@ jobs:
             tests/integration/OperationsRuntimeTest.php
             tests/integration/UpgradeCompatibilityTest.php
             docs/COMPATIBILITY.md docs/ENGINEERING-ROADMAP.md
+            docs/history/H12-ENGINEERING-CHANGELOG.md
             docs/project/PROJECT-STATUS.md
             docs/project/ENTERPRISE-CERTIFICATION.md
             docs/project/RELEASE-ENGINEERING.md
@@ -63,6 +64,8 @@ jobs:
             docs/project/ARCHITECTURE-CODE-QUALITY.md
             docs/project/QUALITY-PLATFORM.md
             docs/project/BASELINE-H12.md
+            docs/project/REPOSITORY-AUDIT.md
+            docs/project/REPOSITORY-READINESS.md
             docs/superpowers/plans/2026-09-06-enterprise-completion.md
           )
           for path in "${required[@]}"; do
