@@ -76,14 +76,28 @@ Q17 closed bounded payment-runtime characterization/hardening for checkout orche
 
 ## Previous verified milestone — Quality Platform Q16 migration-core analysis
 
-PR #42 final verified head:
+PR #42 final reviewed head:
 
 - `3cff2fcc64053d79be7427696c86039f1b52bbfd`
 - tree: `b9cc6eafb3c7f8df36b9c5db8b2e45bb330688d2`
-- squash merge: `06a9ebd732c7cc3f062d4bb361aaef4054a1dfa3`
-- post-merge Quality Gates #316: **SUCCESS**
-- main security #84: **SUCCESS**
+
+Verified squash merge on `main`:
+
+- merge: `06a9ebd732c7cc3f062d4bb361aaef4054a1dfa3`
+- parent: `a4bbb05021dbded73072c0ba108a18245b60ad88`
+- GitHub signature: **VERIFIED**
+- implementation branch `quality/migration-core-analysis`: **deleted after verified merge**
+- exact-head Quality Gates run #315: **SUCCESS across all five jobs**
+- CodeQL PR scan #83: **SUCCESS**
+- push-triggered post-merge Quality Gates run #316: **SUCCESS across all five jobs**
+- main security run #84: **SUCCESS**
+- PHPUnit: **160 tests / 987 assertions**
 - Q16 Migration Core Analysis: **120/0**
+- H12 PHP: **1927/0**; Blocks: **144/0**
+- final independent exact-head independent review: **clean**
+
+Q16 expanded baseline-free PHPStan level 5/PHP 7.2, risk-focused PHPCS and deterministic PHPUnit characterization into `MigrationPreflight.php`, `MigrationBatch.php` and `MigrationExecutor.php`. It hardened exact full-string migration inputs, bounded checkpoint/resume behavior and prepared-SQL boundaries while preserving the closed Phase 9I eligibility/provenance contract and protected payment/subscription identities. Q16 makes no merchant-fleet migration, platform, compliance, performance or production-certification claim.
+
 ## Previous verified milestone — Quality Platform Q15 subscription-presentation analysis
 
 PR #41 final reviewed head:
