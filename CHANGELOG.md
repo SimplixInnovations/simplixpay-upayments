@@ -6,6 +6,23 @@ The project is still in pre-release engineering hardening. Entries below are eng
 
 ## [Unreleased]
 
+### Enterprise Compatibility Certification — core runtime foundation — DONE / VERIFIED
+
+- Added a permanent real WordPress/WooCommerce/MySQL runtime matrix covering 16 WordPress/WooCommerce/PHP × legacy/HPOS cells.
+- Real RED head `23cc9edfa3a905730fbb3924318f09a06803e750` reproduced an activation fatal when `woocommerce_upayments_settings` was object-valued; minimal fix `e912819ad30c3be980c18fe104a1961f306a572a` added only the required `is_array()` guard.
+- Strengthened activation certification to compare the complete serialized protected settings option byte-for-byte and prove the activation callback executed.
+- Verified Classic gateway registration, standard Blocks registration/availability and real WooCommerce order CRUD under both legacy and HPOS authoritative storage.
+- PR #47 final head `d46abc86f329a2b0ae24e79c18c371db2083a43a` passed Quality Gates #490, Compatibility Certification #18, CodeQL and all 16 runtime cells.
+- Squash-merged as `5e4f33d24bcaed1032691c564b570e60c95a9483`; post-merge Quality Gates #491, Compatibility Certification #19, all 16 cells and CodeQL passed; branch auto-deleted.
+
+### Enterprise Compatibility Certification — support metadata and HPOS declaration
+
+- RED-A added real-runtime support-header assertions while leaving production metadata unchanged; Compatibility Certification #20 failed exactly because the prior WordPress minimum remained 5.6.
+- GREEN-A derives public metadata only from the verified matrix: WordPress 6.9 minimum / 7.1 tested, WooCommerce 10.8 minimum / 11.1 tested, PHP 7.4 minimum. Exact candidate `b247965c2ff7e98c00b394b2672b5ef2ba14fba6` passed Quality Gates #495 and Compatibility Certification #23 across all 16 cells.
+- RED-B then inspected WooCommerce's real feature registry and failed exactly because `custom_order_tables` was not declared compatible.
+- GREEN-B adds only the guarded HPOS `custom_order_tables` declaration beside the already-existing `cart_checkout_blocks` declaration. The exact `UPayments.php` ratchet advances to 89,102 bytes for this declaration.
+- Broader provider, feature, multilingual, browser/accessibility/performance and release certification remains pending.
+
 ### Architecture A3 — Gateway Settings/Admin Presentation — DONE / VERIFIED
 
 - Extracted the complete characterized settings schema, validation, one-row allocation renderer and admin assets to `src/Admin/GatewaySettings.php` behind all legacy public gateway wrappers.
@@ -213,7 +230,7 @@ The project is still in pre-release engineering hardening. Entries below are eng
 
 ### Current program gate
 
-**Enterprise Compatibility Certification** is now the active gate. Architecture A1-A5 and Quality Platform Q1-Q19 are DONE / VERIFIED. The certification program must establish reproducible WordPress/WooCommerce/PHP, HPOS and checkout-mode evidence before changing compatibility headers, Woo feature declarations or public support claims. The completed engineering gates do not establish broad platform, feature, performance, PCI/compliance or production certification.
+**Enterprise Compatibility Certification** is now the active gate. Architecture A1-A5, Quality Platform Q1-Q19 and the PR #47 core runtime foundation are DONE / VERIFIED. The current test-first declaration tranche publishes only matrix-proven WordPress/WooCommerce/PHP metadata and HPOS/Blocks feature declarations. Provider sandbox, feature-specific, multilingual, browser/accessibility/performance, operations and release certification remain open; completed gates do not establish broad feature, performance, PCI/compliance or production certification.
 
 ### Provider Contract & Payment Lifecycle — DONE / VERIFIED
 

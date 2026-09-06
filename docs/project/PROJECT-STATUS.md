@@ -48,11 +48,33 @@
 | Quality Platform Q17 payment-runtime analysis | **DONE / VERIFIED** |
 | Quality Platform Q18 Blocks availability enforcement | **DONE / VERIFIED** |
 | Quality Platform Q19 subscription product eligibility | **DONE / VERIFIED** |
+| Enterprise runtime certification foundation (PR #47) | **DONE / VERIFIED** |
+| Core WP/Woo/PHP runtime matrix | **VERIFIED — 16/16 real runtime/storage cells** |
+| Classic + standard Blocks registration/availability | **VERIFIED** |
+| HPOS legacy/on authoritative storage CRUD | **VERIFIED** |
 | Current program gate | **Enterprise Compatibility Certification** |
 
-The plugin remains a pre-release engineering project. Architecture discovery/A1-A5 and Quality Platform Q1-Q19 are DONE / VERIFIED. Q19 is the final evidence-backed numbered gate and the numbered sequence is closed; no Q20 is justified by current evidence. The current named program is Enterprise Compatibility Certification, followed by feature/product readiness and release engineering. None of these completed milestones constitutes broad provider-host, penetration-test, PCI/compliance, platform, feature, performance or release certification.
+The plugin remains a pre-release engineering project. Architecture discovery/A1-A5 and Quality Platform Q1-Q19 are DONE / VERIFIED, and the real-runtime Enterprise Compatibility foundation is DONE / VERIFIED through PR #47. The numbered Quality Platform remains closed at Q19; no Q20 is justified by current evidence. Enterprise Compatibility Certification continues with evidence-derived public declarations plus provider/feature/multilingual/browser/performance certification before Product Readiness and Release Engineering. None of these completed milestones constitutes broad provider-host, penetration-test, PCI/compliance, feature, performance or release certification.
 
-## Latest verified milestone — Quality Platform Q19 Subscription Product Eligibility Consistency
+## Latest verified milestone — Enterprise runtime certification foundation
+
+PR #47 exact final head:
+
+- `d46abc86f329a2b0ae24e79c18c371db2083a43a`
+- exact-head Quality Gates #490: **SUCCESS**
+- exact-head Compatibility Certification #18: **SUCCESS**
+- all 16 real WordPress/WooCommerce/PHP × legacy/HPOS cells: **SUCCESS**
+- exact-head CodeQL: **SUCCESS**
+- squash merge: `5e4f33d24bcaed1032691c564b570e60c95a9483`
+- post-merge Quality Gates #491: **SUCCESS**
+- post-merge Compatibility Certification #19: **SUCCESS**
+- post-merge all 16 runtime/storage cells: **SUCCESS**
+- post-merge CodeQL actions + JavaScript/TypeScript lanes: **SUCCESS**
+- implementation branch: **auto-deleted after verified merge**
+
+The tranche introduced a permanent real-runtime matrix and independently reproduced a malformed persisted-settings activation fatal before the minimal `is_array($settings)` guard fixed it. It certifies activation, Classic gateway registration, standard Blocks registration/availability, and real Woo order CRUD under both legacy and HPOS authoritative storage for the recorded matrix. It does not certify provider sandbox/card completion, subscription/tokenization end-to-end, wallets, WPML/WCML, browser/accessibility/performance or release packaging.
+
+## Previous verified milestone — Quality Platform Q19 Subscription Product Eligibility Consistency
 
 PR #45 final exact head:
 
@@ -706,16 +728,24 @@ Repository readiness remains DONE / VERIFIED:
 
 ## Current program gate — Enterprise Compatibility Certification
 
-**Status: DISCOVERY / IMPLEMENTATION.**
+**Status: CORE PLATFORM VERIFIED / DECLARATIONS + BROADER CERTIFICATION IN PROGRESS.**
 
-Quality Platform Q1-Q19 is closed and remains a permanent regression platform. The current program must establish real WordPress/WooCommerce/PHP runtime evidence before any compatibility claim changes:
+Quality Platform Q1-Q19 is closed and remains a permanent regression platform. PR #47 permanently established the real WordPress/WooCommerce/PHP matrix, Classic/standard Blocks registration and legacy/HPOS order-storage evidence. The current test-first declaration tranche is consuming that evidence to publish only:
 
-- exact supported WordPress, WooCommerce and PHP version cells;
-- Classic checkout and Cart/Checkout Blocks registration/runtime behavior;
-- HPOS enabled/disabled order behavior;
-- activation/install behavior from the eventual packaged artifact;
-- multilingual/multicurrency/RTL and feature-specific certification as separately evidenced;
-- no compatibility header, badge or Woo feature declaration before its exact matrix is green.
+- `Requires at least: 6.9` and `Tested up to: 7.1`;
+- `Requires PHP: 7.4`;
+- `WC requires at least: 10.8` and `WC tested up to: 11.1`;
+- Woo `cart_checkout_blocks` compatibility retained;
+- Woo `custom_order_tables` compatibility added only after a separate RED→GREEN real-registry test.
+
+Still required inside Enterprise Compatibility Certification:
+
+- activation/install behavior from the eventual packaged release artifact;
+- UPayments public-sandbox transport/schema certification;
+- saved-card/subscription/wallet/multi-merchant feature evidence;
+- WPML/WCML/multicurrency/RTL;
+- browser/device/accessibility/performance;
+- no compatibility claim beyond exact tested evidence.
 
 The current program may correct only test-proven compatibility defects while preserving every closed provider/payment, security, Phase 9I, Q1-Q19, Scheduler/CycleClaim and H12 contract.
 

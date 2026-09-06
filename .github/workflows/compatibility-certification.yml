@@ -127,6 +127,9 @@ jobs:
           SIMPLIXPAY_CERT_PHASE: verify
         run: /tmp/wp-cli.phar eval-file "$GITHUB_WORKSPACE/tests/integration/PluginActivationTest.php" --path="$RUNNER_TEMP/wordpress"
 
+      - name: Verify release support metadata
+        run: /tmp/wp-cli.phar eval-file "$GITHUB_WORKSPACE/tests/integration/ReleaseMetadataTest.php" --path="$RUNNER_TEMP/wordpress"
+
       - name: Verify Blocks registration and availability
         run: /tmp/wp-cli.phar eval-file "$GITHUB_WORKSPACE/tests/integration/CheckoutRegistrationTest.php" --path="$RUNNER_TEMP/wordpress"
 

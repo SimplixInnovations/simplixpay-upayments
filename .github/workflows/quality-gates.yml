@@ -67,6 +67,7 @@ jobs:
             tests/integration/PluginActivationTest.php
             tests/integration/CheckoutRegistrationTest.php
             tests/integration/HposCompatibilityTest.php
+            tests/integration/ReleaseMetadataTest.php
             docs/project/ENTERPRISE-CERTIFICATION.md
             docs/project/PROJECT-STATUS.md
             docs/project/PHASE-0-RELEASE-IDENTITY.md
