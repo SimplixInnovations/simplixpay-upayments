@@ -35,4 +35,6 @@ parameters:
         - src/Migration/MigrationExecutor.php
         - src/Subscription/Presentation.php
         - includes/class-wc-gateway-upayments-blocks.php
+        - includes/Subscription/Checkout/Fields.php
+        - includes/Subscription/Helpers/Utils.php
     tmpDir: .cache/phpstan

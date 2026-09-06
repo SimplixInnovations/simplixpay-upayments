@@ -39,9 +39,10 @@ class Fields
             return;
         }
 
+        $post = self::checkout_post();
         $plan = '';
-        if (isset($_POST['upay_subscription_plan']) && is_scalar($_POST['upay_subscription_plan'])) {
-            $plan = sanitize_text_field(wp_unslash($_POST['upay_subscription_plan']));
+        if (isset($post['upay_subscription_plan']) && is_scalar($post['upay_subscription_plan'])) {
+            $plan = wp_unslash($post['upay_subscription_plan']);
         }
 
         if ($plan === '') {
@@ -55,8 +56,8 @@ class Fields
         }
 
         $interval = self::parse_interval(
-            isset($_POST['upay_subscription_interval']) && is_scalar($_POST['upay_subscription_interval'])
-                ? wp_unslash($_POST['upay_subscription_interval'])
+            isset($post['upay_subscription_interval']) && is_scalar($post['upay_subscription_interval'])
+                ? wp_unslash($post['upay_subscription_interval'])
                 : null
         );
 
@@ -107,18 +108,19 @@ class Fields
             return;
         }
 
-        if (!isset($_POST['upay_subscription_plan']) || !is_scalar($_POST['upay_subscription_plan'])) {
+        $post = self::checkout_post();
+        if (!isset($post['upay_subscription_plan']) || !is_scalar($post['upay_subscription_plan'])) {
             return;
         }
 
-        $plan = sanitize_text_field(wp_unslash($_POST['upay_subscription_plan']));
+        $plan = wp_unslash($post['upay_subscription_plan']);
         if (!in_array($plan, self::$ALLOWED_PLANS, true)) {
             return;
         }
 
         $interval = self::parse_interval(
-            isset($_POST['upay_subscription_interval']) && is_scalar($_POST['upay_subscription_interval'])
-                ? wp_unslash($_POST['upay_subscription_interval'])
+            isset($post['upay_subscription_interval']) && is_scalar($post['upay_subscription_interval'])
+                ? wp_unslash($post['upay_subscription_interval'])
                 : null
         );
 
@@ -158,9 +160,10 @@ class Fields
         if ($gateway->get_option('enable_subscriptions') !== 'yes') {
             return false;
         }
+        $post = self::checkout_post();
         $selected_gateway = '';
-        if (isset($_POST['payment_method']) && is_scalar($_POST['payment_method'])) {
-            $selected_gateway = sanitize_key(wp_unslash($_POST['payment_method']));
+        if (isset($post['payment_method']) && is_scalar($post['payment_method'])) {
+            $selected_gateway = sanitize_key(wp_unslash($post['payment_method']));
         }
         if ($selected_gateway !== 'upayments') {
             return false;
@@ -172,6 +175,22 @@ class Fields
             return false;
         }
         return true;
+    }
+
+    /**
+     * Return the Classic WooCommerce checkout POST payload.
+     *
+     * WooCommerce verifies the checkout nonce before invoking the checkout
+     * validation/order-creation hooks used by this class. Individual fields
+     * remain presence-checked, scalar-checked and unslashed before their exact
+     * allowlist or strict parser is applied by the consumer.
+     *
+     * @return array
+     */
+    private static function checkout_post(): array
+    {
+        // phpcs:ignore WordPress.Security.NonceVerification.Missing,WordPress.Security.ValidatedSanitizedInput.InputNotSanitized,WordPress.Security.ValidatedSanitizedInput.MissingUnslash -- WooCommerce owns checkout nonce verification; consumers unslash and strictly allowlist exact fields.
+        return $_POST;
     }
 
     protected static function getGateway()

@@ -1,15 +1,28 @@
 # Full Automated Quality Platform
 
-**Status:** Q18 / IMPLEMENTATION
+**Status:** Q19 / IMPLEMENTATION
 
-**Current branch:** `quality/blocks-availability-enforcement`
+**Current branch:** `quality/subscription-product-eligibility`
 
-**Verified base `main`:** `570dbf3501b359b16767d070d18c25a67a0c24fe`
+**Verified base `main`:** `fe572d2bed5a7250ea98e5b5935c19f1cc6b3246`
 
-**Verified base tree:** `4dae7ad7db04fcd1466389d304e661ac0666983f`
+**Verified base tree:** `94a856f6e88b85edd5f453a76f4d0732e10738aa`
 
 ## Entry evidence
 
+Q18 is DONE / VERIFIED:
+
+- final exact head `b9afcb5afc27ef41a0da8fc60e7b538df0b2c1e7`;
+- exact tree `94a856f6e88b85edd5f453a76f4d0732e10738aa`;
+- Quality Gates #441: SUCCESS across all five jobs;
+- PHPUnit: **172 tests / 1053 assertions**;
+- Q18 **17/0**; Q17 **97/0**; Q16 **113/0**;
+- H12 PHP **1927/0** and Blocks **144/0**;
+- exact-head CodeQL #237: SUCCESS;
+- squash merge `fe572d2bed5a7250ea98e5b5935c19f1cc6b3246` with identical tree;
+- post-merge Quality Gates #442: SUCCESS;
+- main CodeQL #238: SUCCESS;
+- implementation branch auto-deleted after verified merge.
 Q17 is DONE / VERIFIED:
 
 - PR #43 final verified head `2c5d8e9213086c88147f5d1d26247d58f1cbc81b`;
@@ -236,8 +249,8 @@ The current sequence is:
 
 - Q16: migration core — **DONE / VERIFIED**;
 - Q17: payment runtime — **DONE / VERIFIED**;
-- Q18: Blocks availability enforcement — **CURRENT**;
-- Q19: subscription product eligibility — **NEXT / EVIDENCE-BACKED**.
+- Q18: Blocks availability enforcement — **DONE / VERIFIED**;
+- Q19: subscription product eligibility — **CURRENT**.
 
 Q18 exists because a concrete WooCommerce Blocks defect was demonstrated: the PHP adapter could report the method active without faithfully enforcing the canonical gateway enabled state. Q18 is bounded to server activation/availability semantics, analyzer ownership, WooCommerce logging correction and permanent regression coverage. Missing `enabled` in an otherwise valid settings array must preserve the declared gateway default `yes`; malformed settings containers or malformed explicit enabled values fail closed.
 
@@ -247,9 +260,9 @@ Q19 then closes the already demonstrated product-level subscription opt-out inco
 
 Q17 is DONE / VERIFIED. It expanded deterministic PHPUnit, baseline-free PHPStan level 5/PHP 7.2 and risk-focused PHPCS/WPCS into `src/Payment/CheckoutOrchestrator.php` and `src/Payment/PaymentLifecycle.php`, hardened canonical order/provider-bound inputs and Charge-attempt identity, and made capture completion metadata atomic around Woo paid-state/transaction-ID postconditions while preserving authenticated provider truth and protected compatibility identities.
 
-## Q18 acceptance
+## Closed Q18 acceptance
 
-Q18 may be merged only when:
+Q18 was merged only after:
 
 1. deterministic Q18 coverage proves canonical `enabled=yes`, declared fresh-install default behavior, explicit disabled/malformed values and malformed settings containers;
 2. PHPStan level 5/PHP 7.2 and PHPCS/WPCS remain clean with no baseline or ignored errors;
@@ -257,10 +270,23 @@ Q18 may be merged only when:
 4. every Q1-Q17 permanent harness, provider/architecture/security suites and H12 prerequisite aggregator remain green;
 5. PHP 7.2 and PHP 8.2 distributed-source syntax remain green;
 6. exact-head CodeQL is clean;
-7. living governance truth says Q1-Q17 DONE / VERIFIED and Q18 current;
-8. merge and post-merge CI/security verification complete before Q18 is marked DONE / VERIFIED.
+7. living governance truth said Q1-Q17 DONE / VERIFIED and Q18 current;
+8. merge and post-merge CI/security verification completed before Q18 was marked DONE / VERIFIED.
+
+## Q19 acceptance
+
+Q19 may be merged only when:
+
+1. deterministic coverage proves arbitrary product IDs are never restrictions and only exact `_upay_disable_subscription = yes` opts a product out;
+2. Classic and Store API subscription attempts for opted-out products are rejected before provider transport;
+3. baseline-free PHPStan and risk-focused PHPCS/WPCS remain clean for Q19-owned sources;
+4. Composer validation/install/audit, every Q1-Q18 gate, provider/architecture/security regressions and H12 ledgers remain green;
+5. PHP 7.2 and PHP 8.2 distributed syntax remain green;
+6. exact-head CodeQL is clean;
+7. living governance truth says Q1-Q18 DONE / VERIFIED and Q19 current;
+8. merge and post-merge CI/security verification complete before Q19 is marked DONE / VERIFIED.
 ## Non-claims
 
-Q18 is a bounded Blocks activation/availability enforcement tranche. It does not by itself certify WordPress/WooCommerce/PHP versions, HPOS, full Blocks checkout behavior, WPML/WCML, subscriptions, refunds, MultiMerchant marketplace splits, browsers/devices, performance, penetration testing, PCI/compliance or production readiness.
+Q19 is a bounded subscription product-eligibility/opt-out consistency tranche. It does not by itself certify recurring billing, WordPress/WooCommerce/PHP versions, HPOS, full Blocks checkout behavior, WPML/WCML, refunds, MultiMerchant marketplace splits, browsers/devices, performance, penetration testing, PCI/compliance or production readiness.
 
-Q19 is the next evidence-backed gate. After Q19 closes, move to named certification/readiness/release programs unless concrete new enterprise-critical evidence independently establishes another bounded Quality Platform gap.
+After Q19 closes, terminate the numbered Quality Platform sequence unless concrete new enterprise-critical evidence independently establishes another bounded gap; otherwise move to named certification/readiness/release programs.
