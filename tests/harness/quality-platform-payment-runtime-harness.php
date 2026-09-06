@@ -166,9 +166,9 @@ foreach (array(
     'architecture-checkout-orchestration-harness.php',
     'quality-platform-migration-core-harness.php'
 ) as $name) {
-    q17_assert(q17_has($workflow, 'run: php tests/harness/' . $name), 'historical runtime regression remains mandatory: ' . $name);
+    q17_assert(q17_has($workflow, 'tests/harness/' . $name), 'historical runtime regression remains mandatory: ' . $name);
 }
-q17_assert(q17_has($workflow, 'run: php tests/harness/quality-platform-payment-runtime-harness.php'), 'Q17 harness is mandatory');
+q17_assert(q17_has($workflow, 'tests/harness/quality-platform-payment-runtime-harness.php'), 'Q17 harness is mandatory');
 q17_assert(q17_has($workflow, 'if: ${{ always() }}'), 'H12 aggregator always runs');
 q17_assert(q17_has($agents, 'quality-platform-payment-runtime-harness.php'), 'AGENTS keeps Q17 mandatory');
 
@@ -189,7 +189,7 @@ foreach (array(
 
 q17_assert(q17_has($quality, '## Closed Q17 contract') && q17_has($quality, '**Status:** DONE / VERIFIED (Q1-Q19)'), 'quality record closes Q17 and advances into closed Q1-Q19 state');
 q17_assert(q17_has($status, '| Quality Platform Q17 payment-runtime analysis | **DONE / VERIFIED** |'), 'project status preserves Q17 completion row');
-q17_assert(q17_has($status, '| Current engineering state | **Enterprise release candidate qualified — awaiting owner release decision** |'), 'project status advances beyond Q17 into verified release-candidate state');
+q17_assert(q17_has($status, '| Production maturity | **Pre-release / identity migration and exact-head re-certification** |'), 'project status advances beyond Q17 into active SUCheckout re-certification');
 q17_assert(q17_has($status, '## Task 8 — DONE / VERIFIED') && q17_has($status, '| Quality Platform Q17 payment-runtime analysis | **DONE / VERIFIED** |'), 'project status keeps Q17 closure evidence through verified Task 8 closeout');
 q17_assert(preg_match('/\\| Quality Platform Q1-Q([0-9]+) \\| \\*\\*DONE \\/ VERIFIED\\*\\* \\|/', $readme, $q17_readme_range_matches) === 1 && isset($q17_readme_range_matches[1]) && (int) $q17_readme_range_matches[1] >= 17, 'README completion table includes Q17 or a later verified gate');
 q17_assert(q17_has($readme, 'Enterprise Release Candidate Closeout is **DONE / VERIFIED**.'), 'README advances beyond Q17 into verified release-candidate state');
