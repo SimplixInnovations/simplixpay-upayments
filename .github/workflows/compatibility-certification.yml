@@ -10,6 +10,10 @@ on:
 permissions:
   contents: read
 
+env:
+  COMPATIBILITY_SOURCE_SHA: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || github.sha }}
+  SUCHECKOUT_PLUGIN_SLUG: sucheckout-upayments
+
 concurrency:
   group: compatibility-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
@@ -84,15 +88,17 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
+          ref: ${{ env.COMPATIBILITY_SOURCE_SHA }}
           fetch-depth: 0
           persist-credentials: false
 
       - name: Set up PHP ${{ matrix.php }}
-        uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240
+        uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # v2.37.2
         with:
           php-version: ${{ matrix.php }}
           extensions: curl, mbstring, mysqli, zip
           coverage: none
+          tools: none
 
       - name: Install pinned WP-CLI
         shell: bash
@@ -119,8 +125,8 @@ jobs:
           SIMPLIXPAY_CERT_PHASE: seed
         run: /tmp/wp-cli.phar eval-file "$GITHUB_WORKSPACE/tests/integration/PluginActivationTest.php" --path="$RUNNER_TEMP/wordpress"
 
-      - name: Activate SimplixPay
-        run: /tmp/wp-cli.phar plugin activate simplixpay-upayments --path="$RUNNER_TEMP/wordpress"
+      - name: Activate SUCheckout
+        run: /tmp/wp-cli.phar plugin activate "$SUCHECKOUT_PLUGIN_SLUG" --path="$RUNNER_TEMP/wordpress"
 
       - name: Verify activation and Classic registration
         env:
@@ -164,16 +170,16 @@ jobs:
           SIMPLIXPAY_CERT_PHASE: seed
         run: /tmp/wp-cli.phar eval-file "$GITHUB_WORKSPACE/tests/integration/OperationsRuntimeTest.php" --path="$RUNNER_TEMP/wordpress"
 
-      - name: Deactivate SimplixPay without data loss
-        run: /tmp/wp-cli.phar plugin deactivate simplixpay-upayments --path="$RUNNER_TEMP/wordpress"
+      - name: Deactivate SUCheckout without data loss
+        run: /tmp/wp-cli.phar plugin deactivate "$SUCHECKOUT_PLUGIN_SLUG" --path="$RUNNER_TEMP/wordpress"
 
       - name: Verify deactivation retention
         env:
           SIMPLIXPAY_CERT_PHASE: deactivated
         run: /tmp/wp-cli.phar eval-file "$GITHUB_WORKSPACE/tests/integration/OperationsRuntimeTest.php" --path="$RUNNER_TEMP/wordpress"
 
-      - name: Reactivate SimplixPay
-        run: /tmp/wp-cli.phar plugin activate simplixpay-upayments --path="$RUNNER_TEMP/wordpress"
+      - name: Reactivate SUCheckout
+        run: /tmp/wp-cli.phar plugin activate "$SUCHECKOUT_PLUGIN_SLUG" --path="$RUNNER_TEMP/wordpress"
 
       - name: Verify reactivation retention
         env:
@@ -181,7 +187,7 @@ jobs:
         run: /tmp/wp-cli.phar eval-file "$GITHUB_WORKSPACE/tests/integration/OperationsRuntimeTest.php" --path="$RUNNER_TEMP/wordpress"
 
       - name: Execute non-destructive uninstall contract without deleting files
-        run: /tmp/wp-cli.phar plugin uninstall simplixpay-upayments --deactivate --skip-delete --path="$RUNNER_TEMP/wordpress"
+        run: /tmp/wp-cli.phar plugin uninstall "$SUCHECKOUT_PLUGIN_SLUG" --deactivate --skip-delete --path="$RUNNER_TEMP/wordpress"
 
       - name: Verify uninstall retention
         env:
@@ -189,7 +195,7 @@ jobs:
         run: /tmp/wp-cli.phar eval-file "$GITHUB_WORKSPACE/tests/integration/OperationsRuntimeTest.php" --path="$RUNNER_TEMP/wordpress"
 
       - name: Reactivate after uninstall contract probe
-        run: /tmp/wp-cli.phar plugin activate simplixpay-upayments --path="$RUNNER_TEMP/wordpress"
+        run: /tmp/wp-cli.phar plugin activate "$SUCHECKOUT_PLUGIN_SLUG" --path="$RUNNER_TEMP/wordpress"
 
       - name: Verify final retained state and clean certification fixtures
         env:
