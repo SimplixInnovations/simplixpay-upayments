@@ -223,7 +223,7 @@ The current program must preserve the verified architecture map and every Q1-Q19
 - activation and later packaged-artifact install behavior;
 - feature declarations and public compatibility metadata only after their exact runtime evidence is green.
 
-Q18 and Q19 are DONE / VERIFIED. The numbered Quality Platform is closed at Q19; no Q20 is justified by current evidence. New numbered work requires a distinct independently demonstrated enterprise-critical defect that is not better owned by certification/readiness/release engineering.
+Q18 and Q19 are DONE / VERIFIED. The numbered Quality Platform is closed at Q19; no Q20 is justified by current evidence. New numbered work is permitted only if new enterprise-critical evidence independently demonstrates another bounded risk that is not better owned by certification/readiness/release engineering.
 
 Do not reinterpret green tooling as platform certification or modify payment runtime merely to satisfy a tool. Closed Architecture/Security/Provider/H12/Phase 9I contracts remain required regressions throughout certification work.
 
