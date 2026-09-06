@@ -29,8 +29,159 @@ function release_read($root, $relative) {
     return is_string($value) ? $value : '';
 }
 
+function release_git_capture($root, $arguments) {
+    $command = 'git -C ' . escapeshellarg($root);
+    foreach ($arguments as $argument) {
+        $command .= ' ' . escapeshellarg($argument);
+    }
 
-function release_inspect_zip_independently($zip_path, $checksum_path, $manifest_path, $version) {
+    $process = proc_open(
+        $command,
+        array(
+            0 => array('pipe', 'r'),
+            1 => array('pipe', 'w'),
+            2 => array('pipe', 'w'),
+        ),
+        $pipes
+    );
+    if (!is_resource($process)) {
+        return null;
+    }
+
+    fclose($pipes[0]);
+    $stdout = stream_get_contents($pipes[1]);
+    $stderr = stream_get_contents($pipes[2]);
+    fclose($pipes[1]);
+    fclose($pipes[2]);
+    $code = proc_close($process);
+
+    if ($code !== 0 || !is_string($stdout)) {
+        return null;
+    }
+
+    return $stdout;
+}
+
+function release_head_distribution($root) {
+    $distignore = release_git_capture($root, array('show', 'HEAD:.distignore'));
+    $tree = release_git_capture($root, array('ls-tree', '-r', '-z', 'HEAD'));
+    if (!is_string($distignore) || !is_string($tree)) {
+        return null;
+    }
+
+    $patterns = array();
+    foreach (preg_split('/\r?\n/', $distignore) as $raw) {
+        $value = trim($raw);
+        if ($value === '' || strpos($value, '#') === 0) {
+            continue;
+        }
+        if (strpos($value, '/') !== 0) {
+            return null;
+        }
+        $patterns[] = $value;
+    }
+
+    $distribution = array();
+    foreach (explode("\0", $tree) as $record) {
+        if ($record === '') {
+            continue;
+        }
+
+        $parts = explode("\t", $record, 2);
+        if (count($parts) !== 2) {
+            return null;
+        }
+        $metadata = preg_split('/\s+/', $parts[0], 3);
+        if (count($metadata) !== 3) {
+            return null;
+        }
+
+        list($mode, $object_type, $object_sha) = $metadata;
+        $relative = $parts[1];
+        $candidate = '/' . $relative;
+        $excluded = false;
+        foreach ($patterns as $pattern) {
+            if (substr($pattern, -1) === '/') {
+                if (strpos($candidate, $pattern) === 0) {
+                    $excluded = true;
+                    break;
+                }
+            } elseif ($candidate === $pattern) {
+                $excluded = true;
+                break;
+            }
+        }
+        if ($excluded) {
+            continue;
+        }
+
+        if ($object_type !== 'blob' || !in_array($mode, array('100644', '100755'), true)) {
+            return null;
+        }
+        $bytes = release_git_capture($root, array('cat-file', 'blob', $object_sha));
+        if (!is_string($bytes)) {
+            return null;
+        }
+        $distribution['simplixpay-upayments/' . $relative] = $bytes;
+    }
+
+    ksort($distribution, SORT_STRING);
+    return $distribution;
+}
+
+function release_make_tampered_artifact($source_zip, $target_zip, $checksum_path, $manifest_path) {
+    if (!class_exists('ZipArchive') || !copy($source_zip, $target_zip)) {
+        return false;
+    }
+
+    $target = 'simplixpay-upayments/assets/css/customer.css';
+    $zip = new ZipArchive();
+    if ($zip->open($target_zip) !== true) {
+        return false;
+    }
+    $bytes = $zip->getFromName($target);
+    if (!is_string($bytes) || !$zip->addFromString($target, $bytes . "\n/* source-mismatch-probe */\n")) {
+        $zip->close();
+        return false;
+    }
+    $zip->close();
+
+    $zip = new ZipArchive();
+    if ($zip->open($target_zip) !== true) {
+        return false;
+    }
+
+    $names = array();
+    for ($i = 0; $i < $zip->numFiles; ++$i) {
+        $name = $zip->getNameIndex($i);
+        if (is_string($name)) {
+            $names[] = $name;
+        }
+    }
+    sort($names, SORT_STRING);
+
+    $lines = array();
+    foreach ($names as $name) {
+        $content = $zip->getFromName($name);
+        if (!is_string($content)) {
+            $zip->close();
+            return false;
+        }
+        $lines[] = hash('sha256', $content) . '  ' . $name . "\n";
+    }
+    $zip->close();
+
+    $zip_hash = hash_file('sha256', $target_zip);
+    if (!is_string($zip_hash)) {
+        return false;
+    }
+
+    return file_put_contents($manifest_path, implode('', $lines)) !== false
+        && file_put_contents($checksum_path, $zip_hash . '  ' . basename($target_zip) . "\n") !== false;
+}
+
+
+function release_inspect_zip_independently($root, $zip_path, $checksum_path, $manifest_path, $version) {
     release_assert(class_exists('ZipArchive'), 'PHP ZipArchive is available for independent artifact inspection');
     if (!class_exists('ZipArchive')) {
         return;
@@ -92,6 +243,30 @@ function release_inspect_zip_independently($zip_path, $checksum_path, $manifest_
     release_assert($safe, 'independent inspector enforces one safe canonical package root');
     release_assert(!$forbidden, 'independent inspector finds no forbidden development/control paths');
 
+    $allowed_exact = array(
+        'UPayments.php', 'index.php', 'uninstall.php', 'LICENSE',
+        'README.md', 'CHANGELOG.md', 'NOTICE.md', 'SECURITY.md',
+    );
+    $allowed_prefixes = array('src/', 'includes/', 'assets/', 'templates/');
+    $allowlisted = true;
+    foreach ($names as $name) {
+        $relative = substr($name, strlen($prefix));
+        $allowed = in_array($relative, $allowed_exact, true);
+        if (!$allowed) {
+            foreach ($allowed_prefixes as $allowed_prefix) {
+                if (strpos($relative, $allowed_prefix) === 0) {
+                    $allowed = true;
+                    break;
+                }
+            }
+        }
+        if (!$allowed) {
+            $allowlisted = false;
+            break;
+        }
+    }
+    release_assert($allowlisted, 'independent inspector rejects paths outside the explicit release allowlist');
+
     $relative_names = array_map(
         function ($name) use ($prefix) {
             return substr($name, strlen($prefix));
@@ -130,6 +305,30 @@ function release_inspect_zip_independently($zip_path, $checksum_path, $manifest_
         }
     }
     release_assert($required_ok, 'independent inspector confirms required runtime files and subtrees');
+
+    $head_distribution = release_head_distribution($root);
+    release_assert(is_array($head_distribution), 'independent inspector resolves the exact Git HEAD distribution');
+    if (is_array($head_distribution)) {
+        $expected_names = array_keys($head_distribution);
+        release_assert(
+            $names === $expected_names,
+            'independent inspector confirms ZIP paths exactly match the Git HEAD distribution set'
+        );
+
+        $source_match = $names === $expected_names;
+        if ($source_match) {
+            foreach ($names as $name) {
+                $bytes = $zip->getFromName($name);
+                if (!is_string($bytes)
+                    || !isset($head_distribution[$name])
+                    || !hash_equals(hash('sha256', $head_distribution[$name]), hash('sha256', $bytes))) {
+                    $source_match = false;
+                    break;
+                }
+            }
+        }
+        release_assert($source_match, 'independent inspector confirms every packaged byte matches Git HEAD source');
+    }
 
     $plugin_source = $zip->getFromName($prefix . 'UPayments.php');
     $identity_source = $zip->getFromName($prefix . 'src/Release/Identity.php');
@@ -274,6 +473,20 @@ if (preg_match("/public const VERSION = '([^']+)';/", $identity, $matches) === 1
 release_assert(is_string($version) && $version !== '', 'release version is readable from canonical identity');
 
 release_assert(
+    strpos($build, '"ls-tree", "-r", "-z", "HEAD"') !== false
+        && strpos($build, 'HEAD:.distignore') !== false
+        && strpos($build, 'cat-file", "blob"') !== false
+        && strpos($build, '"ls-files"') === false,
+    'release builder derives path policy, file set and bytes exclusively from Git HEAD'
+);
+release_assert(
+    strpos($verify, 'HEAD:.distignore') !== false
+        && strpos($verify, '"ls-tree", "-r", "-z", "HEAD"') !== false
+        && strpos($verify, 'ZIP bytes do not match Git HEAD source') !== false,
+    'release verifier binds artifact paths and bytes to Git HEAD source'
+);
+
+release_assert(
     strpos($workflow, 'php tests/harness/release-artifact-harness.php') !== false,
     'release workflow invokes the permanent artifact harness'
 );
@@ -340,7 +553,29 @@ if ($build !== '' && $verify !== '' && is_string($version) && $version !== '') {
         exec($verify_command, $verify_output, $verify_code);
         release_assert($verify_code === 0, 'release verifier accepts the built ZIP');
 
-        release_inspect_zip_independently($first_zip, $first_checksum, $first_manifest, $version);
+        release_inspect_zip_independently($root, $first_zip, $first_checksum, $first_manifest, $version);
+
+        $tampered = $tmp . '/tampered';
+        @mkdir($tampered, 0777, true);
+        $tampered_zip = $tampered . '/' . $zip_name;
+        $tampered_checksum = $tampered_zip . '.sha256';
+        $tampered_manifest = $tampered . '/simplixpay-upayments-' . $version . '.manifest.sha256';
+        $tampered_ready = release_make_tampered_artifact(
+            $first_zip,
+            $tampered_zip,
+            $tampered_checksum,
+            $tampered_manifest
+        );
+        release_assert($tampered_ready, 'negative probe creates a self-consistent tampered release artifact');
+        if ($tampered_ready) {
+            $tampered_command = 'cd ' . escapeshellarg($root)
+                . ' && bash ' . escapeshellarg($verify_path) . ' ' . escapeshellarg($tampered_zip);
+            exec($tampered_command, $tampered_output, $tampered_code);
+            release_assert(
+                $tampered_code !== 0,
+                'release verifier rejects self-consistent artifact bytes that differ from Git HEAD'
+            );
+        }
     }
 
     $command_two = 'cd ' . escapeshellarg($root)
@@ -373,6 +608,84 @@ if ($build !== '' && $verify !== '' && is_string($version) && $version !== '') {
             file_get_contents($first_manifest) === file_get_contents($second_manifest),
             'same source commit emits identical sorted manifest twice'
         );
+    }
+
+    $dirty_root = $tmp . '/dirty-source';
+    $dirty_out = $tmp . '/dirty-output';
+    $worktree_command = 'git -C ' . escapeshellarg($root)
+        . ' worktree add --detach ' . escapeshellarg($dirty_root) . ' HEAD';
+    exec($worktree_command, $worktree_output, $worktree_code);
+    release_assert($worktree_code === 0, 'provenance probe creates an isolated detached worktree');
+
+    if ($worktree_code === 0) {
+        $dirty_identity_path = $dirty_root . '/src/Release/Identity.php';
+        $dirty_identity = file_get_contents($dirty_identity_path);
+        $dirty_identity_ok = is_string($dirty_identity)
+            && file_put_contents(
+                $dirty_identity_path,
+                str_replace(
+                    "public const VERSION = '" . $version . "';",
+                    "public const VERSION = '9.9.9';",
+                    $dirty_identity
+                )
+            ) !== false;
+        $dirty_distignore_ok = file_put_contents($dirty_root . '/.distignore', "/UPayments.php\n") !== false;
+        $dirty_local_ok = file_put_contents($dirty_root . '/LOCAL-ONLY.txt', "staged local-only release probe\n") !== false;
+        release_assert(
+            $dirty_identity_ok && $dirty_distignore_ok && $dirty_local_ok,
+            'provenance probe mutates working-tree identity, policy and a staged-only file'
+        );
+
+        $stage_command = 'git -C ' . escapeshellarg($dirty_root)
+            . ' add .distignore src/Release/Identity.php LOCAL-ONLY.txt';
+        exec($stage_command, $stage_output, $stage_code);
+        release_assert($stage_code === 0, 'provenance probe stages mutations into the alternate index');
+
+        @mkdir($dirty_out, 0777, true);
+        $dirty_build_path = $dirty_root . '/' . $build_relative;
+        $dirty_verify_path = $dirty_root . '/' . $verify_relative;
+        $dirty_build_command = 'cd ' . escapeshellarg($dirty_root)
+            . ' && bash ' . escapeshellarg($dirty_build_path) . ' ' . escapeshellarg($dirty_out);
+        exec($dirty_build_command, $dirty_build_output, $dirty_build_code);
+        release_assert(
+            $dirty_build_code === 0,
+            'builder ignores dirty worktree and staged index when reproducing Git HEAD'
+        );
+
+        $dirty_zip = $dirty_out . '/' . $zip_name;
+        $dirty_checksum = $dirty_zip . '.sha256';
+        $dirty_manifest = $dirty_out . '/simplixpay-upayments-' . $version . '.manifest.sha256';
+        release_assert(is_file($dirty_zip), 'dirty-source build still emits the canonical HEAD versioned ZIP');
+        release_assert(is_file($dirty_checksum), 'dirty-source build still emits the canonical HEAD checksum');
+        release_assert(is_file($dirty_manifest), 'dirty-source build still emits the canonical HEAD manifest');
+
+        if (is_file($first_zip) && is_file($dirty_zip)) {
+            release_assert(
+                hash_file('sha256', $first_zip) === hash_file('sha256', $dirty_zip),
+                'dirty worktree and staged index cannot change the Git HEAD ZIP bytes'
+            );
+        }
+        if (is_file($first_manifest) && is_file($dirty_manifest)) {
+            release_assert(
+                file_get_contents($first_manifest) === file_get_contents($dirty_manifest),
+                'dirty worktree and staged index cannot change the Git HEAD manifest'
+            );
+        }
+        if (is_file($dirty_zip)) {
+            $dirty_verify_command = 'cd ' . escapeshellarg($dirty_root)
+                . ' && bash ' . escapeshellarg($dirty_verify_path) . ' ' . escapeshellarg($dirty_zip);
+            exec($dirty_verify_command, $dirty_verify_output, $dirty_verify_code);
+            release_assert(
+                $dirty_verify_code === 0,
+                'verifier ignores dirty worktree identity/policy and validates against Git HEAD'
+            );
+        }
+
+        $remove_worktree_command = 'git -C ' . escapeshellarg($root)
+            . ' worktree remove --force ' . escapeshellarg($dirty_root);
+        exec($remove_worktree_command, $remove_worktree_output, $remove_worktree_code);
+        release_assert($remove_worktree_code === 0, 'provenance probe removes the isolated worktree');
+        exec('git -C ' . escapeshellarg($root) . ' worktree prune');
     }
 
     release_rm_tree($tmp);

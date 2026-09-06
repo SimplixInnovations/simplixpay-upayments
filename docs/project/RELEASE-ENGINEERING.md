@@ -21,7 +21,7 @@ This tranche does **not** migrate the main file from `UPayments.php` to `simplix
 - current candidate filename: `simplixpay-upayments-0.1.0.zip`;
 - transitional main file retained: `UPayments.php`;
 - transitional text domain retained: `upayments`;
-- package input comes from tracked Git **HEAD blobs**, never mutable working-tree bytes;
+- package policy, file set and bytes come from the Git **HEAD tree/blobs**, never mutable working-tree or staged-index state;
 - archive paths are sorted;
 - archive timestamps are fixed to 1980-01-01 00:00:00;
 - archived regular-file mode is fixed to 0644;
@@ -118,14 +118,28 @@ The independent harness validates:
 - sorted unique safe archive paths;
 - required runtime files/subtrees;
 - absence of development/control paths;
+- an explicit release-path allowlist;
+- exact equality between ZIP paths and the Git HEAD distribution set;
+- byte-for-byte equality between every packaged file and its Git HEAD blob;
 - packaged product/version/text-domain/main-file identity;
 - ZIP checksum sidecar;
 - manifest path-set equality;
 - every packaged file's SHA-256.
 
-## Exact candidate evidence
+### Provenance hardening — worktree/index isolation and source binding
 
-Current exact candidate:
+A final provenance challenge closes two false-certification classes:
+
+- the builder may not read version, distribution policy, file membership, or file bytes from the mutable worktree/index;
+- a ZIP with internally consistent checksum/manifest evidence must still fail verification if any packaged byte differs from Git HEAD.
+
+The permanent harness now creates an isolated detached worktree, mutates and stages release identity/policy plus a staged-only file, and requires the resulting build to remain byte-identical to the clean Git HEAD build. It also creates a self-consistent tampered ZIP with regenerated sidecars and requires the verifier to reject it because the artifact bytes no longer match source.
+
+## Recorded candidate evidence
+
+The evidence below intentionally records a completed candidate rather than claiming that a Markdown file can embed its own commit SHA. Final merge-head truth is taken from the GitHub checks attached to the exact PR head.
+
+Recorded candidate:
 
 `4d501fc021846b585cec6c17e1e371296c24d174`
 

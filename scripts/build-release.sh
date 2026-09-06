@@ -8,19 +8,25 @@ fi
 
 ROOT="$(git rev-parse --show-toplevel)"
 OUT="$1"
-IDENTITY="$ROOT/src/Release/Identity.php"
-DISTIGNORE="$ROOT/.distignore"
+IDENTITY_PATH="src/Release/Identity.php"
+DISTIGNORE_PATH=".distignore"
 
-[[ -f "$IDENTITY" ]] || { echo "Missing release identity: $IDENTITY" >&2; exit 65; }
-[[ -f "$DISTIGNORE" ]] || { echo "Missing distribution contract: $DISTIGNORE" >&2; exit 66; }
+git -C "$ROOT" cat-file -e "HEAD:$IDENTITY_PATH" 2>/dev/null || {
+  echo "Missing release identity in Git HEAD: $IDENTITY_PATH" >&2
+  exit 65
+}
+git -C "$ROOT" cat-file -e "HEAD:$DISTIGNORE_PATH" 2>/dev/null || {
+  echo "Missing distribution contract in Git HEAD: $DISTIGNORE_PATH" >&2
+  exit 66
+}
 
-VERSION="$(php -r '
-$source = file_get_contents($argv[1]);
+VERSION="$(git -C "$ROOT" show "HEAD:$IDENTITY_PATH" | php -r '
+$source = stream_get_contents(STDIN);
 if (!is_string($source) || !preg_match("/public const VERSION = '\''([^'\'']+)'\'';/", $source, $m)) {
     exit(1);
 }
 echo $m[1];
-' "$IDENTITY")"
+')"
 [[ -n "$VERSION" ]] || { echo "Invalid empty release version" >&2; exit 67; }
 
 SLUG="simplixpay-upayments"
@@ -45,7 +51,11 @@ manifest_path = pathlib.Path(os.environ["MANIFEST"])
 slug = "simplixpay-upayments"
 
 patterns = []
-for raw in (root / ".distignore").read_text(encoding="utf-8").splitlines():
+distignore = subprocess.check_output(
+    ["git", "-C", str(root), "show", "HEAD:.distignore"],
+    text=True,
+)
+for raw in distignore.splitlines():
     value = raw.strip()
     if not value or value.startswith("#"):
         continue
@@ -64,14 +74,25 @@ def excluded(path: str) -> bool:
     return False
 
 proc = subprocess.run(
-    ["git", "-C", str(root), "ls-files", "-z"],
+    ["git", "-C", str(root), "ls-tree", "-r", "-z", "HEAD"],
     check=True,
     stdout=subprocess.PIPE,
 )
-tracked = [p.decode("utf-8") for p in proc.stdout.split(b"\0") if p]
-files = sorted(p for p in tracked if not excluded(p))
+entries = []
+for record in proc.stdout.split(b"\0"):
+    if not record:
+        continue
+    metadata, path_bytes = record.split(b"\t", 1)
+    mode, object_type, object_sha = metadata.decode("ascii").split(" ", 2)
+    relative = path_bytes.decode("utf-8")
+    if excluded(relative):
+        continue
+    if object_type != "blob" or mode not in {"100644", "100755"}:
+        raise SystemExit(f"Unsupported release tree entry: {mode} {object_type} {relative}")
+    entries.append((relative, object_sha))
+entries.sort(key=lambda item: item[0])
 
-if not files:
+if not entries:
     raise SystemExit("No release files selected")
 
 manifest_lines = []
@@ -84,9 +105,9 @@ with zipfile.ZipFile(
     compresslevel=9,
     strict_timestamps=True,
 ) as archive:
-    for relative in files:
+    for relative, object_sha in entries:
         blob = subprocess.run(
-            ["git", "-C", str(root), "show", f"HEAD:{relative}"],
+            ["git", "-C", str(root), "cat-file", "blob", object_sha],
             check=True,
             stdout=subprocess.PIPE,
         ).stdout
@@ -106,5 +127,5 @@ source = subprocess.check_output(["git", "-C", str(root), "rev-parse", "HEAD"], 
 print(f"RELEASE SOURCE: {source}")
 print(f"RELEASE ZIP: {zip_path}")
 print(f"RELEASE SHA256: {zip_hash}")
-print(f"RELEASE FILES: {len(files)}")
+print(f"RELEASE FILES: {len(entries)}")
 PY
