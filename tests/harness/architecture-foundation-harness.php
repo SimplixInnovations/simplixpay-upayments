@@ -435,7 +435,7 @@ arch_assert(arch_contains($naming, '**Canonical slug:** `sucheckout-upayments`')
 
 $gatewayPath = $root . '/UPayments.php';
 $gatewaySize = is_file($gatewayPath) ? filesize($gatewayPath) : false;
-$acceptedGatewayBytes = 89571;
+$acceptedGatewayBytes = 87846;
 arch_assert(is_int($gatewaySize) && $gatewaySize === $acceptedGatewayBytes, 'UPayments.php matches current exact architecture ratchet');
 arch_assert($gatewayClassTokens !== array(), 'legacy WC_Upayments gateway compatibility class remains executable');
 arch_assert(arch_contains($gateway, "add_filter(\"woocommerce_payment_gateways\", \"addUpaymentsGatewayClass\")"), 'WooCommerce gateway registration remains characterized');
