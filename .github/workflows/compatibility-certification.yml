@@ -1,0 +1,148 @@
+name: Compatibility Certification
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: compatibility-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  runtime-matrix:
+    name: WP ${{ matrix.wordpress }} / WC ${{ matrix.woocommerce }} / PHP ${{ matrix.php }} / ${{ matrix.storage }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    strategy:
+      fail-fast: false
+      matrix:
+        cell:
+          - current
+          - current-php84
+          - previous
+          - floor-old-wc
+          - floor-new-wc
+          - minimum
+          - cross-new-wp-old-wc
+          - legacy-php74
+        storage: [legacy, hpos]
+        include:
+          - cell: current
+            wordpress: '7.1'
+            woocommerce: '11.1.0'
+            php: '8.3'
+          - cell: current-php84
+            wordpress: '7.1'
+            woocommerce: '11.1.0'
+            php: '8.4'
+          - cell: previous
+            wordpress: '7.0.4'
+            woocommerce: '11.0.1'
+            php: '8.3'
+          - cell: floor-old-wc
+            wordpress: '7.0.4'
+            woocommerce: '10.8.1'
+            php: '8.3'
+          - cell: floor-new-wc
+            wordpress: '7.0.4'
+            woocommerce: '11.1.0'
+            php: '8.3'
+          - cell: minimum
+            wordpress: '6.9.7'
+            woocommerce: '10.8.1'
+            php: '8.3'
+          - cell: cross-new-wp-old-wc
+            wordpress: '7.1'
+            woocommerce: '10.8.1'
+            php: '8.3'
+          - cell: legacy-php74
+            wordpress: '6.9.7'
+            woocommerce: '10.8.1'
+            php: '7.4'
+
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: wordpress
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h 127.0.0.1 -proot"
+          --health-interval=5s
+          --health-timeout=5s
+          --health-retries=20
+
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Set up PHP ${{ matrix.php }}
+        uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240
+        with:
+          php-version: ${{ matrix.php }}
+          extensions: curl, mbstring, mysqli, zip
+          coverage: none
+
+      - name: Install pinned WP-CLI
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl -fsSL \
+            https://github.com/wp-cli/wp-cli/releases/download/v2.12.0/wp-cli-2.12.0.phar \
+            -o /tmp/wp-cli.phar
+          echo 'ce34ddd838f7351d6759068d09793f26755463b4a4610a5a5c0a97b68220d85c  /tmp/wp-cli.phar' | sha256sum -c -
+          chmod +x /tmp/wp-cli.phar
+          /tmp/wp-cli.phar --version
+
+      - name: Install real WordPress and WooCommerce runtime
+        env:
+          WP_CLI_BIN: /tmp/wp-cli.phar
+        run: >-
+          bash scripts/install-wp-test-environment.sh
+          "${{ matrix.wordpress }}"
+          "${{ matrix.woocommerce }}"
+          "$RUNNER_TEMP/wordpress"
+
+      - name: Seed malformed protected settings
+        env:
+          SIMPLIXPAY_CERT_PHASE: seed
+        run: /tmp/wp-cli.phar eval-file "$GITHUB_WORKSPACE/tests/integration/PluginActivationTest.php" --path="$RUNNER_TEMP/wordpress"
+
+      - name: Activate SimplixPay
+        run: /tmp/wp-cli.phar plugin activate simplixpay-upayments --path="$RUNNER_TEMP/wordpress"
+
+      - name: Verify activation and Classic registration
+        env:
+          SIMPLIXPAY_CERT_PHASE: verify
+        run: /tmp/wp-cli.phar eval-file "$GITHUB_WORKSPACE/tests/integration/PluginActivationTest.php" --path="$RUNNER_TEMP/wordpress"
+
+      - name: Verify Blocks registration and availability
+        run: /tmp/wp-cli.phar eval-file "$GITHUB_WORKSPACE/tests/integration/CheckoutRegistrationTest.php" --path="$RUNNER_TEMP/wordpress"
+
+      - name: Select authoritative order store
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ "${{ matrix.storage }}" == "hpos" ]]; then
+            /tmp/wp-cli.phar option update woocommerce_custom_orders_table_enabled yes --path="$RUNNER_TEMP/wordpress"
+          else
+            /tmp/wp-cli.phar option update woocommerce_custom_orders_table_enabled no --path="$RUNNER_TEMP/wordpress"
+          fi
+          /tmp/wp-cli.phar option update woocommerce_custom_orders_table_data_sync_enabled no --path="$RUNNER_TEMP/wordpress"
+          /tmp/wp-cli.phar cache flush --path="$RUNNER_TEMP/wordpress"
+
+      - name: Verify order CRUD in authoritative store
+        env:
+          SIMPLIXPAY_HPOS_MODE: ${{ matrix.storage }}
+        run: /tmp/wp-cli.phar eval-file "$GITHUB_WORKSPACE/tests/integration/HposCompatibilityTest.php" --path="$RUNNER_TEMP/wordpress"

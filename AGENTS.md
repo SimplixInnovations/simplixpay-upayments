@@ -14,10 +14,11 @@ Before substantive work, read in this order:
 6. `docs/project/PROVIDER-PAYMENT-LIFECYCLE.md`
 7. `docs/project/SECURITY-THREAT-MODEL.md`
 8. `docs/project/ARCHITECTURE-CODE-QUALITY.md`
-9. `docs/project/QUALITY-PLATFORM.md` when the Full Automated Quality Platform is current
-10. relevant living sections of `docs/project/MASTER-ENGINEERING-PLAYBOOK.md`
-11. `docs/project/BASELINE-H12.md` when token/saved-card/subscription identity is relevant
-12. `docs/project/REPOSITORY-READINESS.md` for historical repository-foundation evidence when relevant
+9. `docs/project/QUALITY-PLATFORM.md` as the permanent Q1-Q19 quality record
+10. `docs/project/ENTERPRISE-CERTIFICATION.md` when Enterprise Compatibility Certification or later compatibility claims are relevant
+11. relevant living sections of `docs/project/MASTER-ENGINEERING-PLAYBOOK.md`
+12. `docs/project/BASELINE-H12.md` when token/saved-card/subscription identity is relevant
+13. `docs/project/REPOSITORY-READINESS.md` for historical repository-foundation evidence when relevant
 
 ## Canonical identity
 
@@ -67,7 +68,7 @@ Keep `tests/harness/quality-platform-subscription-presentation-harness.php` mand
 
 Keep `tests/harness/quality-platform-migration-core-harness.php` mandatory after Q16.
 
-Keep `tests/harness/quality-platform-payment-runtime-harness.php` mandatory after Q17. Q17 Payment Runtime Analysis, Q18 Blocks Availability Enforcement and Q19 Subscription Product Eligibility Consistency are all DONE / VERIFIED. Keep `tests/harness/quality-platform-blocks-availability-harness.php` and `tests/harness/quality-platform-subscription-product-eligibility-harness.php` mandatory permanently. The numbered Quality Platform is closed at Q19; do not invent Q20 for continuity. The current named program is **Enterprise Compatibility Certification**. Compatibility headers, Woo feature declarations and public support claims require reproducible WordPress/WooCommerce/PHP runtime evidence and may not be inferred from green static/custom harnesses alone.
+Keep `tests/harness/quality-platform-payment-runtime-harness.php` mandatory after Q17. Q17 Payment Runtime Analysis, Q18 Blocks Availability Enforcement and Q19 Subscription Product Eligibility Consistency are all DONE / VERIFIED. Keep `tests/harness/quality-platform-blocks-availability-harness.php` and `tests/harness/quality-platform-subscription-product-eligibility-harness.php` mandatory permanently. The numbered Quality Platform is closed at Q19; do not invent Q20 for continuity. The current named program is **Enterprise Compatibility Certification**. Compatibility headers, Woo feature declarations and public support claims require reproducible WordPress/WooCommerce/PHP runtime evidence and may not be inferred from green static/custom harnesses alone. Keep `.github/workflows/compatibility-certification.yml` and its real-runtime activation/Classic/Blocks/legacy-storage/HPOS matrix mandatory once merged; a later change may expand or update its supported matrix but may not silently remove runtime certification.
 
 ## Protected compatibility identities
 
