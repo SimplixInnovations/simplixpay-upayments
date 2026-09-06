@@ -303,4 +303,4 @@ Q19 was merged only after:
 
 Q19 is a bounded subscription product-eligibility/opt-out consistency tranche. It does not by itself certify recurring billing, WordPress/WooCommerce/PHP versions, HPOS, full Blocks checkout behavior, WPML/WCML, refunds, MultiMerchant marketplace splits, browsers/devices, performance, penetration testing, PCI/compliance or production readiness.
 
-The numbered Quality Platform is closed at Q19. No Q20 is justified by current evidence. The current named owner is **Enterprise Compatibility Certification**; future numbered quality work requires independently demonstrated enterprise-critical evidence that is not better owned by certification/readiness/release engineering.
+The numbered Quality Platform is closed at Q19. No Q20 is justified by current evidence. The current named owner is **Enterprise Compatibility Certification**; future numbered quality work requires an independently demonstrated enterprise-critical risk that is not better owned by certification/readiness/release engineering.
