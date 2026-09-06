@@ -1,8 +1,8 @@
 # SUCheckout for UPayments — Canonical Naming, Identity, Compatibility and Namespace Standard
 
-**Status:** CANONICAL / ENGINEERING-FROZEN TARGET  
-**Maintainer:** Simplix Innovations  
-**Product family:** SUCheckout  
+**Status:** CANONICAL / ENGINEERING-FROZEN TARGET
+**Maintainer:** Simplix Innovations
+**Product family:** SUCheckout
 **Canonical slug:** `sucheckout-upayments`
 
 This document is authoritative for all new naming decisions.
@@ -15,8 +15,8 @@ Simplix Innovations
     └── SUCheckout for UPayments
 ```
 
-Human-facing formal name: **SUCheckout for UPayments**.  
-Short product reference: **SUCheckout**.  
+Human-facing formal name: **SUCheckout for UPayments**.
+Short product reference: **SUCheckout**.
 Provider: **UPayments**.
 
 The word **for** is relationship copy only. It MUST NOT appear in URL, repository, WordPress.org slug, text domain, package, namespace, prefix, CSS/JS root, REST namespace, logger source, scheduler group, or release ZIP identifiers.
@@ -81,11 +81,11 @@ Provider API request/response fields, endpoint paths, payment-method names, and 
 
 ## New first-party identifiers
 
-New plugin-owned options/hooks/nonces/cache keys use `sucheckout_upayments_*`.  
-New metadata uses `_sucheckout_upayments_*` only where new storage is genuinely required.  
-New REST routes use `sucheckout-upayments/v1`.  
-New script/style handles use `sucheckout-upayments-*`.  
-New CSS uses a `.sucheckout-upayments` component root and `--sucheckout-upayments-*` custom properties.  
+New plugin-owned options/hooks/nonces/cache keys use `sucheckout_upayments_*`.
+New metadata uses `_sucheckout_upayments_*` only where new storage is genuinely required.
+New REST routes use `sucheckout-upayments/v1`.
+New script/style handles use `sucheckout-upayments-*`.
+New CSS uses a `.sucheckout-upayments` component root and `--sucheckout-upayments-*` custom properties.
 A JS global is allowed only when necessary and must use `suCheckoutUpayments`; localized configuration uses `suCheckoutUpaymentsConfig`.
 
 ## Main-file transition
@@ -137,9 +137,9 @@ Changing the formal name, technical slug, repository, WordPress.org slug, folder
 
 Unsafe destructive compatibility rename verdict:
 
-`NOT APPROVED.`  
+`NOT APPROVED.`
 `DO NOT MERGE.`
 
-**Naming architecture:** FROZEN TARGET  
-**Legacy compatibility identifiers:** PROTECTED  
+**Naming architecture:** FROZEN TARGET
+**Legacy compatibility identifiers:** PROTECTED
 **Formal trademark/legal clearance:** separate business/legal gate
