@@ -48,4 +48,4 @@ Not in the current certified feature boundary.
 == Changelog ==
 
 = 0.1.0 =
-* Pre-release SUCheckout identity and enterprise qualification work.
+* Pre-release SUCheckout identity migration and enterprise engineering closeout, including certified package-root migration, WordPress HTTP transport, HPOS/Blocks compatibility, and permanent WordPress.org Plugin Check gating.
