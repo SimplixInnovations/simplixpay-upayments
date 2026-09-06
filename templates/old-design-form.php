@@ -10,7 +10,7 @@
 
 defined( 'ABSPATH' ) || exit;
 ?>
-<div class="form-row form-row-wide">
+<div class="sucheckout-upayments form-row form-row-wide">
     <?php 
     echo wp_kses_post($gateway->description);
     if (isset($_GET["cancelled"]))
