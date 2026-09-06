@@ -187,3 +187,34 @@ Still not certified by this platform-core tranche:
 3. feature-specific certification;
 4. multilingual/RTL/browser/accessibility/performance and operations certification;
 5. deterministic release packaging and packaged-artifact installation/upgrade certification.
+
+
+## Provider public-sandbox certification — IMPLEMENTATION
+
+Current official UPayments test documentation publishes:
+
+- sandbox API base: `https://sandboxapi.upayments.com/api/v1/`;
+- non-whitelabel public test bearer token: `jtest123`;
+- Charge endpoint: `POST /charge`;
+- successful Charge initialization: HTTP `201`;
+- Get Payment Status limit: **30 requests/minute**.
+
+The bounded repository smoke in `tests/provider/sandbox-charge-smoke.php` uses only that documented public non-whitelabel test token. It derives the Charge endpoint through `Simplix\\Pay\\UPayments\\Provider\\EndpointResolver`, preserves TLS verification and redirect-disable transport behavior, and validates the returned payment link through the production `CheckoutPayload::normalize_upayments_redirect_url()` boundary.
+
+### Safety boundary
+
+The automated provider smoke:
+
+- creates exactly one sandbox Charge initialization per workflow job;
+- uses a one-minute payment-link expiry;
+- never follows the returned payment link;
+- never enters card/test-card data;
+- never completes or captures a payment;
+- never polls payment status;
+- never issues a refund;
+- never saves/retrieves a card;
+- never performs subscription/auto-deduction;
+- never uses a merchant production credential;
+- never logs the raw provider body, bearer token or session URL.
+
+The first successful workflow run may certify sandbox Charge **transport and initialization schema only**. It must not be described as captured-payment, wallet, saved-card, subscription, refund, webhook-signature or production-merchant certification.
