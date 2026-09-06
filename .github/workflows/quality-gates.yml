@@ -106,20 +106,34 @@ jobs:
             docs/project/PROJECT-STATUS.md docs/project/ENTERPRISE-CERTIFICATION.md
             docs/project/RELEASE-ENGINEERING.md docs/project/NEW-CHAT-HANDOFF.md
           )
-          stale=(
-            'Enterprise Compatibility Certification — CURRENT GATE'
-            'current program gate is **Enterprise Compatibility Certification**'
-            'Current program gate: **Enterprise Compatibility Certification**'
-            'Full Automated Quality Platform — CURRENT GATE'
-            'Security Threat-Model Closure — CURRENT GATE'
-            'Architecture & Code-Quality Foundation — CURRENT GATE'
-          )
-          for marker in "${stale[@]}"; do
+
+          reject_across_live_records() {
+            local marker="$1"
             if grep -FnH -F -- "$marker" "${living[@]}"; then
               echo "Stale current-gate marker in living record: $marker"
               exit 1
             fi
-          done
+          }
+
+          reject_across_live_records 'Enterprise Compatibility Certification — CURRENT GATE'
+          reject_across_live_records 'current program gate is **Enterprise Compatibility Certification**'
+          reject_across_live_records 'Current program gate: **Enterprise Compatibility Certification**'
+          reject_across_live_records 'Full Automated Quality Platform — CURRENT GATE'
+          reject_across_live_records 'Security Threat-Model Closure — CURRENT GATE'
+          reject_across_live_records 'Architecture & Code-Quality Foundation — CURRENT GATE'
+          reject_across_live_records 'CURRENT / Q1**'
+          reject_across_live_records 'CURRENT / Q2'
+          reject_across_live_records 'CURRENT / Q3'
+          reject_across_live_records 'CURRENT / Q5'
+          reject_across_live_records 'CURRENT / Q6'
+          reject_across_live_records 'CURRENT / Q7'
+          reject_across_live_records 'CURRENT / Q8'
+          reject_across_live_records 'CURRENT / Q9'
+          reject_across_live_records 'CURRENT / Q10'
+          reject_across_live_records 'CURRENT / Q11'
+          reject_across_live_records 'CURRENT / Q12'
+          reject_across_live_records 'CURRENT / Q13'
+          reject_across_live_records 'CURRENT / Q14'
 
       - name: Whitespace errors
         shell: bash
