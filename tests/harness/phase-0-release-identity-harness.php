@@ -70,7 +70,7 @@ p0_assert(p0_header_value($bootstrap, 'Domain Path') === '/languages', 'domain p
 // Text-domain transition is deliberately controlled; legacy runtime strings
 // remain on `upayments` until the dedicated i18n/WPML migration is tested.
 p0_assert(p0_header_value($bootstrap, 'Text Domain') === Identity::LEGACY_TEXT_DOMAIN, 'legacy text domain is intentionally retained during Phase 0');
-p0_assert(Identity::TARGET_TEXT_DOMAIN === 'simplixpay-upayments', 'target text domain remains frozen');
+p0_assert(Identity::TARGET_TEXT_DOMAIN === 'sucheckout-upayments', 'target text domain remains frozen');
 
 // Bootstrap exposes Simplix identity without destroying legacy plugin-file API.
 p0_assert(p0_contains($bootstrap, "src/Release/Identity.php"), 'bootstrap loads canonical release identity');
@@ -108,8 +108,8 @@ p0_assert(p0_contains($uninstall, 'WP_UNINSTALL_PLUGIN'), 'uninstall retains dir
 
 // Independent version line sanity.
 p0_assert((bool) preg_match('/^0\.[0-9]+\.[0-9]+(?:[-+][0-9A-Za-z.-]+)?$/', Identity::VERSION), 'version is on independent pre-1.0 semantic line');
-p0_assert(Identity::SLUG === 'simplixpay-upayments', 'canonical slug is exact');
-p0_assert(Identity::REPOSITORY === 'SimplixInnovations/simplixpay-upayments', 'canonical repository is exact');
+p0_assert(Identity::SLUG === 'sucheckout-upayments', 'canonical slug is exact');
+p0_assert(Identity::REPOSITORY === 'SimplixInnovations/sucheckout-upayments', 'canonical repository is exact');
 
 echo "\n--- Phase 0 Release Identity Report ---\n";
 echo "PASS: {$pass}\n";
