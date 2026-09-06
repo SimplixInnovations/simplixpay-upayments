@@ -110,11 +110,15 @@ Use:
    - provider fixtures and webhook/concurrency tests;
    - browser E2E/accessibility/performance regression coverage.
 
-7. **Enterprise Compatibility Certification — CURRENT GATE**
-   - supported WordPress/WooCommerce/PHP matrix;
-   - HPOS;
-   - Classic Checkout and Checkout Blocks;
-   - WPML/WCML/multilingual/multicurrency/RTL.
+7. **Enterprise Compatibility Certification — CURRENT GATE / CORE PLATFORM VERIFIED**
+   - permanent 16-cell real WordPress/WooCommerce/PHP × legacy/HPOS runtime matrix: **DONE / VERIFIED through PR #47**;
+   - Classic gateway registration and standard Cart/Checkout Blocks registration/availability: **VERIFIED**;
+   - legacy and HPOS authoritative Woo order CRUD: **VERIFIED**;
+   - matrix-derived WordPress/WooCommerce/PHP support headers: **RED→GREEN VERIFIED**;
+   - Woo `cart_checkout_blocks` and `custom_order_tables` declarations: **runtime-registry VERIFIED; declaration tranche in final verification**;
+   - UPayments public-sandbox transport/schema certification: **NEXT**;
+   - WPML/WCML/multilingual/multicurrency/RTL: **PENDING**;
+   - packaged-artifact install/upgrade compatibility: **PENDING RELEASE ENGINEERING**.
 
 8. **Feature Certification**
    - saved cards/tokenization;
