@@ -32,3 +32,52 @@ function simplixpay_cert_note($message) {
         WP_CLI::log('CERT: ' . $message);
     }
 }
+
+/**
+ * Persist an option without firing update_option hooks.
+ *
+ * This is used only to characterize malformed storage that may already exist
+ * before WooCommerce/SimplixPay boots. It intentionally bypasses observers so
+ * the certification target is the plugin's read boundary, not Woo's settings
+ * change hook.
+ *
+ * @param string $name  Option name.
+ * @param mixed  $value Raw option value.
+ * @return void
+ */
+function simplixpay_cert_store_option_raw($name, $value) {
+    global $wpdb;
+
+    $exists = $wpdb->get_var(
+        $wpdb->prepare(
+            "SELECT option_id FROM {$wpdb->options} WHERE option_name = %s",
+            $name
+        )
+    );
+
+    $serialized = maybe_serialize($value);
+
+    if (null === $exists) {
+        $result = $wpdb->insert(
+            $wpdb->options,
+            array(
+                'option_name'  => $name,
+                'option_value' => $serialized,
+                'autoload'     => 'no',
+            ),
+            array('%s', '%s', '%s')
+        );
+    } else {
+        $result = $wpdb->update(
+            $wpdb->options,
+            array('option_value' => $serialized),
+            array('option_name' => $name),
+            array('%s'),
+            array('%s')
+        );
+    }
+
+    simplixpay_cert_assert(false !== $result, 'raw certification option persistence succeeds: ' . $name);
+    wp_cache_delete($name, 'options');
+    wp_cache_delete('alloptions', 'options');
+}
