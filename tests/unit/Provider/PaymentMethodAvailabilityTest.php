@@ -1,10 +1,10 @@
 <?php
 
-namespace Simplix\Pay\UPayments\Tests\Provider;
+namespace Simplixi\SUCheckout\UPayments\Tests\Provider;
 
 use PHPUnit\Framework\TestCase;
 use ReflectionMethod;
-use Simplix\Pay\UPayments\Provider\PaymentMethodAvailability;
+use Simplixi\SUCheckout\UPayments\Provider\PaymentMethodAvailability;
 
 final class PaymentMethodAvailabilityTest extends TestCase {
     protected function setUp(): void {
