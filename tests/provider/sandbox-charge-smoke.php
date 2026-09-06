@@ -1,11 +1,4 @@
 <?php
-
-if (!function_exists('wp_parse_url')) {
-    function wp_parse_url($url, $component = -1) {
-        return parse_url((string) $url, $component);
-    }
-}
-
 /**
  * Bounded UPayments public-sandbox Charge initialization certification.
  *
@@ -16,6 +9,13 @@ if (!function_exists('wp_parse_url')) {
  */
 
 declare(strict_types=1);
+
+if (!function_exists('wp_parse_url')) {
+    function wp_parse_url($url, $component = -1) {
+        return parse_url((string) $url, $component);
+    }
+}
+
 
 $root = dirname(__DIR__, 2);
 
