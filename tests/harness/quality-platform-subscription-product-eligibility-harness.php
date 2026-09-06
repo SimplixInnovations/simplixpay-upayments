@@ -146,8 +146,14 @@ q19_assert(
 );
 q19_assert(
     is_string($fields_source)
-    && substr_count($fields_source, "wp_unslash($post['upay_subscription_interval'])") >= 2
-    && strpos($fields_source, "sanitize_text_field(wp_unslash($post['upay_subscription_interval']))") === false,
+    && substr_count($fields_source, "wp_unslash(\$post['upay_subscription_plan'])") >= 2
+    && strpos($fields_source, "sanitize_text_field(wp_unslash(\$post['upay_subscription_plan']))") === false,
+    'Classic subscription plan is allowlisted from exact unslashed bytes before order metadata can be written'
+);
+q19_assert(
+    is_string($fields_source)
+    && substr_count($fields_source, "wp_unslash(\$post['upay_subscription_interval'])") >= 2
+    && strpos($fields_source, "sanitize_text_field(wp_unslash(\$post['upay_subscription_interval']))") === false,
     'Classic subscription interval is strict-parsed from exact unslashed bytes before order metadata can be written'
 );
 q19_assert(
