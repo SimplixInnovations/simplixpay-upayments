@@ -13,6 +13,12 @@ $root = dirname(__DIR__, 2);
 $pass = 0;
 $fail = 0;
 
+if (!function_exists('wp_parse_url')) {
+    function wp_parse_url($url, $component = -1) {
+        return parse_url((string) $url, $component);
+    }
+}
+
 function a5_assert($condition, $message) {
     global $pass, $fail;
     if ($condition) {
