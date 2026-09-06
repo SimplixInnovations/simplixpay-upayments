@@ -21,7 +21,7 @@ import zipfile
 
 root = pathlib.Path(os.environ["ROOT"])
 zip_path = pathlib.Path(os.environ["ZIP"])
-slug = "simplixpay-upayments"
+slug = "sucheckout-upayments"
 
 identity = subprocess.check_output(
     ["git", "-C", str(root), "show", "HEAD:src/Release/Identity.php"],
