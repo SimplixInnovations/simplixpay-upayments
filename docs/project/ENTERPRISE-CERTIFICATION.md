@@ -1,18 +1,48 @@
 # Enterprise Compatibility Certification
 
-**Status:** RUNTIME FOUNDATION VERIFIED / DECLARATIONS PENDING
+**Status:** CORE PLATFORM VERIFIED / SUPPORT DECLARATION CANDIDATE
 
-**Verified source base:** `93cc66f47847384540cc4ad293e54bc8dc2d6d12`
+**Verified runtime-foundation merge:** `5e4f33d24bcaed1032691c564b570e60c95a9483`
 
-**Verified candidate head:** `1178ffa31687298761f06ef775b691a8433c2578`
-
-**Program branch:** `enterprise/compatibility-certification`
+**Current declaration branch:** `enterprise/compatibility-declarations`
 
 ## Evidence rule
 
-A matrix cell becomes **VERIFIED** only after the exact WordPress, WooCommerce and PHP versions run the real plugin inside an installed WordPress/WooCommerce site and the required activation, checkout-registration and order-storage assertions all pass. Source inspection, syntax-only jobs, Q1-Q19 or H12 do not substitute for this evidence.
+A matrix cell becomes **VERIFIED** only after the exact WordPress, WooCommerce and PHP versions run the real plugin inside an installed WordPress/WooCommerce site and the required activation, checkout-registration, declaration and order-storage assertions all pass. Source inspection, syntax-only jobs, Q1-Q19 or H12 do not substitute for this evidence.
 
 This record certifies only the runtime behaviors exercised below. It does not by itself certify provider sandbox/card completion, subscriptions, saved cards, wallets, refunds, multi-merchant marketplace routing, WPML/WCML, RTL, browsers/devices, accessibility, performance, production operations or release packaging.
+
+## Runtime foundation — DONE / VERIFIED
+
+PR #47 established the permanent real-runtime certification framework.
+
+Final reviewed head:
+
+`d46abc86f329a2b0ae24e79c18c371db2083a43a`
+
+Exact-head evidence:
+
+- Quality Gates #490: **SUCCESS**
+- Compatibility Certification #18: **SUCCESS**
+- all **16/16** real runtime/storage jobs: **SUCCESS**
+- H12 Regression Harness: **SUCCESS**
+- CodeQL: **SUCCESS**
+- zero unresolved review threads
+
+Verified squash merge:
+
+`5e4f33d24bcaed1032691c564b570e60c95a9483`
+
+Post-merge evidence:
+
+- Quality Gates #491: **SUCCESS**
+- Compatibility Certification #19: **SUCCESS**
+- all **16/16** real runtime/storage jobs: **SUCCESS**
+- CodeQL Analyze (actions): **SUCCESS**
+- CodeQL Analyze (javascript-typescript): **SUCCESS**
+- implementation branch auto-deleted
+
+The compatibility workflow is permanent and runs on both pull requests and pushes to `main`. Quality Gates Governance requires its installer, test files and certification record.
 
 ## RED -> GREEN activation hardening
 
@@ -28,9 +58,9 @@ The first real-runtime RED was captured on test-only head `23cc9edfa3a905730fbb3
 
 Minimal production fix `e912819ad30c3be980c18fe104a1961f306a572a` added only the `is_array($settings)` guard before reading `enable_block_checkout`. Compatibility Certification #2 then passed the real activation scenario.
 
-The accepted `UPayments.php` architecture byte ratchet advanced from **88,839** to the exact reviewed post-fix size **88,862** without removing the permanent semantic architecture assertions.
+The accepted `UPayments.php` architecture byte ratchet advanced from **88,839** to **88,862** for this 23-byte compatibility guard without removing permanent semantic assertions.
 
-Certification fixtures were then tightened so malformed option storage is written directly to the WordPress options table without firing WooCommerce update observers. Exact head `1178ffa31687298761f06ef775b691a8433c2578` additionally proves:
+The certification fixture was subsequently tightened so malformed option storage is written directly to the WordPress options table without firing WooCommerce update observers. Final PR #47 evidence also proves:
 
 - the complete serialized protected gateway settings option is byte-identical before and after SimplixPay activation;
 - the SimplixPay activation callback actually executes by replacing a seeded checkout-page marker with `[woocommerce_checkout]`;
@@ -38,14 +68,12 @@ Certification fixtures were then tightened so malformed option storage is writte
 
 ## Verified runtime matrix
 
-Exact workflow: **Compatibility Certification #14 — SUCCESS**
-
-Every row below passed with both **legacy posts/order storage** and **HPOS authoritative order storage** where shown. Every job installed real WordPress and WooCommerce, activated SimplixPay, verified the Classic gateway, verified Blocks registration/availability including malformed settings, selected the requested authoritative order store, and created/reloaded/deleted a real WooCommerce order through CRUD while preserving `upayments` payment identity and protected UPayments order metadata.
+Every row below passed with both **legacy posts/order storage** and **HPOS authoritative order storage**. Every job installs real WordPress and WooCommerce, activates SimplixPay, verifies Classic and Blocks registration/availability, selects the requested authoritative order store, and creates/reloads/deletes a real WooCommerce order through CRUD while preserving `upayments` payment identity and protected UPayments order metadata.
 
 | WordPress | WooCommerce | PHP | Legacy | HPOS | Purpose |
 |---|---|---:|---|---|---|
-| 7.1 | 11.1.0 | 8.3 | **VERIFIED** | **VERIFIED** | Current recommended runtime |
 | 7.1 | 11.1.0 | 8.4 | **VERIFIED** | **VERIFIED** | Current modern PHP |
+| 7.1 | 11.1.0 | 8.3 | **VERIFIED** | **VERIFIED** | Current recommended runtime |
 | 7.0.4 | 11.1.0 | 8.3 | **VERIFIED** | **VERIFIED** | Woo 11.1 WordPress floor series |
 | 7.0.4 | 11.0.1 | 8.3 | **VERIFIED** | **VERIFIED** | Previous WooCommerce line |
 | 7.0.4 | 10.8.1 | 8.3 | **VERIFIED** | **VERIFIED** | WordPress 7.0 / older supported Woo line |
@@ -53,55 +81,109 @@ Every row below passed with both **legacy posts/order storage** and **HPOS autho
 | 6.9.7 | 10.8.1 | 8.3 | **VERIFIED** | **VERIFIED** | Woo 10.8 WordPress floor series |
 | 6.9.7 | 10.8.1 | 7.4 | **VERIFIED** | **VERIFIED** | Legacy ecosystem floor characterization |
 
-WooCommerce 11.1.0 itself requires WordPress 7.0+, so the proposed WordPress 6.9.7 / WooCommerce 11.1.0 combination was removed as upstream-invalid rather than misclassified as a SimplixPay failure.
+WooCommerce 11.1 itself requires WordPress 7.0+, so WordPress 6.9 / WooCommerce 11.1 is intentionally excluded as an upstream-invalid combination.
 
 A passing PHP 7.4 cell proves compatibility for this bounded matrix only. PHP 7.4 is end-of-life and is not the recommended production runtime.
 
-## Exact candidate verification
+## Support metadata — RED -> GREEN VERIFIED
 
-Exact head `1178ffa31687298761f06ef775b691a8433c2578`:
+RED-A test-only head `92d6f21ccde6795c8a9b97915f3c66d8d005e581` added a real-runtime metadata assertion while leaving production headers unchanged.
 
-- Quality Gates #486: **SUCCESS**
-- Compatibility Certification #14: **SUCCESS**
+Compatibility Certification #20 failed exactly at:
+
+`FAIL: WordPress minimum support series is matrix-proven 6.9`
+
+Minimal GREEN-A production change `d4fbf937c9ed81816e16c6f74d6f6e7e4721869a` changed only plugin support headers to:
+
+- `Requires at least: 6.9`
+- `Tested up to: 7.1`
+- `Requires PHP: 7.4`
+- `WC requires at least: 10.8`
+- `WC tested up to: 11.1`
+
+After updating the exact architecture byte ratchet from **88,862** to **88,938**, exact candidate `b247965c2ff7e98c00b394b2672b5ef2ba14fba6` passed:
+
+- Quality Gates #495: **SUCCESS**
+- Compatibility Certification #23: **SUCCESS**
 - all **16/16** runtime/storage jobs: **SUCCESS**
-- Governance: **SUCCESS**
-- Quality Platform: **SUCCESS**
-- PHP 7.2 syntax lane: **SUCCESS** — syntax evidence only, not runtime certification
-- PHP 8.2 syntax lane: **SUCCESS**
-- protected H12 Regression Harness: **SUCCESS**
-- CodeQL: **SUCCESS**
-- CodeQL Analyze (actions): **SUCCESS**
-- CodeQL Analyze (javascript-typescript): **SUCCESS**
 
-## Feature declaration position
+## HPOS declaration — RED -> GREEN VERIFIED
 
-The existing `cart_checkout_blocks` compatibility declaration is now backed by the real runtime matrix for the tested WordPress/WooCommerce/PHP cells above.
+RED-B head `e5e1a324970cf98c4c0218d5996b954f6cc04729` extended the real-runtime metadata test to WooCommerce's public feature registry after `woocommerce_init`.
 
-HPOS `custom_order_tables` compatibility has real enabled/disabled WooCommerce CRUD evidence across the same matrix, but the declaration is intentionally deferred to the next test-first metadata/declaration tranche so the declaration itself receives RED -> GREEN coverage and another full matrix run.
+The test proved:
 
-## Metadata position
+- `cart_checkout_blocks` remained present in the compatible registry;
+- Woo returned both compatible and incompatible feature arrays;
+- `custom_order_tables` was absent.
 
-Current public header metadata remains intentionally unchanged on this certification-foundation candidate:
+Compatibility Certification #24 failed exactly at:
 
-- `Requires at least: 5.6`
-- `Requires PHP: 7.2`
-- no `WC requires at least`
-- no `WC tested up to`
+`FAIL: HPOS custom_order_tables compatibility is declared in the real WooCommerce registry`
 
-Those values are not converted into claims until the next metadata tranche adds test-first assertions and re-runs the full matrix. The evidence currently supports evaluating:
+Minimal GREEN-B production change `1849ee900a0da21c3c39fa85975417063a8b4a12` added only:
 
-- WordPress minimum series **6.9**
-- WordPress tested series **7.1**
-- WooCommerce minimum series **10.8**
-- WooCommerce tested series **11.1**
-- PHP runtime floor **7.4**
+```php
+\Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility(
+    'custom_order_tables',
+    __FILE__,
+    true
+);
+```
 
-## Next certification action
+inside the existing guarded `before_woocommerce_init` callback beside the already-existing Blocks declaration.
 
-1. test-first release metadata and `custom_order_tables` declaration;
-2. full runtime matrix rerun after declarations;
-3. merge and post-merge verify the certification foundation/declaration state;
-4. provider sandbox certification;
-5. feature-specific certification;
-6. multilingual/RTL/browser/accessibility/performance and operations certification;
-7. deterministic release packaging and packaged-artifact installation certification.
+Real runtime cells then passed the metadata/feature-registry assertion and proceeded through Blocks plus HPOS/legacy order CRUD. Quality Gates #497 failed only the intentionally stale architecture byte ratchet. The exact measured `UPayments.php` size after the declaration is **89,102 bytes**, and the ratchet has been advanced without removing semantic architecture checks.
+
+A final exact-head full Quality Gates + 16-cell Compatibility Certification + CodeQL run is required before the declaration tranche is merge-approved.
+
+## Current public platform declarations
+
+The declaration candidate now contains:
+
+- WordPress minimum: **6.9**
+- WordPress tested: **7.1**
+- WooCommerce minimum: **10.8**
+- WooCommerce tested: **11.1**
+- PHP minimum: **7.4**
+- `cart_checkout_blocks`: **compatible**
+- `custom_order_tables`: **compatible**
+
+These are the only platform declarations authorized by the current runtime matrix.
+
+## Source-level HPOS cross-check
+
+A production-tree audit found no direct order access through:
+
+- `get_post_meta` / `update_post_meta` / `delete_post_meta` / `add_post_meta`;
+- `$wpdb->posts` / `$wpdb->postmeta`;
+- raw `shop_order` assumptions;
+- direct `get_post()`/ `wp_update_post()` order paths.
+
+This source evidence supplements—never replaces—the real legacy/HPOS CRUD matrix.
+
+## Non-claims
+
+Still not certified by this platform-core tranche:
+
+- UPayments sandbox Charge/status transport and provider response schema;
+- browser/card completion;
+- saved-card provider retrieval/charge end-to-end;
+- subscription recurring auto-deduction end-to-end;
+- wallets;
+- arbitrary marketplace multi-split;
+- automatic refunds (intentionally unsupported);
+- WPML/WCML/multicurrency/RTL;
+- browser/device/theme interoperability;
+- accessibility;
+- performance/stability;
+- packaged ZIP installation/upgrade/rollback;
+- production operations or public stable-release readiness.
+
+## Next certification actions
+
+1. finish exact-head support/HPOS declaration verification and merge/post-merge verification;
+2. UPayments public-sandbox transport/schema certification;
+3. feature-specific certification;
+4. multilingual/RTL/browser/accessibility/performance and operations certification;
+5. deterministic release packaging and packaged-artifact installation/upgrade certification.
