@@ -7,7 +7,7 @@
  * ownership boundary and the pure lexical/payload contracts directly.
  */
 
-use Simplix\Pay\UPayments\Payment\CheckoutPayload;
+use Simplixi\SUCheckout\UPayments\Payment\CheckoutPayload;
 
 $root = dirname(__DIR__, 2);
 $pass = 0;
