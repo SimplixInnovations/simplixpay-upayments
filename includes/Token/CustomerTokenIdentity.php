@@ -1624,27 +1624,19 @@ class CustomerTokenIdentity {
         $meta_prefix = '_upay_customer_token_v2_b' . $blog_id . '_';
         $escaped_prefix = $wpdb->esc_like($meta_prefix);
 
-        // Use $wpdb->query() for unambiguous DB-error semantics (Section G).
-        $query_result = $wpdb->query(
-            $wpdb->prepare(
-                "SELECT meta_key FROM {$wpdb->usermeta} WHERE user_id = %d AND meta_key LIKE %s",
-                $user_id,
-                $escaped_prefix . '%'
-            )
+        $prepared_query = $wpdb->prepare(
+            "SELECT meta_key FROM {$wpdb->usermeta} WHERE user_id = %d AND meta_key LIKE %s",
+            $user_id,
+            $escaped_prefix . '%'
         );
+        $meta_keys = $wpdb->get_col($prepared_query);
 
-        if ($query_result === false) {
+        if (!is_array($meta_keys)) {
             return array('state' => 'read_failure', 'reason' => 'db_query_failed');
         }
 
-        if ((int) $query_result === 0) {
+        if (count($meta_keys) === 0) {
             return array('state' => 'none', 'reason' => 'no_provenance_records');
-        }
-
-        $meta_keys = $wpdb->get_col(null);
-
-        if (!is_array($meta_keys) || count($meta_keys) !== (int) $query_result) {
-            return array('state' => 'read_failure', 'reason' => 'db_result_inconsistent');
         }
 
         $has_generation_mismatch = false;
