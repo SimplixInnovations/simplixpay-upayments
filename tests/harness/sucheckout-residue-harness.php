@@ -63,7 +63,10 @@ $historical_files = array(
 /*
  * The pre-rename repository coordinate and legacy package root are allowed
  * only where a current migration, rollback, updater, workflow or provenance
- * contract must refer to them explicitly.
+ * contract must refer to them explicitly. OWNER-HANDOFF is included because
+ * an executable rename/cleanup guide must name the old repository coordinate,
+ * obsolete branches and legacy pre-release package root that the owner removes
+ * or migrates.
  */
 $legacy_slug_files = array(
     '.github/ISSUE_TEMPLATE/config.yml',
@@ -80,6 +83,7 @@ $legacy_slug_files = array(
     'docs/ENGINEERING-ROADMAP.md',
     'docs/project/ENTERPRISE-CERTIFICATION.md',
     'docs/project/NEW-CHAT-HANDOFF.md',
+    'docs/project/OWNER-HANDOFF.md',
     'docs/project/PROJECT-STATUS.md',
     'docs/project/RELEASE-ENGINEERING.md',
     'scripts/install-wp-test-environment.sh',
