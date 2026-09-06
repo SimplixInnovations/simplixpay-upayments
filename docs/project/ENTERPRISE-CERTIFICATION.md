@@ -1,7 +1,7 @@
 # SUCheckout for UPayments — Historical Enterprise Foundation & Re-certification Context
 
 **Historical status:** TASKS 1–8 DONE / VERIFIED under the former pre-rebrand product identity
-**Current engineering state:** SUCheckout identity migration and exact-head re-certification
+**Current engineering state:** SUCheckout identity migration implemented; permanent exact-head certification required before merge/release
 **Current GitHub repository pending owner/admin rename:** `SimplixInnovations/simplixpay-upayments`
 **Target canonical repository:** `SimplixInnovations/sucheckout-upayments`
 
@@ -175,6 +175,6 @@ The reserved final whole-plugin Codex challenge identified one valid P2 in stale
 
 PR #54 squash-merged as `2ddb1790fead37c6055256847dc7c827e165af4a`. Post-merge canonical `main` passed Quality #553, Compatibility #81, Release Artifact #35, Provider Sandbox #13 and CodeQL/main-security #358.
 
-The historical enterprise engineering program is therefore **DONE / VERIFIED through Task 8**. SUCheckout must independently satisfy the permanent exact-head re-certification gates before the identity migration is complete. External/manual classifications and unsupported features remain honest boundaries, not fabricated repository certifications.
+The historical enterprise engineering program is therefore **DONE / VERIFIED through Task 8**. The SUCheckout identity migration implementation is complete, and every candidate must independently satisfy the permanent exact-head certification gates before merge or release. External/manual classifications and unsupported features remain honest boundaries, not fabricated repository certifications.
 
 No public tag, GitHub Release, WordPress.org publication or repository rename is created or authorized by this engineering closeout alone.
