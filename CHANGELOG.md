@@ -230,7 +230,7 @@ The project is still in pre-release engineering hardening. Entries below are eng
 
 ### Current program gate
 
-**Enterprise Compatibility Certification** remains the active program. Architecture A1-A5, Quality Platform Q1-Q19 and the PR #47 core runtime foundation are DONE / VERIFIED. The current test-first declaration tranche publishes only matrix-proven WordPress/WooCommerce/PHP metadata and HPOS/Blocks feature declarations. Provider sandbox, feature-specific, multilingual, browser/accessibility/performance, operations and release certification remain open; completed gates do not establish broad feature, performance, PCI/compliance or production certification.
+**Enterprise Compatibility Certification** is now the active gate. Architecture A1-A5, Quality Platform Q1-Q19 and the PR #47 core runtime foundation are DONE / VERIFIED. The current test-first declaration tranche publishes only matrix-proven WordPress/WooCommerce/PHP metadata and HPOS/Blocks feature declarations. Provider sandbox, feature-specific, multilingual, browser/accessibility/performance, operations and release certification remain open; completed gates do not establish broad feature, performance, PCI/compliance or production certification.
 
 ### Provider Contract & Payment Lifecycle — DONE / VERIFIED
 
