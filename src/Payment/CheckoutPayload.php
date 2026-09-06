@@ -1,6 +1,6 @@
 <?php
 
-namespace Simplix\Pay\UPayments\Payment;
+namespace Simplixi\SUCheckout\UPayments\Payment;
 
 /**
  * Pure checkout request, decimal, payload, and redirect helpers.
