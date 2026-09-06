@@ -108,16 +108,25 @@ chmod +x /tmp/sucheckout-python/python3
 export PATH="/tmp/sucheckout-python:$PATH"
 python3 --version
 ```
-### 5.2 Clean canonical checkout
-**Warning:** `git clean -fdx` deletes all ignored/untracked files in this clone, including `vendor/`, local build output and editor/test caches.
+### 5.2 Isolated canonical acceptance worktree
+Do not reset or clean the owner's normal working copy for acceptance. Create a disposable detached worktree from the exact fetched `origin/main` instead; this remains safe even when the normal clone contains local tracked changes or local-only commits.
 ```bash
 git fetch --prune --tags origin
-git switch main
-git reset --hard origin/main
-git clean -fdx
+
+SOURCE_REPO="$(git rev-parse --show-toplevel)"
+ACCEPTANCE_DIR="${SOURCE_REPO}/../sucheckout-owner-acceptance"
+
+test ! -e "$ACCEPTANCE_DIR"
+git worktree add --detach "$ACCEPTANCE_DIR" origin/main
+cd "$ACCEPTANCE_DIR"
+
 git status --short
+git rev-parse HEAD
+git rev-parse origin/main
 ```
-Expected final command output: empty.
+Expected `git status --short` output: empty. The two SHA commands must match.
+
+If the acceptance directory already exists, choose a different disposable path; do not delete an unknown directory merely to reuse the name.
 ### 5.3 Development quality
 ```bash
 composer install --no-interaction --prefer-dist
@@ -181,6 +190,15 @@ wp plugin delete simplixpay-upayments
 wp plugin status sucheckout-upayments
 ```
 Do not change protected persisted/provider identifiers merely to make names look uniform.
+### 5.7 Remove the disposable acceptance worktree
+After local acceptance is complete:
+```bash
+cd "$SOURCE_REPO"
+git worktree remove --force "$ACCEPTANCE_DIR"
+git worktree prune
+git worktree list
+```
+The `--force` here is intentionally bounded to the disposable worktree created in section 5.2, where Composer/build output may remain untracked or ignored. Never substitute the path of the owner's normal working copy.
 ## 6. Full compatibility matrix
 The authoritative 16-cell WordPress/WooCommerce/PHP × legacy/HPOS matrix is intentionally CI-owned. Reproducing all 16 cells on one Windows workstation is not required for owner acceptance.
 If a code/tooling change occurs after local acceptance, require fresh GitHub Compatibility Certification before release.
@@ -226,7 +244,8 @@ Repository/admin:
 - [ ] verify GitHub rules/security/integrations after rename;
 - [ ] merge a post-rename coordinate-only documentation/control PR.
 Optional acceptance:
-- [ ] run clean local Composer quality;
+- [ ] create the isolated `origin/main` acceptance worktree;
+- [ ] run local Composer quality inside that worktree;
 - [ ] run H12 PHP + Blocks and focused SUCheckout harnesses;
 - [ ] build + verify deterministic ZIP;
 - [ ] install the ZIP into a disposable local/staging WooCommerce site;
