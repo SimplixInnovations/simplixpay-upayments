@@ -16,7 +16,7 @@ defined( 'ABSPATH' ) || exit;
     if (isset($_GET["cancelled"]))
     {
         $notice_html = '<div class="woocommerce-NoticeGroup woocommerce-NoticeGroup-checkout"><div class="woocommerce-error alert-color">'
-            . esc_html__('Payment canceled by customer', $gateway->domain)
+            . esc_html__('Payment canceled by customer', 'sucheckout-upayments')
             . '</div></div>';
     ?>
     <script>
@@ -28,7 +28,7 @@ defined( 'ABSPATH' ) || exit;
     <?php
     } elseif (isset($_GET["failed"])) {
         $notice_html = '<div class="woocommerce-NoticeGroup woocommerce-NoticeGroup-checkout"><div class="woocommerce-error alert-color">'
-            . esc_html__('Payment error from UPayments', $gateway->domain)
+            . esc_html__('Payment error from UPayments', 'sucheckout-upayments')
             . '</div></div>';
     ?>
     <script>
@@ -40,7 +40,7 @@ defined( 'ABSPATH' ) || exit;
     <?php
     } elseif (isset($_GET["suspected"])){
         $notice_html = '<div class="woocommerce-NoticeGroup woocommerce-NoticeGroup-checkout"><div class="woocommerce-error alert-color">'
-            . esc_html__('Payment failed for suspected fraud.', $gateway->domain)
+            . esc_html__('Payment failed for suspected fraud.', 'sucheckout-upayments')
             . '</div></div>';
     ?>
     <script>
@@ -76,7 +76,7 @@ defined( 'ABSPATH' ) || exit;
     {
     ?>
         <ul style="list-style: none outside;">
-            <p style="display: inline"><?php esc_html_e('Select Payment Type:', 'upayments'); ?></p>
+            <p style="display: inline"><?php esc_html_e('Select Payment Type:', 'sucheckout-upayments'); ?></p>
             <?php 
             foreach ($icons as $key => $value) {
                 if (!is_scalar($value)) {
