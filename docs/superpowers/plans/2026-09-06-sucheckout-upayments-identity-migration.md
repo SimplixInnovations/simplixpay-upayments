@@ -10,7 +10,7 @@
 
 **Spec:** `docs/superpowers/specs/2026-09-06-sucheckout-upayments-identity-migration-design.md`
 
-**Execution status:** Tasks 1–9 are implemented. Task 10 remains the active closeout: exact-head certification, whole-PR review, merge, and post-merge verification.
+**Execution status:** Tasks 1–9 are implemented. Task 10 is the permanent exact-candidate closeout runbook; its checkboxes describe actions to execute for a candidate and are not the canonical durable repository-state marker. Current state is owned by `docs/project/PROJECT-STATUS.md`.
 
 ## Global Constraints
 
