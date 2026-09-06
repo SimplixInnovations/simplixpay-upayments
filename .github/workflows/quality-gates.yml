@@ -124,6 +124,7 @@ jobs:
           reject_across_live_records 'CURRENT / Q1**'
           reject_across_live_records 'CURRENT / Q2'
           reject_across_live_records 'CURRENT / Q3'
+          reject_across_live_records 'CURRENT / Q4'
           reject_across_live_records 'CURRENT / Q5'
           reject_across_live_records 'CURRENT / Q6'
           reject_across_live_records 'CURRENT / Q7'
@@ -134,6 +135,11 @@ jobs:
           reject_across_live_records 'CURRENT / Q12'
           reject_across_live_records 'CURRENT / Q13'
           reject_across_live_records 'CURRENT / Q14'
+          reject_across_live_records 'CURRENT / Q15'
+          reject_across_live_records 'CURRENT / Q16'
+          reject_across_live_records 'CURRENT / Q17'
+          reject_across_live_records 'CURRENT / Q18'
+          reject_across_live_records 'CURRENT / Q19'
 
       - name: Whitespace errors
         shell: bash
