@@ -19,7 +19,9 @@ on:
       - 'SECURITY.md'
       - 'scripts/build-release.sh'
       - 'scripts/verify-release.sh'
+      - 'scripts/install-wp-test-environment.sh'
       - 'tests/harness/release-artifact-harness.php'
+      - 'tests/integration/**'
       - '.github/workflows/release-artifact.yml'
   push:
     branches: [main]
@@ -39,7 +41,9 @@ on:
       - 'SECURITY.md'
       - 'scripts/build-release.sh'
       - 'scripts/verify-release.sh'
+      - 'scripts/install-wp-test-environment.sh'
       - 'tests/harness/release-artifact-harness.php'
+      - 'tests/integration/**'
       - '.github/workflows/release-artifact.yml'
   workflow_dispatch:
 
@@ -51,7 +55,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  red-artifact-contract:
+  artifact-build:
     name: Deterministic release artifact
     runs-on: ubuntu-latest
     timeout-minutes: 10
@@ -69,3 +73,131 @@ jobs:
 
       - name: Release artifact contract
         run: php tests/harness/release-artifact-harness.php
+
+      - name: Build canonical release evidence
+        run: |
+          set -euo pipefail
+          rm -rf release-output
+          mkdir -p release-output
+          bash scripts/build-release.sh release-output
+          ZIP="$(find release-output -maxdepth 1 -type f -name 'simplixpay-upayments-*.zip' -print -quit)"
+          test -n "$ZIP"
+          bash scripts/verify-release.sh "$ZIP"
+
+      - name: Upload canonical release evidence
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: simplixpay-release-${{ github.sha }}
+          path: |
+            release-output/simplixpay-upayments-*.zip
+            release-output/simplixpay-upayments-*.zip.sha256
+            release-output/simplixpay-upayments-*.manifest.sha256
+          if-no-files-found: error
+          retention-days: 7
+
+  packaged-runtime:
+    name: Packaged WP 7.1 / WC 11.1.0 / PHP 8.3 / ${{ matrix.storage }}
+    needs: artifact-build
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        storage: [legacy, hpos]
+
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: wordpress
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h 127.0.0.1 -proot"
+          --health-interval=5s
+          --health-timeout=5s
+          --health-retries=20
+
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # v2.37.2
+        with:
+          php-version: '8.3'
+          extensions: curl, mbstring, mysqli, zip
+          coverage: none
+          tools: none
+
+      - name: Download exact built release evidence
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        with:
+          name: simplixpay-release-${{ github.sha }}
+          path: release-output
+
+      - name: Verify downloaded release artifact
+        run: |
+          set -euo pipefail
+          ZIP="$(find release-output -maxdepth 1 -type f -name 'simplixpay-upayments-*.zip' -print -quit)"
+          test -n "$ZIP"
+          bash scripts/verify-release.sh "$ZIP"
+
+      - name: Install pinned WP-CLI
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl -fsSL \
+            https://github.com/wp-cli/wp-cli/releases/download/v2.12.0/wp-cli-2.12.0.phar \
+            -o /tmp/wp-cli.phar
+          echo 'ce34ddd838f7351d6759068d09793f26755463b4a4610a5a5c0a97b68220d85c  /tmp/wp-cli.phar' | sha256sum -c -
+          chmod +x /tmp/wp-cli.phar
+          /tmp/wp-cli.phar --version
+
+      - name: Install packaged plugin into real WordPress and WooCommerce
+        shell: bash
+        run: |
+          set -euo pipefail
+          ZIP="$(find "$GITHUB_WORKSPACE/release-output" -maxdepth 1 -type f -name 'simplixpay-upayments-*.zip' -print -quit)"
+          test -n "$ZIP"
+          SIMPLIXPAY_PLUGIN_ZIP="$ZIP" \
+          WP_CLI_BIN=/tmp/wp-cli.phar \
+          bash scripts/install-wp-test-environment.sh 7.1 11.1.0 "$RUNNER_TEMP/wordpress"
+
+      - name: Seed malformed protected settings for packaged plugin
+        env:
+          SIMPLIXPAY_CERT_PHASE: seed
+        run: /tmp/wp-cli.phar eval-file "$GITHUB_WORKSPACE/tests/integration/PluginActivationTest.php" --path="$RUNNER_TEMP/wordpress"
+
+      - name: Activate packaged SimplixPay
+        run: /tmp/wp-cli.phar plugin activate simplixpay-upayments --path="$RUNNER_TEMP/wordpress"
+
+      - name: Verify packaged activation and Classic registration
+        env:
+          SIMPLIXPAY_CERT_PHASE: verify
+        run: /tmp/wp-cli.phar eval-file "$GITHUB_WORKSPACE/tests/integration/PluginActivationTest.php" --path="$RUNNER_TEMP/wordpress"
+
+      - name: Verify packaged release support metadata
+        run: /tmp/wp-cli.phar eval-file "$GITHUB_WORKSPACE/tests/integration/ReleaseMetadataTest.php" --path="$RUNNER_TEMP/wordpress"
+
+      - name: Verify packaged Blocks registration and availability
+        run: /tmp/wp-cli.phar eval-file "$GITHUB_WORKSPACE/tests/integration/CheckoutRegistrationTest.php" --path="$RUNNER_TEMP/wordpress"
+
+      - name: Select packaged authoritative order store
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ "${{ matrix.storage }}" == "hpos" ]]; then
+            /tmp/wp-cli.phar option update woocommerce_custom_orders_table_enabled yes --path="$RUNNER_TEMP/wordpress"
+          else
+            /tmp/wp-cli.phar option update woocommerce_custom_orders_table_enabled no --path="$RUNNER_TEMP/wordpress"
+          fi
+          /tmp/wp-cli.phar option update woocommerce_custom_orders_table_data_sync_enabled no --path="$RUNNER_TEMP/wordpress"
+          /tmp/wp-cli.phar cache flush --path="$RUNNER_TEMP/wordpress"
+
+      - name: Verify packaged order CRUD
+        env:
+          SIMPLIXPAY_HPOS_MODE: ${{ matrix.storage }}
+        run: /tmp/wp-cli.phar eval-file "$GITHUB_WORKSPACE/tests/integration/HposCompatibilityTest.php" --path="$RUNNER_TEMP/wordpress"
