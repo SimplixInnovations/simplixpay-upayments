@@ -6,8 +6,11 @@
  * Version: 0.1.0
  * Author: Simplix Innovations
  * Author URI: https://simplixi.com
- * Requires at least: 5.6
- * Requires PHP: 7.2
+ * Requires at least: 6.9
+ * Tested up to: 7.1
+ * Requires PHP: 7.4
+ * WC requires at least: 10.8
+ * WC tested up to: 11.1
  * License: MIT
  * Text Domain: upayments
  * Domain Path: /languages
