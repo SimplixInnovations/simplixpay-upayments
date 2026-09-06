@@ -50,7 +50,7 @@ The numbered Quality Platform is closed at Q19. **Never invent Q20 for continuit
 
 The former product identity reached Enterprise Release Candidate Closeout through PR #54, final reviewed head `5a24944617f7ee482c381e5e899f687b77d81d09`, squash merge `2ddb1790fead37c6055256847dc7c827e165af4a`, and successful post-merge main Quality #553, Compatibility #81, Release Artifact #35, Provider Sandbox #13 and CodeQL/main-security #358. That is retained historical evidence.
 
-The active engineering work is the approved **SUCheckout identity migration and exact-head re-certification**. It is complete only when the current PR head passes all permanent Quality/H12, Compatibility, Release Artifact, Provider Sandbox and official WordPress.org Plugin Check gates with no unresolved critical/high review findings.
+The approved **SUCheckout identity migration is implemented**. Every candidate must still pass permanent exact-head Quality/H12, Compatibility, Release Artifact, Provider Sandbox and official WordPress.org Plugin Check gates, with no unresolved critical/high review findings, before merge or release.
 
 No public tag, GitHub Release, WordPress.org publication or repository rename is authorized by this engineering migration. Those remain separate owner/admin actions after verified merge.
 
