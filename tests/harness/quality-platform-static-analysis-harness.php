@@ -113,7 +113,15 @@ foreach (array(
     q2_assert(q2_contains($quality_record, $closure_evidence), "Q2 closure evidence is pinned: {$closure_evidence}");
 }
 q2_assert(q2_contains($status, '| Quality Platform Q16 migration-core analysis | **DONE / VERIFIED** |'), 'project status advances beyond Quality Platform Q2');
-q2_assert(q2_contains($readme, 'Quality Platform Q1-Q16 are **DONE / VERIFIED**.'), 'README advances beyond Quality Platform Q2');
+$q2_readme_range_matches = array();
+$q2_readme_has_later_verified_range = preg_match(
+    '/Quality Platform Q1-Q([0-9]+) are \\*\\*DONE \\/ VERIFIED\\*\\*\\./',
+    $readme,
+    $q2_readme_range_matches
+) === 1
+    && isset($q2_readme_range_matches[1])
+    && (int) $q2_readme_range_matches[1] > 2;
+q2_assert($q2_readme_has_later_verified_range, 'README advances beyond Quality Platform Q2 without pinning a later gate number');
 q2_assert(!q2_contains($handoff, 'CURRENT / Q1**'), 'handoff program sequence rejects alternate stale Q1 gate marker without matching Q12');
 q2_assert(!q2_contains($playbook, 'CURRENT / Q1**'), 'master playbook phase ordering rejects alternate stale Q1 gate marker without matching Q12');
 q2_assert(q2_contains($workflow, "reject_across_live_records 'CURRENT / Q1**'"), 'Governance rejects alternate stale Q1 gate marker without matching Q12');
