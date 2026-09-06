@@ -468,7 +468,7 @@ class CheckoutPayload {
         if (strlen($url) > 250) {
             return null;
         }
-        $parts = parse_url($url);
+        $parts = wp_parse_url($url);
         if ($parts === false || !isset($parts['scheme']) || !isset($parts['host'])) {
             return null;
         }
