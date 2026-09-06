@@ -155,12 +155,21 @@ $result = simplixpay_cert_run_subscription_case($strict_order, $invalid_interval
 simplixpay_cert_assert('failure' === $result['result'], 'out-of-contract subscription interval is rejected');
 simplixpay_cert_assert(array() === $routes, 'invalid subscription interval rejects before provider transport');
 
+$bootstrap_history = CustomerTokenIdentity::inspect_bootstrap_history($user_id);
+simplixpay_cert_assert(
+    CustomerTokenIdentity::HISTORY_NONE === $bootstrap_history['classification'],
+    'clean subscription customer is eligible for token bootstrap before the positive checkout probe; reason='
+        . (isset($bootstrap_history['reason']) ? $bootstrap_history['reason'] : 'missing')
+);
+
 $routes = array();
 $result = simplixpay_cert_run_subscription_case($strict_order, $base_post, $user_id, $routes);
+simplixpay_cert_note('eligible subscription bounded route trace: ' . wp_json_encode($routes));
+simplixpay_cert_note('eligible subscription notices: ' . wp_json_encode(wc_get_notices()));
 simplixpay_cert_assert('failure' === $result['result'], 'eligible subscription remains failed when bounded token transport is deliberately unavailable');
 simplixpay_cert_assert(
     array('create-customer-unique-token') === $routes,
-    'eligible Classic subscription reaches token initialization only after all local preflight gates pass'
+    'eligible Classic subscription reaches token initialization only after all local preflight gates pass; actual=' . wp_json_encode($routes)
 );
 
 wp_set_current_user(0);
