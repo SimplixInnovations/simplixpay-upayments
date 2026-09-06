@@ -1898,7 +1898,7 @@ function myPaymentPluginSetupCheckout() {
 
     $use_blocks = false;
     $settings = get_option("woocommerce_upayments_settings");
-    if (isset($settings['enable_block_checkout']) && $settings['enable_block_checkout'] === 'yes') {
+    if (is_array($settings) && isset($settings['enable_block_checkout']) && $settings['enable_block_checkout'] === 'yes') {
         $use_blocks = true;
     }
 
