@@ -99,7 +99,7 @@ Changing one requires an explicitly approved migration contract, old/new precede
 - Do not infer provider success from browser/user-facing prose.
 - Browser redirects are not the sole payment source of truth.
 - Preserve H12 token/provenance contracts unless a later approved phase explicitly supersedes them.
-- Never expose API secrets, bearer tokens, card data, customer/card tokens, H12 identity secrets/provenance, unnecessary PII or production database exports.
+- Never expose private/merchant API secrets or bearer tokens, card data, customer/card tokens, H12 identity secrets/provenance, unnecessary PII or production database exports. A provider-documented public sandbox test credential is not a merchant secret and may appear only in test-only certification surfaces governed by the explicit provider-automation rule above; it must never be presented as or substituted for a production credential.
 
 ## Public claims
 
