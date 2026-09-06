@@ -57,20 +57,17 @@ require_once $identity_path;
 
 use Simplixi\SUCheckout\UPayments\Release\Identity;
 
-// Public product header: Simplix-owned, independent 0.x version line.
-// Header/public metadata migration is intentionally deferred to the dedicated i18n/metadata tranche.
-p0_assert(p0_header_value($bootstrap, 'Plugin Name') === 'SimplixPay for UPayments', 'legacy public header remains until metadata migration tranche');
-p0_assert(p0_header_value($bootstrap, 'Plugin URI') === 'https://github.com/SimplixInnovations/simplixpay-upayments', 'legacy plugin URI remains until metadata migration tranche');
+// Public product header: canonical SUCheckout identity on the independent 0.x line.
+p0_assert(p0_header_value($bootstrap, 'Plugin Name') === 'SUCheckout for UPayments', 'public header exposes canonical SUCheckout product name');
+p0_assert(p0_header_value($bootstrap, 'Plugin URI') === 'https://github.com/SimplixInnovations/sucheckout-upayments', 'plugin URI exposes canonical SUCheckout repository target');
 p0_assert(p0_header_value($bootstrap, 'Description') === 'Independently engineered UPayments payment integration for WooCommerce by Simplix Innovations.', 'plugin description remains provider-accurate during identity transition');
 p0_assert(p0_header_value($bootstrap, 'Version') === Identity::VERSION, 'header version matches canonical release identity');
 p0_assert(p0_header_value($bootstrap, 'Author') === 'Simplix Innovations', 'plugin author is Simplix Innovations');
 p0_assert(p0_header_value($bootstrap, 'Author URI') === 'https://simplixi.com', 'author URI is Simplix');
 p0_assert(p0_header_value($bootstrap, 'License') === 'MIT', 'plugin header keeps MIT license');
-p0_assert(p0_header_value($bootstrap, 'Domain Path') === '/languages', 'domain path remains canonical');
+p0_assert(p0_header_value($bootstrap, 'Domain Path') === null, 'plugin header does not advertise a non-packaged languages directory');
 
-// Text-domain transition is deliberately controlled; legacy runtime strings
-// remain on `upayments` until the dedicated i18n/WPML migration is tested.
-p0_assert(p0_header_value($bootstrap, 'Text Domain') === Identity::LEGACY_TEXT_DOMAIN, 'legacy text domain is intentionally retained during Phase 0');
+p0_assert(p0_header_value($bootstrap, 'Text Domain') === Identity::TARGET_TEXT_DOMAIN, 'public text domain is the canonical SUCheckout domain');
 p0_assert(Identity::TARGET_TEXT_DOMAIN === 'sucheckout-upayments', 'target text domain remains frozen');
 
 // Bootstrap exposes Simplix identity without destroying legacy plugin-file API.
