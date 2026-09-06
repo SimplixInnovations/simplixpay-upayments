@@ -112,6 +112,30 @@ These are not repository blockers that should be fabricated away:
 - live subscription auto-deduction;
 - automatic WooCommerce refunds;
 - arbitrary marketplace multi-split routing.
+## Historical Quality Platform closure ledger
+
+The following rows and evidence are retained solely as historical closure records. They do **not** redefine the current SUCheckout program state above.
+
+| Historical gate | Closure |
+|---|---|
+| Quality Platform Q16 migration-core analysis | **DONE / VERIFIED** |
+| Quality Platform Q17 payment-runtime analysis | **DONE / VERIFIED** |
+
+Historical Q16 closure evidence retained verbatim for permanent regression ownership:
+
+- `3cff2fcc64053d79be7427696c86039f1b52bbfd`;
+- `b9cc6eafb3c7f8df36b9c5db8b2e45bb330688d2`;
+- `06a9ebd732c7cc3f062d4bb361aaef4054a1dfa3`;
+- Quality Gates run #315;
+- Quality Gates run #316;
+- 160 tests / 987 assertions;
+- Q16 Migration Core Analysis: **120/0**;
+- implementation branch `quality/migration-core-analysis`: **deleted after verified merge**.
+
+## Task 8 — DONE / VERIFIED (historical pre-rebrand release-candidate closeout)
+
+Enterprise Task 8 qualified the former product identity as an enterprise release candidate before the approved SUCheckout identity migration. That qualification remains historical evidence; the current SUCheckout candidate must be independently re-certified at its own exact head.
+
 ## Historical evidence
 The former SimplixPay engineering records remain history, not current identity. In particular:
 - Quality Platform Q1-Q19 stays closed and preserved;
