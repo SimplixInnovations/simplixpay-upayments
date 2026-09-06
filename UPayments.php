@@ -247,7 +247,7 @@ function woocommerceUpaymentsInit() {
 
                 echo '<div class="checkout-my-account-link">';
                 echo '<a href="' . esc_url($account_url) . '" target="_blank">';
-                echo __('Go to My Account', 'sucheckout-upayments');
+                esc_html_e('Go to My Account', 'sucheckout-upayments');
                 echo '</a>';
                 echo '</div>';
                 
@@ -402,7 +402,7 @@ function woocommerceUpaymentsInit() {
                 </style>
                 <div class="payment-panel-wait">
                     <h3><?php esc_html_e("We are retrieving your payment status from UPayments, please wait...", 'sucheckout-upayments'); ?></h3>
-                    <div class="img-container"><img src="<?php echo UP_PLUGIN_PATH; ?>assets/images/loader.gif" /></div>
+                    <div class="img-container"><img src="<?php echo esc_url(UP_PLUGIN_URL . 'assets/images/loader.gif'); ?>" alt="" /></div>
                 </div>
             <?php
             } 
@@ -410,24 +410,24 @@ function woocommerceUpaymentsInit() {
                 <div class="payment-panel-wait">
                     <h3><?php esc_html_e('We are retrieving your payment status...', 'sucheckout-upayments' ); ?></h3>
                 </div>
-                <div class="payment-panel-pending" style="<?php echo $status == "pending" ? "display: block" : "display: none"; ?>">
-                    <div style="<?php echo $style; ?>">
+                <div class="payment-panel-pending" style="<?php echo esc_attr($status === "pending" ? "display: block" : "display: none"); ?>">
+                    <div style="<?php echo esc_attr($style); ?>">
                         <?php esc_html_e("Your payment status is pending, we will update the status as soon as we receive notification from UPayments.", 'sucheckout-upayments'); ?>
                     </div>
                 </div>
-                <div class="payment-panel-completed" style="<?php echo $status == "completed" ? "display: block" : "display: none"; ?>">
-                    <div style="<?php echo $style; ?>">
+                <div class="payment-panel-completed" style="<?php echo esc_attr($status === "completed" ? "display: block" : "display: none"); ?>">
+                    <div style="<?php echo esc_attr($style); ?>">
                     <?php esc_html_e("Your payment is successful with UPayments.", 'sucheckout-upayments'); ?>
                         <img style="width:100px" src="<?php echo esc_url(UP_PLUGIN_URL . 'assets/images/check.png'); ?>"/>
                     </div>
                 </div>
-                <div class="payment-panel-failed" style="<?php echo $status == "failed" ? "display: block" : "display: none"; ?>">
-                    <div style="<?php echo $style; ?>">
+                <div class="payment-panel-failed" style="<?php echo esc_attr($status === "failed" ? "display: block" : "display: none"); ?>">
+                    <div style="<?php echo esc_attr($style); ?>">
                     <?php esc_html_e("Your payment is failed with UPayments.", 'sucheckout-upayments'); ?>
                     </div>
                 </div>
-                <div class="payment-panel-cancelled" style="<?php echo $status == "cancelled" ? "display: block" : "display: none"; ?>">
-                    <div style="<?php echo $style; ?>">
+                <div class="payment-panel-cancelled" style="<?php echo esc_attr($status === "cancelled" ? "display: block" : "display: none"); ?>">
+                    <div style="<?php echo esc_attr($style); ?>">
                         <?php esc_html_e("Your order is cancelled.", 'sucheckout-upayments'); ?>
                     </div>
                 </div>
@@ -1796,7 +1796,7 @@ function woocommerceUpaymentsInit() {
 function upaymentsMissingWcNotice() {
     ?>
     <div class="error notice">
-        <p><?php _e( '<b>UPayments Gateway</b> requires WooCommerce to be installed and active!', 'sucheckout-upayments' ); ?></p>
+        <p><strong><?php esc_html_e('UPayments Gateway', 'sucheckout-upayments'); ?></strong> <?php esc_html_e('requires WooCommerce to be installed and active!', 'sucheckout-upayments'); ?></p>
     </div>
     <?php
 }
