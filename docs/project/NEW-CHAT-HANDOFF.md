@@ -35,24 +35,27 @@ Use this file with root `AGENTS.md`, `docs/project/PROJECT-STATUS.md`, `docs/pro
 - Enterprise Task 6 feature/operations boundaries — **DONE / VERIFIED**
 - Enterprise Task 7 existing-install/release identity — **DONE / VERIFIED**
 - Enterprise Task 8 release-candidate closeout — **DONE / VERIFIED**
-- Current engineering state — **SUCheckout identity migration implemented; exact-head certification required before merge/release**
+- Current engineering state — **SUCheckout identity migration DONE / VERIFIED on merged main; owner rename/local acceptance/release administration remain**
 - Public stable release — **NO**
 - WordPress.org release — **NO**
 
 Never invent Q20. Live GitHub evidence wins over recorded milestone SHAs.
 
-## Canonical base entering Task 8
+## Current certified SUCheckout baseline
 
-Task 7 PR #52:
+- PR #58 final certified head: `5bf84dccb880733da45c1f922d43554af69a33dc`;
+- squash merge: `6aabc4fcb0606567a11637ea07fe081fed4c7f85`;
+- post-merge Quality #764 — **SUCCESS**;
+- Compatibility #292 — **16/16 SUCCESS**;
+- Release Artifact #243 — **SUCCESS**;
+- Provider Sandbox #207 — **SUCCESS**;
+- WordPress.org Submission Check #101 — **SUCCESS**;
+- CodeQL/main-security #579 — **SUCCESS**;
+- official Plugin Check — **0 blocking errors**;
+- open issues / open PRs / unresolved review threads — **0 / 0 / 0**.
 
-- final head `dd550eb6af86262aabfd50479407903172327726`;
-- squash merge `02b8d1c2851faabe020f23bbe84ebcca43a4827d`;
-- post-merge Quality #545 — SUCCESS;
-- post-merge Compatibility #73 — SUCCESS;
-- post-merge Release Artifact #27 — SUCCESS;
-- post-merge CodeQL #349 — SUCCESS.
+Engineering work for the SUCheckout identity migration is closed. Next actions are owned by `docs/project/OWNER-HANDOFF.md`; do not invent another numbered Q phase.
 
-Task 8 branch should descend from that canonical merge or a later independently verified `main`.
 
 ## First-stable identity decision
 
@@ -89,7 +92,7 @@ Real-runtime bounded evidence for saved-card/token provenance, subscription elig
 
 Current/floor same-basename upgrade, rollback, deactivate/reactivate, merchant/payment/token/subscription/cron/callback retention and duplicate-root characterization.
 
-## Task 8 closeout — DONE / VERIFIED
+## Historical Task 8 closeout — DONE / VERIFIED
 
 - final reviewed head: `5a24944617f7ee482c381e5e899f687b77d81d09`;
 - exact-head Quality #552/H12, Compatibility #80 (16/16), Release Artifact #34, Provider Sandbox #12 and CodeQL: **SUCCESS**;
