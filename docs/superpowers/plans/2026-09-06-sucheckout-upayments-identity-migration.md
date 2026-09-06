@@ -250,4 +250,3 @@ refactor: establish SUCheckout canonical identity
 - [ ] **Step 6: Audit open issues, PRs, unresolved review threads, stale branches, tags/releases, and current docs.**
 - [ ] **Step 7: Leave repository rename to `SimplixInnovations/sucheckout-upayments` as the final owner/admin action; after rename, update/verify canonical links before publication.**
 - [ ] **Step 8: Do not create a public release or WordPress.org submission without a separate explicit owner release decision.**
-
