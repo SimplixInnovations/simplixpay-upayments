@@ -65,7 +65,10 @@ namespace {
     q18_assert($probe->is_active() === false, 'enabled=no suppresses Blocks method');
 
     $probe->set_settings_for_test(array());
-    q18_assert($probe->is_active() === false, 'missing enabled flag fails closed');
+    q18_assert($probe->is_active() === true, 'missing enabled flag preserves declared fresh-install default=yes');
+
+    $probe->set_settings_for_test(array('enabled' => null));
+    q18_assert($probe->is_active() === false, 'explicit null enabled flag fails closed');
 
     $probe->set_settings_for_test((object) array('enabled' => 'yes'));
     q18_assert($probe->is_active() === false, 'object-valued gateway settings fail closed');
