@@ -2,7 +2,7 @@
 
 ## Source lineage
 
-**SUCheckout for UPayments** is independently maintained by Simplix Innovations and derives from the UPayments WooCommerce integration:
+**SUPCheckout for UPayments** is independently maintained by Simplix Innovations and derives from the UPayments WooCommerce integration:
 
 - canonical GitHub repository: https://github.com/SimplixInnovations/sucheckout
 - historical Simplix engineering/audit archive: https://github.com/SimplixInnovations/upayments-woocommerce
@@ -19,7 +19,7 @@ The canonical Simplix distribution must own its release/update channel; it must 
 
 ## Attribution and trademarks
 
-UPayments and related names/logos/trademarks belong to their respective owners. SUCheckout for UPayments does not imply UPayments sponsorship, endorsement or official maintenance status unless explicitly announced by the relevant parties. Simplix Innovations is responsible for modifications/releases it publishes.
+UPayments and related names/logos/trademarks belong to their respective owners. SUPCheckout for UPayments does not imply UPayments sponsorship, endorsement or official maintenance status unless explicitly announced by the relevant parties. Simplix Innovations is responsible for modifications/releases it publishes.
 
 ## Compatibility claims
 
