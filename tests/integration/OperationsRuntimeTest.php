@@ -184,7 +184,7 @@ if ('seed' === $phase) {
 
     ob_start();
     set_current_screen('dashboard');
-    \Simplixi\SUCheckout\UPayments\Migration\MigrationBootstrap::boot();
+    \Simplixi\SUPCheckout\Migration\MigrationBootstrap::boot();
     $boot_output = ob_get_clean();
     sucheckout_cert_assert(
         class_exists('Simplixi\\SUCheckout\\UPayments\\Migration\\MigrationAdmin'),
