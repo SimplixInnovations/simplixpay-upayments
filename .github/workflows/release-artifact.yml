@@ -3,27 +3,6 @@ name: Release Artifact
 on:
   pull_request:
     branches: [main]
-    paths:
-      - '.distignore'
-      - 'UPayments.php'
-      - 'readme.txt'
-      - 'src/**'
-      - 'includes/**'
-      - 'assets/**'
-      - 'templates/**'
-      - 'index.php'
-      - 'uninstall.php'
-      - 'LICENSE'
-      - 'README.md'
-      - 'CHANGELOG.md'
-      - 'NOTICE.md'
-      - 'SECURITY.md'
-      - 'scripts/build-release.sh'
-      - 'scripts/verify-release.sh'
-      - 'scripts/install-wp-test-environment.sh'
-      - 'tests/harness/release-artifact-harness.php'
-      - 'tests/integration/**'
-      - '.github/workflows/release-artifact.yml'
   push:
     branches: [main]
     paths:
