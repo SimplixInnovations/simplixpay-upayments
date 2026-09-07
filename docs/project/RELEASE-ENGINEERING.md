@@ -4,17 +4,22 @@
 **Planned repository after owner/admin rename:** `SimplixInnovations/sucheckout-upayments`
 ## Latest certified release-engineering baseline
 
-PR #58 certified head `5bf84dccb880733da45c1f922d43554af69a33dc` and merged main `6aabc4fcb0606567a11637ea07fe081fed4c7f85` both passed the complete release-sensitive stack.
+Current runtime-bearing certified `main` after PR #61 final first-party naming reconciliation: `efe937c67343242b7ccf3396a67b3cf2ce35ebac`.
 
-Post-merge evidence:
+Fresh exact-main evidence:
 
-- Release Artifact #243 — **SUCCESS**;
+- Release Artifact #258 — **SUCCESS**;
 - packaged WordPress 7.1 / WooCommerce 11.1.0 / PHP 8.3 legacy — **SUCCESS**;
 - packaged WordPress 7.1 / WooCommerce 11.1.0 / PHP 8.3 HPOS — **SUCCESS**;
 - legacy-root migration WordPress 7.1 / WooCommerce 11.1.0 — **SUCCESS**;
 - legacy-root migration WordPress 6.9.7 / WooCommerce 10.8.1 — **SUCCESS**;
-- WordPress.org Submission Check #101 — **SUCCESS**;
-- Provider Sandbox #207 and CodeQL/main-security #579 — **SUCCESS**.
+- Compatibility #309 — **16/16 SUCCESS**;
+- WordPress.org Submission Check #116 — **SUCCESS**;
+- Provider Sandbox #221 — **SUCCESS**;
+- CodeQL/main-security #595 — **SUCCESS**;
+- official packaged Plugin Check — **0 blocking errors**.
+
+Earlier SUCheckout identity merge `6aabc4fcb0606567a11637ea07fe081fed4c7f85` and living-state closeout `9591c431e1eb56fe40ca60147afdf9f3f909a212` remain historical provenance. PR #61 is the latest runtime-bearing first-party naming baseline.
 
 This evidence certifies the engineering artifact and migration contract. It does not create a public tag, GitHub Release or WordPress.org publication.
 

@@ -1,6 +1,6 @@
 # SUCheckout for UPayments — Canonical Naming, Identity, Compatibility and Namespace Standard
 
-**Status:** CANONICAL / ENGINEERING-FROZEN TARGET
+**Status:** CANONICAL / FROZEN CURRENT IDENTITY
 **Maintainer:** Simplix Innovations
 **Product family:** SUCheckout
 **Canonical slug:** `sucheckout-upayments`
@@ -32,7 +32,8 @@ The word **for** is relationship copy only. It MUST NOT appear in URL, repositor
 | Target GitHub repository | `SimplixInnovations/sucheckout-upayments` |
 | WordPress.org slug | `sucheckout-upayments` |
 | Plugin folder | `sucheckout-upayments/` |
-| Canonical main-file target | `sucheckout-upayments.php` |
+| Current first-stable physical bootstrap | `UPayments.php` — certified compatibility exception |
+| Future bootstrap target | `sucheckout-upayments.php` — only after separately certified migration |
 | Text domain | `sucheckout-upayments` |
 | Composer package | `simplix-innovations/sucheckout-upayments` |
 | PHP namespace root | `Simplixi\SUCheckout\UPayments` |
@@ -90,7 +91,7 @@ A JS global is allowed only when necessary and must use `suCheckoutUpayments`; l
 
 ## Main-file transition
 
-The desired canonical bootstrap is `sucheckout-upayments.php`, but prior real WordPress qualification proved that deleting/renaming an already-active `UPayments.php` can strand the historical active-plugin basename.
+The desired future bootstrap target is `sucheckout-upayments.php`, but the current certified first-stable physical bootstrap is `UPayments.php`. Prior real WordPress qualification proved that deleting/renaming an already-active `UPayments.php` can strand the historical active-plugin basename.
 
 Therefore the physical bootstrap transition is test-gated:
 
@@ -133,13 +134,13 @@ WordPress.org Plugin Check must execute against the actual unpacked deterministi
 
 ## Identity governance
 
-Changing the formal name, technical slug, repository, WordPress.org slug, folder/main-file target, text domain, PHP namespace root, Composer package, prefixes, REST/JS/CSS naming, or compatibility allowlist requires explicit owner approval plus regression evidence.
+Changing the formal name, technical slug, repository, WordPress.org slug, plugin folder, current physical bootstrap/future bootstrap target, text domain, PHP namespace root, Composer package, prefixes, REST/JS/CSS naming, or compatibility allowlist requires explicit owner approval plus regression evidence.
 
 Unsafe destructive compatibility rename verdict:
 
 `NOT APPROVED.`
 `DO NOT MERGE.`
 
-**Naming architecture:** FROZEN TARGET
+**Naming architecture:** FROZEN CURRENT IDENTITY
 **Legacy compatibility identifiers:** PROTECTED
 **Formal trademark/legal clearance:** separate business/legal gate

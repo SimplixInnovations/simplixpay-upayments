@@ -6,14 +6,18 @@ This document is the public compatibility truth. A capability is **Verified** on
 
 ## Current SUCheckout certification anchor
 
-- merged runtime baseline: `6aabc4fcb0606567a11637ea07fe081fed4c7f85`;
-- Quality #764 / H12 — **SUCCESS**;
-- Compatibility #292 — **16/16 SUCCESS**;
-- Release Artifact #243 — **SUCCESS**;
-- Provider Sandbox #207 — **SUCCESS**;
-- WordPress.org Submission Check #101 — **SUCCESS**;
-- CodeQL/main-security #579 — **SUCCESS**;
+Current runtime-bearing certified main after final first-party naming reconciliation:
+
+- `main`: `efe937c67343242b7ccf3396a67b3cf2ce35ebac`;
+- Quality #781 / H12 — **SUCCESS**;
+- Compatibility #309 — **16/16 SUCCESS**;
+- Release Artifact #258 — **SUCCESS**;
+- Provider Sandbox #221 — **SUCCESS**;
+- WordPress.org Submission Check #116 — **SUCCESS**;
+- CodeQL/main-security #595 — **SUCCESS**;
 - official packaged Plugin Check — **0 blocking errors**.
+
+Historical SUCheckout identity migration baseline `6aabc4fcb0606567a11637ea07fe081fed4c7f85` and living-state closeout `9591c431e1eb56fe40ca60147afdf9f3f909a212` remain provenance, but they no longer represent the latest runtime-bearing main.
 
 The matrix remains a permanent regression requirement for future candidates.
 

@@ -103,17 +103,29 @@ Automatic Woo refunds and arbitrary marketplace multi-split remain intentionally
 
 ## SUCheckout post-merge owner stage
 
-Engineering closeout is complete at merged runtime baseline `6aabc4fcb0606567a11637ea07fe081fed4c7f85` with post-merge Quality #764, Compatibility #292 (16/16), Release Artifact #243, Provider Sandbox #207, WordPress.org Submission Check #101 and CodeQL/main-security #579 successful.
+Final first-party naming reconciliation is runtime-bearing certified `main` `efe937c67343242b7ccf3396a67b3cf2ce35ebac`.
+
+Fresh evidence:
+
+- Quality #781 — **SUCCESS**;
+- Compatibility #309 — **16/16 SUCCESS**;
+- Release Artifact #258 — **SUCCESS**;
+- Provider Sandbox #221 — **SUCCESS**;
+- WordPress.org Submission Check #116 — **SUCCESS**;
+- CodeQL/main-security #595 — **SUCCESS**;
+- official packaged Plugin Check — **0 blocking errors**.
 
 The next permitted track is documented in `docs/project/OWNER-HANDOFF.md`:
 
-1. remove obsolete remote branches;
-2. rename the repository to `SimplixInnovations/sucheckout-upayments`;
-3. reconcile repository-coordinate links and reverify;
-4. optionally perform independent local owner acceptance;
-5. make a separate explicit publication/version decision.
+1. merge final docs/control-plane reconciliation;
+2. remove obsolete remote branches;
+3. rename the repository to `SimplixInnovations/sucheckout-upayments`;
+4. reconcile repository-coordinate links and reverify;
+5. perform independent local owner acceptance;
+6. apply final product visual branding/UI acceptance;
+7. make a separate explicit publication/version decision.
 
-No Q20 or invented engineering phase is justified by these administrative actions.
+No Q20 or invented engineering phase is justified by these administrative and acceptance actions.
 
 ## Continuous maintenance after release-candidate closeout
 
