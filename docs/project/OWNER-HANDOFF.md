@@ -2,7 +2,7 @@
 
 **Engineering migration:** DONE / VERIFIED
 **Migration scope:** identity/runtime
-**Latest certified pre-docs `main` baseline:** `efe937c67343242b7ccf3396a67b3cf2ce35ebac`
+**Latest certified documentation-closeout `main`:** `24d868b0388a76654b35b3c9d79535aa2eb74678`
 **Current GitHub repository pending owner rename:** `SimplixInnovations/simplixpay-upayments`
 **Approved repository target:** `SimplixInnovations/sucheckout-upayments`
 **Development version:** `0.1.0`
@@ -10,17 +10,17 @@
 
 This is the authoritative owner/admin/local/release sequence. It does not reopen Quality Platform Q1-Q19 and it does not authorize publication by itself.
 
-Fresh verification on pre-docs `main` `efe937c67343242b7ccf3396a67b3cf2ce35ebac`:
+Fresh verification on documentation-closeout `main` `24d868b0388a76654b35b3c9d79535aa2eb74678`:
 
-- Quality #781 — **SUCCESS**
-- Compatibility #309 — **16/16 SUCCESS**
-- Release Artifact #258 — **SUCCESS**
-- Provider Sandbox #221 — **SUCCESS**
-- WordPress.org Submission Check #116 — **SUCCESS**
-- CodeQL/main-security #595 — **SUCCESS**
+- Quality #814 — **SUCCESS**
+- Compatibility #342 — **16/16 SUCCESS**
+- Release Artifact #291 — **SUCCESS**
+- Provider Sandbox #253 — **SUCCESS**
+- WordPress.org Submission Check #149 — **SUCCESS**
+- CodeQL/main-security #630 — **SUCCESS**
 - official packaged Plugin Check — **0 blocking errors**
 
-The final documentation PR must itself be exact-green and merged before you begin the owner sequence below.
+Complete the final repository-control hardening PR before beginning the owner rename sequence below.
 
 ## Golden identity rule
 
