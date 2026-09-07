@@ -43,7 +43,7 @@ Before implementation, review or release:
 - inspect open PRs/issues/branches;
 - inspect exact source/diff;
 - inspect exact-head CI/check state;
-- distinguish the runtime-bearing baseline from later docs/control-plane-only commits;
+- distinguish the runtime-bearing baseline from later cleanup/docs/control-plane commits;
 - reconcile `PROJECT-STATUS.md` with reality when project truth changes;
 - use current official provider/platform documentation when behavior depends on it.
 
@@ -61,10 +61,16 @@ Runtime-bearing SUCheckout identity migration:
 - squash merge: `6aabc4fcb0606567a11637ea07fe081fed4c7f85`;
 - post-merge Quality #764, Compatibility #292 (**16/16**), Release Artifact #243, Provider Sandbox #207, WordPress.org #101 and CodeQL #579 — **SUCCESS**.
 
-Final documentation/control-plane closeout:
+Documentation/control-plane closeout:
 
 - PR #59 squash merge: `9591c431e1eb56fe40ca60147afdf9f3f909a212`;
 - fresh main Quality #773, Compatibility #301 (**all 16 cells**), Release Artifact #252, Provider Sandbox #216, WordPress.org #110 and CodeQL #588 — **SUCCESS**.
+
+Latest first-party naming cleanup:
+
+- PR #61 squash merge: `efe937c67343242b7ccf3396a67b3cf2ce35ebac`;
+- remaining safe first-party `SIMPLIXPAY_*` runtime/control identities migrated to `SUCHECKOUT_*` equivalents while protected UPayments/persisted contracts remained unchanged;
+- fresh main Quality #781, Compatibility #309 (**16/16**), Release Artifact #258, Provider Sandbox #221, WordPress.org #116 and CodeQL #595 — **SUCCESS**.
 
 Every future candidate must pass the permanent exact-head gates appropriate to its scope before merge or release.
 
