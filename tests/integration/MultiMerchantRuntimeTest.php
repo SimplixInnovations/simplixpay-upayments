@@ -12,16 +12,16 @@ if (!WC()->session) {
     WC()->session->init();
 }
 
-function sucheckout_cert_mm_order() {
+function supcheckout_cert_mm_order() {
     $product = new WC_Product_Simple();
     $product->set_name('Multi-merchant Certification Product');
     $product->set_regular_price('10.00');
     $product->set_price('10.00');
     $product_id = $product->save();
-    sucheckout_cert_assert(is_int($product_id) && $product_id > 0, 'multi-merchant certification product persists');
+    supcheckout_cert_assert(is_int($product_id) && $product_id > 0, 'multi-merchant certification product persists');
 
     $order = wc_create_order();
-    sucheckout_cert_assert($order instanceof WC_Order, 'multi-merchant certification order is created');
+    supcheckout_cert_assert($order instanceof WC_Order, 'multi-merchant certification order is created');
     $order->add_product($product, 1);
     $order->set_payment_method('upayments');
     $order->set_billing_first_name('Certification');
@@ -36,7 +36,7 @@ function sucheckout_cert_mm_order() {
     return array($order, $product);
 }
 
-function sucheckout_cert_mm_gateway($iban) {
+function supcheckout_cert_mm_gateway($iban) {
     $gateway = new WC_Upayments();
     $gateway->domain = 'upayments';
     $gateway->apiKey = 'certification-api-key';
@@ -53,7 +53,7 @@ function sucheckout_cert_mm_gateway($iban) {
     return $gateway;
 }
 
-function sucheckout_cert_run_mm($order, $gateway, &$calls) {
+function supcheckout_cert_run_mm($order, $gateway, &$calls) {
     $_POST = array();
     wc_clear_notices();
     $calls = array();
@@ -77,41 +77,41 @@ function sucheckout_cert_run_mm($order, $gateway, &$calls) {
     return $orchestrator->process($order->get_id());
 }
 
-list($order, $product) = sucheckout_cert_mm_order();
+list($order, $product) = supcheckout_cert_mm_order();
 
 $calls = array();
-$gateway = sucheckout_cert_mm_gateway('KW81CBKU0000000000001234560101');
-$result = sucheckout_cert_run_mm($order, $gateway, $calls);
-sucheckout_cert_assert('failure' === $result['result'], 'bounded multi-merchant probe fails after deliberately unavailable Charge transport');
-sucheckout_cert_assert(1 === count($calls), 'valid single-allocation configuration reaches exactly one provider request');
-sucheckout_cert_assert('charge' === $calls[0]['route'], 'valid single-allocation configuration reaches only Charge');
-sucheckout_cert_assert('POST' === $calls[0]['method'], 'multi-merchant Charge uses POST');
-sucheckout_cert_assert(is_string($calls[0]['body']) && '' !== $calls[0]['body'], 'multi-merchant Charge body is captured for runtime inspection');
+$gateway = supcheckout_cert_mm_gateway('KW81CBKU0000000000001234560101');
+$result = supcheckout_cert_run_mm($order, $gateway, $calls);
+supcheckout_cert_assert('failure' === $result['result'], 'bounded multi-merchant probe fails after deliberately unavailable Charge transport');
+supcheckout_cert_assert(1 === count($calls), 'valid single-allocation configuration reaches exactly one provider request');
+supcheckout_cert_assert('charge' === $calls[0]['route'], 'valid single-allocation configuration reaches only Charge');
+supcheckout_cert_assert('POST' === $calls[0]['method'], 'multi-merchant Charge uses POST');
+supcheckout_cert_assert(is_string($calls[0]['body']) && '' !== $calls[0]['body'], 'multi-merchant Charge body is captured for runtime inspection');
 
 $payload = json_decode($calls[0]['body'], true);
-sucheckout_cert_assert(is_array($payload), 'multi-merchant provider payload is valid JSON');
-sucheckout_cert_assert(
+supcheckout_cert_assert(is_array($payload), 'multi-merchant provider payload is valid JSON');
+supcheckout_cert_assert(
     isset($payload['extraMerchantData']) && is_array($payload['extraMerchantData']) && 1 === count($payload['extraMerchantData']),
     'runtime payload contains exactly one additional-merchant allocation'
 );
 $allocation = $payload['extraMerchantData'][0];
-sucheckout_cert_assert('KW81CBKU0000000000001234560101' === $allocation['ibanNumber'], 'additional-merchant IBAN is exact');
-sucheckout_cert_assert('fixed' === $allocation['knetChargeType'], 'KNET charge type is exact');
-sucheckout_cert_assert('percentage' === $allocation['ccChargeType'], 'credit-card charge type is exact');
-sucheckout_cert_assert(
+supcheckout_cert_assert('KW81CBKU0000000000001234560101' === $allocation['ibanNumber'], 'additional-merchant IBAN is exact');
+supcheckout_cert_assert('fixed' === $allocation['knetChargeType'], 'KNET charge type is exact');
+supcheckout_cert_assert('percentage' === $allocation['ccChargeType'], 'credit-card charge type is exact');
+supcheckout_cert_assert(
     isset($payload['order']['amount'], $allocation['amount']) && $payload['order']['amount'] === $allocation['amount'],
     'single additional-merchant allocation amount equals the exact order amount'
 );
 
 $calls = array();
-$invalid_gateway = sucheckout_cert_mm_gateway('invalid iban');
-$result = sucheckout_cert_run_mm($order, $invalid_gateway, $calls);
-sucheckout_cert_assert('failure' === $result['result'], 'invalid multi-merchant configuration fails closed');
-sucheckout_cert_assert(array() === $calls, 'invalid multi-merchant configuration rejects before provider transport');
+$invalid_gateway = supcheckout_cert_mm_gateway('invalid iban');
+$result = supcheckout_cert_run_mm($order, $invalid_gateway, $calls);
+supcheckout_cert_assert('failure' === $result['result'], 'invalid multi-merchant configuration fails closed');
+supcheckout_cert_assert(array() === $calls, 'invalid multi-merchant configuration rejects before provider transport');
 
 $order->delete(true);
 wp_delete_post($product->get_id(), true);
 $_POST = array();
 wc_clear_notices();
 
-sucheckout_cert_note('single additional-merchant runtime certification complete');
+supcheckout_cert_note('single additional-merchant runtime certification complete');

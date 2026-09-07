@@ -61,8 +61,8 @@ final class StatusVerifierOrder {
 
 final class StatusVerifierTest extends TestCase {
     protected function setUp(): void {
-        \simplixpay_test_reset_wp_options();
-        \simplixpay_test_reset_wp_http();
+        \supcheckout_test_reset_wp_options();
+        \supcheckout_test_reset_wp_http();
     }
 
     public function test_invalid_boundaries_fail_before_rate_or_http_mutation(): void {
@@ -74,8 +74,8 @@ final class StatusVerifierTest extends TestCase {
         self::assertSame('invalid_track_id', StatusVerifier::verify($gateway, $order, "bad\ntrack")['reason']);
         $gateway->apiKey = '';
         self::assertSame('credentials_missing', StatusVerifier::verify($gateway, $order, 'track-abc')['reason']);
-        self::assertSame(array(), $GLOBALS['simplixpay_test_http_calls']);
-        self::assertSame(array(), $GLOBALS['simplixpay_test_options']);
+        self::assertSame(array(), $GLOBALS['supcheckout_test_http_calls']);
+        self::assertSame(array(), $GLOBALS['supcheckout_test_options']);
     }
 
     public function test_disallowed_destination_is_rejected_before_bearer_or_rate_slot(): void {
@@ -109,15 +109,15 @@ final class StatusVerifierTest extends TestCase {
         self::assertTrue($result['bound']);
         self::assertSame(ProviderResult::CAPTURED, $result['classification']);
         self::assertSame('captured', $result['reason']);
-        self::assertCount(1, $GLOBALS['simplixpay_test_http_calls']);
-        $call = $GLOBALS['simplixpay_test_http_calls'][0];
+        self::assertCount(1, $GLOBALS['supcheckout_test_http_calls']);
+        $call = $GLOBALS['supcheckout_test_http_calls'][0];
         self::assertSame('https://sandboxapi.upayments.com/api/v1/get-payment-status/track-abc', $call['url']);
         self::assertSame(15, $call['args']['timeout']);
         self::assertSame(0, $call['args']['redirection']);
         self::assertTrue($call['args']['sslverify']);
         self::assertSame('application/json', $call['args']['headers']['Accept']);
         self::assertSame('Bearer test-api-key-secret', $call['args']['headers']['Authorization']);
-        self::assertStringNotContainsString('test-api-key-secret', implode('|', array_keys($GLOBALS['simplixpay_test_options'])));
+        self::assertStringNotContainsString('test-api-key-secret', implode('|', array_keys($GLOBALS['supcheckout_test_options'])));
     }
 
     public function test_live_status_host_uses_the_same_exact_authenticated_contract(): void {
@@ -132,14 +132,14 @@ final class StatusVerifierTest extends TestCase {
         self::assertTrue($result['authenticated']);
         self::assertTrue($result['bound']);
         self::assertSame(ProviderResult::CAPTURED, $result['classification']);
-        self::assertCount(1, $GLOBALS['simplixpay_test_http_calls']);
+        self::assertCount(1, $GLOBALS['supcheckout_test_http_calls']);
         self::assertSame(
             'https://apiv2api.upayments.com/api/v1/get-payment-status/track-abc',
-            $GLOBALS['simplixpay_test_http_calls'][0]['url']
+            $GLOBALS['supcheckout_test_http_calls'][0]['url']
         );
         self::assertSame(
             'Bearer test-api-key-secret',
-            $GLOBALS['simplixpay_test_http_calls'][0]['args']['headers']['Authorization']
+            $GLOBALS['supcheckout_test_http_calls'][0]['args']['headers']['Authorization']
         );
     }
 
@@ -147,35 +147,35 @@ final class StatusVerifierTest extends TestCase {
         $gateway = new StatusVerifierGateway();
         $order = new StatusVerifierOrder(42, 'merchant-42');
 
-        $GLOBALS['simplixpay_test_http_response'] = new \SimplixPay_Test_WP_Error();
+        $GLOBALS['supcheckout_test_http_response'] = new \SUPCheckout_Test_WP_Error();
         $this->assert_unauthenticated_failure(
             'network_error',
             StatusVerifier::verify($gateway, $order, 'track-network')
         );
 
         $this->reset_fixtures();
-        $GLOBALS['simplixpay_test_http_response'] = array('response' => array('code' => 200), 'body' => '{}');
+        $GLOBALS['supcheckout_test_http_response'] = array('response' => array('code' => 200), 'body' => '{}');
         $this->assert_unauthenticated_failure(
             'unexpected_http_200',
             StatusVerifier::verify($gateway, $order, 'track-http')
         );
 
         $this->reset_fixtures();
-        $GLOBALS['simplixpay_test_http_response'] = array('response' => array('code' => 201), 'body' => '');
+        $GLOBALS['supcheckout_test_http_response'] = array('response' => array('code' => 201), 'body' => '');
         $this->assert_unauthenticated_failure(
             'empty_response',
             StatusVerifier::verify($gateway, $order, 'track-empty')
         );
 
         $this->reset_fixtures();
-        $GLOBALS['simplixpay_test_http_response'] = array('response' => array('code' => 201), 'body' => '{bad-json');
+        $GLOBALS['supcheckout_test_http_response'] = array('response' => array('code' => 201), 'body' => '{bad-json');
         $this->assert_unauthenticated_failure(
             'invalid_status_response',
             StatusVerifier::verify($gateway, $order, 'track-json')
         );
 
         $this->reset_fixtures();
-        $GLOBALS['simplixpay_test_http_response'] = array(
+        $GLOBALS['supcheckout_test_http_response'] = array(
             'response' => array('code' => 201),
             'body'     => json_encode(array('status' => false, 'data' => array())),
         );
@@ -253,8 +253,8 @@ final class StatusVerifierTest extends TestCase {
     }
 
     private function reset_fixtures(): void {
-        \simplixpay_test_reset_wp_options();
-        \simplixpay_test_reset_wp_http();
+        \supcheckout_test_reset_wp_options();
+        \supcheckout_test_reset_wp_http();
     }
 
     private function assert_unauthenticated_failure($reason, array $result): void {
@@ -272,8 +272,8 @@ final class StatusVerifierTest extends TestCase {
         self::assertSame('status_url_invalid', $result['reason'], $label);
         self::assertFalse($result['authenticated'], $label);
         self::assertFalse($result['bound'], $label);
-        self::assertSame(array(), $GLOBALS['simplixpay_test_http_calls'], $label);
-        self::assertSame(array(), $GLOBALS['simplixpay_test_options'], $label);
+        self::assertSame(array(), $GLOBALS['supcheckout_test_http_calls'], $label);
+        self::assertSame(array(), $GLOBALS['supcheckout_test_options'], $label);
     }
 
     private function transaction(StatusVerifierOrder $order, $result = 'CAPTURED'): array {
@@ -289,7 +289,7 @@ final class StatusVerifierTest extends TestCase {
     }
 
     private function respond_with_transaction(array $transaction): void {
-        $GLOBALS['simplixpay_test_http_response'] = array(
+        $GLOBALS['supcheckout_test_http_response'] = array(
             'response' => array('code' => 201),
             'body'     => json_encode(array(
                 'status' => true,

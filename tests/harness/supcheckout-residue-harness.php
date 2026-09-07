@@ -132,7 +132,7 @@ foreach ($tracked as $path) {
     // standard that declares it forbidden and in this regression harness.
     if (strpos($source, 'supcheckout-for-upayments') !== false
         && $path !== 'docs/project/NAMING-IDENTITY-STANDARD.md'
-        && $path !== 'tests/harness/sucheckout-residue-harness.php'
+        && $path !== 'tests/harness/supcheckout-residue-harness.php'
     ) {
         $unexpected[] = $path . ' :: supcheckout-for-upayments';
     }

@@ -1,9 +1,9 @@
 <?php
 
-$GLOBALS['simplixpay_test_gateway_settings'] = array();
+$GLOBALS['supcheckout_test_gateway_settings'] = array();
 
-function simplixpay_test_reset_gateway_settings() {
-    $GLOBALS['simplixpay_test_gateway_settings'] = array(
+function supcheckout_test_reset_gateway_settings() {
+    $GLOBALS['supcheckout_test_gateway_settings'] = array(
         'styles'        => array(),
         'scripts'       => array(),
         'inline_styles' => array(),
@@ -52,7 +52,7 @@ function selected($selected, $current = true, $display = true) {
 }
 
 function wp_enqueue_style($handle, $source, $dependencies = array(), $version = false, $media = 'all') {
-    $GLOBALS['simplixpay_test_gateway_settings']['styles'][] = array(
+    $GLOBALS['supcheckout_test_gateway_settings']['styles'][] = array(
         'handle'       => $handle,
         'source'       => $source,
         'dependencies' => $dependencies,
@@ -62,7 +62,7 @@ function wp_enqueue_style($handle, $source, $dependencies = array(), $version = 
 }
 
 function wp_enqueue_script($handle, $source = '', $dependencies = array(), $version = false, $in_footer = false) {
-    $GLOBALS['simplixpay_test_gateway_settings']['scripts'][] = array(
+    $GLOBALS['supcheckout_test_gateway_settings']['scripts'][] = array(
         'handle'       => $handle,
         'source'       => $source,
         'dependencies' => $dependencies,
@@ -72,11 +72,11 @@ function wp_enqueue_script($handle, $source = '', $dependencies = array(), $vers
 }
 
 function wp_add_inline_style($handle, $css) {
-    $GLOBALS['simplixpay_test_gateway_settings']['inline_styles'][] = array(
+    $GLOBALS['supcheckout_test_gateway_settings']['inline_styles'][] = array(
         'handle' => $handle,
         'css'    => $css,
     );
     return true;
 }
 
-simplixpay_test_reset_gateway_settings();
+supcheckout_test_reset_gateway_settings();

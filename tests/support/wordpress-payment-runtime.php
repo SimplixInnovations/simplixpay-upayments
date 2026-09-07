@@ -73,7 +73,7 @@ class WC_Order {
     public function save_meta_data() {}
 }
 
-final class SimplixPay_Test_Payment_Runtime_Session {
+final class SUPCheckout_Test_Payment_Runtime_Session {
     public $sets = array();
 
     public function set($key, $value) {
@@ -81,7 +81,7 @@ final class SimplixPay_Test_Payment_Runtime_Session {
     }
 }
 
-final class SimplixPay_Test_Payment_Runtime_Cart {
+final class SUPCheckout_Test_Payment_Runtime_Cart {
     public $empty_calls = 0;
 
     public function empty_cart() {
@@ -89,13 +89,13 @@ final class SimplixPay_Test_Payment_Runtime_Cart {
     }
 }
 
-final class SimplixPay_Test_Payment_Runtime_WC {
+final class SUPCheckout_Test_Payment_Runtime_WC {
     public $cart;
     public $session;
 
     public function __construct() {
-        $this->cart = new SimplixPay_Test_Payment_Runtime_Cart();
-        $this->session = new SimplixPay_Test_Payment_Runtime_Session();
+        $this->cart = new SUPCheckout_Test_Payment_Runtime_Cart();
+        $this->session = new SUPCheckout_Test_Payment_Runtime_Session();
     }
 
     public function payment_gateways() {
@@ -103,11 +103,11 @@ final class SimplixPay_Test_Payment_Runtime_WC {
     }
 }
 
-function simplixpay_test_reset_payment_runtime() {
-    simplixpay_test_reset_public_order_status();
-    simplixpay_test_reset_subscription_presentation();
-    $GLOBALS['simplixpay_test_subscription_presentation']['wc'] = new SimplixPay_Test_Payment_Runtime_WC();
-    $GLOBALS['simplixpay_test_payment_runtime_request_calls'] = array();
+function supcheckout_test_reset_payment_runtime() {
+    supcheckout_test_reset_public_order_status();
+    supcheckout_test_reset_subscription_presentation();
+    $GLOBALS['supcheckout_test_subscription_presentation']['wc'] = new SUPCheckout_Test_Payment_Runtime_WC();
+    $GLOBALS['supcheckout_test_payment_runtime_request_calls'] = array();
     $_POST = array();
 }
 
@@ -125,4 +125,4 @@ if (!function_exists('wp_parse_url')) {
     }
 }
 
-simplixpay_test_reset_payment_runtime();
+supcheckout_test_reset_payment_runtime();

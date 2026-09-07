@@ -94,7 +94,7 @@ foreach (array(
     q3_assert(q3_contains($lock_tests, $test_name), "order-lock test exists: {$test_name}");
 }
 
-q3_assert(q3_contains($option_fixture, 'class SimplixPay_Test_WPDB'), 'unit fixture provides a deterministic wpdb compare-and-swap seam');
+q3_assert(q3_contains($option_fixture, 'class SUPCheckout_Test_WPDB'), 'unit fixture provides a deterministic wpdb compare-and-swap seam');
 q3_assert(q3_contains($option_fixture, "strpos(\$statement['query'], 'UPDATE ') === 0"), 'unit fixture executes conditional update semantics');
 q3_assert(q3_contains($option_fixture, "strpos(\$statement['query'], 'DELETE ') === 0"), 'unit fixture executes conditional delete semantics');
 q3_assert(q3_contains($analysis_stubs, 'class wpdb'), 'analysis stubs declare the bounded wpdb surface');

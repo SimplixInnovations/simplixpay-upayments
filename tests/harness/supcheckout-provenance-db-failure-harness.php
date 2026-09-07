@@ -1,6 +1,6 @@
 <?php
 /**
- * SUCheckout provenance DB-error fail-closed regression.
+ * SUPCheckout provenance DB-error fail-closed regression.
  *
  * WordPress wpdb::get_col() can return an empty array after a failed query;
  * last_error is therefore part of the authoritative error boundary.
@@ -22,7 +22,7 @@ function supdb_assert($condition, $message) {
     echo "FAIL: {$message}\n";
 }
 
-class SUCheckout_Provenance_Query_Failure_Wpdb extends WpdbStub {
+class SUPCheckout_Provenance_Query_Failure_Wpdb extends WpdbStub {
     public $last_error = '';
 
     public function get_col($sql = null) {
@@ -32,7 +32,7 @@ class SUCheckout_Provenance_Query_Failure_Wpdb extends WpdbStub {
 }
 
 upay_reset_state();
-$GLOBALS['wpdb'] = new SUCheckout_Provenance_Query_Failure_Wpdb();
+$GLOBALS['wpdb'] = new SUPCheckout_Provenance_Query_Failure_Wpdb();
 
 $result = \UPayments\Token\CustomerTokenIdentity::inspect_current_user_prior_provenance(
     1,
@@ -51,5 +51,5 @@ supdb_assert(
 
 $GLOBALS['wpdb'] = new WpdbStub();
 
-echo "\nSUCheckout Provenance DB Failure: {$pass} PASS / {$fail} FAIL\n";
+echo "\nSUPCheckout Provenance DB Failure: {$pass} PASS / {$fail} FAIL\n";
 exit($fail === 0 ? 0 : 1);

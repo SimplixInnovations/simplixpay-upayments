@@ -9,7 +9,7 @@ use Simplixi\SUPCheckout\Migration\MigrationBatch;
 
 final class MigrationBatchTest extends TestCase {
     protected function setUp(): void {
-        \simplixpay_test_reset_migration_core();
+        \supcheckout_test_reset_migration_core();
     }
 
     public function test_user_id_parser_preserves_exact_canonical_contract(): void {
@@ -42,7 +42,7 @@ final class MigrationBatchTest extends TestCase {
 
         $encoded = json_encode(array(
             'result' => $result,
-            'meta' => $GLOBALS['simplixpay_test_migration_core']['user_meta'],
+            'meta' => $GLOBALS['supcheckout_test_migration_core']['user_meta'],
         ));
         self::assertIsString($encoded);
         self::assertStringNotContainsString('secret-api', $encoded);
@@ -54,7 +54,7 @@ final class MigrationBatchTest extends TestCase {
             'phase9i-operations-v1|live|dry-run|1',
             'api-key'
         );
-        $GLOBALS['simplixpay_test_migration_core']['user_meta'][1][MigrationBatch::RESULT_LEDGER_KEY] = array(
+        $GLOBALS['supcheckout_test_migration_core']['user_meta'][1][MigrationBatch::RESULT_LEDGER_KEY] = array(
             'version' => MigrationBatch::RESULT_LEDGER_VERSION,
             'batch_digest' => $digest,
             'position' => 0,
@@ -85,7 +85,7 @@ final class MigrationBatchTest extends TestCase {
             'invalid_limit',
             MigrationBatch::run(array(1), 'api-key', false, true, 0, MigrationBatch::MAX_LIMIT + 1)['reason']
         );
-        self::assertSame(array(), $GLOBALS['simplixpay_test_migration_core']['user_meta']);
+        self::assertSame(array(), $GLOBALS['supcheckout_test_migration_core']['user_meta']);
     }
 
     public function test_public_boundary_remains_final_and_static(): void {

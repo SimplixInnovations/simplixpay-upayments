@@ -110,7 +110,7 @@ q11_assert(q11_contains($tests, "array('filter', 'woocommerce_add_to_cart_valida
 q11_assert(q11_contains($tests, "array('action', 'woocommerce_before_shop_loop_item_title'"), 'gateway action registration is asserted exactly');
 q11_assert(q11_contains($fixture, 'function add_action('), 'unit fixture records actions');
 q11_assert(q11_contains($fixture, 'function add_filter('), 'unit fixture records filters');
-q11_assert(q11_contains($fixture, 'simplixpay_test_hook_calls'), 'unit fixture preserves ordered hook topology');
+q11_assert(q11_contains($fixture, 'supcheckout_test_hook_calls'), 'unit fixture preserves ordered hook topology');
 q11_assert(
     q11_contains($phpstan, 'includes/Subscription/Checkout/Fields.php')
     || q11_contains($stubs, 'namespace UPayments\\Subscription\\Checkout'),

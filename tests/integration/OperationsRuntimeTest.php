@@ -9,12 +9,12 @@ use UPayments\Token\CustomerTokenIdentity;
 
 $phase = getenv('SUPCHECKOUT_CERT_PHASE');
 $settings_key = 'woocommerce_upayments_settings';
-$snapshot_key = '_sucheckout_feature_ops_snapshot';
-$order_key = '_sucheckout_feature_ops_order_id';
-$identity_snapshot_key = '_sucheckout_feature_ops_identity_snapshot';
+$snapshot_key = '_supcheckout_feature_ops_snapshot';
+$order_key = '_supcheckout_feature_ops_order_id';
+$identity_snapshot_key = '_supcheckout_feature_ops_identity_snapshot';
 $secret = 'ops-certification-secret-sentinel';
 
-function sucheckout_cert_ops_verify_persistence(
+function supcheckout_cert_ops_verify_persistence(
     $settings_key,
     $snapshot_key,
     $order_key,
@@ -23,19 +23,19 @@ function sucheckout_cert_ops_verify_persistence(
 ) {
     $snapshot = get_option($snapshot_key);
     $settings = get_option($settings_key);
-    sucheckout_cert_assert(is_string($snapshot) && '' !== $snapshot, 'operations settings snapshot exists');
-    sucheckout_cert_assert(hash_equals($snapshot, maybe_serialize($settings)), 'merchant gateway settings survive lifecycle operation byte-for-byte');
+    supcheckout_cert_assert(is_string($snapshot) && '' !== $snapshot, 'operations settings snapshot exists');
+    supcheckout_cert_assert(hash_equals($snapshot, maybe_serialize($settings)), 'merchant gateway settings survive lifecycle operation byte-for-byte');
 
     $order_id = (int) get_option($order_key);
     $order = wc_get_order($order_id);
-    sucheckout_cert_assert($order instanceof WC_Order, 'payment order survives lifecycle operation');
-    sucheckout_cert_assert('upayments' === $order->get_payment_method(), 'payment-method identity survives lifecycle operation');
-    sucheckout_cert_assert('ops-provider-order' === $order->get_meta('UPayments_order_id'), 'provider order identity survives lifecycle operation');
-    sucheckout_cert_assert('ops-customer-token' === $order->get_meta('_upay_customer_unique_token'), 'historical token metadata survives lifecycle operation');
+    supcheckout_cert_assert($order instanceof WC_Order, 'payment order survives lifecycle operation');
+    supcheckout_cert_assert('upayments' === $order->get_payment_method(), 'payment-method identity survives lifecycle operation');
+    supcheckout_cert_assert('ops-provider-order' === $order->get_meta('UPayments_order_id'), 'provider order identity survives lifecycle operation');
+    supcheckout_cert_assert('ops-customer-token' === $order->get_meta('_upay_customer_unique_token'), 'historical token metadata survives lifecycle operation');
 
     $identity_snapshot = get_option($identity_snapshot_key);
-    sucheckout_cert_assert(is_array($identity_snapshot), 'canonical identity lifecycle snapshot exists');
-    sucheckout_cert_assert(
+    supcheckout_cert_assert(is_array($identity_snapshot), 'canonical identity lifecycle snapshot exists');
+    supcheckout_cert_assert(
         isset(
             $identity_snapshot['user_id'],
             $identity_snapshot['meta_key'],
@@ -55,10 +55,10 @@ function sucheckout_cert_ops_verify_persistence(
         $identity_meta_key = (string) $identity_snapshot['meta_key'];
 
         $identity_user = get_userdata($identity_user_id);
-        sucheckout_cert_assert($identity_user instanceof WP_User, 'canonical identity user survives lifecycle operation');
+        supcheckout_cert_assert($identity_user instanceof WP_User, 'canonical identity user survives lifecycle operation');
 
         $secret_record = get_option('upayments_token_identity_secret_v2', null);
-        sucheckout_cert_assert(
+        supcheckout_cert_assert(
             isset($identity_snapshot['secret_record'])
                 && is_string($identity_snapshot['secret_record'])
                 && hash_equals($identity_snapshot['secret_record'], maybe_serialize($secret_record)),
@@ -66,14 +66,14 @@ function sucheckout_cert_ops_verify_persistence(
         );
 
         $provenance = get_user_meta($identity_user_id, $identity_meta_key, true);
-        sucheckout_cert_assert(
+        supcheckout_cert_assert(
             isset($identity_snapshot['provenance_record'])
                 && is_string($identity_snapshot['provenance_record'])
                 && hash_equals($identity_snapshot['provenance_record'], maybe_serialize($provenance)),
             'canonical user provenance survives lifecycle operation byte-for-byte'
         );
 
-        sucheckout_cert_assert(
+        supcheckout_cert_assert(
             is_array($provenance)
                 && isset($provenance['token'], $provenance['scope'], $provenance['secret_generation_id'])
                 && $provenance['token'] === $identity_snapshot['token']
@@ -84,7 +84,7 @@ function sucheckout_cert_ops_verify_persistence(
     }
 
     $serialized = maybe_serialize($settings);
-    sucheckout_cert_assert(false !== strpos($serialized, $secret), 'credential sentinel remains stored rather than silently erased');
+    supcheckout_cert_assert(false !== strpos($serialized, $secret), 'credential sentinel remains stored rather than silently erased');
 }
 
 if ('seed' === $phase) {
@@ -103,15 +103,15 @@ if ('seed' === $phase) {
     // so transition this certification fixture through the raw persistence seam
     // used by PluginActivationTest rather than invoking unrelated Woo observers.
     // The lifecycle assertions below still exercise the real stored option.
-    sucheckout_cert_store_option_raw($settings_key, $settings);
+    supcheckout_cert_store_option_raw($settings_key, $settings);
     update_option($snapshot_key, maybe_serialize($settings), false);
 
     $identity_user_id = wp_insert_user(array(
-        'user_login' => 'sucheckout-cert-ops-' . wp_generate_password(12, false, false),
+        'user_login' => 'supcheckout-cert-ops-' . wp_generate_password(12, false, false),
         'user_pass'  => wp_generate_password(24, true, true),
         'user_email' => 'ops-' . wp_generate_password(8, false, false) . '@example.invalid',
     ));
-    sucheckout_cert_assert(
+    supcheckout_cert_assert(
         !is_wp_error($identity_user_id) && (int) $identity_user_id > 0,
         'canonical lifecycle identity user is created'
     );
@@ -133,22 +133,22 @@ if ('seed' === $phase) {
             );
         }
     );
-    sucheckout_cert_assert(true === $identity['success'], 'canonical lifecycle token identity is established');
-    sucheckout_cert_assert(true === $identity['established'], 'canonical lifecycle identity is newly persisted');
+    supcheckout_cert_assert(true === $identity['success'], 'canonical lifecycle token identity is established');
+    supcheckout_cert_assert(true === $identity['established'], 'canonical lifecycle identity is newly persisted');
 
     $identity_meta_key = CustomerTokenIdentity::get_user_meta_key(
         (string) get_current_blog_id(),
         $identity['scope']
     );
-    sucheckout_cert_assert(
+    supcheckout_cert_assert(
         is_string($identity_meta_key) && '' !== $identity_meta_key,
         'canonical lifecycle provenance key is derived'
     );
 
     $secret_record = get_option(CustomerTokenIdentity::SECRET_OPTION, null);
     $provenance_record = get_user_meta($identity_user_id, $identity_meta_key, true);
-    sucheckout_cert_assert(is_array($secret_record), 'canonical lifecycle secret record is persisted');
-    sucheckout_cert_assert(is_array($provenance_record), 'canonical lifecycle provenance record is persisted');
+    supcheckout_cert_assert(is_array($secret_record), 'canonical lifecycle secret record is persisted');
+    supcheckout_cert_assert(is_array($provenance_record), 'canonical lifecycle provenance record is persisted');
 
     update_option(
         $identity_snapshot_key,
@@ -165,7 +165,7 @@ if ('seed' === $phase) {
     );
 
     $order = wc_create_order();
-    sucheckout_cert_assert($order instanceof WC_Order, 'operations certification order is created');
+    supcheckout_cert_assert($order instanceof WC_Order, 'operations certification order is created');
     $order->set_payment_method('upayments');
     $order->update_meta_data('UPayments_order_id', 'ops-provider-order');
     $order->update_meta_data('_upay_customer_unique_token', 'ops-customer-token');
@@ -173,11 +173,11 @@ if ('seed' === $phase) {
     $order->save();
     update_option($order_key, $order->get_id(), false);
 
-    sucheckout_cert_assert(
+    supcheckout_cert_assert(
         class_exists('Simplixi\\SUPCheckout\\Migration\\MigrationCliCommand'),
         'migration CLI module boots in WP-CLI context'
     );
-    sucheckout_cert_assert(
+    supcheckout_cert_assert(
         !class_exists('Simplixi\\SUPCheckout\\Migration\\MigrationAdmin'),
         'migration admin module does not boot in non-admin WP-CLI context'
     );
@@ -186,28 +186,28 @@ if ('seed' === $phase) {
     set_current_screen('dashboard');
     \Simplixi\SUPCheckout\Migration\MigrationBootstrap::boot();
     $boot_output = ob_get_clean();
-    sucheckout_cert_assert(
+    supcheckout_cert_assert(
         class_exists('Simplixi\\SUPCheckout\\Migration\\MigrationAdmin'),
         'migration admin module boots only after an explicit admin context exists'
     );
-    sucheckout_cert_assert(
+    supcheckout_cert_assert(
         false === strpos((string) $boot_output, $secret),
         'migration bootstrap emits no merchant credential material'
     );
 
-    sucheckout_cert_ops_verify_persistence(
+    supcheckout_cert_ops_verify_persistence(
         $settings_key,
         $snapshot_key,
         $order_key,
         $identity_snapshot_key,
         $secret
     );
-    sucheckout_cert_note('operations seed and context-bound migration boot certification complete');
+    supcheckout_cert_note('operations seed and context-bound migration boot certification complete');
     return;
 }
 
 if (in_array($phase, array('deactivated', 'reactivated', 'uninstalled', 'final'), true)) {
-    sucheckout_cert_ops_verify_persistence(
+    supcheckout_cert_ops_verify_persistence(
         $settings_key,
         $snapshot_key,
         $order_key,
@@ -216,9 +216,9 @@ if (in_array($phase, array('deactivated', 'reactivated', 'uninstalled', 'final')
     );
 
     if ('deactivated' === $phase || 'uninstalled' === $phase) {
-        sucheckout_cert_assert(!class_exists('WC_Upayments'), 'SUPCheckout runtime class is absent while plugin is inactive');
+        supcheckout_cert_assert(!class_exists('WC_Upayments'), 'SUPCheckout runtime class is absent while plugin is inactive');
     } else {
-        sucheckout_cert_assert(class_exists('WC_Upayments'), 'SUPCheckout runtime class is present after reactivation');
+        supcheckout_cert_assert(class_exists('WC_Upayments'), 'SUPCheckout runtime class is present after reactivation');
     }
 
     if ('final' === $phase) {
@@ -243,7 +243,7 @@ if (in_array($phase, array('deactivated', 'reactivated', 'uninstalled', 'final')
         ), false);
     }
 
-    sucheckout_cert_note('operations lifecycle phase complete: ' . $phase);
+    supcheckout_cert_note('operations lifecycle phase complete: ' . $phase);
     return;
 }
 

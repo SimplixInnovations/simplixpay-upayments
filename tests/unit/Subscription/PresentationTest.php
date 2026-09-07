@@ -15,7 +15,7 @@ use UPayments\Subscription\Helpers\Utils;
 final class PresentationTest extends TestCase {
     protected function setUp(): void {
         require_once dirname(__DIR__, 2) . '/fixtures/subscription-presentation-runtime.php';
-        \simplixpay_test_reset_subscription_presentation();
+        \supcheckout_test_reset_subscription_presentation();
         \WC_Upayments::$summary_orders = array();
         Utils::$custom = false;
         Utils::$normal = false;
@@ -46,7 +46,7 @@ final class PresentationTest extends TestCase {
             'placeholder' => 'Enter value here',
             'desc_tip' => 'true',
             'description' => 'This is a description of the field.',
-        )), $GLOBALS['simplixpay_test_subscription_presentation']['field_args']);
+        )), $GLOBALS['supcheckout_test_subscription_presentation']['field_args']);
     }
 
     public function test_product_class_registration_remains_guarded_and_loads_exact_legacy_type(): void {
@@ -63,27 +63,27 @@ final class PresentationTest extends TestCase {
             '_custom_field_id' => ' <b>Gold</b> ',
         );
 
-        $GLOBALS['simplixpay_test_subscription_presentation']['nonce_valid'] = false;
+        $GLOBALS['supcheckout_test_subscription_presentation']['nonce_valid'] = false;
         Presentation::save_custom_field_data(12);
-        self::assertSame(array(), $GLOBALS['simplixpay_test_subscription_presentation']['meta_writes']);
+        self::assertSame(array(), $GLOBALS['supcheckout_test_subscription_presentation']['meta_writes']);
 
-        $GLOBALS['simplixpay_test_subscription_presentation']['nonce_valid'] = true;
+        $GLOBALS['supcheckout_test_subscription_presentation']['nonce_valid'] = true;
         $_POST['post_ID'] = '13';
         Presentation::save_custom_field_data(12);
-        self::assertSame(array(), $GLOBALS['simplixpay_test_subscription_presentation']['meta_writes']);
+        self::assertSame(array(), $GLOBALS['supcheckout_test_subscription_presentation']['meta_writes']);
 
         $_POST['post_ID'] = '12';
-        $GLOBALS['simplixpay_test_subscription_presentation']['capability_allowed'] = false;
+        $GLOBALS['supcheckout_test_subscription_presentation']['capability_allowed'] = false;
         Presentation::save_custom_field_data(12);
-        self::assertSame(array(), $GLOBALS['simplixpay_test_subscription_presentation']['meta_writes']);
+        self::assertSame(array(), $GLOBALS['supcheckout_test_subscription_presentation']['meta_writes']);
 
-        $GLOBALS['simplixpay_test_subscription_presentation']['capability_allowed'] = true;
+        $GLOBALS['supcheckout_test_subscription_presentation']['capability_allowed'] = true;
         Presentation::save_custom_field_data(12);
-        self::assertSame(array(array(12, '_custom_field_id', 'Gold')), $GLOBALS['simplixpay_test_subscription_presentation']['meta_writes']);
+        self::assertSame(array(array(12, '_custom_field_id', 'Gold')), $GLOBALS['supcheckout_test_subscription_presentation']['meta_writes']);
         self::assertSame(array(
             array('edit_post', 12),
             array('edit_post', 12),
-        ), $GLOBALS['simplixpay_test_subscription_presentation']['capability_calls']);
+        ), $GLOBALS['supcheckout_test_subscription_presentation']['capability_calls']);
     }
 
     public function test_malformed_product_meta_request_fails_closed_without_writing(): void {
@@ -96,12 +96,12 @@ final class PresentationTest extends TestCase {
         Presentation::save_custom_field_data(12);
         Presentation::save_custom_field_data(array(12));
 
-        self::assertSame(array(), $GLOBALS['simplixpay_test_subscription_presentation']['meta_writes']);
-        self::assertSame(array(), $GLOBALS['simplixpay_test_subscription_presentation']['capability_calls']);
+        self::assertSame(array(), $GLOBALS['supcheckout_test_subscription_presentation']['meta_writes']);
+        self::assertSame(array(), $GLOBALS['supcheckout_test_subscription_presentation']['capability_calls']);
     }
 
     public function test_frontend_value_is_escaped_and_non_product_globals_are_ignored(): void {
-        $GLOBALS['simplixpay_test_subscription_presentation']['meta'][12]['_custom_field_id'] = '<b>Gold</b>';
+        $GLOBALS['supcheckout_test_subscription_presentation']['meta'][12]['_custom_field_id'] = '<b>Gold</b>';
         $GLOBALS['product'] = new \WC_Product();
         $GLOBALS['product']->type = 'custom_type';
 
@@ -119,7 +119,7 @@ final class PresentationTest extends TestCase {
     }
 
     public function test_cart_and_order_item_meta_preserve_valid_shape_and_ignore_malformed_payloads(): void {
-        $GLOBALS['simplixpay_test_subscription_presentation']['meta'][12]['_custom_field_id'] = 'Gold';
+        $GLOBALS['supcheckout_test_subscription_presentation']['meta'][12]['_custom_field_id'] = 'Gold';
 
         self::assertSame(array(array(
             'key' => 'Special Feature',
@@ -129,7 +129,7 @@ final class PresentationTest extends TestCase {
         self::assertSame(array('existing'), Presentation::display_custom_data_in_cart(array('existing'), array()));
         self::assertSame(array('existing'), Presentation::display_custom_data_in_cart(array('existing'), array('product_id' => array(12))));
 
-        $item = new \SimplixPay_Test_Presentation_Item();
+        $item = new \SUPCheckout_Test_Presentation_Item();
         Presentation::save_custom_data_to_order_items($item, 'cart-key', array('product_id' => 12), null);
         Presentation::save_custom_data_to_order_items($item, 'cart-key', array(), null);
         Presentation::save_custom_data_to_order_items($item, 'cart-key', array('product_id' => array(12)), null);
@@ -142,9 +142,9 @@ final class PresentationTest extends TestCase {
         $subscription->type = 'custom_type';
         $order = new \WC_Order();
         $order->items = array(
-            new \SimplixPay_Test_Presentation_Item(null),
-            new \SimplixPay_Test_Presentation_Item($subscription),
-            new \SimplixPay_Test_Presentation_Item($subscription),
+            new \SUPCheckout_Test_Presentation_Item(null),
+            new \SUPCheckout_Test_Presentation_Item($subscription),
+            new \SUPCheckout_Test_Presentation_Item($subscription),
         );
 
         Presentation::render_admin_order_summary($order);
@@ -154,25 +154,25 @@ final class PresentationTest extends TestCase {
 
     public function test_mixed_cart_validation_preserves_both_exact_rejection_contracts(): void {
         $product = new \WC_Product();
-        $GLOBALS['simplixpay_test_subscription_presentation']['product'] = $product;
+        $GLOBALS['supcheckout_test_subscription_presentation']['product'] = $product;
         Utils::$custom = true;
 
         self::assertFalse(Presentation::restrict_mixed_cart_products(true, 12, 1, 'upayments'));
         self::assertSame(array(array(
             'You can only add subscription products to the cart when a subscription item is present.',
             'error',
-        )), $GLOBALS['simplixpay_test_subscription_presentation']['notices']);
+        )), $GLOBALS['supcheckout_test_subscription_presentation']['notices']);
 
         $product->type = 'custom_type';
         Utils::$custom = false;
         Utils::$normal = true;
-        $GLOBALS['simplixpay_test_subscription_presentation']['notices'] = array();
+        $GLOBALS['supcheckout_test_subscription_presentation']['notices'] = array();
 
         self::assertFalse(Presentation::restrict_mixed_cart_products(true, 12, 1, 'upayments'));
         self::assertSame(array(array(
             'Subscription products cannot be added together with normal products. Please complete your current purchase first.',
             'error',
-        )), $GLOBALS['simplixpay_test_subscription_presentation']['notices']);
+        )), $GLOBALS['supcheckout_test_subscription_presentation']['notices']);
     }
 
     public function test_account_query_accepts_only_exact_known_subscription_statuses(): void {
@@ -258,7 +258,7 @@ final class PresentationTest extends TestCase {
         self::assertSame(array(
             array('upay_unsubscribe_44', '_wpnonce', false),
             array('upay_resume_44', '_wpnonce', false),
-        ), $GLOBALS['simplixpay_test_subscription_presentation']['nonce_fields']);
+        ), $GLOBALS['supcheckout_test_subscription_presentation']['nonce_fields']);
     }
 
     public function test_account_details_fail_closed_for_other_cancelled_auto_and_malformed_orders(): void {

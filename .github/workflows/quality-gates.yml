@@ -45,13 +45,13 @@ jobs:
             scripts/build-release.sh scripts/verify-release.sh scripts/install-wp-test-environment.sh
             tests/harness/release-artifact-harness.php
             tests/harness/wordpress-org-submission-harness.php
-            tests/harness/sucheckout-identity-migration-harness.php
-            tests/harness/sucheckout-namespace-migration-harness.php
-            tests/harness/sucheckout-frontend-identity-harness.php
-            tests/harness/sucheckout-residue-harness.php
+            tests/harness/supcheckout-identity-migration-harness.php
+            tests/harness/supcheckout-namespace-migration-harness.php
+            tests/harness/supcheckout-frontend-identity-harness.php
+            tests/harness/supcheckout-residue-harness.php
             tests/harness/wordpress-org-runtime-harness.php
-            tests/harness/sucheckout-http-transport-harness.php
-            tests/harness/sucheckout-provenance-db-failure-harness.php
+            tests/harness/supcheckout-http-transport-harness.php
+            tests/harness/supcheckout-provenance-db-failure-harness.php
             tests/provider/sandbox-charge-smoke.php
             tests/integration/bootstrap.php
             tests/integration/PluginActivationTest.php
@@ -275,13 +275,13 @@ jobs:
         run: |
           set -euo pipefail
           harnesses=(
-            tests/harness/sucheckout-identity-migration-harness.php
-            tests/harness/sucheckout-namespace-migration-harness.php
-            tests/harness/sucheckout-frontend-identity-harness.php
-            tests/harness/sucheckout-residue-harness.php
+            tests/harness/supcheckout-identity-migration-harness.php
+            tests/harness/supcheckout-namespace-migration-harness.php
+            tests/harness/supcheckout-frontend-identity-harness.php
+            tests/harness/supcheckout-residue-harness.php
             tests/harness/wordpress-org-runtime-harness.php
-            tests/harness/sucheckout-http-transport-harness.php
-            tests/harness/sucheckout-provenance-db-failure-harness.php
+            tests/harness/supcheckout-http-transport-harness.php
+            tests/harness/supcheckout-provenance-db-failure-harness.php
             tests/harness/phase-0-release-identity-harness.php
             tests/harness/phase-9i-preflight-harness.php
             tests/harness/phase-9i-executor-harness.php

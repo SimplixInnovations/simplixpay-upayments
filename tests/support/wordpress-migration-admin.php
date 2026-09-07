@@ -1,8 +1,8 @@
 <?php
 
-function simplixpay_test_reset_migration_admin() {
-    $GLOBALS['simplixpay_test_subscription_presentation_active'] = false;
-    $GLOBALS['simplixpay_test_migration_admin'] = array(
+function supcheckout_test_reset_migration_admin() {
+    $GLOBALS['supcheckout_test_subscription_presentation_active'] = false;
+    $GLOBALS['supcheckout_test_migration_admin'] = array(
         'capability_allowed' => true,
         'capability_calls' => array(),
         'submenu_calls' => array(),
@@ -17,22 +17,22 @@ function simplixpay_test_reset_migration_admin() {
 }
 
 function current_user_can($capability, $object_id = null) {
-    if (!empty($GLOBALS['simplixpay_test_subscription_presentation_active'])) {
-        $GLOBALS['simplixpay_test_subscription_presentation']['capability_calls'][] = array($capability, $object_id);
-        return $GLOBALS['simplixpay_test_subscription_presentation']['capability_allowed'] === true;
+    if (!empty($GLOBALS['supcheckout_test_subscription_presentation_active'])) {
+        $GLOBALS['supcheckout_test_subscription_presentation']['capability_calls'][] = array($capability, $object_id);
+        return $GLOBALS['supcheckout_test_subscription_presentation']['capability_allowed'] === true;
     }
-    $GLOBALS['simplixpay_test_migration_admin']['capability_calls'][] = $capability;
-    return $GLOBALS['simplixpay_test_migration_admin']['capability_allowed'] === true;
+    $GLOBALS['supcheckout_test_migration_admin']['capability_calls'][] = $capability;
+    return $GLOBALS['supcheckout_test_migration_admin']['capability_allowed'] === true;
 }
 
 function wp_die($message) {
     $message = (string) $message;
-    $GLOBALS['simplixpay_test_migration_admin']['die_messages'][] = $message;
+    $GLOBALS['supcheckout_test_migration_admin']['die_messages'][] = $message;
     throw new RuntimeException($message);
 }
 
 function add_submenu_page($parent_slug, $page_title, $menu_title, $capability, $menu_slug, $callback) {
-    $GLOBALS['simplixpay_test_migration_admin']['submenu_calls'][] = array(
+    $GLOBALS['supcheckout_test_migration_admin']['submenu_calls'][] = array(
         $parent_slug,
         $page_title,
         $menu_title,
@@ -44,8 +44,8 @@ function add_submenu_page($parent_slug, $page_title, $menu_title, $capability, $
 }
 
 function check_admin_referer($action, $field) {
-    $GLOBALS['simplixpay_test_migration_admin']['nonce_checks'][] = array($action, $field);
-    if ($GLOBALS['simplixpay_test_migration_admin']['nonce_valid'] !== true) {
+    $GLOBALS['supcheckout_test_migration_admin']['nonce_checks'][] = array($action, $field);
+    if ($GLOBALS['supcheckout_test_migration_admin']['nonce_valid'] !== true) {
         throw new RuntimeException('nonce_invalid');
     }
     return 1;
@@ -72,18 +72,18 @@ function checked($checked, $current = true, $echo = true) {
 }
 
 function wp_nonce_field($action, $name, $referer = true) {
-    if (!empty($GLOBALS['simplixpay_test_subscription_presentation_active'])) {
-        $GLOBALS['simplixpay_test_subscription_presentation']['nonce_fields'][] = array($action, $name, $referer);
+    if (!empty($GLOBALS['supcheckout_test_subscription_presentation_active'])) {
+        $GLOBALS['supcheckout_test_subscription_presentation']['nonce_fields'][] = array($action, $name, $referer);
         echo '<input type="hidden" name="' . esc_attr($name) . '" value="test-nonce">';
         return;
     }
-    $GLOBALS['simplixpay_test_migration_admin']['nonce_fields'][] = array($action, $name);
+    $GLOBALS['supcheckout_test_migration_admin']['nonce_fields'][] = array($action, $name);
     echo '<input type="hidden" name="' . esc_attr($name) . '" value="test-nonce">';
 }
 
 function submit_button($text) {
-    $GLOBALS['simplixpay_test_migration_admin']['submit_buttons'][] = $text;
+    $GLOBALS['supcheckout_test_migration_admin']['submit_buttons'][] = $text;
     echo '<button type="submit">' . esc_html($text) . '</button>';
 }
 
-simplixpay_test_reset_migration_admin();
+supcheckout_test_reset_migration_admin();

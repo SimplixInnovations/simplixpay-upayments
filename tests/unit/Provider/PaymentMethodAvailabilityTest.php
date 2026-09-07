@@ -8,7 +8,7 @@ use Simplixi\SUPCheckout\Provider\PaymentMethodAvailability;
 
 final class PaymentMethodAvailabilityTest extends TestCase {
     protected function setUp(): void {
-        \simplixpay_test_reset_availability();
+        \supcheckout_test_reset_availability();
     }
 
     public function test_cache_gate_and_lock_identities_are_scoped_without_leaking_credentials(): void {
@@ -20,12 +20,12 @@ final class PaymentMethodAvailabilityTest extends TestCase {
         $test_transient = $this->invoke_private($test, 'transient_name');
         $rotated_transient = $this->invoke_private($rotated, 'transient_name');
         $expected_transient_hash = substr(
-            hash_hmac('sha256', 'live|live-secret', 'simplixpay-test-auth-salt'),
+            hash_hmac('sha256', 'live|live-secret', 'supcheckout-test-auth-salt'),
             0,
             16
         );
         $expected_lock_hash = substr(
-            hash('sha256', 'simplixpay_test_database|wp_7_|7|live'),
+            hash('sha256', 'supcheckout_test_database|wp_7_|7|live'),
             0,
             16
         );
@@ -83,7 +83,7 @@ final class PaymentMethodAvailabilityTest extends TestCase {
             $provider_data
         ) {
             ++$transport_calls;
-            $lock_held_during_transport = !empty($GLOBALS['simplixpay_test_availability']['locks']);
+            $lock_held_during_transport = !empty($GLOBALS['supcheckout_test_availability']['locks']);
             $gate_during_transport = get_option('upayments_payment_methods_rate_gate_live', null);
             return $this->envelope($provider_data);
         };
@@ -95,10 +95,10 @@ final class PaymentMethodAvailabilityTest extends TestCase {
 
         self::assertSame(1, $transport_calls);
         self::assertFalse($lock_held_during_transport);
-        self::assertSame(1, $GLOBALS['simplixpay_test_availability']['lock_acquires']);
-        self::assertSame(1, $GLOBALS['simplixpay_test_availability']['lock_releases']);
-        self::assertCount(1, $GLOBALS['simplixpay_test_option_calls']);
-        $gate = $GLOBALS['simplixpay_test_options']['upayments_payment_methods_rate_gate_live'];
+        self::assertSame(1, $GLOBALS['supcheckout_test_availability']['lock_acquires']);
+        self::assertSame(1, $GLOBALS['supcheckout_test_availability']['lock_releases']);
+        self::assertCount(1, $GLOBALS['supcheckout_test_option_calls']);
+        $gate = $GLOBALS['supcheckout_test_options']['upayments_payment_methods_rate_gate_live'];
         self::assertGreaterThanOrEqual($before + 65, $gate);
         self::assertLessThanOrEqual($after + 65, $gate);
         self::assertSame($gate, $gate_during_transport);
@@ -110,9 +110,9 @@ final class PaymentMethodAvailabilityTest extends TestCase {
         self::assertArrayNotHasKey('future_pay', $result['payButtons']);
 
         $transient = $this->invoke_private($service, 'transient_name');
-        self::assertSame($this->canonical(true, 1, 0), $GLOBALS['simplixpay_test_availability']['transients'][$transient]);
-        self::assertArrayNotHasKey('providerTrace', $GLOBALS['simplixpay_test_availability']['transients'][$transient]);
-        $ttl = $GLOBALS['simplixpay_test_availability']['transient_ttls'][$transient];
+        self::assertSame($this->canonical(true, 1, 0), $GLOBALS['supcheckout_test_availability']['transients'][$transient]);
+        self::assertArrayNotHasKey('providerTrace', $GLOBALS['supcheckout_test_availability']['transients'][$transient]);
+        $ttl = $GLOBALS['supcheckout_test_availability']['transient_ttls'][$transient];
         self::assertGreaterThanOrEqual(1, $ttl);
         self::assertLessThanOrEqual(65, $ttl);
     }
@@ -121,70 +121,70 @@ final class PaymentMethodAvailabilityTest extends TestCase {
         $transport_calls = 0;
         $service = $this->service(false, 'cached-key', $this->counting_transport($transport_calls, false));
         $transient = $this->invoke_private($service, 'transient_name');
-        $GLOBALS['simplixpay_test_availability']['transients'][$transient] = $this->canonical(false, 0);
+        $GLOBALS['supcheckout_test_availability']['transients'][$transient] = $this->canonical(false, 0);
 
         self::assertSame($this->canonical(false, 0), $service->fetch());
         self::assertSame(0, $transport_calls);
-        self::assertSame(0, $GLOBALS['simplixpay_test_availability']['lock_acquires']);
+        self::assertSame(0, $GLOBALS['supcheckout_test_availability']['lock_acquires']);
 
-        \simplixpay_test_reset_availability();
+        \supcheckout_test_reset_availability();
         $failure = $this->service(false, 'failure-key', $this->counting_transport($transport_calls, false));
         $failure_transient = $this->invoke_private($failure, 'transient_name');
-        $GLOBALS['simplixpay_test_availability']['transients'][$failure_transient] = array(
+        $GLOBALS['supcheckout_test_availability']['transients'][$failure_transient] = array(
             'schema' => 3,
             'state'  => 'failure',
         );
         self::assertSame(array('result' => 'failure'), $failure->fetch());
-        self::assertSame(0, $GLOBALS['simplixpay_test_availability']['lock_acquires']);
+        self::assertSame(0, $GLOBALS['supcheckout_test_availability']['lock_acquires']);
 
-        \simplixpay_test_reset_availability();
+        \supcheckout_test_reset_availability();
         $empty = $this->service(false, '', $this->counting_transport($transport_calls, false));
         self::assertNull($empty->fetch());
-        self::assertSame(0, $GLOBALS['simplixpay_test_availability']['lock_acquires']);
+        self::assertSame(0, $GLOBALS['supcheckout_test_availability']['lock_acquires']);
         self::assertSame(0, $transport_calls);
     }
 
     public function test_lock_contention_rechecks_cache_and_lock_errors_fail_closed(): void {
         $transport_calls = 0;
         $service = $this->service(false, 'contended-key', $this->counting_transport($transport_calls, false));
-        $GLOBALS['simplixpay_test_availability']['lock_result'] = '0';
-        $GLOBALS['simplixpay_test_availability']['populate_on_lock'] = function () use ($service) {
+        $GLOBALS['supcheckout_test_availability']['lock_result'] = '0';
+        $GLOBALS['supcheckout_test_availability']['populate_on_lock'] = function () use ($service) {
             $name = $this->invoke_private($service, 'transient_name');
-            $GLOBALS['simplixpay_test_availability']['transients'][$name] = $this->canonical(false, 0);
+            $GLOBALS['supcheckout_test_availability']['transients'][$name] = $this->canonical(false, 0);
         };
 
         self::assertSame($this->canonical(false, 0), $service->fetch());
-        self::assertSame(1, $GLOBALS['simplixpay_test_availability']['lock_acquires']);
-        self::assertSame(0, $GLOBALS['simplixpay_test_availability']['lock_releases']);
+        self::assertSame(1, $GLOBALS['supcheckout_test_availability']['lock_acquires']);
+        self::assertSame(0, $GLOBALS['supcheckout_test_availability']['lock_releases']);
         self::assertSame(0, $transport_calls);
 
-        \simplixpay_test_reset_availability();
-        $GLOBALS['simplixpay_test_availability']['lock_result'] = null;
+        \supcheckout_test_reset_availability();
+        $GLOBALS['supcheckout_test_availability']['lock_result'] = null;
         $error = $this->service(false, 'error-key', $this->counting_transport($transport_calls, false));
         self::assertSame(array('result' => 'failure'), $error->fetch());
-        self::assertSame(1, $GLOBALS['simplixpay_test_availability']['lock_acquires']);
+        self::assertSame(1, $GLOBALS['supcheckout_test_availability']['lock_acquires']);
         self::assertSame(0, $transport_calls);
     }
 
     public function test_cooldown_and_gate_persistence_failures_prevent_transport(): void {
         $transport_calls = 0;
         $cooldown = $this->service(false, 'cooldown-key', $this->counting_transport($transport_calls, false));
-        $GLOBALS['simplixpay_test_options']['upayments_payment_methods_rate_gate_live'] = time() + 30;
+        $GLOBALS['supcheckout_test_options']['upayments_payment_methods_rate_gate_live'] = time() + 30;
         self::assertSame(array('result' => 'failure'), $cooldown->fetch());
-        self::assertSame(1, $GLOBALS['simplixpay_test_availability']['lock_releases']);
+        self::assertSame(1, $GLOBALS['supcheckout_test_availability']['lock_releases']);
         self::assertSame(0, $transport_calls);
 
-        \simplixpay_test_reset_availability();
-        $GLOBALS['simplixpay_test_update_option_result'] = false;
+        \supcheckout_test_reset_availability();
+        $GLOBALS['supcheckout_test_update_option_result'] = false;
         $write_failure = $this->service(false, 'write-key', $this->counting_transport($transport_calls, false));
         self::assertSame(array('result' => 'failure'), $write_failure->fetch());
-        self::assertSame(1, $GLOBALS['simplixpay_test_availability']['lock_releases']);
+        self::assertSame(1, $GLOBALS['supcheckout_test_availability']['lock_releases']);
         self::assertSame(0, $transport_calls);
 
-        \simplixpay_test_reset_availability();
-        $GLOBALS['simplixpay_test_get_option_filter'] = function ($name, $value) {
+        \supcheckout_test_reset_availability();
+        $GLOBALS['supcheckout_test_get_option_filter'] = function ($name, $value) {
             if (strpos($name, 'upayments_payment_methods_rate_gate_') === 0
-                && !empty($GLOBALS['simplixpay_test_option_calls'])
+                && !empty($GLOBALS['supcheckout_test_option_calls'])
             ) {
                 return (int) $value - 1;
             }
@@ -192,7 +192,7 @@ final class PaymentMethodAvailabilityTest extends TestCase {
         };
         $verify_failure = $this->service(false, 'verify-key', $this->counting_transport($transport_calls, false));
         self::assertSame(array('result' => 'failure'), $verify_failure->fetch());
-        self::assertSame(1, $GLOBALS['simplixpay_test_availability']['lock_releases']);
+        self::assertSame(1, $GLOBALS['supcheckout_test_availability']['lock_releases']);
         self::assertSame(0, $transport_calls);
     }
 
@@ -205,7 +205,7 @@ final class PaymentMethodAvailabilityTest extends TestCase {
             $this->counting_transport($transport_calls, $this->envelope($data))
         );
         $transient = $this->invoke_private($service, 'transient_name');
-        $GLOBALS['simplixpay_test_availability']['transients'][$transient] = array(
+        $GLOBALS['supcheckout_test_availability']['transients'][$transient] = array(
             'schema' => 3,
             'result' => 'success',
         );
@@ -214,9 +214,9 @@ final class PaymentMethodAvailabilityTest extends TestCase {
 
         self::assertSame('success', $result['result']);
         self::assertSame(1, $transport_calls);
-        self::assertSame(1, $GLOBALS['simplixpay_test_availability']['lock_releases']);
+        self::assertSame(1, $GLOBALS['supcheckout_test_availability']['lock_releases']);
         self::assertSame('success', PaymentMethodAvailability::classify_cached(
-            $GLOBALS['simplixpay_test_availability']['transients'][$transient]
+            $GLOBALS['supcheckout_test_availability']['transients'][$transient]
         ));
     }
 
@@ -242,7 +242,7 @@ final class PaymentMethodAvailabilityTest extends TestCase {
         );
 
         foreach ($failures as $label => $failure) {
-            \simplixpay_test_reset_availability();
+            \supcheckout_test_reset_availability();
             $transport_calls = 0;
             $service = $this->service(
                 false,
@@ -253,11 +253,11 @@ final class PaymentMethodAvailabilityTest extends TestCase {
             $transient = $this->invoke_private($service, 'transient_name');
             self::assertSame(
                 array('schema' => 3, 'state' => 'failure'),
-                $GLOBALS['simplixpay_test_availability']['transients'][$transient],
+                $GLOBALS['supcheckout_test_availability']['transients'][$transient],
                 $label
             );
             self::assertSame(1, $transport_calls, $label);
-            self::assertSame(1, $GLOBALS['simplixpay_test_availability']['lock_releases'], $label);
+            self::assertSame(1, $GLOBALS['supcheckout_test_availability']['lock_releases'], $label);
         }
     }
 

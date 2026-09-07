@@ -96,7 +96,7 @@ q17_assert(
     'runtime characterization remains process isolated'
 );
 q17_assert(
-    q17_has($runtime_fixture, 'SimplixPay_Test_Payment_Runtime_WC')
+    q17_has($runtime_fixture, 'SUPCheckout_Test_Payment_Runtime_WC')
     && q17_has($checkout_tests, '$requests = array();'),
     'runtime fixture exposes deterministic Woo/provider observation'
 );

@@ -13,8 +13,8 @@ use Simplixi\SUPCheckout\Migration\MigrationSettings;
 
 final class MigrationAdminTest extends TestCase {
     protected function setUp(): void {
-        \simplixpay_test_reset_migration_admin();
-        \simplixpay_test_reset_wp_options();
+        \supcheckout_test_reset_migration_admin();
+        \supcheckout_test_reset_wp_options();
     }
 
     public static function invalidIntegerProvider(): array {
@@ -54,11 +54,11 @@ final class MigrationAdminTest extends TestCase {
             MigrationAdmin::CAPABILITY,
             MigrationAdmin::PAGE_SLUG,
             array(MigrationAdmin::class, 'render'),
-        )), $GLOBALS['simplixpay_test_migration_admin']['submenu_calls']);
+        )), $GLOBALS['supcheckout_test_migration_admin']['submenu_calls']);
     }
 
     public function test_render_denies_missing_capability_before_request_processing(): void {
-        $GLOBALS['simplixpay_test_migration_admin']['capability_allowed'] = false;
+        $GLOBALS['supcheckout_test_migration_admin']['capability_allowed'] = false;
         $_SERVER['REQUEST_METHOD'] = 'POST';
 
         ob_start();
@@ -72,8 +72,8 @@ final class MigrationAdminTest extends TestCase {
         }
 
         self::assertSame('', $output);
-        self::assertSame(array(MigrationAdmin::CAPABILITY), $GLOBALS['simplixpay_test_migration_admin']['capability_calls']);
-        self::assertSame(array(), $GLOBALS['simplixpay_test_migration_admin']['nonce_checks']);
+        self::assertSame(array(MigrationAdmin::CAPABILITY), $GLOBALS['supcheckout_test_migration_admin']['capability_calls']);
+        self::assertSame(array(), $GLOBALS['supcheckout_test_migration_admin']['nonce_checks']);
     }
 
     public function test_get_render_exposes_only_the_bounded_credential_free_form(): void {
@@ -87,8 +87,8 @@ final class MigrationAdminTest extends TestCase {
         self::assertStringNotContainsString('name="api_key"', $output);
         self::assertStringContainsString('value="0"', $output);
         self::assertStringContainsString('max="' . MigrationBatch::MAX_LIMIT . '"', $output);
-        self::assertSame(array(), $GLOBALS['simplixpay_test_migration_admin']['nonce_checks']);
-        self::assertSame(array(array(MigrationAdmin::NONCE_ACTION, MigrationAdmin::NONCE_FIELD)), $GLOBALS['simplixpay_test_migration_admin']['nonce_fields']);
+        self::assertSame(array(), $GLOBALS['supcheckout_test_migration_admin']['nonce_checks']);
+        self::assertSame(array(array(MigrationAdmin::NONCE_ACTION, MigrationAdmin::NONCE_FIELD)), $GLOBALS['supcheckout_test_migration_admin']['nonce_fields']);
     }
 
     #[DataProvider('noncanonicalRequestMethodProvider')]
@@ -100,13 +100,13 @@ final class MigrationAdminTest extends TestCase {
             'limit' => '1',
             'migration_action' => 'preflight',
         );
-        $GLOBALS['simplixpay_test_migration_admin']['nonce_valid'] = false;
+        $GLOBALS['supcheckout_test_migration_admin']['nonce_valid'] = false;
 
         ob_start();
         MigrationAdmin::render();
         $output = ob_get_clean();
 
-        self::assertSame(array(), $GLOBALS['simplixpay_test_migration_admin']['nonce_checks']);
+        self::assertSame(array(), $GLOBALS['supcheckout_test_migration_admin']['nonce_checks']);
         self::assertStringNotContainsString('Migration request rejected:', $output);
         self::assertStringNotContainsString('<h2>Result</h2>', $output);
     }
@@ -124,21 +124,21 @@ final class MigrationAdminTest extends TestCase {
         MigrationAdmin::render();
         $output = ob_get_clean();
 
-        self::assertSame(array(array(MigrationAdmin::NONCE_ACTION, MigrationAdmin::NONCE_FIELD)), $GLOBALS['simplixpay_test_migration_admin']['nonce_checks']);
+        self::assertSame(array(array(MigrationAdmin::NONCE_ACTION, MigrationAdmin::NONCE_FIELD)), $GLOBALS['supcheckout_test_migration_admin']['nonce_checks']);
         self::assertStringContainsString('Migration request rejected: user_id_invalid', $output);
         self::assertStringNotContainsString('<script>', $output);
         self::assertStringContainsString('&lt;script&gt;', $output);
     }
 
     public function test_invalid_nonce_terminates_before_form_or_settings_processing(): void {
-        $GLOBALS['simplixpay_test_migration_admin']['nonce_valid'] = false;
+        $GLOBALS['supcheckout_test_migration_admin']['nonce_valid'] = false;
         $_SERVER['REQUEST_METHOD'] = 'POST';
         $_POST = array(
             'user_ids' => 'invalid',
             'migration_action' => 'execute',
             'confirm_execute' => 'yes',
         );
-        $GLOBALS['simplixpay_test_get_option_filter'] = static function () {
+        $GLOBALS['supcheckout_test_get_option_filter'] = static function () {
             throw new RuntimeException('settings_must_not_be_read');
         };
 
@@ -153,7 +153,7 @@ final class MigrationAdminTest extends TestCase {
         }
 
         self::assertSame('', $output);
-        self::assertSame(array(array(MigrationAdmin::NONCE_ACTION, MigrationAdmin::NONCE_FIELD)), $GLOBALS['simplixpay_test_migration_admin']['nonce_checks']);
+        self::assertSame(array(array(MigrationAdmin::NONCE_ACTION, MigrationAdmin::NONCE_FIELD)), $GLOBALS['supcheckout_test_migration_admin']['nonce_checks']);
     }
 
     public function test_noncanonical_action_fails_closed_before_settings_resolution(): void {
@@ -165,7 +165,7 @@ final class MigrationAdminTest extends TestCase {
             'migration_action' => 'exec ute',
             'confirm_execute' => 'yes',
         );
-        $GLOBALS['simplixpay_test_get_option_filter'] = static function () {
+        $GLOBALS['supcheckout_test_get_option_filter'] = static function () {
             throw new RuntimeException('settings_must_not_be_read');
         };
 
@@ -179,7 +179,7 @@ final class MigrationAdminTest extends TestCase {
     }
 
     public function test_successful_preflight_renders_redacted_and_escaped_result_without_execution(): void {
-        $GLOBALS['simplixpay_test_options'][MigrationSettings::OPTION_KEY] = array(
+        $GLOBALS['supcheckout_test_options'][MigrationSettings::OPTION_KEY] = array(
             'api_key' => 'secret-api-key<script>',
             'test_mode' => 'yes',
         );
@@ -212,7 +212,7 @@ final class MigrationAdminTest extends TestCase {
             'limit' => '1',
             'migration_action' => 'execute',
         );
-        $GLOBALS['simplixpay_test_get_option_filter'] = static function () {
+        $GLOBALS['supcheckout_test_get_option_filter'] = static function () {
             throw new RuntimeException('settings_must_not_be_read');
         };
 

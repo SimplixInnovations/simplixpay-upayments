@@ -67,7 +67,7 @@ foreach (array(
 }
 q7_assert(q7_contains($tests, "array('status', 'message')"), 'response tests reject expanded public payloads');
 q7_assert(q7_contains($tests, "'CAPTURED'"), 'unknown provider-like state is tested fail closed');
-q7_assert(q7_contains($fixture, 'class SimplixPay_Test_Json_Response'), 'fixture captures terminating JSON responses');
+q7_assert(q7_contains($fixture, 'class SUPCheckout_Test_Json_Response'), 'fixture captures terminating JSON responses');
 q7_assert(q7_contains($fixture, 'function wc_get_order('), 'fixture provides deterministic order lookup');
 q7_assert(q7_contains($fixture, 'function is_user_logged_in('), 'fixture provides deterministic login state');
 q7_assert(q7_contains($fixture, 'function wp_send_json('), 'fixture captures WordPress JSON dispatch');

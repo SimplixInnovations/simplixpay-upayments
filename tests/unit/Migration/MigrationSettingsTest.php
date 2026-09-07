@@ -8,12 +8,12 @@ use Simplixi\SUPCheckout\Migration\MigrationSettings;
 
 final class MigrationSettingsTest extends TestCase {
     protected function setUp(): void {
-        \simplixpay_test_reset_wp_options();
+        \supcheckout_test_reset_wp_options();
     }
 
     public function test_resolver_reads_only_the_historical_gateway_option(): void {
         $reads = array();
-        $GLOBALS['simplixpay_test_get_option_filter'] = function ($name, $value, $default) use (&$reads) {
+        $GLOBALS['supcheckout_test_get_option_filter'] = function ($name, $value, $default) use (&$reads) {
             $reads[] = array($name, $default);
             return $value;
         };
@@ -21,7 +21,7 @@ final class MigrationSettingsTest extends TestCase {
         self::assertSame('woocommerce_upayments_settings', MigrationSettings::OPTION_KEY);
         self::assertSame($this->failure('settings_missing'), MigrationSettings::resolve());
         self::assertSame(array(array('woocommerce_upayments_settings', null)), $reads);
-        self::assertSame(array(), $GLOBALS['simplixpay_test_option_calls']);
+        self::assertSame(array(), $GLOBALS['supcheckout_test_option_calls']);
     }
 
     public function test_missing_or_malformed_api_keys_fail_closed(): void {
@@ -30,7 +30,7 @@ final class MigrationSettingsTest extends TestCase {
             false,
             'not-an-array',
         ) as $settings) {
-            $GLOBALS['simplixpay_test_options'][MigrationSettings::OPTION_KEY] = $settings;
+            $GLOBALS['supcheckout_test_options'][MigrationSettings::OPTION_KEY] = $settings;
             self::assertSame($this->failure('settings_missing'), MigrationSettings::resolve());
         }
 
@@ -42,14 +42,14 @@ final class MigrationSettingsTest extends TestCase {
             array('api_key' => ''),
             array('api_key' => " \t\n"),
         ) as $settings) {
-            $GLOBALS['simplixpay_test_options'][MigrationSettings::OPTION_KEY] = $settings;
+            $GLOBALS['supcheckout_test_options'][MigrationSettings::OPTION_KEY] = $settings;
             self::assertSame($this->failure('api_key_missing'), MigrationSettings::resolve());
         }
     }
 
     public function test_test_mode_accepts_only_exact_woocommerce_checkbox_states(): void {
         foreach (array('maybe', 'YES', 'No', ' yes', 'yes ', true, false, 1, 0, null, array('yes')) as $mode) {
-            $GLOBALS['simplixpay_test_options'][MigrationSettings::OPTION_KEY] = array(
+            $GLOBALS['supcheckout_test_options'][MigrationSettings::OPTION_KEY] = array(
                 'api_key'  => 'secret-api',
                 'test_mode' => $mode,
             );
@@ -70,7 +70,7 @@ final class MigrationSettingsTest extends TestCase {
             if ($stored_mode !== null) {
                 $settings['test_mode'] = $stored_mode;
             }
-            $GLOBALS['simplixpay_test_options'][MigrationSettings::OPTION_KEY] = $settings;
+            $GLOBALS['supcheckout_test_options'][MigrationSettings::OPTION_KEY] = $settings;
 
             $resolved = MigrationSettings::resolve();
             self::assertSame(array(
@@ -84,9 +84,9 @@ final class MigrationSettingsTest extends TestCase {
                 array('ok' => true, 'reason' => 'settings_resolved', 'mode' => $mode),
                 MigrationSettings::redact($resolved)
             );
-            self::assertSame($settings, $GLOBALS['simplixpay_test_options'][MigrationSettings::OPTION_KEY]);
+            self::assertSame($settings, $GLOBALS['supcheckout_test_options'][MigrationSettings::OPTION_KEY]);
         }
-        self::assertSame(array(), $GLOBALS['simplixpay_test_option_calls']);
+        self::assertSame(array(), $GLOBALS['supcheckout_test_option_calls']);
     }
 
     public function test_redaction_never_returns_the_api_key_or_unbounded_fields(): void {
