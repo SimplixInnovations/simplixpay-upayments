@@ -35,7 +35,7 @@ The word `for` is human-facing relationship copy only and must never be encoded 
 - Final SUPCheckout product/namespace/text-domain/package migration — **DONE / VERIFIED — PR #67 merged and post-merge certified**
 - Deterministic release + packaged runtime — **DONE / VERIFIED**
 - Both real pre-stable package roots → SUPCheckout migration/rollback — **CI-CERTIFIED on current candidate**
-- WordPress.org packaged Plugin Check — **DONE / VERIFIED / 0 blocking errors**
+- WordPress.org packaged Plugin Check — **DONE / VERIFIED / strict zero-warning/error gate**
 - Public stable release — **NO**
 - WordPress.org publication — **NO**
 - Repository rename — **DONE / VERIFIED — `SimplixInnovations/supcheckout`**
@@ -125,7 +125,7 @@ Real WordPress qualification proved that directly renaming an already-active phy
 
 ## Final repository-admin closure
 
-Live GitHub state is reconciled: About/topics are correct; Main Rule requires `Governance`, `H12 Regression Harness`, `Compatibility Gate` and `Release Gate`; only `main` remains; no open PRs/issues/tags/releases exist. Latest certified `main` is `a0794c1f968e7bb97d3a6589aa109b6236fa307f` with Quality #911, Compatibility #439 (**16/16**), Release Artifact #388, Provider Sandbox #349, WordPress.org #246 and CodeQL #733 all **SUCCESS**.
+Live GitHub state is reconciled: About/topics are correct; Main Rule requires `Governance`, `H12 Regression Harness`, `Compatibility Gate` and `Release Gate`; only `main` remains; no open PRs/issues/tags/releases exist. Latest certified `main` is `bfadff34142a3a676258e8dc0774bd31287c0138` with Quality #927, Compatibility #455 (**16/16**), Release Artifact #404, Provider Sandbox #365, strict WordPress.org #262 and CodeQL #749 all **SUCCESS**. PR #71 made official packaged Plugin Check `strict: true`; the exact-main result reports no findings. Current deterministic ZIP SHA-256 is `0436256b16605b9b2db91aa8a7865ecec6cae7ef00fa515048d9643e50ad990a` (74 files).
 
 ## What remains
 
