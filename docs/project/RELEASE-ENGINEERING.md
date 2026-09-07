@@ -1,8 +1,8 @@
 # SUCheckout for UPayments — Release Engineering
 
-**Current status:** pre-release SUCheckout engineering migration merged and certified; owner repository rename/local acceptance/release administration pending
-**Current repository pending rename:** `SimplixInnovations/simplixpay-upayments`
-**Approved repository target:** `SimplixInnovations/sucheckout-upayments`
+**Current status:** pre-release SUCheckout engineering migration merged and certified; repository rename complete; local acceptance/release administration pending
+**Canonical GitHub repository:** `SimplixInnovations/sucheckout`
+**Canonical plugin/package slug:** `sucheckout-upayments`
 **Development version:** `0.1.0`
 
 ## Certification anchors
@@ -200,11 +200,11 @@ Do not publish an artifact from:
 - a different SHA than the tag;
 - a candidate with mandatory checks still pending/failed/skipped.
 
-## Repository-rename boundary
+## Repository-coordinate boundary
 
-The GitHub repository coordinate remains temporarily `SimplixInnovations/simplixpay-upayments` until owner/admin rename.
+The canonical GitHub repository is `SimplixInnovations/sucheckout`.
 
-After rename to `SimplixInnovations/sucheckout-upayments`, update only current repository-coordinate references in a dedicated PR. Do not rewrite historical evidence or legacy migration fixtures where `simplixpay-upayments` is semantically required.
+The repository coordinate is intentionally distinct from the WordPress/plugin package slug `sucheckout-upayments`. Current repository URLs must use the canonical GitHub coordinate; historical evidence and legacy migration fixtures retain older package/repository tokens where they are semantically required.
 
 ## Historical evidence
 
@@ -219,7 +219,7 @@ CI artifacts are verification artifacts, not public releases.
 Remaining owner/admin actions are controlled by `OWNER-HANDOFF.md`:
 
 - delete obsolete remote branches;
-- rename repository;
+- verify canonical repository metadata and controls;
 - reconcile living repository coordinates;
 - perform independent local acceptance;
 - explicitly choose version/publication;
