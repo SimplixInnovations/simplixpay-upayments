@@ -34,7 +34,23 @@ Squash merge:
 
 Review-specific permanent closures include the WordPress HTTP production transport contract (**27/27**), fail-closed provenance DB error contract (**3/3**) and retired-identity residue contract (**17/17**).
 
-This closes engineering migration certification only. Repository rename, public version/tag/GitHub Release and WordPress.org publication remain separate owner actions.
+This closes the original identity-migration certification only. Repository rename, public version/tag/GitHub Release and WordPress.org publication remain separate owner actions.
+
+### Final first-party naming reconciliation
+
+PR #59 later reconciled living owner/control documentation as `9591c431e1eb56fe40ca60147afdf9f3f909a212` without changing runtime behavior. PR #61 then removed the remaining retired `SIMPLIXPAY_*` first-party constants/certification-control prefixes while preserving protected UPayments compatibility identities.
+
+Current runtime-bearing certified `main`: `efe937c67343242b7ccf3396a67b3cf2ce35ebac`.
+
+Fresh post-merge evidence on that exact SHA:
+
+- Quality #781 — **SUCCESS**;
+- Compatibility #309 — **16/16 SUCCESS**;
+- Release Artifact #258 — **SUCCESS**;
+- Provider Sandbox #221 — **SUCCESS**;
+- WordPress.org Submission Check #116 — **SUCCESS**;
+- CodeQL/main-security #595 — **SUCCESS**;
+- official packaged Plugin Check — **0 blocking errors**.
 
 ## Certified platform foundation
 
