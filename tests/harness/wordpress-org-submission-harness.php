@@ -69,7 +69,11 @@ wporg_assert(
         && strpos($submission_workflow, 'bash scripts/verify-release.sh "$ZIP"') !== false,
     'submission gate consumes deterministic verified release artifact'
 );
-wporg_assert(strpos($submission_workflow, "simplixpay-upayments-*.zip") === false, 'submission workflow contains no retired release ZIP slug');
+wporg_assert(
+    strpos($submission_workflow, "simplixpay-upayments-*.zip") === false
+        && strpos($submission_workflow, "sucheckout-upayments-*.zip") === false,
+    'submission workflow contains no retired release ZIP slug'
+);
 
 echo "\nWordPress.org Submission Readiness: {$pass} PASS / {$fail} FAIL\n";
 exit($fail === 0 ? 0 : 1);
