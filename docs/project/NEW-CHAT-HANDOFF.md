@@ -125,7 +125,7 @@ Real WordPress qualification proved that directly renaming an already-active phy
 
 ## Final repository-admin closure
 
-Live GitHub state is reconciled: About/topics are correct; Main Rule requires `Governance`, `H12 Regression Harness`, `Compatibility Gate` and `Release Gate`; only `main` remains; no open PRs/issues/tags/releases exist. Latest certified `main` is `bfadff34142a3a676258e8dc0774bd31287c0138` with Quality #927, Compatibility #455 (**16/16**), Release Artifact #404, Provider Sandbox #365, strict WordPress.org #262 and CodeQL #749 all **SUCCESS**. PR #71 made official packaged Plugin Check `strict: true`; the exact-main result reports no findings. Current deterministic ZIP SHA-256 is `0436256b16605b9b2db91aa8a7865ecec6cae7ef00fa515048d9643e50ad990a` (74 files).
+Live GitHub state is reconciled: About/topics are correct; Main Rule requires `Governance`, `H12 Regression Harness`, `Compatibility Gate` and `Release Gate`; only `main` remains; no open PRs/issues/tags/releases exist. Latest runtime-bearing certified `main` is `bfadff34142a3a676258e8dc0774bd31287c0138` with Quality #927, Compatibility #455 (**16/16**), Release Artifact #404, Provider Sandbox #365, strict WordPress.org #262 and CodeQL #749 all **SUCCESS**. PR #71 made official packaged Plugin Check `strict: true`; the exact-main result reports no findings. Current deterministic ZIP SHA-256 is `0436256b16605b9b2db91aa8a7865ecec6cae7ef00fa515048d9643e50ad990a` (74 files).
 
 ## What remains
 
