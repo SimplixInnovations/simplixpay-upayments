@@ -192,7 +192,7 @@ final class PresentationTest extends TestCase {
         ), Presentation::filter_account_orders_query($original));
     }
 
-    public function test_account_filter_escapes_page_identity_and_ignores_malformed_status(): void {
+    public function test_account_filter_preserves_only_supplied_page_identity_and_ignores_malformed_status(): void {
         $_GET = array(
             'page_id' => '<script>12</script>',
             'subscription_filter' => array('paused'),
@@ -205,6 +205,15 @@ final class PresentationTest extends TestCase {
         self::assertStringContainsString('name="page_id" value="12"', $output);
         self::assertStringNotContainsString('<script>', $output);
         self::assertStringNotContainsString('selected="selected"', $output);
+
+        $_GET = array('subscription_filter' => 'active');
+        ob_start();
+        Presentation::render_account_orders_filter();
+        $without_page_id = ob_get_clean();
+
+        self::assertStringNotContainsString('name="page_id"', $without_page_id);
+        self::assertStringNotContainsString('value="12"', $without_page_id);
+        self::assertStringContainsString('value="active" selected="selected"', $without_page_id);
     }
 
     public function test_account_columns_labels_and_status_output_remain_escaped(): void {
