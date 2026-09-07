@@ -1,11 +1,11 @@
 # SUCheckout for UPayments — Owner Handoff
 
-**Engineering migration:** DONE / VERIFIED  
-**Migration scope:** identity/runtime  
-**Latest certified pre-docs `main` baseline:** `efe937c67343242b7ccf3396a67b3cf2ce35ebac`  
-**Current GitHub repository pending owner rename:** `SimplixInnovations/simplixpay-upayments`  
-**Approved repository target:** `SimplixInnovations/sucheckout-upayments`  
-**Development version:** `0.1.0`  
+**Engineering migration:** DONE / VERIFIED
+**Migration scope:** identity/runtime
+**Latest certified pre-docs `main` baseline:** `efe937c67343242b7ccf3396a67b3cf2ce35ebac`
+**Current GitHub repository pending owner rename:** `SimplixInnovations/simplixpay-upayments`
+**Approved repository target:** `SimplixInnovations/sucheckout-upayments`
+**Development version:** `0.1.0`
 **Public tag / GitHub Release / WordPress.org publication:** NOT YET CREATED
 
 This is the authoritative owner/admin/local/release sequence. It does not reopen Quality Platform Q1-Q19 and it does not authorize publication by itself.
