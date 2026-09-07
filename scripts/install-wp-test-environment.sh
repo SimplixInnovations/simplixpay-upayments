@@ -10,7 +10,7 @@ WP_VERSION="$1"
 WC_VERSION="$2"
 WP_PATH="$3"
 WP_CLI_BIN="${WP_CLI_BIN:-/tmp/wp-cli.phar}"
-PLUGIN_SLUG="${SIMPLIXPAY_PLUGIN_SLUG:-sucheckout-upayments}"
+PLUGIN_SLUG="${SUCHECKOUT_PLUGIN_SLUG:-sucheckout-upayments}"
 
 if [[ ! -x "$WP_CLI_BIN" ]]; then
   echo "WP-CLI executable not found: $WP_CLI_BIN" >&2
@@ -18,10 +18,10 @@ if [[ ! -x "$WP_CLI_BIN" ]]; then
 fi
 
 : "${GITHUB_WORKSPACE:?GITHUB_WORKSPACE is required}"
-: "${SIMPLIXPAY_DB_NAME:=wordpress}"
-: "${SIMPLIXPAY_DB_USER:=root}"
-: "${SIMPLIXPAY_DB_PASSWORD:=root}"
-: "${SIMPLIXPAY_DB_HOST:=127.0.0.1:3306}"
+: "${SUCHECKOUT_DB_NAME:=wordpress}"
+: "${SUCHECKOUT_DB_USER:=root}"
+: "${SUCHECKOUT_DB_PASSWORD:=root}"
+: "${SUCHECKOUT_DB_HOST:=127.0.0.1:3306}"
 
 rm -rf "$WP_PATH"
 mkdir -p "$WP_PATH"
@@ -34,10 +34,10 @@ mkdir -p "$WP_PATH"
 
 "$WP_CLI_BIN" config create \
   --path="$WP_PATH" \
-  --dbname="$SIMPLIXPAY_DB_NAME" \
-  --dbuser="$SIMPLIXPAY_DB_USER" \
-  --dbpass="$SIMPLIXPAY_DB_PASSWORD" \
-  --dbhost="$SIMPLIXPAY_DB_HOST" \
+  --dbname="$SUCHECKOUT_DB_NAME" \
+  --dbuser="$SUCHECKOUT_DB_USER" \
+  --dbpass="$SUCHECKOUT_DB_PASSWORD" \
+  --dbhost="$SUCHECKOUT_DB_HOST" \
   --skip-check \
   --quiet
 
@@ -60,13 +60,13 @@ mkdir -p "$WP_PATH"
 PLUGIN_PATH="$WP_PATH/wp-content/plugins/$PLUGIN_SLUG"
 rm -rf "$PLUGIN_PATH"
 
-if [[ -n "${SIMPLIXPAY_PLUGIN_ZIP:-}" ]]; then
-  [[ -f "$SIMPLIXPAY_PLUGIN_ZIP" ]] || {
-    echo "SUCheckout release ZIP not found: $SIMPLIXPAY_PLUGIN_ZIP" >&2
+if [[ -n "${SUCHECKOUT_PLUGIN_ZIP:-}" ]]; then
+  [[ -f "$SUCHECKOUT_PLUGIN_ZIP" ]] || {
+    echo "SUCheckout release ZIP not found: $SUCHECKOUT_PLUGIN_ZIP" >&2
     exit 68
   }
 
-  "$WP_CLI_BIN" plugin install "$SIMPLIXPAY_PLUGIN_ZIP" \
+  "$WP_CLI_BIN" plugin install "$SUCHECKOUT_PLUGIN_ZIP" \
     --path="$WP_PATH" \
     --force \
     --quiet

@@ -4,7 +4,7 @@
  * Phase 0 release-identity/updater characterization harness.
  *
  * This is intentionally WordPress-independent. It verifies package/source
- * contracts that must hold before the Simplix release identity can merge.
+ * contracts that must hold before the canonical SUCheckout release identity can merge.
  */
 
 $root = dirname(__DIR__, 2);
@@ -70,10 +70,10 @@ p0_assert(p0_header_value($bootstrap, 'Domain Path') === null, 'plugin header do
 p0_assert(p0_header_value($bootstrap, 'Text Domain') === Identity::TARGET_TEXT_DOMAIN, 'public text domain is the canonical SUCheckout domain');
 p0_assert(Identity::TARGET_TEXT_DOMAIN === 'sucheckout-upayments', 'target text domain remains frozen');
 
-// Bootstrap exposes Simplix identity without destroying legacy plugin-file API.
+// Bootstrap exposes canonical SUCheckout identity without destroying legacy plugin-file API.
 p0_assert(p0_contains($bootstrap, "src/Release/Identity.php"), 'bootstrap loads canonical release identity');
-p0_assert(p0_contains($bootstrap, "SIMPLIXPAY_UPAYMENTS_VERSION"), 'bootstrap defines canonical version constant');
-p0_assert(p0_contains($bootstrap, "SIMPLIXPAY_UPAYMENTS_PLUGIN_FILE"), 'bootstrap defines canonical plugin-file constant');
+p0_assert(p0_contains($bootstrap, "SUCHECKOUT_UPAYMENTS_VERSION"), 'bootstrap defines canonical version constant');
+p0_assert(p0_contains($bootstrap, "SUCHECKOUT_UPAYMENTS_PLUGIN_FILE"), 'bootstrap defines canonical plugin-file constant');
 p0_assert(p0_contains($bootstrap, "UPAYMENTS_PLUGIN_FILE"), 'legacy plugin-file constant remains available');
 
 // No external self-update authority may remain after Phase 0A.

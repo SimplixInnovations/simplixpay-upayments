@@ -124,17 +124,17 @@ release_assert(
         && strpos($verify, 'HEAD:.distignore') !== false,
     'verifier binds packaged bytes to Git HEAD'
 );
-release_assert(strpos($installer, 'SIMPLIXPAY_PLUGIN_SLUG:-sucheckout-upayments') !== false, 'real installer defaults to canonical SUCheckout root');
+release_assert(strpos($installer, 'SUCHECKOUT_PLUGIN_SLUG:-sucheckout-upayments') !== false, 'real installer defaults to canonical SUCheckout root');
 
 release_assert(strpos($workflow, "-name 'sucheckout-upayments-*.zip'") !== false, 'release workflow selects canonical SUCheckout artifacts');
 release_assert(strpos($workflow, 'name: sucheckout-release-${{ env.RELEASE_SOURCE_SHA }}') !== false, 'release workflow evidence is keyed by exact candidate SHA');
 release_assert(strpos($workflow, 'ref: ${{ env.RELEASE_SOURCE_SHA }}') !== false, 'release workflow checks out exact candidate source SHA');
 release_assert(strpos($workflow, 'storage: [legacy, hpos]') !== false, 'packaged runtime covers legacy and HPOS storage');
 release_assert(strpos($workflow, 'plugin activate sucheckout-upayments') !== false, 'packaged runtime activates canonical plugin slug');
-release_assert(strpos($workflow, 'SIMPLIXPAY_PLUGIN_SLUG=simplixpay-upayments') !== false, 'migration job seeds a real legacy-root installation');
+release_assert(strpos($workflow, 'SUCHECKOUT_PLUGIN_SLUG=simplixpay-upayments') !== false, 'migration job seeds a real legacy-root installation');
 release_assert(strpos($workflow, 'plugin deactivate simplixpay-upayments') !== false, 'migration job explicitly deactivates legacy root');
 release_assert(strpos($workflow, 'plugin activate sucheckout-upayments') !== false, 'migration job explicitly activates canonical root');
-release_assert(strpos($workflow, 'SIMPLIXPAY_UPGRADE_PHASE=verify-legacy-rollback') !== false, 'migration job proves legacy rollback is non-destructive');
+release_assert(strpos($workflow, 'SUCHECKOUT_UPGRADE_PHASE=verify-legacy-rollback') !== false, 'migration job proves legacy rollback is non-destructive');
 release_assert(strpos($workflow, 'plugin delete simplixpay-upayments') !== false, 'migration job ends with legacy package removed');
 release_assert(strpos($workflow, 'actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02') !== false, 'artifact upload action is immutably pinned');
 release_assert(strpos($workflow, 'actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093') !== false, 'artifact download action is immutably pinned');
