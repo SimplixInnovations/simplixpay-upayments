@@ -188,7 +188,7 @@ These are provider/data compatibility contracts, not first-party branding residu
 - verifies the ZIP before inspection;
 - unpacks `supcheckout/`;
 - runs the pinned official `WordPress/plugin-check-action` with slug `supcheckout` and `plugin_repo` checks;
-- fails on blocking findings.
+- runs with `strict: true` and fails on any reported warning/error.
 
 No blanket Plugin Check ignore list is allowed.
 
@@ -247,7 +247,7 @@ These records remain historical truth. They are not rewritten to claim that old 
 
 CI artifacts are verification artifacts, not public releases.
 
-Repository-admin state is now closed and verified on live GitHub: canonical metadata/topics, four required Main Rule checks, protective rules, `main`-only topology and zero open PRs/issues/tags/releases. Latest certified `main` is `a0794c1f968e7bb97d3a6589aa109b6236fa307f`, with Quality #911, Compatibility #439 (**16/16**), Release Artifact #388, Provider Sandbox #349, WordPress.org #246 and CodeQL #733 all **SUCCESS**.
+Repository-admin state is closed and verified on live GitHub: canonical metadata/topics, four required Main Rule checks, protective rules, `main`-only topology and zero open PRs/issues/tags/releases. Latest certified `main` is `bfadff34142a3a676258e8dc0774bd31287c0138`, with Quality #927, Compatibility #455 (**16/16**), Release Artifact #404, Provider Sandbox #365, strict WordPress.org #262 and CodeQL #749 all **SUCCESS**. The exact-main `supcheckout-0.1.0.zip` is Git-HEAD-bound, 74 files, SHA-256 `0436256b16605b9b2db91aa8a7865ecec6cae7ef00fa515048d9643e50ad990a`; official packaged Plugin Check is strict and reports no findings.
 
 Remaining owner/admin actions are controlled by `OWNER-HANDOFF.md`:
 
