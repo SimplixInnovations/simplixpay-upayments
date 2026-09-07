@@ -1,6 +1,7 @@
 # SUCheckout for UPayments — Owner Handoff
 
-**Engineering identity/runtime migration:** DONE / VERIFIED  
+**Engineering migration:** DONE / VERIFIED  
+**Migration scope:** identity/runtime  
 **Latest certified pre-docs `main` baseline:** `efe937c67343242b7ccf3396a67b3cf2ce35ebac`  
 **Current GitHub repository pending owner rename:** `SimplixInnovations/simplixpay-upayments`  
 **Approved repository target:** `SimplixInnovations/sucheckout-upayments`  
