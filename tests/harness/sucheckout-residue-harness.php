@@ -132,11 +132,11 @@ foreach ($tracked as $path) {
 
     // The forbidden "for" technical form may appear only in the naming
     // standard that declares it forbidden and in this regression harness.
-    if (strpos($source, 'sucheckout-for-upayments') !== false
+    if (strpos($source, 'supcheckout-for-upayments') !== false
         && $path !== 'docs/project/NAMING-IDENTITY-STANDARD.md'
         && $path !== 'tests/harness/sucheckout-residue-harness.php'
     ) {
-        $unexpected[] = $path . ' :: sucheckout-for-upayments';
+        $unexpected[] = $path . ' :: supcheckout-for-upayments';
     }
 
     if (strpos($source, 'simplixpay-upayments') !== false
