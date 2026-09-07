@@ -99,11 +99,11 @@ Post-rename coordinate closure:
 
 
 
-Latest fully certified repository-admin baseline: `a0794c1f968e7bb97d3a6589aa109b6236fa307f` — Quality #911, Compatibility #439 (**16/16**), Release Artifact #388, Provider Sandbox #349, WordPress.org #246 and CodeQL #733 all **SUCCESS**.
+Latest fully certified repository baseline: `bfadff34142a3a676258e8dc0774bd31287c0138` — Quality #927, Compatibility #455 (**16/16**), Release Artifact #404, Provider Sandbox #365, strict WordPress.org #262 and CodeQL #749 all **SUCCESS**. The packaged Plugin Check gate is `strict: true` and the exact-main result contains no reported findings.
 
 Every future candidate must pass the permanent exact-head gates appropriate to its scope before merge or release.
 
-No public tag, GitHub Release or WordPress.org publication exists yet. Repository rename is complete; local owner acceptance, remaining repository-admin verification and publication are separate owner actions documented in `OWNER-HANDOFF.md`.
+No public tag, GitHub Release or WordPress.org publication exists yet. Repository administration is complete; local owner acceptance, launch branding/visual acceptance and publication remain owner actions documented in `OWNER-HANDOFF.md`.
 
 ## First-stable plugin identity
 
