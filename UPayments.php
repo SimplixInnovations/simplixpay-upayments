@@ -1,7 +1,7 @@
 <?php
 /**
  * Plugin Name: SUCheckout for UPayments
- * Plugin URI: https://github.com/SimplixInnovations/sucheckout-upayments
+ * Plugin URI: https://github.com/SimplixInnovations/sucheckout
  * Description: Independently engineered UPayments payment integration for WooCommerce by Simplix Innovations.
  * Version: 0.1.0
  * Author: Simplix Innovations
