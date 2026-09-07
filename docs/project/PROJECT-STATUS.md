@@ -29,7 +29,7 @@
 | Deterministic release artifact | **DONE / VERIFIED — permanent exact-head gate** |
 | Legacy-root → canonical-root migration | **DONE / VERIFIED — permanent release gate** |
 | WordPress.org Plugin Check | **DONE / VERIFIED — 0 blocking errors on certified package** |
-| SUPCheckout repository rename | **DONE / VERIFIED — canonical `SimplixInnovations/supcheckout`** |
+| SUPCheckout repository rename + living-coordinate closure | **DONE / VERIFIED — canonical `SimplixInnovations/supcheckout`, PR #68 merged/post-merge green** |
 | Public Git tag / GitHub Release | **NOT CREATED** |
 | WordPress.org publication | **NOT PERFORMED** |
 
@@ -59,6 +59,15 @@ Fresh exact-main evidence:
 - CodeQL/main-security #717 — **SUCCESS**.
 
 After this exact-main certification, the repository was renamed to `SimplixInnovations/supcheckout`. Remote branch topology was verified as `main` only before the dedicated post-rename coordinate-reconciliation branch was created.
+
+Post-rename coordinate closure:
+
+- PR #68 exact head `0e6ef6334282a83a428da7ee793daa98360c2bcc` passed Quality #900, Compatibility #428 (**16/16**), Release Artifact #377, Provider Sandbox #338, WordPress.org #235 and CodeQL #722;
+- squash merge: `05fec942cc8fbeb58cfd0bd41f0ef5fdb86f966f`;
+- post-merge Quality #901, Compatibility #429 (**16/16**), Release Artifact #378, Provider Sandbox #339, WordPress.org #236 and CodeQL #723 — **SUCCESS**;
+- remote branch topology: **main only**;
+- open PRs/issues: **0 / 0**;
+- tags/releases: **0 / 0**.
 
 
 ### Historical runtime-bearing SUCheckout identity baseline
@@ -243,14 +252,13 @@ Passing this gate does **not** publish the plugin or guarantee manual directory 
 
 Repository rename and obsolete-branch cleanup are complete. Remaining work is:
 
-1. finish the residual post-rename About/topics and Main Rule corrections verified by live GitHub state;
+1. finish the residual post-rename About topic cleanup and Main Rule aggregate-check corrections verified by live GitHub state;
 2. verify the owner's local `origin` points directly to `SimplixInnovations/supcheckout`;
-3. merge the dedicated coordinate-only living-reference closure from an exact-green head;
-4. run the documented isolated local acceptance suite;
-5. apply approved SUPCheckout launch branding and visual/accessibility acceptance;
-6. choose the first public version explicitly (`0.1.0` early release vs `1.0.0` first stable);
-7. run a version-promotion PR if required;
-8. tag/release/submit to WordPress.org only after explicit approval.
+3. run the documented isolated local acceptance suite;
+4. apply approved SUPCheckout launch branding and visual/accessibility acceptance;
+5. choose the first public version explicitly (`0.1.0` early release vs `1.0.0` first stable);
+6. run a version-promotion PR if required;
+7. tag/release/submit to WordPress.org only after explicit approval.
 
 The exact commands and checks are in `docs/project/OWNER-HANDOFF.md`.
 
