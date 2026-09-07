@@ -41,7 +41,7 @@ Forbidden technical form: `supcheckout-for-upayments`.
 | Future optional bootstrap target | `supcheckout.php` — only after a separately approved migration proves it safe |
 | Text domain | `supcheckout` |
 | Composer package | `simplix-innovations/supcheckout` |
-| PHP namespace root | `Simplixi\SUPCheckout\UPayments` |
+| PHP namespace root | `Simplixi\SUPCheckout` |
 | Global PHP prefix | `supcheckout_` |
 | Constants | `SUPCHECKOUT_*` |
 | CSS component root | `.supcheckout` |
@@ -143,7 +143,7 @@ No blanket Plugin Check ignore list is permitted.
 Canonical namespace root:
 
 ```php
-Simplixi\SUPCheckout\UPayments
+Simplixi\SUPCheckout
 ```
 
 Existing globals, provider identifiers and persisted compatibility identifiers migrate only where evidence permits. Namespace cleanliness never takes priority over merchant/payment compatibility.
