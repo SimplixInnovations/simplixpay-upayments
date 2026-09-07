@@ -69,7 +69,7 @@ sucheckout_identity_assert(strpos($identity, 'sucheckout-for-upayments') === fal
 
 sucheckout_identity_assert(strpos($standard, '# SUPCheckout for UPayments') === 0, 'canonical naming standard is SUPCheckout-owned');
 sucheckout_identity_assert(strpos($standard, '**Canonical slug:** `supcheckout`') !== false, 'naming standard pins canonical technical slug');
-sucheckout_identity_assert(strpos($standard, '`sucheckout-for-upayments`') !== false, 'naming standard explicitly documents the forbidden for-form');
+sucheckout_identity_assert(strpos($standard, '`supcheckout-for-upayments`') !== false, 'naming standard explicitly documents the forbidden for-form');
 sucheckout_identity_assert(strpos($spec, 'The word **for** is human-facing relationship copy only.') !== false, 'approved design records human-only for rule');
 
 echo "\nSUPCheckout Identity Migration: {$pass} PASS / {$fail} FAIL\n";

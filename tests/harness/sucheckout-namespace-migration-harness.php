@@ -41,8 +41,11 @@ if (is_array($composer)) {
 }
 
 $scan_roots = array($root . '/src', $root . '/tests');
-$legacy = 'Simplix\\Pay\\UPayments';
-$canonical = 'Simplixi\\SUCheckout\\UPayments';
+$retired = array(
+    'Simplix\\Pay\\UPayments',
+    'Simplixi\\SUCheckout\\UPayments',
+);
+$canonical = 'Simplixi\\SUPCheckout';
 $legacy_files = array();
 $canonical_files = 0;
 
