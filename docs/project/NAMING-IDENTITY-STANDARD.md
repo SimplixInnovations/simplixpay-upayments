@@ -32,7 +32,7 @@ Forbidden technical form: `sucheckout-for-upayments`.
 | Product family | **SUCheckout** |
 | Provider | **UPayments** |
 | Technical slug | `sucheckout-upayments` |
-| Target GitHub repository | `SimplixInnovations/sucheckout-upayments` |
+| Canonical GitHub repository | `SimplixInnovations/sucheckout` |
 | WordPress.org slug | `sucheckout-upayments` |
 | Plugin folder | `sucheckout-upayments/` |
 | First-stable physical bootstrap | `UPayments.php` |
@@ -143,15 +143,15 @@ Simplixi\SUCheckout\UPayments
 
 Existing globals, provider identifiers and persisted compatibility identifiers migrate only where evidence permits. Namespace cleanliness never takes priority over merchant/payment compatibility.
 
-## Repository rename rule
+## Repository coordinate rule
 
-Until the owner renames GitHub, the current pre-rename repository coordinate is documented in `OWNER-HANDOFF.md` and `PROJECT-STATUS.md`.
+The canonical GitHub repository is:
 
-The approved target is:
+`SimplixInnovations/sucheckout`
 
-`SimplixInnovations/sucheckout-upayments`
+This repository coordinate is intentionally shorter than the WordPress/plugin technical slug `sucheckout-upayments`. The repository decision does **not** rename the plugin folder, text domain, Composer package, release ZIP, namespace, or protected compatibility identities.
 
-After the GitHub rename, update only **living repository-coordinate references** in a dedicated PR. Do not rewrite historical evidence or legacy migration fixtures merely to remove the old repository/package token.
+Only **living repository-coordinate references** use the canonical GitHub coordinate. Historical evidence and legacy package-root migration fixtures retain older coordinates/tokens where they record true past state.
 
 ## Release engineering
 
