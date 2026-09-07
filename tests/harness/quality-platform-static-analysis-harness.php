@@ -255,7 +255,7 @@ q2_assert(q2_contains($workflow, "reject_across_live_records 'CURRENT / Q1**'"),
 
 
 /*
- * SUCheckout identity-migration invariant.
+ * SUPCheckout identity-migration invariant.
  *
  * The historical Q2 harness remains permanent and now also protects the
  * canonical first-party translation/metadata boundary established before the
@@ -281,7 +281,7 @@ q2_assert(
     'plugin header exposes canonical SUPCheckout product name'
 );
 q2_assert(
-    q2_contains($runtime, 'Text Domain: sucheckout-upayments'),
+    q2_contains($runtime, 'Text Domain: supcheckout'),
     'plugin header exposes canonical SUPCheckout text domain'
 );
 q2_assert(

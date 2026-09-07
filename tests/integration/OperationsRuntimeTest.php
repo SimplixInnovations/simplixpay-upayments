@@ -174,7 +174,7 @@ if ('seed' === $phase) {
     update_option($order_key, $order->get_id(), false);
 
     sucheckout_cert_assert(
-        class_exists('Simplixi\\SUPCheckout\\UPayments\\Migration\\MigrationCliCommand'),
+        class_exists('Simplixi\\SUPCheckout\\Migration\\MigrationCliCommand'),
         'migration CLI module boots in WP-CLI context'
     );
     sucheckout_cert_assert(
