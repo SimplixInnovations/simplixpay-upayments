@@ -1,5 +1,7 @@
 # Changelog
 
+- Final repository-control hardening: upgraded release artifact upload/download actions to current Node-24 generations, added stable `Compatibility Gate` and `Release Gate` aggregate contexts for branch-protection use, and reconciled the owner ruleset handoff. No plugin runtime/provider/persisted identity changed.
+
 All notable **SUCheckout for UPayments** product changes are documented here.
 
 The project is still in pre-release engineering hardening. Entries below are engineering milestones and do not imply a merchant-facing stable release. The independent Simplix development line is `0.x`; `1.0.0` remains reserved for the first release that satisfies the stable-release gates.
