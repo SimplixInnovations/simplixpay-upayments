@@ -26,7 +26,8 @@ Before substantive work read, in this order:
 - PHP namespace root: `Simplixi\SUPCheckout\UPayments`
 - Global PHP prefix for new first-party symbols: `supcheckout_`
 - Constants: `SUPCHECKOUT_*`
-- Canonical GitHub coordinate: `SimplixInnovations/sucheckout`
+- Current GitHub coordinate during implementation: `SimplixInnovations/sucheckout`
+- Target GitHub coordinate after certified merge: `SimplixInnovations/supcheckout`
 - Canonical plugin/package slug remains: `supcheckout`
 
 The word **for** is human-facing relationship copy only and must never be encoded into URLs, slugs, text domains, package names, namespaces, CSS/JS roots or release artifacts.
@@ -204,7 +205,7 @@ UPayments may appear as the provider/integration in human-facing copy. SUPChecko
 
 ## Repository coordinate discipline
 
-The canonical GitHub coordinate is `SimplixInnovations/sucheckout`. The WordPress/plugin technical slug remains `supcheckout`.
+The current GitHub coordinate is `SimplixInnovations/sucheckout` only until the final SUPCheckout identity merge is post-merge green. The owner then renames it to `SimplixInnovations/supcheckout`; the WordPress/plugin technical slug is already `supcheckout`.
 
 For repository-coordinate changes:
 
