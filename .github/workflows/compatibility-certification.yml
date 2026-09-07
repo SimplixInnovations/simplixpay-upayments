@@ -201,3 +201,18 @@ jobs:
         env:
           SUCHECKOUT_CERT_PHASE: final
         run: /tmp/wp-cli.phar eval-file "$GITHUB_WORKSPACE/tests/integration/OperationsRuntimeTest.php" --path="$RUNNER_TEMP/wordpress"
+
+  compatibility-gate:
+    name: Compatibility Gate
+    if: ${{ always() }}
+    needs: [runtime-matrix]
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Require all compatibility matrix cells
+        env:
+          RUNTIME_MATRIX_RESULT: ${{ needs.runtime-matrix.result }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$RUNTIME_MATRIX_RESULT" = "success"
