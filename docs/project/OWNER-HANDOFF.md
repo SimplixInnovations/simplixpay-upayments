@@ -223,6 +223,12 @@ Verify rather than assume:
 - default branch is still `main`;
 - squash merge remains the intended/only merge method;
 - default-branch rules/ruleset still require the intended checks and block force-push/deletion;
+- after this hardening PR has produced the new stable contexts on `main`, update ruleset **Main Rule** so its strict required checks are exactly:
+  - `Governance`;
+  - `H12 Regression Harness`;
+  - `Compatibility Gate`;
+  - `Release Gate`;
+- do not remove the existing Governance/H12 requirements when adding the two aggregate certification gates;
 - Actions remain enabled;
 - workflow permissions remain appropriately minimal;
 - CodeQL/code scanning remains enabled;
@@ -569,6 +575,7 @@ Unsupported in the current certified feature set:
 - [ ] About description/homepage/topics updated
 - [ ] local `origin` updated to `https://github.com/SimplixInnovations/sucheckout.git`
 - [ ] ruleset/Actions/CodeQL/Dependabot/secret scanning/PVR/integrations verified after rename
+- [ ] `Main Rule` requires `Governance`, `H12 Regression Harness`, `Compatibility Gate` and `Release Gate` after the new contexts exist on `main`
 - [ ] coordinate-only living-link PR merged from exact green head
 - [ ] final branch audit shows only intended branch(es), ideally `main`
 
