@@ -1,6 +1,6 @@
 <?php
 
-namespace Simplixi\SUCheckout\UPayments\Payment;
+namespace Simplixi\SUPCheckout\Payment;
 
 use UPayments\Token\CustomerTokenIdentity;
 
