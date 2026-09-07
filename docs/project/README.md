@@ -74,7 +74,7 @@ Namespace:          Simplixi\SUPCheckout
 Package root:       supcheckout/
 First-stable file:  UPayments.php
 Canonical basename: supcheckout/UPayments.php
-Current GitHub repo: SimplixInnovations/sucheckout
+Current GitHub repo: SimplixInnovations/supcheckout
 Target GitHub repo:  SimplixInnovations/supcheckout
 ```
 
