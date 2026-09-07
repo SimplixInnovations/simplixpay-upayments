@@ -131,7 +131,7 @@ Post-merge:
 
 Repository/admin state is fully reconciled: canonical About/topics are correct, Main Rule requires all four aggregate/quality checks, protections remain intact, branch topology is `main` only, and no open PRs/issues/tags/releases exist.
 
-Latest certified `main`: `a0794c1f968e7bb97d3a6589aa109b6236fa307f` with Quality #911, Compatibility #439 (**16/16**), Release Artifact #388, Provider Sandbox #349, WordPress.org #246 and CodeQL #733 all **SUCCESS**.
+Latest certified `main`: `bfadff34142a3a676258e8dc0774bd31287c0138` with Quality #927, Compatibility #455 (**16/16**), Release Artifact #404, Provider Sandbox #365, strict WordPress.org #262 and CodeQL #749 all **SUCCESS**. PR #71 permanently ratcheted official packaged Plugin Check to `strict: true` and eliminated the previously reported warning surface without weakening protected compatibility identities.
 
 ## Current owner/admin/local stage
 
