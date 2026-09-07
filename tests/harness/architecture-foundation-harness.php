@@ -463,7 +463,7 @@ foreach ($publicMethods as $methodName => $message) {
     arch_assert($resolvedPublicMethods[$methodName]['found'], $message);
 }
 
-arch_assert(arch_contains($gateway, '\\Simplixi\\SUCheckout\\UPayments\\Security\\PublicOrderStatus::handle();'), 'public status polling delegates to Security boundary');
+arch_assert(arch_contains($gateway, '\\Simplixi\\SUPCheckout\\Security\\PublicOrderStatus::handle();'), 'public status polling delegates to Security boundary');
 arch_assert(arch_contains($subscriptionComposition, "add_action('woocommerce_process_product_meta', 'saveCustomFieldData')"), 'subscription product-meta hook retains legacy callback identity through A4 composition');
 arch_assert(is_file($root . '/src/Release/Identity.php'), 'Release module exists');
 arch_assert(is_dir($root . '/src/Migration'), 'Migration module exists');
@@ -474,17 +474,17 @@ arch_assert(is_file($root . '/src/Subscription/Composition.php'), 'Subscription 
 arch_assert(is_file($root . '/src/Subscription/Presentation.php'), 'Subscription Presentation boundary exists');
 arch_assert(is_file($root . '/src/Payment/CheckoutPayload.php'), 'A5 CheckoutPayload boundary exists');
 arch_assert(is_file($root . '/src/Payment/CheckoutOrchestrator.php'), 'A5 CheckoutOrchestrator boundary exists');
-arch_assert(arch_contains($subscriptionPresentation, 'namespace Simplixi\\SUCheckout\\UPayments\\Subscription;'), 'Subscription presentation uses SUPCheckout namespace');
-arch_assert(arch_contains($checkoutPayload, 'namespace Simplixi\\SUCheckout\\UPayments\\Payment;'), 'A5 checkout payload uses SUPCheckout Payment namespace');
-arch_assert(arch_contains($checkoutOrchestrator, 'namespace Simplixi\\SUCheckout\\UPayments\\Payment;'), 'A5 checkout orchestrator uses SUPCheckout Payment namespace');
+arch_assert(arch_contains($subscriptionPresentation, 'namespace Simplixi\\SUPCheckout\\Subscription;'), 'Subscription presentation uses SUPCheckout namespace');
+arch_assert(arch_contains($checkoutPayload, 'namespace Simplixi\\SUPCheckout\\Payment;'), 'A5 checkout payload uses SUPCheckout Payment namespace');
+arch_assert(arch_contains($checkoutOrchestrator, 'namespace Simplixi\\SUPCheckout\\Payment;'), 'A5 checkout orchestrator uses SUPCheckout Payment namespace');
 arch_assert(arch_contains($gateway, 'GatewaySettings::fields('), 'gateway settings schema delegates to Admin boundary');
 arch_assert(arch_contains($gateway, 'GatewaySettings::render_multimerchant('), 'multi-merchant presentation delegates to Admin boundary');
 arch_assert(is_file($root . '/src/Payment/OrderLock.php'), 'Payment OrderLock boundary exists');
 arch_assert(is_file($root . '/src/Payment/ProviderResult.php'), 'Payment ProviderResult boundary exists');
 arch_assert(is_file($root . '/src/Payment/StatusRateGate.php'), 'Payment StatusRateGate boundary exists');
 arch_assert(is_file($root . '/src/Payment/StatusVerifier.php'), 'Payment StatusVerifier boundary exists');
-arch_assert(arch_contains($paymentLifecycle, 'namespace Simplixi\\SUCheckout\\UPayments\\Payment;'), 'Payment lifecycle uses SUPCheckout namespace');
-arch_assert(arch_contains($securityStatus, 'namespace Simplixi\\SUCheckout\\UPayments\\Security;'), 'Security boundary uses SUPCheckout namespace');
+arch_assert(arch_contains($paymentLifecycle, 'namespace Simplixi\\SUPCheckout\\Payment;'), 'Payment lifecycle uses SUPCheckout namespace');
+arch_assert(arch_contains($securityStatus, 'namespace Simplixi\\SUPCheckout\\Security;'), 'Security boundary uses SUPCheckout namespace');
 arch_assert(is_file($root . '/includes/Token/CustomerTokenIdentity.php'), 'protected H12 token identity module exists');
 arch_assert(arch_contains($tokenIdentity, 'CustomerTokenIdentity'), 'H12 token identity implementation remains readable');
 arch_assert(is_file($root . '/includes/Subscription/Cron/Scheduler.php'), 'protected subscription scheduler exists');
@@ -609,11 +609,11 @@ arch_assert(arch_has_token_sequence($validAvailability['body'], $settingsReadSeq
 
 $providerResolver = arch_read($root, 'src/Provider/EndpointResolver.php');
 arch_assert($providerResolver !== '', 'A1 Provider endpoint resolver exists');
-arch_assert(arch_contains($providerResolver, 'namespace Simplixi\\SUCheckout\\UPayments\\Provider;'), 'A1 Provider resolver uses the SUPCheckout Provider namespace');
+arch_assert(arch_contains($providerResolver, 'namespace Simplixi\\SUPCheckout\\Provider;'), 'A1 Provider resolver uses the SUPCheckout Provider namespace');
 
 $availabilityService = arch_read($root, 'src/Provider/PaymentMethodAvailability.php');
 arch_assert($availabilityService !== '', 'A2 payment-method availability service exists');
-arch_assert(arch_contains($availabilityService, 'namespace Simplixi\\SUCheckout\\UPayments\\Provider;'), 'A2 availability service uses the SUPCheckout Provider namespace');
+arch_assert(arch_contains($availabilityService, 'namespace Simplixi\\SUPCheckout\\Provider;'), 'A2 availability service uses the SUPCheckout Provider namespace');
 arch_assert(is_file($root . '/tests/harness/architecture-payment-method-availability-harness.php'), 'A2 availability harness exists');
 
 $gatewaySettings = arch_read($root, 'src/Admin/GatewaySettings.php');

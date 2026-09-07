@@ -72,8 +72,8 @@ p0_assert(Identity::TARGET_TEXT_DOMAIN === 'supcheckout', 'target text domain re
 
 // Bootstrap exposes canonical SUPCheckout identity without destroying legacy plugin-file API.
 p0_assert(p0_contains($bootstrap, "src/Release/Identity.php"), 'bootstrap loads canonical release identity');
-p0_assert(p0_contains($bootstrap, "SUCHECKOUT_UPAYMENTS_VERSION"), 'bootstrap defines canonical version constant');
-p0_assert(p0_contains($bootstrap, "SUCHECKOUT_UPAYMENTS_PLUGIN_FILE"), 'bootstrap defines canonical plugin-file constant');
+p0_assert(p0_contains($bootstrap, "SUPCHECKOUT_VERSION"), 'bootstrap defines canonical version constant');
+p0_assert(p0_contains($bootstrap, "SUPCHECKOUT_PLUGIN_FILE"), 'bootstrap defines canonical plugin-file constant');
 p0_assert(p0_contains($bootstrap, "UPAYMENTS_PLUGIN_FILE"), 'legacy plugin-file constant remains available');
 
 // No external self-update authority may remain after Phase 0A.
