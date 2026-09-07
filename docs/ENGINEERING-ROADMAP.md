@@ -65,7 +65,7 @@ A future physical rename to `supcheckout.php` remains separately gated.
 
 **DONE / VERIFIED.** The pre-rebrand enterprise engineering foundation was closed with full exact-head quality, compatibility, artifact, provider and security evidence. Those records remain historical evidence.
 
-## Final SUPCheckout identity migration — IN EXACT-HEAD CERTIFICATION
+## Final SUPCheckout identity migration — DONE / VERIFIED
 
 The first-party identity is now:
 
