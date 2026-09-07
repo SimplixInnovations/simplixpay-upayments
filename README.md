@@ -74,7 +74,7 @@ The **SUPCheckout identity migration and first-party naming cleanup are DONE / V
 | PHP runtime | 7.4, 8.3 and 8.4 in exact certified cells |
 | Provider sandbox Charge initialization | **Verified — bounded** |
 | Deterministic ZIP/checksum/manifest | **Verified / permanent gate** |
-| Official Plugin Check | **0 blocking errors on certified package** |
+| Official Plugin Check | **Strict zero-warning/error gate on certified package** |
 | Automatic Woo refunds | **Unsupported** |
 | Arbitrary marketplace multi-split | **Unsupported** |
 | Stable public release | **Not yet published** |
@@ -108,6 +108,14 @@ Latest first-party naming cleanup:
 - PR #61 squash merge `efe937c67343242b7ccf3396a67b3cf2ce35ebac`;
 - remaining safe retired first-party runtime/control identifiers migrated to canonical SUPCheckout equivalents while protected UPayments/persisted contracts remained unchanged;
 - fresh main Quality #781, Compatibility #309 (**16/16**), Release Artifact #258, Provider Sandbox #221, WordPress.org #116 and CodeQL #595 — **SUCCESS**.
+
+Strict WordPress.org package hardening:
+
+- PR #71 exact head `a820b7feff765aa99e2321c6cc930baa57793fac` passed Quality #926, Compatibility #454 (**16/16**), Release Artifact #403, Provider Sandbox #364, strict WordPress.org #261 and CodeQL #748;
+- PR #71 squash-merged as `bfadff34142a3a676258e8dc0774bd31287c0138`;
+- post-merge Quality #927, Compatibility #455 (**16/16**), Release Artifact #404, Provider Sandbox #365, strict WordPress.org #262 and CodeQL #749 — **SUCCESS**;
+- official packaged Plugin Check is configured with `strict: true`; the exact-main result artifact reports `Success: Checks complete. No errors found.`;
+- deterministic `supcheckout-0.1.0.zip` on that exact main has SHA-256 `0436256b16605b9b2db91aa8a7865ecec6cae7ef00fa515048d9643e50ad990a` and 74 files.
 
 See [`docs/project/PROJECT-STATUS.md`](docs/project/PROJECT-STATUS.md) for the living state and [`docs/COMPATIBILITY.md`](docs/COMPATIBILITY.md) for the public evidence boundary.
 
@@ -178,7 +186,7 @@ Development/test/control files are excluded from the public package.
 
 ## Repository administration
 
-Repository administration is closed and verified: canonical About/topics, strict four-check Main Rule, squash-only merging, deletion/non-fast-forward/linear-history protection, `main`-only branch topology, and no open PRs/issues/tags/releases. Latest certified `main`: `a0794c1f968e7bb97d3a6589aa109b6236fa307f` with Quality #911, Compatibility #439 (**16/16**), Release Artifact #388, Provider Sandbox #349, WordPress.org #246 and CodeQL #733 all green.
+Repository administration is closed and verified: canonical About/topics, strict four-check Main Rule, squash-only merging, deletion/non-fast-forward/linear-history protection, `main`-only branch topology, and no open PRs/issues/tags/releases. Latest certified `main`: `bfadff34142a3a676258e8dc0774bd31287c0138` with Quality #927, Compatibility #455 (**16/16**), Release Artifact #404, Provider Sandbox #365, strict WordPress.org #262 and CodeQL #749 all green.
 
 ## Local owner acceptance
 
