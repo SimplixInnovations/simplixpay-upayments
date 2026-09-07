@@ -23,7 +23,7 @@ Before substantive work read, in this order:
 - Provider: **UPayments**
 - Maintainer: **Simplix Innovations**
 - Canonical slug/text domain: `supcheckout`
-- PHP namespace root: `Simplixi\SUPCheckout\UPayments`
+- PHP namespace root: `Simplixi\SUPCheckout`
 - Global PHP prefix for new first-party symbols: `supcheckout_`
 - Constants: `SUPCHECKOUT_*`
 - Current GitHub coordinate during implementation: `SimplixInnovations/sucheckout`
