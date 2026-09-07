@@ -1,6 +1,6 @@
 # Contribution Policy
 
-Thank you for helping improve **SUCheckout for UPayments**.
+Thank you for helping improve **SUPCheckout for UPayments**.
 
 ## Current contribution model
 
