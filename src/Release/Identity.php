@@ -20,7 +20,7 @@ final class Identity {
     public const SLUG = 'supcheckout';
     public const REPOSITORY = 'SimplixInnovations/sucheckout';
     public const TEXT_DOMAIN = 'supcheckout';
-    public const NAMESPACE_ROOT = 'Simplixi\\SUPCheckout\\UPayments';
+    public const NAMESPACE_ROOT = 'Simplixi\\SUPCheckout';
 
     /** External self-updates stay disabled until release authority is explicitly enabled. */
     public const UPDATE_CHANNEL = 'disabled';
