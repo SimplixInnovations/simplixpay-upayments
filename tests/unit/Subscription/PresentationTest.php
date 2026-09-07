@@ -213,7 +213,7 @@ final class PresentationTest extends TestCase {
 
         self::assertStringNotContainsString('name="page_id"', $without_page_id);
         self::assertStringNotContainsString('value="12"', $without_page_id);
-        self::assertStringContainsString('value="active" selected="selected"', $without_page_id);
+        self::assertMatchesRegularExpression('/value="active"\s+selected="selected"/', $without_page_id);
     }
 
     public function test_account_columns_labels_and_status_output_remain_escaped(): void {
