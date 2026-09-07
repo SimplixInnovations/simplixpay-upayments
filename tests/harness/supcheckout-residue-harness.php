@@ -294,5 +294,31 @@ foreach ($qa_unexpected as $qa_item) {
 }
 sur_assert($qa_unexpected === array(), 'living QA/control-plane identity uses canonical SUPCheckout naming');
 
+/*
+ * Final living runtime residue contract. These are intentionally limited to
+ * non-persisted presentation/internal identities; frozen migration, provider,
+ * option, metadata and cron identities are excluded.
+ */
+$migration_admin = sur_read($root, 'src/Migration/MigrationAdmin.php');
+$order_lock = sur_read($root, 'src/Payment/OrderLock.php');
+$new_design_template = sur_read($root, 'templates/new-design-form.php');
+$old_design_template = sur_read($root, 'templates/old-design-form.php');
+
+foreach (array('sucheckout-user-ids', 'sucheckout-offset', 'sucheckout-limit') as $retired_dom_id) {
+    sur_assert(strpos($migration_admin, $retired_dom_id) === false, 'retired non-persisted admin DOM identity is absent: ' . $retired_dom_id);
+}
+sur_assert(strpos($order_lock, 'simplixpay-upay-lock-') === false, 'retired non-persisted lock entropy label is absent');
+sur_assert(strpos($new_design_template, 'WC_Gateway_Your_Gateway') === false, 'new-design template documents the real gateway type');
+sur_assert(strpos($old_design_template, 'WC_Gateway_Your_Gateway') === false, 'old-design template documents the real gateway type');
+sur_assert(!is_file($root . '/templates/order-details.php'), 'unreferenced legacy order-details template is absent');
+
+/*
+ * Google Pay and Samsung Pay icons are referenced through the dynamic
+ * assets/images/<payment-method>.png template contract rather than literals.
+ * Keep them even though literal-filename searches report no references.
+ */
+sur_assert(is_file($root . '/assets/images/google-pay.png'), 'dynamic Google Pay icon asset remains packaged');
+sur_assert(is_file($root . '/assets/images/samsung-pay.png'), 'dynamic Samsung Pay icon asset remains packaged');
+
 echo "\nSUPCheckout Residue: {$pass} PASS / {$fail} FAIL\n";
 exit($fail === 0 ? 0 : 1);
