@@ -197,8 +197,7 @@ final class GatewaySettingsTest extends TestCase {
             'https://example.test/plugin/',
             'upayments',
             array('page' => 'wc-settings', 'tab' => 'checkout', 'section' => 'upayments'),
-            'woocommerce_page_wc-settings',
-            '0.1.0'
+            'woocommerce_page_wc-settings'
         );
 
         self::assertSame(array(array(
@@ -224,8 +223,7 @@ final class GatewaySettingsTest extends TestCase {
             'https://example.test/plugin/',
             'upayments',
             array('page' => 'wc-settings', 'tab' => 'checkout', 'section' => 'other'),
-            'other_screen',
-            '0.1.0'
+            'other_screen'
         );
         self::assertSame(array(), $GLOBALS['simplixpay_test_gateway_settings']['styles']);
         self::assertSame(array(), $GLOBALS['simplixpay_test_gateway_settings']['scripts']);

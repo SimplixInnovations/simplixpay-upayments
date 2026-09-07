@@ -235,8 +235,7 @@ GatewaySettings::enqueue_admin_assets(
     'https://example.test/plugin/',
     'upayments',
     array('page' => 'wc-settings', 'tab' => 'checkout', 'section' => 'upayments'),
-    'woocommerce_page_wc-settings',
-    '0.1.0'
+    'woocommerce_page_wc-settings'
 );
 a3_assert_same(array('upayments-multimerchant-style'), a3_asset_handles('styles'), 'allocation stylesheet loads on exact gateway settings page');
 a3_assert_same(array('upayments-multimerchant-repeater', 'upayments-admin-logic'), a3_asset_handles('scripts'), 'exact inherited admin scripts load on gateway settings page');
@@ -283,7 +282,7 @@ a3_assert_same(
 );
 
 a3_reset_assets();
-GatewaySettings::enqueue_admin_assets('https://example.test/plugin/', 'upayments', array(), 'dashboard', '0.1.0');
+GatewaySettings::enqueue_admin_assets('https://example.test/plugin/', 'upayments', array(), 'dashboard');
 a3_assert_same(array(), a3_asset_handles('styles'), 'admin styles do not load outside settings');
 a3_assert_same(array(), a3_asset_handles('scripts'), 'admin scripts do not load outside settings');
 

@@ -306,23 +306,22 @@ final class GatewaySettings {
      * @param string $gateway_id Gateway ID.
      * @param array  $query Request query.
      * @param string $screen_id Current screen ID.
-     * @param string $asset_version Canonical plugin release version.
      * @return void
      */
-    public static function enqueue_admin_assets($plugin_url, $gateway_id, array $query, $screen_id, $asset_version) {
+    public static function enqueue_admin_assets($plugin_url, $gateway_id, array $query, $screen_id) {
         if (isset($query['page'], $query['tab'], $query['section'])
             && $query['page'] == 'wc-settings'
             && $query['tab'] == 'checkout'
             && $query['section'] == $gateway_id
         ) {
-            wp_enqueue_style('upayments-multimerchant-style', $plugin_url . 'assets/css/admin-style.css', array(), $asset_version);
-            wp_enqueue_script('upayments-multimerchant-repeater', $plugin_url . 'assets/js/multimerchant-repeater.js', array('jquery'), $asset_version, true);
+            wp_enqueue_style('upayments-multimerchant-style', $plugin_url . 'assets/css/admin-style.css', array(), \Simplixi\SUPCheckout\Release\Identity::VERSION);
+            wp_enqueue_script('upayments-multimerchant-repeater', $plugin_url . 'assets/js/multimerchant-repeater.js', array('jquery'), \Simplixi\SUPCheckout\Release\Identity::VERSION, true);
         }
 
         if ($screen_id === 'woocommerce_page_wc-settings'
             && isset($query['tab']) && $query['tab'] === 'checkout'
         ) {
-            wp_enqueue_script('upayments-admin-logic', $plugin_url . 'assets/js/admin-settings.js', array('jquery'), $asset_version, true);
+            wp_enqueue_script('upayments-admin-logic', $plugin_url . 'assets/js/admin-settings.js', array('jquery'), \Simplixi\SUPCheckout\Release\Identity::VERSION, true);
             wp_add_inline_style('woocommerce_admin_styles', '.upayments-disabled-setting { opacity: 0.5; pointer-events: none; }');
         }
     }

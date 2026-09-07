@@ -1148,8 +1148,7 @@ function woocommerceUpaymentsInit() {
                 plugin_dir_url(__FILE__),
                 $this->id,
                 $query,
-                $screen ? $screen->id : '',
-                SUPCHECKOUT_VERSION
+                $screen ? $screen->id : ''
             );
         }
 
