@@ -22,6 +22,13 @@ The enterprise completion plan is retained at `docs/superpowers/plans/2026-09-06
 
 **DONE / VERIFIED.** Closed the numbered quality sequence at Q19 while retaining the permanent regression stack.
 
+Historical terminal quality gates retained as permanent evidence:
+
+- Q16 migration-core preflight/batch/executor characterization and baseline-free analysis — **DONE / VERIFIED**;
+- Q17 payment-runtime checkout-orchestration/lifecycle characterization and baseline-free analysis — **DONE / VERIFIED**;
+- Q18 Blocks activation/availability enforcement and permanent regression coverage — **DONE / VERIFIED**;
+- Q19 subscription product-eligibility consistency — **DONE / VERIFIED**.
+
 ### Task 2 — real platform compatibility
 
 **DONE / VERIFIED.** Permanent 16-cell real WordPress/WooCommerce/PHP × legacy/HPOS matrix covering activation, Classic registration, Blocks registration/availability and Woo order CRUD.
