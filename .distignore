@@ -2,6 +2,7 @@
 /.github/
 /.phpunit.cache/
 /tests/
+/assets/screenshots/
 /vendor/
 /composer.json
 /composer.lock

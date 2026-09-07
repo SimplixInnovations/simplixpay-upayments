@@ -226,7 +226,6 @@ function woocommerceUpaymentsInit() {
             add_action("woocommerce_api_" . strtolower("WC_UPayments") , [$this, "check_ipn_response", ]);
             add_filter("woocommerce_gateway_icon", [$this, "custom_payment_gateway_icons"], 10, 2);
             add_action("woocommerce_admin_order_data_after_order_details", [$this, "admin_order_details"], 10, 3);
-            add_action("admin_footer", [$this, "UPayments_admin_footer"], 10, 3);
             add_action("admin_enqueue_scripts", [$this, "admin_enqueue_scripts"]);
             add_action('wp_enqueue_scripts', [$this, 'enqueue_scripts']);
             
@@ -301,11 +300,6 @@ function woocommerceUpaymentsInit() {
                 $this->method_title,
                 $this->method_description
             );
-        }
-
-        public function UPayments_admin_footer()
-        {
-            include_once UP_PLUGIN_PATH . 'includes/admin-footer.php';
         }
 
         public function get_logged_in_user_phone_number() {
@@ -1111,7 +1105,7 @@ function woocommerceUpaymentsInit() {
          */
         public function enqueue_scripts() {
             $plugin_url = plugin_dir_url( __FILE__ );
-            wp_enqueue_style('supcheckout-customer', $plugin_url . 'assets/css/customer.css', array(), '3.0.0' );
+            wp_enqueue_style('supcheckout-customer', $plugin_url . 'assets/css/customer.css', array(), SUPCHECKOUT_VERSION );
             // Check if we are on the checkout page AND the gateway is active
             if ( ! is_checkout() || ! $this->is_available() ) {
                 return;
@@ -1123,24 +1117,18 @@ function woocommerceUpaymentsInit() {
             if (is_checkout() && !is_wc_endpoint_url()) {
                 if ($this->get_option('use_new_design') == 'yes') {
                     // Load New Design specific resources (Modal handling, modern API SDK)
-                    wp_enqueue_style('supcheckout-checkout-new-style', $plugin_url . 'assets/css/new-design.css', array(), '3.0.0' );
-                    wp_enqueue_script('supcheckout-checkout-new-script', $plugin_url . 'assets/js/new-upay.js', array('jquery'), '3.0.0', true );
+                    wp_enqueue_style('supcheckout-checkout-new-style', $plugin_url . 'assets/css/new-design.css', array(), SUPCHECKOUT_VERSION );
+                    wp_enqueue_script('supcheckout-checkout-new-script', $plugin_url . 'assets/js/new-upay.js', array('jquery'), SUPCHECKOUT_VERSION, true );
                 } else {
-                    // Load Old Design specific resources (Inline form handling, legacy API SDK)
-                    wp_enqueue_style('supcheckout-checkout-legacy-style', $plugin_url . 'assets/css/old-design.css', array(), '3.0.0' );
-                    wp_enqueue_script('supcheckout-checkout-legacy-script', $plugin_url . 'assets/js/old-upay.js', array('jquery'), '3.0.0', true );
+                    // Load legacy inline-form handling without the inherited empty stylesheet.
+                    wp_enqueue_script('supcheckout-checkout-legacy-script', $plugin_url . 'assets/js/old-upay.js', array('jquery'), SUPCHECKOUT_VERSION, true );
                 }
-                wp_enqueue_script('supcheckout-subscription-checkout', $plugin_url. 'assets/js/subscription-checkout.js', array('jquery'),'3.0.0',true);
+                wp_enqueue_script('supcheckout-subscription-checkout', $plugin_url. 'assets/js/subscription-checkout.js', array('jquery'),SUPCHECKOUT_VERSION,true);
                 wp_localize_script('supcheckout-subscription-checkout', 'wcUser', [
                     'isLoggedIn' => is_user_logged_in(),
                     'userId'     => get_current_user_id(),
                 ]);
             }            
-            
-            // Localize data needed by the JavaScript (e.g., API keys, environment settings)
-            wp_localize_script( 'your-gateway-core', 'YourGatewayParams', array(
-                'isNewDesign' => $this->get_option('use_new_design') == 'yes',
-            ));
         }
 
         /**
@@ -1160,7 +1148,8 @@ function woocommerceUpaymentsInit() {
                 plugin_dir_url(__FILE__),
                 $this->id,
                 $query,
-                $screen ? $screen->id : ''
+                $screen ? $screen->id : '',
+                SUPCHECKOUT_VERSION
             );
         }
 
