@@ -1,8 +1,8 @@
-# SUCheckout for UPayments — Project Control Documents
+# SUPCheckout for UPayments — Project Control Documents
 
-This directory is the permanent engineering control plane for **SUCheckout for UPayments**.
+This directory is the permanent engineering control plane for **SUPCheckout for UPayments**.
 
-The main rule is simple: **living documents own current truth; historical documents preserve milestone truth.** Do not rewrite historical evidence merely to make old milestones look like they originally occurred under SUCheckout.
+The main rule is simple: **living documents own current truth; historical documents preserve milestone truth.** Do not rewrite historical evidence merely to make old milestones look like they originally occurred under SUPCheckout.
 
 ## Required read order
 
@@ -11,11 +11,11 @@ For a new engineering/release session:
 1. [`../../AGENTS.md`](../../AGENTS.md) — repository-wide execution, compatibility and merge rules
 2. [`PROJECT-STATUS.md`](PROJECT-STATUS.md) — canonical current verified state
 3. [`OWNER-HANDOFF.md`](OWNER-HANDOFF.md) — exact owner/admin/local/release sequence
-4. [`NAMING-IDENTITY-STANDARD.md`](NAMING-IDENTITY-STANDARD.md) — frozen SUCheckout identity and protected compatibility IDs
+4. [`NAMING-IDENTITY-STANDARD.md`](NAMING-IDENTITY-STANDARD.md) — frozen SUPCheckout identity and protected compatibility IDs
 5. [`../../docs/COMPATIBILITY.md`](../COMPATIBILITY.md) — public compatibility/evidence truth
 6. [`NEW-CHAT-HANDOFF.md`](NEW-CHAT-HANDOFF.md) — compact continuation context
 7. [`RELEASE-ENGINEERING.md`](RELEASE-ENGINEERING.md) — deterministic artifact and migration/release contract
-8. [`ENTERPRISE-CERTIFICATION.md`](ENTERPRISE-CERTIFICATION.md) — retained enterprise + SUCheckout certification evidence
+8. [`ENTERPRISE-CERTIFICATION.md`](ENTERPRISE-CERTIFICATION.md) — retained enterprise + SUPCheckout certification evidence
 9. [`MASTER-ENGINEERING-PLAYBOOK.md`](MASTER-ENGINEERING-PLAYBOOK.md) — broader permanent engineering rules
 10. [`ARCHITECTURE-CODE-QUALITY.md`](ARCHITECTURE-CODE-QUALITY.md) — architecture discovery/A1-A5 and later ratchets
 11. [`QUALITY-PLATFORM.md`](QUALITY-PLATFORM.md) — permanent closed Q1-Q19 record
@@ -66,15 +66,16 @@ Do not bulk-rebrand these records. Add a current-state banner/cross-reference wh
 ## Current identity summary
 
 ```text
-Human product:      SUCheckout for UPayments
-Short product:      SUCheckout
-Technical slug:     sucheckout-upayments
-Text domain:        sucheckout-upayments
-Namespace:          Simplixi\SUCheckout\UPayments
-Package root:       sucheckout-upayments/
+Human product:      SUPCheckout for UPayments
+Short product:      SUPCheckout
+Technical slug:     supcheckout
+Text domain:        supcheckout
+Namespace:          Simplixi\SUPCheckout
+Package root:       supcheckout/
 First-stable file:  UPayments.php
-Canonical basename: sucheckout-upayments/UPayments.php
-GitHub repository:  SimplixInnovations/sucheckout
+Canonical basename: supcheckout/UPayments.php
+Current GitHub repo: SimplixInnovations/sucheckout
+Target GitHub repo:  SimplixInnovations/supcheckout
 ```
 
 `for` is display/relationship wording only and must never be encoded into technical identifiers.
