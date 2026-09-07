@@ -18,7 +18,7 @@
 | Production maturity | **Pre-release / final SUPCheckout identity migration in exact-head certification** |
 | Canonical technical slug | `supcheckout` |
 | WordPress text domain | `supcheckout` |
-| PHP namespace | `Simplixi\SUPCheckout\UPayments` |
+| PHP namespace | `Simplixi\SUPCheckout` |
 | Canonical release root | `supcheckout/` |
 | First-stable physical bootstrap | `UPayments.php` — protected compatibility exception |
 | Historical pre-stable SUCheckout runtime migration | **DONE / VERIFIED — retained as evidence** |
@@ -120,7 +120,7 @@ The approved identity is:
 - short product reference: **SUPCheckout**;
 - technical slug: `supcheckout`;
 - WordPress text domain: `supcheckout`;
-- PHP namespace root: `Simplixi\SUPCheckout\UPayments`;
+- PHP namespace root: `Simplixi\SUPCheckout`;
 - deterministic package: `supcheckout-X.Y.Z.zip`;
 - package root: `supcheckout/`;
 - first-stable bootstrap: `UPayments.php`;
