@@ -462,6 +462,7 @@ final class MigrationPreflight {
         $key_like = $wpdb->esc_like($prefix) . '%';
         $token_like = '%' . $wpdb->esc_like($token) . '%';
         $limit = self::GLOBAL_PROVENANCE_LIMIT + 1;
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Cross-user provenance scan is a bounded migration safety probe that must read current usermeta.
         $rows = $wpdb->get_results(
             $wpdb->prepare(
                 "SELECT user_id, meta_key, meta_value FROM {$wpdb->usermeta} WHERE meta_key LIKE %s AND meta_value LIKE %s LIMIT %d",
@@ -515,6 +516,7 @@ final class MigrationPreflight {
         }
         $prefix = '_upay_customer_token_v2_b' . (string) get_current_blog_id() . '_';
         $like = $wpdb->esc_like($prefix) . '%';
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Global provenance existence is a migration safety invariant and must not be served from cache.
         $value = $wpdb->get_var(
             $wpdb->prepare(
                 "SELECT meta_key FROM {$wpdb->usermeta} WHERE meta_key LIKE %s LIMIT 1",
