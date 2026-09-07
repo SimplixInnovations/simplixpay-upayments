@@ -28,7 +28,8 @@ Current strict release-engineering baseline:
 - squash merge `bfadff34142a3a676258e8dc0774bd31287c0138`;
 - post-merge Quality #927, Compatibility #455 (**16/16**), Release Artifact #404, Provider Sandbox #365, strict WordPress.org #262 and CodeQL #749 — **SUCCESS**;
 - official packaged Plugin Check uses `strict: true`; exact-main artifact result: `Success: Checks complete. No errors found.`;
-- exact-main deterministic ZIP: `supcheckout-0.1.0.zip`, SHA-256 `0436256b16605b9b2db91aa8a7865ecec6cae7ef00fa515048d9643e50ad990a`, 74 files;
+- PR #71 runtime-baseline deterministic ZIP: `supcheckout-0.1.0.zip`, SHA-256 `0436256b16605b9b2db91aa8a7865ecec6cae7ef00fa515048d9643e50ad990a`, 74 files;
+- current documentation-reconciled package candidate (runtime unchanged; distributed README updated): SHA-256 `ffdf69d55169e61bb64b1b8401f435bf4c6bbcfaced6750ad9a12cda4a6200ef`, 74 files;
 - repository remains `main` only with zero open PRs/issues, tags or releases after PR #71 closeout.
 
 

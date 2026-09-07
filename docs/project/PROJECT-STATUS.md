@@ -274,7 +274,8 @@ PR #71 exact head `a820b7feff765aa99e2321c6cc930baa57793fac` passed the complete
 - Provider Sandbox #365 — **SUCCESS**;
 - WordPress.org Submission Check #262 — **SUCCESS / strict package gate**;
 - CodeQL/main-security #749 — **SUCCESS**;
-- release ZIP `supcheckout-0.1.0.zip` — SHA-256 `0436256b16605b9b2db91aa8a7865ecec6cae7ef00fa515048d9643e50ad990a`, 74 files.
+- PR #71 runtime-baseline ZIP `supcheckout-0.1.0.zip` — SHA-256 `0436256b16605b9b2db91aa8a7865ecec6cae7ef00fa515048d9643e50ad990a`, 74 files;
+- current documentation-reconciled package candidate (same runtime; distributed README updated) — SHA-256 `ffdf69d55169e61bb64b1b8401f435bf4c6bbcfaced6750ad9a12cda4a6200ef`, 74 files.
 
 ## Remaining owner/admin/local work
 
