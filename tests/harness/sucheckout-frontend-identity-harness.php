@@ -33,6 +33,7 @@ $settings = sufi_read($root, 'src/Admin/GatewaySettings.php');
 $new_template = sufi_read($root, 'templates/new-design-form.php');
 $old_template = sufi_read($root, 'templates/old-design-form.php');
 $new_js = sufi_read($root, 'assets/js/new-upay.js');
+$blocks_js = sufi_read($root, 'assets/js/upayments-block.js');
 
 foreach (array(
     'supcheckout-customer',
@@ -62,6 +63,11 @@ sufi_assert(strpos($gateway, "'supcheckout-checkout-legacy-style'") === false, '
 sufi_assert(strpos($gateway, 'assets/css/old-design.css') === false, 'empty legacy stylesheet is not enqueued');
 sufi_assert(strpos($gateway, 'includes/admin-footer.php') === false, 'empty admin-footer include is not registered');
 sufi_assert(strpos($gateway, 'your-gateway-core') === false, 'nonexistent script handle is not localized');
+sufi_assert(strpos($gateway, 'upayments-debug') === false, 'default-gateway selection emits no unconditional diagnostic logging');
+sufi_assert(strpos($blocks_js, 'console.log(') === false, 'Blocks runtime contains no console debugging');
+sufi_assert(strpos($gateway, 'UPayemnts') === false, 'active provider icon alt text is spelled UPayments');
+sufi_assert(strpos($gateway, 'assets/images/logo.png') === false, 'gateway does not retain duplicate provider-logo path');
+sufi_assert(strpos($gateway, 'assets/images/upayment.png') !== false, 'gateway uses the single canonical provider-logo asset');
 
 foreach (array(
     'assets/css/old-design.css',
@@ -71,6 +77,8 @@ foreach (array(
     'assets/js/checkout/constants.js',
     'assets/js/checkout/data.js',
     'assets/images/disabled.gif',
+    'assets/js/upay.js',
+    'assets/images/logo.png',
 ) as $dead_asset) {
     sufi_assert(!is_file($root . '/' . $dead_asset), 'proven dead runtime asset is absent: ' . $dead_asset);
 }
