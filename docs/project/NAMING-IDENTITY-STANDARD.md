@@ -3,7 +3,7 @@
 **Status:** CANONICAL / CURRENT
 **Maintainer:** Simplix Innovations
 **Product family:** SUCheckout
-**Canonical technical slug:** `sucheckout-upayments`
+**Canonical slug:** `sucheckout-upayments`
 
 This document is authoritative for all new naming and identity decisions.
 
@@ -72,7 +72,7 @@ Every inherited identifier must be classified before change as one of:
 - **PROVIDER CONTRACT** — UPayments-defined request/response/schema terminology that must remain provider-accurate;
 - **REMOVE** — obsolete implementation residue proven unused and safe to delete.
 
-Never perform a blind repository-wide replacement of `upayments`, `_upay_`, `UPayments` or `simplixpay-upayments`.
+Never perform a blind repository-wide replacement of provider/persisted compatibility tokens or the retired pre-rebrand package-root token.
 
 ## Protected compatibility identifiers
 
@@ -145,9 +145,7 @@ Existing globals, provider identifiers and persisted compatibility identifiers m
 
 ## Repository rename rule
 
-Until the owner renames GitHub, the repository coordinate remains temporarily:
-
-`SimplixInnovations/simplixpay-upayments`
+Until the owner renames GitHub, the current pre-rename repository coordinate is documented in `OWNER-HANDOFF.md` and `PROJECT-STATUS.md`.
 
 The approved target is:
 
