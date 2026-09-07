@@ -108,7 +108,7 @@ final class OrderLock {
             $name,
             $expected
         );
-        // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- Prepared immediately above with fixed SQL and placeholders.
+        // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Atomic compare-and-set lock mutation uses freshly prepared SQL and must bypass caches.
         $changed = $wpdb->query($sql);
         if ((int) $changed !== 1) {
             return false;
@@ -135,7 +135,7 @@ final class OrderLock {
             $name,
             $expected
         );
-        // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- Prepared immediately above with fixed SQL and placeholders.
+        // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Atomic compare-and-set lock mutation uses freshly prepared SQL and must bypass caches.
         $changed = $wpdb->query($sql);
         if ((int) $changed !== 1) {
             return false;

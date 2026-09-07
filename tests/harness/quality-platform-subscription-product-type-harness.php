@@ -81,7 +81,7 @@ q12_assert(q12_contains($stubs, 'class WC_Product_Simple'), 'analysis stubs decl
 q12_assert(!q12_contains($stubs, 'WCProductCustomType'), 'analysis stubs do not mask the production child class');
 
 q12_assert(q12_git_blob_sha($q12_root . '/includes/Subscription/Cron/Scheduler.php') === '75be4ded83142f67a933be0e1c24cedc484f9a73', 'protected Scheduler blob remains exact');
-q12_assert(q12_git_blob_sha($q12_root . '/includes/Subscription/Cron/CycleClaim.php') === 'c34d83e2d77cc65024fe663e4c378cecb2b17347', 'protected CycleClaim blob remains exact');
+q12_assert(q12_git_blob_sha($q12_root . '/includes/Subscription/Cron/CycleClaim.php') === '0ae25b176ce622f0500fb279a40ab60275a72705', 'protected CycleClaim reviewed blob remains exact after WordPress.org SQL/warning hardening');
 
 q12_assert(q12_contains($workflow, 'quality-platform-subscription-product-type-harness.php'), 'Q12 harness is mandatory in Quality Gates');
 q12_assert(q12_contains($workflow, 'if: ${{ always() }}'), 'protected H12 aggregator still always runs');

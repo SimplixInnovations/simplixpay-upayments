@@ -8,6 +8,7 @@ use Automattic\WooCommerce\Blocks\Payments\Integrations\AbstractPaymentMethodTyp
  * This class handles the integration of the UPayments gateway with the 
  * WooCommerce Block Checkout (including data and assets registration).
  */
+// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedClassFound -- Protected legacy WooCommerce Blocks integration identity retained for compatibility.
 class WCGatewayUPaymentsBlocks extends AbstractPaymentMethodType {
 
     protected $name = 'upayments';

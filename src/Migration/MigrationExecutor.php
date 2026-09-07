@@ -344,6 +344,7 @@ final class MigrationExecutor {
         ) {
             return false;
         }
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Migration advisory lock must observe the live database connection and cannot be cached.
         $value = $wpdb->get_var($wpdb->prepare('SELECT GET_LOCK(%s, 5)', $lock_name));
         return $value === 1 || $value === '1';
     }
@@ -355,6 +356,7 @@ final class MigrationExecutor {
         ) {
             return;
         }
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Migration advisory-lock release must execute against the live connection and cannot be cached.
         $wpdb->get_var($wpdb->prepare('SELECT RELEASE_LOCK(%s)', $lock_name));
     }
 

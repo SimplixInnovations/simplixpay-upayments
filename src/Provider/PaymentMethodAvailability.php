@@ -68,6 +68,7 @@ final class PaymentMethodAvailability {
     private function acquire_lock() {
         global $wpdb;
 
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- MySQL advisory lock is an atomic concurrency primitive and must never be cached.
         $result = $wpdb->get_var(
             $wpdb->prepare('SELECT GET_LOCK(%s, 0)', $this->lock_name())
         );
@@ -84,6 +85,7 @@ final class PaymentMethodAvailability {
     private function release_lock() {
         global $wpdb;
 
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- MySQL advisory-lock release must execute against the live connection and cannot be cached.
         $wpdb->get_var(
             $wpdb->prepare('SELECT RELEASE_LOCK(%s)', $this->lock_name())
         );

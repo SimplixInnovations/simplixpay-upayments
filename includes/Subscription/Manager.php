@@ -26,6 +26,7 @@ class Manager
 
         global $wpdb;
 
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery -- Plugin-owned subscription journal write; WooCommerce does not provide an equivalent CRUD API for this legacy compatibility table.
         $wpdb->insert(
             $wpdb->prefix . 'upay_subscriptions',
             [
