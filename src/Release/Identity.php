@@ -18,7 +18,7 @@ final class Identity {
     public const SHORT_NAME = 'SUCheckout';
     public const VERSION = '0.1.0';
     public const SLUG = 'sucheckout-upayments';
-    public const REPOSITORY = 'SimplixInnovations/sucheckout-upayments';
+    public const REPOSITORY = 'SimplixInnovations/sucheckout';
     public const TEXT_DOMAIN = 'sucheckout-upayments';
     public const NAMESPACE_ROOT = 'Simplixi\\SUCheckout\\UPayments';
 
