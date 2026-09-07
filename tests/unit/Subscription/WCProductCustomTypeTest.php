@@ -1,6 +1,6 @@
 <?php
 
-namespace Simplixi\SUCheckout\UPayments\Tests\Subscription;
+namespace Simplixi\SUPCheckout\Tests\Subscription;
 
 use PHPUnit\Framework\Attributes\PreserveGlobalState;
 use PHPUnit\Framework\Attributes\RunInSeparateProcess;

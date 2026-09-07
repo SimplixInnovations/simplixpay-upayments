@@ -1,11 +1,11 @@
 <?php
 
-namespace Simplixi\SUCheckout\UPayments\Tests\Subscription;
+namespace Simplixi\SUPCheckout\Tests\Subscription;
 
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
-use Simplixi\SUCheckout\UPayments\Subscription\Composition;
-use Simplixi\SUCheckout\UPayments\Subscription\Presentation;
+use Simplixi\SUPCheckout\Subscription\Composition;
+use Simplixi\SUPCheckout\Subscription\Presentation;
 
 final class CompositionTest extends TestCase {
     protected function setUp(): void {
