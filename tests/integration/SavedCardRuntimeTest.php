@@ -7,7 +7,7 @@ require_once __DIR__ . '/bootstrap.php';
 
 use UPayments\Token\CustomerTokenIdentity;
 
-simplixpay_cert_assert(class_exists(CustomerTokenIdentity::class), 'customer token identity boundary is loaded');
+sucheckout_cert_assert(class_exists(CustomerTokenIdentity::class), 'customer token identity boundary is loaded');
 
 delete_option(CustomerTokenIdentity::SECRET_OPTION);
 
@@ -21,17 +21,17 @@ $guest = CustomerTokenIdentity::get_or_establish_token(
         return null;
     }
 );
-simplixpay_cert_assert(false === $guest['success'], 'guest token establishment is rejected');
-simplixpay_cert_assert('not_logged_in' === $guest['reason'], 'guest token rejection reason is exact');
-simplixpay_cert_assert(0 === $create_calls, 'guest token rejection occurs before provider transport');
-simplixpay_cert_assert(false === get_option(CustomerTokenIdentity::SECRET_OPTION, false), 'guest rejection does not initialize token identity');
+sucheckout_cert_assert(false === $guest['success'], 'guest token establishment is rejected');
+sucheckout_cert_assert('not_logged_in' === $guest['reason'], 'guest token rejection reason is exact');
+sucheckout_cert_assert(0 === $create_calls, 'guest token rejection occurs before provider transport');
+sucheckout_cert_assert(false === get_option(CustomerTokenIdentity::SECRET_OPTION, false), 'guest rejection does not initialize token identity');
 
 $user_id = wp_insert_user(array(
     'user_login' => 'simplixpay-cert-card-' . wp_generate_password(12, false, false),
     'user_pass'  => wp_generate_password(24, true, true),
     'user_email' => 'saved-card-' . wp_generate_password(8, false, false) . '@example.invalid',
 ));
-simplixpay_cert_assert(!is_wp_error($user_id) && (int) $user_id > 0, 'saved-card certification user is created');
+sucheckout_cert_assert(!is_wp_error($user_id) && (int) $user_id > 0, 'saved-card certification user is created');
 $user_id = (int) $user_id;
 
 $create_calls = 0;
@@ -53,14 +53,14 @@ $identity = CustomerTokenIdentity::get_or_establish_token(
     }
 );
 
-simplixpay_cert_assert(true === $identity['success'], 'authenticated user can establish canonical token identity');
-simplixpay_cert_assert(true === $identity['established'], 'canonical token is newly established in the real WordPress user store');
-simplixpay_cert_assert(1 === $create_calls, 'canonical token creation performs one bounded provider-callback invocation');
-simplixpay_cert_assert(
+sucheckout_cert_assert(true === $identity['success'], 'authenticated user can establish canonical token identity');
+sucheckout_cert_assert(true === $identity['established'], 'canonical token is newly established in the real WordPress user store');
+sucheckout_cert_assert(1 === $create_calls, 'canonical token creation performs one bounded provider-callback invocation');
+sucheckout_cert_assert(
     is_string($identity['token']) && CustomerTokenIdentity::is_valid_canonical_token($identity['token']),
     'established customer token satisfies the canonical grammar'
 );
-simplixpay_cert_assert(
+sucheckout_cert_assert(
     CustomerTokenIdentity::KIND_CANONICAL === $identity['kind'],
     'established token provenance is canonical'
 );
@@ -74,7 +74,7 @@ $cards = CustomerTokenIdentity::get_saved_cards_for_current_user(
     true,
     function ($token) use (&$retrieve_calls, $customer_token, $card_token) {
         ++$retrieve_calls;
-        simplixpay_cert_assert($customer_token === $token, 'saved-card retrieval uses the exact canonical customer token');
+        sucheckout_cert_assert($customer_token === $token, 'saved-card retrieval uses the exact canonical customer token');
         return array(
             'result' => 'success',
             'data'   => array(array('token' => $card_token, 'last4' => '4242')),
@@ -82,13 +82,13 @@ $cards = CustomerTokenIdentity::get_saved_cards_for_current_user(
     }
 );
 
-simplixpay_cert_assert(is_array($cards) && 'success' === $cards['result'], 'saved cards load for valid current provenance');
-simplixpay_cert_assert(1 === $retrieve_calls, 'valid saved-card retrieval performs exactly one callback');
+sucheckout_cert_assert(is_array($cards) && 'success' === $cards['result'], 'saved cards load for valid current provenance');
+sucheckout_cert_assert(1 === $retrieve_calls, 'valid saved-card retrieval performs exactly one callback');
 
 $membership_calls = 0;
 $membership_reader = function ($token) use (&$membership_calls, $customer_token, $card_token) {
     ++$membership_calls;
-    simplixpay_cert_assert($customer_token === $token, 'card membership lookup is bound to the exact customer token');
+    sucheckout_cert_assert($customer_token === $token, 'card membership lookup is bound to the exact customer token');
     return array(
         'result' => 'success',
         'data'   => array(
@@ -98,24 +98,24 @@ $membership_reader = function ($token) use (&$membership_calls, $customer_token,
     );
 };
 
-simplixpay_cert_assert(
+sucheckout_cert_assert(
     CustomerTokenIdentity::verify_card_membership($card_token, $customer_token, $membership_reader),
     'exact selected-card membership is accepted'
 );
-simplixpay_cert_assert(
+sucheckout_cert_assert(
     !CustomerTokenIdentity::verify_card_membership('foreign-card-token', $customer_token, $membership_reader),
     'foreign selected-card token is rejected'
 );
-simplixpay_cert_assert(2 === $membership_calls, 'membership checks each use one fresh bounded retrieval');
+sucheckout_cert_assert(2 === $membership_calls, 'membership checks each use one fresh bounded retrieval');
 
 $meta_key = CustomerTokenIdentity::get_user_meta_key((string) get_current_blog_id(), $identity['scope']);
-simplixpay_cert_assert(is_string($meta_key) && '' !== $meta_key, 'canonical provenance meta key is derived for the active scope');
+sucheckout_cert_assert(is_string($meta_key) && '' !== $meta_key, 'canonical provenance meta key is derived for the active scope');
 $original_record = get_user_meta($user_id, $meta_key, true);
-simplixpay_cert_assert(is_array($original_record), 'canonical provenance is persisted as one structured user-meta record');
+sucheckout_cert_assert(is_array($original_record), 'canonical provenance is persisted as one structured user-meta record');
 
 $invalid_record = $original_record;
 $invalid_record['source'] = 'tampered-certification-source';
-simplixpay_cert_assert(
+sucheckout_cert_assert(
     false !== update_user_meta($user_id, $meta_key, $invalid_record),
     'certification can inject malformed provenance for fail-closed runtime proof'
 );
@@ -130,11 +130,11 @@ $blocked = CustomerTokenIdentity::get_saved_cards_for_current_user(
         return array('result' => 'success', 'data' => array());
     }
 );
-simplixpay_cert_assert(null === $blocked, 'invalid provenance fails closed before saved-card retrieval');
-simplixpay_cert_assert(0 === $blocked_calls, 'invalid provenance never reaches provider-card retrieval');
+sucheckout_cert_assert(null === $blocked, 'invalid provenance fails closed before saved-card retrieval');
+sucheckout_cert_assert(0 === $blocked_calls, 'invalid provenance never reaches provider-card retrieval');
 
 update_user_meta($user_id, $meta_key, $original_record);
 wp_delete_user($user_id);
 delete_option(CustomerTokenIdentity::SECRET_OPTION);
 
-simplixpay_cert_note('saved-card/tokenization runtime certification complete');
+sucheckout_cert_note('saved-card/tokenization runtime certification complete');

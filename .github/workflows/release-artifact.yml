@@ -170,13 +170,13 @@ jobs:
           set -euo pipefail
           ZIP="$(find "$GITHUB_WORKSPACE/release-output" -maxdepth 1 -type f -name 'sucheckout-upayments-*.zip' -print -quit)"
           test -n "$ZIP"
-          SIMPLIXPAY_PLUGIN_ZIP="$ZIP" \
+          SUCHECKOUT_PLUGIN_ZIP="$ZIP" \
           WP_CLI_BIN=/tmp/wp-cli.phar \
           bash scripts/install-wp-test-environment.sh 7.1 11.1.0 "$RUNNER_TEMP/wordpress"
 
       - name: Seed malformed protected settings for packaged plugin
         env:
-          SIMPLIXPAY_CERT_PHASE: seed
+          SUCHECKOUT_CERT_PHASE: seed
         run: /tmp/wp-cli.phar eval-file "$GITHUB_WORKSPACE/tests/integration/PluginActivationTest.php" --path="$RUNNER_TEMP/wordpress"
 
       - name: Activate packaged SUCheckout
@@ -184,7 +184,7 @@ jobs:
 
       - name: Verify packaged activation and Classic registration
         env:
-          SIMPLIXPAY_CERT_PHASE: verify
+          SUCHECKOUT_CERT_PHASE: verify
         run: /tmp/wp-cli.phar eval-file "$GITHUB_WORKSPACE/tests/integration/PluginActivationTest.php" --path="$RUNNER_TEMP/wordpress"
 
       - name: Verify packaged release support metadata
@@ -207,7 +207,7 @@ jobs:
 
       - name: Verify packaged order CRUD
         env:
-          SIMPLIXPAY_HPOS_MODE: ${{ matrix.storage }}
+          SUCHECKOUT_HPOS_MODE: ${{ matrix.storage }}
         run: /tmp/wp-cli.phar eval-file "$GITHUB_WORKSPACE/tests/integration/HposCompatibilityTest.php" --path="$RUNNER_TEMP/wordpress"
 
   package-identity-migration:
@@ -302,15 +302,15 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          SIMPLIXPAY_PLUGIN_ZIP="$PREVIOUS_ZIP" \
-          SIMPLIXPAY_PLUGIN_SLUG=simplixpay-upayments \
+          SUCHECKOUT_PLUGIN_ZIP="$PREVIOUS_ZIP" \
+          SUCHECKOUT_PLUGIN_SLUG=simplixpay-upayments \
           WP_CLI_BIN=/tmp/wp-cli.phar \
           bash scripts/install-wp-test-environment.sh "${{ matrix.wordpress }}" "${{ matrix.woocommerce }}" "$RUNNER_TEMP/wordpress"
           /tmp/wp-cli.phar plugin activate simplixpay-upayments --path="$RUNNER_TEMP/wordpress"
 
       - name: Seed legacy merchant state
         env:
-          SIMPLIXPAY_UPGRADE_PHASE: seed-existing
+          SUCHECKOUT_UPGRADE_PHASE: seed-existing
         run: /tmp/wp-cli.phar eval-file "$GITHUB_WORKSPACE/tests/integration/UpgradeCompatibilityTest.php" --path="$RUNNER_TEMP/wordpress"
 
       - name: Deactivate legacy package before identity migration
@@ -325,7 +325,7 @@ jobs:
 
       - name: Verify canonical migration preserves legacy merchant data
         env:
-          SIMPLIXPAY_UPGRADE_PHASE: verify-canonical
+          SUCHECKOUT_UPGRADE_PHASE: verify-canonical
         run: /tmp/wp-cli.phar eval-file "$GITHUB_WORKSPACE/tests/integration/UpgradeCompatibilityTest.php" --path="$RUNNER_TEMP/wordpress"
 
       - name: Prove rollback remains non-destructive
@@ -334,7 +334,7 @@ jobs:
           set -euo pipefail
           /tmp/wp-cli.phar plugin deactivate sucheckout-upayments --path="$RUNNER_TEMP/wordpress"
           /tmp/wp-cli.phar plugin activate simplixpay-upayments --path="$RUNNER_TEMP/wordpress"
-          SIMPLIXPAY_UPGRADE_PHASE=verify-legacy-rollback \
+          SUCHECKOUT_UPGRADE_PHASE=verify-legacy-rollback \
             /tmp/wp-cli.phar eval-file "$GITHUB_WORKSPACE/tests/integration/UpgradeCompatibilityTest.php" --path="$RUNNER_TEMP/wordpress"
 
       - name: Return to canonical SUCheckout and remove legacy package
@@ -344,10 +344,10 @@ jobs:
           /tmp/wp-cli.phar plugin deactivate simplixpay-upayments --path="$RUNNER_TEMP/wordpress"
           /tmp/wp-cli.phar plugin activate sucheckout-upayments --path="$RUNNER_TEMP/wordpress"
           /tmp/wp-cli.phar plugin delete simplixpay-upayments --path="$RUNNER_TEMP/wordpress"
-          SIMPLIXPAY_UPGRADE_PHASE=verify-canonical-final \
+          SUCHECKOUT_UPGRADE_PHASE=verify-canonical-final \
             /tmp/wp-cli.phar eval-file "$GITHUB_WORKSPACE/tests/integration/UpgradeCompatibilityTest.php" --path="$RUNNER_TEMP/wordpress"
 
       - name: Clean migration certification fixtures
         env:
-          SIMPLIXPAY_UPGRADE_PHASE: cleanup
+          SUCHECKOUT_UPGRADE_PHASE: cleanup
         run: /tmp/wp-cli.phar eval-file "$GITHUB_WORKSPACE/tests/integration/UpgradeCompatibilityTest.php" --path="$RUNNER_TEMP/wordpress"

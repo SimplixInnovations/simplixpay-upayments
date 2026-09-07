@@ -1,6 +1,6 @@
 <?php
 /**
- * SimplixPay real WordPress/WooCommerce certification assertions.
+ * SUCheckout real WordPress/WooCommerce certification assertions.
  */
 
 if (!defined('ABSPATH')) {
@@ -12,7 +12,7 @@ if (!defined('ABSPATH')) {
  * @param string $message   Failure message.
  * @return void
  */
-function simplixpay_cert_assert($condition, $message) {
+function sucheckout_cert_assert($condition, $message) {
     if ($condition) {
         if (defined('WP_CLI') && WP_CLI) {
             WP_CLI::log('PASS: ' . $message);
@@ -27,7 +27,7 @@ function simplixpay_cert_assert($condition, $message) {
  * @param string $message Evidence note.
  * @return void
  */
-function simplixpay_cert_note($message) {
+function sucheckout_cert_note($message) {
     if (defined('WP_CLI') && WP_CLI) {
         WP_CLI::log('CERT: ' . $message);
     }
@@ -37,7 +37,7 @@ function simplixpay_cert_note($message) {
  * Persist an option without firing update_option hooks.
  *
  * This is used only to characterize malformed storage that may already exist
- * before WooCommerce/SimplixPay boots. It intentionally bypasses observers so
+ * before WooCommerce/SUCheckout boots. It intentionally bypasses observers so
  * the certification target is the plugin's read boundary, not Woo's settings
  * change hook.
  *
@@ -45,7 +45,7 @@ function simplixpay_cert_note($message) {
  * @param mixed  $value Raw option value.
  * @return void
  */
-function simplixpay_cert_store_option_raw($name, $value) {
+function sucheckout_cert_store_option_raw($name, $value) {
     global $wpdb;
 
     $exists = $wpdb->get_var(
@@ -77,7 +77,7 @@ function simplixpay_cert_store_option_raw($name, $value) {
         );
     }
 
-    simplixpay_cert_assert(false !== $result, 'raw certification option persistence succeeds: ' . $name);
+    sucheckout_cert_assert(false !== $result, 'raw certification option persistence succeeds: ' . $name);
     wp_cache_delete($name, 'options');
     wp_cache_delete('alloptions', 'options');
 

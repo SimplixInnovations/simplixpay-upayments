@@ -122,7 +122,7 @@ jobs:
 
       - name: Seed malformed protected settings
         env:
-          SIMPLIXPAY_CERT_PHASE: seed
+          SUCHECKOUT_CERT_PHASE: seed
         run: /tmp/wp-cli.phar eval-file "$GITHUB_WORKSPACE/tests/integration/PluginActivationTest.php" --path="$RUNNER_TEMP/wordpress"
 
       - name: Activate SUCheckout
@@ -130,7 +130,7 @@ jobs:
 
       - name: Verify activation and Classic registration
         env:
-          SIMPLIXPAY_CERT_PHASE: verify
+          SUCHECKOUT_CERT_PHASE: verify
         run: /tmp/wp-cli.phar eval-file "$GITHUB_WORKSPACE/tests/integration/PluginActivationTest.php" --path="$RUNNER_TEMP/wordpress"
 
       - name: Verify release support metadata
@@ -153,7 +153,7 @@ jobs:
 
       - name: Verify order CRUD in authoritative store
         env:
-          SIMPLIXPAY_HPOS_MODE: ${{ matrix.storage }}
+          SUCHECKOUT_HPOS_MODE: ${{ matrix.storage }}
         run: /tmp/wp-cli.phar eval-file "$GITHUB_WORKSPACE/tests/integration/HposCompatibilityTest.php" --path="$RUNNER_TEMP/wordpress"
 
       - name: Verify saved-card and tokenization runtime boundaries
@@ -167,7 +167,7 @@ jobs:
 
       - name: Seed operations/data-retention certification
         env:
-          SIMPLIXPAY_CERT_PHASE: seed
+          SUCHECKOUT_CERT_PHASE: seed
         run: /tmp/wp-cli.phar eval-file "$GITHUB_WORKSPACE/tests/integration/OperationsRuntimeTest.php" --path="$RUNNER_TEMP/wordpress"
 
       - name: Deactivate SUCheckout without data loss
@@ -175,7 +175,7 @@ jobs:
 
       - name: Verify deactivation retention
         env:
-          SIMPLIXPAY_CERT_PHASE: deactivated
+          SUCHECKOUT_CERT_PHASE: deactivated
         run: /tmp/wp-cli.phar eval-file "$GITHUB_WORKSPACE/tests/integration/OperationsRuntimeTest.php" --path="$RUNNER_TEMP/wordpress"
 
       - name: Reactivate SUCheckout
@@ -183,7 +183,7 @@ jobs:
 
       - name: Verify reactivation retention
         env:
-          SIMPLIXPAY_CERT_PHASE: reactivated
+          SUCHECKOUT_CERT_PHASE: reactivated
         run: /tmp/wp-cli.phar eval-file "$GITHUB_WORKSPACE/tests/integration/OperationsRuntimeTest.php" --path="$RUNNER_TEMP/wordpress"
 
       - name: Execute non-destructive uninstall contract without deleting files
@@ -191,7 +191,7 @@ jobs:
 
       - name: Verify uninstall retention
         env:
-          SIMPLIXPAY_CERT_PHASE: uninstalled
+          SUCHECKOUT_CERT_PHASE: uninstalled
         run: /tmp/wp-cli.phar eval-file "$GITHUB_WORKSPACE/tests/integration/OperationsRuntimeTest.php" --path="$RUNNER_TEMP/wordpress"
 
       - name: Reactivate after uninstall contract probe
@@ -199,5 +199,5 @@ jobs:
 
       - name: Verify final retained state and clean certification fixtures
         env:
-          SIMPLIXPAY_CERT_PHASE: final
+          SUCHECKOUT_CERT_PHASE: final
         run: /tmp/wp-cli.phar eval-file "$GITHUB_WORKSPACE/tests/integration/OperationsRuntimeTest.php" --path="$RUNNER_TEMP/wordpress"

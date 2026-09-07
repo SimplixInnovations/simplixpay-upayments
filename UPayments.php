@@ -46,10 +46,10 @@ use Simplixi\SUCheckout\UPayments\Subscription\Presentation as SubscriptionPrese
 use UPayments\Subscription\Cron\Scheduler;
 use UPayments\Token\CustomerTokenIdentity;
 
-define('SIMPLIXPAY_UPAYMENTS_VERSION', Identity::VERSION);
-define('SIMPLIXPAY_UPAYMENTS_SLUG', Identity::SLUG);
-define('SIMPLIXPAY_UPAYMENTS_PLUGIN_FILE', __FILE__);
-define('SIMPLIXPAY_UPAYMENTS_UPDATE_CHANNEL', Identity::UPDATE_CHANNEL);
+define('SUCHECKOUT_UPAYMENTS_VERSION', Identity::VERSION);
+define('SUCHECKOUT_UPAYMENTS_SLUG', Identity::SLUG);
+define('SUCHECKOUT_UPAYMENTS_PLUGIN_FILE', __FILE__);
+define('SUCHECKOUT_UPAYMENTS_UPDATE_CHANNEL', Identity::UPDATE_CHANNEL);
 
 add_action( 'plugins_loaded', 'woocommerceUpaymentsInit' );
 function woocommerceUpaymentsInit() {
