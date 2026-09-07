@@ -43,18 +43,13 @@ Never invent Q20. Live GitHub evidence wins over recorded milestone SHAs.
 
 ## Current certified SUCheckout baseline
 
-- PR #58 final certified head: `5bf84dccb880733da45c1f922d43554af69a33dc`;
-- squash merge: `6aabc4fcb0606567a11637ea07fe081fed4c7f85`;
-- post-merge Quality #764 — **SUCCESS**;
-- Compatibility #292 — **16/16 SUCCESS**;
-- Release Artifact #243 — **SUCCESS**;
-- Provider Sandbox #207 — **SUCCESS**;
-- WordPress.org Submission Check #101 — **SUCCESS**;
-- CodeQL/main-security #579 — **SUCCESS**;
-- official Plugin Check — **0 blocking errors**;
-- open issues / open PRs / unresolved review threads — **0 / 0 / 0**.
+- PR #58 established the canonical SUCheckout identity and merged as `6aabc4fcb0606567a11637ea07fe081fed4c7f85`;
+- PR #59 reconciled living owner/control docs and merged as `9591c431e1eb56fe40ca60147afdf9f3f909a212`;
+- PR #61 completed the remaining first-party `SIMPLIXPAY_*` naming/control-prefix migration and merged as current runtime-bearing `main` `efe937c67343242b7ccf3396a67b3cf2ce35ebac`;
+- Quality #781, Compatibility #309 (**16/16**), Release Artifact #258, Provider Sandbox #221, WordPress.org Submission Check #116 and CodeQL/main-security #595 — **SUCCESS**;
+- official packaged Plugin Check — **0 blocking errors**.
 
-Engineering work for the SUCheckout identity migration is closed. Next actions are owned by `docs/project/OWNER-HANDOFF.md`; do not invent another numbered Q phase.
+Engineering work for the SUCheckout identity/naming migration is closed. Next actions are owned by `docs/project/OWNER-HANDOFF.md`; do not invent another numbered Q phase.
 
 
 ## First-stable identity decision
