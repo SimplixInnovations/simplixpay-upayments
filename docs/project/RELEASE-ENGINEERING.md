@@ -35,7 +35,7 @@ Fresh post-merge evidence:
 - WordPress.org Submission Check #236 — **SUCCESS**;
 - CodeQL/main-security #723 — **SUCCESS**.
 
-Final remote topology is `main` only; no public tags/releases exist.
+At PR #68 closeout, before documentation-only PR #69 opened, remote topology was `main` only. No public tags/releases exist.
 
 
 ### Runtime-bearing release baseline
