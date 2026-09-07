@@ -59,6 +59,7 @@ function wp_add_inline_style($handle, $css) {
     $a3_assets['inline'][] = array($handle, $css);
 }
 
+require_once dirname(__DIR__, 2) . '/src/Release/Identity.php';
 require_once dirname(__DIR__, 2) . '/src/Admin/GatewaySettings.php';
 
 $pass = 0;
