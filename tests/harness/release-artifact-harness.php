@@ -95,6 +95,10 @@ release_assert($build !== '', 'canonical release builder exists');
 release_assert($verify !== '', 'canonical release verifier exists');
 release_assert($installer !== '', 'real WordPress/WooCommerce installer exists');
 release_assert($workflow !== '', 'release workflow exists');
+release_assert(
+    preg_match('/pull_request:\\n    branches: \\[main\\]\\n    paths:/', $workflow) !== 1,
+    'required Release Gate workflow is created for every pull request'
+);
 release_assert($distignore !== '', 'distribution exclusion contract exists');
 
 $version = '';
