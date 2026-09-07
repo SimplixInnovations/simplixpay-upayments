@@ -1,11 +1,11 @@
 # SUCheckout for UPayments — Canonical Naming, Identity, Compatibility and Namespace Standard
 
-**Status:** CANONICAL / ENGINEERING-FROZEN TARGET
+**Status:** CANONICAL / CURRENT
 **Maintainer:** Simplix Innovations
 **Product family:** SUCheckout
-**Canonical slug:** `sucheckout-upayments`
+**Canonical technical slug:** `sucheckout-upayments`
 
-This document is authoritative for all new naming decisions.
+This document is authoritative for all new naming and identity decisions.
 
 ## Product hierarchy
 
@@ -15,36 +15,43 @@ Simplix Innovations
     └── SUCheckout for UPayments
 ```
 
-Human-facing formal name: **SUCheckout for UPayments**.
-Short product reference: **SUCheckout**.
-Provider: **UPayments**.
+- Human-facing formal name: **SUCheckout for UPayments**
+- Short product reference: **SUCheckout**
+- Provider/integration: **UPayments**
+- Maintainer/publisher: **Simplix Innovations**
 
-The word **for** is relationship copy only. It MUST NOT appear in URL, repository, WordPress.org slug, text domain, package, namespace, prefix, CSS/JS root, REST namespace, logger source, scheduler group, or release ZIP identifiers.
+The word **for** is relationship copy only. It MUST NOT appear in URLs, repository names, WordPress.org slug, text domain, package names, namespaces, prefixes, CSS/JS roots, REST namespaces, logger sources, scheduler groups or release ZIP identifiers.
 
-## Frozen technical identity
+Forbidden technical form: `sucheckout-for-upayments`.
+
+## Canonical technical identity
 
 | Surface | Canonical value |
 |---|---|
 | Formal plugin name | **SUCheckout for UPayments** |
 | Product family | **SUCheckout** |
 | Provider | **UPayments** |
-| Canonical slug | `sucheckout-upayments` |
+| Technical slug | `sucheckout-upayments` |
 | Target GitHub repository | `SimplixInnovations/sucheckout-upayments` |
 | WordPress.org slug | `sucheckout-upayments` |
 | Plugin folder | `sucheckout-upayments/` |
-| Canonical main-file target | `sucheckout-upayments.php` |
+| First-stable physical bootstrap | `UPayments.php` |
+| First-stable plugin basename | `sucheckout-upayments/UPayments.php` |
+| Future optional bootstrap target | `sucheckout-upayments.php` — only after a separately approved migration proves it safe |
 | Text domain | `sucheckout-upayments` |
 | Composer package | `simplix-innovations/sucheckout-upayments` |
 | PHP namespace root | `Simplixi\SUCheckout\UPayments` |
 | Global PHP prefix | `sucheckout_upayments_` |
 | Constants | `SUCHECKOUT_UPAYMENTS_*` |
-| CSS root | `.sucheckout-upayments` |
+| CSS component root | `.sucheckout-upayments` |
+| CSS custom properties | `--sucheckout-upayments-*` |
 | JS namespace | `suCheckoutUpayments` |
+| Localized JS config | `suCheckoutUpaymentsConfig` |
 | REST namespace | `sucheckout-upayments/v1` |
-| Action Scheduler group | `sucheckout-upayments` |
+| Action Scheduler group for new first-party jobs | `sucheckout-upayments` |
+| Logger source for new first-party logging | `sucheckout-upayments` |
 | Release ZIP | `sucheckout-upayments-X.Y.Z.zip` |
-
-Forbidden technical form: `sucheckout-for-upayments`.
+| Git tag form | `vX.Y.Z` |
 
 ## Public positioning
 
@@ -52,76 +59,107 @@ Preferred first reference:
 
 > **SUCheckout for UPayments is an independently engineered UPayments payment gateway integration for WooCommerce by Simplix Innovations.**
 
-UPayments is the external payment provider/service. Do not imply that Simplix Innovations is the acquirer/processor, that SUCheckout is owned by UPayments, or that UPayments officially endorses SUCheckout unless explicit authorization exists.
+UPayments is the external payment provider/service. Never imply that Simplix Innovations is the acquiring bank/payment processor, that SUCheckout is owned by UPayments, or that UPayments officially endorses/distributes SUCheckout unless explicit authorization exists.
 
 ## Critical compatibility rule
 
-> **First-party rebranding must never destroy or silently disconnect persisted payment identity.**
+> **First-party rebranding must never destroy, detach or silently reinterpret persisted payment identity.**
 
-Every inherited identifier is classified as **RENAME**, **LEGACY-COMPATIBILITY**, **PROVIDER-CONTRACT**, or **REMOVE**.
+Every inherited identifier must be classified before change as one of:
 
-### Protected compatibility identifiers
+- **FIRST-PARTY RENAME** — owned branding/implementation identity that should use SUCheckout;
+- **LEGACY COMPATIBILITY** — historical merchant/store identity that remains readable/usable;
+- **PROVIDER CONTRACT** — UPayments-defined request/response/schema terminology that must remain provider-accurate;
+- **REMOVE** — obsolete implementation residue proven unused and safe to delete.
 
-| Identifier | Legacy value | Policy |
+Never perform a blind repository-wide replacement of `upayments`, `_upay_`, `UPayments` or `simplixpay-upayments`.
+
+## Protected compatibility identifiers
+
+| Identifier | Protected value | Policy |
 |---|---|---|
 | WooCommerce gateway/payment ID | `upayments` | preserve until a tested dual-ID migration exists |
 | Settings option | `woocommerce_upayments_settings` | preserve/read; never silently discard |
 | Historical order payment method | `upayments` | preserve indefinitely |
-| Blocks/Store API legacy key | `upayments` | preserve until upgrade-safe migration exists |
-| Callback route | `wc_upayments` | continue recognizing for old/in-flight callbacks |
-| Existing metadata | `_upay_*` | preserve/read compatibly |
+| Blocks / Store API payment identity | `upayments` | preserve until upgrade-safe migration exists |
+| Callback route | `wc_upayments` | continue recognizing for existing/in-flight callbacks |
+| Existing order/user/product metadata | `_upay_*` | preserve/read compatibly |
+| Provider order identity | e.g. `UPayments_order_id` | preserve provider/historical semantics |
 | H12 token secret | `upayments_token_identity_secret_v2` | preserve exactly |
 | H12 provenance/scope/generation keys | historical forms | preserve exactly |
-| Subscription cron | `upay_process_subscriptions` | recognize/migrate safely |
-| Historical cleanup cron | `upay_hourly_cron_job` | recognize/clean as required |
+| Subscription cron | `upay_process_subscriptions` | preserve/recognize unless a tested migration supersedes it |
+| Historical cleanup cron | `upay_hourly_cron_job` | recognize/clean only under characterized behavior |
 | Billing-attempt table | `{$wpdb->prefix}upayments_billing_attempts` | preserve unless transactional migration is proven |
-| Existing public hooks | `upayments_*` | audit before replacement; alias when needed |
+| Existing public hooks | `upayments_*` | audit before replacement; alias where compatibility requires it |
 
-Provider API request/response fields, endpoint paths, payment-method names, and schema terminology retain the provider's exact contract.
+Provider API request/response fields, endpoint paths, provider payment-method names and schema terminology retain UPayments' exact contract.
 
 ## New first-party identifiers
 
-New plugin-owned options/hooks/nonces/cache keys use `sucheckout_upayments_*`.
-New metadata uses `_sucheckout_upayments_*` only where new storage is genuinely required.
-New REST routes use `sucheckout-upayments/v1`.
+New plugin-owned options, hooks, nonces and cache keys use `sucheckout_upayments_*`.
+
+New metadata uses `_sucheckout_upayments_*` only where new storage is genuinely required; do not create duplicate metadata just for naming uniformity.
+
 New script/style handles use `sucheckout-upayments-*`.
-New CSS uses a `.sucheckout-upayments` component root and `--sucheckout-upayments-*` custom properties.
+New CSS uses `.sucheckout-upayments` component scoping and `--sucheckout-upayments-*` custom properties.
 A JS global is allowed only when necessary and must use `suCheckoutUpayments`; localized configuration uses `suCheckoutUpaymentsConfig`.
+New REST routes use `sucheckout-upayments/v1`.
 
-## Main-file transition
+## Physical bootstrap decision
 
-The desired canonical bootstrap is `sucheckout-upayments.php`, but prior real WordPress qualification proved that deleting/renaming an already-active `UPayments.php` can strand the historical active-plugin basename.
+The **first-stable physical bootstrap is intentionally `UPayments.php`**.
 
-Therefore the physical bootstrap transition is test-gated:
+Prior real WordPress qualification proved that deleting or renaming an already-active `UPayments.php` can strand WordPress's stored plugin basename. The canonical SUCheckout package therefore uses:
 
-1. old active installations must continue loading;
-2. no duplicate visible plugin entry may be created;
-3. activation, upgrade, rollback and duplicate-package behavior must be verified on real WordPress;
-4. if a compatibility shim cannot prove those properties, `UPayments.php` remains a documented first-stable compatibility exception.
+```text
+sucheckout-upayments/UPayments.php
+```
 
-The physical filename does not block migration of the product name, text domain, package slug, namespace, assets, docs, or release identity.
+The future filename `sucheckout-upayments.php` is not current release identity. It may be considered only in a dedicated future migration that proves, on real WordPress:
 
-## Text domain
+1. old active installations continue loading;
+2. no duplicate visible plugin entry is created;
+3. activation, update, rollback and duplicate-package behavior remain safe;
+4. stored plugin-basename state is migrated without stranding the plugin;
+5. rollback remains non-destructive.
 
-All plugin-owned translatable source strings must converge on the literal domain `sucheckout-upayments`.
+Until that proof exists, `UPayments.php` is a deliberate compatibility contract, not unfinished branding work.
 
-Dynamic translation domains and inherited `upayments`/third-party domains are not acceptable for SUCheckout-owned strings. No blanket Plugin Check ignores are permitted.
+## Text domain and translations
+
+All SUCheckout-owned translatable strings use the literal text domain `sucheckout-upayments`.
+
+Dynamic translation domains and inherited `upayments` or third-party domains are not acceptable for SUCheckout-owned copy. Provider names inside translated strings remain provider names; the **text domain** remains `sucheckout-upayments`.
+
+No blanket Plugin Check ignore list is permitted.
 
 ## PHP architecture
 
-Approved destination namespace:
+Canonical namespace root:
 
 ```php
 Simplixi\SUCheckout\UPayments
 ```
 
-Existing `UPayments\...` and global legacy classes migrate only where compatibility tests permit. Provider/persistence names are not renamed merely for cosmetic consistency.
+Existing globals, provider identifiers and persisted compatibility identifiers migrate only where evidence permits. Namespace cleanliness never takes priority over merchant/payment compatibility.
+
+## Repository rename rule
+
+Until the owner renames GitHub, the repository coordinate remains temporarily:
+
+`SimplixInnovations/simplixpay-upayments`
+
+The approved target is:
+
+`SimplixInnovations/sucheckout-upayments`
+
+After the GitHub rename, update only **living repository-coordinate references** in a dedicated PR. Do not rewrite historical evidence or legacy migration fixtures merely to remove the old repository/package token.
 
 ## Release engineering
 
-Independent semantic versioning remains on the current 0.x development line until an explicit release decision.
+The project remains on the independent `0.x` development line until an explicit release/version decision.
 
-Target artifacts:
+Canonical artifact forms:
 
 ```text
 folder: sucheckout-upayments/
@@ -129,17 +167,30 @@ ZIP:    sucheckout-upayments-X.Y.Z.zip
 tag:    vX.Y.Z
 ```
 
-WordPress.org Plugin Check must execute against the actual unpacked deterministic ZIP using the `plugin_repo` category with no blanket ignore list.
+WordPress.org Plugin Check must execute against the actual unpacked deterministic release package using slug `sucheckout-upayments` and `plugin_repo` checks, without blanket error suppression.
 
 ## Identity governance
 
-Changing the formal name, technical slug, repository, WordPress.org slug, folder/main-file target, text domain, PHP namespace root, Composer package, prefixes, REST/JS/CSS naming, or compatibility allowlist requires explicit owner approval plus regression evidence.
+Changing any of the following requires explicit owner approval plus regression evidence appropriate to the risk:
+
+- formal product name;
+- technical slug;
+- repository identity;
+- WordPress.org slug;
+- plugin folder or bootstrap filename;
+- text domain;
+- PHP namespace root;
+- Composer package;
+- public/global prefixes;
+- REST/JS/CSS identity;
+- protected compatibility allowlist.
 
 Unsafe destructive compatibility rename verdict:
 
 `NOT APPROVED.`
 `DO NOT MERGE.`
 
-**Naming architecture:** FROZEN TARGET
+**Naming architecture:** FROZEN / CURRENT
+**First-stable bootstrap:** `UPayments.php` PROTECTED
 **Legacy compatibility identifiers:** PROTECTED
 **Formal trademark/legal clearance:** separate business/legal gate
