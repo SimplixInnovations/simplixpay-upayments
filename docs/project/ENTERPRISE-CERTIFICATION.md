@@ -38,7 +38,7 @@ This closes the original identity-migration certification only. Repository renam
 
 ### Final first-party naming reconciliation
 
-PR #59 later reconciled living owner/control documentation as `9591c431e1eb56fe40ca60147afdf9f3f909a212` without changing runtime behavior. PR #61 then removed the remaining retired `SIMPLIXPAY_*` first-party constants/certification-control prefixes while preserving protected UPayments compatibility identities.
+PR #59 later reconciled living owner/control documentation as `9591c431e1eb56fe40ca60147afdf9f3f909a212` without changing runtime behavior. PR #61 then removed the remaining retired retired pre-rebrand first-party first-party constants/certification-control prefixes while preserving protected UPayments compatibility identities.
 
 Current runtime-bearing certified `main`: `efe937c67343242b7ccf3396a67b3cf2ce35ebac`.
 
