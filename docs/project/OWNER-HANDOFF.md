@@ -31,7 +31,7 @@ Technical identity:
 
 `sucheckout-upayments`
 
-Never use `sucheckout-for-upayments` in repository URLs, WordPress.org slug, text domain, package names, namespaces, CSS/JS roots, REST namespaces or release artifacts.
+Never encode the human-only relationship word `for` in repository URLs, WordPress.org slug, text domain, package names, namespaces, CSS/JS roots, REST namespaces or release artifacts.
 
 The first-stable physical bootstrap is intentionally:
 
@@ -169,7 +169,7 @@ sucheckout-upayments
 SimplixInnovations/sucheckout-upayments
 ```
 
-Do not rename it to `sucheckout-for-upayments`.
+Do not encode the human-only relationship word in the technical repository name.
 
 ## A4. Update GitHub About metadata
 
@@ -537,7 +537,7 @@ Only after explicit owner approval:
 9. install/upgrade from the actual public channel on a disposable site;
 10. run a post-publication checkout smoke.
 
-Never publish a mutable worktree build, synthetic PR merge ref, artifact from a different SHA, or package using `sucheckout-for-upayments` technical identity.
+Never publish a mutable worktree build, synthetic PR merge ref, artifact from a different SHA, or a package whose technical identity encodes the human-only relationship word.
 
 ---
 
