@@ -213,7 +213,7 @@ $GLOBALS['wpdb'] = new Phase9IWpdb();
 require_once $root . '/includes/Token/CustomerTokenIdentity.php';
 require_once $root . '/src/Migration/MigrationPreflight.php';
 
-use Simplixi\SUCheckout\UPayments\Migration\MigrationPreflight;
+use Simplixi\SUPCheckout\Migration\MigrationPreflight;
 use UPayments\Token\CustomerTokenIdentity;
 
 $pass = 0; $fail = 0;

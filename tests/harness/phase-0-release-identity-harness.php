@@ -4,7 +4,7 @@
  * Phase 0 release-identity/updater characterization harness.
  *
  * This is intentionally WordPress-independent. It verifies package/source
- * contracts that must hold before the canonical SUCheckout release identity can merge.
+ * contracts that must hold before the canonical SUPCheckout release identity can merge.
  */
 
 $root = dirname(__DIR__, 2);
@@ -55,11 +55,11 @@ if (!defined('ABSPATH')) {
 }
 require_once $identity_path;
 
-use Simplixi\SUCheckout\UPayments\Release\Identity;
+use Simplixi\SUPCheckout\Release\Identity;
 
-// Public product header: canonical SUCheckout identity on the independent 0.x line.
-p0_assert(p0_header_value($bootstrap, 'Plugin Name') === 'SUCheckout for UPayments', 'public header exposes canonical SUCheckout product name');
-p0_assert(p0_header_value($bootstrap, 'Plugin URI') === 'https://github.com/SimplixInnovations/sucheckout', 'plugin URI exposes canonical SUCheckout repository target');
+// Public product header: canonical SUPCheckout identity on the independent 0.x line.
+p0_assert(p0_header_value($bootstrap, 'Plugin Name') === 'SUPCheckout for UPayments', 'public header exposes canonical SUPCheckout product name');
+p0_assert(p0_header_value($bootstrap, 'Plugin URI') === 'https://github.com/SimplixInnovations/sucheckout', 'plugin URI exposes canonical SUPCheckout repository target');
 p0_assert(p0_header_value($bootstrap, 'Description') === 'Independently engineered UPayments payment integration for WooCommerce by Simplix Innovations.', 'plugin description remains provider-accurate during identity transition');
 p0_assert(p0_header_value($bootstrap, 'Version') === Identity::VERSION, 'header version matches canonical release identity');
 p0_assert(p0_header_value($bootstrap, 'Author') === 'Simplix Innovations', 'plugin author is Simplix Innovations');
@@ -67,10 +67,10 @@ p0_assert(p0_header_value($bootstrap, 'Author URI') === 'https://simplixi.com', 
 p0_assert(p0_header_value($bootstrap, 'License') === 'MIT', 'plugin header keeps MIT license');
 p0_assert(p0_header_value($bootstrap, 'Domain Path') === null, 'plugin header does not advertise a non-packaged languages directory');
 
-p0_assert(p0_header_value($bootstrap, 'Text Domain') === Identity::TARGET_TEXT_DOMAIN, 'public text domain is the canonical SUCheckout domain');
-p0_assert(Identity::TARGET_TEXT_DOMAIN === 'sucheckout-upayments', 'target text domain remains frozen');
+p0_assert(p0_header_value($bootstrap, 'Text Domain') === Identity::TARGET_TEXT_DOMAIN, 'public text domain is the canonical SUPCheckout domain');
+p0_assert(Identity::TARGET_TEXT_DOMAIN === 'supcheckout', 'target text domain remains frozen');
 
-// Bootstrap exposes canonical SUCheckout identity without destroying legacy plugin-file API.
+// Bootstrap exposes canonical SUPCheckout identity without destroying legacy plugin-file API.
 p0_assert(p0_contains($bootstrap, "src/Release/Identity.php"), 'bootstrap loads canonical release identity');
 p0_assert(p0_contains($bootstrap, "SUCHECKOUT_UPAYMENTS_VERSION"), 'bootstrap defines canonical version constant');
 p0_assert(p0_contains($bootstrap, "SUCHECKOUT_UPAYMENTS_PLUGIN_FILE"), 'bootstrap defines canonical plugin-file constant');
@@ -106,7 +106,7 @@ p0_assert(p0_contains($uninstall, 'WP_UNINSTALL_PLUGIN'), 'uninstall retains dir
 
 // Independent version line sanity.
 p0_assert((bool) preg_match('/^0\.[0-9]+\.[0-9]+(?:[-+][0-9A-Za-z.-]+)?$/', Identity::VERSION), 'version is on independent pre-1.0 semantic line');
-p0_assert(Identity::SLUG === 'sucheckout-upayments', 'canonical slug is exact');
+p0_assert(Identity::SLUG === 'supcheckout', 'canonical slug is exact');
 p0_assert(Identity::REPOSITORY === 'SimplixInnovations/sucheckout', 'canonical repository is exact');
 
 echo "\n--- Phase 0 Release Identity Report ---\n";
