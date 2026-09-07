@@ -123,16 +123,19 @@ Real WordPress qualification proved that directly renaming an already-active phy
 - legacy-root → canonical-root migration and rollback;
 - official Plugin Check on the exact unpacked release artifact.
 
+## Final repository-admin closure
+
+Live GitHub state is reconciled: About/topics are correct; Main Rule requires `Governance`, `H12 Regression Harness`, `Compatibility Gate` and `Release Gate`; only `main` remains; no open PRs/issues/tags/releases exist. Latest certified `main` is `a0794c1f968e7bb97d3a6589aa109b6236fa307f` with Quality #911, Compatibility #439 (**16/16**), Release Artifact #388, Provider Sandbox #349, WordPress.org #246 and CodeQL #733 all **SUCCESS**.
+
 ## What remains
 
 Owner/admin/local sequence is controlled by `OWNER-HANDOFF.md`:
 
-1. finish the residual About topic cleanup and Main Rule aggregate-check corrections;
-2. verify local `origin` points directly to the canonical repository;
-3. run isolated local acceptance and real WooCommerce smoke;
-4. apply approved launch branding and visual/accessibility acceptance;
-5. explicitly choose the first public version;
-6. release/tag/WordPress.org only after exact-main verification and owner approval.
+1. verify local `origin` points directly to the canonical repository;
+2. run isolated local acceptance and real WooCommerce smoke;
+3. apply approved launch branding and visual/accessibility acceptance;
+4. explicitly choose the first public version;
+5. release/tag/WordPress.org only after exact-main verification and owner approval.
 
 ## External/manual and unsupported boundaries
 
