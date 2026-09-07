@@ -74,7 +74,7 @@ $legacy_slug_files = array(
     '.github/workflows/provider-sandbox-certification.yml',
     '.github/workflows/quality-gates.yml',
     '.github/workflows/release-artifact.yml',
-    '.github/workflows/wordpress-org-submission.yml',
+    '.github/workflows/wordpress-org-submission-check.yml',
     'AGENTS.md',
     'NOTICE.md',
     'README.md',
@@ -122,6 +122,12 @@ foreach ($tracked as $path) {
         $unexpected[] = $path . ' :: Simplix\\Pay\\UPayments';
     }
 
+    // Pre-rebrand first-party constant prefixes are branding residue, not
+    // provider/persisted compatibility identifiers.
+    if (strpos($source, 'SIMPLIXPAY_UPAYMENTS_') !== false) {
+        $unexpected[] = $path . ' :: SIMPLIXPAY_UPAYMENTS_';
+    }
+
     // The forbidden "for" technical form may appear only in the naming
     // standard that declares it forbidden and in this regression harness.
     if (strpos($source, 'sucheckout-for-upayments') !== false
@@ -149,6 +155,12 @@ $current_identity_contracts = array(
     'AGENTS.md' => array('SUCheckout for UPayments', 'Simplixi\\SUCheckout\\UPayments'),
     'docs/project/PROJECT-STATUS.md' => array('SUCheckout for UPayments', 'sucheckout-upayments'),
     'docs/project/NAMING-IDENTITY-STANDARD.md' => array('SUCheckout for UPayments', 'Simplixi\\SUCheckout\\UPayments'),
+    'UPayments.php' => array(
+        "define('SUCHECKOUT_UPAYMENTS_VERSION', Identity::VERSION);",
+        "define('SUCHECKOUT_UPAYMENTS_SLUG', Identity::SLUG);",
+        "define('SUCHECKOUT_UPAYMENTS_PLUGIN_FILE', __FILE__);",
+        "define('SUCHECKOUT_UPAYMENTS_UPDATE_CHANNEL', Identity::UPDATE_CHANNEL);",
+    ),
     'composer.json' => array('simplix-innovations/sucheckout-upayments', 'Simplixi\\\\SUCheckout\\\\UPayments\\\\'),
 );
 foreach ($current_identity_contracts as $contract_path => $needles) {
