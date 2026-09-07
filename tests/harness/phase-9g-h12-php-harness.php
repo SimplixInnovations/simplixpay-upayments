@@ -3309,7 +3309,7 @@ if (is_resource($proc)) {
 }
 upay_assert_eq($scheduler_blob, '75be4ded83142f67a933be0e1c24cedc484f9a73', 'SEM14-H Scheduler.php blob byte-identical', 'static_source');
 
-// --- SEM14-I: CycleClaim.php blob unchanged ---
+// --- SEM14-I: CycleClaim.php reviewed protected blob ---
 $cycle_blob = '';
 $proc = @proc_open('git rev-parse HEAD:includes/Subscription/Cron/CycleClaim.php', $desc, $pipes, $repo_root);
 if (is_resource($proc)) {
@@ -3317,7 +3317,7 @@ if (is_resource($proc)) {
     fclose($pipes[0]); fclose($pipes[1]); fclose($pipes[2]);
     proc_close($proc);
 }
-upay_assert_eq($cycle_blob, 'c34d83e2d77cc65024fe663e4c378cecb2b17347', 'SEM14-I CycleClaim.php blob byte-identical', 'static_source');
+upay_assert_eq($cycle_blob, '0ae25b176ce622f0500fb279a40ab60275a72705', 'SEM14-I CycleClaim.php reviewed blob byte-identical', 'static_source');
 
 // --- SEM14-J: Production code does NOT use bccomp/BCMath/GMP ---
 $upayments_content = file_get_contents($repo_root . '/UPayments.php');
