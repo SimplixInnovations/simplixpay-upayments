@@ -1,39 +1,57 @@
 # SUCheckout for UPayments — Owner Handoff
 
-**Engineering migration:** DONE / VERIFIED  
-**Runtime-bearing certified baseline:** `6aabc4fcb0606567a11637ea07fe081fed4c7f85`  
-**Final control-plane closeout baseline:** `9591c431e1eb56fe40ca60147afdf9f3f909a212`  
-**Current GitHub repository:** `SimplixInnovations/simplixpay-upayments`  
-**Approved target repository:** `SimplixInnovations/sucheckout-upayments`  
+**Engineering identity/runtime migration:** DONE / VERIFIED  
+**Latest certified pre-docs `main` baseline:** `efe937c67343242b7ccf3396a67b3cf2ce35ebac`  
+**Current GitHub repository pending owner rename:** `SimplixInnovations/simplixpay-upayments`  
+**Approved repository target:** `SimplixInnovations/sucheckout-upayments`  
 **Development version:** `0.1.0`  
-**Public release:** NOT YET PUBLISHED
+**Public tag / GitHub Release / WordPress.org publication:** NOT YET CREATED
 
-This document is the authoritative owner/admin/local checklist after the SUCheckout engineering migration. It does not reopen Quality Platform Q1-Q19 and does not authorize publication by itself.
+This is the authoritative owner/admin/local/release sequence. It does not reopen Quality Platform Q1-Q19 and it does not authorize publication by itself.
 
-## Golden rule
+Fresh verification on pre-docs `main` `efe937c67343242b7ccf3396a67b3cf2ce35ebac`:
 
-Do not mechanically rename protected `upayments`, `_upay_*`, callback, token, subscription or provider-contract identifiers merely to make naming uniform. The canonical first-stable package is intentionally:
+- Quality #781 — **SUCCESS**
+- Compatibility #309 — **16/16 SUCCESS**
+- Release Artifact #258 — **SUCCESS**
+- Provider Sandbox #221 — **SUCCESS**
+- WordPress.org Submission Check #116 — **SUCCESS**
+- CodeQL/main-security #595 — **SUCCESS**
+- official packaged Plugin Check — **0 blocking errors**
 
-```text
-sucheckout-upayments/UPayments.php
-```
+The final documentation PR must itself be exact-green and merged before you begin the owner sequence below.
 
-The technical slug/text domain/repository target is `sucheckout-upayments`. The word `for` belongs only in the human-facing name **SUCheckout for UPayments**.
+## Golden identity rule
+
+Human-facing product:
+
+**SUCheckout for UPayments**
+
+Technical identity:
+
+`sucheckout-upayments`
+
+Never use `sucheckout-for-upayments` in repository URLs, WordPress.org slug, text domain, package names, namespaces, CSS/JS roots, REST namespaces or release artifacts.
+
+The first-stable physical bootstrap is intentionally:
+
+`sucheckout-upayments/UPayments.php`
+
+Do not rename protected provider/persisted identities (`upayments`, `woocommerce_upayments_settings`, `wc_upayments`, `_upay_*`, token/provenance keys, subscription hooks, billing-attempt state, provider fields) merely for cosmetic uniformity.
 
 ---
 
-# Part A — Required owner/admin repository actions
+# A. Required repository/admin actions
 
-## A1. Bring the normal local clone up to date
+## A1. Synchronize the owner's normal clone
 
-Run from the existing repository clone before deleting branches or renaming GitHub.
+Run after the final docs PR has merged.
 
 ### PowerShell
 
 ```powershell
-cd C:\path\to\your\repo
+cd C:\path\to\repo
 git status --short
-git branch --show-current
 git fetch --prune --tags origin
 git switch main
 git pull --ff-only origin main
@@ -45,9 +63,8 @@ git rev-parse origin/main
 ### Git Bash
 
 ```bash
-cd /path/to/your/repo
+cd /path/to/repo
 git status --short
-git branch --show-current
 git fetch --prune --tags origin
 git switch main
 git pull --ff-only origin main
@@ -56,60 +73,84 @@ git rev-parse HEAD
 git rev-parse origin/main
 ```
 
-Do not use `git reset --hard` or `git clean -fdx` on the normal owner working copy merely to perform this handoff. If the working tree is not clean, preserve/commit/stash intentional work first.
+Required result:
 
-Expected before proceeding:
+- current branch `main`;
+- `git status --short` empty;
+- `HEAD` exactly equals `origin/main`.
 
-- branch: `main`;
-- `git status --short`: empty;
-- `HEAD` equals `origin/main`.
+Do **not** use `git reset --hard` or `git clean -fdx` on the normal owner working copy merely to perform acceptance. Preserve intentional local work first.
 
-## A2. Delete the two obsolete remote branches
+## A2. Confirm there are no legitimate open PRs before deleting branches
 
-These branches are superseded by certified `main`:
+In GitHub, confirm the final docs PR is merged and there are no other intended open PRs.
 
-- `release/wordpress-org-submission-readiness`
-- `enterprise/release-identity-migration-decision`
-
-Run:
+Then locally:
 
 ```bash
-git push origin --delete release/wordpress-org-submission-readiness
+git fetch --prune origin
+git branch -r
+git worktree list
+```
+
+As of the final documentation audit, non-main branches included closeout/historical/Dependabot branches such as:
+
+- `dependabot/github_actions/github-actions-055219aa09`
+- `docs/final-sucheckout-owner-closeout`
+- `docs/sucheckout-final-documentation-hardening`
+- `docs/sucheckout-final-documentation-hardening-v2`
+- `enterprise/release-identity-migration-decision`
+- `release/wordpress-org-submission-readiness`
+
+This list is a snapshot, not a command to delete blindly. **Live branch/PR state wins.**
+
+Delete every non-`main` remote branch only after confirming it is superseded and has no intended open PR. For the known superseded branches:
+
+```bash
+git push origin --delete dependabot/github_actions/github-actions-055219aa09
+git push origin --delete docs/final-sucheckout-owner-closeout
+git push origin --delete docs/sucheckout-final-documentation-hardening
+git push origin --delete docs/sucheckout-final-documentation-hardening-v2
 git push origin --delete enterprise/release-identity-migration-decision
+git push origin --delete release/wordpress-org-submission-readiness
 git fetch --prune origin
 git branch -r
 ```
 
-Expected remote result before repository rename:
+If GitHub auto-deleted any branch, a delete command may report that the remote ref does not exist; that is harmless. Do not create it again.
+
+Expected final remote state before repository rename:
 
 ```text
 origin/HEAD -> origin/main
 origin/main
 ```
 
-If matching local branches exist, first make sure no worktree uses them:
+For matching local branches, first inspect `git worktree list`. Delete only branches not used by a worktree and not containing needed local work.
 
-```bash
+PowerShell-safe example:
+
+```powershell
 git worktree list
-```
-
-Then delete only the obsolete local branches:
-
-```bash
-git branch -D release/wordpress-org-submission-readiness
+git branch
+# Delete only verified obsolete local branches, one at a time:
+git branch -D docs/final-sucheckout-owner-closeout
+git branch -D docs/sucheckout-final-documentation-hardening
+git branch -D docs/sucheckout-final-documentation-hardening-v2
 git branch -D enterprise/release-identity-migration-decision
+git branch -D release/wordpress-org-submission-readiness
 git worktree prune
 ```
 
-If Git says a branch is checked out in another worktree, inspect that worktree before deleting anything. Do not force-remove an unknown worktree.
+The Dependabot branch normally exists only remotely; delete a local counterpart only if one actually exists.
 
 ## A3. Rename the GitHub repository
 
-In GitHub:
+GitHub UI:
 
-1. Open repository **Settings**.
-2. Open **General**.
-3. Under **Repository name**, change:
+1. Repository → **Settings**.
+2. **General** → Repository name.
+3. Change:
 
 ```text
 simplixpay-upayments
@@ -121,32 +162,28 @@ to:
 sucheckout-upayments
 ```
 
-4. Confirm the rename.
-5. Re-open the repository from the new coordinate:
+4. Confirm.
+5. Re-open the repository at the new coordinate:
 
 ```text
 SimplixInnovations/sucheckout-upayments
 ```
 
-The repository ID/history should remain the same; the coordinate changes.
+Do not rename it to `sucheckout-for-upayments`.
 
 ## A4. Update GitHub About metadata
 
-Set:
-
-**Description**
+Description:
 
 ```text
 SUCheckout for UPayments — independently engineered WooCommerce payment integration by Simplix Innovations.
 ```
 
-**Homepage**
+Homepage until a dedicated product page exists:
 
 ```text
 https://simplixi.com
 ```
-
-Keep that homepage until a dedicated canonical SUCheckout product page exists.
 
 Remove retired topic:
 
@@ -154,7 +191,7 @@ Remove retired topic:
 simplixpay
 ```
 
-Recommended evidence-safe discovery topics:
+Recommended evidence-safe topics:
 
 ```text
 checkout-blocks
@@ -171,11 +208,9 @@ woocommerce-payment-gateway
 wordpress
 ```
 
-Do not add claim-like topics such as `wpml-ready`, `pci-compliant`, `accessibility-ready`, `all-wallets`, `refunds`, or `multicurrency` without separate evidence.
+Do not add unsupported/uncertified claim topics such as `wpml-ready`, `pci-compliant`, `all-wallets`, `refunds`, `multicurrency` or `accessibility-ready` without separate evidence.
 
-## A5. Update the local remote after GitHub rename
-
-Run in the normal local clone:
+## A5. Update local `origin` after rename
 
 ```bash
 git remote set-url origin https://github.com/SimplixInnovations/sucheckout-upayments.git
@@ -186,44 +221,32 @@ git branch -r
 git status --short
 ```
 
-Expected fetch/remote behavior must use the new canonical URL rather than relying on GitHub redirects from the old name.
+Use the new URL directly rather than relying on GitHub's old-name redirect.
 
-## A6. Verify GitHub configuration after rename
+## A6. Verify repository controls after rename
 
-Do not assume every repository-level integration followed the rename correctly. Verify:
+Verify rather than assume:
 
-- default branch remains `main`;
-- squash merge remains the only allowed merge method;
-- default-branch ruleset still blocks force-push/deletion and requires the intended checks;
-- Actions are enabled;
+- default branch is still `main`;
+- squash merge remains the intended/only merge method;
+- default-branch rules/ruleset still require the intended checks and block force-push/deletion;
+- Actions remain enabled;
 - workflow permissions remain appropriately minimal;
 - CodeQL/code scanning remains enabled;
-- Dependabot version/security updates remain enabled;
-- secret scanning/push protection remain enabled where available;
+- Dependabot settings remain enabled;
+- secret scanning / push protection remain enabled where available;
 - Private Vulnerability Reporting remains configured as intended;
 - repository secrets and environments still exist;
-- webhooks/GitHub Apps/external integrations point at the renamed repo where they store explicit coordinates;
-- About description/homepage/topics show SUCheckout, not SimplixPay;
-- open issues/PRs are still as expected;
+- webhooks, GitHub Apps and external integrations use the new coordinate where they store one explicitly;
+- About description/homepage/topics are correct;
+- no unexpected open PRs/issues remain;
 - only intended branches remain.
 
-## A7. Tell ChatGPT the rename is complete
+## A7. Post-rename coordinate-only PR
 
-After A1-A6, provide the new repository URL or simply state that the rename to `SimplixInnovations/sucheckout-upayments` is complete.
+After the GitHub rename, tell ChatGPT the new URL/that the rename is complete. A small dedicated PR must update **living repository-coordinate references only**.
 
-A **small coordinate-only PR** is then required to update living repository links such as:
-
-- README workflow badges/links;
-- `AGENTS.md` current repository line;
-- `PROJECT-STATUS.md` current repository line;
-- `OWNER-HANDOFF.md` transition wording;
-- `NOTICE.md` / `UPSTREAM.md` current source links where applicable;
-- `.github/ISSUE_TEMPLATE/config.yml` links;
-- other living GitHub URLs discovered by exact grep.
-
-Do not blindly replace `simplixpay-upayments` repository-wide. The token remains valid in historical evidence and in the explicitly certified legacy package-root migration contract.
-
-Recommended audit after rename:
+Audit:
 
 ```bash
 git grep -n "SimplixInnovations/simplixpay-upayments"
@@ -231,22 +254,27 @@ git grep -n "github.com/SimplixInnovations/simplixpay-upayments"
 git grep -n "simplixpay" -- ':!docs/history/**' ':!docs/superpowers/**'
 ```
 
-Every hit must be classified as either:
+Expected current-coordinate surfaces can include README badges/links, `AGENTS.md`, project status/handoff, `NOTICE.md`, `UPSTREAM.md` and issue-template links.
 
-- current repository coordinate → update;
-- historical evidence → keep;
-- legacy package/migration fixture → keep;
+Classify every hit:
+
+- living repository URL → update;
+- historical evidence → retain;
+- certified legacy package-root migration fixture → retain;
+- protected persisted/provider identity → retain;
 - obsolete first-party branding residue → remove/update.
+
+Never bulk-replace `simplixpay-upayments` repository-wide.
+
+Merge the coordinate-only PR only from an exact green head, then verify the resulting `main` again.
 
 ---
 
-# Part B — Independent local acceptance before release
+# B. Independent local acceptance
 
-GitHub CI already owns the authoritative cross-version matrix. Local acceptance is an independent owner verification of the exact canonical package and merchant-facing behavior.
+GitHub CI owns the authoritative 16-cell cross-version matrix. Local acceptance is an independent owner check of the exact final package and merchant-facing behavior.
 
-## B1. Toolchain preflight
-
-From Git Bash on Windows:
+## B1. Toolchain preflight — Windows Git Bash
 
 ```bash
 git --version
@@ -259,7 +287,7 @@ wp --info
 py -3 --version
 ```
 
-Release scripts invoke `python3`. If Git Bash has only the Windows `py` launcher, create a temporary shell-local shim:
+Release scripts invoke `python3`. If Git Bash only has Windows `py`, create a temporary shell-local shim:
 
 ```bash
 mkdir -p /tmp/sucheckout-python
@@ -272,15 +300,12 @@ export PATH="/tmp/sucheckout-python:$PATH"
 python3 --version
 ```
 
-Do not globally alter Windows Python just for this test.
+Do not globally modify Windows Python just for this acceptance run.
 
-## B2. Create an isolated acceptance worktree
-
-Do not run destructive cleanup against the normal clone.
+## B2. Use a disposable exact-main worktree
 
 ```bash
 git fetch --prune --tags origin
-
 SOURCE_REPO="$(git rev-parse --show-toplevel)"
 ACCEPTANCE_DIR="${SOURCE_REPO}/../sucheckout-owner-acceptance"
 
@@ -293,16 +318,14 @@ git rev-parse HEAD
 git rev-parse origin/main
 ```
 
-Expected:
+Required:
 
-- `git status --short` is empty;
-- both SHA commands match exactly.
+- empty `git status --short`;
+- both SHAs identical.
 
-If the target directory already exists, choose another disposable path. Never delete an unknown directory just to reuse the name.
+If the directory exists, choose another disposable path; never remove an unknown directory just to reuse the name.
 
-## B3. Development quality suite
-
-Run:
+## B3. Development quality
 
 ```bash
 composer install --no-interaction --prefer-dist
@@ -311,7 +334,7 @@ composer audit --locked
 composer quality
 ```
 
-Then run the permanent high-value SUCheckout contracts directly:
+High-value standalone contracts:
 
 ```bash
 php tests/harness/sucheckout-identity-migration-harness.php
@@ -327,11 +350,11 @@ node --check tests/harness/phase-9g-h12-blocks-harness.js
 node tests/harness/phase-9g-h12-blocks-harness.js
 ```
 
-Any failure is a release blocker until understood. Do not edit production code merely to silence a local environment mismatch; diagnose whether the failure is environment-specific or a real regression.
+A failure is a release blocker until understood. Do not alter production behavior merely to silence an environment mismatch.
 
-PHP 7.2 syntax CI is not PHP 7.2 runtime certification. Supported runtime floor remains PHP 7.4.
+Supported runtime floor is PHP 7.4; syntax checks on older PHP do not broaden runtime certification.
 
-## B4. Build and verify the deterministic package
+## B4. Build and verify deterministic artifact
 
 ```bash
 rm -rf dist
@@ -341,27 +364,23 @@ sha256sum dist/sucheckout-upayments-0.1.0.zip
 cat dist/sucheckout-upayments-0.1.0.zip.sha256
 ```
 
-The calculated SHA-256 must match the sidecar.
+The calculated hash must match the sidecar.
 
-Treat this ZIP as a verification artifact until the public version/release decision is explicitly approved.
-
-## B5. Inspect the package identity
-
-Optional but recommended:
+Optional package inspection:
 
 ```bash
-unzip -l dist/sucheckout-upayments-0.1.0.zip | head -80
+unzip -l dist/sucheckout-upayments-0.1.0.zip | head -100
 ```
 
 Verify:
 
-- one top-level `sucheckout-upayments/` directory;
+- exactly one `sucheckout-upayments/` root;
 - `sucheckout-upayments/UPayments.php` exists;
-- `readme.txt` exists;
-- no development-only `.git`, tests, CI or secret files are packaged;
+- packaged `readme.txt` exists;
+- no development/tests/CI/secrets are packaged;
 - no second plugin root exists.
 
-## B6. Install on a disposable local/staging WordPress + WooCommerce site
+## B5. Install on disposable WordPress + WooCommerce
 
 ```bash
 wp plugin install ./dist/sucheckout-upayments-0.1.0.zip --force
@@ -369,78 +388,68 @@ wp plugin activate sucheckout-upayments
 wp plugin status sucheckout-upayments
 ```
 
-Do not use a production store for first local acceptance.
+Do not make the first acceptance installation on a production store.
 
-## B7. Manual merchant/admin smoke
+## B6. Merchant/admin/manual smoke
 
-Verify all of the following:
+Verify:
 
-### WordPress / plugin identity
+### Plugin identity
 
-- plugin displays **SUCheckout for UPayments**;
-- no current UI presents SimplixPay as the product;
-- plugin activates without PHP notices/warnings/fatals;
-- WordPress identifies the installed root as `sucheckout-upayments`;
-- the retained physical file `UPayments.php` causes no duplicate plugin entry.
+- display name is **SUCheckout for UPayments**;
+- no active current UI presents SimplixPay as the product;
+- no PHP notices/warnings/fatals;
+- package root is `sucheckout-upayments`;
+- retained `UPayments.php` does not create a duplicate plugin entry.
 
 ### WooCommerce admin
 
-- payment settings page loads cleanly;
-- SUCheckout/UPayments settings save;
-- reload confirms saved values;
-- sensitive credentials are masked/not leaked;
-- malformed/blank optional values do not create warnings;
-- admin JS has no console errors.
+- payment settings page loads;
+- settings save/reload correctly;
+- credentials remain masked/not leaked;
+- malformed/blank optional settings fail safely;
+- no admin-console JS errors.
 
 ### Classic checkout
 
-- gateway registers under the protected payment ID `upayments`;
+- protected gateway ID `upayments` registers correctly;
 - enabled/disabled behavior matches settings;
-- checkout renders without PHP/JS errors;
-- failure states show safe user-facing messages;
-- no secret/provider-token data appears in HTML or browser console.
+- checkout renders and errors safely;
+- no credentials/tokens appear in HTML or browser console.
 
 ### Cart / Checkout Blocks
 
-- gateway registers and becomes available only when eligible;
+- registration/availability is correct;
 - disabled/malformed settings fail closed;
-- checkout JS has no errors;
-- frontend text and styling remain usable.
+- no checkout JS errors.
 
-### HPOS
+### HPOS / legacy order storage
 
-If the disposable store can safely switch modes, smoke both:
-
-- legacy order storage;
-- HPOS authoritative storage.
-
-Create an order in each mode and confirm SUCheckout payment metadata/order operations remain readable through WooCommerce APIs/admin.
+Where your disposable site allows safe switching, smoke both storage modes and confirm WooCommerce order CRUD/payment metadata remains readable.
 
 ### UPayments sandbox
 
-Using non-production/test credentials only:
+Using **non-production credentials only**:
 
 - initialize a bounded test payment;
-- confirm the provider payment link/initial response is handled;
-- exercise successful/failed/pending return paths only as supported by the sandbox;
-- confirm browser return data alone never marks an order paid without provider-authenticated verification;
-- confirm logs contain no secrets, full bearer tokens, card data or sensitive customer tokens.
+- confirm payment-link/initial response handling;
+- exercise available success/failure/pending return paths;
+- verify browser return data alone cannot mark an order paid without provider-authenticated status verification;
+- verify logs contain no secrets, full bearer tokens, card data or sensitive customer tokens.
 
-### Saved-card / subscriptions / multi-merchant
+### Optional saved-card/subscription/multi-merchant checks
 
-Only test these when your sandbox/provider account and Woo setup support them:
+Only when your provider/Woo setup supports them:
 
-- saved-card UI respects provenance/membership restrictions;
+- saved-card membership/provenance restrictions fail closed;
 - guest/foreign/malformed token paths fail closed;
-- subscription eligibility follows configured product/order rules;
-- auto-deduction is not claimed as certified unless separately validated live;
-- multi-merchant behavior remains limited to the certified single additional merchant.
+- subscription eligibility UI matches configured rules;
+- live auto-deduction is **not** treated as certified unless separately validated;
+- multi-merchant remains limited to one additional merchant.
 
-## B8. Optional legacy-root migration smoke
+## B7. Legacy-root migration smoke — only if applicable
 
-Only if you have an actual old internal/pre-release `simplixpay-upayments` installation.
-
-Back up the disposable database first.
+If you actually have an old internal/pre-release `simplixpay-upayments` installation, back up the disposable database first.
 
 ```bash
 wp plugin deactivate simplixpay-upayments
@@ -448,14 +457,7 @@ wp plugin install ./dist/sucheckout-upayments-0.1.0.zip --force
 wp plugin activate sucheckout-upayments
 ```
 
-Before deleting the old folder, verify:
-
-- merchant settings retained;
-- historical orders still show/read the expected payment method;
-- protected metadata remains intact;
-- token/provenance state remains intact;
-- subscription metadata and scheduled events remain intact;
-- callbacks/provider-order identities are unchanged.
+Before deleting the old package, verify settings, historical orders/payment method, metadata, token/provenance, subscription state, scheduled events and provider/callback identities remain intact.
 
 Only after verification:
 
@@ -464,23 +466,26 @@ wp plugin delete simplixpay-upayments
 wp plugin status sucheckout-upayments
 ```
 
-## B9. Visual/accessibility/browser acceptance
+## B8. Branding / visual / accessibility acceptance
 
-Repository CI does not certify this. At minimum, manually check the actual target launch browser/theme combination for:
+Share/apply the approved Simplixi branding before final public screenshots/marketing assets are produced.
 
-- desktop + mobile responsive checkout;
-- keyboard navigation and visible focus;
-- labels/error messages;
+Validate the actual launch UI for:
+
+- SUCheckout-specific logo/icon usage;
+- brand colors/tokens/typography where appropriate;
+- admin settings visual hierarchy;
+- Classic and Blocks checkout presentation;
+- desktop/mobile responsive behavior;
+- keyboard navigation / visible focus;
+- labels and error-state clarity;
 - contrast/readability;
-- RTL/Arabic only if you intend to claim/support it at launch;
-- no layout break in Classic and Blocks checkout;
-- admin settings usability.
+- target theme/browser combinations;
+- RTL/Arabic only if you intend to claim/support it at launch.
 
-Broader browser/theme/accessibility certification remains a separate evidence track.
+Do not convert this into a broad compatibility claim until the relevant evidence exists.
 
-## B10. Remove the disposable acceptance worktree
-
-After acceptance is complete:
+## B9. Remove disposable worktree
 
 ```bash
 cd "$SOURCE_REPO"
@@ -489,113 +494,112 @@ git worktree prune
 git worktree list
 ```
 
-The `--force` is intentionally bounded to the disposable worktree created in B2 because Composer/build outputs may remain there. Never substitute the normal working-copy path.
+The force flag is bounded to the disposable acceptance worktree where Composer/build output may remain. Never substitute the owner's normal working-copy path.
 
 ---
 
-# Part C — Release/version decision
+# C. First public version decision
 
-Current development version is `0.1.0`. Do not create a tag merely because engineering gates are green.
+Current development version: `0.1.0`.
 
-Explicitly choose one of:
+Explicitly choose:
 
-- **0.1.0** — early public/pre-1.0 release;
-- **1.0.0** — first stable release.
+- `0.1.0` — early public/pre-1.0 release; or
+- `1.0.0` — first stable release.
 
-If the release version changes, use a dedicated version-promotion PR and update all canonical surfaces together, including at minimum:
+Do not create a public tag merely because engineering checks are green.
+
+If the version changes, use a dedicated version-promotion PR and update all canonical version surfaces together, including at minimum:
 
 - `src/Release/Identity.php`;
 - plugin header in `UPayments.php`;
-- `readme.txt` stable tag + changelog;
+- `readme.txt` Stable Tag/changelog;
 - root `CHANGELOG.md`;
 - README version badge/text;
-- release documentation tied to the version.
+- release documentation tied to the release version.
 
-That exact version-promotion head must pass all release-sensitive CI before merge, and merged `main` must be reverified before tagging.
+Require full release-sensitive exact-head CI and fresh merged-main verification before tagging.
 
 ---
 
-# Part D — Public release / WordPress.org publication
+# D. Public release / WordPress.org publication
 
-Only after explicit owner approval and green exact-main evidence:
+Only after explicit owner approval:
 
-1. fetch the exact certified `main`;
+1. fetch exact certified `main`;
 2. build the deterministic artifact from that exact commit;
 3. run `scripts/verify-release.sh`;
 4. confirm ZIP SHA-256 equals the sidecar;
 5. create `vX.Y.Z` on that exact certified commit;
-6. create the GitHub Release using the verified ZIP/checksum/manifest;
+6. create GitHub Release using the verified ZIP/checksum/manifest;
 7. submit/publish the exact verified package to WordPress.org under slug `sucheckout-upayments`;
-8. verify public directory name, slug, stable tag, screenshots/assets and package contents;
-9. install/upgrade from the actual public distribution channel on a disposable site;
+8. verify public directory name/slug/version/metadata/screenshots/package;
+9. install/upgrade from the actual public channel on a disposable site;
 10. run a post-publication checkout smoke.
 
-Never publish:
-
-- a mutable local working-tree build;
-- a synthetic PR merge ref;
-- a ZIP from a different SHA;
-- a package with `sucheckout-for-upayments` technical identity;
-- a package that changes protected persisted/provider IDs for branding uniformity.
+Never publish a mutable worktree build, synthetic PR merge ref, artifact from a different SHA, or package using `sucheckout-for-upayments` technical identity.
 
 ---
 
-# Part E — Explicit external/manual boundaries
+# E. External/manual and unsupported boundaries
 
 Repository certification does not replace:
 
-- production merchant payment completion evidence;
+- production merchant payment completion;
 - real Apple Pay / Google Pay / Samsung Pay account/device completion;
-- WPML/WCML/multilingual/multicurrency/RTL validation;
-- broad browser/device/theme/accessibility certification;
+- WPML/WCML/multilingual/multicurrency/RTL certification;
+- broad browser/device/theme/accessibility matrix;
 - representative-store performance/load testing;
 - penetration testing;
 - PCI/legal/compliance attestation;
-- live non-idempotent subscription auto-deduction evidence;
+- live non-idempotent subscription auto-deduction;
 - provider webhook-signature verification until UPayments publishes a stable documented verification contract.
 
-Automatic WooCommerce refunds and arbitrary marketplace multi-split remain unsupported.
+Unsupported in the current certified feature set:
+
+- automatic WooCommerce refunds;
+- arbitrary marketplace multi-split beyond one additional merchant.
 
 ---
 
-# Owner completion checklist
+# Final owner checklist
 
 ## Repository/admin
 
-- [ ] normal local clone clean and synchronized with `origin/main`
-- [ ] obsolete remote branch `release/wordpress-org-submission-readiness` deleted
-- [ ] obsolete remote branch `enterprise/release-identity-migration-decision` deleted
-- [ ] GitHub repository renamed to `SimplixInnovations/sucheckout-upayments`
-- [ ] GitHub About description/homepage/topics updated
-- [ ] local `origin` updated to new repository URL
-- [ ] ruleset/Actions/security/Dependabot/PVR/integrations verified after rename
-- [ ] living old repository-coordinate references reconciled in a dedicated PR
-- [ ] only intended branches remain
-- [ ] no unexpected open PRs/issues remain
+- [ ] final documentation PR merged from exact green head
+- [ ] normal clone synchronized; `HEAD == origin/main`; worktree clean
+- [ ] no legitimate open PRs remain
+- [ ] all superseded non-main branches removed
+- [ ] repository renamed to `SimplixInnovations/sucheckout-upayments`
+- [ ] About description/homepage/topics updated
+- [ ] local `origin` updated to new URL
+- [ ] ruleset/Actions/CodeQL/Dependabot/secret scanning/PVR/integrations verified after rename
+- [ ] coordinate-only living-link PR merged from exact green head
+- [ ] final branch audit shows only intended branch(es), ideally `main`
 
 ## Local acceptance
 
-- [ ] isolated acceptance worktree created from exact `origin/main`
-- [ ] Composer validation/audit/quality green
+- [ ] isolated exact-main worktree created
+- [ ] Composer validate/audit/quality green
 - [ ] focused SUCheckout/H12/WordPress.org harnesses green
 - [ ] deterministic ZIP built and verified
-- [ ] package structure manually inspected
-- [ ] ZIP installed on disposable WordPress/WooCommerce site
-- [ ] admin settings save/reload smoke green
-- [ ] Classic checkout smoke green
-- [ ] Blocks checkout smoke green
-- [ ] HPOS/legacy smoke completed where feasible
-- [ ] bounded UPayments sandbox initialization/return smoke completed
-- [ ] logs/browser output checked for secrets/customer-token leakage
-- [ ] optional legacy-root migration smoke completed if applicable
-- [ ] intended launch browser/theme/mobile/accessibility smoke completed
+- [ ] package structure inspected
+- [ ] disposable WordPress/WooCommerce installation green
+- [ ] admin settings save/reload green
+- [ ] Classic checkout green
+- [ ] Blocks checkout green
+- [ ] HPOS/legacy smoke complete where feasible
+- [ ] bounded sandbox smoke complete
+- [ ] no secrets/token leakage found
+- [ ] optional legacy-root migration smoke complete if applicable
+- [ ] approved Simplixi/SUCheckout branding applied and launch UI/browser/mobile/accessibility smoke complete
 
 ## Publication
 
 - [ ] first public version explicitly approved
 - [ ] version-promotion PR completed if required
-- [ ] exact merged `main` release-sensitive gates green
-- [ ] exact deterministic ZIP/checksum/manifest verified
+- [ ] exact merged-main release gates green
+- [ ] release ZIP/checksum/manifest verified
 - [ ] tag/GitHub Release explicitly approved
 - [ ] WordPress.org submission/publication explicitly approved
-- [ ] public-channel install/upgrade smoke completed after publication
+- [ ] public-channel post-release install/upgrade smoke complete
