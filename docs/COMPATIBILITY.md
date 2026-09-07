@@ -2,9 +2,25 @@
 
 This document is the public compatibility truth. A capability is **Verified** only when exact reproducible evidence exists. External/manual requirements and unsupported features are named explicitly rather than inferred from green CI.
 
-**Current posture:** pre-release final SUPCheckout identity is under exact-head certification. Publication remains a separate owner decision.
+**Current posture:** pre-release final SUPCheckout identity is merged and post-merge certified. Repository rename is complete; publication remains a separate owner decision.
 
 ## Certification anchors
+
+### Final SUPCheckout identity baseline
+
+PR #67 certified head `0059f365883fa4edd6a2d623c7b370d38d3f565c` squash-merged as:
+
+`7547e59a2d5ef6d49b059851c6899a2d9987b16a`
+
+Fresh post-merge evidence:
+
+- Quality Gates #896 — **SUCCESS**;
+- Compatibility Certification #424 — **16/16 SUCCESS**;
+- Release Artifact #373 — **SUCCESS**;
+- Provider Sandbox #334 — **SUCCESS**;
+- WordPress.org Submission Check #231 — **SUCCESS**;
+- CodeQL/main-security #717 — **SUCCESS**.
+
 
 ### Runtime-bearing SUCheckout baseline
 

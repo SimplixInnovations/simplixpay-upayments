@@ -26,8 +26,7 @@ Before substantive work read, in this order:
 - PHP namespace root: `Simplixi\SUPCheckout`
 - Global PHP prefix for new first-party symbols: `supcheckout_`
 - Constants: `SUPCHECKOUT_*`
-- Current GitHub coordinate during implementation: `SimplixInnovations/sucheckout`
-- Target GitHub coordinate after certified merge: `SimplixInnovations/supcheckout`
+- Canonical GitHub coordinate: `SimplixInnovations/supcheckout`
 - Canonical plugin/package slug remains: `supcheckout`
 
 The word **for** is human-facing relationship copy only and must never be encoded into URLs, slugs, text domains, package names, namespaces, CSS/JS roots or release artifacts.
@@ -82,9 +81,18 @@ Latest first-party naming cleanup:
 - remaining safe retired first-party runtime/control identities migrated to canonical SUPCheckout equivalents while protected UPayments/persisted contracts remained unchanged;
 - fresh main Quality #781, Compatibility #309 (**16/16**), Release Artifact #258, Provider Sandbox #221, WordPress.org #116 and CodeQL #595 — **SUCCESS**.
 
+Final SUPCheckout identity migration:
+
+- PR #67 certified head: `0059f365883fa4edd6a2d623c7b370d38d3f565c`;
+- squash merge: `7547e59a2d5ef6d49b059851c6899a2d9987b16a`;
+- post-merge Quality #896, Compatibility #424 (**16/16**), Release Artifact #373, Provider Sandbox #334, WordPress.org #231 and CodeQL #717 — **SUCCESS**;
+- repository rename to `SimplixInnovations/supcheckout` is complete;
+- canonical remote topology was verified as `main` only before post-rename coordinate reconciliation.
+
+
 Every future candidate must pass the permanent exact-head gates appropriate to its scope before merge or release.
 
-No public tag, GitHub Release or WordPress.org publication exists yet. Repository rename/local owner acceptance/publication are separate owner/admin actions documented in `OWNER-HANDOFF.md`.
+No public tag, GitHub Release or WordPress.org publication exists yet. Repository rename is complete; local owner acceptance, remaining repository-admin verification and publication are separate owner actions documented in `OWNER-HANDOFF.md`.
 
 ## First-stable plugin identity
 
@@ -205,18 +213,11 @@ UPayments may appear as the provider/integration in human-facing copy. SUPChecko
 
 ## Repository coordinate discipline
 
-The current GitHub coordinate is `SimplixInnovations/sucheckout` only until the final SUPCheckout identity merge is post-merge green. The owner then renames it to `SimplixInnovations/supcheckout`; the WordPress/plugin technical slug is already `supcheckout`.
+The canonical GitHub coordinate is `SimplixInnovations/supcheckout`. All living repository URLs, badges, issue/support links and release-identity references must use it.
 
-For repository-coordinate changes:
+Historical milestone records and certified legacy package-root fixtures may retain former repository/package tokens where they record true past state. Never reinterpret provider/persisted compatibility identifiers as repository branding, and never perform blind repository-wide replacement of historical or protected tokens.
 
-1. update only current/living repository URLs, badges and issue/support links;
-2. audit every retired repository-coordinate hit;
-3. retain historical milestone records and legacy package-root migration fixtures where old package tokens are semantically required;
-4. never reinterpret provider/persisted compatibility identifiers as repository branding;
-5. rerun all workflows triggered by coordinate changes;
-6. merge only an exact green head and verify `main` again.
-
-Never bulk-replace the old token repository-wide.
+Any future repository-coordinate change must be exact-head reviewed, pass all triggered gates, and be reverified on merged `main`.
 
 ## Change discipline
 

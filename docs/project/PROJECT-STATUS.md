@@ -2,8 +2,7 @@
 
 **Status document:** canonical living engineering state
 **Last reconciled:** 2026-09-07
-**Current GitHub repository:** `SimplixInnovations/sucheckout`
-**Target repository after certified SUPCheckout merge:** `SimplixInnovations/supcheckout`
+**Canonical GitHub repository:** `SimplixInnovations/supcheckout`
 **Canonical plugin/package slug:** `supcheckout`
 **Development version:** `0.1.0`
 
@@ -15,14 +14,14 @@
 |---|---|
 | Product | **SUPCheckout for UPayments** |
 | Product family | **SUPCheckout** |
-| Production maturity | **Pre-release / final SUPCheckout identity migration in exact-head certification** |
+| Production maturity | **Pre-release / final SUPCheckout identity merged and post-merge certified** |
 | Canonical technical slug | `supcheckout` |
 | WordPress text domain | `supcheckout` |
 | PHP namespace | `Simplixi\SUPCheckout` |
 | Canonical release root | `supcheckout/` |
 | First-stable physical bootstrap | `UPayments.php` — protected compatibility exception |
 | Historical pre-stable SUCheckout runtime migration | **DONE / VERIFIED — retained as evidence** |
-| Final SUPCheckout identity migration | **IN IMPLEMENTATION / EXACT-HEAD CERTIFICATION** |
+| Final SUPCheckout identity migration | **DONE / VERIFIED — PR #67 merged and post-merge certified** |
 | First-party naming cleanup | **DONE / VERIFIED** |
 | Documentation/control-plane hardening | **DONE / VERIFIED — PR #65 merged and post-merge certified** |
 | Historical Quality Platform Q1-Q19 | **DONE / VERIFIED — permanently closed at Q19** |
@@ -30,7 +29,7 @@
 | Deterministic release artifact | **DONE / VERIFIED — permanent exact-head gate** |
 | Legacy-root → canonical-root migration | **DONE / VERIFIED — permanent release gate** |
 | WordPress.org Plugin Check | **DONE / VERIFIED — 0 blocking errors on certified package** |
-| SUPCheckout repository rename | **PENDING OWNER/ADMIN — only after certified merge; target `SimplixInnovations/supcheckout`** |
+| SUPCheckout repository rename | **DONE / VERIFIED — canonical `SimplixInnovations/supcheckout`** |
 | Public Git tag / GitHub Release | **NOT CREATED** |
 | WordPress.org publication | **NOT PERFORMED** |
 
@@ -39,6 +38,28 @@ No Q20 is justified. Do not create additional numbered quality phases merely for
 ## Certification anchors
 
 Different SHAs below own different milestones and must not be conflated.
+
+### Final SUPCheckout identity + canonical repository baseline
+
+PR #67 certified head:
+
+`0059f365883fa4edd6a2d623c7b370d38d3f565c`
+
+It squash-merged to `main` as:
+
+`7547e59a2d5ef6d49b059851c6899a2d9987b16a`
+
+Fresh exact-main evidence:
+
+- Quality Gates #896 — **SUCCESS**;
+- Compatibility Certification #424 — **16/16 SUCCESS**;
+- Release Artifact #373 — **SUCCESS**, including packaged legacy/HPOS and both pre-stable root migration/rollback families;
+- Provider Sandbox Certification #334 — **SUCCESS**;
+- WordPress.org Submission Check #231 — **SUCCESS**;
+- CodeQL/main-security #717 — **SUCCESS**.
+
+After this exact-main certification, the repository was renamed to `SimplixInnovations/supcheckout`. Remote branch topology was verified as `main` only before the dedicated post-rename coordinate-reconciliation branch was created.
+
 
 ### Historical runtime-bearing SUCheckout identity baseline
 
@@ -124,8 +145,7 @@ The approved identity is:
 - deterministic package: `supcheckout-X.Y.Z.zip`;
 - package root: `supcheckout/`;
 - first-stable bootstrap: `UPayments.php`;
-- current GitHub repository during implementation: `SimplixInnovations/sucheckout`;
-- target repository after certified merge: `SimplixInnovations/supcheckout`.
+- canonical GitHub repository: `SimplixInnovations/supcheckout`.
 
 The word **for** appears in human-facing relationship copy only. It does not appear in technical slugs, URLs, package identities, text domains or namespaces.
 
@@ -221,18 +241,16 @@ Passing this gate does **not** publish the plugin or guarantee manual directory 
 
 ## Remaining owner/admin/local work
 
-After this final documentation-hardening PR is exact-green and merged, the remaining sequence is:
+Repository rename and obsolete-branch cleanup are complete. Remaining work is:
 
-1. synchronize the owner's local clone to the final `origin/main`;
-2. delete obsolete remote branches;
-3. after the final SUPCheckout identity PR is merged and post-merge green, rename the repository from `SimplixInnovations/sucheckout` to `SimplixInnovations/supcheckout`;
-4. update repository About metadata and local `origin`;
-5. verify rulesets/security/integrations after rename;
-6. create/merge one coordinate-only PR updating living repository URLs to `SimplixInnovations/supcheckout`;
-7. run the documented isolated local acceptance suite;
-8. choose the first public version explicitly (`0.1.0` early release vs `1.0.0` first stable);
-9. run a version-promotion PR if required;
-10. tag/release/submit to WordPress.org only after explicit approval.
+1. finish the residual post-rename About/topics and Main Rule corrections verified by live GitHub state;
+2. verify the owner's local `origin` points directly to `SimplixInnovations/supcheckout`;
+3. merge the dedicated coordinate-only living-reference closure from an exact-green head;
+4. run the documented isolated local acceptance suite;
+5. apply approved SUPCheckout launch branding and visual/accessibility acceptance;
+6. choose the first public version explicitly (`0.1.0` early release vs `1.0.0` first stable);
+7. run a version-promotion PR if required;
+8. tag/release/submit to WordPress.org only after explicit approval.
 
 The exact commands and checks are in `docs/project/OWNER-HANDOFF.md`.
 

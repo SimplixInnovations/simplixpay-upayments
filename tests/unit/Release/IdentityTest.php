@@ -11,7 +11,7 @@ final class IdentityTest extends TestCase {
         self::assertSame('SUPCheckout for UPayments', Identity::PRODUCT_NAME);
         self::assertSame('SUPCheckout', Identity::SHORT_NAME);
         self::assertSame('supcheckout', Identity::SLUG);
-        self::assertSame('SimplixInnovations/sucheckout', Identity::REPOSITORY);
+        self::assertSame('SimplixInnovations/supcheckout', Identity::REPOSITORY);
         self::assertSame('supcheckout', Identity::TEXT_DOMAIN);
         self::assertSame('Simplixi\\SUPCheckout', Identity::NAMESPACE_ROOT);
     }

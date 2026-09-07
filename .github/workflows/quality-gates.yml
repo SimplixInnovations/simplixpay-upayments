@@ -96,7 +96,7 @@ jobs:
           grep -Fq '<h1 align="center">SUPCheckout for UPayments</h1>' README.md
           grep -Fq '| Canonical technical slug | `supcheckout` |' docs/project/PROJECT-STATUS.md
           grep -Fq '| WordPress text domain | `supcheckout` |' docs/project/PROJECT-STATUS.md
-          grep -Fq '**Target GitHub repository after certified merge:** `SimplixInnovations/supcheckout`' docs/project/OWNER-HANDOFF.md
+          grep -Fq '**Canonical GitHub repository:** `SimplixInnovations/supcheckout`' docs/project/OWNER-HANDOFF.md
           grep -Fq '`supcheckout/UPayments.php`' docs/project/PROJECT-STATUS.md
           grep -Fq 'No Q20 is justified.' docs/project/PROJECT-STATUS.md
           grep -Fq '**Canonical slug:** `supcheckout`' docs/project/NAMING-IDENTITY-STANDARD.md

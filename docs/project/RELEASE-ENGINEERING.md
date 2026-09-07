@@ -1,12 +1,27 @@
 # SUPCheckout for UPayments — Release Engineering
 
-**Current status:** pre-release SUPCheckout identity migration in exact-head certification; repository rename pending; local acceptance/release administration pending
-**Current GitHub repository:** `SimplixInnovations/sucheckout`
-**Target GitHub repository after certified merge:** `SimplixInnovations/supcheckout`
+**Current status:** pre-release SUPCheckout identity merged and post-merge certified; repository rename complete; coordinate closure/local acceptance/release administration pending
+**Canonical GitHub repository:** `SimplixInnovations/supcheckout`
 **Canonical plugin/package slug:** `supcheckout`
 **Development version:** `0.1.0`
 
 ## Certification anchors
+
+### Final SUPCheckout identity baseline
+
+PR #67 certified head `0059f365883fa4edd6a2d623c7b370d38d3f565c` squash-merged as `7547e59a2d5ef6d49b059851c6899a2d9987b16a`.
+
+Fresh post-merge evidence:
+
+- Quality #896 — **SUCCESS**;
+- Compatibility #424 — **16/16 SUCCESS**;
+- Release Artifact #373 — **SUCCESS**;
+- Provider Sandbox #334 — **SUCCESS**;
+- WordPress.org Submission Check #231 — **SUCCESS**;
+- CodeQL/main-security #717 — **SUCCESS**.
+
+The GitHub repository was then renamed to `SimplixInnovations/supcheckout`; public tag/Release/WordPress.org publication remain unperformed.
+
 
 ### Runtime-bearing release baseline
 
@@ -203,9 +218,9 @@ Do not publish an artifact from:
 
 ## Repository-coordinate boundary
 
-The current GitHub repository is `SimplixInnovations/sucheckout`; after the certified SUPCheckout merge it must be renamed to `SimplixInnovations/supcheckout`.
+The canonical GitHub repository is `SimplixInnovations/supcheckout`, matching the canonical plugin slug.
 
-During this migration only, the current repository coordinate differs from the final plugin slug. After owner/admin rename, living repository URLs use `SimplixInnovations/supcheckout`; historical evidence and pre-stable migration fixtures retain older package/repository tokens where semantically required.
+Living repository URLs use that coordinate. Historical evidence and pre-stable migration fixtures retain older package/repository tokens only where semantically required to preserve true past state.
 
 ## Historical evidence
 
@@ -219,9 +234,9 @@ CI artifacts are verification artifacts, not public releases.
 
 Remaining owner/admin actions are controlled by `OWNER-HANDOFF.md`:
 
-- delete obsolete remote branches;
-- verify canonical repository metadata and controls;
-- reconcile living repository coordinates;
+- verify remaining canonical repository metadata and controls;
+- complete the exact-green living-coordinate closure;
+- verify the owner's local canonical remote;
 - perform independent local acceptance;
 - explicitly choose version/publication;
 - tag/release/submit only after exact-main verification.

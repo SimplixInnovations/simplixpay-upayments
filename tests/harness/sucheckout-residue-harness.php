@@ -61,12 +61,10 @@ $historical_files = array(
 );
 
 /*
- * The pre-rename repository coordinate and legacy package root are allowed
- * only where a current migration, rollback, updater, workflow or provenance
- * contract must refer to them explicitly. OWNER-HANDOFF is included because
- * an executable rename/cleanup guide must name the old repository coordinate,
- * obsolete branches and legacy pre-release package root that the owner removes
- * or migrates.
+ * Legacy package roots remain allowed only where migration, rollback,
+ * workflow or provenance contracts must refer to them explicitly. The former
+ * repository coordinate is no longer a living identity after the completed
+ * GitHub rename and is separately rejected across current coordinate surfaces.
  */
 $legacy_slug_files = array(
     '.github/ISSUE_TEMPLATE/config.yml',
@@ -153,19 +151,19 @@ foreach ($unexpected as $item) {
 sur_assert($unexpected === array(), 'no unexplained retired identity remains on live/shippable surfaces');
 
 $current_identity_contracts = array(
-    'README.md' => array('SUPCheckout for UPayments', 'supcheckout', 'SimplixInnovations/sucheckout'),
-    'AGENTS.md' => array('SUPCheckout for UPayments', 'Simplixi\\SUPCheckout', 'SimplixInnovations/sucheckout'),
-    'docs/project/PROJECT-STATUS.md' => array('SUPCheckout for UPayments', 'supcheckout', 'SimplixInnovations/sucheckout'),
-    'docs/project/NAMING-IDENTITY-STANDARD.md' => array('SUPCheckout for UPayments', 'Simplixi\\SUPCheckout', 'SimplixInnovations/sucheckout'),
+    'README.md' => array('SUPCheckout for UPayments', 'supcheckout', 'SimplixInnovations/supcheckout'),
+    'AGENTS.md' => array('SUPCheckout for UPayments', 'Simplixi\\SUPCheckout', 'SimplixInnovations/supcheckout'),
+    'docs/project/PROJECT-STATUS.md' => array('SUPCheckout for UPayments', 'supcheckout', 'SimplixInnovations/supcheckout'),
+    'docs/project/NAMING-IDENTITY-STANDARD.md' => array('SUPCheckout for UPayments', 'Simplixi\\SUPCheckout', 'SimplixInnovations/supcheckout'),
     'UPayments.php' => array(
-        'Plugin URI: https://github.com/SimplixInnovations/sucheckout',
+        'Plugin URI: https://github.com/SimplixInnovations/supcheckout',
         "define('SUPCHECKOUT_VERSION', Identity::VERSION);",
         "define('SUPCHECKOUT_SLUG', Identity::SLUG);",
         "define('SUPCHECKOUT_PLUGIN_FILE', __FILE__);",
         "define('SUPCHECKOUT_UPDATE_CHANNEL', Identity::UPDATE_CHANNEL);",
     ),
     'composer.json' => array('simplix-innovations/supcheckout', 'Simplixi\\\\SUPCheckout\\\\'),
-    'src/Release/Identity.php' => array("REPOSITORY = 'SimplixInnovations/sucheckout'"),
+    'src/Release/Identity.php' => array("REPOSITORY = 'SimplixInnovations/supcheckout'"),
 );
 foreach ($current_identity_contracts as $contract_path => $needles) {
     $source = sur_read($root, $contract_path);
@@ -195,6 +193,7 @@ $repository_coordinate_files = array(
 $stale_repository_coordinates = array(
     'SimplixInnovations/simplixpay-upayments',
     'SimplixInnovations/sucheckout-upayments',
+    'SimplixInnovations/sucheckout',
 );
 foreach ($repository_coordinate_files as $coordinate_path) {
     $source = sur_read($root, $coordinate_path);

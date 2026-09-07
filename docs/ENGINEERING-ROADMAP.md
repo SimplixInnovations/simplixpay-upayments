@@ -65,7 +65,7 @@ A future physical rename to `supcheckout.php` remains separately gated.
 
 **DONE / VERIFIED.** The pre-rebrand enterprise engineering foundation was closed with full exact-head quality, compatibility, artifact, provider and security evidence. Those records remain historical evidence.
 
-## Final SUPCheckout identity migration — IN EXACT-HEAD CERTIFICATION
+## Final SUPCheckout identity migration — DONE / VERIFIED
 
 The first-party identity is now:
 
@@ -74,8 +74,7 @@ The first-party identity is now:
 - PHP namespace: `Simplixi\SUPCheckout`;
 - package root: `supcheckout/`;
 - first-stable physical bootstrap: `UPayments.php`;
-- current GitHub repository during implementation: `SimplixInnovations/sucheckout`;
-- target repository after certified merge: `SimplixInnovations/supcheckout`.
+- canonical GitHub repository: `SimplixInnovations/supcheckout`.
 
 The word `for` is human-facing relationship wording only and never appears in technical identifiers.
 
@@ -108,21 +107,35 @@ Fresh main evidence:
 
 Later documentation-only maintenance may advance `main` without redefining the historical pre-stable SUCheckout baseline.
 
+### Final SUPCheckout identity + repository closure
+
+PR #67 certified head `0059f365883fa4edd6a2d623c7b370d38d3f565c` squash-merged as `7547e59a2d5ef6d49b059851c6899a2d9987b16a`.
+
+Post-merge:
+
+- Quality #896 — **SUCCESS**
+- Compatibility #424 — **16/16 SUCCESS**
+- Release Artifact #373 — **SUCCESS**
+- Provider Sandbox #334 — **SUCCESS**
+- WordPress.org #231 — **SUCCESS**
+- CodeQL #717 — **SUCCESS**
+- repository rename to `SimplixInnovations/supcheckout` — **COMPLETE**
+- obsolete remote branches — **CLEANED; canonical remote topology was main-only before this reconciliation branch**
+
+
 ## Current owner/admin/local stage
 
-Engineering does not need another invented phase. The remaining sequence is controlled by `docs/project/OWNER-HANDOFF.md`:
+Engineering does not need another invented phase. Repository rename and obsolete-branch cleanup are complete. The remaining sequence is controlled by `docs/project/OWNER-HANDOFF.md`:
 
-1. synchronize the owner's normal clone with `origin/main`;
-2. delete obsolete remote branches;
-3. after exact-green merge, rename `SimplixInnovations/sucheckout` to `SimplixInnovations/supcheckout` and reconcile living coordinates;
-4. update About metadata and local `origin`;
-5. verify rulesets, Actions, security controls, Dependabot, PVR, secrets/environments and external integrations after rename;
-6. create one coordinate-only PR for living old-repository URLs/badges/issue links;
-7. run isolated local owner acceptance from exact `origin/main`;
-8. build and verify the deterministic ZIP;
-9. perform disposable WordPress/WooCommerce Classic/Blocks/HPOS/bounded-sandbox smoke;
-10. explicitly choose the first public version;
-11. tag/GitHub Release/WordPress.org publication only after exact-main certification and owner approval.
+1. finish post-rename About/topics and Main Rule verification;
+2. verify the owner's local `origin` points directly to `SimplixInnovations/supcheckout`;
+3. merge this coordinate-only reconciliation from an exact-green head;
+4. run isolated local owner acceptance from exact `origin/main`;
+5. build and verify the deterministic ZIP;
+6. perform disposable WordPress/WooCommerce Classic/Blocks/HPOS/bounded-sandbox smoke;
+7. apply approved launch branding and visual/accessibility acceptance;
+8. explicitly choose the first public version;
+9. tag/GitHub Release/WordPress.org publication only after exact-main certification and owner approval.
 
 ## External/manual evidence track
 

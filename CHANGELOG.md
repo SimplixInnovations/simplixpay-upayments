@@ -8,6 +8,14 @@ The project is still in pre-release engineering hardening. Entries below are eng
 
 ## [Unreleased]
 
+### Final SUPCheckout identity and repository transition
+
+- Final provider-specific identity migration PR #67 certified exact head `0059f365883fa4edd6a2d623c7b370d38d3f565c` and squash-merged as `7547e59a2d5ef6d49b059851c6899a2d9987b16a`.
+- Fresh merged-main Quality #896, Compatibility #424 (**16/16**), Release Artifact #373, Provider Sandbox #334, WordPress.org #231 and CodeQL/main-security #717 all succeeded.
+- Canonical first-party repository identity is now `SimplixInnovations/supcheckout`; plugin slug/text domain/package root remain `supcheckout`, while protected UPayments payment and persisted compatibility identities remain unchanged.
+- No public tag, GitHub Release or WordPress.org publication is introduced by this transition.
+
+
 ### Final SUCheckout first-party naming and documentation closeout
 
 - PR #61 completed the remaining retired pre-rebrand first-party constants/certification-control prefix migration while preserving protected UPayments compatibility identities; current runtime-bearing certified `main` is `efe937c67343242b7ccf3396a67b3cf2ce35ebac`.

@@ -1,7 +1,7 @@
 <?php
 /**
  * Plugin Name: SUPCheckout for UPayments
- * Plugin URI: https://github.com/SimplixInnovations/sucheckout
+ * Plugin URI: https://github.com/SimplixInnovations/supcheckout
  * Description: Independently engineered UPayments payment integration for WooCommerce by Simplix Innovations.
  * Version: 0.1.0
  * Author: Simplix Innovations
