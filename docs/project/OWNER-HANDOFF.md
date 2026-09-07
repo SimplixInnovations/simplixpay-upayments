@@ -2,7 +2,7 @@
 
 **Engineering migration:** FINAL SUPCHECKOUT IDENTITY — DONE / VERIFIED (PR #67)
 **Migration scope:** identity/runtime + canonical repository coordinate
-**Latest certified `main`:** `7547e59a2d5ef6d49b059851c6899a2d9987b16a`
+**Latest certified coordinate-bearing `main`:** `05fec942cc8fbeb58cfd0bd41f0ef5fdb86f966f`
 **Canonical GitHub repository:** `SimplixInnovations/supcheckout`
 **Canonical plugin/package slug:** `supcheckout`
 **Development version:** `0.1.0`
@@ -20,7 +20,7 @@ Fresh verification on final SUPCheckout `main` `7547e59a2d5ef6d49b059851c6899a2d
 - CodeQL/main-security #717 — **SUCCESS**
 - official packaged Plugin Check — **0 blocking errors**
 
-The repository rename to `SimplixInnovations/supcheckout` is complete. Obsolete remote branches were removed and a main-only remote topology was verified before this dedicated coordinate-reconciliation branch was created.
+The repository rename to `SimplixInnovations/supcheckout` and the dedicated living-coordinate reconciliation are complete. PR #68 exact head `0e6ef6334282a83a428da7ee793daa98360c2bcc` passed Quality #900, Compatibility #428 (**16/16**), Release Artifact #377, Provider Sandbox #338, WordPress.org #235 and CodeQL #722, then squash-merged as `05fec942cc8fbeb58cfd0bd41f0ef5fdb86f966f`. Fresh post-merge Quality #901, Compatibility #429 (**16/16**), Release Artifact #378, Provider Sandbox #339, WordPress.org #236 and CodeQL #723 all succeeded. Final remote topology is `main` only.
 
 ## Golden identity rule
 
@@ -46,7 +46,7 @@ Do not rename protected provider/persisted identities (`upayments`, `woocommerce
 
 ## A1. Synchronize the owner's normal clone
 
-Re-run after the coordinate-reconciliation PR merges so the normal clone is pinned to the final canonical `main`.
+Run now against the canonical repository so the normal clone is pinned to the latest final `main`.
 
 ### PowerShell
 
@@ -203,7 +203,7 @@ wordpress-plugin
 
 Remove retired or claim-inflating topics such as `upayments-woocommerce` and `wpml`. Do not add unsupported/uncertified claim topics such as `wpml-ready`, `pci-compliant`, `all-wallets`, `refunds`, `multicurrency` or `accessibility-ready` without separate evidence.
 
-**Live verification:** description and homepage are correct. Topic cleanup is not yet complete: remove `supcheckout-upayment`, `upayments-woocommerce` and `wpml`; add `woocommerce-plugin` and `wordpress-plugin`. Keep the evidence-safe topic set above.
+**Live verification:** description and homepage are correct. The retired `supcheckout-upayment`, `upayments-woocommerce` and `wpml` topics are gone and `woocommerce-plugin` is present. One topic correction remains: replace generic `gateway` with `wordpress-plugin` so the live topic set matches the evidence-safe set above.
 
 ## A5. Update local `origin` after rename
 
@@ -245,19 +245,22 @@ Verify rather than assume:
 
 **Live verification:** the Main Rule still requires only `Governance` and `H12 Regression Harness`. Add `Compatibility Gate` and `Release Gate` while retaining the existing two. No other rule should be weakened.
 
-## A7. Post-rename coordinate reconciliation PR
+## A7. Post-rename coordinate reconciliation — completed
 
-This dedicated closure updates **living repository-coordinate references only** to the canonical repository and ratchets tests so the pre-rename coordinate cannot return on current surfaces.
+PR #68 completed the living repository-coordinate closure while preserving historical evidence, certified legacy package-root fixtures and protected persisted/provider identities.
 
-Required classification remains:
+Verified evidence:
 
-- living repository URL/badge/issue link/release identity → canonical repository;
-- historical evidence → retain unchanged;
-- certified legacy package-root migration fixture → retain;
-- protected persisted/provider identity → retain;
-- obsolete first-party branding residue → remove/update.
-
-The exact candidate must pass all triggered Quality/H12, Compatibility, Release Artifact, Provider Sandbox, WordPress.org and CodeQL gates before squash merge. Reverify merged `main` afterward.
+- exact head `0e6ef6334282a83a428da7ee793daa98360c2bcc`;
+- Quality #900 — **SUCCESS**;
+- Compatibility #428 — **16/16 SUCCESS**;
+- Release Artifact #377 — **SUCCESS**;
+- Provider Sandbox #338 — **SUCCESS**;
+- WordPress.org #235 — **SUCCESS**;
+- CodeQL #722 — **SUCCESS**;
+- squash merge `05fec942cc8fbeb58cfd0bd41f0ef5fdb86f966f`;
+- post-merge Quality #901, Compatibility #429 (**16/16**), Release Artifact #378, Provider Sandbox #339, WordPress.org #236 and CodeQL #723 — **SUCCESS**;
+- final remote topology — **main only**.
 
 ---
 
@@ -566,8 +569,8 @@ Unsupported in the current certified feature set:
 - [ ] local `origin` updated to `https://github.com/SimplixInnovations/supcheckout.git`
 - [ ] post-rename controls verified; Main Rule still needs the two aggregate gate requirements
 - [ ] `Main Rule` requires `Governance`, `H12 Regression Harness`, `Compatibility Gate` and `Release Gate`
-- [ ] coordinate-only living-link PR merged from exact green head
-- [ ] final branch audit shows only intended branch(es), ideally `main`
+- [x] coordinate-only living-link PR #68 merged from exact green head
+- [x] final branch audit shows only `main`
 
 ## Local acceptance
 

@@ -68,6 +68,10 @@ Never invent Q20. Live GitHub evidence wins over recorded SHAs.
 - CodeQL/main-security #717 — **SUCCESS**;
 - repository rename — **COMPLETE**;
 - obsolete remote branches — **CLEANED; main-only topology verified before coordinate reconciliation**.
+- coordinate-closure PR #68 exact head: `0e6ef6334282a83a428da7ee793daa98360c2bcc` — **FULL EXACT-HEAD STACK SUCCESS**;
+- PR #68 squash merge: `05fec942cc8fbeb58cfd0bd41f0ef5fdb86f966f`;
+- post-merge Quality #901, Compatibility #429 (**16/16**), Release Artifact #378, Provider Sandbox #339, WordPress.org #236 and CodeQL #723 — **SUCCESS**;
+- PR #68 closeout state before documentation-only PR #69: **main only**, with open PRs/issues, tags and releases **empty**.
 
 ### Final control-plane closeout
 
@@ -123,13 +127,12 @@ Real WordPress qualification proved that directly renaming an already-active phy
 
 Owner/admin/local sequence is controlled by `OWNER-HANDOFF.md`:
 
-1. finish the remaining post-rename About/topics and Main Rule corrections;
+1. finish the residual About topic cleanup and Main Rule aggregate-check corrections;
 2. verify local `origin` points directly to the canonical repository;
-3. merge the coordinate-only living-reference closure from an exact-green head;
-4. run isolated local acceptance and real WooCommerce smoke;
-5. apply approved launch branding and visual/accessibility acceptance;
-6. explicitly choose the first public version;
-7. release/tag/WordPress.org only after exact-main verification and owner approval.
+3. run isolated local acceptance and real WooCommerce smoke;
+4. apply approved launch branding and visual/accessibility acceptance;
+5. explicitly choose the first public version;
+6. release/tag/WordPress.org only after exact-main verification and owner approval.
 
 ## External/manual and unsupported boundaries
 

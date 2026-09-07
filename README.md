@@ -81,13 +81,15 @@ The **SUPCheckout identity migration and first-party naming cleanup are DONE / V
 
 ### Certification anchors
 
-Final SUPCheckout identity migration:
+Final SUPCheckout identity and repository-coordinate closure:
 
-- PR #67 certified head `0059f365883fa4edd6a2d623c7b370d38d3f565c`;
-- squash merge `7547e59a2d5ef6d49b059851c6899a2d9987b16a`;
-- post-merge Quality #896, Compatibility #424 (**16/16**), Release Artifact #373, Provider Sandbox #334, WordPress.org #231 and CodeQL #717 — **SUCCESS**;
+- PR #67 certified head `0059f365883fa4edd6a2d623c7b370d38d3f565c` and squash merge `7547e59a2d5ef6d49b059851c6899a2d9987b16a`;
+- post-merge PR #67 Quality #896, Compatibility #424 (**16/16**), Release Artifact #373, Provider Sandbox #334, WordPress.org #231 and CodeQL #717 — **SUCCESS**;
 - repository renamed to `SimplixInnovations/supcheckout`;
-- canonical remote branch topology verified as `main` only before the coordinate-only closure branch.
+- coordinate-closure PR #68 exact head `0e6ef6334282a83a428da7ee793daa98360c2bcc` passed Quality #900, Compatibility #428 (**16/16**), Release Artifact #377, Provider Sandbox #338, WordPress.org #235 and CodeQL #722;
+- PR #68 squash-merged as `05fec942cc8fbeb58cfd0bd41f0ef5fdb86f966f`;
+- post-merge Quality #901, Compatibility #429 (**16/16**), Release Artifact #378, Provider Sandbox #339, WordPress.org #236 and CodeQL #723 — **SUCCESS**;
+- PR #68 closeout state, before documentation-only PR #69 opened, was `main` only with no open PRs/issues, tags or releases.
 
 
 Runtime-bearing SUPCheckout migration:
@@ -182,8 +184,8 @@ The authoritative local and owner-administration sequence is documented in:
 
 It includes:
 
-1. final GitHub About/topics/rules/security/integration verification;
-2. local `origin` verification against the canonical repository;
+1. finish the residual GitHub topic cleanup and Main Rule aggregate-check requirements;
+2. verify local `origin` points directly to the canonical repository;
 3. isolated local Composer/H12/SUPCheckout quality acceptance;
 4. deterministic ZIP build/verification;
 5. disposable WordPress/WooCommerce install;

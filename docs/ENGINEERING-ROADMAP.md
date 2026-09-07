@@ -120,22 +120,25 @@ Post-merge:
 - WordPress.org #231 — **SUCCESS**
 - CodeQL #717 — **SUCCESS**
 - repository rename to `SimplixInnovations/supcheckout` — **COMPLETE**
-- obsolete remote branches — **CLEANED; canonical remote topology was main-only before this reconciliation branch**
+- obsolete remote branches — **CLEANED; canonical remote topology was main-only before this reconciliation branch**;
+- coordinate-closure PR #68 exact head `0e6ef6334282a83a428da7ee793daa98360c2bcc` — **FULL EXACT-HEAD STACK SUCCESS**;
+- PR #68 squash merge `05fec942cc8fbeb58cfd0bd41f0ef5fdb86f966f` — **DONE**;
+- post-merge Quality #901, Compatibility #429 (**16/16**), Release Artifact #378, Provider Sandbox #339, WordPress.org #236 and CodeQL #723 — **SUCCESS**;
+- PR #68 closeout state before documentation-only PR #69 — **main only**, with open PRs/issues, tags and releases — **empty**
 
 
 ## Current owner/admin/local stage
 
 Engineering does not need another invented phase. Repository rename and obsolete-branch cleanup are complete. The remaining sequence is controlled by `docs/project/OWNER-HANDOFF.md`:
 
-1. finish post-rename About/topics and Main Rule verification;
+1. finish the residual About-topic cleanup and add `Compatibility Gate` + `Release Gate` to Main Rule;
 2. verify the owner's local `origin` points directly to `SimplixInnovations/supcheckout`;
-3. merge this coordinate-only reconciliation from an exact-green head;
-4. run isolated local owner acceptance from exact `origin/main`;
-5. build and verify the deterministic ZIP;
-6. perform disposable WordPress/WooCommerce Classic/Blocks/HPOS/bounded-sandbox smoke;
-7. apply approved launch branding and visual/accessibility acceptance;
-8. explicitly choose the first public version;
-9. tag/GitHub Release/WordPress.org publication only after exact-main certification and owner approval.
+3. run isolated local owner acceptance from exact `origin/main`;
+4. build and verify the deterministic ZIP;
+5. perform disposable WordPress/WooCommerce Classic/Blocks/HPOS/bounded-sandbox smoke;
+6. apply approved launch branding and visual/accessibility acceptance;
+7. explicitly choose the first public version;
+8. tag/GitHub Release/WordPress.org publication only after exact-main certification and owner approval.
 
 ## External/manual evidence track
 
