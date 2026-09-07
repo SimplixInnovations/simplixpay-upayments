@@ -9,6 +9,8 @@
  */
 
 defined( 'ABSPATH' ) || exit;
+
+// phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound, WordPress.Security.NonceVerification.Recommended -- WooCommerce template locals and read-only provider-return status flags; this template performs no request-authorized state change.
 ?>
 <style>
     .wc-toast {
