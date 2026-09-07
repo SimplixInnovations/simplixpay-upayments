@@ -444,7 +444,6 @@ const handleSubscriptionChange = (plan, interval) => {
             },
             
             onPaymentMethodChange: () => {
-                console.log('UPayments selected');
                 return true;
             }
         });
