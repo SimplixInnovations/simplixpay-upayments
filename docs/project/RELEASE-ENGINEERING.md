@@ -1,8 +1,8 @@
 # SUCheckout for UPayments — Release Engineering
 
-**Current status:** pre-release SUCheckout engineering migration merged and certified; owner repository rename/local acceptance/release administration pending  
-**Current repository pending rename:** `SimplixInnovations/simplixpay-upayments`  
-**Approved repository target:** `SimplixInnovations/sucheckout-upayments`  
+**Current status:** pre-release SUCheckout engineering migration merged and certified; owner repository rename/local acceptance/release administration pending
+**Current repository pending rename:** `SimplixInnovations/simplixpay-upayments`
+**Approved repository target:** `SimplixInnovations/sucheckout-upayments`
 **Development version:** `0.1.0`
 
 ## Certification anchors
