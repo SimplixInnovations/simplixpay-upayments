@@ -5,22 +5,22 @@ namespace Simplixi\SUPCheckout\Release;
 defined('ABSPATH') || exit;
 
 /**
- * Canonical product/release identity for SUCheckout for UPayments.
+ * Canonical product/release identity for SUPCheckout for UPayments.
  *
- * The first-party PSR-4 namespace has migrated to the canonical SUCheckout
+ * The first-party PSR-4 namespace has migrated to the canonical SUPCheckout
  * root. NAMESPACE_ROOT is the permanent machine-readable namespace contract.
  *
  * Persisted payment/provider identities are explicit compatibility contracts,
  * not product branding. They must not be destroyed by a rebrand.
  */
 final class Identity {
-    public const PRODUCT_NAME = 'SUCheckout for UPayments';
-    public const SHORT_NAME = 'SUCheckout';
+    public const PRODUCT_NAME = 'SUPCheckout for UPayments';
+    public const SHORT_NAME = 'SUPCheckout';
     public const VERSION = '0.1.0';
-    public const SLUG = 'sucheckout-upayments';
+    public const SLUG = 'supcheckout';
     public const REPOSITORY = 'SimplixInnovations/sucheckout';
-    public const TEXT_DOMAIN = 'sucheckout-upayments';
-    public const NAMESPACE_ROOT = 'Simplixi\\SUCheckout\\UPayments';
+    public const TEXT_DOMAIN = 'supcheckout';
+    public const NAMESPACE_ROOT = 'Simplixi\\SUPCheckout\\UPayments';
 
     /** External self-updates stay disabled until release authority is explicitly enabled. */
     public const UPDATE_CHANNEL = 'disabled';
@@ -36,8 +36,8 @@ final class Identity {
     public const LEGACY_BILLING_ATTEMPT_TABLE_SUFFIX = 'upayments_billing_attempts';
 
     /** Canonical packaging/i18n targets; bootstrap migration is qualified separately. */
-    public const TARGET_MAIN_FILE = 'sucheckout-upayments.php';
-    public const TARGET_TEXT_DOMAIN = 'sucheckout-upayments';
+    public const TARGET_MAIN_FILE = 'supcheckout.php';
+    public const TARGET_TEXT_DOMAIN = 'supcheckout';
 
     private function __construct() {
     }
