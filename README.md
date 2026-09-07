@@ -75,7 +75,7 @@ Current SUCheckout certification and owner stage:
 - CodeQL/main-security #595 — **SUCCESS**;
 - official packaged Plugin Check — **0 blocking errors**.
 
-PR #61 removed remaining retired retired pre-rebrand first-party first-party constants/test-control prefixes while preserving protected UPayments provider/persisted compatibility identities.
+PR #61 removed remaining retired pre-rebrand first-party constants/test-control prefixes while preserving protected UPayments provider/persisted compatibility identities.
 
 Before local acceptance or publication, the owner/admin sequence is: remove obsolete remote branches, rename the GitHub repository to `SimplixInnovations/sucheckout-upayments`, update GitHub metadata and local `origin`, reconcile living repository-coordinate links in one small PR, then run the independent local acceptance documented in `docs/project/OWNER-HANDOFF.md`.
 
