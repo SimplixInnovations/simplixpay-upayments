@@ -186,7 +186,7 @@ Development/test/control files are excluded from the public package.
 
 ## Repository administration
 
-Repository administration is closed and verified: canonical About/topics, strict four-check Main Rule, squash-only merging, deletion/non-fast-forward/linear-history protection, `main`-only branch topology, and no open PRs/issues/tags/releases. Latest certified `main`: `bfadff34142a3a676258e8dc0774bd31287c0138` with Quality #927, Compatibility #455 (**16/16**), Release Artifact #404, Provider Sandbox #365, strict WordPress.org #262 and CodeQL #749 all green.
+Repository administration is closed and verified: canonical About/topics, strict four-check Main Rule, squash-only merging, deletion/non-fast-forward/linear-history protection, `main`-only branch topology, and no open PRs/issues/tags/releases. Latest runtime-bearing certified `main`: `bfadff34142a3a676258e8dc0774bd31287c0138` with Quality #927, Compatibility #455 (**16/16**), Release Artifact #404, Provider Sandbox #365, strict WordPress.org #262 and CodeQL #749 all green.
 
 ## Local owner acceptance
 
