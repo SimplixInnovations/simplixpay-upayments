@@ -1,9 +1,9 @@
 # SUCheckout for UPayments — Project Status
 
-**Status document:** canonical living engineering state  
-**Last reconciled:** 2026-09-07  
-**Current GitHub repository pending owner rename:** `SimplixInnovations/simplixpay-upayments`  
-**Approved canonical repository:** `SimplixInnovations/sucheckout-upayments`  
+**Status document:** canonical living engineering state
+**Last reconciled:** 2026-09-07
+**Current GitHub repository pending owner rename:** `SimplixInnovations/simplixpay-upayments`
+**Approved canonical repository:** `SimplixInnovations/sucheckout-upayments`
 **Development version:** `0.1.0`
 
 > Live GitHub/source evidence wins over recorded SHAs. Historical phase records preserve what was true at their close. This file owns the current program state; `OWNER-HANDOFF.md` owns the remaining owner/admin/local sequence.
