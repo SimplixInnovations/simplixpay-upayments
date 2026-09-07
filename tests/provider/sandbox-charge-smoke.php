@@ -63,7 +63,7 @@ $url = $resolver->resolve('charge');
 
 sucheckout_provider_assert(
     $url === EndpointResolver::SANDBOX_BASE . 'charge',
-    'Charge endpoint is derived from the Simplix sandbox resolver'
+    'Charge endpoint is derived from the SUCheckout sandbox resolver'
 );
 
 $endpoint_parts = parse_url($url);
