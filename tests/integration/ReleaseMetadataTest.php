@@ -5,7 +5,7 @@
 
 require_once __DIR__ . '/bootstrap.php';
 
-$plugin_file = SUCHECKOUT_UPAYMENTS_PLUGIN_FILE;
+$plugin_file = SUPCHECKOUT_UPAYMENTS_PLUGIN_FILE;
 $headers = get_file_data(
     $plugin_file,
     array(
@@ -30,11 +30,11 @@ $feature_compatibility = Automattic\WooCommerce\Utilities\FeaturesUtil::get_comp
 
 sucheckout_cert_assert(
     isset($feature_compatibility['compatible']) && is_array($feature_compatibility['compatible']),
-    'WooCommerce returns the compatible-feature registry for SUCheckout'
+    'WooCommerce returns the compatible-feature registry for SUPCheckout'
 );
 sucheckout_cert_assert(
     isset($feature_compatibility['incompatible']) && is_array($feature_compatibility['incompatible']),
-    'WooCommerce returns the incompatible-feature registry for SUCheckout'
+    'WooCommerce returns the incompatible-feature registry for SUPCheckout'
 );
 sucheckout_cert_assert(
     in_array('cart_checkout_blocks', $feature_compatibility['compatible'], true),

@@ -5,7 +5,7 @@
 
 require_once __DIR__ . '/bootstrap.php';
 
-$mode = getenv('SUCHECKOUT_HPOS_MODE');
+$mode = getenv('SUPCHECKOUT_HPOS_MODE');
 sucheckout_cert_assert(in_array($mode, array('legacy', 'hpos'), true), 'HPOS certification mode is explicit');
 sucheckout_cert_assert(
     class_exists('Automattic\\WooCommerce\\Utilities\\OrderUtil'),
@@ -19,7 +19,7 @@ sucheckout_cert_assert(
 );
 
 $product = new WC_Product_Simple();
-$product->set_name('SUCheckout Certification Product');
+$product->set_name('SUPCheckout Certification Product');
 $product->set_regular_price('10.00');
 $product->set_price('10.00');
 $product_id = $product->save();
@@ -39,7 +39,7 @@ sucheckout_cert_assert(is_int($order_id) && $order_id > 0, 'order persists in re
 
 $reloaded = wc_get_order($order_id);
 sucheckout_cert_assert($reloaded instanceof WC_Order, 'order reloads through WooCommerce CRUD');
-sucheckout_cert_assert('upayments' === $reloaded->get_payment_method(), 'SUCheckout payment method identity survives order reload');
+sucheckout_cert_assert('upayments' === $reloaded->get_payment_method(), 'SUPCheckout payment method identity survives order reload');
 sucheckout_cert_assert(
     'certification-order-identity' === $reloaded->get_meta('UPayments_order_id'),
     'protected UPayments order metadata survives order reload'

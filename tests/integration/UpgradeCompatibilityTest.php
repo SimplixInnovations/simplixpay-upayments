@@ -3,7 +3,7 @@
  * Existing-install package-root migration certification.
  *
  * The pre-release product identity moves from simplixpay-upayments/ to
- * sucheckout-upayments/ while preserving merchant/payment data contracts.
+ * supcheckout/ while preserving merchant/payment data contracts.
  * The physical bootstrap filename remains UPayments.php because prior
  * qualification proved an in-place filename rename unsafe for activation.
  */
@@ -11,11 +11,11 @@
 require_once __DIR__ . '/bootstrap.php';
 require_once ABSPATH . 'wp-admin/includes/plugin.php';
 
-$phase = getenv('SUCHECKOUT_UPGRADE_PHASE');
+$phase = getenv('SUPCHECKOUT_UPGRADE_PHASE');
 
 $legacy_basename = 'simplixpay-upayments/UPayments.php';
-$canonical_basename = 'sucheckout-upayments/UPayments.php';
-$future_basename = 'sucheckout-upayments/sucheckout-upayments.php';
+$canonical_basename = 'supcheckout/UPayments.php';
+$future_basename = 'supcheckout/supcheckout.php';
 
 $settings_key = 'woocommerce_upayments_settings';
 $settings_snapshot_key = '_sucheckout_upgrade_settings_snapshot';
@@ -84,9 +84,9 @@ function sucheckout_upgrade_assert_runtime_contract($mode, $legacy_basename, $ca
     $legacy = 'legacy' === $mode;
     $active_basename = $legacy ? $legacy_basename : $canonical_basename;
     $inactive_basename = $legacy ? $canonical_basename : $legacy_basename;
-    $root = WP_PLUGIN_DIR . '/' . ($legacy ? 'simplixpay-upayments' : 'sucheckout-upayments');
-    $expected_domain = $legacy ? 'upayments' : 'sucheckout-upayments';
-    $label = $legacy ? 'legacy existing-install' : 'canonical SUCheckout';
+    $root = WP_PLUGIN_DIR . '/' . ($legacy ? 'simplixpay-upayments' : 'supcheckout');
+    $expected_domain = $legacy ? 'upayments' : 'supcheckout';
+    $label = $legacy ? 'legacy existing-install' : 'canonical SUPCheckout';
 
     sucheckout_cert_assert(file_exists($root . '/UPayments.php'), $label . ' retains qualified UPayments.php bootstrap');
     if (!$legacy) {
@@ -164,7 +164,7 @@ if ('seed-existing' === $phase) {
 if ('verify-canonical' === $phase || 'verify-canonical-final' === $phase) {
     sucheckout_upgrade_assert_runtime_contract('canonical', $legacy_basename, $canonical_basename, $future_basename);
     sucheckout_upgrade_verify_data($settings_key, $settings_snapshot_key, $order_key, $cron_key);
-    sucheckout_cert_note('canonical SUCheckout package-root migration verified');
+    sucheckout_cert_note('canonical SUPCheckout package-root migration verified');
     return;
 }
 
@@ -192,4 +192,4 @@ if ('cleanup' === $phase) {
     return;
 }
 
-throw new RuntimeException('Unknown SUCHECKOUT_UPGRADE_PHASE.');
+throw new RuntimeException('Unknown SUPCHECKOUT_UPGRADE_PHASE.');
