@@ -1,11 +1,32 @@
 # SUCheckout for UPayments — Owner Handoff
 **Engineering migration:** DONE / VERIFIED
-**Certified runtime-bearing main baseline:** `6aabc4fcb0606567a11637ea07fe081fed4c7f85`
+**Current runtime-bearing certified main baseline:** `efe937c67343242b7ccf3396a67b3cf2ce35ebac`
+**Prior SUCheckout identity merge:** `6aabc4fcb0606567a11637ea07fe081fed4c7f85`
+**Prior living-state closeout:** `9591c431e1eb56fe40ca60147afdf9f3f909a212`
 **Current GitHub repository:** `SimplixInnovations/simplixpay-upayments`
 **Target repository:** `SimplixInnovations/sucheckout-upayments`
 **Current development version:** `0.1.0`
 **Public release:** NOT YET PUBLISHED
-This document owns the remaining owner/admin actions after the SUCheckout engineering migration. It does not reopen Quality Platform Q1-Q19 or create a new engineering phase.
+This document owns the remaining owner/admin actions after the SUCheckout engineering migration and final first-party naming reconciliation. It does not reopen Quality Platform Q1-Q19 or create a new engineering phase.
+
+Fresh verification on runtime-bearing certified `main` `efe937c67343242b7ccf3396a67b3cf2ce35ebac`: Quality #781, Compatibility #309 (**16/16**), Release Artifact #258, Provider Sandbox #221, WordPress.org Submission Check #116 and CodeQL/main-security #595 all completed successfully; the official packaged Plugin Check has **0 blocking errors**.
+
+## 0. Required order of operations
+
+Follow this order; do not mix release publication into the repository rename:
+
+1. merge the final documentation/control-plane PR only from an exact green head, then fetch the new `origin/main`;
+2. delete obsolete remote branches and any matching local branches/worktrees;
+3. rename GitHub repository `SimplixInnovations/simplixpay-upayments` → `SimplixInnovations/sucheckout-upayments`;
+4. update repository description/homepage/topics and re-check rules, Actions, CodeQL, Dependabot, Private Vulnerability Reporting and integrations;
+5. update the local `origin` URL and remote HEAD;
+6. perform one coordinate-only documentation/control PR replacing only *living* old repository links; retain historical/legacy migration references intentionally;
+7. require the exact head of that PR and the merged `main` to be green;
+8. run the independent local acceptance in section 5;
+9. apply approved Simplixi/SUCheckout visual branding and perform UI/browser acceptance before public screenshots/marketing assets are finalized;
+10. make a separate explicit first-public-version and publication decision.
+
+Do not tag, create a GitHub Release, or submit to WordPress.org before steps 1–8 are complete and the version decision is explicit.
 ## 1. Required repository cleanup
 Two obsolete remote branches remain after the certified SUCheckout merge:
 - `release/wordpress-org-submission-readiness`
@@ -28,6 +49,31 @@ git branch -D enterprise/release-identity-migration-decision 2>/dev/null || true
 git worktree prune
 ```
 Expected remote result before the repository rename: only `origin/main` plus `origin/HEAD -> origin/main`.
+
+### Windows PowerShell equivalent
+
+If you are operating from PowerShell rather than Git Bash:
+
+```powershell
+git fetch --prune origin
+git switch main
+git pull --ff-only origin main
+git push origin --delete release/wordpress-org-submission-readiness
+git push origin --delete enterprise/release-identity-migration-decision
+git fetch --prune origin
+git branch -r
+
+git worktree list
+if (git branch --list release/wordpress-org-submission-readiness) {
+    git branch -D release/wordpress-org-submission-readiness
+}
+if (git branch --list enterprise/release-identity-migration-decision) {
+    git branch -D enterprise/release-identity-migration-decision
+}
+git worktree prune
+```
+
+Do not force-delete a branch that is checked out by another worktree; inspect `git worktree list` first.
 ## 2. Required GitHub repository rename
 Rename the repository in GitHub:
 ```text
