@@ -62,14 +62,22 @@ No public SUCheckout tag, GitHub Release or WordPress.org publication exists yet
 | Arbitrary marketplace multi-split | **Unsupported** |
 | Stable public release | **Not yet published** |
 
-Latest runtime-bearing SUCheckout engineering closeout:
+Current SUCheckout certification and owner stage:
 
-- PR #58 certified head: `5bf84dccb880733da45c1f922d43554af69a33dc`;
-- squash merge on `main`: `6aabc4fcb0606567a11637ea07fe081fed4c7f85`;
-- post-merge Quality #764, Compatibility #292 (**16/16**), Release Artifact #243, Provider Sandbox #207, WordPress.org Submission Check #101 and CodeQL/main-security #579: **SUCCESS**;
-- official Plugin Check: **0 blocking errors**;
-- open issues / open PRs / unresolved review threads after closeout: **0 / 0 / 0**.
+- original SUCheckout identity migration runtime merge: `6aabc4fcb0606567a11637ea07fe081fed4c7f85`;
+- living-state/control-plane closeout: `9591c431e1eb56fe40ca60147afdf9f3f909a212`;
+- final first-party naming reconciliation: PR #61, current runtime-bearing certified `main` `efe937c67343242b7ccf3396a67b3cf2ce35ebac`;
+- Quality #781 — **SUCCESS**;
+- Compatibility #309 — **16/16 SUCCESS**;
+- Release Artifact #258 — **SUCCESS**;
+- Provider Sandbox #221 — **SUCCESS**;
+- WordPress.org Submission Check #116 — **SUCCESS**;
+- CodeQL/main-security #595 — **SUCCESS**;
+- official packaged Plugin Check — **0 blocking errors**.
 
+PR #61 removed remaining retired `SIMPLIXPAY_*` first-party constants/test-control prefixes while preserving protected UPayments provider/persisted compatibility identities.
+
+Before local acceptance or publication, the owner/admin sequence is: remove obsolete remote branches, rename the GitHub repository to `SimplixInnovations/sucheckout-upayments`, update GitHub metadata and local `origin`, reconcile living repository-coordinate links in one small PR, then run the independent local acceptance documented in `docs/project/OWNER-HANDOFF.md`.
 
 See [`docs/COMPATIBILITY.md`](docs/COMPATIBILITY.md) for verified/external/unsupported boundaries and [`docs/project/PROJECT-STATUS.md`](docs/project/PROJECT-STATUS.md) for the living engineering ledger.
 
