@@ -1,15 +1,15 @@
 <?php
 
-namespace Simplixi\SUCheckout\UPayments\Tests\Migration;
+namespace Simplixi\SUPCheckout\Tests\Migration;
 
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 use ReflectionMethod;
 use RuntimeException;
-use Simplixi\SUCheckout\UPayments\Migration\MigrationAdmin;
-use Simplixi\SUCheckout\UPayments\Migration\MigrationBatch;
-use Simplixi\SUCheckout\UPayments\Migration\MigrationSettings;
+use Simplixi\SUPCheckout\Migration\MigrationAdmin;
+use Simplixi\SUPCheckout\Migration\MigrationBatch;
+use Simplixi\SUPCheckout\Migration\MigrationSettings;
 
 final class MigrationAdminTest extends TestCase {
     protected function setUp(): void {
@@ -49,8 +49,8 @@ final class MigrationAdminTest extends TestCase {
 
         self::assertSame(array(array(
             'woocommerce',
-            'SUCheckout for UPayments Migration',
-            'SUCheckout Migration',
+            'SUPCheckout for UPayments Migration',
+            'SUPCheckout Migration',
             MigrationAdmin::CAPABILITY,
             MigrationAdmin::PAGE_SLUG,
             array(MigrationAdmin::class, 'render'),
@@ -66,7 +66,7 @@ final class MigrationAdminTest extends TestCase {
             MigrationAdmin::render();
             self::fail('Unauthorized render must terminate.');
         } catch (RuntimeException $exception) {
-            self::assertSame('You do not have permission to run SUCheckout migration tools.', $exception->getMessage());
+            self::assertSame('You do not have permission to run SUPCheckout migration tools.', $exception->getMessage());
         } finally {
             $output = ob_get_clean();
         }

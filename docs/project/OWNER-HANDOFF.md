@@ -1,10 +1,11 @@
-# SUCheckout for UPayments — Owner Handoff
+# SUPCheckout for UPayments — Owner Handoff
 
-**Engineering migration:** DONE / VERIFIED
+**Engineering migration:** FINAL SUPCHECKOUT IDENTITY — IN EXACT-HEAD CERTIFICATION (PR #67)
 **Migration scope:** identity/runtime
 **Latest certified documentation-closeout `main`:** `24d868b0388a76654b35b3c9d79535aa2eb74678`
-**Canonical GitHub repository:** `SimplixInnovations/sucheckout`
-**Canonical plugin/package slug:** `sucheckout-upayments`
+**Current GitHub repository:** `SimplixInnovations/sucheckout`
+**Target GitHub repository after certified merge:** `SimplixInnovations/supcheckout`
+**Canonical plugin/package slug:** `supcheckout`
 **Development version:** `0.1.0`
 **Public tag / GitHub Release / WordPress.org publication:** NOT YET CREATED
 
@@ -20,23 +21,23 @@ Fresh verification on documentation-closeout `main` `24d868b0388a76654b35b3c9d79
 - CodeQL/main-security #630 — **SUCCESS**
 - official packaged Plugin Check — **0 blocking errors**
 
-The repository rename is complete. Complete the final repository-control hardening PR, then perform the post-rename verification and local acceptance sequence below.
+The repository rename is **not complete and must not be performed before PR #67 is exact-green, reviewed, merged, and the resulting `main` is post-merge green**. After that engineering closure, rename the repository to `SimplixInnovations/supcheckout`, then perform the coordinate reconciliation and local acceptance sequence below.
 
 ## Golden identity rule
 
 Human-facing product:
 
-**SUCheckout for UPayments**
+**SUPCheckout for UPayments**
 
 Technical identity:
 
-`sucheckout-upayments`
+`supcheckout`
 
 Never encode the human-only relationship word `for` in repository URLs, WordPress.org slug, text domain, package names, namespaces, CSS/JS roots, REST namespaces or release artifacts.
 
 The first-stable physical bootstrap is intentionally:
 
-`sucheckout-upayments/UPayments.php`
+`supcheckout/UPayments.php`
 
 Do not rename protected provider/persisted identities (`upayments`, `woocommerce_upayments_settings`, `wc_upayments`, `_upay_*`, token/provenance keys, subscription hooks, billing-attempt state, provider fields) merely for cosmetic uniformity.
 
@@ -145,12 +146,12 @@ git worktree prune
 
 The Dependabot branch normally exists only remotely; delete a local counterpart only if one actually exists.
 
-## A3. Verify the completed GitHub repository rename
+## A3. Perform and verify the GitHub repository rename
 
-The owner has completed the administrative rename. The canonical repository is:
+Only after the final SUPCheckout identity PR is merged and post-merge certified, rename the repository in GitHub Settings from `sucheckout` to `supcheckout`. The target canonical repository is:
 
 ```text
-SimplixInnovations/sucheckout
+SimplixInnovations/supcheckout
 ```
 
 Verify:
@@ -158,16 +159,15 @@ Verify:
 1. the browser URL resolves directly to the canonical coordinate without relying on an old-name redirect;
 2. the default branch is still `main`;
 3. repository permissions, rulesets, Actions, security settings, secrets/environments and integrations survived the rename;
-4. the WordPress/plugin technical slug remains `sucheckout-upayments` and is not mechanically shortened to the repository slug.
-
-The shorter repository coordinate is an explicit product-repository decision; it does not change package/runtime identity.
+4. the WordPress/plugin technical slug remains exactly `supcheckout`;
+5. the repository and plugin slug intentionally converge on `supcheckout`, while protected UPayments persisted/provider identities remain unchanged.
 
 ## A4. Update GitHub About metadata
 
 Description:
 
 ```text
-SUCheckout for UPayments — independently engineered WooCommerce payment integration by Simplix Innovations.
+SUPCheckout for UPayments — independently engineered WooCommerce payment integration by Simplix Innovations.
 ```
 
 Homepage until a dedicated product page exists:
@@ -191,8 +191,7 @@ hpos
 payment-gateway
 payments
 php
-sucheckout
-sucheckout-upayments
+supcheckout
 upayments
 woocommerce
 woocommerce-payment-gateway
@@ -206,7 +205,7 @@ Remove retired or claim-inflating topics such as `upayments-woocommerce` and `wp
 ## A5. Update local `origin` after rename
 
 ```bash
-git remote set-url origin https://github.com/SimplixInnovations/sucheckout.git
+git remote set-url origin https://github.com/SimplixInnovations/supcheckout.git
 git remote -v
 git fetch --prune --tags origin
 git remote set-head origin -a
@@ -248,14 +247,16 @@ After the GitHub rename, tell ChatGPT the new URL/that the rename is complete. A
 Audit:
 
 ```bash
-git grep -n "SimplixInnovations/simplixpay-upayments"
+git grep -n "SimplixInnovations/sucheckout"
 git grep -n "SimplixInnovations/sucheckout-upayments"
-git grep -n "github.com/SimplixInnovations/simplixpay-upayments"
+git grep -n "SimplixInnovations/simplixpay-upayments"
+git grep -n "github.com/SimplixInnovations/sucheckout"
 git grep -n "github.com/SimplixInnovations/sucheckout-upayments"
+git grep -n "github.com/SimplixInnovations/simplixpay-upayments"
 git grep -n "simplixpay" -- ':!docs/history/**' ':!docs/superpowers/**'
 ```
 
-Expected current-coordinate surfaces include README badges/links, `AGENTS.md`, plugin metadata, release identity, project status/handoff, `NOTICE.md`, `UPSTREAM.md` and issue-template links; all must resolve to `SimplixInnovations/sucheckout`.
+Expected current-coordinate surfaces include README badges/links, `AGENTS.md`, plugin metadata, release identity, project status/handoff, `NOTICE.md`, `UPSTREAM.md` and issue-template links; all must resolve to `SimplixInnovations/supcheckout` after the coordinate-only PR.
 
 Classify every hit:
 
@@ -360,9 +361,9 @@ Supported runtime floor is PHP 7.4; syntax checks on older PHP do not broaden ru
 ```bash
 rm -rf dist
 bash scripts/build-release.sh dist
-bash scripts/verify-release.sh dist/sucheckout-upayments-0.1.0.zip
-sha256sum dist/sucheckout-upayments-0.1.0.zip
-cat dist/sucheckout-upayments-0.1.0.zip.sha256
+bash scripts/verify-release.sh dist/supcheckout-0.1.0.zip
+sha256sum dist/supcheckout-0.1.0.zip
+cat dist/supcheckout-0.1.0.zip.sha256
 ```
 
 The calculated hash must match the sidecar.
@@ -370,13 +371,13 @@ The calculated hash must match the sidecar.
 Optional package inspection:
 
 ```bash
-unzip -l dist/sucheckout-upayments-0.1.0.zip | head -100
+unzip -l dist/supcheckout-0.1.0.zip | head -100
 ```
 
 Verify:
 
-- exactly one `sucheckout-upayments/` root;
-- `sucheckout-upayments/UPayments.php` exists;
+- exactly one `supcheckout/` root;
+- `supcheckout/UPayments.php` exists;
 - packaged `readme.txt` exists;
 - no development/tests/CI/secrets are packaged;
 - no second plugin root exists.
@@ -384,9 +385,9 @@ Verify:
 ## B5. Install on disposable WordPress + WooCommerce
 
 ```bash
-wp plugin install ./dist/sucheckout-upayments-0.1.0.zip --force
-wp plugin activate sucheckout-upayments
-wp plugin status sucheckout-upayments
+wp plugin install ./dist/supcheckout-0.1.0.zip --force
+wp plugin activate supcheckout
+wp plugin status supcheckout
 ```
 
 Do not make the first acceptance installation on a production store.
@@ -397,10 +398,10 @@ Verify:
 
 ### Plugin identity
 
-- display name is **SUCheckout for UPayments**;
+- display name is **SUPCheckout for UPayments**;
 - no active current UI presents SimplixPay as the product;
 - no PHP notices/warnings/fatals;
-- package root is `sucheckout-upayments`;
+- package root is `supcheckout`;
 - retained `UPayments.php` does not create a duplicate plugin entry.
 
 ### WooCommerce admin
@@ -454,8 +455,8 @@ If you actually have an old internal/pre-release `simplixpay-upayments` installa
 
 ```bash
 wp plugin deactivate simplixpay-upayments
-wp plugin install ./dist/sucheckout-upayments-0.1.0.zip --force
-wp plugin activate sucheckout-upayments
+wp plugin install ./dist/supcheckout-0.1.0.zip --force
+wp plugin activate supcheckout
 ```
 
 Before deleting the old package, verify settings, historical orders/payment method, metadata, token/provenance, subscription state, scheduled events and provider/callback identities remain intact.
@@ -464,7 +465,7 @@ Only after verification:
 
 ```bash
 wp plugin delete simplixpay-upayments
-wp plugin status sucheckout-upayments
+wp plugin status supcheckout
 ```
 
 ## B8. Branding / visual / accessibility acceptance
@@ -473,7 +474,7 @@ Share/apply the approved Simplixi branding before final public screenshots/marke
 
 Validate the actual launch UI for:
 
-- SUCheckout-specific logo/icon usage;
+- SUPCheckout-specific logo/icon usage;
 - brand colors/tokens/typography where appropriate;
 - admin settings visual hierarchy;
 - Classic and Blocks checkout presentation;
@@ -533,7 +534,7 @@ Only after explicit owner approval:
 4. confirm ZIP SHA-256 equals the sidecar;
 5. create `vX.Y.Z` on that exact certified commit;
 6. create GitHub Release using the verified ZIP/checksum/manifest;
-7. submit/publish the exact verified package to WordPress.org under slug `sucheckout-upayments`;
+7. submit/publish the exact verified package to WordPress.org under slug `supcheckout`;
 8. verify public directory name/slug/version/metadata/screenshots/package;
 9. install/upgrade from the actual public channel on a disposable site;
 10. run a post-publication checkout smoke.
@@ -567,13 +568,13 @@ Unsupported in the current certified feature set:
 
 ## Repository/admin
 
-- [ ] final documentation PR merged from exact green head
+- [ ] final SUPCheckout identity PR merged from exact green head
 - [ ] normal clone synchronized; `HEAD == origin/main`; worktree clean
 - [ ] no legitimate open PRs remain
 - [ ] all superseded non-main branches removed
-- [x] repository canonical coordinate verified as `SimplixInnovations/sucheckout`
+- [ ] repository renamed and canonical coordinate verified as `SimplixInnovations/supcheckout`
 - [ ] About description/homepage/topics updated
-- [ ] local `origin` updated to `https://github.com/SimplixInnovations/sucheckout.git`
+- [ ] local `origin` updated to `https://github.com/SimplixInnovations/supcheckout.git`
 - [ ] ruleset/Actions/CodeQL/Dependabot/secret scanning/PVR/integrations verified after rename
 - [ ] `Main Rule` requires `Governance`, `H12 Regression Harness`, `Compatibility Gate` and `Release Gate` after the new contexts exist on `main`
 - [ ] coordinate-only living-link PR merged from exact green head
@@ -583,7 +584,7 @@ Unsupported in the current certified feature set:
 
 - [ ] isolated exact-main worktree created
 - [ ] Composer validate/audit/quality green
-- [ ] focused SUCheckout/H12/WordPress.org harnesses green
+- [ ] focused SUPCheckout/H12/WordPress.org harnesses green
 - [ ] deterministic ZIP built and verified
 - [ ] package structure inspected
 - [ ] disposable WordPress/WooCommerce installation green
@@ -594,7 +595,7 @@ Unsupported in the current certified feature set:
 - [ ] bounded sandbox smoke complete
 - [ ] no secrets/token leakage found
 - [ ] optional legacy-root migration smoke complete if applicable
-- [ ] approved Simplixi/SUCheckout branding applied and launch UI/browser/mobile/accessibility smoke complete
+- [ ] approved Simplixi/SUPCheckout branding applied and launch UI/browser/mobile/accessibility smoke complete
 
 ## Publication
 

@@ -1,9 +1,9 @@
 <?php
 
-namespace Simplixi\SUCheckout\UPayments\Tests\Security;
+namespace Simplixi\SUPCheckout\Tests\Security;
 
 use PHPUnit\Framework\TestCase;
-use Simplixi\SUCheckout\UPayments\Security\PublicOrderStatus;
+use Simplixi\SUPCheckout\Security\PublicOrderStatus;
 
 final class PublicOrderStatusTest extends TestCase {
     protected function setUp(): void {

@@ -1069,7 +1069,7 @@ arch2_assert(
 
 $gatewayClass = arch2_class_body_tokens($gatewayTokens, 'WC_Upayments');
 $statusMethod = arch2_direct_public_method($gatewayClass, 'get_payment_staus');
-$statusDelegation = '\\Simplixi\\SUCheckout\\UPayments\\Security\\PublicOrderStatus::handle();';
+$statusDelegation = '\\Simplixi\\SUPCheckout\\Security\\PublicOrderStatus::handle();';
 arch2_assert($statusMethod['found'], 'historical public status-poll wrapper remains executable');
 arch2_assert(
     $statusMethod['found'] && arch2_code_without_strings($statusMethod['body']) === $statusDelegation,
@@ -1147,7 +1147,7 @@ arch2_assert(
 
 $namespaceFixture = <<<'PHP'
 <?php
-namespace Simplixi\SUCheckout\UPayments;
+namespace Simplixi\SUPCheckout;
 add_filter("woocommerce_payment_gateways", "addUpaymentsGatewayClass");
 function addUpaymentsGatewayClass($methods) { $methods[] = "WC_UPayments"; return $methods; }
 PHP;
@@ -1266,10 +1266,10 @@ $statusInertFixture = <<<'PHP'
 <?php
 class WC_Upayments {
     public function get_payment_staus() {
-        // \Simplixi\SUCheckout\UPayments\Security\PublicOrderStatus::handle();
-        $dead = '\Simplixi\SUCheckout\UPayments\Security\PublicOrderStatus::handle();';
+        // \Simplixi\SUPCheckout\Security\PublicOrderStatus::handle();
+        $dead = '\Simplixi\SUPCheckout\Security\PublicOrderStatus::handle();';
         $nested = function () {
-            \Simplixi\SUCheckout\UPayments\Security\PublicOrderStatus::handle();
+            \Simplixi\SUPCheckout\Security\PublicOrderStatus::handle();
         };
     }
 }

@@ -40,7 +40,7 @@ concurrency:
 
 jobs:
   artifact-build:
-    name: Deterministic SUCheckout release artifact
+    name: Deterministic SUPCheckout release artifact
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
@@ -67,18 +67,18 @@ jobs:
           rm -rf release-output
           mkdir -p release-output
           bash scripts/build-release.sh release-output
-          ZIP="$(find release-output -maxdepth 1 -type f -name 'sucheckout-upayments-*.zip' -print -quit)"
+          ZIP="$(find release-output -maxdepth 1 -type f -name 'supcheckout-*.zip' -print -quit)"
           test -n "$ZIP"
           bash scripts/verify-release.sh "$ZIP"
 
       - name: Upload canonical release evidence
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
-          name: sucheckout-release-${{ env.RELEASE_SOURCE_SHA }}
+          name: supcheckout-release-${{ env.RELEASE_SOURCE_SHA }}
           path: |
-            release-output/sucheckout-upayments-*.zip
-            release-output/sucheckout-upayments-*.zip.sha256
-            release-output/sucheckout-upayments-*.manifest.sha256
+            release-output/supcheckout-*.zip
+            release-output/supcheckout-*.zip.sha256
+            release-output/supcheckout-*.manifest.sha256
           if-no-files-found: error
           retention-days: 7
 
@@ -123,14 +123,14 @@ jobs:
       - name: Download exact built release evidence
         uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
-          name: sucheckout-release-${{ env.RELEASE_SOURCE_SHA }}
+          name: supcheckout-release-${{ env.RELEASE_SOURCE_SHA }}
           path: release-output
 
       - name: Verify downloaded release artifact
         shell: bash
         run: |
           set -euo pipefail
-          ZIP="$(find release-output -maxdepth 1 -type f -name 'sucheckout-upayments-*.zip' -print -quit)"
+          ZIP="$(find release-output -maxdepth 1 -type f -name 'supcheckout-*.zip' -print -quit)"
           test -n "$ZIP"
           bash scripts/verify-release.sh "$ZIP"
 
@@ -143,27 +143,27 @@ jobs:
           chmod +x /tmp/wp-cli.phar
           /tmp/wp-cli.phar --version
 
-      - name: Install packaged SUCheckout into real WordPress and WooCommerce
+      - name: Install packaged SUPCheckout into real WordPress and WooCommerce
         shell: bash
         run: |
           set -euo pipefail
-          ZIP="$(find "$GITHUB_WORKSPACE/release-output" -maxdepth 1 -type f -name 'sucheckout-upayments-*.zip' -print -quit)"
+          ZIP="$(find "$GITHUB_WORKSPACE/release-output" -maxdepth 1 -type f -name 'supcheckout-*.zip' -print -quit)"
           test -n "$ZIP"
-          SUCHECKOUT_PLUGIN_ZIP="$ZIP" \
+          SUPCHECKOUT_PLUGIN_ZIP="$ZIP" \
           WP_CLI_BIN=/tmp/wp-cli.phar \
           bash scripts/install-wp-test-environment.sh 7.1 11.1.0 "$RUNNER_TEMP/wordpress"
 
       - name: Seed malformed protected settings for packaged plugin
         env:
-          SUCHECKOUT_CERT_PHASE: seed
+          SUPCHECKOUT_CERT_PHASE: seed
         run: /tmp/wp-cli.phar eval-file "$GITHUB_WORKSPACE/tests/integration/PluginActivationTest.php" --path="$RUNNER_TEMP/wordpress"
 
-      - name: Activate packaged SUCheckout
-        run: /tmp/wp-cli.phar plugin activate sucheckout-upayments --path="$RUNNER_TEMP/wordpress"
+      - name: Activate packaged SUPCheckout
+        run: /tmp/wp-cli.phar plugin activate supcheckout --path="$RUNNER_TEMP/wordpress"
 
       - name: Verify packaged activation and Classic registration
         env:
-          SUCHECKOUT_CERT_PHASE: verify
+          SUPCHECKOUT_CERT_PHASE: verify
         run: /tmp/wp-cli.phar eval-file "$GITHUB_WORKSPACE/tests/integration/PluginActivationTest.php" --path="$RUNNER_TEMP/wordpress"
 
       - name: Verify packaged release support metadata
@@ -186,11 +186,11 @@ jobs:
 
       - name: Verify packaged order CRUD
         env:
-          SUCHECKOUT_HPOS_MODE: ${{ matrix.storage }}
+          SUPCHECKOUT_HPOS_MODE: ${{ matrix.storage }}
         run: /tmp/wp-cli.phar eval-file "$GITHUB_WORKSPACE/tests/integration/HposCompatibilityTest.php" --path="$RUNNER_TEMP/wordpress"
 
   package-identity-migration:
-    name: Legacy-root migration WP ${{ matrix.wordpress }} / WC ${{ matrix.woocommerce }} / PHP 8.3
+    name: ${{ matrix.previous_slug }} → SUPCheckout WP ${{ matrix.wordpress }} / WC ${{ matrix.woocommerce }} / PHP 8.3
     needs: artifact-build
     runs-on: ubuntu-latest
     timeout-minutes: 25
@@ -200,8 +200,24 @@ jobs:
         include:
           - wordpress: '7.1'
             woocommerce: '11.1.0'
+            previous_sha: '54b1fbcc280b92372bd93baf929d6a746cfd3959'
+            previous_slug: 'simplixpay-upayments'
+            previous_text_domain: 'upayments'
           - wordpress: '6.9.7'
             woocommerce: '10.8.1'
+            previous_sha: '54b1fbcc280b92372bd93baf929d6a746cfd3959'
+            previous_slug: 'simplixpay-upayments'
+            previous_text_domain: 'upayments'
+          - wordpress: '7.1'
+            woocommerce: '11.1.0'
+            previous_sha: 'e9f953b0c3a881ad2d4b74390d0b5394b766a3fa'
+            previous_slug: 'sucheckout-upayments'
+            previous_text_domain: 'sucheckout-upayments'
+          - wordpress: '6.9.7'
+            woocommerce: '10.8.1'
+            previous_sha: 'e9f953b0c3a881ad2d4b74390d0b5394b766a3fa'
+            previous_slug: 'sucheckout-upayments'
+            previous_text_domain: 'sucheckout-upayments'
 
     services:
       mysql:
@@ -218,7 +234,9 @@ jobs:
           --health-retries=20
 
     env:
-      UPGRADE_BASE_SHA: 54b1fbcc280b92372bd93baf929d6a746cfd3959
+      UPGRADE_BASE_SHA: ${{ matrix.previous_sha }}
+      SUPCHECKOUT_LEGACY_SLUG: ${{ matrix.previous_slug }}
+      SUPCHECKOUT_LEGACY_TEXT_DOMAIN: ${{ matrix.previous_text_domain }}
 
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -234,27 +252,27 @@ jobs:
           coverage: none
           tools: none
 
-      - name: Download canonical SUCheckout artifact
+      - name: Download canonical SUPCheckout artifact
         uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
-          name: sucheckout-release-${{ env.RELEASE_SOURCE_SHA }}
+          name: supcheckout-release-${{ env.RELEASE_SOURCE_SHA }}
           path: release-output
 
       - name: Verify canonical artifact
         shell: bash
         run: |
           set -euo pipefail
-          CURRENT_ZIP="$(find "$GITHUB_WORKSPACE/release-output" -maxdepth 1 -type f -name 'sucheckout-upayments-*.zip' -print -quit)"
+          CURRENT_ZIP="$(find "$GITHUB_WORKSPACE/release-output" -maxdepth 1 -type f -name 'supcheckout-*.zip' -print -quit)"
           test -n "$CURRENT_ZIP"
           bash scripts/verify-release.sh "$CURRENT_ZIP"
           echo "CURRENT_ZIP=$CURRENT_ZIP" >> "$GITHUB_ENV"
 
-      - name: Build legacy pre-rebrand candidate
+      - name: Build pre-stable candidate
         shell: bash
         run: |
           set -euo pipefail
-          PREVIOUS_SOURCE="$RUNNER_TEMP/simplixpay-previous-source"
-          PREVIOUS_OUTPUT="$RUNNER_TEMP/simplixpay-previous-output"
+          PREVIOUS_SOURCE="$RUNNER_TEMP/pre-stable-previous-source"
+          PREVIOUS_OUTPUT="$RUNNER_TEMP/pre-stable-previous-output"
           rm -rf "$PREVIOUS_SOURCE" "$PREVIOUS_OUTPUT"
           git worktree add --detach "$PREVIOUS_SOURCE" "$UPGRADE_BASE_SHA"
           mkdir -p "$PREVIOUS_OUTPUT"
@@ -264,7 +282,7 @@ jobs:
           )
           git worktree remove --force "$PREVIOUS_SOURCE"
           git worktree prune
-          PREVIOUS_ZIP="$(find "$PREVIOUS_OUTPUT" -maxdepth 1 -type f -name 'simplixpay-upayments-*.zip' -print -quit)"
+          PREVIOUS_ZIP="$(find "$PREVIOUS_OUTPUT" -maxdepth 1 -type f -name "${SUPCHECKOUT_LEGACY_SLUG}-*.zip" -print -quit)"
           test -n "$PREVIOUS_ZIP"
           echo "PREVIOUS_ZIP=$PREVIOUS_ZIP" >> "$GITHUB_ENV"
 
@@ -277,58 +295,58 @@ jobs:
           chmod +x /tmp/wp-cli.phar
           /tmp/wp-cli.phar --version
 
-      - name: Install legacy package as existing active installation
+      - name: Install pre-stable package as existing active installation
         shell: bash
         run: |
           set -euo pipefail
-          SUCHECKOUT_PLUGIN_ZIP="$PREVIOUS_ZIP" \
-          SUCHECKOUT_PLUGIN_SLUG=simplixpay-upayments \
+          SUPCHECKOUT_PLUGIN_ZIP="$PREVIOUS_ZIP" \
+          SUPCHECKOUT_PLUGIN_SLUG="$SUPCHECKOUT_LEGACY_SLUG" \
           WP_CLI_BIN=/tmp/wp-cli.phar \
           bash scripts/install-wp-test-environment.sh "${{ matrix.wordpress }}" "${{ matrix.woocommerce }}" "$RUNNER_TEMP/wordpress"
-          /tmp/wp-cli.phar plugin activate simplixpay-upayments --path="$RUNNER_TEMP/wordpress"
+          /tmp/wp-cli.phar plugin activate "$SUPCHECKOUT_LEGACY_SLUG" --path="$RUNNER_TEMP/wordpress"
 
-      - name: Seed legacy merchant state
+      - name: Seed pre-stable merchant state
         env:
-          SUCHECKOUT_UPGRADE_PHASE: seed-existing
+          SUPCHECKOUT_UPGRADE_PHASE: seed-existing
         run: /tmp/wp-cli.phar eval-file "$GITHUB_WORKSPACE/tests/integration/UpgradeCompatibilityTest.php" --path="$RUNNER_TEMP/wordpress"
 
-      - name: Deactivate legacy package before identity migration
-        run: /tmp/wp-cli.phar plugin deactivate simplixpay-upayments --path="$RUNNER_TEMP/wordpress"
+      - name: Deactivate pre-stable package before identity migration
+        run: /tmp/wp-cli.phar plugin deactivate "$SUPCHECKOUT_LEGACY_SLUG" --path="$RUNNER_TEMP/wordpress"
 
-      - name: Install and activate canonical SUCheckout package
+      - name: Install and activate canonical SUPCheckout package
         shell: bash
         run: |
           set -euo pipefail
           /tmp/wp-cli.phar plugin install "$CURRENT_ZIP" --force --path="$RUNNER_TEMP/wordpress"
-          /tmp/wp-cli.phar plugin activate sucheckout-upayments --path="$RUNNER_TEMP/wordpress"
+          /tmp/wp-cli.phar plugin activate supcheckout --path="$RUNNER_TEMP/wordpress"
 
       - name: Verify canonical migration preserves legacy merchant data
         env:
-          SUCHECKOUT_UPGRADE_PHASE: verify-canonical
+          SUPCHECKOUT_UPGRADE_PHASE: verify-canonical
         run: /tmp/wp-cli.phar eval-file "$GITHUB_WORKSPACE/tests/integration/UpgradeCompatibilityTest.php" --path="$RUNNER_TEMP/wordpress"
 
       - name: Prove rollback remains non-destructive
         shell: bash
         run: |
           set -euo pipefail
-          /tmp/wp-cli.phar plugin deactivate sucheckout-upayments --path="$RUNNER_TEMP/wordpress"
-          /tmp/wp-cli.phar plugin activate simplixpay-upayments --path="$RUNNER_TEMP/wordpress"
-          SUCHECKOUT_UPGRADE_PHASE=verify-legacy-rollback \
+          /tmp/wp-cli.phar plugin deactivate supcheckout --path="$RUNNER_TEMP/wordpress"
+          /tmp/wp-cli.phar plugin activate "$SUPCHECKOUT_LEGACY_SLUG" --path="$RUNNER_TEMP/wordpress"
+          SUPCHECKOUT_UPGRADE_PHASE=verify-legacy-rollback \
             /tmp/wp-cli.phar eval-file "$GITHUB_WORKSPACE/tests/integration/UpgradeCompatibilityTest.php" --path="$RUNNER_TEMP/wordpress"
 
-      - name: Return to canonical SUCheckout and remove legacy package
+      - name: Return to canonical SUPCheckout and remove legacy package
         shell: bash
         run: |
           set -euo pipefail
-          /tmp/wp-cli.phar plugin deactivate simplixpay-upayments --path="$RUNNER_TEMP/wordpress"
-          /tmp/wp-cli.phar plugin activate sucheckout-upayments --path="$RUNNER_TEMP/wordpress"
-          /tmp/wp-cli.phar plugin delete simplixpay-upayments --path="$RUNNER_TEMP/wordpress"
-          SUCHECKOUT_UPGRADE_PHASE=verify-canonical-final \
+          /tmp/wp-cli.phar plugin deactivate "$SUPCHECKOUT_LEGACY_SLUG" --path="$RUNNER_TEMP/wordpress"
+          /tmp/wp-cli.phar plugin activate supcheckout --path="$RUNNER_TEMP/wordpress"
+          /tmp/wp-cli.phar plugin delete "$SUPCHECKOUT_LEGACY_SLUG" --path="$RUNNER_TEMP/wordpress"
+          SUPCHECKOUT_UPGRADE_PHASE=verify-canonical-final \
             /tmp/wp-cli.phar eval-file "$GITHUB_WORKSPACE/tests/integration/UpgradeCompatibilityTest.php" --path="$RUNNER_TEMP/wordpress"
 
       - name: Clean migration certification fixtures
         env:
-          SUCHECKOUT_UPGRADE_PHASE: cleanup
+          SUPCHECKOUT_UPGRADE_PHASE: cleanup
         run: /tmp/wp-cli.phar eval-file "$GITHUB_WORKSPACE/tests/integration/UpgradeCompatibilityTest.php" --path="$RUNNER_TEMP/wordpress"
 
   release-gate:

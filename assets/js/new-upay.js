@@ -1,7 +1,7 @@
 (function ($, window, document) {
     'use strict';
 
-    const api = window.suCheckoutUpayments = window.suCheckoutUpayments || {};
+    const api = window.supCheckout = window.supCheckout || {};
 
     function hidePlaceOrderButtonIfNeeded() {
         const selectedPaymentMethod = $('input[name="payment_method"]:checked').val();

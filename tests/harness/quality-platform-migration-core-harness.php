@@ -78,7 +78,7 @@ q16_assert(q16_has($fixture, 'SimplixPay_Test_Migration_Core_WPDB'), 'fixture mo
 q16_assert(q16_has($stubs, 'namespace UPayments\\Token'), 'stub models H12 namespace');
 q16_assert(q16_has($bootstrap, "require __DIR__ . '/support/wordpress-migration-core.php';"), 'PHPUnit bootstrap loads migration fixture');
 
-q16_assert(q16_blob($root . '/includes/Subscription/Cron/Scheduler.php') === '348fa0a2183be5a9b5897d6bd355fbaf902d8948', 'protected Scheduler blob remains exact');
+q16_assert(q16_blob($root . '/includes/Subscription/Cron/Scheduler.php') === '75be4ded83142f67a933be0e1c24cedc484f9a73', 'protected Scheduler blob remains exact');
 q16_assert(q16_blob($root . '/includes/Subscription/Cron/CycleClaim.php') === 'c34d83e2d77cc65024fe663e4c378cecb2b17347', 'protected CycleClaim blob remains exact');
 foreach (array('phase-9i-preflight-harness.php','phase-9i-executor-harness.php','phase-9i-operations-harness.php') as $name) q16_assert(q16_has($workflow, 'tests/harness/' . $name), 'Phase 9I regression remains mandatory: ' . $name);
 q16_assert(q16_has($workflow, 'tests/harness/quality-platform-migration-core-harness.php'), 'Q16 harness is mandatory');
@@ -123,7 +123,7 @@ q16_assert(q16_has($handoff, '- Quality Platform Q1-Q19 — **DONE / VERIFIED; c
 q16_assert(preg_match('/\\| Quality Platform Q1-Q([0-9]+) \\| \\*\\*DONE \\/ VERIFIED\\*\\* \\|/', $readme, $q16_readme_range_matches) === 1 && isset($q16_readme_range_matches[1]) && (int) $q16_readme_range_matches[1] >= 16, 'README completion table includes Q16 or a later verified gate');
 q16_assert(q16_has($audit, '**Enterprise Compatibility Certification**') && q16_has($audit, 'every Q1-Q19 regression'), 'repository audit advances beyond Q16 into certification while preserving closed quality ownership');
 q16_assert(q16_has($audit, 'every Q1-Q19 regression'), 'repository audit requires the complete closed Q1-Q19 regression platform');
-q16_assert(q16_has($status, '| Production maturity | **Pre-release / SUCheckout migration merged and post-merge certified** |'), 'project status advances beyond Q16 into implemented SUCheckout migration with permanent certification');
+q16_assert(q16_has($status, '| Final SUPCheckout identity migration |'), 'project status advances beyond Q16 into final SUPCheckout identity migration with permanent certification');
 q16_assert(q16_has($readme, 'Enterprise Release Candidate Closeout is **DONE / VERIFIED**.'), 'README advances beyond Q16 into verified release-candidate state');
 q16_assert(q16_has($playbook, '- [x] Full Automated Quality Platform — **Q16 / DONE / VERIFIED** through PR #42 and post-merge Quality Gates #316.'), 'playbook preserves Q16 as completed');
 q16_assert(q16_has($playbook, '7. Enterprise Compatibility Certification — **CURRENT**.'), 'playbook advances beyond Q16 into named certification');

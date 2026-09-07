@@ -1,9 +1,10 @@
-# SUCheckout for UPayments — Project Status
+# SUPCheckout for UPayments — Project Status
 
 **Status document:** canonical living engineering state
 **Last reconciled:** 2026-09-07
-**Canonical GitHub repository:** `SimplixInnovations/sucheckout`
-**Canonical plugin/package slug:** `sucheckout-upayments`
+**Current GitHub repository:** `SimplixInnovations/sucheckout`
+**Target repository after certified SUPCheckout merge:** `SimplixInnovations/supcheckout`
+**Canonical plugin/package slug:** `supcheckout`
 **Development version:** `0.1.0`
 
 > Live GitHub/source evidence wins over recorded SHAs. Historical phase records preserve what was true at their close. This file owns the current program state; `OWNER-HANDOFF.md` owns the remaining owner/admin/local sequence.
@@ -12,15 +13,16 @@
 
 | Item | State |
 |---|---|
-| Product | **SUCheckout for UPayments** |
-| Product family | **SUCheckout** |
-| Production maturity | **Pre-release / SUCheckout migration merged and post-merge certified** |
-| Canonical technical slug | `sucheckout-upayments` |
-| WordPress text domain | `sucheckout-upayments` |
-| PHP namespace | `Simplixi\SUCheckout\UPayments` |
-| Canonical release root | `sucheckout-upayments/` |
+| Product | **SUPCheckout for UPayments** |
+| Product family | **SUPCheckout** |
+| Production maturity | **Pre-release / final SUPCheckout identity migration in exact-head certification** |
+| Canonical technical slug | `supcheckout` |
+| WordPress text domain | `supcheckout` |
+| PHP namespace | `Simplixi\SUPCheckout` |
+| Canonical release root | `supcheckout/` |
 | First-stable physical bootstrap | `UPayments.php` — protected compatibility exception |
-| Runtime-bearing SUCheckout migration | **DONE / VERIFIED** |
+| Historical pre-stable SUCheckout runtime migration | **DONE / VERIFIED — retained as evidence** |
+| Final SUPCheckout identity migration | **IN IMPLEMENTATION / EXACT-HEAD CERTIFICATION** |
 | First-party naming cleanup | **DONE / VERIFIED** |
 | Documentation/control-plane hardening | **DONE / VERIFIED — PR #65 merged and post-merge certified** |
 | Historical Quality Platform Q1-Q19 | **DONE / VERIFIED — permanently closed at Q19** |
@@ -28,7 +30,7 @@
 | Deterministic release artifact | **DONE / VERIFIED — permanent exact-head gate** |
 | Legacy-root → canonical-root migration | **DONE / VERIFIED — permanent release gate** |
 | WordPress.org Plugin Check | **DONE / VERIFIED — 0 blocking errors on certified package** |
-| Repository rename | **DONE / VERIFIED — canonical repository is `SimplixInnovations/sucheckout`** |
+| SUPCheckout repository rename | **PENDING OWNER/ADMIN — only after certified merge; target `SimplixInnovations/supcheckout`** |
 | Public Git tag / GitHub Release | **NOT CREATED** |
 | WordPress.org publication | **NOT PERFORMED** |
 
@@ -38,9 +40,9 @@ No Q20 is justified. Do not create additional numbered quality phases merely for
 
 Different SHAs below own different milestones and must not be conflated.
 
-### Runtime-bearing SUCheckout identity baseline
+### Historical runtime-bearing SUCheckout identity baseline
 
-PR #58 carried the product/runtime identity migration and was certified at head:
+PR #58 carried the earlier pre-stable SUCheckout product/runtime identity migration and was certified at head:
 
 `5bf84dccb880733da45c1f922d43554af69a33dc`
 
@@ -57,9 +59,9 @@ Post-merge runtime evidence:
 - WordPress.org Submission Check #101 — **SUCCESS**;
 - CodeQL/main-security #579 — **SUCCESS**;
 - official packaged Plugin Check — **0 blocking errors**;
-- SUCheckout Production HTTP Transport — **27 PASS / 0 FAIL**;
-- SUCheckout Provenance DB Failure — **3 PASS / 0 FAIL**;
-- SUCheckout Residue — **17 PASS / 0 FAIL**.
+- SUPCheckout Production HTTP Transport — **27 PASS / 0 FAIL**;
+- SUPCheckout Provenance DB Failure — **3 PASS / 0 FAIL**;
+- SUPCheckout Residue — **17 PASS / 0 FAIL**.
 
 ### Documentation/control-plane closeout baseline
 
@@ -93,7 +95,7 @@ Fresh exact-main evidence:
 
 ### Latest first-party naming cleanup baseline
 
-PR #61 completed the remaining safe first-party runtime/control naming cleanup, migrating retired first-party implementation/control symbols to canonical SUCheckout equivalents while preserving all protected UPayments/provider/persisted identities.
+PR #61 completed the remaining safe first-party runtime/control naming cleanup, migrating then-retired first-party implementation/control symbols to the pre-stable SUCheckout equivalents while preserving all protected UPayments/provider/persisted identities.
 
 It merged to `main` as:
 
@@ -108,23 +110,28 @@ Fresh exact-main evidence:
 - WordPress.org Submission Check #116 — **SUCCESS**;
 - CodeQL/main-security #595 — **SUCCESS**.
 
-This `efe937c6...` commit is the base of the current final documentation-hardening branch. The final docs merge may advance `main` without redefining the runtime-bearing milestone above.
+This historical baseline remains evidence only; the current SUPCheckout migration is certified independently on PR #67.
 
 ## Canonical identity
 
 The approved identity is:
 
-- human-facing name: **SUCheckout for UPayments**;
-- short product reference: **SUCheckout**;
-- technical slug: `sucheckout-upayments`;
-- WordPress text domain: `sucheckout-upayments`;
-- PHP namespace root: `Simplixi\SUCheckout\UPayments`;
-- deterministic package: `sucheckout-upayments-X.Y.Z.zip`;
-- package root: `sucheckout-upayments/`;
+- human-facing name: **SUPCheckout for UPayments**;
+- short product reference: **SUPCheckout**;
+- technical slug: `supcheckout`;
+- WordPress text domain: `supcheckout`;
+- PHP namespace root: `Simplixi\SUPCheckout`;
+- deterministic package: `supcheckout-X.Y.Z.zip`;
+- package root: `supcheckout/`;
 - first-stable bootstrap: `UPayments.php`;
-- canonical GitHub repository: `SimplixInnovations/sucheckout`.
+- current GitHub repository during implementation: `SimplixInnovations/sucheckout`;
+- target repository after certified merge: `SimplixInnovations/supcheckout`.
 
 The word **for** appears in human-facing relationship copy only. It does not appear in technical slugs, URLs, package identities, text domains or namespaces.
+
+## Provider-specific scope
+
+SUPCheckout is permanently UPayments-only. Other provider integrations are separate Simplix products/repositories. Cross-provider routing, orchestration and fraud-platform capabilities belong to the separate payments-platform project and are not added to this runtime.
 
 ## Protected compatibility identities
 
@@ -148,24 +155,22 @@ These are compatibility contracts, not stale branding residue.
 The canonical first-stable package is:
 
 ```text
-sucheckout-upayments/UPayments.php
+supcheckout/UPayments.php
 ```
 
-Real WordPress qualification showed that directly deleting/renaming an already-active `UPayments.php` can strand WordPress's stored plugin basename. A future physical rename to `sucheckout-upayments.php` therefore remains a separately approved migration, not remaining work for this first release.
+Real WordPress qualification showed that directly deleting/renaming an already-active `UPayments.php` can strand WordPress's stored plugin basename. A future physical rename to `supcheckout.php` therefore remains a separately approved migration, not remaining work for this first release.
 
 ## Existing pre-release installation migration
 
-Changing the package root changes WordPress's plugin basename. The release workflow therefore certifies the explicit pre-release path:
+Changing the package root changes WordPress's plugin basename. The release workflow therefore certifies **both real pre-stable package roots** against the final SUPCheckout package:
 
-1. install/activate legacy `simplixpay-upayments/UPayments.php`;
-2. seed merchant settings, historical order/payment data, tokens/subscription metadata and cron state;
-3. deactivate the legacy package;
-4. install/activate canonical `sucheckout-upayments/UPayments.php`;
-5. verify protected merchant/provider data continuity;
-6. prove rollback remains non-destructive;
-7. return to canonical SUCheckout;
-8. remove the inactive legacy package;
-9. re-verify canonical runtime and retained data.
+1. `simplixpay-upayments/UPayments.php` from immutable source `54b1fbcc280b92372bd93baf929d6a746cfd3959`;
+2. transitional `sucheckout-upayments/UPayments.php` from immutable source `e9f953b0c3a881ad2d4b74390d0b5394b766a3fa`;
+3. final `supcheckout/UPayments.php`.
+
+For each pre-stable root, CI installs/activates the old package, seeds merchant settings and historical order/payment/token/subscription state, deactivates it, installs/activates SUPCheckout, verifies byte/data continuity, proves rollback is non-destructive, returns to SUPCheckout, deletes the inactive pre-stable package, and verifies final runtime again.
+
+No `sucheckout/UPayments.php` migration fixture is invented because that identity existed only on an unmerged superseded refactor branch.
 
 This is permanent release evidence; it is not permission to rename protected stored IDs.
 
@@ -191,8 +196,8 @@ See `docs/COMPATIBILITY.md` for the public evidence matrix and exact exclusions.
 
 For development version `0.1.0`, the release tooling produces:
 
-- `sucheckout-upayments-0.1.0.zip`;
-- one `sucheckout-upayments/` root;
+- `supcheckout-0.1.0.zip`;
+- one `supcheckout/` root;
 - SHA-256 ZIP sidecar;
 - sorted per-file SHA-256 manifest;
 - Git-HEAD-bound bytes according to `.distignore`;
@@ -207,9 +212,9 @@ The permanent `WordPress.org Submission Check`:
 
 - builds the canonical deterministic package;
 - verifies the ZIP before use;
-- unpacks `sucheckout-upayments/`;
+- unpacks `supcheckout/`;
 - runs the pinned official `WordPress/plugin-check-action` against that exact package;
-- uses slug `sucheckout-upayments` and `plugin_repo` checks;
+- uses slug `supcheckout` and `plugin_repo` checks;
 - fails on blocking findings.
 
 Passing this gate does **not** publish the plugin or guarantee manual directory approval.
@@ -220,10 +225,10 @@ After this final documentation-hardening PR is exact-green and merged, the remai
 
 1. synchronize the owner's local clone to the final `origin/main`;
 2. delete obsolete remote branches;
-3. verify canonical GitHub repository metadata/controls at `SimplixInnovations/sucheckout`;
+3. after the final SUPCheckout identity PR is merged and post-merge green, rename the repository from `SimplixInnovations/sucheckout` to `SimplixInnovations/supcheckout`;
 4. update repository About metadata and local `origin`;
 5. verify rulesets/security/integrations after rename;
-6. create/merge one coordinate-only PR updating living old-repository URLs;
+6. create/merge one coordinate-only PR updating living repository URLs to `SimplixInnovations/supcheckout`;
 7. run the documented isolated local acceptance suite;
 8. choose the first public version explicitly (`0.1.0` early release vs `1.0.0` first stable);
 9. run a version-promotion PR if required;
@@ -248,7 +253,7 @@ Automatic WooCommerce refunds and arbitrary marketplace multi-split remain unsup
 
 ## Permanent historical closure markers
 
-These entries are retained because permanent regression harnesses use them as audit evidence. They do not redefine the current SUCheckout program state.
+These entries are retained because permanent regression harnesses use them as audit evidence. They do not redefine the current SUPCheckout program state.
 
 | Historical gate | Closure |
 |---|---|
@@ -272,7 +277,7 @@ Enterprise Task 8 release-candidate closeout remains historical pre-rebrand evid
 
 ## Historical evidence rule
 
-Former SimplixPay/Q/Task phase records are retained as historical evidence. Do not rewrite historical SHAs, names or then-current claims to pretend those milestones originally occurred under SUCheckout.
+Former SimplixPay/Q/Task phase records are retained as historical evidence. Do not rewrite historical SHAs, names or then-current claims to pretend those milestones originally occurred under SUPCheckout.
 
 Current truth precedence:
 

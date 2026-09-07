@@ -30,7 +30,7 @@ function q2_contains($source, $needle) {
 
 /**
  * Return plugin-owned translation calls whose text-domain argument is not the
- * canonical SUCheckout literal.
+ * canonical SUPCheckout literal.
  *
  * @param string $root Repository root.
  * @return array<int,array{path:string,line:int,function:string,domain:string}>
@@ -139,7 +139,7 @@ function q2_sucheckout_i18n_violations($root) {
 
             $domain_index = $functions[$function];
             $domain = isset($args[$domain_index]) ? trim($args[$domain_index]) : '<missing>';
-            if ($domain !== "'sucheckout-upayments'" && $domain !== '"sucheckout-upayments"') {
+            if ($domain !== "'supcheckout'" && $domain !== '"supcheckout"') {
                 $violations[] = array(
                     'path' => $relative,
                     'line' => (int) $tokens[$i][2],
@@ -166,12 +166,12 @@ $handoff = q2_read($q2_root, 'docs/project/NEW-CHAT-HANDOFF.md');
 $playbook = q2_read($q2_root, 'docs/project/MASTER-ENGINEERING-PLAYBOOK.md');
 
 q2_assert(is_array($composer), 'Composer manifest is valid JSON');
-q2_assert(isset($composer['require']) && $composer['require'] === array('php' => '>=7.2'), 'Composer still has no production package dependency');
+q2_assert(isset($composer['require']) && $composer['require'] === array('php' => '>=7.4'), 'Composer still has no production package dependency');
 q2_assert(isset($composer['config']['allow-plugins']) && $composer['config']['allow-plugins'] === false, 'Composer plugin execution remains disabled');
 q2_assert(!q2_contains($runtime, 'vendor/autoload.php'), 'runtime still does not load development Composer code');
 
 q2_assert(q2_contains($phpstan, 'level: 5'), 'PHPStan level remains explicit');
-q2_assert(q2_contains($phpstan, 'phpVersion: 70200'), 'PHPStan target remains the declared PHP floor');
+q2_assert(q2_contains($phpstan, 'phpVersion: 70400'), 'PHPStan target remains the declared PHP floor');
 foreach (array(
     'src/Payment/CheckoutPayload.php',
     'src/Payment/ProviderResult.php',
@@ -255,7 +255,7 @@ q2_assert(q2_contains($workflow, "reject_across_live_records 'CURRENT / Q1**'"),
 
 
 /*
- * SUCheckout identity-migration invariant.
+ * SUPCheckout identity-migration invariant.
  *
  * The historical Q2 harness remains permanent and now also protects the
  * canonical first-party translation/metadata boundary established before the
@@ -266,7 +266,7 @@ foreach ($q2_i18n_violations as $violation) {
     q2_assert(
         false,
         sprintf(
-            'SUCheckout translation domain is canonical: %s:%d %s() domain=%s',
+            'SUPCheckout translation domain is canonical: %s:%d %s() domain=%s',
             $violation['path'],
             $violation['line'],
             $violation['function'],
@@ -274,15 +274,15 @@ foreach ($q2_i18n_violations as $violation) {
         )
     );
 }
-q2_assert(count($q2_i18n_violations) === 0, 'all plugin-owned translation calls use literal sucheckout-upayments domain');
+q2_assert(count($q2_i18n_violations) === 0, 'all plugin-owned translation calls use literal supcheckout domain');
 
 q2_assert(
-    q2_contains($runtime, 'Plugin Name: SUCheckout for UPayments'),
-    'plugin header exposes canonical SUCheckout product name'
+    q2_contains($runtime, 'Plugin Name: SUPCheckout for UPayments'),
+    'plugin header exposes canonical SUPCheckout product name'
 );
 q2_assert(
-    q2_contains($runtime, 'Text Domain: sucheckout-upayments'),
-    'plugin header exposes canonical SUCheckout text domain'
+    q2_contains($runtime, 'Text Domain: supcheckout'),
+    'plugin header exposes canonical SUPCheckout text domain'
 );
 q2_assert(
     !q2_contains($runtime, 'Domain Path:'),
@@ -290,11 +290,11 @@ q2_assert(
 );
 q2_assert(
     is_file($q2_root . '/readme.txt'),
-    'canonical WordPress readme.txt exists for SUCheckout'
+    'canonical WordPress readme.txt exists for SUPCheckout'
 );
 q2_assert(
-    q2_contains($readme, '<h1 align="center">SUCheckout for UPayments</h1>'),
-    'README current product heading is canonical SUCheckout'
+    q2_contains($readme, '<h1 align="center">SUPCheckout for UPayments</h1>'),
+    'README current product heading is canonical SUPCheckout'
 );
 
 echo "\nQ2 Checkout Payload Analysis: {$q2_pass} PASS / {$q2_fail} FAIL\n";

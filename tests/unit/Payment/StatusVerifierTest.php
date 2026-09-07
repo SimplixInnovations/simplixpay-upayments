@@ -1,10 +1,10 @@
 <?php
 
-namespace Simplixi\SUCheckout\UPayments\Tests\Payment;
+namespace Simplixi\SUPCheckout\Tests\Payment;
 
 use PHPUnit\Framework\TestCase;
-use Simplixi\SUCheckout\UPayments\Payment\ProviderResult;
-use Simplixi\SUCheckout\UPayments\Payment\StatusVerifier;
+use Simplixi\SUPCheckout\Payment\ProviderResult;
+use Simplixi\SUPCheckout\Payment\StatusVerifier;
 
 final class StatusVerifierGateway {
     public $apiKey = 'test-api-key-secret';

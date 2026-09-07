@@ -1,14 +1,14 @@
 <?php
 
-namespace Simplixi\SUCheckout\UPayments\Tests\Migration;
+namespace Simplixi\SUPCheckout\Tests\Migration;
 
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 use ReflectionMethod;
 use RuntimeException;
-use Simplixi\SUCheckout\UPayments\Migration\MigrationBatch;
-use Simplixi\SUCheckout\UPayments\Migration\MigrationCliCommand;
+use Simplixi\SUPCheckout\Migration\MigrationBatch;
+use Simplixi\SUPCheckout\Migration\MigrationCliCommand;
 
 final class MigrationCliCommandTest extends TestCase {
     protected function setUp(): void {
@@ -39,10 +39,10 @@ final class MigrationCliCommandTest extends TestCase {
             $command->preflight(array(), $request);
             self::fail('WP_CLI::error should terminate the invalid request.');
         } catch (RuntimeException $exception) {
-            self::assertSame('SUCheckout for UPayments migration: ' . $reason, $exception->getMessage());
+            self::assertSame('SUPCheckout for UPayments migration: ' . $reason, $exception->getMessage());
         }
 
-        self::assertSame(array(array('SUCheckout for UPayments migration: ' . $reason, true)), \WP_CLI::$errors);
+        self::assertSame(array(array('SUPCheckout for UPayments migration: ' . $reason, true)), \WP_CLI::$errors);
         self::assertSame(array(), \WP_CLI::$lines);
     }
 
@@ -53,10 +53,10 @@ final class MigrationCliCommandTest extends TestCase {
             $command->execute(array(), array());
             self::fail('WP_CLI::error should require explicit confirmation.');
         } catch (RuntimeException $exception) {
-            self::assertSame('SUCheckout for UPayments migration: explicit_yes_required', $exception->getMessage());
+            self::assertSame('SUPCheckout for UPayments migration: explicit_yes_required', $exception->getMessage());
         }
 
-        self::assertSame(array(array('SUCheckout for UPayments migration: explicit_yes_required', true)), \WP_CLI::$errors);
+        self::assertSame(array(array('SUPCheckout for UPayments migration: explicit_yes_required', true)), \WP_CLI::$errors);
         self::assertSame(array(), \WP_CLI::$lines);
     }
 

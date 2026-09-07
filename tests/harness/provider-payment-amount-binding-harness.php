@@ -1,6 +1,6 @@
 <?php
 
-namespace Simplixi\SUCheckout\UPayments\Payment {
+namespace Simplixi\SUPCheckout\Payment {
     \define('ABSPATH', __DIR__ . '/');
     require_once __DIR__ . '/../../src/Payment/ProviderResult.php';
     require_once __DIR__ . '/../../src/Payment/StatusVerifier.php';

@@ -1,6 +1,6 @@
 <?php
 /**
- * Deterministic canonical SUCheckout release-artifact certification.
+ * Deterministic canonical SUPCheckout release-artifact certification.
  */
 
 $root = dirname(__DIR__, 2);
@@ -107,15 +107,15 @@ if (preg_match("/public const VERSION = '([^']+)';/", $identity, $matches) === 1
 }
 release_assert($version !== '', 'release version is readable from canonical identity');
 release_assert(strpos($identity, "public const LEGACY_MAIN_FILE = 'UPayments.php';") !== false, 'qualified UPayments.php bootstrap is retained');
-release_assert(strpos($identity, "public const TARGET_MAIN_FILE = 'sucheckout-upayments.php';") !== false, 'unsafe physical main-file rename remains an explicit future target');
+release_assert(strpos($identity, "public const TARGET_MAIN_FILE = 'supcheckout.php';") !== false, 'unsafe physical main-file rename remains an explicit future target');
 
 foreach (array('/.github/', '/tests/', '/vendor/', '/composer.json', '/composer.lock', '/docs/', '/scripts/') as $excluded) {
     release_assert(strpos($distignore, $excluded) !== false, 'distribution excludes control/development path: ' . $excluded);
 }
 
-release_assert(substr_count($build, 'sucheckout-upayments') >= 2, 'builder owns canonical SUCheckout ZIP/root slug');
+release_assert(substr_count($build, 'supcheckout') >= 2, 'builder owns canonical SUPCheckout ZIP/root slug');
 release_assert(strpos($build, 'slug = "simplixpay-upayments"') === false, 'builder contains no retired package-root slug');
-release_assert(substr_count($verify, 'sucheckout-upayments') >= 2, 'verifier owns canonical SUCheckout ZIP/root slug');
+release_assert(substr_count($verify, 'supcheckout') >= 2, 'verifier owns canonical SUPCheckout ZIP/root slug');
 release_assert(strpos($verify, 'slug = "simplixpay-upayments"') === false, 'verifier contains no retired package-root slug');
 release_assert(
     strpos($build, '"ls-tree", "-r", "-z", "HEAD"') !== false
@@ -128,23 +128,27 @@ release_assert(
         && strpos($verify, 'HEAD:.distignore') !== false,
     'verifier binds packaged bytes to Git HEAD'
 );
-release_assert(strpos($installer, 'SUCHECKOUT_PLUGIN_SLUG:-sucheckout-upayments') !== false, 'real installer defaults to canonical SUCheckout root');
+release_assert(strpos($installer, 'SUPCHECKOUT_PLUGIN_SLUG:-supcheckout') !== false, 'real installer defaults to canonical SUPCheckout root');
 
-release_assert(strpos($workflow, "-name 'sucheckout-upayments-*.zip'") !== false, 'release workflow selects canonical SUCheckout artifacts');
-release_assert(strpos($workflow, 'name: sucheckout-release-${{ env.RELEASE_SOURCE_SHA }}') !== false, 'release workflow evidence is keyed by exact candidate SHA');
+release_assert(strpos($workflow, "-name 'supcheckout-*.zip'") !== false, 'release workflow selects canonical SUPCheckout artifacts');
+release_assert(strpos($workflow, 'name: supcheckout-release-${{ env.RELEASE_SOURCE_SHA }}') !== false, 'release workflow evidence is keyed by exact candidate SHA');
 release_assert(strpos($workflow, 'ref: ${{ env.RELEASE_SOURCE_SHA }}') !== false, 'release workflow checks out exact candidate source SHA');
 release_assert(strpos($workflow, 'storage: [legacy, hpos]') !== false, 'packaged runtime covers legacy and HPOS storage');
-release_assert(strpos($workflow, 'plugin activate sucheckout-upayments') !== false, 'packaged runtime activates canonical plugin slug');
-release_assert(strpos($workflow, 'SUCHECKOUT_PLUGIN_SLUG=simplixpay-upayments') !== false, 'migration job seeds a real legacy-root installation');
-release_assert(strpos($workflow, 'plugin deactivate simplixpay-upayments') !== false, 'migration job explicitly deactivates legacy root');
-release_assert(strpos($workflow, 'plugin activate sucheckout-upayments') !== false, 'migration job explicitly activates canonical root');
-release_assert(strpos($workflow, 'SUCHECKOUT_UPGRADE_PHASE=verify-legacy-rollback') !== false, 'migration job proves legacy rollback is non-destructive');
-release_assert(strpos($workflow, 'plugin delete simplixpay-upayments') !== false, 'migration job ends with legacy package removed');
+release_assert(strpos($workflow, 'plugin activate supcheckout') !== false, 'packaged runtime activates canonical plugin slug');
+release_assert(strpos($workflow, "previous_slug: 'simplixpay-upayments'") !== false, 'migration matrix retains historical SimplixPay package root');
+release_assert(strpos($workflow, "previous_slug: 'sucheckout-upayments'") !== false, 'migration matrix certifies transitional SUCheckout package root');
+release_assert(strpos($workflow, "previous_sha: '54b1fbcc280b92372bd93baf929d6a746cfd3959'") !== false, 'historical SimplixPay migration source is immutable');
+release_assert(strpos($workflow, "previous_sha: 'e9f953b0c3a881ad2d4b74390d0b5394b766a3fa'") !== false, 'transitional SUCheckout migration source is immutable');
+release_assert(strpos($workflow, 'SUPCHECKOUT_PLUGIN_SLUG="$SUPCHECKOUT_LEGACY_SLUG"') !== false, 'migration job installs each matrix-selected pre-stable root');
+release_assert(strpos($workflow, 'plugin deactivate "$SUPCHECKOUT_LEGACY_SLUG"') !== false, 'migration job explicitly deactivates each pre-stable root');
+release_assert(strpos($workflow, 'plugin activate supcheckout') !== false, 'migration job explicitly activates canonical root');
+release_assert(strpos($workflow, 'SUPCHECKOUT_UPGRADE_PHASE=verify-legacy-rollback') !== false, 'migration job proves legacy rollback is non-destructive');
+release_assert(strpos($workflow, 'plugin delete "$SUPCHECKOUT_LEGACY_SLUG"') !== false, 'migration job ends with selected pre-stable package removed');
 release_assert(strpos($workflow, 'actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a') !== false, 'artifact upload action is immutably pinned');
 release_assert(strpos($workflow, 'actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c') !== false, 'artifact download action is immutably pinned');
 
 if ($version !== '') {
-    $tmp = sys_get_temp_dir() . '/sucheckout-release-' . getmypid() . '-' . substr(hash('sha256', __FILE__), 0, 8);
+    $tmp = sys_get_temp_dir() . '/supcheckout-release-' . getmypid() . '-' . substr(hash('sha256', __FILE__), 0, 8);
     $first = $tmp . '/first';
     $second = $tmp . '/second';
     @mkdir($first, 0777, true);
@@ -155,12 +159,12 @@ if ($version !== '') {
     $first_code = release_run($build_command . escapeshellarg($first), $first_output);
     release_assert($first_code === 0, 'first deterministic canonical build exits zero');
 
-    $zip_name = 'sucheckout-upayments-' . $version . '.zip';
-    $manifest_name = 'sucheckout-upayments-' . $version . '.manifest.sha256';
+    $zip_name = 'supcheckout-' . $version . '.zip';
+    $manifest_name = 'supcheckout-' . $version . '.manifest.sha256';
     $first_zip = $first . '/' . $zip_name;
     $first_checksum = $first_zip . '.sha256';
     $first_manifest = $first . '/' . $manifest_name;
-    release_assert(is_file($first_zip), 'first build emits canonical SUCheckout ZIP');
+    release_assert(is_file($first_zip), 'first build emits canonical SUPCheckout ZIP');
     release_assert(is_file($first_checksum), 'first build emits ZIP checksum');
     release_assert(is_file($first_manifest), 'first build emits per-file manifest');
 
@@ -182,14 +186,14 @@ if ($version !== '') {
                         $names[] = $name;
                     }
                 }
-                $prefix = 'sucheckout-upayments/';
+                $prefix = 'supcheckout/';
                 $safe = count($names) > 0;
                 foreach ($names as $name) {
                     if (strpos($name, $prefix) !== 0 || strpos($name, 'simplixpay-upayments/') === 0 || substr($name, -1) === '/') {
                         $safe = false;
                     }
                 }
-                release_assert($safe, 'independent inspector sees one canonical SUCheckout package root');
+                release_assert($safe, 'independent inspector sees one canonical SUPCheckout package root');
                 release_assert(in_array($prefix . 'UPayments.php', $names, true), 'canonical package retains qualified UPayments.php bootstrap');
                 release_assert(in_array($prefix . 'readme.txt', $names, true), 'canonical package contains WordPress.org readme');
                 release_assert(!in_array($prefix . 'composer.json', $names, true), 'canonical package excludes Composer controls');
@@ -197,10 +201,10 @@ if ($version !== '') {
                 $plugin = $zip->getFromName($prefix . 'UPayments.php');
                 release_assert(
                     is_string($plugin)
-                        && strpos($plugin, 'Plugin Name: SUCheckout for UPayments') !== false
-                        && strpos($plugin, 'Text Domain: sucheckout-upayments') !== false
+                        && strpos($plugin, 'Plugin Name: SUPCheckout for UPayments') !== false
+                        && strpos($plugin, 'Text Domain: supcheckout') !== false
                         && strpos($plugin, 'Version: ' . $version) !== false,
-                    'independent inspector confirms packaged SUCheckout metadata'
+                    'independent inspector confirms packaged SUPCheckout metadata'
                 );
                 $zip->close();
             }
@@ -215,7 +219,7 @@ if ($version !== '') {
         if ($tampered_ready && class_exists('ZipArchive')) {
             $tampered = new ZipArchive();
             if ($tampered->open($tampered_zip) === true) {
-                $target = 'sucheckout-upayments/assets/css/customer.css';
+                $target = 'supcheckout/assets/css/customer.css';
                 $bytes = $tampered->getFromName($target);
                 $tampered_ready = is_string($bytes)
                     && $tampered->addFromString($target, $bytes . "\n/* git-head-mismatch-probe */\n");
@@ -250,5 +254,5 @@ if ($version !== '') {
     release_rm_tree($tmp);
 }
 
-echo "\nRelease Artifact: {$pass} PASS / {$fail} FAIL\n";
+echo "\nSUPCheckout Release Artifact: {$pass} PASS / {$fail} FAIL\n";
 exit($fail === 0 ? 0 : 1);

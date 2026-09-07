@@ -1,9 +1,9 @@
 <?php
 
-namespace Simplixi\SUCheckout\UPayments\Tests\Provider;
+namespace Simplixi\SUPCheckout\Tests\Provider;
 
 use PHPUnit\Framework\TestCase;
-use Simplixi\SUCheckout\UPayments\Provider\EndpointResolver;
+use Simplixi\SUPCheckout\Provider\EndpointResolver;
 
 final class EndpointResolverTest extends TestCase {
     public function test_live_and_sandbox_bases_remain_byte_exact(): void {

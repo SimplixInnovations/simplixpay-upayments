@@ -1,9 +1,9 @@
 <?php
 
-namespace Simplixi\SUCheckout\UPayments\Tests\Payment;
+namespace Simplixi\SUPCheckout\Tests\Payment;
 
 use PHPUnit\Framework\TestCase;
-use Simplixi\SUCheckout\UPayments\Payment\ProviderResult;
+use Simplixi\SUPCheckout\Payment\ProviderResult;
 
 final class ProviderResultTest extends TestCase {
     public function test_only_exact_documented_results_receive_terminal_meaning(): void {

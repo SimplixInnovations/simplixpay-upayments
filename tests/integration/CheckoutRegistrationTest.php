@@ -15,7 +15,7 @@ sucheckout_cert_assert(
 );
 sucheckout_cert_assert(
     false !== has_action('woocommerce_blocks_payment_method_type_registration'),
-    'SUCheckout registered a server-side Blocks payment-method callback'
+    'SUPCheckout registered a server-side Blocks payment-method callback'
 );
 
 $original_settings = get_option('woocommerce_upayments_settings');
@@ -48,7 +48,7 @@ foreach ($cases as $label => $case) {
     sucheckout_cert_assert($registry->is_registered('upayments'), 'Blocks registry contains upayments for case ' . $label);
 
     $integration = $registry->get_registered('upayments');
-    sucheckout_cert_assert($integration instanceof WCGatewayUPaymentsBlocks, 'Blocks registry returns SUCheckout integration for case ' . $label);
+    sucheckout_cert_assert($integration instanceof WCGatewayUPaymentsBlocks, 'Blocks registry returns SUPCheckout integration for case ' . $label);
     sucheckout_cert_assert($integration->is_active() === $case['active'], 'Blocks availability is exact for case ' . $label);
     sucheckout_cert_assert(
         array('products') === $integration->get_supported_features(),

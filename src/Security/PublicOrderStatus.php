@@ -1,6 +1,6 @@
 <?php
 
-namespace Simplixi\SUCheckout\UPayments\Security;
+namespace Simplixi\SUPCheckout\Security;
 
 defined('ABSPATH') || exit;
 

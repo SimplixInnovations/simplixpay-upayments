@@ -1,6 +1,6 @@
 <?php
 /**
- * Plugin Name: SUCheckout for UPayments
+ * Plugin Name: SUPCheckout for UPayments
  * Plugin URI: https://github.com/SimplixInnovations/sucheckout
  * Description: Independently engineered UPayments payment integration for WooCommerce by Simplix Innovations.
  * Version: 0.1.0
@@ -12,7 +12,7 @@
  * WC requires at least: 10.8
  * WC tested up to: 11.1
  * License: MIT
- * Text Domain: sucheckout-upayments
+ * Text Domain: supcheckout
  */
 
 // Exit if accessed directly.
@@ -35,21 +35,21 @@ require_once __DIR__ . '/src/Subscription/Composition.php';
 require_once __DIR__ . '/includes/Token/CustomerTokenIdentity.php';
 require_once __DIR__ . '/src/Migration/MigrationBootstrap.php';
 
-use Simplixi\SUCheckout\UPayments\Release\Identity;
-use Simplixi\SUCheckout\UPayments\Admin\GatewaySettings;
-use Simplixi\SUCheckout\UPayments\Provider\EndpointResolver;
-use Simplixi\SUCheckout\UPayments\Provider\PaymentMethodAvailability;
-use Simplixi\SUCheckout\UPayments\Payment\CheckoutPayload;
-use Simplixi\SUCheckout\UPayments\Payment\CheckoutOrchestrator;
-use Simplixi\SUCheckout\UPayments\Subscription\Composition as SubscriptionComposition;
-use Simplixi\SUCheckout\UPayments\Subscription\Presentation as SubscriptionPresentation;
+use Simplixi\SUPCheckout\Release\Identity;
+use Simplixi\SUPCheckout\Admin\GatewaySettings;
+use Simplixi\SUPCheckout\Provider\EndpointResolver;
+use Simplixi\SUPCheckout\Provider\PaymentMethodAvailability;
+use Simplixi\SUPCheckout\Payment\CheckoutPayload;
+use Simplixi\SUPCheckout\Payment\CheckoutOrchestrator;
+use Simplixi\SUPCheckout\Subscription\Composition as SubscriptionComposition;
+use Simplixi\SUPCheckout\Subscription\Presentation as SubscriptionPresentation;
 use UPayments\Subscription\Cron\Scheduler;
 use UPayments\Token\CustomerTokenIdentity;
 
-define('SUCHECKOUT_UPAYMENTS_VERSION', Identity::VERSION);
-define('SUCHECKOUT_UPAYMENTS_SLUG', Identity::SLUG);
-define('SUCHECKOUT_UPAYMENTS_PLUGIN_FILE', __FILE__);
-define('SUCHECKOUT_UPAYMENTS_UPDATE_CHANNEL', Identity::UPDATE_CHANNEL);
+define('SUPCHECKOUT_VERSION', Identity::VERSION);
+define('SUPCHECKOUT_SLUG', Identity::SLUG);
+define('SUPCHECKOUT_PLUGIN_FILE', __FILE__);
+define('SUPCHECKOUT_UPDATE_CHANNEL', Identity::UPDATE_CHANNEL);
 
 add_action( 'plugins_loaded', 'woocommerceUpaymentsInit' );
 function woocommerceUpaymentsInit() {
@@ -186,9 +186,9 @@ function woocommerceUpaymentsInit() {
             // Define ID, title, description, and settings.
             $this->id                 = 'upayments';
             $this->icon = UP_PLUGIN_URL . "assets/images/logo.png";
-            $this->method_title       = __("UPayments", 'sucheckout-upayments');
+            $this->method_title       = __("UPayments", 'supcheckout');
             $this->method_description = __("UPayments payment integration for WooCommerce. Available payment methods depend on your UPayments account and provider configuration.
-            Supports Classic and Block Checkout. Subscription auto-deduction requires separately validated provider setup.", 'sucheckout-upayments');
+            Supports Classic and Block Checkout. Subscription auto-deduction requires separately validated provider setup.", 'supcheckout');
             $this->has_fields         = true; // Required for custom forms like Save Card/Design variations.
 
             // Define user set variables
@@ -247,7 +247,7 @@ function woocommerceUpaymentsInit() {
 
                 echo '<div class="checkout-my-account-link">';
                 echo '<a href="' . esc_url($account_url) . '" target="_blank">';
-                esc_html_e('Go to My Account', 'sucheckout-upayments');
+                esc_html_e('Go to My Account', 'supcheckout');
                 echo '</a>';
                 echo '</div>';
                 
@@ -268,7 +268,7 @@ function woocommerceUpaymentsInit() {
                 $normalized = GatewaySettings::normalize_dependencies($settings);
                 if ($normalized['forced_save_card']) {
                     wc_add_notice(
-                        __('Save Card must be enabled when Subscriptions are enabled.', 'sucheckout-upayments'),
+                        __('Save Card must be enabled when Subscriptions are enabled.', 'supcheckout'),
                         'error'
                     );
                 }
@@ -401,50 +401,50 @@ function woocommerceUpaymentsInit() {
                     }
                 </style>
                 <div class="payment-panel-wait">
-                    <h3><?php esc_html_e("We are retrieving your payment status from UPayments, please wait...", 'sucheckout-upayments'); ?></h3>
+                    <h3><?php esc_html_e("We are retrieving your payment status from UPayments, please wait...", 'supcheckout'); ?></h3>
                     <div class="img-container"><img src="<?php echo esc_url(UP_PLUGIN_URL . 'assets/images/loader.gif'); ?>" alt="" /></div>
                 </div>
             <?php
             } 
             ?>
                 <div class="payment-panel-wait">
-                    <h3><?php esc_html_e('We are retrieving your payment status...', 'sucheckout-upayments' ); ?></h3>
+                    <h3><?php esc_html_e('We are retrieving your payment status...', 'supcheckout' ); ?></h3>
                 </div>
                 <div class="payment-panel-pending" style="<?php echo esc_attr($status === "pending" ? "display: block" : "display: none"); ?>">
                     <div style="<?php echo esc_attr($style); ?>">
-                        <?php esc_html_e("Your payment status is pending, we will update the status as soon as we receive notification from UPayments.", 'sucheckout-upayments'); ?>
+                        <?php esc_html_e("Your payment status is pending, we will update the status as soon as we receive notification from UPayments.", 'supcheckout'); ?>
                     </div>
                 </div>
                 <div class="payment-panel-completed" style="<?php echo esc_attr($status === "completed" ? "display: block" : "display: none"); ?>">
                     <div style="<?php echo esc_attr($style); ?>">
-                    <?php esc_html_e("Your payment is successful with UPayments.", 'sucheckout-upayments'); ?>
+                    <?php esc_html_e("Your payment is successful with UPayments.", 'supcheckout'); ?>
                         <img style="width:100px" src="<?php echo esc_url(UP_PLUGIN_URL . 'assets/images/check.png'); ?>"/>
                     </div>
                 </div>
                 <div class="payment-panel-failed" style="<?php echo esc_attr($status === "failed" ? "display: block" : "display: none"); ?>">
                     <div style="<?php echo esc_attr($style); ?>">
-                    <?php esc_html_e("Your payment is failed with UPayments.", 'sucheckout-upayments'); ?>
+                    <?php esc_html_e("Your payment is failed with UPayments.", 'supcheckout'); ?>
                     </div>
                 </div>
                 <div class="payment-panel-cancelled" style="<?php echo esc_attr($status === "cancelled" ? "display: block" : "display: none"); ?>">
                     <div style="<?php echo esc_attr($style); ?>">
-                        <?php esc_html_e("Your order is cancelled.", 'sucheckout-upayments'); ?>
+                        <?php esc_html_e("Your order is cancelled.", 'supcheckout'); ?>
                     </div>
                 </div>
                 <div class="payment-panel-error" style="display: none">
                     <div class="message-holder">
-                        <?php esc_html_e("Something went wrong, please contact the merchant.", 'sucheckout-upayments'); ?>
+                        <?php esc_html_e("Something went wrong, please contact the merchant.", 'supcheckout'); ?>
                     </div>
                 </div>
                 <div class="upayment-status-holder" style="display: none">
                     <li class="woocommerce-order-overview__payment-status status">
-                        <?php esc_html_e("Payment Status:", 'sucheckout-upayments'); ?>
+                        <?php esc_html_e("Payment Status:", 'supcheckout'); ?>
                         <strong id="upayment-status-holder-strong"><?php echo esc_html($payment_status); ?></strong>
                     </li>
                 </div>
                 <div class="upayment-id-holder" style="display: none">
                     <li class="woocommerce-order-overview__payment-id payment-id">
-                        <?php esc_html_e("UPayment ID:", 'sucheckout-upayments'); ?>
+                        <?php esc_html_e("UPayment ID:", 'supcheckout'); ?>
                         <strong id="upayment-id-holder-strong"><?php echo esc_html($upayment_id); ?></strong>
                     </li>
                 </div>
@@ -454,7 +454,7 @@ function woocommerceUpaymentsInit() {
 
         public function get_payment_staus()
         {
-            \Simplixi\SUCheckout\UPayments\Security\PublicOrderStatus::handle();
+            \Simplixi\SUPCheckout\Security\PublicOrderStatus::handle();
         }
 
         /**
@@ -875,7 +875,7 @@ function woocommerceUpaymentsInit() {
                 if ($current_status !== $paid_order_status) {
                     $status_transition_ok = $order->update_status(
                         $paid_order_status,
-                        __('Payment successful with UPayments. PaymentID: ', 'sucheckout-upayments') . $verified_payment_id
+                        __('Payment successful with UPayments. PaymentID: ', 'supcheckout') . $verified_payment_id
                     );
                 }
 
@@ -1023,7 +1023,7 @@ function woocommerceUpaymentsInit() {
                 if ($current_status !== $paid_order_status) {
                     $status_transition_ok = $order->update_status(
                         $paid_order_status,
-                        __('Payment successful with UPayments. PaymentID: ', 'sucheckout-upayments') . $verified_payment_id
+                        __('Payment successful with UPayments. PaymentID: ', 'supcheckout') . $verified_payment_id
                     );
                 }
 
@@ -1103,7 +1103,7 @@ function woocommerceUpaymentsInit() {
          */
         public function enqueue_scripts() {
             $plugin_url = plugin_dir_url( __FILE__ );
-            wp_enqueue_style('sucheckout-upayments-customer', $plugin_url . 'assets/css/customer.css', array(), '3.0.0' );
+            wp_enqueue_style('supcheckout-customer', $plugin_url . 'assets/css/customer.css', array(), '3.0.0' );
             // Check if we are on the checkout page AND the gateway is active
             if ( ! is_checkout() || ! $this->is_available() ) {
                 return;
@@ -1115,15 +1115,15 @@ function woocommerceUpaymentsInit() {
             if (is_checkout() && !is_wc_endpoint_url()) {
                 if ($this->get_option('use_new_design') == 'yes') {
                     // Load New Design specific resources (Modal handling, modern API SDK)
-                    wp_enqueue_style('sucheckout-upayments-checkout-new-style', $plugin_url . 'assets/css/new-design.css', array(), '3.0.0' );
-                    wp_enqueue_script('sucheckout-upayments-checkout-new-script', $plugin_url . 'assets/js/new-upay.js', array('jquery'), '3.0.0', true );
+                    wp_enqueue_style('supcheckout-checkout-new-style', $plugin_url . 'assets/css/new-design.css', array(), '3.0.0' );
+                    wp_enqueue_script('supcheckout-checkout-new-script', $plugin_url . 'assets/js/new-upay.js', array('jquery'), '3.0.0', true );
                 } else {
                     // Load Old Design specific resources (Inline form handling, legacy API SDK)
-                    wp_enqueue_style('sucheckout-upayments-checkout-legacy-style', $plugin_url . 'assets/css/old-design.css', array(), '3.0.0' );
-                    wp_enqueue_script('sucheckout-upayments-checkout-legacy-script', $plugin_url . 'assets/js/old-upay.js', array('jquery'), '3.0.0', true );
+                    wp_enqueue_style('supcheckout-checkout-legacy-style', $plugin_url . 'assets/css/old-design.css', array(), '3.0.0' );
+                    wp_enqueue_script('supcheckout-checkout-legacy-script', $plugin_url . 'assets/js/old-upay.js', array('jquery'), '3.0.0', true );
                 }
-                wp_enqueue_script('sucheckout-upayments-subscription-checkout', $plugin_url. 'assets/js/subscription-checkout.js', array('jquery'),'3.0.0',true);
-                wp_localize_script('sucheckout-upayments-subscription-checkout', 'wcUser', [
+                wp_enqueue_script('supcheckout-subscription-checkout', $plugin_url. 'assets/js/subscription-checkout.js', array('jquery'),'3.0.0',true);
+                wp_localize_script('supcheckout-subscription-checkout', 'wcUser', [
                     'isLoggedIn' => is_user_logged_in(),
                     'userId'     => get_current_user_id(),
                 ]);
@@ -1162,14 +1162,14 @@ function woocommerceUpaymentsInit() {
                     <table class="wc-order-totals" style="border-top: 1px solid #999; margin-top:12px; padding-top:12px">
             <tbody>
                             <tr>
-                                <td class="label"><h3 style="margin:0"><?php esc_html_e('Payment Status', 'sucheckout-upayments'); ?>:</h3></td>
+                                <td class="label"><h3 style="margin:0"><?php esc_html_e('Payment Status', 'supcheckout'); ?>:</h3></td>
                 <td width="1%"></td>
                 <td class="total">
                                     <span class="woocommerce-Price-amount amount"><strong><?php echo esc_html($payment_status); ?></strong></span>
                                 </td>
                             </tr>
                             <tr>
-                <td class="label"><h3 style="margin:0"><?php esc_html_e('UPayment ID', 'sucheckout-upayments'); ?>:</h3></td>
+                <td class="label"><h3 style="margin:0"><?php esc_html_e('UPayment ID', 'supcheckout'); ?>:</h3></td>
                 <td width="1%"></td>
                 <td class="total">
                                     <span class="woocommerce-Price-amount amount">
@@ -1211,10 +1211,10 @@ function woocommerceUpaymentsInit() {
             $post_data = $prepared['post_data'];
 
             if ($prepared['api_key_missing']){
-                WC_Admin_Settings::add_error(__("Please enter UPayments API Key", 'sucheckout-upayments'));
+                WC_Admin_Settings::add_error(__("Please enter UPayments API Key", 'supcheckout'));
             }else{
                 if ($prepared['multimerchant_missing']) {
-                    WC_Admin_Settings::add_error(__("Please enter Multimerchant Configuration", 'sucheckout-upayments'));
+                    WC_Admin_Settings::add_error(__("Please enter Multimerchant Configuration", 'supcheckout'));
                 }
                 foreach ($this->get_form_fields() as $key => $field)
                 {
@@ -1326,7 +1326,7 @@ function woocommerceUpaymentsInit() {
 
         public function getSiteName()
         {
-            return __("Woocommerce", 'sucheckout-upayments');
+            return __("Woocommerce", 'supcheckout');
         }
 
         public function getIsOrderComplete() {  
@@ -1421,7 +1421,7 @@ function woocommerceUpaymentsInit() {
                 && $result['result'] === 'failure'
             ) {
                 wc_clear_notices();
-                wc_add_notice(__("Payment methods could not be loaded. Please try again.", 'sucheckout-upayments'), "error");
+                wc_add_notice(__("Payment methods could not be loaded. Please try again.", 'supcheckout'), "error");
                 return array('result' => 'failure', 'redirect' => wc_get_checkout_url());
             }
 
@@ -1587,31 +1587,31 @@ function woocommerceUpaymentsInit() {
             // If ONLY normal products in cart → allow all methods
             if (!$isSubscriptionContext) {
                 if (isset($payment_methods['knet']) && $payment_methods['knet'] === 1) {
-                    $methods['payment']['knet'] = __('KNET', 'sucheckout-upayments');
+                    $methods['payment']['knet'] = __('KNET', 'supcheckout');
                 }
 
                 if (isset($payment_methods['apple_pay_knet']) && $payment_methods['apple_pay_knet'] === 1) {
-                    $methods['payment']['apple-pay-knet'] = __('Apple Pay KNET', 'sucheckout-upayments');
+                    $methods['payment']['apple-pay-knet'] = __('Apple Pay KNET', 'supcheckout');
                 }
 
                 if (isset($payment_methods['credit_card']) && $payment_methods['credit_card'] === 1) {
-                    $methods['payment']['cc'] = __('Credit Card', 'sucheckout-upayments');
+                    $methods['payment']['cc'] = __('Credit Card', 'supcheckout');
                 }
 
                 if (isset($payment_methods['apple_pay']) && $payment_methods['apple_pay'] === 1) {
-                    $methods['payment']['apple-pay'] = __('Apple Pay Credit Card', 'sucheckout-upayments');
+                    $methods['payment']['apple-pay'] = __('Apple Pay Credit Card', 'supcheckout');
                 }
 
                 if (isset($payment_methods['samsung_pay']) && $payment_methods['samsung_pay'] === 1) {
-                    $methods['payment']['samsung-pay'] = __('Samsung Pay', 'sucheckout-upayments');
+                    $methods['payment']['samsung-pay'] = __('Samsung Pay', 'supcheckout');
                 }
 
                 if (isset($payment_methods['google_pay']) && $payment_methods['google_pay'] === 1) {
-                    $methods['payment']['google-pay'] = __('Google Pay', 'sucheckout-upayments');
+                    $methods['payment']['google-pay'] = __('Google Pay', 'supcheckout');
                 }
             } else { // If subscription product in cart → ONLY CC allowed (per API requirement)
                 if (isset($payment_methods['credit_card']) && $payment_methods['credit_card'] === 1) {
-                    $methods['payment']['cc'] = __('Credit Card', 'sucheckout-upayments');
+                    $methods['payment']['cc'] = __('Credit Card', 'supcheckout');
                 }
             }
 
@@ -1745,7 +1745,7 @@ function woocommerceUpaymentsInit() {
 function upaymentsMissingWcNotice() {
     ?>
     <div class="error notice">
-        <p><strong><?php esc_html_e('UPayments Gateway', 'sucheckout-upayments'); ?></strong> <?php esc_html_e('requires WooCommerce to be installed and active!', 'sucheckout-upayments'); ?></p>
+        <p><strong><?php esc_html_e('UPayments Gateway', 'supcheckout'); ?></strong> <?php esc_html_e('requires WooCommerce to be installed and active!', 'supcheckout'); ?></p>
     </div>
     <?php
 }
@@ -1944,7 +1944,7 @@ add_action('init', function () {
 
     // Authorization: nonce is CSRF protection, never object authorization.
     if (!is_user_logged_in() || get_current_user_id() !== (int) $order->get_user_id()) {
-        wc_add_notice(__('Unauthorized request.', 'sucheckout-upayments'), 'error');
+        wc_add_notice(__('Unauthorized request.', 'supcheckout'), 'error');
         wp_safe_redirect(wc_get_account_endpoint_url('orders'));
         exit;
     }
@@ -1966,7 +1966,7 @@ add_action('init', function () {
         || !isset($allowed_intervals[$plan])
         || !in_array($interval, $allowed_intervals[$plan], true)
     ) {
-        wc_add_notice(__('Invalid subscription request.', 'sucheckout-upayments'), 'error');
+        wc_add_notice(__('Invalid subscription request.', 'supcheckout'), 'error');
         wp_safe_redirect(wc_get_account_endpoint_url('orders'));
         exit;
     }
@@ -1976,7 +1976,7 @@ add_action('init', function () {
         || ($action === 'pause' && $current_status === 'active')
         || ($action === 'resume' && $current_status === 'paused');
     if (!$transition_allowed) {
-        wc_add_notice(__('Invalid subscription state transition.', 'sucheckout-upayments'), 'error');
+        wc_add_notice(__('Invalid subscription state transition.', 'supcheckout'), 'error');
         wp_safe_redirect(wc_get_account_endpoint_url('view-order') . $order_id);
         exit;
     }
@@ -1993,20 +1993,20 @@ add_action('init', function () {
     }
 
     if (empty($nonce) || !wp_verify_nonce($nonce, $nonce_action)) {
-        wc_add_notice(__('Invalid request.', 'sucheckout-upayments'), 'error');
+        wc_add_notice(__('Invalid request.', 'supcheckout'), 'error');
         wp_safe_redirect(wc_get_account_endpoint_url('orders'));
         exit;
     }
 
     if ($action === 'unsubscribe') {
         $order->update_meta_data('_upay_subscription_status', 'cancelled');
-        wc_add_notice(__('Your subscription has been cancelled.', 'sucheckout-upayments'), 'success');
+        wc_add_notice(__('Your subscription has been cancelled.', 'supcheckout'), 'success');
     } elseif ($action === 'pause') {
         $order->update_meta_data('_upay_subscription_status', 'paused');
-        wc_add_notice(__('Subscription paused.', 'sucheckout-upayments'), 'success');
+        wc_add_notice(__('Subscription paused.', 'supcheckout'), 'success');
     } elseif ($action === 'resume') {
         $order->update_meta_data('_upay_subscription_status', 'active');
-        wc_add_notice(__('Subscription resumed.', 'sucheckout-upayments'), 'success');
+        wc_add_notice(__('Subscription resumed.', 'supcheckout'), 'success');
     }
 
     $order->save();

@@ -1,9 +1,9 @@
-# SUCheckout for UPayments — Canonical Naming, Identity, Compatibility and Namespace Standard
+# SUPCheckout for UPayments — Canonical Naming, Identity, Compatibility and Namespace Standard
 
 **Status:** CANONICAL / CURRENT
 **Maintainer:** Simplix Innovations
-**Product family:** SUCheckout
-**Canonical slug:** `sucheckout-upayments`
+**Product family:** SUPCheckout
+**Canonical slug:** `supcheckout`
 
 This document is authoritative for all new naming and identity decisions.
 
@@ -11,55 +11,60 @@ This document is authoritative for all new naming and identity decisions.
 
 ```text
 Simplix Innovations
-└── SUCheckout
-    └── SUCheckout for UPayments
+└── SUPCheckout
+    └── SUPCheckout for UPayments
 ```
 
-- Human-facing formal name: **SUCheckout for UPayments**
-- Short product reference: **SUCheckout**
+- Human-facing formal name: **SUPCheckout for UPayments**
+- Short product reference: **SUPCheckout**
 - Provider/integration: **UPayments**
 - Maintainer/publisher: **Simplix Innovations**
 
 The word **for** is relationship copy only. It MUST NOT appear in URLs, repository names, WordPress.org slug, text domain, package names, namespaces, prefixes, CSS/JS roots, REST namespaces, logger sources, scheduler groups or release ZIP identifiers.
 
-Forbidden technical form: `sucheckout-for-upayments`.
+Forbidden technical form: `supcheckout-for-upayments`.
 
 ## Canonical technical identity
 
 | Surface | Canonical value |
 |---|---|
-| Formal plugin name | **SUCheckout for UPayments** |
-| Product family | **SUCheckout** |
+| Formal plugin name | **SUPCheckout for UPayments** |
+| Product family | **SUPCheckout** |
 | Provider | **UPayments** |
-| Technical slug | `sucheckout-upayments` |
-| Canonical GitHub repository | `SimplixInnovations/sucheckout` |
-| WordPress.org slug | `sucheckout-upayments` |
-| Plugin folder | `sucheckout-upayments/` |
+| Technical slug | `supcheckout` |
+| Current GitHub repository during implementation | `SimplixInnovations/sucheckout` |
+| Target GitHub repository after certified merge | `SimplixInnovations/supcheckout` |
+| WordPress.org slug | `supcheckout` |
+| Plugin folder | `supcheckout/` |
 | First-stable physical bootstrap | `UPayments.php` |
-| First-stable plugin basename | `sucheckout-upayments/UPayments.php` |
-| Future optional bootstrap target | `sucheckout-upayments.php` — only after a separately approved migration proves it safe |
-| Text domain | `sucheckout-upayments` |
-| Composer package | `simplix-innovations/sucheckout-upayments` |
-| PHP namespace root | `Simplixi\SUCheckout\UPayments` |
-| Global PHP prefix | `sucheckout_upayments_` |
-| Constants | `SUCHECKOUT_UPAYMENTS_*` |
-| CSS component root | `.sucheckout-upayments` |
-| CSS custom properties | `--sucheckout-upayments-*` |
-| JS namespace | `suCheckoutUpayments` |
-| Localized JS config | `suCheckoutUpaymentsConfig` |
-| REST namespace | `sucheckout-upayments/v1` |
-| Action Scheduler group for new first-party jobs | `sucheckout-upayments` |
-| Logger source for new first-party logging | `sucheckout-upayments` |
-| Release ZIP | `sucheckout-upayments-X.Y.Z.zip` |
+| First-stable plugin basename | `supcheckout/UPayments.php` |
+| Future optional bootstrap target | `supcheckout.php` — only after a separately approved migration proves it safe |
+| Text domain | `supcheckout` |
+| Composer package | `simplix-innovations/supcheckout` |
+| PHP namespace root | `Simplixi\SUPCheckout` |
+| Global PHP prefix | `supcheckout_` |
+| Constants | `SUPCHECKOUT_*` |
+| CSS component root | `.supcheckout` |
+| CSS custom properties | `--supcheckout-*` |
+| JS namespace | `supCheckout` |
+| Localized JS config | `supCheckoutConfig` |
+| REST namespace | `supcheckout/v1` |
+| Action Scheduler group for new first-party jobs | `supcheckout` |
+| Logger source for new first-party logging | `supcheckout` |
+| Release ZIP | `supcheckout-X.Y.Z.zip` |
 | Git tag form | `vX.Y.Z` |
+
+## Provider-specific product boundary
+
+SUPCheckout is permanently scoped to UPayments. Other providers must be implemented as separate products/repositories rather than adapters inside SUPCheckout. Cross-provider orchestration, routing and fraud-platform behavior belong to a separate platform project.
 
 ## Public positioning
 
 Preferred first reference:
 
-> **SUCheckout for UPayments is an independently engineered UPayments payment gateway integration for WooCommerce by Simplix Innovations.**
+> **SUPCheckout for UPayments is an independently engineered UPayments payment gateway integration for WooCommerce by Simplix Innovations.**
 
-UPayments is the external payment provider/service. Never imply that Simplix Innovations is the acquiring bank/payment processor, that SUCheckout is owned by UPayments, or that UPayments officially endorses/distributes SUCheckout unless explicit authorization exists.
+UPayments is the external payment provider/service. Never imply that Simplix Innovations is the acquiring bank/payment processor, that SUPCheckout is owned by UPayments, or that UPayments officially endorses/distributes SUPCheckout unless explicit authorization exists.
 
 ## Critical compatibility rule
 
@@ -67,7 +72,7 @@ UPayments is the external payment provider/service. Never imply that Simplix Inn
 
 Every inherited identifier must be classified before change as one of:
 
-- **FIRST-PARTY RENAME** — owned branding/implementation identity that should use SUCheckout;
+- **FIRST-PARTY RENAME** — owned branding/implementation identity that should use SUPCheckout;
 - **LEGACY COMPATIBILITY** — historical merchant/store identity that remains readable/usable;
 - **PROVIDER CONTRACT** — UPayments-defined request/response/schema terminology that must remain provider-accurate;
 - **REMOVE** — obsolete implementation residue proven unused and safe to delete.
@@ -96,26 +101,26 @@ Provider API request/response fields, endpoint paths, provider payment-method na
 
 ## New first-party identifiers
 
-New plugin-owned options, hooks, nonces and cache keys use `sucheckout_upayments_*`.
+New plugin-owned options, hooks, nonces and cache keys use `supcheckout_*`.
 
-New metadata uses `_sucheckout_upayments_*` only where new storage is genuinely required; do not create duplicate metadata just for naming uniformity.
+New metadata uses `_supcheckout_*` only where new storage is genuinely required; do not create duplicate metadata just for naming uniformity.
 
-New script/style handles use `sucheckout-upayments-*`.
-New CSS uses `.sucheckout-upayments` component scoping and `--sucheckout-upayments-*` custom properties.
-A JS global is allowed only when necessary and must use `suCheckoutUpayments`; localized configuration uses `suCheckoutUpaymentsConfig`.
-New REST routes use `sucheckout-upayments/v1`.
+New script/style handles use `supcheckout-*`.
+New CSS uses `.supcheckout` component scoping and `--supcheckout-*` custom properties.
+A JS global is allowed only when necessary and must use `supCheckout`; localized configuration uses `supCheckoutConfig`.
+New REST routes use `supcheckout/v1`.
 
 ## Physical bootstrap decision
 
 The **first-stable physical bootstrap is intentionally `UPayments.php`**.
 
-Prior real WordPress qualification proved that deleting or renaming an already-active `UPayments.php` can strand WordPress's stored plugin basename. The canonical SUCheckout package therefore uses:
+Prior real WordPress qualification proved that deleting or renaming an already-active `UPayments.php` can strand WordPress's stored plugin basename. The canonical SUPCheckout package therefore uses:
 
 ```text
-sucheckout-upayments/UPayments.php
+supcheckout/UPayments.php
 ```
 
-The future filename `sucheckout-upayments.php` is not current release identity. It may be considered only in a dedicated future migration that proves, on real WordPress:
+The future filename `supcheckout.php` is not current release identity. It may be considered only in a dedicated future migration that proves, on real WordPress:
 
 1. old active installations continue loading;
 2. no duplicate visible plugin entry is created;
@@ -127,9 +132,9 @@ Until that proof exists, `UPayments.php` is a deliberate compatibility contract,
 
 ## Text domain and translations
 
-All SUCheckout-owned translatable strings use the literal text domain `sucheckout-upayments`.
+All SUPCheckout-owned translatable strings use the literal text domain `supcheckout`.
 
-Dynamic translation domains and inherited `upayments` or third-party domains are not acceptable for SUCheckout-owned copy. Provider names inside translated strings remain provider names; the **text domain** remains `sucheckout-upayments`.
+Dynamic translation domains and inherited `upayments` or third-party domains are not acceptable for SUPCheckout-owned copy. Provider names inside translated strings remain provider names; the **text domain** remains `supcheckout`.
 
 No blanket Plugin Check ignore list is permitted.
 
@@ -138,18 +143,22 @@ No blanket Plugin Check ignore list is permitted.
 Canonical namespace root:
 
 ```php
-Simplixi\SUCheckout\UPayments
+Simplixi\SUPCheckout
 ```
 
 Existing globals, provider identifiers and persisted compatibility identifiers migrate only where evidence permits. Namespace cleanliness never takes priority over merchant/payment compatibility.
 
 ## Repository coordinate rule
 
-The canonical GitHub repository is:
+The current GitHub repository during implementation is:
 
 `SimplixInnovations/sucheckout`
 
-This repository coordinate is intentionally shorter than the WordPress/plugin technical slug `sucheckout-upayments`. The repository decision does **not** rename the plugin folder, text domain, Composer package, release ZIP, namespace, or protected compatibility identities.
+After the certified SUPCheckout merge and post-merge verification, the owner renames it to:
+
+`SimplixInnovations/supcheckout`
+
+The temporary current repository coordinate differs only because the owner/admin rename is deliberately deferred until engineering certification. After rename, repository and plugin slug both use `supcheckout`; protected UPayments compatibility identities remain unchanged.
 
 Only **living repository-coordinate references** use the canonical GitHub coordinate. Historical evidence and legacy package-root migration fixtures retain older coordinates/tokens where they record true past state.
 
@@ -160,12 +169,12 @@ The project remains on the independent `0.x` development line until an explicit 
 Canonical artifact forms:
 
 ```text
-folder: sucheckout-upayments/
-ZIP:    sucheckout-upayments-X.Y.Z.zip
+folder: supcheckout/
+ZIP:    supcheckout-X.Y.Z.zip
 tag:    vX.Y.Z
 ```
 
-WordPress.org Plugin Check must execute against the actual unpacked deterministic release package using slug `sucheckout-upayments` and `plugin_repo` checks, without blanket error suppression.
+WordPress.org Plugin Check must execute against the actual unpacked deterministic release package using slug `supcheckout` and `plugin_repo` checks, without blanket error suppression.
 
 ## Identity governance
 

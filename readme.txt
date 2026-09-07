@@ -1,4 +1,4 @@
-=== SUCheckout for UPayments ===
+=== SUPCheckout for UPayments ===
 Tags: woocommerce, payments, payment gateway, upayments
 Requires at least: 6.9
 Tested up to: 7.1
@@ -11,11 +11,11 @@ Independent UPayments payment gateway integration for WooCommerce by Simplix Inn
 
 == Description ==
 
-**SUCheckout for UPayments** connects WooCommerce stores to the external UPayments payment service.
+**SUPCheckout for UPayments** connects WooCommerce stores to the external UPayments payment service.
 
-SUCheckout is independently engineered and maintained by Simplix Innovations. UPayments is the payment provider and owner of its respective names and trademarks. This plugin does not imply endorsement or official distribution by UPayments, and it does not imply UPayments sponsorship or ownership of SUCheckout.
+SUPCheckout is independently engineered and maintained by Simplix Innovations. UPayments is the payment provider and owner of its respective names and trademarks. This plugin does not imply endorsement or official distribution by UPayments, and it does not imply UPayments sponsorship or ownership of SUPCheckout.
 
-The canonical technical slug and text domain are `sucheckout-upayments`. The word "for" is part of the human-facing product name only.
+The canonical technical slug and text domain are `supcheckout`. The word "for" is part of the human-facing product name only.
 
 = Current certified boundaries =
 
@@ -50,26 +50,26 @@ Do not use production credentials while performing initial test/sandbox validati
 == Installation ==
 
 1. Install and activate WooCommerce.
-2. Install and activate SUCheckout for UPayments.
+2. Install and activate SUPCheckout for UPayments.
 3. Open WooCommerce payment settings and configure your UPayments credentials and required gateway options.
 4. Validate the integration using UPayments sandbox/test mode before enabling production transactions.
 5. Confirm your UPayments account is enabled for any payment methods or wallet features you intend to offer.
 
 == Frequently Asked Questions ==
 
-= Does SUCheckout process payments itself? =
+= Does SUPCheckout process payments itself? =
 
-No. SUCheckout integrates WooCommerce with the external UPayments payment service. UPayments is the payment provider.
+No. SUPCheckout integrates WooCommerce with the external UPayments payment service. UPayments is the payment provider.
 
 = Is this an official UPayments plugin? =
 
-SUCheckout is independently engineered and maintained by Simplix Innovations. It does not imply endorsement or official distribution by UPayments.
+SUPCheckout is independently engineered and maintained by Simplix Innovations. It does not imply endorsement or official distribution by UPayments.
 
 = Does every UPayments payment method automatically become available? =
 
 No. Availability depends on the merchant's UPayments account, provider configuration, plugin settings, checkout context, and the capabilities supported by the account/device.
 
-= Does SUCheckout support WooCommerce Blocks and HPOS? =
+= Does SUPCheckout support WooCommerce Blocks and HPOS? =
 
 The current certified compatibility matrix includes Cart / Checkout Blocks registration/availability and both HPOS and legacy order storage in exact tested WordPress/WooCommerce/PHP cells.
 
@@ -77,23 +77,23 @@ The current certified compatibility matrix includes Cart / Checkout Blocks regis
 
 No. Automatic WooCommerce refunds are outside the current supported feature boundary.
 
-= Does SUCheckout support marketplace split payments? =
+= Does SUPCheckout support marketplace split payments? =
 
 The current certified boundary supports one additional merchant allocation only. Arbitrary multi-split marketplace routing is not supported.
 
-= Does SUCheckout support subscription auto-deduction? =
+= Does SUPCheckout support subscription auto-deduction? =
 
 Subscription eligibility and pre-dispatch behavior are covered by repository tests. Live non-idempotent auto-deduction requires separately validated UPayments provider/account setup and is not claimed as broadly certified by repository CI.
 
 = Is WPML, WCML, multicurrency or RTL certified? =
 
-The source uses the canonical `sucheckout-upayments` text domain, but WPML/WCML, multicurrency, multilingual and RTL behavior require separate real-environment validation before those compatibility claims are made.
+The source uses the canonical `supcheckout` text domain, but WPML/WCML, multicurrency, multilingual and RTL behavior require separate real-environment validation before those compatibility claims are made.
 
 == Changelog ==
 
 = 0.1.0 =
-* Pre-release SUCheckout identity and release-engineering closeout.
-* Canonical package/text-domain identity: `sucheckout-upayments`.
+* Pre-release SUPCheckout identity and release-engineering closeout.
+* Canonical package/text-domain identity: `supcheckout`.
 * Certified Classic and Blocks registration plus HPOS/legacy order-storage matrix.
 * Added deterministic package verification, legacy package-root migration/rollback certification, WordPress HTTP transport hardening, and permanent official WordPress Plugin Check gating.
 * Retained required historical UPayments payment/settings/token/subscription identifiers for compatibility rather than renaming persisted merchant data cosmetically.

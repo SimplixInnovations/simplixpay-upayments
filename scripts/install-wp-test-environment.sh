@@ -10,7 +10,7 @@ WP_VERSION="$1"
 WC_VERSION="$2"
 WP_PATH="$3"
 WP_CLI_BIN="${WP_CLI_BIN:-/tmp/wp-cli.phar}"
-PLUGIN_SLUG="${SUCHECKOUT_PLUGIN_SLUG:-sucheckout-upayments}"
+PLUGIN_SLUG="${SUPCHECKOUT_PLUGIN_SLUG:-supcheckout}"
 
 if [[ ! -x "$WP_CLI_BIN" ]]; then
   echo "WP-CLI executable not found: $WP_CLI_BIN" >&2
@@ -18,10 +18,10 @@ if [[ ! -x "$WP_CLI_BIN" ]]; then
 fi
 
 : "${GITHUB_WORKSPACE:?GITHUB_WORKSPACE is required}"
-: "${SUCHECKOUT_DB_NAME:=wordpress}"
-: "${SUCHECKOUT_DB_USER:=root}"
-: "${SUCHECKOUT_DB_PASSWORD:=root}"
-: "${SUCHECKOUT_DB_HOST:=127.0.0.1:3306}"
+: "${SUPCHECKOUT_DB_NAME:=wordpress}"
+: "${SUPCHECKOUT_DB_USER:=root}"
+: "${SUPCHECKOUT_DB_PASSWORD:=root}"
+: "${SUPCHECKOUT_DB_HOST:=127.0.0.1:3306}"
 
 rm -rf "$WP_PATH"
 mkdir -p "$WP_PATH"
@@ -34,17 +34,17 @@ mkdir -p "$WP_PATH"
 
 "$WP_CLI_BIN" config create \
   --path="$WP_PATH" \
-  --dbname="$SUCHECKOUT_DB_NAME" \
-  --dbuser="$SUCHECKOUT_DB_USER" \
-  --dbpass="$SUCHECKOUT_DB_PASSWORD" \
-  --dbhost="$SUCHECKOUT_DB_HOST" \
+  --dbname="$SUPCHECKOUT_DB_NAME" \
+  --dbuser="$SUPCHECKOUT_DB_USER" \
+  --dbpass="$SUPCHECKOUT_DB_PASSWORD" \
+  --dbhost="$SUPCHECKOUT_DB_HOST" \
   --skip-check \
   --quiet
 
 "$WP_CLI_BIN" core install \
   --path="$WP_PATH" \
   --url="http://sucheckout.test" \
-  --title="SUCheckout Certification" \
+  --title="SUPCheckout Certification" \
   --admin_user="cert-admin" \
   --admin_password="cert-password-not-production" \
   --admin_email="certification@example.test" \
@@ -60,13 +60,13 @@ mkdir -p "$WP_PATH"
 PLUGIN_PATH="$WP_PATH/wp-content/plugins/$PLUGIN_SLUG"
 rm -rf "$PLUGIN_PATH"
 
-if [[ -n "${SUCHECKOUT_PLUGIN_ZIP:-}" ]]; then
-  [[ -f "$SUCHECKOUT_PLUGIN_ZIP" ]] || {
-    echo "SUCheckout release ZIP not found: $SUCHECKOUT_PLUGIN_ZIP" >&2
+if [[ -n "${SUPCHECKOUT_PLUGIN_ZIP:-}" ]]; then
+  [[ -f "$SUPCHECKOUT_PLUGIN_ZIP" ]] || {
+    echo "SUPCheckout release ZIP not found: $SUPCHECKOUT_PLUGIN_ZIP" >&2
     exit 68
   }
 
-  "$WP_CLI_BIN" plugin install "$SUCHECKOUT_PLUGIN_ZIP" \
+  "$WP_CLI_BIN" plugin install "$SUPCHECKOUT_PLUGIN_ZIP" \
     --path="$WP_PATH" \
     --force \
     --quiet

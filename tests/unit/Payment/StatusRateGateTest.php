@@ -1,9 +1,9 @@
 <?php
 
-namespace Simplixi\SUCheckout\UPayments\Tests\Payment;
+namespace Simplixi\SUPCheckout\Tests\Payment;
 
 use PHPUnit\Framework\TestCase;
-use Simplixi\SUCheckout\UPayments\Payment\StatusRateGate;
+use Simplixi\SUPCheckout\Payment\StatusRateGate;
 
 final class StatusRateGateTest extends TestCase {
     protected function setUp(): void {

@@ -22,8 +22,8 @@ $root = dirname(__DIR__, 2);
 require_once $root . '/src/Provider/EndpointResolver.php';
 require_once $root . '/src/Payment/CheckoutPayload.php';
 
-use Simplixi\SUCheckout\UPayments\Payment\CheckoutPayload;
-use Simplixi\SUCheckout\UPayments\Provider\EndpointResolver;
+use Simplixi\SUPCheckout\Payment\CheckoutPayload;
+use Simplixi\SUPCheckout\Provider\EndpointResolver;
 
 function sucheckout_provider_assert(bool $condition, string $message): void {
     if ($condition) {

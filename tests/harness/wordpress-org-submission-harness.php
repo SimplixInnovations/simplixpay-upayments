@@ -1,6 +1,6 @@
 <?php
 /**
- * Permanent WordPress.org submission-readiness contract for SUCheckout.
+ * Permanent WordPress.org submission-readiness contract for SUPCheckout.
  */
 
 $root = dirname(__DIR__, 2);
@@ -38,7 +38,7 @@ if (preg_match("/public const VERSION = '([^']+)';/", $identity, $matches) === 1
 }
 wporg_assert($version !== '', 'submission harness reads canonical release version');
 
-wporg_assert(strpos($readme, '=== SUCheckout for UPayments ===') !== false, 'WordPress.org readme uses canonical human-facing product name');
+wporg_assert(strpos($readme, '=== SUPCheckout for UPayments ===') !== false, 'WordPress.org readme uses canonical human-facing product name');
 wporg_assert(strlen($readme) > 0 && strlen($readme) < 10000, 'WordPress.org readme remains below 10 KB directory guidance');
 wporg_assert($version !== '' && strpos($readme, 'Stable tag: ' . $version) !== false, 'readme Stable Tag matches canonical release version');
 wporg_assert(strpos($readme, 'Requires at least: 6.9') !== false, 'readme preserves verified WordPress floor');
@@ -51,16 +51,16 @@ wporg_assert(strpos($readme, 'does not imply endorsement or official distributio
 wporg_assert(strpos($readme, 'Stable tag: trunk') === false, 'new-plugin readme never uses trunk as stable tag');
 wporg_assert(stripos($readme, 'guaranteed PCI') === false && stripos($readme, 'PCI compliant plugin') === false, 'readme makes no plugin-level PCI compliance guarantee');
 
-wporg_assert(strpos($plugin, 'Plugin Name: SUCheckout for UPayments') !== false, 'plugin header uses canonical product name');
-wporg_assert(strpos($plugin, 'Text Domain: sucheckout-upayments') !== false, 'plugin header uses canonical WordPress.org text domain');
-wporg_assert(strpos($build, 'SLUG="sucheckout-upayments"') !== false, 'release builder emits canonical WordPress.org slug');
-wporg_assert(strpos($verify, 'slug = "sucheckout-upayments"') !== false, 'release verifier requires canonical WordPress.org slug');
-wporg_assert(strpos($release_workflow, "-name 'sucheckout-upayments-*.zip'") !== false, 'release workflow produces canonical submission ZIP');
+wporg_assert(strpos($plugin, 'Plugin Name: SUPCheckout for UPayments') !== false, 'plugin header uses canonical product name');
+wporg_assert(strpos($plugin, 'Text Domain: supcheckout') !== false, 'plugin header uses canonical WordPress.org text domain');
+wporg_assert(strpos($build, 'SLUG="supcheckout"') !== false, 'release builder emits canonical WordPress.org slug');
+wporg_assert(strpos($verify, 'slug = "supcheckout"') !== false, 'release verifier requires canonical WordPress.org slug');
+wporg_assert(strpos($release_workflow, "-name 'supcheckout-*.zip'") !== false, 'release workflow produces canonical submission ZIP');
 
 wporg_assert(
     strpos($submission_workflow, 'WordPress/plugin-check-action@10857da14b6c2246d15402b3e69f777edcf8c12e') !== false
-        && strpos($submission_workflow, 'build-dir: ${{ runner.temp }}/plugin-check/sucheckout-upayments') !== false
-        && strpos($submission_workflow, 'slug: sucheckout-upayments') !== false
+        && strpos($submission_workflow, 'build-dir: ${{ runner.temp }}/plugin-check/supcheckout') !== false
+        && strpos($submission_workflow, 'slug: supcheckout') !== false
         && strpos($submission_workflow, 'categories: plugin_repo') !== false,
     'official Plugin Check runs on unpacked canonical package with immutable action pin'
 );
@@ -69,7 +69,11 @@ wporg_assert(
         && strpos($submission_workflow, 'bash scripts/verify-release.sh "$ZIP"') !== false,
     'submission gate consumes deterministic verified release artifact'
 );
-wporg_assert(strpos($submission_workflow, "simplixpay-upayments-*.zip") === false, 'submission workflow contains no retired release ZIP slug');
+wporg_assert(
+    strpos($submission_workflow, "simplixpay-upayments-*.zip") === false
+        && strpos($submission_workflow, "sucheckout-upayments-*.zip") === false,
+    'submission workflow contains no retired release ZIP slug'
+);
 
 echo "\nWordPress.org Submission Readiness: {$pass} PASS / {$fail} FAIL\n";
 exit($fail === 0 ? 0 : 1);

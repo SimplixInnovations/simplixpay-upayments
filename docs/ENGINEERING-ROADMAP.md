@@ -1,4 +1,4 @@
-# SUCheckout for UPayments — Engineering Roadmap
+# SUPCheckout for UPayments — Engineering Roadmap
 
 This is the public high-level sequence. `docs/project/PROJECT-STATUS.md` owns current verified state. Historical phase/quality records preserve detailed closeout evidence and are not rewritten into current branding.
 
@@ -53,28 +53,29 @@ Historical terminal quality gates retained as permanent evidence:
 
 **DONE / VERIFIED.** Upgrade/rollback/data/callback/cron continuity and duplicate-package characterization.
 
-Task 7 also produced the important negative proof that changing the physical main filename alone does not preserve WordPress active-plugin identity. That is why first-stable SUCheckout intentionally uses:
+Task 7 also produced the important negative proof that changing the physical main filename alone does not preserve WordPress active-plugin identity. That is why first-stable SUPCheckout intentionally uses:
 
 ```text
-sucheckout-upayments/UPayments.php
+supcheckout/UPayments.php
 ```
 
-A future physical rename to `sucheckout-upayments.php` remains separately gated.
+A future physical rename to `supcheckout.php` remains separately gated.
 
 ### Task 8 — Enterprise Release Candidate Closeout
 
 **DONE / VERIFIED.** The pre-rebrand enterprise engineering foundation was closed with full exact-head quality, compatibility, artifact, provider and security evidence. Those records remain historical evidence.
 
-## SUCheckout identity migration — DONE / VERIFIED
+## Final SUPCheckout identity migration — IN EXACT-HEAD CERTIFICATION
 
 The first-party identity is now:
 
-- human product: **SUCheckout for UPayments**;
-- technical slug/text domain: `sucheckout-upayments`;
-- PHP namespace: `Simplixi\SUCheckout\UPayments`;
-- package root: `sucheckout-upayments/`;
+- human product: **SUPCheckout for UPayments**;
+- technical slug/text domain: `supcheckout`;
+- PHP namespace: `Simplixi\SUPCheckout`;
+- package root: `supcheckout/`;
 - first-stable physical bootstrap: `UPayments.php`;
-- canonical GitHub repository: `SimplixInnovations/sucheckout`.
+- current GitHub repository during implementation: `SimplixInnovations/sucheckout`;
+- target repository after certified merge: `SimplixInnovations/supcheckout`.
 
 The word `for` is human-facing relationship wording only and never appears in technical identifiers.
 
@@ -105,7 +106,7 @@ Fresh main evidence:
 - WordPress.org #110 — **SUCCESS**
 - CodeQL #588 — **SUCCESS**
 
-Later documentation-only maintenance may advance `main` without redefining the runtime-bearing SUCheckout baseline.
+Later documentation-only maintenance may advance `main` without redefining the historical pre-stable SUCheckout baseline.
 
 ## Current owner/admin/local stage
 
@@ -113,7 +114,7 @@ Engineering does not need another invented phase. The remaining sequence is cont
 
 1. synchronize the owner's normal clone with `origin/main`;
 2. delete obsolete remote branches;
-3. verify the canonical GitHub repository is `SimplixInnovations/sucheckout` and reconcile living coordinates;
+3. after exact-green merge, rename `SimplixInnovations/sucheckout` to `SimplixInnovations/supcheckout` and reconcile living coordinates;
 4. update About metadata and local `origin`;
 5. verify rulesets, Actions, security controls, Dependabot, PVR, secrets/environments and external integrations after rename;
 6. create one coordinate-only PR for living old-repository URLs/badges/issue links;

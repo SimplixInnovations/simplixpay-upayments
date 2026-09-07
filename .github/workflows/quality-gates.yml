@@ -82,27 +82,29 @@ jobs:
             docs/project/REPOSITORY-READINESS.md
             docs/superpowers/specs/2026-09-06-sucheckout-upayments-identity-migration-design.md
             docs/superpowers/plans/2026-09-06-sucheckout-upayments-identity-migration.md
+            docs/superpowers/specs/2026-09-07-supcheckout-provider-specific-identity-design.md
+            docs/superpowers/plans/2026-09-07-supcheckout-final-provider-identity.md
           )
           for path in "${required[@]}"; do
             test -s "$path" || { echo "Missing or empty required control file: $path"; exit 1; }
           done
 
-      - name: Current SUCheckout living-state invariants
+      - name: Current SUPCheckout living-state invariants
         shell: bash
         run: |
           set -euo pipefail
-          grep -Fq '<h1 align="center">SUCheckout for UPayments</h1>' README.md
-          grep -Fq '| Canonical technical slug | `sucheckout-upayments` |' docs/project/PROJECT-STATUS.md
-          grep -Fq '| WordPress text domain | `sucheckout-upayments` |' docs/project/PROJECT-STATUS.md
-          grep -Fq '**Engineering migration:** DONE / VERIFIED' docs/project/OWNER-HANDOFF.md
-          grep -Fq '`sucheckout-upayments/UPayments.php`' docs/project/PROJECT-STATUS.md
+          grep -Fq '<h1 align="center">SUPCheckout for UPayments</h1>' README.md
+          grep -Fq '| Canonical technical slug | `supcheckout` |' docs/project/PROJECT-STATUS.md
+          grep -Fq '| WordPress text domain | `supcheckout` |' docs/project/PROJECT-STATUS.md
+          grep -Fq '**Target GitHub repository after certified merge:** `SimplixInnovations/supcheckout`' docs/project/OWNER-HANDOFF.md
+          grep -Fq '`supcheckout/UPayments.php`' docs/project/PROJECT-STATUS.md
           grep -Fq 'No Q20 is justified.' docs/project/PROJECT-STATUS.md
-          grep -Fq '**Canonical slug:** `sucheckout-upayments`' docs/project/NAMING-IDENTITY-STANDARD.md
-          grep -Fq '=== SUCheckout for UPayments ===' readme.txt
-          grep -Fq 'Text Domain: sucheckout-upayments' UPayments.php
-          grep -Fq 'SLUG="sucheckout-upayments"' scripts/build-release.sh
-          grep -Fq 'slug = "sucheckout-upayments"' scripts/verify-release.sh
-          grep -Fq 'slug: sucheckout-upayments' .github/workflows/wordpress-org-submission-check.yml
+          grep -Fq '**Canonical slug:** `supcheckout`' docs/project/NAMING-IDENTITY-STANDARD.md
+          grep -Fq '=== SUPCheckout for UPayments ===' readme.txt
+          grep -Fq 'Text Domain: supcheckout' UPayments.php
+          grep -Fq 'SLUG="supcheckout"' scripts/build-release.sh
+          grep -Fq 'slug = "supcheckout"' scripts/verify-release.sh
+          grep -Fq 'slug: supcheckout' .github/workflows/wordpress-org-submission-check.yml
           grep -Fq '**Status:** DONE / VERIFIED' docs/project/PHASE-0-RELEASE-IDENTITY.md
           grep -Fq '**Status:** DONE / VERIFIED' docs/project/PHASE-9I-MIGRATION.md
           grep -Fq '**Status:** DONE / VERIFIED' docs/project/PROVIDER-PAYMENT-LIFECYCLE.md
@@ -158,13 +160,13 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          if grep -FnH -F 'simplixpay-upayments-*.zip' \
+          if grep -FnH -e 'simplixpay-upayments-*.zip' -e 'sucheckout-upayments-*.zip' \
             scripts/build-release.sh scripts/verify-release.sh \
             .github/workflows/wordpress-org-submission-check.yml; then
             echo 'Retired first-party release ZIP identity detected.'
             exit 1
           fi
-          if grep -FnH -F 'Text Domain: upayments' UPayments.php readme.txt; then
+          if grep -FnH -e 'Text Domain: upayments' -e 'Text Domain: sucheckout-upayments' UPayments.php readme.txt; then
             echo 'Retired first-party text domain detected in canonical metadata.'
             exit 1
           fi

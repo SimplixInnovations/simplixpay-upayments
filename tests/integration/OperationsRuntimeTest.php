@@ -7,7 +7,7 @@ require_once __DIR__ . '/bootstrap.php';
 
 use UPayments\Token\CustomerTokenIdentity;
 
-$phase = getenv('SUCHECKOUT_CERT_PHASE');
+$phase = getenv('SUPCHECKOUT_CERT_PHASE');
 $settings_key = 'woocommerce_upayments_settings';
 $snapshot_key = '_sucheckout_feature_ops_snapshot';
 $order_key = '_sucheckout_feature_ops_order_id';
@@ -174,20 +174,20 @@ if ('seed' === $phase) {
     update_option($order_key, $order->get_id(), false);
 
     sucheckout_cert_assert(
-        class_exists('Simplixi\\SUCheckout\\UPayments\\Migration\\MigrationCliCommand'),
+        class_exists('Simplixi\\SUPCheckout\\Migration\\MigrationCliCommand'),
         'migration CLI module boots in WP-CLI context'
     );
     sucheckout_cert_assert(
-        !class_exists('Simplixi\\SUCheckout\\UPayments\\Migration\\MigrationAdmin'),
+        !class_exists('Simplixi\\SUPCheckout\\Migration\\MigrationAdmin'),
         'migration admin module does not boot in non-admin WP-CLI context'
     );
 
     ob_start();
     set_current_screen('dashboard');
-    \Simplixi\SUCheckout\UPayments\Migration\MigrationBootstrap::boot();
+    \Simplixi\SUPCheckout\Migration\MigrationBootstrap::boot();
     $boot_output = ob_get_clean();
     sucheckout_cert_assert(
-        class_exists('Simplixi\\SUCheckout\\UPayments\\Migration\\MigrationAdmin'),
+        class_exists('Simplixi\\SUPCheckout\\Migration\\MigrationAdmin'),
         'migration admin module boots only after an explicit admin context exists'
     );
     sucheckout_cert_assert(
@@ -216,9 +216,9 @@ if (in_array($phase, array('deactivated', 'reactivated', 'uninstalled', 'final')
     );
 
     if ('deactivated' === $phase || 'uninstalled' === $phase) {
-        sucheckout_cert_assert(!class_exists('WC_Upayments'), 'SUCheckout runtime class is absent while plugin is inactive');
+        sucheckout_cert_assert(!class_exists('WC_Upayments'), 'SUPCheckout runtime class is absent while plugin is inactive');
     } else {
-        sucheckout_cert_assert(class_exists('WC_Upayments'), 'SUCheckout runtime class is present after reactivation');
+        sucheckout_cert_assert(class_exists('WC_Upayments'), 'SUPCheckout runtime class is present after reactivation');
     }
 
     if ('final' === $phase) {
@@ -247,4 +247,4 @@ if (in_array($phase, array('deactivated', 'reactivated', 'uninstalled', 'final')
     return;
 }
 
-throw new RuntimeException('Unknown SUCHECKOUT_CERT_PHASE for operations certification.');
+throw new RuntimeException('Unknown SUPCHECKOUT_CERT_PHASE for operations certification.');

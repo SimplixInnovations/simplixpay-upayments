@@ -1,5 +1,5 @@
 <?php
-namespace Simplixi\SUCheckout\UPayments\Migration;
+namespace Simplixi\SUPCheckout\Migration;
 
 defined('ABSPATH') || exit;
 
@@ -211,7 +211,7 @@ final class MigrationCliCommand {
     }
 
     private static function cliError($reason, $exit = true) {
-        $message = 'SUCheckout for UPayments migration: ' . $reason;
+        $message = 'SUPCheckout for UPayments migration: ' . $reason;
         \WP_CLI::error($message, $exit);
     }
 }

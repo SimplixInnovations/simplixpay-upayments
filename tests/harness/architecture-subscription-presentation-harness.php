@@ -18,8 +18,8 @@ namespace UPayments\Subscription\Cron {
 }
 
 namespace {
-use Simplixi\SUCheckout\UPayments\Subscription\Composition;
-use Simplixi\SUCheckout\UPayments\Subscription\Presentation;
+use Simplixi\SUPCheckout\Subscription\Composition;
+use Simplixi\SUPCheckout\Subscription\Presentation;
 use UPayments\Subscription\Helpers\Utils;
 
 $a4_hooks = array();
@@ -256,8 +256,8 @@ foreach (array('process_payment', 'auto-deduct', 'upay_process_subscriptions', '
 }
 a4_assert(strpos($composition, 'register_presentation_hooks') !== false && strpos($composition, 'register_gateway_hooks') !== false, 'composition explicitly owns global and gateway hook registration');
 
-// Exact protected scheduler/cycle-claim blobs remain unchanged except for the approved SUCheckout i18n migration.
-a4_same('88dc245a195752bc5bc3f01962c72b8b0c57793d', a4_git_blob_sha($root . '/includes/Subscription/Cron/Scheduler.php'), 'protected Scheduler blob matches approved SUCheckout i18n migration');
+// Exact protected scheduler/cycle-claim blobs remain unchanged except for the approved SUPCheckout identity migration.
+a4_same('75be4ded83142f67a933be0e1c24cedc484f9a73', a4_git_blob_sha($root . '/includes/Subscription/Cron/Scheduler.php'), 'protected Scheduler blob matches approved SUPCheckout identity migration');
 a4_same('c34d83e2d77cc65024fe663e4c378cecb2b17347', a4_git_blob_sha($root . '/includes/Subscription/Cron/CycleClaim.php'), 'protected CycleClaim blob remains exact');
 
 echo "\nArchitecture Subscription Presentation: {$pass} PASS / {$fail} FAIL\n";

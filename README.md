@@ -6,7 +6,7 @@
   </picture>
 </p>
 
-<h1 align="center">SUCheckout for UPayments</h1>
+<h1 align="center">SUPCheckout for UPayments</h1>
 
 <p align="center"><strong>Independent UPayments payment gateway integration for WooCommerce</strong><br>engineered and maintained by <a href="https://simplixi.com">Simplix Innovations</a></p>
 
@@ -19,14 +19,16 @@
 </p>
 
 > [!IMPORTANT]
-> **SUCheckout for UPayments** is independently engineered and maintained by **Simplix Innovations**. UPayments is the external payment-service provider and owns its respective names and trademarks. This project does not imply UPayments endorsement, ownership or official distribution.
+> **SUPCheckout for UPayments** is independently engineered and maintained by **Simplix Innovations**. UPayments is the external payment-service provider and owns its respective names and trademarks. This project does not imply UPayments endorsement, ownership or official distribution.
 
 > [!NOTE]
-> The canonical GitHub repository is `SimplixInnovations/sucheckout`. The WordPress/plugin package slug, text domain and release artifact identity remain `sucheckout-upayments`; the shorter repository coordinate is intentional and does not change the certified plugin identity.
+> The current GitHub repository remains `SimplixInnovations/sucheckout` only until this final SUPCheckout identity migration is merged and post-merge certified. The owner/admin target is `SimplixInnovations/supcheckout`; plugin slug, text domain and release identity are already `supcheckout`.
 
-## What SUCheckout is
+## What SUPCheckout is
 
-SUCheckout connects WooCommerce checkout to UPayments while preserving WooCommerce order semantics, provider-authenticated payment truth and compatibility with historical merchant/payment data that must not be renamed merely for branding.
+**SUPCheckout is permanently UPayments-specific.** Other payment providers are developed as independent Simplix products/repositories, while any future cross-provider orchestration or fraud platform remains a separate project. This repository will not become a multi-provider runtime.
+
+SUPCheckout connects WooCommerce checkout to UPayments while preserving WooCommerce order semantics, provider-authenticated payment truth and compatibility with historical merchant/payment data that must not be renamed merely for branding.
 
 The current engineering line includes:
 
@@ -38,7 +40,7 @@ The current engineering line includes:
 - subscription eligibility/pre-dispatch boundaries;
 - one additional-merchant allocation boundary;
 - deterministic source-bound release packaging;
-- explicit legacy package-root → SUCheckout package-root migration qualification;
+- explicit legacy package-root → SUPCheckout package-root migration qualification;
 - official WordPress Plugin Check against the actual deterministic release package.
 
 ## Current status
@@ -50,20 +52,21 @@ Quality Platform Q1-Q19 are **DONE / VERIFIED**. Enterprise Tasks 1-8 are **DONE
 | Quality Platform Q1-Q19 | **DONE / VERIFIED** |
 | Enterprise Tasks 1-8 | **DONE / VERIFIED** |
 
-The **SUCheckout identity migration and first-party naming cleanup are DONE / VERIFIED**. No public stable tag, GitHub Release or WordPress.org publication has been created yet.
+The **SUPCheckout identity migration and first-party naming cleanup are DONE / VERIFIED**. No public stable tag, GitHub Release or WordPress.org publication has been created yet.
 
 | Area | Current position |
 |---|---|
-| Product | **SUCheckout for UPayments** |
-| Product family | **SUCheckout** |
-| GitHub repository | `SimplixInnovations/sucheckout` |
-| Technical slug | `sucheckout-upayments` |
-| WordPress text domain | `sucheckout-upayments` |
-| PHP namespace | `Simplixi\SUCheckout\UPayments` |
+| Product | **SUPCheckout for UPayments** |
+| Product family | **SUPCheckout** |
+| Current GitHub repository | `SimplixInnovations/sucheckout` |
+| Target repository after certified merge | `SimplixInnovations/supcheckout` |
+| Technical slug | `supcheckout` |
+| WordPress text domain | `supcheckout` |
+| PHP namespace | `Simplixi\SUPCheckout` |
 | Development version | `0.1.0` |
-| Canonical package root | `sucheckout-upayments/` |
+| Canonical package root | `supcheckout/` |
 | First-stable bootstrap | `UPayments.php` — qualified compatibility exception |
-| Canonical basename | `sucheckout-upayments/UPayments.php` |
+| Canonical basename | `supcheckout/UPayments.php` |
 | Classic checkout | **Verified** |
 | Cart / Checkout Blocks | **Verified** |
 | HPOS | **Verified / declared compatible** |
@@ -79,7 +82,7 @@ The **SUCheckout identity migration and first-party naming cleanup are DONE / VE
 
 ### Certification anchors
 
-Runtime-bearing SUCheckout migration:
+Runtime-bearing SUPCheckout migration:
 
 - PR #58 certified head `5bf84dccb880733da45c1f922d43554af69a33dc`;
 - squash merge `6aabc4fcb0606567a11637ea07fe081fed4c7f85`;
@@ -93,22 +96,22 @@ Documentation/control-plane closeout:
 Latest first-party naming cleanup:
 
 - PR #61 squash merge `efe937c67343242b7ccf3396a67b3cf2ce35ebac`;
-- remaining safe retired first-party runtime/control identifiers migrated to canonical SUCheckout equivalents while protected UPayments/persisted contracts remained unchanged;
+- remaining safe retired first-party runtime/control identifiers migrated to canonical SUPCheckout equivalents while protected UPayments/persisted contracts remained unchanged;
 - fresh main Quality #781, Compatibility #309 (**16/16**), Release Artifact #258, Provider Sandbox #221, WordPress.org #116 and CodeQL #595 — **SUCCESS**.
 
 See [`docs/project/PROJECT-STATUS.md`](docs/project/PROJECT-STATUS.md) for the living state and [`docs/COMPATIBILITY.md`](docs/COMPATIBILITY.md) for the public evidence boundary.
 
 ## Identity architecture
 
-The SUCheckout rebrand deliberately separates **first-party product identity** from **provider/persisted compatibility identity**.
+The SUPCheckout rebrand deliberately separates **first-party product identity** from **provider/persisted compatibility identity**.
 
 ### Canonical first-party identity
 
-- human name: **SUCheckout for UPayments**;
-- technical slug/text domain: `sucheckout-upayments`;
-- namespace: `Simplixi\SUCheckout\UPayments`;
-- release package: `sucheckout-upayments-X.Y.Z.zip`;
-- package root: `sucheckout-upayments/`.
+- human name: **SUPCheckout for UPayments**;
+- technical slug/text domain: `supcheckout`;
+- namespace: `Simplixi\SUPCheckout`;
+- release package: `supcheckout-X.Y.Z.zip`;
+- package root: `supcheckout/`.
 
 The word **for** is human-facing relationship copy only and never appears in technical identifiers such as the slug, text domain, repository target or ZIP name.
 
@@ -130,13 +133,13 @@ These are payment/merchant compatibility contracts, not stale branding residue.
 
 ### Why `UPayments.php` remains
 
-Real WordPress upgrade qualification proved that deleting/renaming an already-active physical `UPayments.php` can strand WordPress's stored plugin basename. Therefore the first-stable SUCheckout package intentionally uses:
+Real WordPress upgrade qualification proved that deleting/renaming an already-active physical `UPayments.php` can strand WordPress's stored plugin basename. Therefore the first-stable SUPCheckout package intentionally uses:
 
 ```text
-sucheckout-upayments/UPayments.php
+supcheckout/UPayments.php
 ```
 
-A future physical rename to `sucheckout-upayments.php` requires a separately approved and tested migration. It is not an unfinished requirement for the first release.
+A future physical rename to `supcheckout.php` requires a separately approved and tested migration. It is not an unfinished requirement for the first release.
 
 ## Release artifact
 
@@ -144,14 +147,14 @@ Build and verify the current development artifact with:
 
 ```bash
 bash scripts/build-release.sh dist
-bash scripts/verify-release.sh dist/sucheckout-upayments-0.1.0.zip
-sha256sum dist/sucheckout-upayments-0.1.0.zip
-cat dist/sucheckout-upayments-0.1.0.zip.sha256
+bash scripts/verify-release.sh dist/supcheckout-0.1.0.zip
+sha256sum dist/supcheckout-0.1.0.zip
+cat dist/supcheckout-0.1.0.zip.sha256
 ```
 
 The release contract provides:
 
-- one `sucheckout-upayments/` ZIP root;
+- one `supcheckout/` ZIP root;
 - exact file set/bytes from Git `HEAD` under `.distignore`;
 - deterministic ordering/timestamps/modes;
 - ZIP SHA-256 sidecar;
@@ -172,11 +175,11 @@ The authoritative local and owner-administration sequence is documented in:
 It includes:
 
 1. final branch cleanup after the hardening PR merges;
-2. canonical repository verification at `SimplixInnovations/sucheckout`;
+2. post-merge repository rename from `SimplixInnovations/sucheckout` to `SimplixInnovations/supcheckout` and coordinate verification;
 3. GitHub About/security/rules/integration verification;
 4. local `origin` update to the canonical repository;
 5. post-rename living-coordinate reconciliation;
-6. isolated local Composer/H12/SUCheckout quality acceptance;
+6. isolated local Composer/H12/SUPCheckout quality acceptance;
 7. deterministic ZIP build/verification;
 8. disposable WordPress/WooCommerce install;
 9. Classic + Blocks + HPOS + bounded sandbox smoke;
@@ -212,9 +215,9 @@ See [`SECURITY.md`](SECURITY.md), [`docs/project/PROVIDER-PAYMENT-LIFECYCLE.md`]
 
 - [`docs/project/PROJECT-STATUS.md`](docs/project/PROJECT-STATUS.md) — living canonical state
 - [`docs/project/OWNER-HANDOFF.md`](docs/project/OWNER-HANDOFF.md) — exact owner/admin/local/release checklist
-- [`docs/project/NAMING-IDENTITY-STANDARD.md`](docs/project/NAMING-IDENTITY-STANDARD.md) — canonical SUCheckout identity and protected IDs
+- [`docs/project/NAMING-IDENTITY-STANDARD.md`](docs/project/NAMING-IDENTITY-STANDARD.md) — canonical SUPCheckout identity and protected IDs
 - [`docs/COMPATIBILITY.md`](docs/COMPATIBILITY.md) — public compatibility/evidence matrix
-- [`docs/project/ENTERPRISE-CERTIFICATION.md`](docs/project/ENTERPRISE-CERTIFICATION.md) — enterprise and SUCheckout certification evidence
+- [`docs/project/ENTERPRISE-CERTIFICATION.md`](docs/project/ENTERPRISE-CERTIFICATION.md) — enterprise and SUPCheckout certification evidence
 - [`docs/project/RELEASE-ENGINEERING.md`](docs/project/RELEASE-ENGINEERING.md) — deterministic artifact/migration contract
 - [`docs/project/QUALITY-PLATFORM.md`](docs/project/QUALITY-PLATFORM.md) — permanent historical Q1-Q19 record
 - [`docs/project/README.md`](docs/project/README.md) — control-document map and precedence
