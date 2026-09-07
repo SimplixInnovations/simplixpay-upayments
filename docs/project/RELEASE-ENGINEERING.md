@@ -1,6 +1,6 @@
 # SUPCheckout for UPayments — Release Engineering
 
-**Current status:** pre-release SUPCheckout identity merged and post-merge certified; repository rename complete; coordinate closure/local acceptance/release administration pending
+**Current status:** pre-release SUPCheckout identity + repository coordinate closure merged and post-merge certified; local acceptance/release administration pending
 **Canonical GitHub repository:** `SimplixInnovations/supcheckout`
 **Canonical plugin/package slug:** `supcheckout`
 **Development version:** `0.1.0`
@@ -21,6 +21,21 @@ Fresh post-merge evidence:
 - CodeQL/main-security #717 — **SUCCESS**.
 
 The GitHub repository was then renamed to `SimplixInnovations/supcheckout`; public tag/Release/WordPress.org publication remain unperformed.
+
+### Post-rename coordinate closure
+
+PR #68 exact head `0e6ef6334282a83a428da7ee793daa98360c2bcc` passed Quality #900, Compatibility #428 (**16/16**), Release Artifact #377, Provider Sandbox #338, WordPress.org #235 and CodeQL #722, then squash-merged as `05fec942cc8fbeb58cfd0bd41f0ef5fdb86f966f`.
+
+Fresh post-merge evidence:
+
+- Quality #901 — **SUCCESS**;
+- Compatibility #429 — **16/16 SUCCESS**;
+- Release Artifact #378 — **SUCCESS**;
+- Provider Sandbox #339 — **SUCCESS**;
+- WordPress.org Submission Check #236 — **SUCCESS**;
+- CodeQL/main-security #723 — **SUCCESS**.
+
+Final remote topology is `main` only; no public tags/releases exist.
 
 
 ### Runtime-bearing release baseline
@@ -235,7 +250,7 @@ CI artifacts are verification artifacts, not public releases.
 Remaining owner/admin actions are controlled by `OWNER-HANDOFF.md`:
 
 - verify remaining canonical repository metadata and controls;
-- complete the exact-green living-coordinate closure;
+- verify the residual GitHub topics/Main Rule settings;
 - verify the owner's local canonical remote;
 - perform independent local acceptance;
 - explicitly choose version/publication;
