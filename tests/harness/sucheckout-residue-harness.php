@@ -206,5 +206,93 @@ foreach ($repository_coordinate_files as $coordinate_path) {
     }
 }
 
+/*
+ * Living QA/control-plane identity is also current product identity. Historical
+ * migration roots and frozen merchant/provider persistence are deliberately
+ * outside this check; only test/control names with no compatibility surface are
+ * canonicalized here.
+ */
+$retired_qa_paths = array(
+    'tests/harness/sucheckout-frontend-identity-harness.php',
+    'tests/harness/sucheckout-http-transport-harness.php',
+    'tests/harness/sucheckout-identity-migration-harness.php',
+    'tests/harness/sucheckout-namespace-migration-harness.php',
+    'tests/harness/sucheckout-provenance-db-failure-harness.php',
+    'tests/harness/sucheckout-residue-harness.php',
+);
+foreach ($retired_qa_paths as $retired_qa_path) {
+    sur_assert(!is_file($root . '/' . $retired_qa_path), 'retired living QA path is absent: ' . $retired_qa_path);
+}
+
+$canonical_qa_paths = array(
+    'tests/harness/supcheckout-frontend-identity-harness.php',
+    'tests/harness/supcheckout-http-transport-harness.php',
+    'tests/harness/supcheckout-identity-migration-harness.php',
+    'tests/harness/supcheckout-namespace-migration-harness.php',
+    'tests/harness/supcheckout-provenance-db-failure-harness.php',
+    'tests/harness/supcheckout-residue-harness.php',
+);
+foreach ($canonical_qa_paths as $canonical_qa_path) {
+    sur_assert(is_file($root . '/' . $canonical_qa_path), 'canonical living QA path exists: ' . $canonical_qa_path);
+}
+
+$qa_scan_prefixes = array(
+    'tests/fixtures/',
+    'tests/integration/',
+    'tests/provider/',
+    'tests/support/',
+    'tests/unit/',
+);
+$qa_retired_needles = array(
+    'SimplixPay_Test_',
+    'simplixpay_test_',
+    'sucheckout_cert_',
+    '_sucheckout_certification_',
+    '_sucheckout_feature_ops_',
+    'sucheckout-cert-',
+    'SUCHECKOUT_UPAYMENTS_SANDBOX_TOKEN',
+);
+$qa_unexpected = array();
+foreach ($tracked as $path) {
+    $scan_qa = false;
+    foreach ($qa_scan_prefixes as $qa_prefix) {
+        if (strpos($path, $qa_prefix) === 0) {
+            $scan_qa = true;
+            break;
+        }
+    }
+    if (!$scan_qa || !is_file($root . '/' . $path) || !sur_is_text_path($path)) {
+        continue;
+    }
+    $source = sur_read($root, $path);
+    foreach ($qa_retired_needles as $qa_retired_needle) {
+        if (strpos($source, $qa_retired_needle) !== false) {
+            $qa_unexpected[] = $path . ' :: ' . $qa_retired_needle;
+        }
+    }
+}
+$qa_control_sources = array(
+    '.github/ISSUE_TEMPLATE/compatibility-report.yml',
+    '.github/workflows/provider-sandbox-certification.yml',
+    '.github/workflows/quality-gates.yml',
+    'phpcs.xml.dist',
+    'phpunit.xml.dist',
+    'scripts/install-wp-test-environment.sh',
+    'tests/provider/sandbox-charge-smoke.php',
+);
+foreach ($qa_control_sources as $qa_control_path) {
+    $source = sur_read($root, $qa_control_path);
+    foreach (array('SUCheckout', 'sucheckout.test', 'SUCHECKOUT_UPAYMENTS_SANDBOX_TOKEN') as $qa_control_needle) {
+        if (strpos($source, $qa_control_needle) !== false) {
+            $qa_unexpected[] = $qa_control_path . ' :: ' . $qa_control_needle;
+        }
+    }
+}
+$qa_unexpected = array_values(array_unique($qa_unexpected));
+foreach ($qa_unexpected as $qa_item) {
+    echo "UNEXPLAINED QA IDENTITY: {$qa_item}\n";
+}
+sur_assert($qa_unexpected === array(), 'living QA/control-plane identity uses canonical SUPCheckout naming');
+
 echo "\nSUPCheckout Residue: {$pass} PASS / {$fail} FAIL\n";
 exit($fail === 0 ? 0 : 1);
