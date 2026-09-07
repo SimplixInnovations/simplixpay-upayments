@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Permanent SUCheckout identity-migration contract.
+ * Permanent SUPCheckout identity-migration contract.
  *
  * WordPress-independent by design: this harness guards canonical first-party
  * identity while explicitly documenting compatibility identities that are
@@ -35,13 +35,13 @@ $standard = sucheckout_identity_read($root, 'docs/project/NAMING-IDENTITY-STANDA
 $spec = sucheckout_identity_read($root, 'docs/superpowers/specs/2026-09-06-sucheckout-upayments-identity-migration-design.md');
 
 $canonical = array(
-    "PRODUCT_NAME = 'SUCheckout for UPayments'",
-    "SHORT_NAME = 'SUCheckout'",
-    "SLUG = 'sucheckout-upayments'",
+    "PRODUCT_NAME = 'SUPCheckout for UPayments'",
+    "SHORT_NAME = 'SUPCheckout'",
+    "SLUG = 'supcheckout'",
     "REPOSITORY = 'SimplixInnovations/sucheckout'",
-    "TEXT_DOMAIN = 'sucheckout-upayments'",
-    "NAMESPACE_ROOT = 'Simplixi\\\\SUCheckout\\\\UPayments'",
-    "TARGET_MAIN_FILE = 'sucheckout-upayments.php'",
+    "TEXT_DOMAIN = 'supcheckout'",
+    "NAMESPACE_ROOT = 'Simplixi\\\\SUPCheckout'",
+    "TARGET_MAIN_FILE = 'supcheckout.php'",
 );
 
 foreach ($canonical as $needle) {
@@ -67,10 +67,10 @@ sucheckout_identity_assert(strpos($identity, 'SimplixPay for UPayments') === fal
 sucheckout_identity_assert(strpos($identity, 'simplixpay-upayments') === false, 'retired SimplixPay slug is absent from canonical identity source');
 sucheckout_identity_assert(strpos($identity, 'sucheckout-for-upayments') === false, 'technical identity never contains for');
 
-sucheckout_identity_assert(strpos($standard, '# SUCheckout for UPayments') === 0, 'canonical naming standard is SUCheckout-owned');
-sucheckout_identity_assert(strpos($standard, '**Canonical slug:** `sucheckout-upayments`') !== false, 'naming standard pins canonical technical slug');
+sucheckout_identity_assert(strpos($standard, '# SUPCheckout for UPayments') === 0, 'canonical naming standard is SUPCheckout-owned');
+sucheckout_identity_assert(strpos($standard, '**Canonical slug:** `supcheckout`') !== false, 'naming standard pins canonical technical slug');
 sucheckout_identity_assert(strpos($standard, '`sucheckout-for-upayments`') !== false, 'naming standard explicitly documents the forbidden for-form');
 sucheckout_identity_assert(strpos($spec, 'The word **for** is human-facing relationship copy only.') !== false, 'approved design records human-only for rule');
 
-echo "\nSUCheckout Identity Migration: {$pass} PASS / {$fail} FAIL\n";
+echo "\nSUPCheckout Identity Migration: {$pass} PASS / {$fail} FAIL\n";
 exit($fail === 0 ? 0 : 1);

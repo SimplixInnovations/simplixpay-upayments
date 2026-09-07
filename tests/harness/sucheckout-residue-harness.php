@@ -1,6 +1,6 @@
 <?php
 /**
- * Machine-readable SUCheckout retired-identity residue contract.
+ * Machine-readable SUPCheckout retired-identity residue contract.
  *
  * This gate distinguishes current/shippable identity from historical,
  * test-only and explicitly bounded migration compatibility evidence.
@@ -111,15 +111,17 @@ foreach ($tracked as $path) {
     $source = sur_read($root, $path);
 
     // Retired human product names must not survive on current/live surfaces.
-    foreach (array('SimplixPay for UPayments', 'SimplixPay UPayments') as $retired_human) {
+    foreach (array('SimplixPay for UPayments', 'SimplixPay UPayments', 'SUCheckout for UPayments') as $retired_human) {
         if (strpos($source, $retired_human) !== false) {
             $unexpected[] = $path . ' :: ' . $retired_human;
         }
     }
 
     // Retired first-party PHP namespace must not survive outside history/tests.
-    if (strpos($source, 'Simplix\\Pay\\UPayments') !== false) {
-        $unexpected[] = $path . ' :: Simplix\\Pay\\UPayments';
+    foreach (array('Simplix\\Pay\\UPayments', 'Simplixi\\SUCheckout\\UPayments') as $retired_namespace) {
+        if (strpos($source, $retired_namespace) !== false) {
+            $unexpected[] = $path . ' :: ' . $retired_namespace;
+        }
     }
 
     // Pre-rebrand first-party constant prefixes are branding residue, not
@@ -151,18 +153,18 @@ foreach ($unexpected as $item) {
 sur_assert($unexpected === array(), 'no unexplained retired identity remains on live/shippable surfaces');
 
 $current_identity_contracts = array(
-    'README.md' => array('SUCheckout for UPayments', 'sucheckout-upayments', 'SimplixInnovations/sucheckout'),
-    'AGENTS.md' => array('SUCheckout for UPayments', 'Simplixi\\SUCheckout\\UPayments', 'SimplixInnovations/sucheckout'),
-    'docs/project/PROJECT-STATUS.md' => array('SUCheckout for UPayments', 'sucheckout-upayments', 'SimplixInnovations/sucheckout'),
-    'docs/project/NAMING-IDENTITY-STANDARD.md' => array('SUCheckout for UPayments', 'Simplixi\\SUCheckout\\UPayments', 'SimplixInnovations/sucheckout'),
+    'README.md' => array('SUPCheckout for UPayments', 'supcheckout', 'SimplixInnovations/sucheckout'),
+    'AGENTS.md' => array('SUPCheckout for UPayments', 'Simplixi\\SUPCheckout', 'SimplixInnovations/sucheckout'),
+    'docs/project/PROJECT-STATUS.md' => array('SUPCheckout for UPayments', 'supcheckout', 'SimplixInnovations/sucheckout'),
+    'docs/project/NAMING-IDENTITY-STANDARD.md' => array('SUPCheckout for UPayments', 'Simplixi\\SUPCheckout', 'SimplixInnovations/sucheckout'),
     'UPayments.php' => array(
         'Plugin URI: https://github.com/SimplixInnovations/sucheckout',
-        "define('SUCHECKOUT_UPAYMENTS_VERSION', Identity::VERSION);",
-        "define('SUCHECKOUT_UPAYMENTS_SLUG', Identity::SLUG);",
-        "define('SUCHECKOUT_UPAYMENTS_PLUGIN_FILE', __FILE__);",
-        "define('SUCHECKOUT_UPAYMENTS_UPDATE_CHANNEL', Identity::UPDATE_CHANNEL);",
+        "define('SUPCHECKOUT_VERSION', Identity::VERSION);",
+        "define('SUPCHECKOUT_SLUG', Identity::SLUG);",
+        "define('SUPCHECKOUT_PLUGIN_FILE', __FILE__);",
+        "define('SUPCHECKOUT_UPDATE_CHANNEL', Identity::UPDATE_CHANNEL);",
     ),
-    'composer.json' => array('simplix-innovations/sucheckout-upayments', 'Simplixi\\\\SUCheckout\\\\UPayments\\\\'),
+    'composer.json' => array('simplix-innovations/supcheckout', 'Simplixi\\\\SUPCheckout\\\\'),
     'src/Release/Identity.php' => array("REPOSITORY = 'SimplixInnovations/sucheckout'"),
 );
 foreach ($current_identity_contracts as $contract_path => $needles) {
@@ -205,5 +207,5 @@ foreach ($repository_coordinate_files as $coordinate_path) {
     }
 }
 
-echo "\nSUCheckout Residue: {$pass} PASS / {$fail} FAIL\n";
+echo "\nSUPCheckout Residue: {$pass} PASS / {$fail} FAIL\n";
 exit($fail === 0 ? 0 : 1);
