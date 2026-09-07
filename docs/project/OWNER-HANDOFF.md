@@ -191,7 +191,6 @@ hpos
 payment-gateway
 payments
 php
-sucheckout
 supcheckout
 upayments
 woocommerce
@@ -569,13 +568,13 @@ Unsupported in the current certified feature set:
 
 ## Repository/admin
 
-- [ ] final documentation PR merged from exact green head
+- [ ] final SUPCheckout identity PR merged from exact green head
 - [ ] normal clone synchronized; `HEAD == origin/main`; worktree clean
 - [ ] no legitimate open PRs remain
 - [ ] all superseded non-main branches removed
-- [x] repository canonical coordinate verified as `SimplixInnovations/sucheckout`
+- [ ] repository renamed and canonical coordinate verified as `SimplixInnovations/supcheckout`
 - [ ] About description/homepage/topics updated
-- [ ] local `origin` updated to `https://github.com/SimplixInnovations/sucheckout.git`
+- [ ] local `origin` updated to `https://github.com/SimplixInnovations/supcheckout.git`
 - [ ] ruleset/Actions/CodeQL/Dependabot/secret scanning/PVR/integrations verified after rename
 - [ ] `Main Rule` requires `Governance`, `H12 Regression Harness`, `Compatibility Gate` and `Release Gate` after the new contexts exist on `main`
 - [ ] coordinate-only living-link PR merged from exact green head
