@@ -32,11 +32,11 @@ defined( 'ABSPATH' ) || exit;
 }
 </style>
 <div id="wc-toast" class="wc-toast"></div>
-<div class="sucheckout-upayments form-row form-row-wide">
+<div class="supcheckout form-row form-row-wide">
     <?php 
     if (isset($_GET["cancelled"])){
         $notice_html = '<div class="woocommerce-NoticeGroup woocommerce-NoticeGroup-checkout"><div class="woocommerce-error alert-color">'
-            . esc_html__('Payment canceled by customer', 'sucheckout-upayments')
+            . esc_html__('Payment canceled by customer', 'supcheckout')
             . '</div></div>';
     ?>
         <script>
@@ -48,7 +48,7 @@ defined( 'ABSPATH' ) || exit;
     <?php
     } elseif (isset($_GET["failed"])){
         $notice_html = '<div class="woocommerce-NoticeGroup woocommerce-NoticeGroup-checkout"><div class="woocommerce-error alert-color">'
-            . esc_html__('Payment error from UPayments', 'sucheckout-upayments')
+            . esc_html__('Payment error from UPayments', 'supcheckout')
             . '</div></div>';
     ?>
         <script>
@@ -60,7 +60,7 @@ defined( 'ABSPATH' ) || exit;
     <?php
     } elseif (isset($_GET["suspected"])) {
         $notice_html = '<div class="woocommerce-NoticeGroup woocommerce-NoticeGroup-checkout"><div class="woocommerce-error alert-color">'
-            . esc_html__('Payment failed for suspected fraud.', 'sucheckout-upayments')
+            . esc_html__('Payment failed for suspected fraud.', 'supcheckout')
             . '</div></div>';
     ?>
         <script>
@@ -157,7 +157,7 @@ defined( 'ABSPATH' ) || exit;
                 {
                     $cardList = $savedCards['data'];
                 ?>
-                    <span class="payment-method-label"><?php esc_html_e('Saved Cards', 'sucheckout-upayments'); ?></span>
+                    <span class="payment-method-label"><?php esc_html_e('Saved Cards', 'supcheckout'); ?></span>
                     <?php
                     foreach ($cardList as $cardkey => $cardValue) {
                         if (!is_array($cardValue)) {
@@ -172,7 +172,7 @@ defined( 'ABSPATH' ) || exit;
                         $card_number_text = esc_html($card_number_raw);
                     ?>
 
-                        <button type="button" value="<?php echo esc_attr($card_token); ?>" onclick="suCheckoutUpayments.submitSavedCard(this)" class="upay-payment-method" id="upay-button-cc">
+                        <button type="button" value="<?php echo esc_attr($card_token); ?>" onclick="supCheckout.submitSavedCard(this)" class="upay-payment-method" id="upay-button-cc">
                         <span class="payment-method-icon"><img src="<?php echo esc_url(UP_PLUGIN_URL . 'assets/images/cc.png'); ?>" alt="<?php echo esc_attr($card_number_raw); ?>"  title="<?php echo esc_attr($card_number_raw); ?>"/></span>
                         <span class="payment-method-label"><?php echo esc_html($card_number_raw); ?></span>
                         <span class="payment-method-price"><?php echo esc_html($total); ?> <?php echo wp_kses($currency, array()); ?></span>
@@ -182,7 +182,7 @@ defined( 'ABSPATH' ) || exit;
                     <?php
                     }
                     ?>
-                    <span class="payment-method-label"><?php esc_html_e('Other Options', 'sucheckout-upayments'); ?></span>
+                    <span class="payment-method-label"><?php esc_html_e('Other Options', 'supcheckout'); ?></span>
                 <?php
                 }
             } else {
@@ -200,7 +200,7 @@ defined( 'ABSPATH' ) || exit;
                     $value_attr = esc_attr($value_string);
                     $value_text = esc_html($value_string);
                     $key_js = wp_json_encode($key_string, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT);
-                    $onclick = 'suCheckoutUpayments.submitPaymentMethod(' . $key_js . ')';
+                    $onclick = 'supCheckout.submitPaymentMethod(' . $key_js . ')';
             ?>
                 <button type="button" onclick="<?php echo esc_attr($onclick); ?>" class="upay-payment-method" id="upay-button-<?php echo esc_attr($key_string); ?>">
                     <span class="payment-method-icon">
@@ -236,7 +236,7 @@ defined( 'ABSPATH' ) || exit;
                         <input
                             type="checkbox"
                             id="chkSaveCard"
-                            onclick="suCheckoutUpayments.toggleSaveCard(<?php echo $is_logged_in ? 'true' : 'false'; ?>);"
+                            onclick="supCheckout.toggleSaveCard(<?php echo $is_logged_in ? 'true' : 'false'; ?>);"
                         >
                         <span class="slider round"></span>
                     </label>
@@ -250,7 +250,7 @@ defined( 'ABSPATH' ) || exit;
         } elseif ($payment_data_valid && !$whitelabled) {
     ?>
         <div class="payment-buttons">
-            <button type="button" onclick="suCheckoutUpayments.submitPaymentMethod('knet')" class="upay-payment-method">
+            <button type="button" onclick="supCheckout.submitPaymentMethod('knet')" class="upay-payment-method">
     <?php
             foreach ($icons as $key => $value) {
                 if (!is_scalar($value)) {
