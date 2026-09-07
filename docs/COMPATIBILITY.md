@@ -1,8 +1,8 @@
-# SUCheckout for UPayments — Compatibility & Certification Matrix
+# SUPCheckout for UPayments — Compatibility & Certification Matrix
 
 This document is the public compatibility truth. A capability is **Verified** only when exact reproducible evidence exists. External/manual requirements and unsupported features are named explicitly rather than inferred from green CI.
 
-**Current posture:** pre-release SUCheckout engineering is merged and certified. Publication remains a separate owner decision.
+**Current posture:** pre-release final SUPCheckout identity is under exact-head certification. Publication remains a separate owner decision.
 
 ## Certification anchors
 
@@ -85,26 +85,26 @@ Public metadata derived from this matrix:
 
 | Identity | Current contract |
 |---|---|
-| Product name | **SUCheckout for UPayments** |
-| Product family | **SUCheckout** |
-| Package / WordPress.org slug | `sucheckout-upayments` |
-| Text domain | `sucheckout-upayments` |
-| Namespace | `Simplixi\SUCheckout\UPayments` |
+| Product name | **SUPCheckout for UPayments** |
+| Product family | **SUPCheckout** |
+| Package / WordPress.org slug | `supcheckout` |
+| Text domain | `supcheckout` |
+| Namespace | `Simplixi\SUPCheckout` |
 | First-stable physical bootstrap | `UPayments.php` retained |
-| Canonical package basename | `sucheckout-upayments/UPayments.php` |
+| Canonical package basename | `supcheckout/UPayments.php` |
 | Gateway/payment ID | `upayments` preserved |
 | Settings option | `woocommerce_upayments_settings` preserved |
 | Blocks / Store API ID | `upayments` preserved |
 | Callback | `wc_upayments` preserved |
 | Historical payment/meta/token/cron identities | preserved |
 
-The retained `UPayments.php` filename is a qualified compatibility contract. A future physical rename to `sucheckout-upayments.php` is not part of the first-stable release and requires a separately proven migration.
+The retained `UPayments.php` filename is a qualified compatibility contract. A future physical rename to `supcheckout.php` is not part of the first-stable release and requires a separately proven migration.
 
 Changing the package root changes WordPress's stored plugin basename. Permanent release certification therefore treats legacy-root → canonical-root movement as an explicit pre-release migration: deactivate legacy, install/activate canonical, prove merchant/payment data continuity, prove rollback, return to canonical and remove the inactive legacy package.
 
 ## Capability matrix
 
-| Area | SUCheckout status | Evidence / boundary |
+| Area | SUPCheckout status | Evidence / boundary |
 |---|---|---|
 | Classic checkout registration/runtime | **Verified** | Real Woo gateway registry contains exact protected ID `upayments`. |
 | Cart / Checkout Blocks registration & availability | **Verified** | Real Blocks registry plus enabled/disabled/fresh-default/malformed-settings contract. |
@@ -116,9 +116,9 @@ Changing the package root changes WordPress's stored plugin basename. Permanent 
 | Multi-merchant | **Verified — one additional merchant only** | One `extraMerchantData` allocation; arbitrary multi-split unsupported. |
 | Activation/deactivation/reactivation | **Verified** | Protected settings/payment/token data preserved. |
 | WordPress uninstall hook | **Verified non-destructive** | Merchant/payment/token state retained by default. |
-| Deterministic canonical ZIP | **Permanent exact-head gate** | `sucheckout-upayments` ZIP/root, HEAD-bound bytes, checksum/manifest, reproducibility and tamper rejection. |
-| Legacy package-root migration | **Permanent exact-head gate** | Legacy `simplixpay-upayments` → canonical `sucheckout-upayments`, protected data continuity + rollback. |
-| Official WordPress Plugin Check | **Permanent packaged-artifact gate** | Runs against the unpacked deterministic `sucheckout-upayments/` package and fails on blocking findings. |
+| Deterministic canonical ZIP | **Permanent exact-head gate** | `supcheckout` ZIP/root, HEAD-bound bytes, checksum/manifest, reproducibility and tamper rejection. |
+| Legacy package-root migration | **Permanent exact-head gate** | Pre-stable `simplixpay-upayments` and `sucheckout-upayments` → canonical `supcheckout`, protected data continuity + rollback. |
+| Official WordPress Plugin Check | **Permanent packaged-artifact gate** | Runs against the unpacked deterministic `supcheckout/` package and fails on blocking findings. |
 | Physical bootstrap rename | **Not adopted for first stable** | Real-install qualification showed an active-install filename rename can strand WordPress basename state. |
 | Webhook/browser payment updates | **Non-authoritative** | Browser/webhook payload cannot establish paid state without trusted provider verification. |
 | Automatic Woo refunds | **Unsupported** | Withheld pending durable idempotency/reconciliation design. |
@@ -159,4 +159,4 @@ No one control substitutes for the others or for explicitly external/manual evid
 
 ## Public-claim rule
 
-Do not broaden platform, provider, feature, multilingual, browser, accessibility, performance, security or compliance claims beyond this matrix. A neighboring green version, static analyzer, unit harness or provider marketing page is not SUCheckout certification.
+Do not broaden platform, provider, feature, multilingual, browser, accessibility, performance, security or compliance claims beyond this matrix. A neighboring green version, static analyzer, unit harness or provider marketing page is not SUPCheckout certification.
