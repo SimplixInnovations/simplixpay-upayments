@@ -29,7 +29,7 @@ Before substantive work read, in this order:
 - Current GitHub coordinate pending owner/admin rename: `SimplixInnovations/simplixpay-upayments`
 - Approved target GitHub coordinate: `SimplixInnovations/sucheckout-upayments`
 
-The word **for** is human-facing relationship copy only. Never create `sucheckout-for-upayments` URLs, slugs, text domains, package names, namespaces, CSS/JS roots or release artifacts.
+The word **for** is human-facing relationship copy only and must never be encoded into URLs, slugs, text domains, package names, namespaces, CSS/JS roots or release artifacts.
 
 Do not invent alternate product names/slugs/prefixes/namespaces.
 
@@ -69,7 +69,7 @@ Documentation/control-plane closeout:
 Latest first-party naming cleanup:
 
 - PR #61 squash merge: `efe937c67343242b7ccf3396a67b3cf2ce35ebac`;
-- remaining safe first-party `SIMPLIXPAY_*` runtime/control identities migrated to `SUCHECKOUT_*` equivalents while protected UPayments/persisted contracts remained unchanged;
+- remaining safe retired first-party runtime/control identities migrated to canonical SUCheckout equivalents while protected UPayments/persisted contracts remained unchanged;
 - fresh main Quality #781, Compatibility #309 (**16/16**), Release Artifact #258, Provider Sandbox #221, WordPress.org #116 and CodeQL #595 — **SUCCESS**.
 
 Every future candidate must pass the permanent exact-head gates appropriate to its scope before merge or release.
@@ -135,6 +135,16 @@ Do not remove, skip, soften or blanket-ignore:
 - real integration fixtures for activation, metadata, Blocks, HPOS, saved cards, subscriptions, multi-merchant, operations and upgrade compatibility;
 - deterministic artifact builder/verifier/harness;
 - official packaged Plugin Check.
+
+Permanent numbered-platform harness ratchet:
+
+- keep `tests/harness/quality-platform-migration-cli-harness.php` mandatory after Q13;
+- keep `tests/harness/quality-platform-migration-admin-harness.php` mandatory after Q14;
+- keep `tests/harness/quality-platform-subscription-presentation-harness.php` mandatory after Q15;
+- keep `tests/harness/quality-platform-migration-core-harness.php` mandatory after Q16;
+- keep `tests/harness/quality-platform-payment-runtime-harness.php` mandatory after Q17;
+- keep `tests/harness/quality-platform-blocks-availability-harness.php` mandatory permanently after Q18;
+- keep `tests/harness/quality-platform-subscription-product-eligibility-harness.php` mandatory permanently after Q19.
 
 The protected H12 job must run and must fail when required upstream quality/syntax prerequisites fail or skip.
 
