@@ -13,7 +13,7 @@ Independent UPayments payment gateway integration for WooCommerce by Simplix Inn
 
 **SUCheckout for UPayments** connects WooCommerce stores to the external UPayments payment service.
 
-SUCheckout is independently engineered and maintained by Simplix Innovations. UPayments is the payment provider and owner of its respective names and trademarks. This plugin does not imply UPayments sponsorship, endorsement, ownership, or official distribution.
+SUCheckout is independently engineered and maintained by Simplix Innovations. UPayments is the payment provider and owner of its respective names and trademarks. This plugin does not imply endorsement or official distribution by UPayments, and it does not imply UPayments sponsorship or ownership of SUCheckout.
 
 The canonical technical slug and text domain are `sucheckout-upayments`. The word "for" is part of the human-facing product name only.
 
@@ -63,7 +63,7 @@ No. SUCheckout integrates WooCommerce with the external UPayments payment servic
 
 = Is this an official UPayments plugin? =
 
-SUCheckout is independently engineered and maintained by Simplix Innovations. It does not imply UPayments sponsorship, endorsement, ownership, or official distribution.
+SUCheckout is independently engineered and maintained by Simplix Innovations. It does not imply endorsement or official distribution by UPayments.
 
 = Does every UPayments payment method automatically become available? =
 
