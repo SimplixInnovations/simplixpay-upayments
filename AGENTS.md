@@ -55,7 +55,7 @@ The approved **SUCheckout identity migration is DONE / VERIFIED** through PR #58
 
 PR #59 reconciled living-state/owner documentation without runtime behavior changes and merged as `9591c431e1eb56fe40ca60147afdf9f3f909a212`.
 
-PR #61 completed the remaining retired `SIMPLIXPAY_*` first-party constant and certification-control prefix migration while preserving protected UPayments compatibility identities. Current runtime-bearing certified `main` is `efe937c67343242b7ccf3396a67b3cf2ce35ebac`; post-merge Quality #781, Compatibility #309 (**16/16**), Release Artifact #258, Provider Sandbox #221, WordPress.org Submission Check #116 and CodeQL/main-security #595 all succeeded, with official packaged Plugin Check at **0 blocking errors**.
+PR #61 completed the remaining retired retired pre-rebrand first-party first-party constant and certification-control prefix migration while preserving protected UPayments compatibility identities. Current runtime-bearing certified `main` is `efe937c67343242b7ccf3396a67b3cf2ce35ebac`; post-merge Quality #781, Compatibility #309 (**16/16**), Release Artifact #258, Provider Sandbox #221, WordPress.org Submission Check #116 and CodeQL/main-security #595 all succeeded, with official packaged Plugin Check at **0 blocking errors**.
 
 Every future candidate must still pass the permanent exact-head gates appropriate to its scope before merge or release.
 
