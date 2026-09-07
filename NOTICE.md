@@ -14,7 +14,7 @@ The complete Simplix pre-product fork/hardening history is preserved separately 
 
 The standalone canonical product repository is:
 
-- canonical GitHub repository: https://github.com/SimplixInnovations/sucheckout
+- canonical GitHub repository: https://github.com/SimplixInnovations/supcheckout
 
 Copyright in upstream portions remains with the respective upstream copyright holders. Simplix Innovations claims copyright only in its own original modifications and documentation to the extent applicable.
 
