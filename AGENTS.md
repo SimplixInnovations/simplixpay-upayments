@@ -53,6 +53,10 @@ The former product identity reached Enterprise Release Candidate Closeout throug
 
 The approved **SUCheckout identity migration is DONE / VERIFIED** through PR #58. Certified head `5bf84dccb880733da45c1f922d43554af69a33dc` squash-merged as `6aabc4fcb0606567a11637ea07fe081fed4c7f85`; post-merge Quality #764, Compatibility #292 (16/16), Release Artifact #243, Provider Sandbox #207, WordPress.org Submission Check #101 and CodeQL/main-security #579 all succeeded.
 
+PR #59 reconciled living-state/owner documentation without runtime behavior changes and merged as `9591c431e1eb56fe40ca60147afdf9f3f909a212`.
+
+PR #61 completed the remaining retired `SIMPLIXPAY_*` first-party constant and certification-control prefix migration while preserving protected UPayments compatibility identities. Current runtime-bearing certified `main` is `efe937c67343242b7ccf3396a67b3cf2ce35ebac`; post-merge Quality #781, Compatibility #309 (**16/16**), Release Artifact #258, Provider Sandbox #221, WordPress.org Submission Check #116 and CodeQL/main-security #595 all succeeded, with official packaged Plugin Check at **0 blocking errors**.
+
 Every future candidate must still pass the permanent exact-head gates appropriate to its scope before merge or release.
 
 No public tag, GitHub Release or WordPress.org publication exists yet. Repository rename to `SimplixInnovations/sucheckout-upayments`, local owner acceptance and any publication are separate owner/admin actions documented in `docs/project/OWNER-HANDOFF.md`.
