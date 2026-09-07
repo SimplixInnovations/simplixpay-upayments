@@ -1,9 +1,8 @@
 # SUPCheckout for UPayments — Historical Enterprise Foundation & Re-certification Context
 
 **Historical status:** TASKS 1–8 DONE / VERIFIED under the former pre-rebrand product identity
-**Current engineering state:** final SUPCheckout identity migration in exact-head certification; repository rename/public release pending
-**Current GitHub repository:** `SimplixInnovations/sucheckout`
-**Target GitHub repository after certified merge:** `SimplixInnovations/supcheckout`
+**Current engineering state:** final SUPCheckout identity merged and post-merge certified; repository rename complete; public release pending
+**Canonical GitHub repository:** `SimplixInnovations/supcheckout`
 **Canonical plugin/package slug:** `supcheckout`
 
 This record preserves the reproducible enterprise certification foundation established before the approved SUCheckout rebrand. Historical package names, basenames, text domains, SHAs and run numbers below remain evidence of what was certified then; they are not current SUPCheckout identity declarations. Current state is owned by `PROJECT-STATUS.md`.
@@ -52,6 +51,22 @@ Fresh post-merge evidence on that exact SHA:
 - WordPress.org Submission Check #116 — **SUCCESS**;
 - CodeQL/main-security #595 — **SUCCESS**;
 - official packaged Plugin Check — **0 blocking errors**.
+
+## Final SUPCheckout identity re-certification — DONE / VERIFIED
+
+PR #67 certified head `0059f365883fa4edd6a2d623c7b370d38d3f565c` passed the complete release-sensitive stack and squash-merged as `7547e59a2d5ef6d49b059851c6899a2d9987b16a`.
+
+Fresh exact-main evidence:
+
+- Quality #896 — **SUCCESS**;
+- Compatibility #424 — **16/16 SUCCESS**;
+- Release Artifact #373 — **SUCCESS**;
+- Provider Sandbox #334 — **SUCCESS**;
+- WordPress.org Submission Check #231 — **SUCCESS**;
+- CodeQL/main-security #717 — **SUCCESS**;
+- official packaged Plugin Check — **0 blocking errors**.
+
+The canonical repository was then renamed to `SimplixInnovations/supcheckout`. No public tag, GitHub Release or WordPress.org publication is created by that rename.
 
 ## Certified platform foundation
 
