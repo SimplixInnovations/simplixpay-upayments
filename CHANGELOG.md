@@ -8,7 +8,7 @@ The project is still in pre-release engineering hardening. Entries below are eng
 
 ### Final SUCheckout first-party naming and documentation closeout
 
-- PR #61 completed the remaining retired retired pre-rebrand first-party first-party constants/certification-control prefix migration while preserving protected UPayments compatibility identities; current runtime-bearing certified `main` is `efe937c67343242b7ccf3396a67b3cf2ce35ebac`.
+- PR #61 completed the remaining retired pre-rebrand first-party constants/certification-control prefix migration while preserving protected UPayments compatibility identities; current runtime-bearing certified `main` is `efe937c67343242b7ccf3396a67b3cf2ce35ebac`.
 - Fresh post-merge Quality #781, Compatibility #309 (**16/16**), Release Artifact #258, Provider Sandbox #221, WordPress.org Submission Check #116 and CodeQL/main-security #595 all succeeded.
 - Living README/status/compatibility/release/owner docs now distinguish historical identity milestones from the latest runtime-bearing baseline and provide one ordered docs merge → branch cleanup → repository rename → coordinate reconciliation → local acceptance → release-decision path.
 - WordPress.org `readme.txt` is expanded to document provider independence, external-service/data boundaries, exact certified platform scope, unsupported features, privacy/support boundaries and safe installation expectations without broadening runtime claims.
