@@ -11,7 +11,7 @@
 <p align="center"><strong>Independent UPayments payment gateway integration for WooCommerce</strong><br>engineered and maintained by <a href="https://simplixi.com">Simplix Innovations</a></p>
 
 <p align="center">
-  <a href="https://github.com/SimplixInnovations/simplixpay-upayments/actions/workflows/quality-gates.yml"><img alt="Quality Gates" src="https://github.com/SimplixInnovations/simplixpay-upayments/actions/workflows/quality-gates.yml/badge.svg?branch=main"></a>
+  <a href="https://github.com/SimplixInnovations/sucheckout/actions/workflows/quality-gates.yml"><img alt="Quality Gates" src="https://github.com/SimplixInnovations/sucheckout/actions/workflows/quality-gates.yml/badge.svg?branch=main"></a>
   <a href="LICENSE"><img alt="MIT License" src="https://img.shields.io/badge/License-MIT-2ea44f?style=flat-square"></a>
   <a href="SECURITY.md"><img alt="Security Policy" src="https://img.shields.io/badge/Security-Private%20Reporting-2ea44f?style=flat-square"></a>
   <img alt="Version 0.1.0" src="https://img.shields.io/badge/Version-0.1.0-2563eb?style=flat-square">
@@ -22,7 +22,7 @@
 > **SUCheckout for UPayments** is independently engineered and maintained by **Simplix Innovations**. UPayments is the external payment-service provider and owns its respective names and trademarks. This project does not imply UPayments endorsement, ownership or official distribution.
 
 > [!NOTE]
-> The GitHub repository is temporarily still named `simplixpay-upayments` while the owner performs the approved administrative rename to `sucheckout-upayments`. The plugin/package/text-domain identity is already **SUCheckout**. Living GitHub links and badges will be reconciled in one coordinate-only PR immediately after the repository rename.
+> The canonical GitHub repository is `SimplixInnovations/sucheckout`. The WordPress/plugin package slug, text domain and release artifact identity remain `sucheckout-upayments`; the shorter repository coordinate is intentional and does not change the certified plugin identity.
 
 ## What SUCheckout is
 
@@ -56,6 +56,7 @@ The **SUCheckout identity migration and first-party naming cleanup are DONE / VE
 |---|---|
 | Product | **SUCheckout for UPayments** |
 | Product family | **SUCheckout** |
+| GitHub repository | `SimplixInnovations/sucheckout` |
 | Technical slug | `sucheckout-upayments` |
 | WordPress text domain | `sucheckout-upayments` |
 | PHP namespace | `Simplixi\SUCheckout\UPayments` |
@@ -170,11 +171,11 @@ The authoritative local and owner-administration sequence is documented in:
 
 It includes:
 
-1. obsolete branch cleanup;
-2. repository rename to `SimplixInnovations/sucheckout-upayments`;
+1. final branch cleanup after the hardening PR merges;
+2. canonical repository verification at `SimplixInnovations/sucheckout`;
 3. GitHub About/security/rules/integration verification;
-4. local `origin` update;
-5. post-rename coordinate-only documentation reconciliation;
+4. local `origin` update to the canonical repository;
+5. post-rename living-coordinate reconciliation;
 6. isolated local Composer/H12/SUCheckout quality acceptance;
 7. deterministic ZIP build/verification;
 8. disposable WordPress/WooCommerce install;
