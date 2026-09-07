@@ -43,7 +43,12 @@ The current engineering line includes:
 
 ## Current status
 
-The historical Quality Platform Q1-Q19 and Enterprise Tasks 1-8 are **DONE / VERIFIED** and retained as evidence. The numbered Quality Platform is permanently closed at Q19; no Q20 is justified.
+Quality Platform Q1-Q19 are **DONE / VERIFIED**. Enterprise Tasks 1-8 are **DONE / VERIFIED** and retained as historical evidence. Enterprise Release Candidate Closeout is **DONE / VERIFIED**. The numbered Quality Platform is permanently closed at Q19; no Q20 is justified.
+
+| Historical program | Status |
+|---|---|
+| Quality Platform Q1-Q19 | **DONE / VERIFIED** |
+| Enterprise Tasks 1-8 | **DONE / VERIFIED** |
 
 The **SUCheckout identity migration and first-party naming cleanup are DONE / VERIFIED**. No public stable tag, GitHub Release or WordPress.org publication has been created yet.
 
@@ -87,7 +92,7 @@ Documentation/control-plane closeout:
 Latest first-party naming cleanup:
 
 - PR #61 squash merge `efe937c67343242b7ccf3396a67b3cf2ce35ebac`;
-- remaining safe first-party `SIMPLIXPAY_*` runtime/control identifiers migrated to `SUCHECKOUT_*` equivalents while protected UPayments/persisted contracts remained unchanged;
+- remaining safe retired first-party runtime/control identifiers migrated to canonical SUCheckout equivalents while protected UPayments/persisted contracts remained unchanged;
 - fresh main Quality #781, Compatibility #309 (**16/16**), Release Artifact #258, Provider Sandbox #221, WordPress.org #116 and CodeQL #595 — **SUCCESS**.
 
 See [`docs/project/PROJECT-STATUS.md`](docs/project/PROJECT-STATUS.md) for the living state and [`docs/COMPATIBILITY.md`](docs/COMPATIBILITY.md) for the public evidence boundary.
