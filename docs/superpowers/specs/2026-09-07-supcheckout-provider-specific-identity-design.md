@@ -1,11 +1,11 @@
 # SUPCheckout for UPayments — Provider-Specific Product and Final Pre-Stable Identity Design
 
-**Status:** APPROVED / OWNER STRATEGY DECISION  
-**Approved:** 2026-09-07  
-**Maintainer:** Simplix Innovations  
-**Product:** SUPCheckout  
-**Formal integration name:** SUPCheckout for UPayments  
-**Strategic model:** provider-isolated plugin family (Option B)  
+**Status:** APPROVED / OWNER STRATEGY DECISION
+**Approved:** 2026-09-07
+**Maintainer:** Simplix Innovations
+**Product:** SUPCheckout
+**Formal integration name:** SUPCheckout for UPayments
+**Strategic model:** provider-isolated plugin family (Option B)
 **Provider scope:** UPayments only
 
 ## Decision
