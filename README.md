@@ -45,7 +45,7 @@ The current engineering line includes:
 
 The historical Quality Platform Q1-Q19 and Enterprise Tasks 1-8 are **DONE / VERIFIED** and retained as evidence. The numbered Quality Platform is permanently closed at Q19; no Q20 is justified.
 
-The **SUCheckout identity migration is DONE / VERIFIED**. No public stable tag, GitHub Release or WordPress.org publication has been created yet.
+The **SUCheckout identity migration and first-party naming cleanup are DONE / VERIFIED**. No public stable tag, GitHub Release or WordPress.org publication has been created yet.
 
 | Area | Current position |
 |---|---|
@@ -79,10 +79,16 @@ Runtime-bearing SUCheckout migration:
 - squash merge `6aabc4fcb0606567a11637ea07fe081fed4c7f85`;
 - post-merge Quality #764, Compatibility #292 (**16/16**), Release Artifact #243, Provider Sandbox #207, WordPress.org #101 and CodeQL #579 — **SUCCESS**.
 
-Final documentation/control-plane closeout:
+Documentation/control-plane closeout:
 
 - squash merge `9591c431e1eb56fe40ca60147afdf9f3f909a212`;
 - fresh main Quality #773, Compatibility #301 (**16/16**), Release Artifact #252, Provider Sandbox #216, WordPress.org #110 and CodeQL #588 — **SUCCESS**.
+
+Latest first-party naming cleanup:
+
+- PR #61 squash merge `efe937c67343242b7ccf3396a67b3cf2ce35ebac`;
+- remaining safe first-party `SIMPLIXPAY_*` runtime/control identifiers migrated to `SUCHECKOUT_*` equivalents while protected UPayments/persisted contracts remained unchanged;
+- fresh main Quality #781, Compatibility #309 (**16/16**), Release Artifact #258, Provider Sandbox #221, WordPress.org #116 and CodeQL #595 — **SUCCESS**.
 
 See [`docs/project/PROJECT-STATUS.md`](docs/project/PROJECT-STATUS.md) for the living state and [`docs/COMPATIBILITY.md`](docs/COMPATIBILITY.md) for the public evidence boundary.
 
