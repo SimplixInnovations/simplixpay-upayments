@@ -14,8 +14,8 @@ Use this file with root `AGENTS.md`, `PROJECT-STATUS.md`, `OWNER-HANDOFF.md`, `N
 - First-stable physical bootstrap: `UPayments.php`
 - Canonical first-stable basename: `sucheckout-upayments/UPayments.php`
 - Development version: **0.1.0**
-- Current GitHub coordinate pending owner rename: `SimplixInnovations/simplixpay-upayments`
-- Approved target repository: `SimplixInnovations/sucheckout-upayments`
+- Canonical GitHub repository: `SimplixInnovations/sucheckout`
+- Canonical plugin/package slug: `sucheckout-upayments`
 
 The word `for` is human-facing relationship copy only and must never be encoded into technical identifiers.
 
@@ -111,7 +111,7 @@ Real WordPress qualification proved that directly renaming an already-active phy
 Owner/admin/local sequence is controlled by `OWNER-HANDOFF.md`:
 
 1. delete two obsolete remote branches;
-2. rename repository to `SimplixInnovations/sucheckout-upayments`;
+2. verify/reconcile the canonical repository at `SimplixInnovations/sucheckout`;
 3. update GitHub About/security/integrations and local `origin`;
 4. run a coordinate-only PR for living old-repository links;
 5. run isolated local acceptance and real WooCommerce smoke;

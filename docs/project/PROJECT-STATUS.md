@@ -2,8 +2,8 @@
 
 **Status document:** canonical living engineering state
 **Last reconciled:** 2026-09-07
-**Current GitHub repository pending owner rename:** `SimplixInnovations/simplixpay-upayments`
-**Approved canonical repository:** `SimplixInnovations/sucheckout-upayments`
+**Canonical GitHub repository:** `SimplixInnovations/sucheckout`
+**Canonical plugin/package slug:** `sucheckout-upayments`
 **Development version:** `0.1.0`
 
 > Live GitHub/source evidence wins over recorded SHAs. Historical phase records preserve what was true at their close. This file owns the current program state; `OWNER-HANDOFF.md` owns the remaining owner/admin/local sequence.
@@ -22,13 +22,13 @@
 | First-stable physical bootstrap | `UPayments.php` — protected compatibility exception |
 | Runtime-bearing SUCheckout migration | **DONE / VERIFIED** |
 | First-party naming cleanup | **DONE / VERIFIED** |
-| Documentation/control-plane hardening | **IN FINAL EXACT-HEAD CERTIFICATION** |
+| Documentation/control-plane hardening | **DONE / VERIFIED — PR #65 merged and post-merge certified** |
 | Historical Quality Platform Q1-Q19 | **DONE / VERIFIED — permanently closed at Q19** |
 | Historical Enterprise Tasks 1-8 | **DONE / VERIFIED evidence retained** |
 | Deterministic release artifact | **DONE / VERIFIED — permanent exact-head gate** |
 | Legacy-root → canonical-root migration | **DONE / VERIFIED — permanent release gate** |
 | WordPress.org Plugin Check | **DONE / VERIFIED — 0 blocking errors on certified package** |
-| Repository rename | **OWNER/ADMIN ACTION — READY AFTER THIS DOC PR MERGES** |
+| Repository rename | **DONE / VERIFIED — canonical repository is `SimplixInnovations/sucheckout`** |
 | Public Git tag / GitHub Release | **NOT CREATED** |
 | WordPress.org publication | **NOT PERFORMED** |
 
@@ -76,6 +76,21 @@ Fresh push-triggered evidence on that exact `main` SHA:
 - WordPress.org Submission Check #110 — **SUCCESS**;
 - CodeQL/main-security #588 — **SUCCESS**.
 
+### Final documentation/control-plane baseline
+
+PR #65 upgraded and reconciled the complete living documentation/control plane. It squash-merged as:
+
+`24d868b0388a76654b35b3c9d79535aa2eb74678`
+
+Fresh exact-main evidence:
+
+- Quality Gates #814 — **SUCCESS**;
+- Compatibility Certification #342 — **16/16 SUCCESS**;
+- Release Artifact #291 — **SUCCESS**;
+- Provider Sandbox Certification #253 — **SUCCESS**;
+- WordPress.org Submission Check #149 — **SUCCESS**;
+- CodeQL/main-security #630 — **SUCCESS**.
+
 ### Latest first-party naming cleanup baseline
 
 PR #61 completed the remaining safe first-party runtime/control naming cleanup, migrating retired first-party implementation/control symbols to canonical SUCheckout equivalents while preserving all protected UPayments/provider/persisted identities.
@@ -107,7 +122,7 @@ The approved identity is:
 - deterministic package: `sucheckout-upayments-X.Y.Z.zip`;
 - package root: `sucheckout-upayments/`;
 - first-stable bootstrap: `UPayments.php`;
-- target repository after owner rename: `SimplixInnovations/sucheckout-upayments`.
+- canonical GitHub repository: `SimplixInnovations/sucheckout`.
 
 The word **for** appears in human-facing relationship copy only. It does not appear in technical slugs, URLs, package identities, text domains or namespaces.
 
@@ -205,7 +220,7 @@ After this final documentation-hardening PR is exact-green and merged, the remai
 
 1. synchronize the owner's local clone to the final `origin/main`;
 2. delete obsolete remote branches;
-3. rename GitHub repository to `SimplixInnovations/sucheckout-upayments`;
+3. verify canonical GitHub repository metadata/controls at `SimplixInnovations/sucheckout`;
 4. update repository About metadata and local `origin`;
 5. verify rulesets/security/integrations after rename;
 6. create/merge one coordinate-only PR updating living old-repository URLs;

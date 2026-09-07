@@ -59,7 +59,7 @@ use Simplixi\SUCheckout\UPayments\Release\Identity;
 
 // Public product header: canonical SUCheckout identity on the independent 0.x line.
 p0_assert(p0_header_value($bootstrap, 'Plugin Name') === 'SUCheckout for UPayments', 'public header exposes canonical SUCheckout product name');
-p0_assert(p0_header_value($bootstrap, 'Plugin URI') === 'https://github.com/SimplixInnovations/sucheckout-upayments', 'plugin URI exposes canonical SUCheckout repository target');
+p0_assert(p0_header_value($bootstrap, 'Plugin URI') === 'https://github.com/SimplixInnovations/sucheckout', 'plugin URI exposes canonical SUCheckout repository target');
 p0_assert(p0_header_value($bootstrap, 'Description') === 'Independently engineered UPayments payment integration for WooCommerce by Simplix Innovations.', 'plugin description remains provider-accurate during identity transition');
 p0_assert(p0_header_value($bootstrap, 'Version') === Identity::VERSION, 'header version matches canonical release identity');
 p0_assert(p0_header_value($bootstrap, 'Author') === 'Simplix Innovations', 'plugin author is Simplix Innovations');
@@ -107,7 +107,7 @@ p0_assert(p0_contains($uninstall, 'WP_UNINSTALL_PLUGIN'), 'uninstall retains dir
 // Independent version line sanity.
 p0_assert((bool) preg_match('/^0\.[0-9]+\.[0-9]+(?:[-+][0-9A-Za-z.-]+)?$/', Identity::VERSION), 'version is on independent pre-1.0 semantic line');
 p0_assert(Identity::SLUG === 'sucheckout-upayments', 'canonical slug is exact');
-p0_assert(Identity::REPOSITORY === 'SimplixInnovations/sucheckout-upayments', 'canonical repository is exact');
+p0_assert(Identity::REPOSITORY === 'SimplixInnovations/sucheckout', 'canonical repository is exact');
 
 echo "\n--- Phase 0 Release Identity Report ---\n";
 echo "PASS: {$pass}\n";

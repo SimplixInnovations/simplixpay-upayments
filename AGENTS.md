@@ -26,8 +26,8 @@ Before substantive work read, in this order:
 - PHP namespace root: `Simplixi\SUCheckout\UPayments`
 - Global PHP prefix for new first-party symbols: `sucheckout_upayments_`
 - Constants: `SUCHECKOUT_UPAYMENTS_*`
-- Current GitHub coordinate pending owner/admin rename: `SimplixInnovations/simplixpay-upayments`
-- Approved target GitHub coordinate: `SimplixInnovations/sucheckout-upayments`
+- Canonical GitHub coordinate: `SimplixInnovations/sucheckout`
+- Canonical plugin/package slug remains: `sucheckout-upayments`
 
 The word **for** is human-facing relationship copy only and must never be encoded into URLs, slugs, text domains, package names, namespaces, CSS/JS roots or release artifacts.
 
@@ -193,17 +193,17 @@ Do not imply WooCommerce or UPayments endorsement.
 
 UPayments may appear as the provider/integration in human-facing copy. SUCheckout must remain the first-party product identity.
 
-## Repository rename discipline
+## Repository coordinate discipline
 
-Until the owner/admin rename occurs, living GitHub links may still point at `SimplixInnovations/simplixpay-upayments` because that is the live coordinate.
+The canonical GitHub coordinate is `SimplixInnovations/sucheckout`. The WordPress/plugin technical slug remains `sucheckout-upayments`.
 
-After rename to `SimplixInnovations/sucheckout-upayments`:
+For repository-coordinate changes:
 
-1. create a dedicated coordinate-only branch/PR;
-2. update only current/living repository URLs, badges and issue/support links;
-3. audit every `simplixpay` hit;
-4. retain historical milestone records and legacy package-root migration fixtures where the old token is semantically required;
-5. rerun all workflows triggered by those changes;
+1. update only current/living repository URLs, badges and issue/support links;
+2. audit every retired repository-coordinate hit;
+3. retain historical milestone records and legacy package-root migration fixtures where old package tokens are semantically required;
+4. never reinterpret provider/persisted compatibility identifiers as repository branding;
+5. rerun all workflows triggered by coordinate changes;
 6. merge only an exact green head and verify `main` again.
 
 Never bulk-replace the old token repository-wide.

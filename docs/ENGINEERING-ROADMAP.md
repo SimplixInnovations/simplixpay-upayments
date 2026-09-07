@@ -74,7 +74,7 @@ The first-party identity is now:
 - PHP namespace: `Simplixi\SUCheckout\UPayments`;
 - package root: `sucheckout-upayments/`;
 - first-stable physical bootstrap: `UPayments.php`;
-- target GitHub repository: `SimplixInnovations/sucheckout-upayments`.
+- canonical GitHub repository: `SimplixInnovations/sucheckout`.
 
 The word `for` is human-facing relationship wording only and never appears in technical identifiers.
 
@@ -113,7 +113,7 @@ Engineering does not need another invented phase. The remaining sequence is cont
 
 1. synchronize the owner's normal clone with `origin/main`;
 2. delete obsolete remote branches;
-3. rename GitHub repository to `SimplixInnovations/sucheckout-upayments`;
+3. verify the canonical GitHub repository is `SimplixInnovations/sucheckout` and reconcile living coordinates;
 4. update About metadata and local `origin`;
 5. verify rulesets, Actions, security controls, Dependabot, PVR, secrets/environments and external integrations after rename;
 6. create one coordinate-only PR for living old-repository URLs/badges/issue links;

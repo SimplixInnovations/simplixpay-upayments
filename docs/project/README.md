@@ -74,7 +74,7 @@ Namespace:          Simplixi\SUCheckout\UPayments
 Package root:       sucheckout-upayments/
 First-stable file:  UPayments.php
 Canonical basename: sucheckout-upayments/UPayments.php
-Target repository:  SimplixInnovations/sucheckout-upayments
+GitHub repository:  SimplixInnovations/sucheckout
 ```
 
 `for` is display/relationship wording only and must never be encoded into technical identifiers.

@@ -39,7 +39,7 @@ foreach (array(
     "SHORT_NAME = 'SUCheckout'",
     "VERSION = '0.1.0'",
     "SLUG = 'sucheckout-upayments'",
-    "REPOSITORY = 'SimplixInnovations/sucheckout-upayments'",
+    "REPOSITORY = 'SimplixInnovations/sucheckout'",
     "UPDATE_CHANNEL = 'disabled'",
     "LEGACY_MAIN_FILE = 'UPayments.php'",
     "LEGACY_TEXT_DOMAIN = 'upayments'",

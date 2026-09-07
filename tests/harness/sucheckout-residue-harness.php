@@ -151,23 +151,57 @@ foreach ($unexpected as $item) {
 sur_assert($unexpected === array(), 'no unexplained retired identity remains on live/shippable surfaces');
 
 $current_identity_contracts = array(
-    'README.md' => array('SUCheckout for UPayments', 'sucheckout-upayments'),
-    'AGENTS.md' => array('SUCheckout for UPayments', 'Simplixi\\SUCheckout\\UPayments'),
-    'docs/project/PROJECT-STATUS.md' => array('SUCheckout for UPayments', 'sucheckout-upayments'),
-    'docs/project/NAMING-IDENTITY-STANDARD.md' => array('SUCheckout for UPayments', 'Simplixi\\SUCheckout\\UPayments'),
+    'README.md' => array('SUCheckout for UPayments', 'sucheckout-upayments', 'SimplixInnovations/sucheckout'),
+    'AGENTS.md' => array('SUCheckout for UPayments', 'Simplixi\\SUCheckout\\UPayments', 'SimplixInnovations/sucheckout'),
+    'docs/project/PROJECT-STATUS.md' => array('SUCheckout for UPayments', 'sucheckout-upayments', 'SimplixInnovations/sucheckout'),
+    'docs/project/NAMING-IDENTITY-STANDARD.md' => array('SUCheckout for UPayments', 'Simplixi\\SUCheckout\\UPayments', 'SimplixInnovations/sucheckout'),
     'UPayments.php' => array(
+        'Plugin URI: https://github.com/SimplixInnovations/sucheckout',
         "define('SUCHECKOUT_UPAYMENTS_VERSION', Identity::VERSION);",
         "define('SUCHECKOUT_UPAYMENTS_SLUG', Identity::SLUG);",
         "define('SUCHECKOUT_UPAYMENTS_PLUGIN_FILE', __FILE__);",
         "define('SUCHECKOUT_UPAYMENTS_UPDATE_CHANNEL', Identity::UPDATE_CHANNEL);",
     ),
     'composer.json' => array('simplix-innovations/sucheckout-upayments', 'Simplixi\\\\SUCheckout\\\\UPayments\\\\'),
+    'src/Release/Identity.php' => array("REPOSITORY = 'SimplixInnovations/sucheckout'"),
 );
 foreach ($current_identity_contracts as $contract_path => $needles) {
     $source = sur_read($root, $contract_path);
     sur_assert($source !== '', 'current identity source readable: ' . $contract_path);
     foreach ($needles as $needle) {
         sur_assert(strpos($source, $needle) !== false, $contract_path . ' contains canonical identity: ' . $needle);
+    }
+}
+
+
+$repository_coordinate_files = array(
+    '.github/ISSUE_TEMPLATE/config.yml',
+    'README.md',
+    'AGENTS.md',
+    'NOTICE.md',
+    'UPSTREAM.md',
+    'UPayments.php',
+    'docs/ENGINEERING-ROADMAP.md',
+    'docs/project/ENTERPRISE-CERTIFICATION.md',
+    'docs/project/NAMING-IDENTITY-STANDARD.md',
+    'docs/project/NEW-CHAT-HANDOFF.md',
+    'docs/project/PROJECT-STATUS.md',
+    'docs/project/README.md',
+    'docs/project/RELEASE-ENGINEERING.md',
+    'src/Release/Identity.php',
+);
+$stale_repository_coordinates = array(
+    'SimplixInnovations/simplixpay-upayments',
+    'SimplixInnovations/sucheckout-upayments',
+);
+foreach ($repository_coordinate_files as $coordinate_path) {
+    $source = sur_read($root, $coordinate_path);
+    sur_assert($source !== '', 'repository-coordinate source readable: ' . $coordinate_path);
+    foreach ($stale_repository_coordinates as $stale_coordinate) {
+        sur_assert(
+            strpos($source, $stale_coordinate) === false,
+            $coordinate_path . ' excludes stale repository coordinate: ' . $stale_coordinate
+        );
     }
 }
 
