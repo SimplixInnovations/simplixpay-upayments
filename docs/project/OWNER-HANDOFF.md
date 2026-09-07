@@ -3,8 +3,8 @@
 **Engineering migration:** DONE / VERIFIED
 **Migration scope:** identity/runtime
 **Latest certified documentation-closeout `main`:** `24d868b0388a76654b35b3c9d79535aa2eb74678`
-**Current GitHub repository pending owner rename:** `SimplixInnovations/simplixpay-upayments`
-**Approved repository target:** `SimplixInnovations/sucheckout-upayments`
+**Canonical GitHub repository:** `SimplixInnovations/sucheckout`
+**Canonical plugin/package slug:** `sucheckout-upayments`
 **Development version:** `0.1.0`
 **Public tag / GitHub Release / WordPress.org publication:** NOT YET CREATED
 
@@ -20,7 +20,7 @@ Fresh verification on documentation-closeout `main` `24d868b0388a76654b35b3c9d79
 - CodeQL/main-security #630 — **SUCCESS**
 - official packaged Plugin Check — **0 blocking errors**
 
-Complete the final repository-control hardening PR before beginning the owner rename sequence below.
+The repository rename is complete. Complete the final repository-control hardening PR, then perform the post-rename verification and local acceptance sequence below.
 
 ## Golden identity rule
 
@@ -145,32 +145,22 @@ git worktree prune
 
 The Dependabot branch normally exists only remotely; delete a local counterpart only if one actually exists.
 
-## A3. Rename the GitHub repository
+## A3. Verify the completed GitHub repository rename
 
-GitHub UI:
-
-1. Repository → **Settings**.
-2. **General** → Repository name.
-3. Change:
+The owner has completed the administrative rename. The canonical repository is:
 
 ```text
-simplixpay-upayments
+SimplixInnovations/sucheckout
 ```
 
-to:
+Verify:
 
-```text
-sucheckout-upayments
-```
+1. the browser URL resolves directly to the canonical coordinate without relying on an old-name redirect;
+2. the default branch is still `main`;
+3. repository permissions, rulesets, Actions, security settings, secrets/environments and integrations survived the rename;
+4. the WordPress/plugin technical slug remains `sucheckout-upayments` and is not mechanically shortened to the repository slug.
 
-4. Confirm.
-5. Re-open the repository at the new coordinate:
-
-```text
-SimplixInnovations/sucheckout-upayments
-```
-
-Do not encode the human-only relationship word in the technical repository name.
+The shorter repository coordinate is an explicit product-repository decision; it does not change package/runtime identity.
 
 ## A4. Update GitHub About metadata
 
@@ -206,15 +196,17 @@ sucheckout-upayments
 upayments
 woocommerce
 woocommerce-payment-gateway
+woocommerce-plugin
 wordpress
+wordpress-plugin
 ```
 
-Do not add unsupported/uncertified claim topics such as `wpml-ready`, `pci-compliant`, `all-wallets`, `refunds`, `multicurrency` or `accessibility-ready` without separate evidence.
+Remove retired or claim-inflating topics such as `upayments-woocommerce` and `wpml`. Do not add unsupported/uncertified claim topics such as `wpml-ready`, `pci-compliant`, `all-wallets`, `refunds`, `multicurrency` or `accessibility-ready` without separate evidence.
 
 ## A5. Update local `origin` after rename
 
 ```bash
-git remote set-url origin https://github.com/SimplixInnovations/sucheckout-upayments.git
+git remote set-url origin https://github.com/SimplixInnovations/sucheckout.git
 git remote -v
 git fetch --prune --tags origin
 git remote set-head origin -a
@@ -243,7 +235,7 @@ Verify rather than assume:
 - no unexpected open PRs/issues remain;
 - only intended branches remain.
 
-## A7. Post-rename coordinate-only PR
+## A7. Post-rename coordinate reconciliation PR
 
 After the GitHub rename, tell ChatGPT the new URL/that the rename is complete. A small dedicated PR must update **living repository-coordinate references only**.
 
@@ -251,11 +243,13 @@ Audit:
 
 ```bash
 git grep -n "SimplixInnovations/simplixpay-upayments"
+git grep -n "SimplixInnovations/sucheckout-upayments"
 git grep -n "github.com/SimplixInnovations/simplixpay-upayments"
+git grep -n "github.com/SimplixInnovations/sucheckout-upayments"
 git grep -n "simplixpay" -- ':!docs/history/**' ':!docs/superpowers/**'
 ```
 
-Expected current-coordinate surfaces can include README badges/links, `AGENTS.md`, project status/handoff, `NOTICE.md`, `UPSTREAM.md` and issue-template links.
+Expected current-coordinate surfaces include README badges/links, `AGENTS.md`, plugin metadata, release identity, project status/handoff, `NOTICE.md`, `UPSTREAM.md` and issue-template links; all must resolve to `SimplixInnovations/sucheckout`.
 
 Classify every hit:
 
@@ -571,9 +565,9 @@ Unsupported in the current certified feature set:
 - [ ] normal clone synchronized; `HEAD == origin/main`; worktree clean
 - [ ] no legitimate open PRs remain
 - [ ] all superseded non-main branches removed
-- [ ] repository renamed to `SimplixInnovations/sucheckout-upayments`
+- [x] repository canonical coordinate verified as `SimplixInnovations/sucheckout`
 - [ ] About description/homepage/topics updated
-- [ ] local `origin` updated to new URL
+- [ ] local `origin` updated to `https://github.com/SimplixInnovations/sucheckout.git`
 - [ ] ruleset/Actions/CodeQL/Dependabot/secret scanning/PVR/integrations verified after rename
 - [ ] coordinate-only living-link PR merged from exact green head
 - [ ] final branch audit shows only intended branch(es), ideally `main`
