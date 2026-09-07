@@ -4,7 +4,7 @@
 
 **SUPCheckout for UPayments** is independently maintained by Simplix Innovations and derives from the UPayments WooCommerce integration:
 
-- canonical GitHub repository: https://github.com/SimplixInnovations/sucheckout
+- canonical GitHub repository: https://github.com/SimplixInnovations/supcheckout
 - historical Simplix engineering/audit archive: https://github.com/SimplixInnovations/upayments-woocommerce
 - provider upstream repository: https://github.com/upaymentskwt/woocommerce
 - provider documentation: https://developers.upayments.com/reference/woocommerce
