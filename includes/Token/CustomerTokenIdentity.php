@@ -219,6 +219,7 @@ class CustomerTokenIdentity {
         $escaped_prefix = $wpdb->esc_like($meta_prefix);
 
         // Use $wpdb->query() for unambiguous row-count semantics.
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Fresh global provenance-presence probe is a security invariant and must not be cached.
         $row_count = $wpdb->query(
             $wpdb->prepare(
                 "SELECT 1 FROM {$wpdb->usermeta} WHERE meta_key LIKE %s LIMIT 1",
@@ -1624,6 +1625,7 @@ class CustomerTokenIdentity {
         $meta_prefix = '_upay_customer_token_v2_b' . $blog_id . '_';
         $escaped_prefix = $wpdb->esc_like($meta_prefix);
 
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Provenance enumeration must observe current usermeta and intentionally bypass caches.
         $meta_keys = $wpdb->get_col(
             $wpdb->prepare(
                 "SELECT meta_key FROM {$wpdb->usermeta} WHERE user_id = %d AND meta_key LIKE %s",
@@ -2293,6 +2295,7 @@ class CustomerTokenIdentity {
     private static function acquire_lock($lock_name) {
         global $wpdb;
 
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- MySQL advisory lock is a live-connection concurrency primitive and cannot be cached.
         $result = $wpdb->get_var(
             $wpdb->prepare('SELECT GET_LOCK(%s, 5)', $lock_name)
         );
@@ -2303,6 +2306,7 @@ class CustomerTokenIdentity {
     private static function release_lock($lock_name) {
         global $wpdb;
 
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- MySQL advisory-lock release must execute on the live connection and cannot be cached.
         $wpdb->get_var(
             $wpdb->prepare('SELECT RELEASE_LOCK(%s)', $lock_name)
         );
