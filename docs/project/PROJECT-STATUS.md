@@ -65,8 +65,8 @@ Post-rename coordinate closure:
 - PR #68 exact head `0e6ef6334282a83a428da7ee793daa98360c2bcc` passed Quality #900, Compatibility #428 (**16/16**), Release Artifact #377, Provider Sandbox #338, WordPress.org #235 and CodeQL #722;
 - squash merge: `05fec942cc8fbeb58cfd0bd41f0ef5fdb86f966f`;
 - post-merge Quality #901, Compatibility #429 (**16/16**), Release Artifact #378, Provider Sandbox #339, WordPress.org #236 and CodeQL #723 — **SUCCESS**;
-- remote branch topology: **main only**;
-- open PRs/issues: **0 / 0**;
+- PR #68 closeout remote topology before documentation-only PR #69: **main only**;
+- open PRs/issues at that closeout point: **0 / 0**;
 - tags/releases: **0 / 0**.
 
 
