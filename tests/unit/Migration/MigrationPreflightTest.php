@@ -1,11 +1,11 @@
 <?php
 
-namespace Simplixi\SUCheckout\UPayments\Tests\Migration;
+namespace Simplixi\SUPCheckout\Tests\Migration;
 
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 use ReflectionMethod;
-use Simplixi\SUCheckout\UPayments\Migration\MigrationPreflight;
+use Simplixi\SUPCheckout\Migration\MigrationPreflight;
 use UPayments\Token\CustomerTokenIdentity;
 
 final class MigrationPreflightTest extends TestCase {

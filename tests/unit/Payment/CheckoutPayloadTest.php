@@ -1,9 +1,9 @@
 <?php
 
-namespace Simplixi\SUCheckout\UPayments\Tests\Payment;
+namespace Simplixi\SUPCheckout\Tests\Payment;
 
 use PHPUnit\Framework\TestCase;
-use Simplixi\SUCheckout\UPayments\Payment\CheckoutPayload;
+use Simplixi\SUPCheckout\Payment\CheckoutPayload;
 
 final class CheckoutPayloadTest extends TestCase {
     public function test_decimal_comparison_preserves_exact_provider_economics(): void {

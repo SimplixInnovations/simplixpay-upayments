@@ -1,9 +1,9 @@
 <?php
 
-namespace Simplixi\SUCheckout\UPayments\Tests\Payment;
+namespace Simplixi\SUPCheckout\Tests\Payment;
 
 use PHPUnit\Framework\TestCase;
-use Simplixi\SUCheckout\UPayments\Payment\OrderLock;
+use Simplixi\SUPCheckout\Payment\OrderLock;
 
 final class OrderLockTest extends TestCase {
     protected function setUp(): void {
