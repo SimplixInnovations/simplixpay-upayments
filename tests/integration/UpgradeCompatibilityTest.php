@@ -13,15 +13,23 @@ require_once ABSPATH . 'wp-admin/includes/plugin.php';
 
 $phase = getenv('SUPCHECKOUT_UPGRADE_PHASE');
 
-$legacy_basename = 'simplixpay-upayments/UPayments.php';
+$legacy_slug = getenv('SUPCHECKOUT_LEGACY_SLUG');
+if (!is_string($legacy_slug) || !preg_match('/^[a-z0-9-]+$/', $legacy_slug)) {
+    throw new RuntimeException('SUPCHECKOUT_LEGACY_SLUG is required.');
+}
+$legacy_text_domain = getenv('SUPCHECKOUT_LEGACY_TEXT_DOMAIN');
+if (!is_string($legacy_text_domain) || $legacy_text_domain === '') {
+    throw new RuntimeException('SUPCHECKOUT_LEGACY_TEXT_DOMAIN is required.');
+}
+$legacy_basename = $legacy_slug . '/UPayments.php';
 $canonical_basename = 'supcheckout/UPayments.php';
 $future_basename = 'supcheckout/supcheckout.php';
 
 $settings_key = 'woocommerce_upayments_settings';
-$settings_snapshot_key = '_sucheckout_upgrade_settings_snapshot';
-$order_key = '_sucheckout_upgrade_order_id';
-$product_key = '_sucheckout_upgrade_product_id';
-$cron_key = '_sucheckout_upgrade_cron_timestamp';
+$settings_snapshot_key = '_supcheckout_upgrade_settings_snapshot';
+$order_key = '_supcheckout_upgrade_order_id';
+$product_key = '_supcheckout_upgrade_product_id';
+$cron_key = '_supcheckout_upgrade_cron_timestamp';
 
 function sucheckout_upgrade_verify_data($settings_key, $settings_snapshot_key, $order_key, $cron_key) {
     $snapshot = get_option($settings_snapshot_key);
@@ -80,13 +88,13 @@ function sucheckout_upgrade_translation_hits($plugin_root, $domain) {
     return $hits;
 }
 
-function sucheckout_upgrade_assert_runtime_contract($mode, $legacy_basename, $canonical_basename, $future_basename) {
+function sucheckout_upgrade_assert_runtime_contract($mode, $legacy_slug, $legacy_text_domain, $legacy_basename, $canonical_basename, $future_basename) {
     $legacy = 'legacy' === $mode;
     $active_basename = $legacy ? $legacy_basename : $canonical_basename;
     $inactive_basename = $legacy ? $canonical_basename : $legacy_basename;
-    $root = WP_PLUGIN_DIR . '/' . ($legacy ? 'simplixpay-upayments' : 'supcheckout');
-    $expected_domain = $legacy ? 'upayments' : 'supcheckout';
-    $label = $legacy ? 'legacy existing-install' : 'canonical SUPCheckout';
+    $root = WP_PLUGIN_DIR . '/' . ($legacy ? $legacy_slug : 'supcheckout');
+    $expected_domain = $legacy ? $legacy_text_domain : 'supcheckout';
+    $label = $legacy ? 'pre-stable existing-install ' . $legacy_slug : 'canonical SUPCheckout';
 
     sucheckout_cert_assert(file_exists($root . '/UPayments.php'), $label . ' retains qualified UPayments.php bootstrap');
     if (!$legacy) {
@@ -115,7 +123,7 @@ function sucheckout_upgrade_assert_runtime_contract($mode, $legacy_basename, $ca
 }
 
 if ('seed-existing' === $phase) {
-    sucheckout_upgrade_assert_runtime_contract('legacy', $legacy_basename, $canonical_basename, $future_basename);
+    sucheckout_upgrade_assert_runtime_contract('legacy', $legacy_slug, $legacy_text_domain, $legacy_basename, $canonical_basename, $future_basename);
 
     // Prime the negative cache to keep this fixture representative of an
     // already-running merchant installation.
@@ -157,19 +165,19 @@ if ('seed-existing' === $phase) {
     update_option($cron_key, $cron, false);
 
     sucheckout_upgrade_verify_data($settings_key, $settings_snapshot_key, $order_key, $cron_key);
-    sucheckout_cert_note('legacy simplixpay-upayments installation seeded');
+    sucheckout_cert_note('pre-stable installation seeded: ' . $legacy_slug);
     return;
 }
 
 if ('verify-canonical' === $phase || 'verify-canonical-final' === $phase) {
-    sucheckout_upgrade_assert_runtime_contract('canonical', $legacy_basename, $canonical_basename, $future_basename);
+    sucheckout_upgrade_assert_runtime_contract('canonical', $legacy_slug, $legacy_text_domain, $legacy_basename, $canonical_basename, $future_basename);
     sucheckout_upgrade_verify_data($settings_key, $settings_snapshot_key, $order_key, $cron_key);
     sucheckout_cert_note('canonical SUPCheckout package-root migration verified');
     return;
 }
 
 if ('verify-legacy-rollback' === $phase) {
-    sucheckout_upgrade_assert_runtime_contract('legacy', $legacy_basename, $canonical_basename, $future_basename);
+    sucheckout_upgrade_assert_runtime_contract('legacy', $legacy_slug, $legacy_text_domain, $legacy_basename, $canonical_basename, $future_basename);
     sucheckout_upgrade_verify_data($settings_key, $settings_snapshot_key, $order_key, $cron_key);
     sucheckout_cert_note('legacy rollback remains non-destructive');
     return;
