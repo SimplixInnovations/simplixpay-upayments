@@ -370,10 +370,12 @@ final class Presentation {
         // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only account orders filter.
         $current = self::subscription_filter($_GET);
         // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only account pagination identity.
-        $page_id = self::request_text($_GET, 'page_id', '12');
+        $page_id = self::request_text($_GET, 'page_id');
         ?>
         <form method="get" class="upay-orders-filter" action="<?php echo esc_url(add_query_arg(null, null)); ?>">
-            <input type="hidden" name="page_id" value="<?php echo esc_attr($page_id); ?>">
+            <?php if ($page_id !== '') { ?>
+                <input type="hidden" name="page_id" value="<?php echo esc_attr($page_id); ?>">
+            <?php } ?>
             <input type="hidden" name="orders" value="">
             <label for="subscription_filter">Select Order Type:</label>
             <select id="subscription_filter" name="subscription_filter" onchange="this.form.submit()">
