@@ -14,8 +14,7 @@ Use this file with root `AGENTS.md`, `PROJECT-STATUS.md`, `OWNER-HANDOFF.md`, `N
 - First-stable physical bootstrap: `UPayments.php`
 - Canonical first-stable basename: `supcheckout/UPayments.php`
 - Development version: **0.1.0**
-- Current GitHub repository: `SimplixInnovations/sucheckout`
-- Target repository after certified merge: `SimplixInnovations/supcheckout`
+- Canonical GitHub repository: `SimplixInnovations/supcheckout`
 - Canonical plugin/package slug: `supcheckout`
 
 The word `for` is human-facing relationship copy only and must never be encoded into technical identifiers.
@@ -33,13 +32,13 @@ The word `for` is human-facing relationship copy only and must never be encoded 
 - Quality Platform Q17 payment-runtime analysis: **DONE / VERIFIED**
 - Enterprise Task 8 release-candidate closeout — **DONE / VERIFIED**
 - Enterprise Tasks 1-8 — **DONE / VERIFIED**
-- Final SUPCheckout product/namespace/text-domain/package migration — **IN EXACT-HEAD CERTIFICATION (PR #67)**
+- Final SUPCheckout product/namespace/text-domain/package migration — **DONE / VERIFIED — PR #67 merged and post-merge certified**
 - Deterministic release + packaged runtime — **DONE / VERIFIED**
 - Both real pre-stable package roots → SUPCheckout migration/rollback — **CI-CERTIFIED on current candidate**
 - WordPress.org packaged Plugin Check — **DONE / VERIFIED / 0 blocking errors**
 - Public stable release — **NO**
 - WordPress.org publication — **NO**
-- Repository rename — **owner/admin action pending**
+- Repository rename — **DONE / VERIFIED — `SimplixInnovations/supcheckout`**
 
 Never invent Q20. Live GitHub evidence wins over recorded SHAs.
 
@@ -56,6 +55,19 @@ Never invent Q20. Live GitHub evidence wins over recorded SHAs.
 - WordPress.org #101 — **SUCCESS**;
 - CodeQL/main-security #579 — **SUCCESS**;
 - official packaged Plugin Check — **0 blocking errors**.
+
+### Final SUPCheckout identity migration
+
+- PR #67 certified head: `0059f365883fa4edd6a2d623c7b370d38d3f565c`;
+- squash merge: `7547e59a2d5ef6d49b059851c6899a2d9987b16a`;
+- post-merge Quality #896 — **SUCCESS**;
+- Compatibility #424 — **16/16 SUCCESS**;
+- Release Artifact #373 — **SUCCESS**;
+- Provider Sandbox #334 — **SUCCESS**;
+- WordPress.org #231 — **SUCCESS**;
+- CodeQL/main-security #717 — **SUCCESS**;
+- repository rename — **COMPLETE**;
+- obsolete remote branches — **CLEANED; main-only topology verified before coordinate reconciliation**.
 
 ### Final control-plane closeout
 
@@ -111,11 +123,11 @@ Real WordPress qualification proved that directly renaming an already-active phy
 
 Owner/admin/local sequence is controlled by `OWNER-HANDOFF.md`:
 
-1. delete two obsolete remote branches;
-2. after exact-green merge, rename `SimplixInnovations/sucheckout` to `SimplixInnovations/supcheckout` and reconcile living coordinates;
-3. update GitHub About/security/integrations and local `origin`;
-4. run a coordinate-only PR for living old-repository links;
-5. run isolated local acceptance and real WooCommerce smoke;
+1. finish the remaining post-rename About/topics and Main Rule corrections;
+2. verify local `origin` points directly to the canonical repository;
+3. merge the coordinate-only living-reference closure from an exact-green head;
+4. run isolated local acceptance and real WooCommerce smoke;
+5. apply approved launch branding and visual/accessibility acceptance;
 6. explicitly choose the first public version;
 7. release/tag/WordPress.org only after exact-main verification and owner approval.
 
