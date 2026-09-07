@@ -1,6 +1,6 @@
 <?php
 
-namespace Simplixi\SUCheckout\UPayments\Provider;
+namespace Simplixi\SUPCheckout\Provider;
 
 /**
  * UPayments payment-method availability client and cache coordinator.
