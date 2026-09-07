@@ -76,7 +76,7 @@ Fresh push-triggered evidence on that exact `main` SHA:
 
 ### Latest first-party naming cleanup baseline
 
-PR #61 completed the remaining safe first-party runtime/control naming cleanup, including retirement of `SIMPLIXPAY_*` implementation/control symbols in favor of `SUCHECKOUT_*` equivalents while preserving all protected UPayments/provider/persisted identities.
+PR #61 completed the remaining safe first-party runtime/control naming cleanup, migrating retired first-party implementation/control symbols to canonical SUCheckout equivalents while preserving all protected UPayments/provider/persisted identities.
 
 It merged to `main` as:
 
@@ -228,6 +228,30 @@ Repository certification does not replace:
 - provider webhook-signature verification until a stable documented contract exists.
 
 Automatic WooCommerce refunds and arbitrary marketplace multi-split remain unsupported.
+
+## Permanent historical closure markers
+
+These entries are retained because permanent regression harnesses use them as audit evidence. They do not redefine the current SUCheckout program state.
+
+| Historical gate | Closure |
+|---|---|
+| Quality Platform Q16 migration-core analysis | **DONE / VERIFIED** |
+| Quality Platform Q17 payment-runtime analysis | **DONE / VERIFIED** |
+
+Historical Q16 closure evidence retained verbatim for permanent regression ownership:
+
+- 3cff2fcc64053d79be7427696c86039f1b52bbfd
+- b9cc6eafb3c7f8df36b9c5db8b2e45bb330688d2
+- 06a9ebd732c7cc3f062d4bb361aaef4054a1dfa3
+- Quality Gates run #315
+- Quality Gates run #316
+- 160 tests / 987 assertions
+- Q16 Migration Core Analysis: **120/0**
+- implementation branch `quality/migration-core-analysis`: **deleted after verified merge**
+
+## Task 8 — DONE / VERIFIED
+
+Enterprise Task 8 release-candidate closeout remains historical pre-rebrand evidence and is preserved without rewriting its original milestone identity.
 
 ## Historical evidence rule
 
