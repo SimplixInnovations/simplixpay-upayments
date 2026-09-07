@@ -61,7 +61,7 @@ concurrency:
 
 jobs:
   plugin-check:
-    name: Plugin Check — canonical SUCheckout package
+    name: Plugin Check — canonical SUPCheckout package
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
@@ -88,18 +88,18 @@ jobs:
           rm -rf submission-output "${RUNNER_TEMP}/plugin-check"
           mkdir -p submission-output "${RUNNER_TEMP}/plugin-check"
           bash scripts/build-release.sh submission-output
-          ZIP="$(find submission-output -maxdepth 1 -type f -name 'sucheckout-upayments-*.zip' -print -quit)"
+          ZIP="$(find submission-output -maxdepth 1 -type f -name 'supcheckout-*.zip' -print -quit)"
           test -n "$ZIP"
           bash scripts/verify-release.sh "$ZIP"
           unzip -q "$ZIP" -d "${RUNNER_TEMP}/plugin-check"
-          test -s "${RUNNER_TEMP}/plugin-check/sucheckout-upayments/UPayments.php"
-          test -s "${RUNNER_TEMP}/plugin-check/sucheckout-upayments/readme.txt"
+          test -s "${RUNNER_TEMP}/plugin-check/supcheckout/UPayments.php"
+          test -s "${RUNNER_TEMP}/plugin-check/supcheckout/readme.txt"
 
       - name: Run official WordPress Plugin Check against packaged artifact
         uses: WordPress/plugin-check-action@10857da14b6c2246d15402b3e69f777edcf8c12e # v1.1.9
         with:
-          build-dir: ${{ runner.temp }}/plugin-check/sucheckout-upayments
-          slug: sucheckout-upayments
+          build-dir: ${{ runner.temp }}/plugin-check/supcheckout
+          slug: supcheckout
           categories: plugin_repo
           include-experimental: false
           strict: false

@@ -12,7 +12,7 @@ permissions:
 
 env:
   COMPATIBILITY_SOURCE_SHA: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || github.sha }}
-  SUCHECKOUT_PLUGIN_SLUG: sucheckout-upayments
+  SUPCHECKOUT_PLUGIN_SLUG: supcheckout
 
 concurrency:
   group: compatibility-${{ github.workflow }}-${{ github.ref }}
@@ -122,15 +122,15 @@ jobs:
 
       - name: Seed malformed protected settings
         env:
-          SUCHECKOUT_CERT_PHASE: seed
+          SUPCHECKOUT_CERT_PHASE: seed
         run: /tmp/wp-cli.phar eval-file "$GITHUB_WORKSPACE/tests/integration/PluginActivationTest.php" --path="$RUNNER_TEMP/wordpress"
 
-      - name: Activate SUCheckout
-        run: /tmp/wp-cli.phar plugin activate "$SUCHECKOUT_PLUGIN_SLUG" --path="$RUNNER_TEMP/wordpress"
+      - name: Activate SUPCheckout
+        run: /tmp/wp-cli.phar plugin activate "$SUPCHECKOUT_PLUGIN_SLUG" --path="$RUNNER_TEMP/wordpress"
 
       - name: Verify activation and Classic registration
         env:
-          SUCHECKOUT_CERT_PHASE: verify
+          SUPCHECKOUT_CERT_PHASE: verify
         run: /tmp/wp-cli.phar eval-file "$GITHUB_WORKSPACE/tests/integration/PluginActivationTest.php" --path="$RUNNER_TEMP/wordpress"
 
       - name: Verify release support metadata
@@ -153,7 +153,7 @@ jobs:
 
       - name: Verify order CRUD in authoritative store
         env:
-          SUCHECKOUT_HPOS_MODE: ${{ matrix.storage }}
+          SUPCHECKOUT_HPOS_MODE: ${{ matrix.storage }}
         run: /tmp/wp-cli.phar eval-file "$GITHUB_WORKSPACE/tests/integration/HposCompatibilityTest.php" --path="$RUNNER_TEMP/wordpress"
 
       - name: Verify saved-card and tokenization runtime boundaries
@@ -167,39 +167,39 @@ jobs:
 
       - name: Seed operations/data-retention certification
         env:
-          SUCHECKOUT_CERT_PHASE: seed
+          SUPCHECKOUT_CERT_PHASE: seed
         run: /tmp/wp-cli.phar eval-file "$GITHUB_WORKSPACE/tests/integration/OperationsRuntimeTest.php" --path="$RUNNER_TEMP/wordpress"
 
-      - name: Deactivate SUCheckout without data loss
-        run: /tmp/wp-cli.phar plugin deactivate "$SUCHECKOUT_PLUGIN_SLUG" --path="$RUNNER_TEMP/wordpress"
+      - name: Deactivate SUPCheckout without data loss
+        run: /tmp/wp-cli.phar plugin deactivate "$SUPCHECKOUT_PLUGIN_SLUG" --path="$RUNNER_TEMP/wordpress"
 
       - name: Verify deactivation retention
         env:
-          SUCHECKOUT_CERT_PHASE: deactivated
+          SUPCHECKOUT_CERT_PHASE: deactivated
         run: /tmp/wp-cli.phar eval-file "$GITHUB_WORKSPACE/tests/integration/OperationsRuntimeTest.php" --path="$RUNNER_TEMP/wordpress"
 
-      - name: Reactivate SUCheckout
-        run: /tmp/wp-cli.phar plugin activate "$SUCHECKOUT_PLUGIN_SLUG" --path="$RUNNER_TEMP/wordpress"
+      - name: Reactivate SUPCheckout
+        run: /tmp/wp-cli.phar plugin activate "$SUPCHECKOUT_PLUGIN_SLUG" --path="$RUNNER_TEMP/wordpress"
 
       - name: Verify reactivation retention
         env:
-          SUCHECKOUT_CERT_PHASE: reactivated
+          SUPCHECKOUT_CERT_PHASE: reactivated
         run: /tmp/wp-cli.phar eval-file "$GITHUB_WORKSPACE/tests/integration/OperationsRuntimeTest.php" --path="$RUNNER_TEMP/wordpress"
 
       - name: Execute non-destructive uninstall contract without deleting files
-        run: /tmp/wp-cli.phar plugin uninstall "$SUCHECKOUT_PLUGIN_SLUG" --deactivate --skip-delete --path="$RUNNER_TEMP/wordpress"
+        run: /tmp/wp-cli.phar plugin uninstall "$SUPCHECKOUT_PLUGIN_SLUG" --deactivate --skip-delete --path="$RUNNER_TEMP/wordpress"
 
       - name: Verify uninstall retention
         env:
-          SUCHECKOUT_CERT_PHASE: uninstalled
+          SUPCHECKOUT_CERT_PHASE: uninstalled
         run: /tmp/wp-cli.phar eval-file "$GITHUB_WORKSPACE/tests/integration/OperationsRuntimeTest.php" --path="$RUNNER_TEMP/wordpress"
 
       - name: Reactivate after uninstall contract probe
-        run: /tmp/wp-cli.phar plugin activate "$SUCHECKOUT_PLUGIN_SLUG" --path="$RUNNER_TEMP/wordpress"
+        run: /tmp/wp-cli.phar plugin activate "$SUPCHECKOUT_PLUGIN_SLUG" --path="$RUNNER_TEMP/wordpress"
 
       - name: Verify final retained state and clean certification fixtures
         env:
-          SUCHECKOUT_CERT_PHASE: final
+          SUPCHECKOUT_CERT_PHASE: final
         run: /tmp/wp-cli.phar eval-file "$GITHUB_WORKSPACE/tests/integration/OperationsRuntimeTest.php" --path="$RUNNER_TEMP/wordpress"
 
   compatibility-gate:
