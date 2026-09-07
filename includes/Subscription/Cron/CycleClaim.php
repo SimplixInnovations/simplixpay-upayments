@@ -111,6 +111,7 @@ class CycleClaim
         global $wpdb;
         $table = self::table_name();
 
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Schema-existence probe for the plugin-owned billing-attempt journal; caching would make migration/runtime readiness stale.
         $found = $wpdb->get_var(
             $wpdb->prepare(
                 'SHOW TABLES LIKE %s',
@@ -174,12 +175,14 @@ class CycleClaim
 
         $now_gmt = current_time('mysql', true);
 
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Atomic INSERT IGNORE is the concurrency primitive for the plugin-owned billing-attempt journal; result caching is invalid for claim ownership.
         $inserted = $wpdb->query(
             $wpdb->prepare(
-                "INSERT IGNORE INTO {$table} (
+                "INSERT IGNORE INTO %i (
                     cycle_key, parent_order_id, owner_token, state,
                     cycle_due_gmt, created_gmt, updated_gmt
                 ) VALUES (%s, %d, %s, %s, %s, %s, %s)",
+                $table,
                 $cycle_key,
                 $parent_order_id,
                 $owner_token,
@@ -232,9 +235,10 @@ class CycleClaim
             time() - self::STALE_CLAIMED_THRESHOLD_SECONDS
         );
 
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Atomic compare-and-set update on the plugin-owned billing-attempt journal; caching would violate owner-token concurrency semantics.
         $updated = (int) $wpdb->query(
             $wpdb->prepare(
-                "UPDATE {$table}
+                "UPDATE %i
                     SET owner_token = %s,
                         updated_gmt = %s,
                         cycle_due_gmt = %s
@@ -242,6 +246,7 @@ class CycleClaim
                       AND parent_order_id = %d
                       AND state = %s
                       AND updated_gmt < %s",
+                $table,
                 $new_owner_token,
                 $now_gmt,
                 $cycle_due_gmt,
@@ -277,15 +282,17 @@ class CycleClaim
         $table   = self::table_name();
         $now_gmt = current_time('mysql', true);
 
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Atomic state transition on the plugin-owned billing-attempt journal; cached state is unsafe.
         $updated = (int) $wpdb->query(
             $wpdb->prepare(
-                "UPDATE {$table}
+                "UPDATE %i
                     SET state = %s,
                         dispatched_gmt = %s,
                         updated_gmt = %s
                     WHERE cycle_key = %s
                       AND owner_token = %s
                       AND state = %s",
+                $table,
                 self::STATE_DISPATCHING,
                 $now_gmt,
                 $now_gmt,
@@ -322,9 +329,10 @@ class CycleClaim
         $table   = self::table_name();
         $now_gmt = current_time('mysql', true);
 
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Atomic held-state transition on the plugin-owned billing-attempt journal; cached state is unsafe.
         $updated = (int) $wpdb->query(
             $wpdb->prepare(
-                "UPDATE {$table}
+                "UPDATE %i
                     SET state = %s,
                         updated_gmt = %s,
                         curl_errno = %d,
@@ -332,6 +340,7 @@ class CycleClaim
                     WHERE cycle_key = %s
                       AND owner_token = %s
                       AND state IN (%s, %s)",
+                $table,
                 self::STATE_HELD,
                 $now_gmt,
                 null === $curl_errno ? 0 : $curl_errno,
@@ -374,9 +383,10 @@ class CycleClaim
         $table   = self::table_name();
         $now_gmt = current_time('mysql', true);
 
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Atomic resolved-state transition on the plugin-owned billing-attempt journal; cached state is unsafe.
         $updated = (int) $wpdb->query(
             $wpdb->prepare(
-                "UPDATE {$table}
+                "UPDATE %i
                     SET state = %s,
                         resolved_gmt = %s,
                         updated_gmt = %s,
@@ -385,6 +395,7 @@ class CycleClaim
                     WHERE cycle_key = %s
                       AND owner_token = %s
                       AND state IN (%s, %s)",
+                $table,
                 self::STATE_RESOLVED,
                 $now_gmt,
                 $now_gmt,
@@ -409,12 +420,14 @@ class CycleClaim
         global $wpdb;
         $table = self::table_name();
 
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Atomic owner-token-guarded release from the plugin-owned billing-attempt journal; caching is invalid.
         $deleted = (int) $wpdb->query(
             $wpdb->prepare(
-                "DELETE FROM {$table}
+                "DELETE FROM %i
                     WHERE cycle_key = %s
                       AND owner_token = %s
                       AND state = %s",
+                $table,
                 $cycle_key,
                 $owner_token,
                 self::STATE_CLAIMED
@@ -432,9 +445,11 @@ class CycleClaim
         global $wpdb;
         $table = self::table_name();
 
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Fresh journal ownership/state is required immediately after atomic mutations.
         $row = $wpdb->get_row(
             $wpdb->prepare(
-                "SELECT * FROM {$table} WHERE cycle_key = %s",
+                "SELECT * FROM %i WHERE cycle_key = %s",
+                $table,
                 $cycle_key
             ),
             ARRAY_A
