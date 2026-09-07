@@ -247,7 +247,7 @@ These records remain historical truth. They are not rewritten to claim that old 
 
 CI artifacts are verification artifacts, not public releases.
 
-Repository-admin state is closed and verified on live GitHub: canonical metadata/topics, four required Main Rule checks, protective rules, `main`-only topology and zero open PRs/issues/tags/releases. Latest certified `main` is `bfadff34142a3a676258e8dc0774bd31287c0138`, with Quality #927, Compatibility #455 (**16/16**), Release Artifact #404, Provider Sandbox #365, strict WordPress.org #262 and CodeQL #749 all **SUCCESS**. The exact-main `supcheckout-0.1.0.zip` is Git-HEAD-bound, 74 files, SHA-256 `0436256b16605b9b2db91aa8a7865ecec6cae7ef00fa515048d9643e50ad990a`; official packaged Plugin Check is strict and reports no findings.
+Repository-admin state is closed and verified on live GitHub: canonical metadata/topics, four required Main Rule checks, protective rules, `main`-only topology and zero open PRs/issues/tags/releases. Latest runtime-bearing certified `main` is `bfadff34142a3a676258e8dc0774bd31287c0138`, with Quality #927, Compatibility #455 (**16/16**), Release Artifact #404, Provider Sandbox #365, strict WordPress.org #262 and CodeQL #749 all **SUCCESS**. The exact-main `supcheckout-0.1.0.zip` is Git-HEAD-bound, 74 files, SHA-256 `0436256b16605b9b2db91aa8a7865ecec6cae7ef00fa515048d9643e50ad990a`; official packaged Plugin Check is strict and reports no findings.
 
 Remaining owner/admin actions are controlled by `OWNER-HANDOFF.md`:
 
