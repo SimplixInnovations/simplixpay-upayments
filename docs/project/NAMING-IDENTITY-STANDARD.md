@@ -32,8 +32,7 @@ Forbidden technical form: `supcheckout-for-upayments`.
 | Product family | **SUPCheckout** |
 | Provider | **UPayments** |
 | Technical slug | `supcheckout` |
-| Current GitHub repository during implementation | `SimplixInnovations/sucheckout` |
-| Target GitHub repository after certified merge | `SimplixInnovations/supcheckout` |
+| Canonical GitHub repository | `SimplixInnovations/supcheckout` |
 | WordPress.org slug | `supcheckout` |
 | Plugin folder | `supcheckout/` |
 | First-stable physical bootstrap | `UPayments.php` |
@@ -150,15 +149,11 @@ Existing globals, provider identifiers and persisted compatibility identifiers m
 
 ## Repository coordinate rule
 
-The current GitHub repository during implementation is:
-
-`SimplixInnovations/sucheckout`
-
-After the certified SUPCheckout merge and post-merge verification, the owner renames it to:
+The canonical GitHub repository is:
 
 `SimplixInnovations/supcheckout`
 
-The temporary current repository coordinate differs only because the owner/admin rename is deliberately deferred until engineering certification. After rename, repository and plugin slug both use `supcheckout`; protected UPayments compatibility identities remain unchanged.
+Repository and plugin slug now intentionally converge on `supcheckout`; protected UPayments compatibility identities remain unchanged.
 
 Only **living repository-coordinate references** use the canonical GitHub coordinate. Historical evidence and legacy package-root migration fixtures retain older coordinates/tokens where they record true past state.
 
