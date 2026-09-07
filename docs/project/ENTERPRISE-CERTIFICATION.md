@@ -2,8 +2,8 @@
 
 **Historical status:** TASKS 1–8 DONE / VERIFIED under the former pre-rebrand product identity
 **Current engineering state:** SUCheckout identity migration DONE / VERIFIED; owner repository/release administration pending
-**Current GitHub repository pending owner/admin rename:** `SimplixInnovations/simplixpay-upayments`
-**Target canonical repository:** `SimplixInnovations/sucheckout-upayments`
+**Canonical GitHub repository:** `SimplixInnovations/sucheckout`
+**Canonical plugin/package slug:** `sucheckout-upayments`
 
 This record preserves the reproducible enterprise certification foundation established before the approved SUCheckout rebrand. Historical package names, basenames, text domains, SHAs and run numbers below remain evidence of what was certified then; they are not current SUCheckout identity declarations. Current state is owned by `PROJECT-STATUS.md`.
 
