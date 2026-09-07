@@ -203,7 +203,7 @@ wordpress-plugin
 
 Remove retired or claim-inflating topics such as `upayments-woocommerce` and `wpml`. Do not add unsupported/uncertified claim topics such as `wpml-ready`, `pci-compliant`, `all-wallets`, `refunds`, `multicurrency` or `accessibility-ready` without separate evidence.
 
-**Live verification:** description and homepage are correct. The retired `supcheckout-upayment`, `upayments-woocommerce` and `wpml` topics are gone and `woocommerce-plugin` is present. One topic correction remains: replace generic `gateway` with `wordpress-plugin` so the live topic set matches the evidence-safe set above.
+**Live verification:** description, homepage and evidence-safe topic set are correct. Retired/claim-inflating topics are absent and the live topics match the set above.
 
 ## A5. Update local `origin` after rename
 
@@ -243,7 +243,7 @@ Verify rather than assume:
 - no unexpected open PRs/issues remain;
 - only intended branches remain.
 
-**Live verification:** the Main Rule still requires only `Governance` and `H12 Regression Harness`. Add `Compatibility Gate` and `Release Gate` while retaining the existing two. No other rule should be weakened.
+**Live verification:** Main Rule is active and now requires exactly `Governance`, `H12 Regression Harness`, `Compatibility Gate` and `Release Gate`, with strict up-to-date checking. Deletion protection, non-fast-forward/force-push protection, linear history, pull-request flow, review-thread resolution and squash-only merging remain enabled.
 
 ## A7. Post-rename coordinate reconciliation — completed
 
@@ -565,10 +565,10 @@ Unsupported in the current certified feature set:
 - [x] no legitimate open PRs remained before this coordinate-closure PR
 - [x] all superseded non-main branches removed
 - [x] repository renamed and canonical coordinate verified as `SimplixInnovations/supcheckout`
-- [ ] About description/homepage correct; residual topic corrections still required
+- [x] About description/homepage/topics verified against the evidence-safe set
 - [ ] local `origin` updated to `https://github.com/SimplixInnovations/supcheckout.git`
-- [ ] post-rename controls verified; Main Rule still needs the two aggregate gate requirements
-- [ ] `Main Rule` requires `Governance`, `H12 Regression Harness`, `Compatibility Gate` and `Release Gate`
+- [x] post-rename repository controls and Main Rule verified
+- [x] `Main Rule` requires `Governance`, `H12 Regression Harness`, `Compatibility Gate` and `Release Gate`
 - [x] coordinate-only living-link PR #68 merged from exact green head
 - [x] final branch audit shows only `main`
 

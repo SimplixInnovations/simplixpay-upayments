@@ -95,9 +95,11 @@ Post-rename coordinate closure:
 - squash merge: `05fec942cc8fbeb58cfd0bd41f0ef5fdb86f966f`;
 - post-merge Quality #901, Compatibility #429 (**16/16**), Release Artifact #378, Provider Sandbox #339, WordPress.org #236 and CodeQL #723 — **SUCCESS**;
 - PR #68 closeout state, before the documentation-only PR #69 opened, was `main` only with no open PRs/issues, tags or releases;
-- remaining repository-admin deltas are limited to live topic cleanup and adding `Compatibility Gate` + `Release Gate` to Main Rule; local acceptance/branding/publication remain owner actions.
+- repository-admin state is fully reconciled: evidence-safe About/topics, strict four-check Main Rule, protective rules and `main`-only topology are verified; local acceptance/branding/publication remain owner actions.
 
 
+
+Latest fully certified repository-admin baseline: `a0794c1f968e7bb97d3a6589aa109b6236fa307f` — Quality #911, Compatibility #439 (**16/16**), Release Artifact #388, Provider Sandbox #349, WordPress.org #246 and CodeQL #733 all **SUCCESS**.
 
 Every future candidate must pass the permanent exact-head gates appropriate to its scope before merge or release.
 

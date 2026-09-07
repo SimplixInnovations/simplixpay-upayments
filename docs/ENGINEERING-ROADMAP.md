@@ -127,18 +127,23 @@ Post-merge:
 - PR #68 closeout state before documentation-only PR #69 — **main only**, with open PRs/issues, tags and releases — **empty**
 
 
+## Final repository-admin closure
+
+Repository/admin state is fully reconciled: canonical About/topics are correct, Main Rule requires all four aggregate/quality checks, protections remain intact, branch topology is `main` only, and no open PRs/issues/tags/releases exist.
+
+Latest certified `main`: `a0794c1f968e7bb97d3a6589aa109b6236fa307f` with Quality #911, Compatibility #439 (**16/16**), Release Artifact #388, Provider Sandbox #349, WordPress.org #246 and CodeQL #733 all **SUCCESS**.
+
 ## Current owner/admin/local stage
 
 Engineering does not need another invented phase. Repository rename and obsolete-branch cleanup are complete. The remaining sequence is controlled by `docs/project/OWNER-HANDOFF.md`:
 
-1. finish the residual About-topic cleanup and add `Compatibility Gate` + `Release Gate` to Main Rule;
-2. verify the owner's local `origin` points directly to `SimplixInnovations/supcheckout`;
-3. run isolated local owner acceptance from exact `origin/main`;
-4. build and verify the deterministic ZIP;
-5. perform disposable WordPress/WooCommerce Classic/Blocks/HPOS/bounded-sandbox smoke;
-6. apply approved launch branding and visual/accessibility acceptance;
-7. explicitly choose the first public version;
-8. tag/GitHub Release/WordPress.org publication only after exact-main certification and owner approval.
+1. verify the owner's local `origin` points directly to `SimplixInnovations/supcheckout`;
+2. run isolated local owner acceptance from exact `origin/main`;
+3. build and verify the deterministic ZIP;
+4. perform disposable WordPress/WooCommerce Classic/Blocks/HPOS/bounded-sandbox smoke;
+5. apply approved launch branding and visual/accessibility acceptance;
+6. explicitly choose the first public version;
+7. tag/GitHub Release/WordPress.org publication only after exact-main certification and owner approval.
 
 ## External/manual evidence track
 

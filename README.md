@@ -176,6 +176,10 @@ The release contract provides:
 
 Development/test/control files are excluded from the public package.
 
+## Repository administration
+
+Repository administration is closed and verified: canonical About/topics, strict four-check Main Rule, squash-only merging, deletion/non-fast-forward/linear-history protection, `main`-only branch topology, and no open PRs/issues/tags/releases. Latest certified `main`: `a0794c1f968e7bb97d3a6589aa109b6236fa307f` with Quality #911, Compatibility #439 (**16/16**), Release Artifact #388, Provider Sandbox #349, WordPress.org #246 and CodeQL #733 all green.
+
 ## Local owner acceptance
 
 The authoritative local and owner-administration sequence is documented in:
@@ -184,14 +188,13 @@ The authoritative local and owner-administration sequence is documented in:
 
 It includes:
 
-1. finish the residual GitHub topic cleanup and Main Rule aggregate-check requirements;
-2. verify local `origin` points directly to the canonical repository;
-3. isolated local Composer/H12/SUPCheckout quality acceptance;
-4. deterministic ZIP build/verification;
-5. disposable WordPress/WooCommerce install;
-6. Classic + Blocks + HPOS + bounded sandbox smoke;
-7. approved launch branding/visual/accessibility acceptance;
-8. explicit release/version and WordPress.org publication decision.
+1. verify local `origin` points directly to the canonical repository;
+2. isolated local Composer/H12/SUPCheckout quality acceptance;
+3. deterministic ZIP build/verification;
+4. disposable WordPress/WooCommerce install;
+5. Classic + Blocks + HPOS + bounded sandbox smoke;
+6. approved launch branding/visual/accessibility acceptance;
+7. explicit release/version and WordPress.org publication decision.
 
 ## Compatibility and evidence boundaries
 
