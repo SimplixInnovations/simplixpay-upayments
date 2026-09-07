@@ -124,7 +124,7 @@ Post-merge:
 - coordinate-closure PR #68 exact head `0e6ef6334282a83a428da7ee793daa98360c2bcc` — **FULL EXACT-HEAD STACK SUCCESS**;
 - PR #68 squash merge `05fec942cc8fbeb58cfd0bd41f0ef5fdb86f966f` — **DONE**;
 - post-merge Quality #901, Compatibility #429 (**16/16**), Release Artifact #378, Provider Sandbox #339, WordPress.org #236 and CodeQL #723 — **SUCCESS**;
-- final remote topology — **main only**; open PRs/issues, tags and releases — **empty**
+- PR #68 closeout state before documentation-only PR #69 — **main only**, with open PRs/issues, tags and releases — **empty**
 
 
 ## Current owner/admin/local stage
