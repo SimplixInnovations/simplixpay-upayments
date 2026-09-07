@@ -11,7 +11,7 @@
 <p align="center"><strong>Independent UPayments payment gateway integration for WooCommerce</strong><br>engineered and maintained by <a href="https://simplixi.com">Simplix Innovations</a></p>
 
 <p align="center">
-  <a href="https://github.com/SimplixInnovations/sucheckout/actions/workflows/quality-gates.yml"><img alt="Quality Gates" src="https://github.com/SimplixInnovations/sucheckout/actions/workflows/quality-gates.yml/badge.svg?branch=main"></a>
+  <a href="https://github.com/SimplixInnovations/supcheckout/actions/workflows/quality-gates.yml"><img alt="Quality Gates" src="https://github.com/SimplixInnovations/supcheckout/actions/workflows/quality-gates.yml/badge.svg?branch=main"></a>
   <a href="LICENSE"><img alt="MIT License" src="https://img.shields.io/badge/License-MIT-2ea44f?style=flat-square"></a>
   <a href="SECURITY.md"><img alt="Security Policy" src="https://img.shields.io/badge/Security-Private%20Reporting-2ea44f?style=flat-square"></a>
   <img alt="Version 0.1.0" src="https://img.shields.io/badge/Version-0.1.0-2563eb?style=flat-square">
@@ -22,7 +22,7 @@
 > **SUPCheckout for UPayments** is independently engineered and maintained by **Simplix Innovations**. UPayments is the external payment-service provider and owns its respective names and trademarks. This project does not imply UPayments endorsement, ownership or official distribution.
 
 > [!NOTE]
-> The current GitHub repository remains `SimplixInnovations/sucheckout` only until this final SUPCheckout identity migration is merged and post-merge certified. The owner/admin target is `SimplixInnovations/supcheckout`; plugin slug, text domain and release identity are already `supcheckout`.
+> The canonical GitHub repository is `SimplixInnovations/supcheckout`. The final SUPCheckout identity migration is merged and post-merge certified; public release/version publication remains a separate owner decision.
 
 ## What SUPCheckout is
 
@@ -58,8 +58,7 @@ The **SUPCheckout identity migration and first-party naming cleanup are DONE / V
 |---|---|
 | Product | **SUPCheckout for UPayments** |
 | Product family | **SUPCheckout** |
-| Current GitHub repository | `SimplixInnovations/sucheckout` |
-| Target repository after certified merge | `SimplixInnovations/supcheckout` |
+| Canonical GitHub repository | `SimplixInnovations/supcheckout` |
 | Technical slug | `supcheckout` |
 | WordPress text domain | `supcheckout` |
 | PHP namespace | `Simplixi\SUPCheckout` |
@@ -81,6 +80,15 @@ The **SUPCheckout identity migration and first-party naming cleanup are DONE / V
 | Stable public release | **Not yet published** |
 
 ### Certification anchors
+
+Final SUPCheckout identity migration:
+
+- PR #67 certified head `0059f365883fa4edd6a2d623c7b370d38d3f565c`;
+- squash merge `7547e59a2d5ef6d49b059851c6899a2d9987b16a`;
+- post-merge Quality #896, Compatibility #424 (**16/16**), Release Artifact #373, Provider Sandbox #334, WordPress.org #231 and CodeQL #717 — **SUCCESS**;
+- repository renamed to `SimplixInnovations/supcheckout`;
+- canonical remote branch topology verified as `main` only before the coordinate-only closure branch.
+
 
 Runtime-bearing SUPCheckout migration:
 
@@ -174,16 +182,14 @@ The authoritative local and owner-administration sequence is documented in:
 
 It includes:
 
-1. final branch cleanup after the hardening PR merges;
-2. post-merge repository rename from `SimplixInnovations/sucheckout` to `SimplixInnovations/supcheckout` and coordinate verification;
-3. GitHub About/security/rules/integration verification;
-4. local `origin` update to the canonical repository;
-5. post-rename living-coordinate reconciliation;
-6. isolated local Composer/H12/SUPCheckout quality acceptance;
-7. deterministic ZIP build/verification;
-8. disposable WordPress/WooCommerce install;
-9. Classic + Blocks + HPOS + bounded sandbox smoke;
-10. explicit release/version and WordPress.org publication decision.
+1. final GitHub About/topics/rules/security/integration verification;
+2. local `origin` verification against the canonical repository;
+3. isolated local Composer/H12/SUPCheckout quality acceptance;
+4. deterministic ZIP build/verification;
+5. disposable WordPress/WooCommerce install;
+6. Classic + Blocks + HPOS + bounded sandbox smoke;
+7. approved launch branding/visual/accessibility acceptance;
+8. explicit release/version and WordPress.org publication decision.
 
 ## Compatibility and evidence boundaries
 
