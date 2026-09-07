@@ -1,6 +1,6 @@
 # SUPCheckout for UPayments — Release Engineering
 
-**Current status:** pre-release SUCheckout engineering migration merged and certified; repository rename complete; local acceptance/release administration pending
+**Current status:** pre-release SUPCheckout identity migration in exact-head certification; repository rename pending; local acceptance/release administration pending
 **Current GitHub repository:** `SimplixInnovations/sucheckout`
 **Target GitHub repository after certified merge:** `SimplixInnovations/supcheckout`
 **Canonical plugin/package slug:** `supcheckout`
@@ -125,7 +125,7 @@ Each cell:
 5. installs/activates canonical `supcheckout/UPayments.php`;
 6. verifies settings/data/provider IDs/callback/cron continuity;
 7. proves rollback to the legacy package remains non-destructive;
-8. returns to canonical SUCheckout;
+8. returns to canonical SUPCheckout;
 9. removes the inactive legacy package;
 10. re-verifies canonical runtime and retained data.
 
