@@ -203,7 +203,7 @@ wordpress-plugin
 
 Remove retired or claim-inflating topics such as `upayments-woocommerce` and `wpml`. Do not add unsupported/uncertified claim topics such as `wpml-ready`, `pci-compliant`, `all-wallets`, `refunds`, `multicurrency` or `accessibility-ready` without separate evidence.
 
-**Live verification:** description and homepage are correct. Topic cleanup is not yet complete: remove `supcheckout-upayment`, `upayments-woocommerce` and `wpml`; add `woocommerce-plugin` and `wordpress-plugin`. Keep the evidence-safe topic set above.
+**Live verification:** description and homepage are correct. The retired `supcheckout-upayment`, `upayments-woocommerce` and `wpml` topics are gone and `woocommerce-plugin` is present. One topic correction remains: replace generic `gateway` with `wordpress-plugin` so the live topic set matches the evidence-safe set above.
 
 ## A5. Update local `origin` after rename
 
