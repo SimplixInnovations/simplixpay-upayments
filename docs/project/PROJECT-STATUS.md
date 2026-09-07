@@ -124,7 +124,8 @@ The approved identity is:
 - deterministic package: `supcheckout-X.Y.Z.zip`;
 - package root: `supcheckout/`;
 - first-stable bootstrap: `UPayments.php`;
-- canonical GitHub repository: `SimplixInnovations/sucheckout`.
+- current GitHub repository during implementation: `SimplixInnovations/sucheckout`;
+- target repository after certified merge: `SimplixInnovations/supcheckout`.
 
 The word **for** appears in human-facing relationship copy only. It does not appear in technical slugs, URLs, package identities, text domains or namespaces.
 
