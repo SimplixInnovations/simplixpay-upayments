@@ -1,12 +1,12 @@
 <?php
 
-namespace Simplixi\SUCheckout\UPayments\Tests\Migration;
+namespace Simplixi\SUPCheckout\Tests\Migration;
 
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
-use Simplixi\SUCheckout\UPayments\Migration\MigrationAdmin;
-use Simplixi\SUCheckout\UPayments\Migration\MigrationBootstrap;
-use Simplixi\SUCheckout\UPayments\Migration\MigrationCliCommand;
+use Simplixi\SUPCheckout\Migration\MigrationAdmin;
+use Simplixi\SUPCheckout\Migration\MigrationBootstrap;
+use Simplixi\SUPCheckout\Migration\MigrationCliCommand;
 
 final class MigrationBootstrapTest extends TestCase {
     public static function setUpBeforeClass(): void {
