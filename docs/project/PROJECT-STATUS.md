@@ -22,13 +22,13 @@
 | First-stable physical bootstrap | `UPayments.php` — protected compatibility exception |
 | Runtime-bearing SUCheckout migration | **DONE / VERIFIED** |
 | First-party naming cleanup | **DONE / VERIFIED** |
-| Documentation/control-plane hardening | **IN FINAL EXACT-HEAD CERTIFICATION** |
+| Documentation/control-plane hardening | **DONE / VERIFIED — PR #65 merged and post-merge certified** |
 | Historical Quality Platform Q1-Q19 | **DONE / VERIFIED — permanently closed at Q19** |
 | Historical Enterprise Tasks 1-8 | **DONE / VERIFIED evidence retained** |
 | Deterministic release artifact | **DONE / VERIFIED — permanent exact-head gate** |
 | Legacy-root → canonical-root migration | **DONE / VERIFIED — permanent release gate** |
 | WordPress.org Plugin Check | **DONE / VERIFIED — 0 blocking errors on certified package** |
-| Repository rename | **OWNER/ADMIN ACTION — READY AFTER THIS DOC PR MERGES** |
+| Repository rename | **OWNER/ADMIN ACTION — READY after final repository-control hardening** |
 | Public Git tag / GitHub Release | **NOT CREATED** |
 | WordPress.org publication | **NOT PERFORMED** |
 
@@ -75,6 +75,21 @@ Fresh push-triggered evidence on that exact `main` SHA:
 - Provider Sandbox Certification #216 — **SUCCESS**;
 - WordPress.org Submission Check #110 — **SUCCESS**;
 - CodeQL/main-security #588 — **SUCCESS**.
+
+### Final documentation/control-plane baseline
+
+PR #65 upgraded and reconciled the complete living documentation/control plane. It squash-merged as:
+
+`24d868b0388a76654b35b3c9d79535aa2eb74678`
+
+Fresh exact-main evidence:
+
+- Quality Gates #814 — **SUCCESS**;
+- Compatibility Certification #342 — **16/16 SUCCESS**;
+- Release Artifact #291 — **SUCCESS**;
+- Provider Sandbox Certification #253 — **SUCCESS**;
+- WordPress.org Submission Check #149 — **SUCCESS**;
+- CodeQL/main-security #630 — **SUCCESS**.
 
 ### Latest first-party naming cleanup baseline
 
