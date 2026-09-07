@@ -247,11 +247,12 @@ These records remain historical truth. They are not rewritten to claim that old 
 
 CI artifacts are verification artifacts, not public releases.
 
+Repository-admin state is now closed and verified on live GitHub: canonical metadata/topics, four required Main Rule checks, protective rules, `main`-only topology and zero open PRs/issues/tags/releases. Latest certified `main` is `a0794c1f968e7bb97d3a6589aa109b6236fa307f`, with Quality #911, Compatibility #439 (**16/16**), Release Artifact #388, Provider Sandbox #349, WordPress.org #246 and CodeQL #733 all **SUCCESS**.
+
 Remaining owner/admin actions are controlled by `OWNER-HANDOFF.md`:
 
-- verify remaining canonical repository metadata and controls;
-- verify the residual GitHub topics/Main Rule settings;
 - verify the owner's local canonical remote;
 - perform independent local acceptance;
+- apply approved launch branding/visual acceptance;
 - explicitly choose version/publication;
 - tag/release/submit only after exact-main verification.
