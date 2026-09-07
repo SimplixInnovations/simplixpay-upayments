@@ -45,7 +45,7 @@ PR #59 reconciled the owner/control documentation without changing runtime behav
 
 ### Final first-party naming reconciliation
 
-PR #61 removed remaining retired `SIMPLIXPAY_*` first-party constants and certification-control prefixes while preserving protected provider/persisted UPayments identities.
+PR #61 removed remaining retired retired pre-rebrand first-party first-party constants and certification-control prefixes while preserving protected provider/persisted UPayments identities.
 
 - current runtime-bearing certified `main`: `efe937c67343242b7ccf3396a67b3cf2ce35ebac`;
 - Quality #781 — **SUCCESS**;
