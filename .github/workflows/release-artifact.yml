@@ -190,7 +190,7 @@ jobs:
         run: /tmp/wp-cli.phar eval-file "$GITHUB_WORKSPACE/tests/integration/HposCompatibilityTest.php" --path="$RUNNER_TEMP/wordpress"
 
   package-identity-migration:
-    name: Legacy-root migration WP ${{ matrix.wordpress }} / WC ${{ matrix.woocommerce }} / PHP 8.3
+    name: ${{ matrix.previous_slug }} → SUPCheckout WP ${{ matrix.wordpress }} / WC ${{ matrix.woocommerce }} / PHP 8.3
     needs: artifact-build
     runs-on: ubuntu-latest
     timeout-minutes: 25
@@ -200,8 +200,24 @@ jobs:
         include:
           - wordpress: '7.1'
             woocommerce: '11.1.0'
+            previous_sha: '54b1fbcc280b92372bd93baf929d6a746cfd3959'
+            previous_slug: 'simplixpay-upayments'
+            previous_text_domain: 'upayments'
           - wordpress: '6.9.7'
             woocommerce: '10.8.1'
+            previous_sha: '54b1fbcc280b92372bd93baf929d6a746cfd3959'
+            previous_slug: 'simplixpay-upayments'
+            previous_text_domain: 'upayments'
+          - wordpress: '7.1'
+            woocommerce: '11.1.0'
+            previous_sha: 'e9f953b0c3a881ad2d4b74390d0b5394b766a3fa'
+            previous_slug: 'sucheckout-upayments'
+            previous_text_domain: 'sucheckout-upayments'
+          - wordpress: '6.9.7'
+            woocommerce: '10.8.1'
+            previous_sha: 'e9f953b0c3a881ad2d4b74390d0b5394b766a3fa'
+            previous_slug: 'sucheckout-upayments'
+            previous_text_domain: 'sucheckout-upayments'
 
     services:
       mysql:
@@ -218,7 +234,9 @@ jobs:
           --health-retries=20
 
     env:
-      UPGRADE_BASE_SHA: 54b1fbcc280b92372bd93baf929d6a746cfd3959
+      UPGRADE_BASE_SHA: ${{ matrix.previous_sha }}
+      SUPCHECKOUT_LEGACY_SLUG: ${{ matrix.previous_slug }}
+      SUPCHECKOUT_LEGACY_TEXT_DOMAIN: ${{ matrix.previous_text_domain }}
 
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -249,12 +267,12 @@ jobs:
           bash scripts/verify-release.sh "$CURRENT_ZIP"
           echo "CURRENT_ZIP=$CURRENT_ZIP" >> "$GITHUB_ENV"
 
-      - name: Build legacy pre-rebrand candidate
+      - name: Build pre-stable candidate
         shell: bash
         run: |
           set -euo pipefail
-          PREVIOUS_SOURCE="$RUNNER_TEMP/simplixpay-previous-source"
-          PREVIOUS_OUTPUT="$RUNNER_TEMP/simplixpay-previous-output"
+          PREVIOUS_SOURCE="$RUNNER_TEMP/pre-stable-previous-source"
+          PREVIOUS_OUTPUT="$RUNNER_TEMP/pre-stable-previous-output"
           rm -rf "$PREVIOUS_SOURCE" "$PREVIOUS_OUTPUT"
           git worktree add --detach "$PREVIOUS_SOURCE" "$UPGRADE_BASE_SHA"
           mkdir -p "$PREVIOUS_OUTPUT"
@@ -264,7 +282,7 @@ jobs:
           )
           git worktree remove --force "$PREVIOUS_SOURCE"
           git worktree prune
-          PREVIOUS_ZIP="$(find "$PREVIOUS_OUTPUT" -maxdepth 1 -type f -name 'simplixpay-upayments-*.zip' -print -quit)"
+          PREVIOUS_ZIP="$(find "$PREVIOUS_OUTPUT" -maxdepth 1 -type f -name "${SUPCHECKOUT_LEGACY_SLUG}-*.zip" -print -quit)"
           test -n "$PREVIOUS_ZIP"
           echo "PREVIOUS_ZIP=$PREVIOUS_ZIP" >> "$GITHUB_ENV"
 
@@ -277,23 +295,23 @@ jobs:
           chmod +x /tmp/wp-cli.phar
           /tmp/wp-cli.phar --version
 
-      - name: Install legacy package as existing active installation
+      - name: Install pre-stable package as existing active installation
         shell: bash
         run: |
           set -euo pipefail
           SUPCHECKOUT_PLUGIN_ZIP="$PREVIOUS_ZIP" \
-          SUPCHECKOUT_PLUGIN_SLUG=simplixpay-upayments \
+          SUPCHECKOUT_PLUGIN_SLUG="$SUPCHECKOUT_LEGACY_SLUG" \
           WP_CLI_BIN=/tmp/wp-cli.phar \
           bash scripts/install-wp-test-environment.sh "${{ matrix.wordpress }}" "${{ matrix.woocommerce }}" "$RUNNER_TEMP/wordpress"
-          /tmp/wp-cli.phar plugin activate simplixpay-upayments --path="$RUNNER_TEMP/wordpress"
+          /tmp/wp-cli.phar plugin activate "$SUPCHECKOUT_LEGACY_SLUG" --path="$RUNNER_TEMP/wordpress"
 
-      - name: Seed legacy merchant state
+      - name: Seed pre-stable merchant state
         env:
           SUPCHECKOUT_UPGRADE_PHASE: seed-existing
         run: /tmp/wp-cli.phar eval-file "$GITHUB_WORKSPACE/tests/integration/UpgradeCompatibilityTest.php" --path="$RUNNER_TEMP/wordpress"
 
-      - name: Deactivate legacy package before identity migration
-        run: /tmp/wp-cli.phar plugin deactivate simplixpay-upayments --path="$RUNNER_TEMP/wordpress"
+      - name: Deactivate pre-stable package before identity migration
+        run: /tmp/wp-cli.phar plugin deactivate "$SUPCHECKOUT_LEGACY_SLUG" --path="$RUNNER_TEMP/wordpress"
 
       - name: Install and activate canonical SUPCheckout package
         shell: bash
@@ -312,7 +330,7 @@ jobs:
         run: |
           set -euo pipefail
           /tmp/wp-cli.phar plugin deactivate supcheckout --path="$RUNNER_TEMP/wordpress"
-          /tmp/wp-cli.phar plugin activate simplixpay-upayments --path="$RUNNER_TEMP/wordpress"
+          /tmp/wp-cli.phar plugin activate "$SUPCHECKOUT_LEGACY_SLUG" --path="$RUNNER_TEMP/wordpress"
           SUPCHECKOUT_UPGRADE_PHASE=verify-legacy-rollback \
             /tmp/wp-cli.phar eval-file "$GITHUB_WORKSPACE/tests/integration/UpgradeCompatibilityTest.php" --path="$RUNNER_TEMP/wordpress"
 
@@ -320,9 +338,9 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          /tmp/wp-cli.phar plugin deactivate simplixpay-upayments --path="$RUNNER_TEMP/wordpress"
+          /tmp/wp-cli.phar plugin deactivate "$SUPCHECKOUT_LEGACY_SLUG" --path="$RUNNER_TEMP/wordpress"
           /tmp/wp-cli.phar plugin activate supcheckout --path="$RUNNER_TEMP/wordpress"
-          /tmp/wp-cli.phar plugin delete simplixpay-upayments --path="$RUNNER_TEMP/wordpress"
+          /tmp/wp-cli.phar plugin delete "$SUPCHECKOUT_LEGACY_SLUG" --path="$RUNNER_TEMP/wordpress"
           SUPCHECKOUT_UPGRADE_PHASE=verify-canonical-final \
             /tmp/wp-cli.phar eval-file "$GITHUB_WORKSPACE/tests/integration/UpgradeCompatibilityTest.php" --path="$RUNNER_TEMP/wordpress"
 
