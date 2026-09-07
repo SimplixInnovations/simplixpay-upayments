@@ -100,6 +100,7 @@ release_assert(
     'required Release Gate workflow is created for every pull request'
 );
 release_assert($distignore !== '', 'distribution exclusion contract exists');
+release_assert(strpos($distignore, '/assets/screenshots/') !== false, 'distribution excludes WordPress.org screenshot source material');
 
 $version = '';
 if (preg_match("/public const VERSION = '([^']+)';/", $identity, $matches) === 1) {
@@ -197,6 +198,15 @@ if ($version !== '') {
                 release_assert(in_array($prefix . 'UPayments.php', $names, true), 'canonical package retains qualified UPayments.php bootstrap');
                 release_assert(in_array($prefix . 'readme.txt', $names, true), 'canonical package contains WordPress.org readme');
                 release_assert(!in_array($prefix . 'composer.json', $names, true), 'canonical package excludes Composer controls');
+
+                $contains_screenshots = false;
+                foreach ($names as $name) {
+                    if (strpos($name, $prefix . 'assets/screenshots/') === 0) {
+                        $contains_screenshots = true;
+                        break;
+                    }
+                }
+                release_assert(!$contains_screenshots, 'canonical package excludes WordPress.org screenshot source material');
 
                 $plugin = $zip->getFromName($prefix . 'UPayments.php');
                 release_assert(
