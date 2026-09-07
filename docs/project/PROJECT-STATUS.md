@@ -248,17 +248,40 @@ The permanent `WordPress.org Submission Check`:
 
 Passing this gate does **not** publish the plugin or guarantee manual directory approval.
 
+## Final repository-admin closure
+
+Live verification on 2026-09-07 confirms:
+
+- canonical repository `SimplixInnovations/supcheckout`;
+- `main` as the only remote branch;
+- zero open PRs/issues, zero tags and zero GitHub Releases;
+- evidence-safe About description/homepage/topics;
+- squash-only merge policy with merged-branch deletion;
+- active Main Rule requiring `Governance`, `H12 Regression Harness`, `Compatibility Gate` and `Release Gate` under strict up-to-date checking;
+- deletion, non-fast-forward/force-push and linear-history protections retained;
+- PR flow and review-thread resolution retained.
+
+Latest certified `main`: `a0794c1f968e7bb97d3a6589aa109b6236fa307f`.
+
+Fresh post-merge evidence on that exact SHA:
+
+- Quality #911 — **SUCCESS**;
+- Compatibility #439 — **16/16 SUCCESS**;
+- Release Artifact #388 — **SUCCESS**;
+- Provider Sandbox #349 — **SUCCESS**;
+- WordPress.org Submission Check #246 — **SUCCESS**;
+- CodeQL/main-security #733 — **SUCCESS**.
+
 ## Remaining owner/admin/local work
 
-Repository rename and obsolete-branch cleanup are complete. Remaining work is:
+Repository rename, metadata/topics, Main Rule hardening, branch cleanup and living-coordinate reconciliation are complete. Remaining work is:
 
-1. finish the residual post-rename About topic cleanup and Main Rule aggregate-check corrections verified by live GitHub state;
-2. verify the owner's local `origin` points directly to `SimplixInnovations/supcheckout`;
-3. run the documented isolated local acceptance suite;
-4. apply approved SUPCheckout launch branding and visual/accessibility acceptance;
-5. choose the first public version explicitly (`0.1.0` early release vs `1.0.0` first stable);
-6. run a version-promotion PR if required;
-7. tag/release/submit to WordPress.org only after explicit approval.
+1. verify the owner's local `origin` points directly to `SimplixInnovations/supcheckout`;
+2. run the documented isolated local acceptance suite;
+3. apply approved SUPCheckout launch branding and visual/accessibility acceptance;
+4. choose the first public version explicitly (`0.1.0` early release vs `1.0.0` first stable);
+5. run a version-promotion PR if required;
+6. tag/release/submit to WordPress.org only after explicit approval.
 
 The exact commands and checks are in `docs/project/OWNER-HANDOFF.md`.
 
