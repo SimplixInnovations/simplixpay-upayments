@@ -1,27 +1,26 @@
 # SUPCheckout for UPayments — Owner Handoff
 
-**Engineering migration:** FINAL SUPCHECKOUT IDENTITY — IN EXACT-HEAD CERTIFICATION (PR #67)
-**Migration scope:** identity/runtime
-**Latest certified documentation-closeout `main`:** `24d868b0388a76654b35b3c9d79535aa2eb74678`
-**Current GitHub repository:** `SimplixInnovations/sucheckout`
-**Target GitHub repository after certified merge:** `SimplixInnovations/supcheckout`
+**Engineering migration:** FINAL SUPCHECKOUT IDENTITY — DONE / VERIFIED (PR #67)
+**Migration scope:** identity/runtime + canonical repository coordinate
+**Latest certified `main`:** `7547e59a2d5ef6d49b059851c6899a2d9987b16a`
+**Canonical GitHub repository:** `SimplixInnovations/supcheckout`
 **Canonical plugin/package slug:** `supcheckout`
 **Development version:** `0.1.0`
 **Public tag / GitHub Release / WordPress.org publication:** NOT YET CREATED
 
 This is the authoritative owner/admin/local/release sequence. It does not reopen Quality Platform Q1-Q19 and it does not authorize publication by itself.
 
-Fresh verification on documentation-closeout `main` `24d868b0388a76654b35b3c9d79535aa2eb74678`:
+Fresh verification on final SUPCheckout `main` `7547e59a2d5ef6d49b059851c6899a2d9987b16a`:
 
-- Quality #814 — **SUCCESS**
-- Compatibility #342 — **16/16 SUCCESS**
-- Release Artifact #291 — **SUCCESS**
-- Provider Sandbox #253 — **SUCCESS**
-- WordPress.org Submission Check #149 — **SUCCESS**
-- CodeQL/main-security #630 — **SUCCESS**
+- Quality #896 — **SUCCESS**
+- Compatibility #424 — **16/16 SUCCESS**
+- Release Artifact #373 — **SUCCESS**
+- Provider Sandbox #334 — **SUCCESS**
+- WordPress.org Submission Check #231 — **SUCCESS**
+- CodeQL/main-security #717 — **SUCCESS**
 - official packaged Plugin Check — **0 blocking errors**
 
-The repository rename is **not complete and must not be performed before PR #67 is exact-green, reviewed, merged, and the resulting `main` is post-merge green**. After that engineering closure, rename the repository to `SimplixInnovations/supcheckout`, then perform the coordinate reconciliation and local acceptance sequence below.
+The repository rename to `SimplixInnovations/supcheckout` is complete. Obsolete remote branches were removed and a main-only remote topology was verified before this dedicated coordinate-reconciliation branch was created.
 
 ## Golden identity rule
 
@@ -43,11 +42,11 @@ Do not rename protected provider/persisted identities (`upayments`, `woocommerce
 
 ---
 
-# A. Required repository/admin actions
+# A. Repository/admin closure and verification
 
 ## A1. Synchronize the owner's normal clone
 
-Run after the final docs PR has merged.
+Re-run after the coordinate-reconciliation PR merges so the normal clone is pinned to the final canonical `main`.
 
 ### PowerShell
 
@@ -83,7 +82,7 @@ Required result:
 
 Do **not** use `git reset --hard` or `git clean -fdx` on the normal owner working copy merely to perform acceptance. Preserve intentional local work first.
 
-## A2. Confirm there are no legitimate open PRs before deleting branches
+## A2. Branch cleanup — completed; retain this procedure for future hygiene
 
 In GitHub, confirm the final docs PR is merged and there are no other intended open PRs.
 
@@ -121,7 +120,7 @@ git branch -r
 
 If GitHub auto-deleted any branch, a delete command may report that the remote ref does not exist; that is harmless. Do not create it again.
 
-Expected final remote state before repository rename:
+Expected clean remote state:
 
 ```text
 origin/HEAD -> origin/main
@@ -146,21 +145,23 @@ git worktree prune
 
 The Dependabot branch normally exists only remotely; delete a local counterpart only if one actually exists.
 
-## A3. Perform and verify the GitHub repository rename
+## A3. GitHub repository rename — completed
 
-Only after the final SUPCheckout identity PR is merged and post-merge certified, rename the repository in GitHub Settings from `sucheckout` to `supcheckout`. The target canonical repository is:
+The canonical repository is:
 
 ```text
 SimplixInnovations/supcheckout
 ```
 
-Verify:
+The post-rename verification remains:
 
 1. the browser URL resolves directly to the canonical coordinate without relying on an old-name redirect;
 2. the default branch is still `main`;
 3. repository permissions, rulesets, Actions, security settings, secrets/environments and integrations survived the rename;
 4. the WordPress/plugin technical slug remains exactly `supcheckout`;
 5. the repository and plugin slug intentionally converge on `supcheckout`, while protected UPayments persisted/provider identities remain unchanged.
+
+Live repository inspection confirms the canonical name, default branch `main`, squash-only merge configuration and branch cleanup.
 
 ## A4. Update GitHub About metadata
 
@@ -202,6 +203,8 @@ wordpress-plugin
 
 Remove retired or claim-inflating topics such as `upayments-woocommerce` and `wpml`. Do not add unsupported/uncertified claim topics such as `wpml-ready`, `pci-compliant`, `all-wallets`, `refunds`, `multicurrency` or `accessibility-ready` without separate evidence.
 
+**Live verification:** description and homepage are correct. Topic cleanup is not yet complete: remove `supcheckout-upayment`, `upayments-woocommerce` and `wpml`; add `woocommerce-plugin` and `wordpress-plugin`. Keep the evidence-safe topic set above.
+
 ## A5. Update local `origin` after rename
 
 ```bash
@@ -240,35 +243,21 @@ Verify rather than assume:
 - no unexpected open PRs/issues remain;
 - only intended branches remain.
 
+**Live verification:** the Main Rule still requires only `Governance` and `H12 Regression Harness`. Add `Compatibility Gate` and `Release Gate` while retaining the existing two. No other rule should be weakened.
+
 ## A7. Post-rename coordinate reconciliation PR
 
-After the GitHub rename, tell ChatGPT the new URL/that the rename is complete. A small dedicated PR must update **living repository-coordinate references only**.
+This dedicated closure updates **living repository-coordinate references only** to the canonical repository and ratchets tests so the pre-rename coordinate cannot return on current surfaces.
 
-Audit:
+Required classification remains:
 
-```bash
-git grep -n "SimplixInnovations/sucheckout"
-git grep -n "SimplixInnovations/sucheckout-upayments"
-git grep -n "SimplixInnovations/simplixpay-upayments"
-git grep -n "github.com/SimplixInnovations/sucheckout"
-git grep -n "github.com/SimplixInnovations/sucheckout-upayments"
-git grep -n "github.com/SimplixInnovations/simplixpay-upayments"
-git grep -n "simplixpay" -- ':!docs/history/**' ':!docs/superpowers/**'
-```
-
-Expected current-coordinate surfaces include README badges/links, `AGENTS.md`, plugin metadata, release identity, project status/handoff, `NOTICE.md`, `UPSTREAM.md` and issue-template links; all must resolve to `SimplixInnovations/supcheckout` after the coordinate-only PR.
-
-Classify every hit:
-
-- living repository URL → update;
-- historical evidence → retain;
+- living repository URL/badge/issue link/release identity → canonical repository;
+- historical evidence → retain unchanged;
 - certified legacy package-root migration fixture → retain;
 - protected persisted/provider identity → retain;
 - obsolete first-party branding residue → remove/update.
 
-Never bulk-replace `simplixpay-upayments` repository-wide.
-
-Merge the coordinate-only PR only from an exact green head, then verify the resulting `main` again.
+The exact candidate must pass all triggered Quality/H12, Compatibility, Release Artifact, Provider Sandbox, WordPress.org and CodeQL gates before squash merge. Reverify merged `main` afterward.
 
 ---
 
@@ -568,15 +557,15 @@ Unsupported in the current certified feature set:
 
 ## Repository/admin
 
-- [ ] final SUPCheckout identity PR merged from exact green head
+- [x] final SUPCheckout identity PR merged from exact green head
 - [ ] normal clone synchronized; `HEAD == origin/main`; worktree clean
-- [ ] no legitimate open PRs remain
-- [ ] all superseded non-main branches removed
-- [ ] repository renamed and canonical coordinate verified as `SimplixInnovations/supcheckout`
-- [ ] About description/homepage/topics updated
+- [x] no legitimate open PRs remained before this coordinate-closure PR
+- [x] all superseded non-main branches removed
+- [x] repository renamed and canonical coordinate verified as `SimplixInnovations/supcheckout`
+- [ ] About description/homepage correct; residual topic corrections still required
 - [ ] local `origin` updated to `https://github.com/SimplixInnovations/supcheckout.git`
-- [ ] ruleset/Actions/CodeQL/Dependabot/secret scanning/PVR/integrations verified after rename
-- [ ] `Main Rule` requires `Governance`, `H12 Regression Harness`, `Compatibility Gate` and `Release Gate` after the new contexts exist on `main`
+- [ ] post-rename controls verified; Main Rule still needs the two aggregate gate requirements
+- [ ] `Main Rule` requires `Governance`, `H12 Regression Harness`, `Compatibility Gate` and `Release Gate`
 - [ ] coordinate-only living-link PR merged from exact green head
 - [ ] final branch audit shows only intended branch(es), ideally `main`
 
