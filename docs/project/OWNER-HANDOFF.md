@@ -2,7 +2,7 @@
 
 **Engineering migration:** FINAL SUPCHECKOUT IDENTITY — DONE / VERIFIED (PR #67)
 **Migration scope:** identity/runtime + canonical repository coordinate
-**Latest certified `main`:** `bfadff34142a3a676258e8dc0774bd31287c0138`
+**Latest runtime-bearing certified `main`:** `bfadff34142a3a676258e8dc0774bd31287c0138`
 **Canonical GitHub repository:** `SimplixInnovations/supcheckout`
 **Canonical plugin/package slug:** `supcheckout`
 **Development version:** `0.1.0`
