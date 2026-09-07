@@ -124,8 +124,8 @@ foreach ($tracked as $path) {
 
     // Pre-rebrand first-party constant prefixes are branding residue, not
     // provider/persisted compatibility identifiers.
-    if (strpos($source, 'SIMPLIXPAY_UPAYMENTS_') !== false) {
-        $unexpected[] = $path . ' :: SIMPLIXPAY_UPAYMENTS_';
+    if (strpos($source, 'SIMPLIXPAY_') !== false) {
+        $unexpected[] = $path . ' :: SIMPLIXPAY_';
     }
 
     // The forbidden "for" technical form may appear only in the naming
