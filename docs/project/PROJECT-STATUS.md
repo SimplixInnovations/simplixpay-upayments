@@ -27,23 +27,36 @@
 No Q20 is justified. The numbered Quality Platform remains closed at Q19. The SUCheckout engineering migration is complete; remaining pre-release work is owner-controlled repository cleanup/rename, optional local acceptance, and a separate release/publication decision.
 ## SUCheckout post-merge certification
 
-Engineering identity migration is **DONE / VERIFIED**.
+Engineering identity migration and first-party naming reconciliation are **DONE / VERIFIED**.
+
+### Identity migration foundation
 
 - PR #58 certified head: `5bf84dccb880733da45c1f922d43554af69a33dc`;
-- squash merge on `main`: `6aabc4fcb0606567a11637ea07fe081fed4c7f85`;
-- post-merge Quality Gates #764 — **SUCCESS**;
-- Compatibility Certification #292 — **16/16 SUCCESS**;
-- Release Artifact #243 — **SUCCESS**;
-- Provider Sandbox Certification #207 — **SUCCESS**;
-- WordPress.org Submission Check #101 — **SUCCESS**;
-- CodeQL/main-security #579 — **SUCCESS**;
+- squash merge: `6aabc4fcb0606567a11637ea07fe081fed4c7f85`;
+- post-merge Quality #764, Compatibility #292 (**16/16**), Release Artifact #243, Provider Sandbox #207, WordPress.org Submission Check #101 and CodeQL/main-security #579 — **SUCCESS**;
 - official packaged Plugin Check — **0 blocking errors**;
 - SUCheckout Production HTTP Transport — **27 PASS / 0 FAIL**;
 - SUCheckout Provenance DB Failure — **3 PASS / 0 FAIL**;
-- SUCheckout Residue — **17 PASS / 0 FAIL**;
-- post-closeout open issues / open PRs / unresolved review threads — **0 / 0 / 0**.
+- SUCheckout Residue — **17 PASS / 0 FAIL** at that closeout.
 
-The two older remote branches `release/wordpress-org-submission-readiness` and `enterprise/release-identity-migration-decision` remain owner cleanup because the available automation connector cannot delete branches. Their earlier work is superseded by certified `main`.
+### Living-state closeout
+
+PR #59 reconciled the owner/control documentation without changing runtime behavior and merged as `9591c431e1eb56fe40ca60147afdf9f3f909a212`; its post-merge Quality #773, Compatibility #301 (**16/16**), Release Artifact #252, Provider Sandbox #216, WordPress.org Submission Check #110 and CodeQL/main-security #588 all succeeded.
+
+### Final first-party naming reconciliation
+
+PR #61 removed remaining retired `SIMPLIXPAY_*` first-party constants and certification-control prefixes while preserving protected provider/persisted UPayments identities.
+
+- current runtime-bearing certified `main`: `efe937c67343242b7ccf3396a67b3cf2ce35ebac`;
+- Quality #781 — **SUCCESS**;
+- Compatibility #309 — **16/16 SUCCESS**;
+- Release Artifact #258 — **SUCCESS**;
+- Provider Sandbox #221 — **SUCCESS**;
+- WordPress.org Submission Check #116 — **SUCCESS**;
+- CodeQL/main-security #595 — **SUCCESS**;
+- official packaged Plugin Check — **0 blocking errors**.
+
+The two older remote branches `release/wordpress-org-submission-readiness` and `enterprise/release-identity-migration-decision` remain owner cleanup because the available automation connector cannot delete branches. The current documentation closeout branch is temporary and must disappear after its PR merges.
 
 ## Canonical first-party identity
 The approved SUCheckout identity is:
