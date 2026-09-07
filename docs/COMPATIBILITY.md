@@ -39,7 +39,7 @@ Fresh push-triggered evidence on that exact `main` SHA:
 
 ### Latest first-party naming cleanup baseline
 
-PR #61 removed remaining safe first-party `SIMPLIXPAY_*` runtime/control naming in favor of `SUCHECKOUT_*` equivalents without altering protected provider/persisted identities. It merged as:
+PR #61 removed the remaining safe retired first-party runtime/control naming in favor of canonical SUCheckout equivalents without altering protected provider/persisted identities. It merged as:
 
 `efe937c67343242b7ccf3396a67b3cf2ce35ebac`
 
