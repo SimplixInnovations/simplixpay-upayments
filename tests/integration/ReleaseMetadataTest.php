@@ -5,7 +5,7 @@
 
 require_once __DIR__ . '/bootstrap.php';
 
-$plugin_file = SIMPLIXPAY_UPAYMENTS_PLUGIN_FILE;
+$plugin_file = SUCHECKOUT_UPAYMENTS_PLUGIN_FILE;
 $headers = get_file_data(
     $plugin_file,
     array(
