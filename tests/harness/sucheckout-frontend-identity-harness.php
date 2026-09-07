@@ -83,7 +83,7 @@ foreach (array(
     sufi_assert(strpos($source, "'3.0.0'") === false, 'first-party asset cache version is not frozen in ' . $path);
 }
 sufi_assert(strpos($gateway, 'SUPCHECKOUT_VERSION') !== false, 'classic checkout assets bind to canonical SUPCheckout version');
-sufi_assert(strpos($blocks, 'SUPCHECKOUT_VERSION') !== false, 'Blocks asset binds to canonical SUPCheckout version');
+sufi_assert(strpos($blocks, '\\Simplixi\\SUPCheckout\\Release\\Identity::VERSION') !== false, 'Blocks asset binds to canonical SUPCheckout release identity');
 
 sufi_assert(strpos($new_template, 'supcheckout') !== false, 'new checkout template exposes canonical SUPCheckout root');
 sufi_assert(strpos($old_template, 'supcheckout') !== false, 'legacy checkout template exposes canonical SUPCheckout root');
