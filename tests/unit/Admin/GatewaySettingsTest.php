@@ -204,7 +204,7 @@ final class GatewaySettingsTest extends TestCase {
             'handle'       => 'upayments-multimerchant-style',
             'source'       => 'https://example.test/plugin/assets/css/admin-style.css',
             'dependencies' => array(),
-            'version'      => '3.0.0',
+            'version'      => '0.1.0',
             'media'        => 'all',
         )), $GLOBALS['simplixpay_test_gateway_settings']['styles']);
         self::assertSame(array('upayments-multimerchant-repeater', 'upayments-admin-logic'), array_column(

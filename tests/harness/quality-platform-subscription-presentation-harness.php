@@ -76,7 +76,9 @@ q15_assert(q15_contains($source, "in_array(\$filter, array('active', 'paused', '
 q15_assert(q15_contains($source, "!isset(\$request['subscription_filter']) || !is_string(\$request['subscription_filter'])"), 'malformed account filter shape fails closed');
 q15_assert(q15_contains($source, "\$raw_filter = wp_unslash(\$request['subscription_filter'])"), 'account status input is unslashed before validation');
 q15_assert(q15_contains($source, 'if ($filter !== $raw_filter)'), 'account status rejects lossy sanitation before its allowlist');
-q15_assert(q15_contains($source, "self::request_text(\$_GET, 'page_id', '12')"), 'account page identity is normalized through one request boundary');
+q15_assert(q15_contains($source, "self::request_text(\$_GET, 'page_id')"), 'account page identity is read through the existing sanitized request boundary');
+q15_assert(!q15_contains($source, "self::request_text(\$_GET, 'page_id', '12')"), 'account filter never invents historical page ID 12');
+q15_assert(q15_contains($source, "if (\$page_id !== '')"), 'account page identity is rendered only when explicitly supplied');
 q15_assert(q15_contains($source, "esc_html__('Auto Deduction', 'supcheckout')"), 'account type label is escaped');
 q15_assert(q15_contains($source, "esc_attr(\$status)") && q15_contains($source, "esc_html(ucfirst(\$status))"), 'account status is escaped in attribute and HTML contexts');
 
@@ -90,7 +92,7 @@ foreach (array(
     'admin_order_summary_ignores_missing_products_and_renders_once_per_order',
     'mixed_cart_validation_preserves_both_exact_rejection_contracts',
     'account_query_accepts_only_exact_known_subscription_statuses',
-    'account_filter_escapes_page_identity_and_ignores_malformed_status',
+    'account_filter_preserves_only_supplied_page_identity_and_ignores_malformed_status',
     'account_columns_labels_and_status_output_remain_escaped',
     'owned_manual_account_details_preserve_actions_and_nonce_identities',
     'account_details_fail_closed_for_other_cancelled_auto_and_malformed_orders',

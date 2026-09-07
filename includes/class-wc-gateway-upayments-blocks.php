@@ -65,7 +65,7 @@ class WCGatewayUPaymentsBlocks extends AbstractPaymentMethodType {
                 'wp-i18n',
                 'wc-blocks-data-store',
             ],
-            '3.0.0',
+            \Simplixi\SUPCheckout\Release\Identity::VERSION,
             true
         );
         return [ 'supcheckout-block-checkout' ];

@@ -78,7 +78,10 @@ q6_assert(substr_count($settings, '<tbody>') === 1, 'renderer remains one additi
 q6_assert(q6_contains($settings, "\$query['section'] == \$gateway_id"), 'multimerchant assets remain gateway-section scoped');
 q6_assert(q6_contains($settings, "\$screen_id === 'woocommerce_page_wc-settings'"), 'admin logic remains Woo settings-screen scoped');
 q6_assert(q6_contains($settings, "\$query['tab'] === 'checkout'"), 'admin logic remains checkout-tab scoped');
-q6_assert(q6_contains($settings, "'3.0.0'"), 'admin asset version remains frozen');
+q6_assert(!q6_contains($settings, "'3.0.0'"), 'admin asset version is not frozen to the inherited release');
+q6_assert(q6_contains($settings, '\\Simplixi\\SUPCheckout\\Release\\Identity::VERSION'), 'admin assets bind directly to canonical SUPCheckout release identity');
+q6_assert(q6_contains($gateway, 'SUPCHECKOUT_VERSION'), 'gateway binds first-party asset versions to canonical SUPCheckout identity');
+q6_assert(!q6_contains($settings, '$asset_version'), 'admin asset versioning does not widen the established public method boundary');
 
 q6_assert(
     !q6_contains($gateway, 'allows merchants to accept KNET, Cards, Samsung Pay, Apple Pay, Google Pay Payments.'),

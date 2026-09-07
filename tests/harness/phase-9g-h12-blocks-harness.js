@@ -1582,7 +1582,7 @@ record(true, 'H-ST-1 harness initializes', 'harness');
 
 {
     // The production registration hands createElement(Content) to BOTH slots
-    // (see assets/js/upayments-blocks-integration.js:378-379). Therefore
+    // (as exercised from the canonical assets/js/upayments-block.js source). Therefore
     // every call into Content carries a different fiber (registration identity)
     // and hook state MUST NOT cross between the two slots.
     const scene = buildScene(makeSettings({
