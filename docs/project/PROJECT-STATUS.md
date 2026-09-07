@@ -262,7 +262,7 @@ Live verification on 2026-09-07 confirms:
 - PR flow and review-thread resolution retained;
 - official packaged Plugin Check runs with `strict: true` and the exact-main result reports no findings.
 
-Latest certified `main`: `bfadff34142a3a676258e8dc0774bd31287c0138`.
+Latest runtime-bearing certified `main`: `bfadff34142a3a676258e8dc0774bd31287c0138`. Documentation-only descendants may advance `main`; live GitHub evidence is authoritative for the exact current documentation commit.
 
 PR #71 exact head `a820b7feff765aa99e2321c6cc930baa57793fac` passed the complete stack and squash-merged to that main. Fresh post-merge evidence:
 
