@@ -29,6 +29,7 @@ $plugin = wporg_read($root, 'UPayments.php');
 $identity = wporg_read($root, 'src/Release/Identity.php');
 $build = wporg_read($root, 'scripts/build-release.sh');
 $verify = wporg_read($root, 'scripts/verify-release.sh');
+$distignore = wporg_read($root, '.distignore');
 $release_workflow = wporg_read($root, '.github/workflows/release-artifact.yml');
 $submission_workflow = wporg_read($root, '.github/workflows/wordpress-org-submission-check.yml');
 
@@ -52,7 +53,8 @@ wporg_assert(strpos($readme, 'Stable tag: trunk') === false, 'new-plugin readme 
 wporg_assert(stripos($readme, 'guaranteed PCI') === false && stripos($readme, 'PCI compliant plugin') === false, 'readme makes no plugin-level PCI compliance guarantee');
 
 wporg_assert(strpos($plugin, 'Plugin Name: SUPCheckout for UPayments') !== false, 'plugin header uses canonical product name');
-wporg_assert(strpos(wporg_read($root, '.distignore'), '/NOTICE.md') !== false, 'WordPress.org package excludes source-only NOTICE markdown');
+wporg_assert(strpos($distignore, '/NOTICE.md') !== false, 'WordPress.org package excludes source-only NOTICE markdown');
+wporg_assert(strpos($distignore, '/assets/screenshots/') !== false, 'installable package excludes WordPress.org screenshot source material');
 wporg_assert(strpos($plugin, 'Text Domain: supcheckout') !== false, 'plugin header uses canonical WordPress.org text domain');
 wporg_assert(strpos($build, 'SLUG="supcheckout"') !== false, 'release builder emits canonical WordPress.org slug');
 wporg_assert(strpos($verify, 'slug = "supcheckout"') !== false, 'release verifier requires canonical WordPress.org slug');
