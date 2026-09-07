@@ -40,9 +40,9 @@ No Q20 is justified. Do not create additional numbered quality phases merely for
 
 Different SHAs below own different milestones and must not be conflated.
 
-### Runtime-bearing SUPCheckout identity baseline
+### Historical runtime-bearing SUCheckout identity baseline
 
-PR #58 carried the product/runtime identity migration and was certified at head:
+PR #58 carried the earlier pre-stable SUCheckout product/runtime identity migration and was certified at head:
 
 `5bf84dccb880733da45c1f922d43554af69a33dc`
 
@@ -95,7 +95,7 @@ Fresh exact-main evidence:
 
 ### Latest first-party naming cleanup baseline
 
-PR #61 completed the remaining safe first-party runtime/control naming cleanup, migrating retired first-party implementation/control symbols to canonical SUPCheckout equivalents while preserving all protected UPayments/provider/persisted identities.
+PR #61 completed the remaining safe first-party runtime/control naming cleanup, migrating then-retired first-party implementation/control symbols to the pre-stable SUCheckout equivalents while preserving all protected UPayments/provider/persisted identities.
 
 It merged to `main` as:
 
@@ -110,7 +110,7 @@ Fresh exact-main evidence:
 - WordPress.org Submission Check #116 — **SUCCESS**;
 - CodeQL/main-security #595 — **SUCCESS**.
 
-This `efe937c6...` commit is the base of the current final documentation-hardening branch. The final docs merge may advance `main` without redefining the runtime-bearing milestone above.
+This historical baseline remains evidence only; the current SUPCheckout migration is certified independently on PR #67.
 
 ## Canonical identity
 
