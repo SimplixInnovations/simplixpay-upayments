@@ -1,6 +1,6 @@
 <?php
 
-namespace Simplixi\SUCheckout\UPayments\Release;
+namespace Simplixi\SUPCheckout\Release;
 
 defined('ABSPATH') || exit;
 
@@ -47,5 +47,5 @@ final class Identity {
 // in deliberate isolation, outside a WordPress hook environment.
 if (function_exists('add_action')) {
     require_once dirname(__DIR__) . '/Payment/PaymentLifecycle.php';
-    \Simplixi\SUCheckout\UPayments\Payment\PaymentLifecycle::bootstrap();
+    \Simplixi\SUPCheckout\Payment\PaymentLifecycle::bootstrap();
 }

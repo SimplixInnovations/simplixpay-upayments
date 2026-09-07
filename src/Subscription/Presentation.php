@@ -1,6 +1,6 @@
 <?php
 
-namespace Simplixi\SUCheckout\UPayments\Subscription;
+namespace Simplixi\SUPCheckout\Subscription;
 
 use UPayments\Subscription\Cron\Scheduler;
 use UPayments\Subscription\Helpers\Utils;
