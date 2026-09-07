@@ -19,25 +19,24 @@
 | Canonical release root | `sucheckout-upayments/` |
 | First-stable physical bootstrap | `UPayments.php` — protected compatibility exception |
 | Runtime-bearing SUCheckout migration | **DONE / VERIFIED** |
-| Final documentation/control-plane closeout | **DONE / VERIFIED** |
+| First-party naming cleanup | **DONE / VERIFIED** |
+| Documentation/control-plane hardening | **IN FINAL EXACT-HEAD CERTIFICATION** |
 | Historical Quality Platform Q1-Q19 | **DONE / VERIFIED — permanently closed at Q19** |
 | Historical Enterprise Tasks 1-8 | **DONE / VERIFIED evidence retained** |
 | Deterministic release artifact | **DONE / VERIFIED — permanent exact-head gate** |
 | Legacy-root → canonical-root migration | **DONE / VERIFIED — permanent release gate** |
 | WordPress.org Plugin Check | **DONE / VERIFIED — 0 blocking errors on certified package** |
-| Open issues after final closeout | **0** at last verified closeout |
-| Open PRs after final closeout | **0** at last verified closeout |
-| Repository rename | **OWNER/ADMIN ACTION — READY** |
+| Repository rename | **OWNER/ADMIN ACTION — READY AFTER THIS DOC PR MERGES** |
 | Public Git tag / GitHub Release | **NOT CREATED** |
 | WordPress.org publication | **NOT PERFORMED** |
 
 No Q20 is justified. Do not create additional numbered quality phases merely for continuity.
 
-## Certification anchors: runtime vs control plane
+## Certification anchors
 
-Two SHAs have different meanings and must not be conflated.
+Different SHAs below own different milestones and must not be conflated.
 
-### Runtime-bearing SUCheckout baseline
+### Runtime-bearing SUCheckout identity baseline
 
 PR #58 carried the product/runtime identity migration and was certified at head:
 
@@ -60,22 +59,39 @@ Post-merge runtime evidence:
 - SUCheckout Provenance DB Failure — **3 PASS / 0 FAIL**;
 - SUCheckout Residue — **17 PASS / 0 FAIL**.
 
-### Final documentation/control-plane closeout
+### Documentation/control-plane closeout baseline
 
 PR #59 reconciled the owner handoff and living documentation without changing runtime behavior. It squash-merged as:
 
 `9591c431e1eb56fe40ca60147afdf9f3f909a212`
 
-Fresh push-triggered evidence on that exact `main` SHA completed successfully:
+Fresh push-triggered evidence on that exact `main` SHA:
 
 - Quality Gates #773 — **SUCCESS**;
 - Compatibility Certification #301 — **SUCCESS, all 16 runtime cells**;
-- Release Artifact #252 — **SUCCESS**, including packaged legacy/HPOS and legacy-root migration jobs;
+- Release Artifact #252 — **SUCCESS**;
 - Provider Sandbox Certification #216 — **SUCCESS**;
-- WordPress.org Submission Check #110 — **SUCCESS**, official packaged Plugin Check included;
+- WordPress.org Submission Check #110 — **SUCCESS**;
 - CodeQL/main-security #588 — **SUCCESS**.
 
-A later documentation-only reconciliation may advance `main` without changing the runtime-bearing `6aabc4fc...` baseline. Always verify live `main` before release.
+### Latest first-party naming cleanup baseline
+
+PR #61 completed the remaining safe first-party runtime/control naming cleanup, including retirement of `SIMPLIXPAY_*` implementation/control symbols in favor of `SUCHECKOUT_*` equivalents while preserving all protected UPayments/provider/persisted identities.
+
+It merged to `main` as:
+
+`efe937c67343242b7ccf3396a67b3cf2ce35ebac`
+
+Fresh exact-main evidence:
+
+- Quality Gates #781 — **SUCCESS**;
+- Compatibility Certification #309 — **16/16 SUCCESS**;
+- Release Artifact #258 — **SUCCESS**;
+- Provider Sandbox Certification #221 — **SUCCESS**;
+- WordPress.org Submission Check #116 — **SUCCESS**;
+- CodeQL/main-security #595 — **SUCCESS**.
+
+This `efe937c6...` commit is the base of the current final documentation-hardening branch. The final docs merge may advance `main` without redefining the runtime-bearing milestone above.
 
 ## Canonical identity
 
@@ -183,17 +199,18 @@ Passing this gate does **not** publish the plugin or guarantee manual directory 
 
 ## Remaining owner/admin/local work
 
-Engineering is not blocked on additional speculative repository refactors. The remaining sequence is explicit:
+After this final documentation-hardening PR is exact-green and merged, the remaining sequence is:
 
-1. delete the two obsolete remote branches;
-2. rename GitHub repository to `SimplixInnovations/sucheckout-upayments`;
-3. update repository About metadata and local `origin`;
-4. verify rulesets/security/integrations after rename;
-5. create/merge one coordinate-only PR updating living old-repository URLs;
-6. run the documented isolated local acceptance suite;
-7. choose the first public version explicitly (`0.1.0` early release vs `1.0.0` first stable);
-8. run a version-promotion PR if required;
-9. tag/release/submit to WordPress.org only after explicit approval.
+1. synchronize the owner's local clone to the final `origin/main`;
+2. delete obsolete remote branches;
+3. rename GitHub repository to `SimplixInnovations/sucheckout-upayments`;
+4. update repository About metadata and local `origin`;
+5. verify rulesets/security/integrations after rename;
+6. create/merge one coordinate-only PR updating living old-repository URLs;
+7. run the documented isolated local acceptance suite;
+8. choose the first public version explicitly (`0.1.0` early release vs `1.0.0` first stable);
+9. run a version-promotion PR if required;
+10. tag/release/submit to WordPress.org only after explicit approval.
 
 The exact commands and checks are in `docs/project/OWNER-HANDOFF.md`.
 
