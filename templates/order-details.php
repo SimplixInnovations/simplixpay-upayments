@@ -1,6 +1,8 @@
 <?php
 defined( 'ABSPATH' ) || exit;
 
+// phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- WooCommerce template variables are local include-scope values, not public plugin globals.
+
 $payment_status = isset($payment_status) && is_scalar($payment_status)
     ? (string) $payment_status
     : '';
