@@ -17,7 +17,7 @@ Use this file with root `AGENTS.md`, `PROJECT-STATUS.md`, `OWNER-HANDOFF.md`, `N
 - Current GitHub coordinate pending owner rename: `SimplixInnovations/simplixpay-upayments`
 - Approved target repository: `SimplixInnovations/sucheckout-upayments`
 
-The word `for` is human-facing relationship copy only. Never use `sucheckout-for-upayments` technically.
+The word `for` is human-facing relationship copy only and must never be encoded into technical identifiers.
 
 ## Program state
 
@@ -27,7 +27,10 @@ The word `for` is human-facing relationship copy only. Never use `sucheckout-for
 - Provider Contract & Payment Lifecycle — **DONE / VERIFIED**
 - Security Threat-Model Closure — **DONE / VERIFIED**
 - Architecture A1-A5 — **DONE / VERIFIED**
-- Quality Platform Q1-Q19 — **DONE / VERIFIED / permanently closed at Q19**
+- Quality Platform Q1-Q19 — **DONE / VERIFIED; closed at Q19**
+- Quality Platform Q16 migration-core analysis: **DONE / VERIFIED**
+- Quality Platform Q17 payment-runtime analysis: **DONE / VERIFIED**
+- Enterprise Task 8 release-candidate closeout — **DONE / VERIFIED**
 - Enterprise Tasks 1-8 — **DONE / VERIFIED**
 - SUCheckout product/namespace/text-domain/package migration — **DONE / VERIFIED**
 - Deterministic release + packaged runtime — **DONE / VERIFIED**
