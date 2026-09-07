@@ -4,7 +4,7 @@ contact_links:
     url: https://simplixi.com
     about: Commercial implementation, production debugging and long-term WooCommerce engineering.
   - name: Security policy
-    url: https://github.com/SimplixInnovations/simplixpay-upayments/security/policy
+    url: https://github.com/SimplixInnovations/sucheckout/security/policy
     about: Do not post suspected vulnerabilities publicly.
   - name: Official UPayments developer documentation
     url: https://developers.upayments.com/reference/woocommerce
