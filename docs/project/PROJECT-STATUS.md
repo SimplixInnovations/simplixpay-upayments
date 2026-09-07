@@ -2,8 +2,8 @@
 
 **Status document:** canonical living engineering state
 **Last reconciled:** 2026-09-07
-**Current GitHub repository pending owner rename:** `SimplixInnovations/simplixpay-upayments`
-**Approved canonical repository:** `SimplixInnovations/sucheckout-upayments`
+**Canonical GitHub repository:** `SimplixInnovations/sucheckout`
+**Canonical plugin/package slug:** `sucheckout-upayments`
 **Development version:** `0.1.0`
 
 > Live GitHub/source evidence wins over recorded SHAs. Historical phase records preserve what was true at their close. This file owns the current program state; `OWNER-HANDOFF.md` owns the remaining owner/admin/local sequence.
@@ -28,7 +28,7 @@
 | Deterministic release artifact | **DONE / VERIFIED — permanent exact-head gate** |
 | Legacy-root → canonical-root migration | **DONE / VERIFIED — permanent release gate** |
 | WordPress.org Plugin Check | **DONE / VERIFIED — 0 blocking errors on certified package** |
-| Repository rename | **OWNER/ADMIN ACTION — READY after final repository-control hardening** |
+| Repository rename | **DONE / VERIFIED — canonical repository is `SimplixInnovations/sucheckout`** |
 | Public Git tag / GitHub Release | **NOT CREATED** |
 | WordPress.org publication | **NOT PERFORMED** |
 
@@ -122,7 +122,7 @@ The approved identity is:
 - deterministic package: `sucheckout-upayments-X.Y.Z.zip`;
 - package root: `sucheckout-upayments/`;
 - first-stable bootstrap: `UPayments.php`;
-- target repository after owner rename: `SimplixInnovations/sucheckout-upayments`.
+- canonical GitHub repository: `SimplixInnovations/sucheckout`.
 
 The word **for** appears in human-facing relationship copy only. It does not appear in technical slugs, URLs, package identities, text domains or namespaces.
 
@@ -220,7 +220,7 @@ After this final documentation-hardening PR is exact-green and merged, the remai
 
 1. synchronize the owner's local clone to the final `origin/main`;
 2. delete obsolete remote branches;
-3. rename GitHub repository to `SimplixInnovations/sucheckout-upayments`;
+3. verify canonical GitHub repository metadata/controls at `SimplixInnovations/sucheckout`;
 4. update repository About metadata and local `origin`;
 5. verify rulesets/security/integrations after rename;
 6. create/merge one coordinate-only PR updating living old-repository URLs;
