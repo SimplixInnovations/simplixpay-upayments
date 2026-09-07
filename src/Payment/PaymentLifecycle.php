@@ -562,8 +562,8 @@ final class PaymentLifecycle {
         $order->update_meta_data('UPayments_Result', (string) $provider_result);
         if ((string) $order->get_status() !== $target_status) {
             $note = $target_status === 'failed'
-                ? __('UPayments authenticated payment result is terminal failure.', 'sucheckout-upayments')
-                : __('UPayments authenticated payment result is cancelled.', 'sucheckout-upayments');
+                ? __('UPayments authenticated payment result is terminal failure.', 'supcheckout')
+                : __('UPayments authenticated payment result is cancelled.', 'supcheckout');
             $order->update_status($target_status, $note);
         } else {
             $order->save();
@@ -621,7 +621,7 @@ final class PaymentLifecycle {
         $order->update_meta_data(self::RECONCILE_REASON_META, self::safe_code($reason));
         if (method_exists($order, 'add_order_note')) {
             $order->add_order_note(
-                __('SUCheckout for UPayments reconciliation exhausted without authoritative terminal payment state. Manual review is required.', 'sucheckout-upayments')
+                __('SUPCheckout for UPayments reconciliation exhausted without authoritative terminal payment state. Manual review is required.', 'supcheckout')
             );
         }
         $order->save();
@@ -826,7 +826,7 @@ final class PaymentLifecycle {
             return;
         }
         $message = 'Payment lifecycle: ' . self::safe_code($code);
-        $context = array('source' => 'sucheckout-upayments-lifecycle');
+        $context = array('source' => 'supcheckout-lifecycle');
         if ($level === 'warning' && method_exists($logger, 'warning')) {
             $logger->warning($message, $context);
         } elseif (method_exists($logger, 'info')) {
