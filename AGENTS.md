@@ -240,5 +240,5 @@ Documentation-only changes still require their triggered required checks and exa
 
 If required verification fails:
 
-`NOT APPROVED.`  
+`NOT APPROVED.`
 `DO NOT MERGE.`
