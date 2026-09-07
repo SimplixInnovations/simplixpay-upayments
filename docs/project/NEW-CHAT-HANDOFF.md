@@ -1,21 +1,22 @@
-# SUCheckout for UPayments — Clean Chat Handoff
+# SUPCheckout for UPayments — Clean Chat Handoff
 
 Use this file with root `AGENTS.md`, `PROJECT-STATUS.md`, `OWNER-HANDOFF.md`, `NAMING-IDENTITY-STANDARD.md`, `docs/COMPATIBILITY.md` and `RELEASE-ENGINEERING.md`.
 
 ## Identity
 
-- Formal product: **SUCheckout for UPayments**
-- Short product/family: **SUCheckout**
+- Formal product: **SUPCheckout for UPayments**
+- Short product/family: **SUPCheckout**
 - Provider: **UPayments**
 - Maintainer: **Simplix Innovations**
-- Technical slug / text domain: `sucheckout-upayments`
-- PHP namespace root: `Simplixi\SUCheckout\UPayments`
-- Package root: `sucheckout-upayments/`
+- Technical slug / text domain: `supcheckout`
+- PHP namespace root: `Simplixi\SUPCheckout`
+- Package root: `supcheckout/`
 - First-stable physical bootstrap: `UPayments.php`
-- Canonical first-stable basename: `sucheckout-upayments/UPayments.php`
+- Canonical first-stable basename: `supcheckout/UPayments.php`
 - Development version: **0.1.0**
-- Canonical GitHub repository: `SimplixInnovations/sucheckout`
-- Canonical plugin/package slug: `sucheckout-upayments`
+- Current GitHub repository: `SimplixInnovations/sucheckout`
+- Target repository after certified merge: `SimplixInnovations/supcheckout`
+- Canonical plugin/package slug: `supcheckout`
 
 The word `for` is human-facing relationship copy only and must never be encoded into technical identifiers.
 
@@ -32,9 +33,9 @@ The word `for` is human-facing relationship copy only and must never be encoded 
 - Quality Platform Q17 payment-runtime analysis: **DONE / VERIFIED**
 - Enterprise Task 8 release-candidate closeout — **DONE / VERIFIED**
 - Enterprise Tasks 1-8 — **DONE / VERIFIED**
-- SUCheckout product/namespace/text-domain/package migration — **DONE / VERIFIED**
+- Final SUPCheckout product/namespace/text-domain/package migration — **IN EXACT-HEAD CERTIFICATION (PR #67)**
 - Deterministic release + packaged runtime — **DONE / VERIFIED**
-- Legacy package-root → SUCheckout package-root migration/rollback — **DONE / VERIFIED**
+- Both real pre-stable package roots → SUPCheckout migration/rollback — **CI-CERTIFIED on current candidate**
 - WordPress.org packaged Plugin Check — **DONE / VERIFIED / 0 blocking errors**
 - Public stable release — **NO**
 - WordPress.org publication — **NO**
@@ -44,7 +45,7 @@ Never invent Q20. Live GitHub evidence wins over recorded SHAs.
 
 ## Certification anchors
 
-### Runtime-bearing SUCheckout baseline
+### Historical pre-stable SUCheckout baseline
 
 - PR #58 certified head: `5bf84dccb880733da45c1f922d43554af69a33dc`;
 - squash merge: `6aabc4fcb0606567a11637ea07fe081fed4c7f85`;
@@ -88,7 +89,7 @@ Do not search/replace these for cosmetic naming:
 
 The first-stable package intentionally uses `UPayments.php`.
 
-Real WordPress qualification proved that directly renaming an already-active physical bootstrap can strand the stored plugin basename. A future physical filename `sucheckout-upayments.php` is separately gated and is **not** required before the first release.
+Real WordPress qualification proved that directly renaming an already-active physical bootstrap can strand the stored plugin basename. A future physical filename `supcheckout.php` is separately gated and is **not** required before the first release.
 
 ## Verified enterprise surfaces
 
@@ -111,7 +112,7 @@ Real WordPress qualification proved that directly renaming an already-active phy
 Owner/admin/local sequence is controlled by `OWNER-HANDOFF.md`:
 
 1. delete two obsolete remote branches;
-2. verify/reconcile the canonical repository at `SimplixInnovations/sucheckout`;
+2. after exact-green merge, rename `SimplixInnovations/sucheckout` to `SimplixInnovations/supcheckout` and reconcile living coordinates;
 3. update GitHub About/security/integrations and local `origin`;
 4. run a coordinate-only PR for living old-repository links;
 5. run isolated local acceptance and real WooCommerce smoke;
