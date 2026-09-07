@@ -22,7 +22,7 @@
 > **SUPCheckout for UPayments** is independently engineered and maintained by **Simplix Innovations**. UPayments is the external payment-service provider and owns its respective names and trademarks. This project does not imply UPayments endorsement, ownership or official distribution.
 
 > [!NOTE]
-> The canonical GitHub repository is `SimplixInnovations/sucheckout`. The WordPress/plugin package slug, text domain and release artifact identity remain `supcheckout`; the shorter repository coordinate is intentional and does not change the certified plugin identity.
+> The current GitHub repository remains `SimplixInnovations/sucheckout` only until this final SUPCheckout identity migration is merged and post-merge certified. The owner/admin target is `SimplixInnovations/supcheckout`; plugin slug, text domain and release identity are already `supcheckout`.
 
 ## What SUPCheckout is
 
@@ -58,7 +58,8 @@ The **SUPCheckout identity migration and first-party naming cleanup are DONE / V
 |---|---|
 | Product | **SUPCheckout for UPayments** |
 | Product family | **SUPCheckout** |
-| GitHub repository | `SimplixInnovations/sucheckout` |
+| Current GitHub repository | `SimplixInnovations/sucheckout` |
+| Target repository after certified merge | `SimplixInnovations/supcheckout` |
 | Technical slug | `supcheckout` |
 | WordPress text domain | `supcheckout` |
 | PHP namespace | `Simplixi\SUPCheckout\UPayments` |
@@ -174,7 +175,7 @@ The authoritative local and owner-administration sequence is documented in:
 It includes:
 
 1. final branch cleanup after the hardening PR merges;
-2. canonical repository verification at `SimplixInnovations/sucheckout`;
+2. post-merge repository rename from `SimplixInnovations/sucheckout` to `SimplixInnovations/supcheckout` and coordinate verification;
 3. GitHub About/security/rules/integration verification;
 4. local `origin` update to the canonical repository;
 5. post-rename living-coordinate reconciliation;
