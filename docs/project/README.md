@@ -77,7 +77,7 @@ Canonical basename: sucheckout-upayments/UPayments.php
 Target repository:  SimplixInnovations/sucheckout-upayments
 ```
 
-`for` is display/relationship wording only. Never create `sucheckout-for-upayments` technical identifiers.
+`for` is display/relationship wording only and must never be encoded into technical identifiers.
 
 Existing persisted/provider payment identities are never renamed merely for naming uniformity.
 
