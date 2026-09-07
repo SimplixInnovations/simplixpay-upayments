@@ -1,11 +1,12 @@
-# SUCheckout for UPayments — Historical Enterprise Foundation & Re-certification Context
+# SUPCheckout for UPayments — Historical Enterprise Foundation & Re-certification Context
 
 **Historical status:** TASKS 1–8 DONE / VERIFIED under the former pre-rebrand product identity
-**Current engineering state:** SUCheckout identity migration DONE / VERIFIED; owner repository/release administration pending
-**Canonical GitHub repository:** `SimplixInnovations/sucheckout`
-**Canonical plugin/package slug:** `sucheckout-upayments`
+**Current engineering state:** final SUPCheckout identity migration in exact-head certification; repository rename/public release pending
+**Current GitHub repository:** `SimplixInnovations/sucheckout`
+**Target GitHub repository after certified merge:** `SimplixInnovations/supcheckout`
+**Canonical plugin/package slug:** `supcheckout`
 
-This record preserves the reproducible enterprise certification foundation established before the approved SUCheckout rebrand. Historical package names, basenames, text domains, SHAs and run numbers below remain evidence of what was certified then; they are not current SUCheckout identity declarations. Current state is owned by `PROJECT-STATUS.md`.
+This record preserves the reproducible enterprise certification foundation established before the approved SUCheckout rebrand. Historical package names, basenames, text domains, SHAs and run numbers below remain evidence of what was certified then; they are not current SUPCheckout identity declarations. Current state is owned by `PROJECT-STATUS.md`.
 
 ## SUCheckout identity-migration certification — DONE / VERIFIED
 
@@ -188,7 +189,7 @@ Historical Task 7 decision at that time:
 - historical basename `simplixpay-upayments/UPayments.php`;
 - historical text domain `upayments`.
 
-The approved SUCheckout migration later superseded the package/text identity while retaining the physical `UPayments.php` compatibility decision. Current canonical package basename is `sucheckout-upayments/UPayments.php` and current text domain is `sucheckout-upayments`; the legacy root remains only for migration/rollback evidence.
+The approved SUCheckout migration later superseded the package/text identity while retaining the physical `UPayments.php` compatibility decision. Current canonical package basename is `supcheckout/UPayments.php` and current text domain is `supcheckout`; the legacy root remains only for migration/rollback evidence.
 
 Task 7 merged as `02b8d1c2851faabe020f23bbe84ebcca43a4827d`. Post-merge `main` passed Quality #545, Compatibility #73, Release Artifact #27 and CodeQL #349.
 
@@ -220,6 +221,6 @@ The reserved final whole-plugin Codex challenge identified one valid P2 in stale
 
 PR #54 squash-merged as `2ddb1790fead37c6055256847dc7c827e165af4a`. Post-merge canonical `main` passed Quality #553, Compatibility #81, Release Artifact #35, Provider Sandbox #13 and CodeQL/main-security #358.
 
-The historical enterprise engineering program is therefore **DONE / VERIFIED through Task 8**. The SUCheckout identity migration is now independently DONE / VERIFIED. Every future candidate must still satisfy the permanent exact-head certification gates appropriate to its scope before merge or release. External/manual classifications and unsupported features remain honest boundaries, not fabricated repository certifications.
+The historical enterprise engineering program is therefore **DONE / VERIFIED through Task 8**. The earlier pre-stable SUCheckout identity migration remains independently DONE / VERIFIED evidence; the final SUPCheckout migration is certified separately. Every future candidate must still satisfy the permanent exact-head certification gates appropriate to its scope before merge or release. External/manual classifications and unsupported features remain honest boundaries, not fabricated repository certifications.
 
 No public tag, GitHub Release, WordPress.org publication or repository rename is created or authorized by this engineering closeout alone.
