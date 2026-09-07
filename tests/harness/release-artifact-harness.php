@@ -135,11 +135,15 @@ release_assert(strpos($workflow, 'name: supcheckout-release-${{ env.RELEASE_SOUR
 release_assert(strpos($workflow, 'ref: ${{ env.RELEASE_SOURCE_SHA }}') !== false, 'release workflow checks out exact candidate source SHA');
 release_assert(strpos($workflow, 'storage: [legacy, hpos]') !== false, 'packaged runtime covers legacy and HPOS storage');
 release_assert(strpos($workflow, 'plugin activate supcheckout') !== false, 'packaged runtime activates canonical plugin slug');
-release_assert(strpos($workflow, 'SUPCHECKOUT_PLUGIN_SLUG=simplixpay-upayments') !== false, 'migration job seeds a real legacy-root installation');
-release_assert(strpos($workflow, 'plugin deactivate simplixpay-upayments') !== false, 'migration job explicitly deactivates legacy root');
+release_assert(strpos($workflow, "previous_slug: 'simplixpay-upayments'") !== false, 'migration matrix retains historical SimplixPay package root');
+release_assert(strpos($workflow, "previous_slug: 'sucheckout-upayments'") !== false, 'migration matrix certifies transitional SUCheckout package root');
+release_assert(strpos($workflow, "previous_sha: '54b1fbcc280b92372bd93baf929d6a746cfd3959'") !== false, 'historical SimplixPay migration source is immutable');
+release_assert(strpos($workflow, "previous_sha: 'e9f953b0c3a881ad2d4b74390d0b5394b766a3fa'") !== false, 'transitional SUCheckout migration source is immutable');
+release_assert(strpos($workflow, 'SUPCHECKOUT_PLUGIN_SLUG="$SUPCHECKOUT_LEGACY_SLUG"') !== false, 'migration job installs each matrix-selected pre-stable root');
+release_assert(strpos($workflow, 'plugin deactivate "$SUPCHECKOUT_LEGACY_SLUG"') !== false, 'migration job explicitly deactivates each pre-stable root');
 release_assert(strpos($workflow, 'plugin activate supcheckout') !== false, 'migration job explicitly activates canonical root');
 release_assert(strpos($workflow, 'SUPCHECKOUT_UPGRADE_PHASE=verify-legacy-rollback') !== false, 'migration job proves legacy rollback is non-destructive');
-release_assert(strpos($workflow, 'plugin delete simplixpay-upayments') !== false, 'migration job ends with legacy package removed');
+release_assert(strpos($workflow, 'plugin delete "$SUPCHECKOUT_LEGACY_SLUG"') !== false, 'migration job ends with selected pre-stable package removed');
 release_assert(strpos($workflow, 'actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a') !== false, 'artifact upload action is immutably pinned');
 release_assert(strpos($workflow, 'actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c') !== false, 'artifact download action is immutably pinned');
 
@@ -200,7 +204,7 @@ if ($version !== '') {
                         && strpos($plugin, 'Plugin Name: SUPCheckout for UPayments') !== false
                         && strpos($plugin, 'Text Domain: supcheckout') !== false
                         && strpos($plugin, 'Version: ' . $version) !== false,
-                    'independent inspector confirms packaged SUCheckout metadata'
+                    'independent inspector confirms packaged SUPCheckout metadata'
                 );
                 $zip->close();
             }
