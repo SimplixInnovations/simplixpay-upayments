@@ -62,7 +62,7 @@ The **SUPCheckout identity migration and first-party naming cleanup are DONE / V
 | Target repository after certified merge | `SimplixInnovations/supcheckout` |
 | Technical slug | `supcheckout` |
 | WordPress text domain | `supcheckout` |
-| PHP namespace | `Simplixi\SUPCheckout\UPayments` |
+| PHP namespace | `Simplixi\SUPCheckout` |
 | Development version | `0.1.0` |
 | Canonical package root | `supcheckout/` |
 | First-stable bootstrap | `UPayments.php` — qualified compatibility exception |
@@ -109,7 +109,7 @@ The SUPCheckout rebrand deliberately separates **first-party product identity** 
 
 - human name: **SUPCheckout for UPayments**;
 - technical slug/text domain: `supcheckout`;
-- namespace: `Simplixi\SUPCheckout\UPayments`;
+- namespace: `Simplixi\SUPCheckout`;
 - release package: `supcheckout-X.Y.Z.zip`;
 - package root: `supcheckout/`.
 
