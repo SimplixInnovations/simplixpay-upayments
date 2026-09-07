@@ -22,7 +22,7 @@ Post-merge evidence on that runtime-bearing baseline:
 - CodeQL/main-security #579 — **SUCCESS**;
 - official packaged Plugin Check — **0 blocking errors**.
 
-### Final control-plane closeout baseline
+### Documentation/control-plane closeout baseline
 
 The documentation/owner-control closeout merged as:
 
@@ -36,6 +36,21 @@ Fresh push-triggered evidence on that exact `main` SHA:
 - Provider Sandbox #216 — **SUCCESS**;
 - WordPress.org Submission Check #110 — **SUCCESS**;
 - CodeQL/main-security #588 — **SUCCESS**.
+
+### Latest first-party naming cleanup baseline
+
+PR #61 removed remaining safe first-party `SIMPLIXPAY_*` runtime/control naming in favor of `SUCHECKOUT_*` equivalents without altering protected provider/persisted identities. It merged as:
+
+`efe937c67343242b7ccf3396a67b3cf2ce35ebac`
+
+Fresh exact-main evidence:
+
+- Quality Gates #781 — **SUCCESS**;
+- Compatibility Certification #309 — **16/16 SUCCESS**;
+- Release Artifact #258 — **SUCCESS**;
+- Provider Sandbox #221 — **SUCCESS**;
+- WordPress.org Submission Check #116 — **SUCCESS**;
+- CodeQL/main-security #595 — **SUCCESS**.
 
 Later documentation-only merges may advance `main` without changing the runtime-bearing baseline. Always verify live release-candidate evidence before publication.
 
