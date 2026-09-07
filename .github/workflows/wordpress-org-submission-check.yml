@@ -102,4 +102,4 @@ jobs:
           slug: supcheckout
           categories: plugin_repo
           include-experimental: false
-          strict: false
+          strict: true
