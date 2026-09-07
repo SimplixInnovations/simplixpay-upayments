@@ -49,8 +49,8 @@ final class MigrationAdminTest extends TestCase {
 
         self::assertSame(array(array(
             'woocommerce',
-            'SUCheckout for UPayments Migration',
-            'SUCheckout Migration',
+            'SUPCheckout for UPayments Migration',
+            'SUPCheckout Migration',
             MigrationAdmin::CAPABILITY,
             MigrationAdmin::PAGE_SLUG,
             array(MigrationAdmin::class, 'render'),
@@ -66,7 +66,7 @@ final class MigrationAdminTest extends TestCase {
             MigrationAdmin::render();
             self::fail('Unauthorized render must terminate.');
         } catch (RuntimeException $exception) {
-            self::assertSame('You do not have permission to run SUCheckout migration tools.', $exception->getMessage());
+            self::assertSame('You do not have permission to run SUPCheckout migration tools.', $exception->getMessage());
         } finally {
             $output = ob_get_clean();
         }
