@@ -1,8 +1,9 @@
-# SUCheckout for UPayments — Release Engineering
+# SUPCheckout for UPayments — Release Engineering
 
 **Current status:** pre-release SUCheckout engineering migration merged and certified; repository rename complete; local acceptance/release administration pending
-**Canonical GitHub repository:** `SimplixInnovations/sucheckout`
-**Canonical plugin/package slug:** `sucheckout-upayments`
+**Current GitHub repository:** `SimplixInnovations/sucheckout`
+**Target GitHub repository after certified merge:** `SimplixInnovations/supcheckout`
+**Canonical plugin/package slug:** `supcheckout`
 **Development version:** `0.1.0`
 
 ## Certification anchors
@@ -52,17 +53,17 @@ This evidence certifies the engineering artifact and migration contract. It does
 
 The first-stable release identity is:
 
-- human product: **SUCheckout for UPayments**;
-- package root: `sucheckout-upayments/`;
+- human product: **SUPCheckout for UPayments**;
+- package root: `supcheckout/`;
 - physical main file: `UPayments.php`;
-- plugin basename: `sucheckout-upayments/UPayments.php`;
-- text domain: `sucheckout-upayments`;
-- namespace: `Simplixi\SUCheckout\UPayments`;
-- current development artifact: `sucheckout-upayments-0.1.0.zip`.
+- plugin basename: `supcheckout/UPayments.php`;
+- text domain: `supcheckout`;
+- namespace: `Simplixi\SUPCheckout`;
+- current development artifact: `supcheckout-0.1.0.zip`.
 
 The retained `UPayments.php` filename is deliberate. Real-install qualification proved that directly renaming an already-active physical main file can strand WordPress's persisted plugin basename.
 
-A future physical filename `sucheckout-upayments.php` is a separately gated migration target, not a first-stable requirement.
+A future physical filename `supcheckout.php` is a separately gated migration target, not a first-stable requirement.
 
 ## Deterministic artifact contract
 
@@ -70,9 +71,9 @@ Build and verify:
 
 ```bash
 bash scripts/build-release.sh dist
-bash scripts/verify-release.sh dist/sucheckout-upayments-0.1.0.zip
-sha256sum dist/sucheckout-upayments-0.1.0.zip
-cat dist/sucheckout-upayments-0.1.0.zip.sha256
+bash scripts/verify-release.sh dist/supcheckout-0.1.0.zip
+sha256sum dist/supcheckout-0.1.0.zip
+cat dist/supcheckout-0.1.0.zip.sha256
 ```
 
 The builder/verifier requires:
@@ -85,7 +86,7 @@ The builder/verifier requires:
 - ZIP SHA-256 sidecar;
 - sorted per-file SHA-256 manifest;
 - explicit release-path allowlist;
-- exactly one `sucheckout-upayments/` ZIP root;
+- exactly one `supcheckout/` ZIP root;
 - exact source-byte verification;
 - rejection of a rehashed/self-consistent ZIP whose bytes diverge from Git HEAD;
 - reproducible byte-identical output from the same source commit.
@@ -104,11 +105,11 @@ Permanent packaged smoke includes:
 - real Woo order CRUD with legacy authoritative storage;
 - real Woo order CRUD with HPOS authoritative storage.
 
-The WordPress plugin is installed under slug `sucheckout-upayments` while the protected WooCommerce gateway/payment identity remains `upayments`.
+The WordPress plugin is installed under slug `supcheckout` while the protected WooCommerce gateway/payment identity remains `upayments`.
 
 ## Pre-release legacy-root migration certification
 
-Changing package root from `simplixpay-upayments/` to `sucheckout-upayments/` changes the WordPress plugin basename. This is therefore not represented as an invisible same-basename auto-update.
+Changing package root from either real pre-stable root (`simplixpay-upayments/` or `sucheckout-upayments/`) to `supcheckout/` changes the WordPress plugin basename. This is therefore not represented as an invisible same-basename auto-update.
 
 Permanent migration cells include:
 
@@ -121,7 +122,7 @@ Each cell:
 2. installs/activates it as `simplixpay-upayments/UPayments.php`;
 3. seeds protected merchant settings, order/payment/token/subscription metadata and cron state;
 4. deactivates the legacy package;
-5. installs/activates canonical `sucheckout-upayments/UPayments.php`;
+5. installs/activates canonical `supcheckout/UPayments.php`;
 6. verifies settings/data/provider IDs/callback/cron continuity;
 7. proves rollback to the legacy package remains non-destructive;
 8. returns to canonical SUCheckout;
@@ -155,8 +156,8 @@ These are provider/data compatibility contracts, not first-party branding residu
 - runs the permanent submission harness;
 - builds the deterministic canonical ZIP;
 - verifies the ZIP before inspection;
-- unpacks `sucheckout-upayments/`;
-- runs the pinned official `WordPress/plugin-check-action` with slug `sucheckout-upayments` and `plugin_repo` checks;
+- unpacks `supcheckout/`;
+- runs the pinned official `WordPress/plugin-check-action` with slug `supcheckout` and `plugin_repo` checks;
 - fails on blocking findings.
 
 No blanket Plugin Check ignore list is allowed.
@@ -188,7 +189,7 @@ Only after explicit owner approval:
 4. verify ZIP SHA-256 against sidecar;
 5. create `vX.Y.Z` on that exact commit;
 6. create GitHub Release with verified ZIP/checksum/manifest;
-7. submit/publish that exact package to WordPress.org under slug `sucheckout-upayments`;
+7. submit/publish that exact package to WordPress.org under slug `supcheckout`;
 8. verify the public directory metadata/package/version;
 9. perform post-publication install/upgrade smoke from the real public channel.
 
@@ -202,9 +203,9 @@ Do not publish an artifact from:
 
 ## Repository-coordinate boundary
 
-The canonical GitHub repository is `SimplixInnovations/sucheckout`.
+The current GitHub repository is `SimplixInnovations/sucheckout`; after the certified SUPCheckout merge it must be renamed to `SimplixInnovations/supcheckout`.
 
-The repository coordinate is intentionally distinct from the WordPress/plugin package slug `sucheckout-upayments`. Current repository URLs must use the canonical GitHub coordinate; historical evidence and legacy migration fixtures retain older package/repository tokens where they are semantically required.
+During this migration only, the current repository coordinate differs from the final plugin slug. After owner/admin rename, living repository URLs use `SimplixInnovations/supcheckout`; historical evidence and pre-stable migration fixtures retain older package/repository tokens where semantically required.
 
 ## Historical evidence
 
