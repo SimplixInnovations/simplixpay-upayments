@@ -28,7 +28,7 @@
 | Historical Enterprise Tasks 1-8 | **DONE / VERIFIED evidence retained** |
 | Deterministic release artifact | **DONE / VERIFIED — permanent exact-head gate** |
 | Legacy-root → canonical-root migration | **DONE / VERIFIED — permanent release gate** |
-| WordPress.org Plugin Check | **DONE / VERIFIED — 0 blocking errors on certified package** |
+| WordPress.org Plugin Check | **DONE / VERIFIED — strict zero-warning/error gate on certified package** |
 | SUPCheckout repository rename + living-coordinate closure | **DONE / VERIFIED — canonical `SimplixInnovations/supcheckout`, PR #68 merged/post-merge green** |
 | Public Git tag / GitHub Release | **NOT CREATED** |
 | WordPress.org publication | **NOT PERFORMED** |
@@ -244,11 +244,11 @@ The permanent `WordPress.org Submission Check`:
 - unpacks `supcheckout/`;
 - runs the pinned official `WordPress/plugin-check-action` against that exact package;
 - uses slug `supcheckout` and `plugin_repo` checks;
-- fails on blocking findings.
+- runs with `strict: true` and fails on any reported warning/error.
 
 Passing this gate does **not** publish the plugin or guarantee manual directory approval.
 
-## Final repository-admin closure
+## Current certified repository state
 
 Live verification on 2026-09-07 confirms:
 
@@ -259,18 +259,23 @@ Live verification on 2026-09-07 confirms:
 - squash-only merge policy with merged-branch deletion;
 - active Main Rule requiring `Governance`, `H12 Regression Harness`, `Compatibility Gate` and `Release Gate` under strict up-to-date checking;
 - deletion, non-fast-forward/force-push and linear-history protections retained;
-- PR flow and review-thread resolution retained.
+- PR flow and review-thread resolution retained;
+- official packaged Plugin Check runs with `strict: true` and the exact-main result reports no findings.
 
-Latest certified `main`: `a0794c1f968e7bb97d3a6589aa109b6236fa307f`.
+Latest runtime-bearing certified `main`: `bfadff34142a3a676258e8dc0774bd31287c0138`. Documentation-only descendants may advance `main`; live GitHub evidence is authoritative for the exact current documentation commit.
 
-Fresh post-merge evidence on that exact SHA:
+PR #71 exact head `a820b7feff765aa99e2321c6cc930baa57793fac` passed the complete stack and squash-merged to that main. Fresh post-merge evidence:
 
-- Quality #911 — **SUCCESS**;
-- Compatibility #439 — **16/16 SUCCESS**;
-- Release Artifact #388 — **SUCCESS**;
-- Provider Sandbox #349 — **SUCCESS**;
-- WordPress.org Submission Check #246 — **SUCCESS**;
-- CodeQL/main-security #733 — **SUCCESS**.
+- Quality #927 — **SUCCESS**;
+- H12 PHP — **1927 PASS / 0 FAIL**;
+- H12 Blocks — **144 PASS / 0 FAIL**;
+- Compatibility #455 — **16/16 SUCCESS**;
+- Release Artifact #404 / Release Gate — **SUCCESS**;
+- Provider Sandbox #365 — **SUCCESS**;
+- WordPress.org Submission Check #262 — **SUCCESS / strict package gate**;
+- CodeQL/main-security #749 — **SUCCESS**;
+- PR #71 runtime-baseline ZIP `supcheckout-0.1.0.zip` — SHA-256 `0436256b16605b9b2db91aa8a7865ecec6cae7ef00fa515048d9643e50ad990a`, 74 files;
+- current documentation-reconciled package candidate (same runtime; distributed README updated) — SHA-256 `ffdf69d55169e61bb64b1b8401f435bf4c6bbcfaced6750ad9a12cda4a6200ef`, 74 files.
 
 ## Remaining owner/admin/local work
 

@@ -238,4 +238,23 @@ PR #54 squash-merged as `2ddb1790fead37c6055256847dc7c827e165af4a`. Post-merge c
 
 The historical enterprise engineering program is therefore **DONE / VERIFIED through Task 8**. The earlier pre-stable SUCheckout identity migration remains independently DONE / VERIFIED evidence; the final SUPCheckout migration is certified separately. Every future candidate must still satisfy the permanent exact-head certification gates appropriate to its scope before merge or release. External/manual classifications and unsupported features remain honest boundaries, not fabricated repository certifications.
 
+## Post-program strict WordPress.org package certification
+
+The later SUPCheckout release-engineering hardening is independently certified without rewriting the historical Task 1-8 record.
+
+PR #71 exact head `a820b7feff765aa99e2321c6cc930baa57793fac` passed Quality #926, Compatibility #454 (**16/16**), Release Artifact #403, Provider Sandbox #364, strict WordPress.org #261 and CodeQL #748, then squash-merged as `bfadff34142a3a676258e8dc0774bd31287c0138`.
+
+Fresh post-merge evidence on that exact `main`:
+
+- Quality #927 — **SUCCESS**;
+- Compatibility #455 — **16/16 SUCCESS**;
+- Release Artifact #404 / Release Gate — **SUCCESS**;
+- Provider Sandbox #365 — **SUCCESS**;
+- WordPress.org Submission Check #262 — **SUCCESS** with official packaged Plugin Check configured `strict: true`;
+- CodeQL/main-security #749 — **SUCCESS**;
+- packaged Plugin Check result — **no reported findings**;
+- deterministic `supcheckout-0.1.0.zip` — SHA-256 `0436256b16605b9b2db91aa8a7865ecec6cae7ef00fa515048d9643e50ad990a`, 74 files.
+
+This is release-engineering evidence only. It does not constitute WordPress.org manual approval, a production merchant-payment certification, a public tag or a GitHub Release.
+
 No public tag, GitHub Release, WordPress.org publication or repository rename is created or authorized by this engineering closeout alone.
