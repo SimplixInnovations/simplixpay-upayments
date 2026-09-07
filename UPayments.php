@@ -35,14 +35,14 @@ require_once __DIR__ . '/src/Subscription/Composition.php';
 require_once __DIR__ . '/includes/Token/CustomerTokenIdentity.php';
 require_once __DIR__ . '/src/Migration/MigrationBootstrap.php';
 
-use Simplixi\SUCheckout\UPayments\Release\Identity;
-use Simplixi\SUCheckout\UPayments\Admin\GatewaySettings;
-use Simplixi\SUCheckout\UPayments\Provider\EndpointResolver;
-use Simplixi\SUCheckout\UPayments\Provider\PaymentMethodAvailability;
-use Simplixi\SUCheckout\UPayments\Payment\CheckoutPayload;
-use Simplixi\SUCheckout\UPayments\Payment\CheckoutOrchestrator;
-use Simplixi\SUCheckout\UPayments\Subscription\Composition as SubscriptionComposition;
-use Simplixi\SUCheckout\UPayments\Subscription\Presentation as SubscriptionPresentation;
+use Simplixi\SUPCheckout\Release\Identity;
+use Simplixi\SUPCheckout\Admin\GatewaySettings;
+use Simplixi\SUPCheckout\Provider\EndpointResolver;
+use Simplixi\SUPCheckout\Provider\PaymentMethodAvailability;
+use Simplixi\SUPCheckout\Payment\CheckoutPayload;
+use Simplixi\SUPCheckout\Payment\CheckoutOrchestrator;
+use Simplixi\SUPCheckout\Subscription\Composition as SubscriptionComposition;
+use Simplixi\SUPCheckout\Subscription\Presentation as SubscriptionPresentation;
 use UPayments\Subscription\Cron\Scheduler;
 use UPayments\Token\CustomerTokenIdentity;
 
@@ -454,7 +454,7 @@ function woocommerceUpaymentsInit() {
 
         public function get_payment_staus()
         {
-            \Simplixi\SUCheckout\UPayments\Security\PublicOrderStatus::handle();
+            \Simplixi\SUPCheckout\Security\PublicOrderStatus::handle();
         }
 
         /**
