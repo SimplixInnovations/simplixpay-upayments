@@ -295,13 +295,13 @@ py -3 --version
 Release scripts invoke `python3`. If Git Bash only has Windows `py`, create a temporary shell-local shim:
 
 ```bash
-mkdir -p /tmp/sucheckout-python
-cat > /tmp/sucheckout-python/python3 <<'EOF'
+mkdir -p /tmp/supcheckout-python
+cat > /tmp/supcheckout-python/python3 <<'EOF'
 #!/usr/bin/env bash
 exec py -3 "$@"
 EOF
-chmod +x /tmp/sucheckout-python/python3
-export PATH="/tmp/sucheckout-python:$PATH"
+chmod +x /tmp/supcheckout-python/python3
+export PATH="/tmp/supcheckout-python:$PATH"
 python3 --version
 ```
 
@@ -312,7 +312,7 @@ Do not globally modify Windows Python just for this acceptance run.
 ```bash
 git fetch --prune --tags origin
 SOURCE_REPO="$(git rev-parse --show-toplevel)"
-ACCEPTANCE_DIR="${SOURCE_REPO}/../sucheckout-owner-acceptance"
+ACCEPTANCE_DIR="${SOURCE_REPO}/../supcheckout-owner-acceptance"
 
 test ! -e "$ACCEPTANCE_DIR"
 git worktree add --detach "$ACCEPTANCE_DIR" origin/main
