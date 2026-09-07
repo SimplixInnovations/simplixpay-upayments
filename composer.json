@@ -1,6 +1,6 @@
 {
     "name": "simplix-innovations/supcheckout",
-    "description": "Development quality toolchain for SUCheckout for UPayments.",
+    "description": "Development quality toolchain for SUPCheckout for UPayments.",
     "type": "wordpress-plugin",
     "license": "MIT",
     "require": {
