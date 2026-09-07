@@ -157,7 +157,7 @@ $current_identity_contracts = array(
     'docs/project/NAMING-IDENTITY-STANDARD.md' => array('SUCheckout for UPayments', 'Simplixi\\SUCheckout\\UPayments', 'SimplixInnovations/sucheckout'),
     'UPayments.php' => array(
         'Plugin URI: https://github.com/SimplixInnovations/sucheckout',
-        "define('SUCHECKOUT_UPAYMENTS_VERSION', Identity::VERSION);"
+        "define('SUCHECKOUT_UPAYMENTS_VERSION', Identity::VERSION);",
         "define('SUCHECKOUT_UPAYMENTS_SLUG', Identity::SLUG);",
         "define('SUCHECKOUT_UPAYMENTS_PLUGIN_FILE', __FILE__);",
         "define('SUCHECKOUT_UPAYMENTS_UPDATE_CHANNEL', Identity::UPDATE_CHANNEL);",
