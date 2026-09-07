@@ -83,7 +83,6 @@ $legacy_slug_files = array(
     'docs/ENGINEERING-ROADMAP.md',
     'docs/project/ENTERPRISE-CERTIFICATION.md',
     'docs/project/NEW-CHAT-HANDOFF.md',
-    'docs/project/OWNER-HANDOFF.md',
     'docs/project/PROJECT-STATUS.md',
     'docs/project/RELEASE-ENGINEERING.md',
     'scripts/install-wp-test-environment.sh',
