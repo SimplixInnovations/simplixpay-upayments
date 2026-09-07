@@ -1,4 +1,4 @@
-# SUCheckout for UPayments — Repository Agent Instructions
+# SUPCheckout for UPayments — Repository Agent Instructions
 
 These instructions apply repository-wide. Nested `AGENTS.md` files may tighten but never weaken payment, security, compatibility or release invariants.
 
@@ -18,20 +18,29 @@ Before substantive work read, in this order:
 
 ## Canonical identity
 
-- Formal product: **SUCheckout for UPayments**
-- Short product reference/family: **SUCheckout**
+- Formal product: **SUPCheckout for UPayments**
+- Short product reference/family: **SUPCheckout**
 - Provider: **UPayments**
 - Maintainer: **Simplix Innovations**
-- Canonical slug/text domain: `sucheckout-upayments`
-- PHP namespace root: `Simplixi\SUCheckout\UPayments`
-- Global PHP prefix for new first-party symbols: `sucheckout_upayments_`
-- Constants: `SUCHECKOUT_UPAYMENTS_*`
+- Canonical slug/text domain: `supcheckout`
+- PHP namespace root: `Simplixi\SUPCheckout\UPayments`
+- Global PHP prefix for new first-party symbols: `supcheckout_`
+- Constants: `SUPCHECKOUT_*`
 - Canonical GitHub coordinate: `SimplixInnovations/sucheckout`
-- Canonical plugin/package slug remains: `sucheckout-upayments`
+- Canonical plugin/package slug remains: `supcheckout`
 
 The word **for** is human-facing relationship copy only and must never be encoded into URLs, slugs, text domains, package names, namespaces, CSS/JS roots or release artifacts.
 
 Do not invent alternate product names/slugs/prefixes/namespaces.
+
+## Provider-specific product boundary
+
+SUPCheckout is permanently a **UPayments-only** product.
+
+- Do not add PayTabs, Tap, MyFatoorah, Stripe, Tabby, Tamara or other provider adapters to this repository.
+- Do not add cross-provider routing, failover, unified fraud scoring or payment orchestration here.
+- Future provider integrations are independent repositories/products with independent release and security boundaries.
+- Shared engineering templates may standardize CI/testing/release practice, but runtime sharing requires separate evidence and approval.
 
 ## Freshness rule
 
@@ -55,7 +64,7 @@ Repository Foundation, Phase 0, Phase 9I, Provider Lifecycle, Security, Architec
 
 The numbered Quality Platform is permanently closed at Q19. **Never invent Q20 for continuity.**
 
-Runtime-bearing SUCheckout identity migration:
+Runtime-bearing SUPCheckout identity migration:
 
 - PR #58 certified head: `5bf84dccb880733da45c1f922d43554af69a33dc`;
 - squash merge: `6aabc4fcb0606567a11637ea07fe081fed4c7f85`;
@@ -69,7 +78,7 @@ Documentation/control-plane closeout:
 Latest first-party naming cleanup:
 
 - PR #61 squash merge: `efe937c67343242b7ccf3396a67b3cf2ce35ebac`;
-- remaining safe retired first-party runtime/control identities migrated to canonical SUCheckout equivalents while protected UPayments/persisted contracts remained unchanged;
+- remaining safe retired first-party runtime/control identities migrated to canonical SUPCheckout equivalents while protected UPayments/persisted contracts remained unchanged;
 - fresh main Quality #781, Compatibility #309 (**16/16**), Release Artifact #258, Provider Sandbox #221, WordPress.org #116 and CodeQL #595 — **SUCCESS**.
 
 Every future candidate must pass the permanent exact-head gates appropriate to its scope before merge or release.
@@ -81,15 +90,15 @@ No public tag, GitHub Release or WordPress.org publication exists yet. Repositor
 The first-stable package uses:
 
 ```text
-sucheckout-upayments/UPayments.php
+supcheckout/UPayments.php
 ```
 
 Task 7/real-install qualification proved a direct physical main-file rename can strand WordPress's stored plugin basename. Therefore:
 
 - `UPayments.php` is a protected first-stable compatibility exception;
-- `sucheckout-upayments/UPayments.php` is the canonical first-stable basename;
-- `sucheckout-upayments.php` is only a possible future separately gated migration target;
-- the text domain is `sucheckout-upayments`;
+- `supcheckout/UPayments.php` is the canonical first-stable basename;
+- `supcheckout.php` is only a possible future separately gated migration target;
+- the text domain is `supcheckout`;
 - legacy pre-release basename `simplixpay-upayments/UPayments.php` exists only as migration/rollback evidence.
 
 Do not treat the retained physical filename as unfinished cosmetic work.
@@ -131,7 +140,7 @@ Do not remove, skip, soften or blanket-ignore:
 - Security Threat-Model harness;
 - Phase 0 / Phase 9I / Provider Lifecycle harnesses;
 - H12 PHP and Blocks harnesses;
-- SUCheckout identity/namespace/frontend/residue/HTTP/provenance harnesses;
+- SUPCheckout identity/namespace/frontend/residue/HTTP/provenance harnesses;
 - real integration fixtures for activation, metadata, Blocks, HPOS, saved cards, subscriptions, multi-merchant, operations and upgrade compatibility;
 - deterministic artifact builder/verifier/harness;
 - official packaged Plugin Check.
@@ -191,11 +200,11 @@ Do not add compatibility/security/performance/compliance badges, topics or prose
 
 Do not imply WooCommerce or UPayments endorsement.
 
-UPayments may appear as the provider/integration in human-facing copy. SUCheckout must remain the first-party product identity.
+UPayments may appear as the provider/integration in human-facing copy. SUPCheckout must remain the first-party product identity.
 
 ## Repository coordinate discipline
 
-The canonical GitHub coordinate is `SimplixInnovations/sucheckout`. The WordPress/plugin technical slug remains `sucheckout-upayments`.
+The canonical GitHub coordinate is `SimplixInnovations/sucheckout`. The WordPress/plugin technical slug remains `supcheckout`.
 
 For repository-coordinate changes:
 
