@@ -52,11 +52,13 @@ define('SUPCHECKOUT_PLUGIN_FILE', __FILE__);
 define('SUPCHECKOUT_UPDATE_CHANNEL', Identity::UPDATE_CHANNEL);
 
 add_action( 'plugins_loaded', 'woocommerceUpaymentsInit' );
+// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedFunctionFound -- Legacy WooCommerce bootstrap callback retained for upgrade/runtime compatibility.
 function woocommerceUpaymentsInit() {
     if ( ! class_exists( 'WooCommerce' ) ) {
         add_action( 'admin_notices', 'upaymentsMissingWcNotice' );
         return;
     }
+    // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedClassFound -- Protected legacy WooCommerce gateway class identity retained for compatibility.
     class WC_Upayments extends WC_Payment_Gateway {
         public $domain = 'upayments';
         public $debug;
@@ -734,6 +736,7 @@ function woocommerceUpaymentsInit() {
          */
         public function return_from_upayments()
         {
+            // phpcs:disable WordPress.Security.NonceVerification.Recommended -- External UPayments browser return cannot carry a WordPress nonce; all inbound identifiers are sanitized and paid-state authority requires authenticated provider status verification.
             if (!isset($_GET["wc_order_id"])) {
                 $this->log("Return callback received without wc_order_id.");
                 wp_safe_redirect($this->get_payment_verification_fallback_url());
@@ -791,6 +794,7 @@ function woocommerceUpaymentsInit() {
                 wp_safe_redirect($this->get_payment_verification_fallback_url());
                 exit();
             }
+            // phpcs:enable WordPress.Security.NonceVerification.Recommended
 
             // A1 — _upay_verified_capture means the original capture has already
             // been authoritatively verified. A later callback/URL replay must
@@ -926,6 +930,7 @@ function woocommerceUpaymentsInit() {
             $this->log("Webhook received; verifying payment status.");
 
             try {
+                // phpcs:disable WordPress.Security.NonceVerification.Recommended -- Server-to-server provider webhook cannot use a WordPress nonce; identifiers are sanitized and no paid state is trusted without authenticated provider status verification.
                 if (!isset($_REQUEST["wc_order_id"])) {
                     $this->log("Webhook received without wc_order_id.");
                     exit();
@@ -976,6 +981,7 @@ function woocommerceUpaymentsInit() {
                     $this->log("Webhook requested_order_id preflight failed.", 'warning');
                     exit();
                 }
+                // phpcs:enable WordPress.Security.NonceVerification.Recommended
 
                 // A1 — _upay_verified_capture means the original capture has already
                 // been authoritatively verified. Webhook must never drive lifecycle state
@@ -1054,6 +1060,7 @@ function woocommerceUpaymentsInit() {
         public function check_ipn_response()
         {
             global $woocommerce;
+            // phpcs:disable WordPress.Security.NonceVerification.Recommended -- Read-only routing selector for external UPayments callback/status endpoints; state-changing authority remains provider-authenticated.
             if (isset($_GET["get_order_status"])){
                 $this->get_payment_staus();
             }elseif (isset($_GET["page"])){
@@ -1061,6 +1068,7 @@ function woocommerceUpaymentsInit() {
             }else{
                 $this->web_hook_handler();
             }
+            // phpcs:enable WordPress.Security.NonceVerification.Recommended
             exit();
         }
 
@@ -1140,10 +1148,18 @@ function woocommerceUpaymentsInit() {
          */
         public function admin_enqueue_scripts() {
             $screen = get_current_screen();
+            $query = array();
+            // phpcs:disable WordPress.Security.NonceVerification.Recommended -- These sanitized values select admin assets only and perform no state change.
+            foreach (array('page', 'tab', 'section') as $query_key) {
+                if (isset($_GET[$query_key]) && is_string($_GET[$query_key])) {
+                    $query[$query_key] = sanitize_key(wp_unslash($_GET[$query_key]));
+                }
+            }
+            // phpcs:enable WordPress.Security.NonceVerification.Recommended
             GatewaySettings::enqueue_admin_assets(
                 plugin_dir_url(__FILE__),
                 $this->id,
-                $_GET,
+                $query,
                 $screen ? $screen->id : ''
             );
         }
@@ -1222,6 +1238,7 @@ function woocommerceUpaymentsInit() {
                     $this->settings[$key] = $setting_value;
                 }
                 delete_option("upayments_maat");
+                // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- WooCommerce Settings API defines this dynamic core hook name.
                 return update_option($this->get_option_key() , apply_filters("woocommerce_settings_api_sanitized_fields_" . $this->id, $this->settings));
             }
         }
@@ -1751,6 +1768,7 @@ function upaymentsMissingWcNotice() {
 }
 
 add_filter("woocommerce_payment_gateways", "addUpaymentsGatewayClass");
+// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedFunctionFound -- Legacy WooCommerce callback retained for compatibility.
 function addUpaymentsGatewayClass($methods)
 {
     $methods[] = "WC_UPayments";
@@ -1758,6 +1776,7 @@ function addUpaymentsGatewayClass($methods)
 }
 
 add_filter("woocommerce_available_payment_gateways", "enableUpaymentsGateway");
+// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedFunctionFound -- Legacy WooCommerce callback retained for compatibility.
 function enableUpaymentsGateway($available_gateways)
 {
     if (is_admin()){
@@ -1834,6 +1853,7 @@ add_action( 'woocommerce_blocks_loaded', function() {
 });
 
 register_activation_hook(__FILE__, 'myPaymentPluginSetupCheckout');
+// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedFunctionFound -- Legacy activation callback retained for existing plugin lifecycle compatibility.
 function myPaymentPluginSetupCheckout() {
     if ( ! class_exists( 'WooCommerce' ) ) {
         add_action( 'admin_notices', 'upaymentsMissingWcNotice' );
@@ -1869,38 +1889,47 @@ function myPaymentPluginSetupCheckout() {
 /* Subscription Product Data Handler from product Data Page - Start */
 SubscriptionComposition::register_presentation_hooks();
 
+// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedFunctionFound -- Legacy WooCommerce subscription presentation callback retained for compatibility.
 function addCustomProductType( $types ){
     return SubscriptionPresentation::add_custom_product_type($types);
 }
 
+// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedFunctionFound -- Legacy WooCommerce subscription presentation callback retained for compatibility.
 function mapCustomProductClass( $classname, $product_type ) {
     return SubscriptionPresentation::map_custom_product_class($classname, $product_type);
 }
 
+// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedFunctionFound -- Legacy WooCommerce subscription presentation callback retained for compatibility.
 function customProductTypes() {
     SubscriptionPresentation::custom_product_types();
 }
 
+// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedFunctionFound -- Legacy WooCommerce subscription presentation callback retained for compatibility.
 function addCustomDataTab( $tabs ) {
     return SubscriptionPresentation::add_custom_data_tab($tabs);
 }
 
+// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedFunctionFound -- Legacy WooCommerce subscription presentation callback retained for compatibility.
 function addCustomDataPanel() {
     SubscriptionPresentation::add_custom_data_panel();
 }
 
+// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedFunctionFound -- Legacy WooCommerce subscription presentation callback retained for compatibility.
 function saveCustomFieldData( $post_id ) {
     SubscriptionPresentation::save_custom_field_data($post_id);
 }
 
+// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedFunctionFound -- Legacy WooCommerce subscription presentation callback retained for compatibility.
 function displayCustomFieldOnFrontend() {
     SubscriptionPresentation::display_custom_field_on_frontend();
 }
 
+// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedFunctionFound -- Legacy WooCommerce subscription presentation callback retained for compatibility.
 function displayCustomDataInCart( $item_data, $cart_item ) {
     return SubscriptionPresentation::display_custom_data_in_cart($item_data, $cart_item);
 }
 
+// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedFunctionFound -- Legacy WooCommerce subscription presentation callback retained for compatibility.
 function saveCustomDataToOrderItems( $item, $cart_item_key, $values, $order ) {
     SubscriptionPresentation::save_custom_data_to_order_items($item, $cart_item_key, $values, $order);
 }
@@ -1914,7 +1943,7 @@ add_action('woocommerce_init', function () {
 
 add_action('init', function () {
     $method = isset($_SERVER['REQUEST_METHOD']) && is_string($_SERVER['REQUEST_METHOD'])
-        ? strtoupper($_SERVER['REQUEST_METHOD'])
+        ? strtoupper(sanitize_text_field(wp_unslash($_SERVER['REQUEST_METHOD'])))
         : '';
     if ($method !== 'POST') {
         return;
