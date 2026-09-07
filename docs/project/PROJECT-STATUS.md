@@ -14,7 +14,9 @@
 |---|---|
 | Product | **SUCheckout for UPayments** |
 | Product family | **SUCheckout** |
-| Technical slug / text domain | `sucheckout-upayments` |
+| Production maturity | **Pre-release / SUCheckout migration merged and post-merge certified** |
+| Canonical technical slug | `sucheckout-upayments` |
+| WordPress text domain | `sucheckout-upayments` |
 | PHP namespace | `Simplixi\SUCheckout\UPayments` |
 | Canonical release root | `sucheckout-upayments/` |
 | First-stable physical bootstrap | `UPayments.php` — protected compatibility exception |
