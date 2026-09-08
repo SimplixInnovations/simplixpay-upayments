@@ -140,14 +140,20 @@ function upay_assert_eq($actual, $expected, $description, $kind = 'semantic_runt
         "$description (expected " . var_export($expected, true) . ", got " . var_export($actual, true) . ")",
         $kind);
 }
+function upay_make_reflection_accessible(ReflectionMethod $reflection) {
+    // PHP < 8.1 requires explicit accessibility; PHP 8.1+ makes this unnecessary.
+    if (\PHP_VERSION_ID < 80100) {
+        $reflection->setAccessible(true);
+    }
+}
 function upay_call_static($class, $method, array $args) {
     $reflection = new ReflectionMethod($class, $method);
-    $reflection->setAccessible(true);
+    upay_make_reflection_accessible($reflection);
     return $reflection->invokeArgs(null, $args);
 }
 function upay_call_instance($instance, $method, array $args) {
     $reflection = new ReflectionMethod($instance, $method);
-    $reflection->setAccessible(true);
+    upay_make_reflection_accessible($reflection);
     return $reflection->invokeArgs($instance, $args);
 }
 
@@ -3348,7 +3354,7 @@ upay_assert_eq($ctx1['generation_id'], $ctx2['generation_id'], 'SEM14-SEM14-M-3 
 // --- SEM14-N: Atomic provenance write compensation (verify create_provenance failure path deletes the meta) ---
 $reflection = new ReflectionClass('\UPayments\Token\CustomerTokenIdentity');
 $cp_method = $reflection->getMethod('create_provenance');
-$cp_method->setAccessible(true);
+upay_make_reflection_accessible($cp_method);
 upay_reset_state();
 upay_set_secret('live_key', 'live_secret_test_' . str_repeat('a', 20), 'live', $gen);
 $result = $cp_method->invoke(null, 100, 'live_key', false, 'wrong_fingerprint', $gen, 'canonical', '12345678', 'create');
@@ -3358,7 +3364,7 @@ upay_assert_eq($exists, '', 'SEM14-SEM14-N-2 compensating delete: provenance not
 
 // --- SEM14-O: Strict order-ID parsing covers edge inputs ---
 $parse_method = $reflection->getMethod('parse_strict_positive_int');
-$parse_method->setAccessible(true);
+upay_make_reflection_accessible($parse_method);
 $out = 0;
 foreach ([
     ['input' => 0, 'expect' => false, 'desc' => 'zero'],
@@ -3398,7 +3404,7 @@ foreach ([
 
 // --- SEM14-Q: derive_scope_fingerprint strict input typing ---
 $dsf_method = $reflection->getMethod('derive_scope_fingerprint');
-$dsf_method->setAccessible(true);
+upay_make_reflection_accessible($dsf_method);
 foreach ([
     ['api_key' => '', 'is_test_mode' => true, 'secret' => ['secret' => 'x'], 'desc' => 'empty api_key'],
     ['api_key' => null, 'is_test_mode' => true, 'secret' => ['secret' => 'x'], 'desc' => 'null api_key'],
@@ -3420,7 +3426,7 @@ foreach ([
 // call-site; testing it would conflate type-system semantics with the
 // production missing-generation contract.
 $ich_method = $reflection->getMethod('inspect_customer_history');
-$ich_method->setAccessible(true);
+upay_make_reflection_accessible($ich_method);
 foreach ([
     'int_gen',
     'float_gen',
@@ -3466,7 +3472,7 @@ foreach ([
 // Residual Correction #15: only test cases where the function-signature is
 // satisfied (2 args) but the generation argument is malformed.
 $icp_method = $reflection->getMethod('inspect_current_user_prior_provenance');
-$icp_method->setAccessible(true);
+upay_make_reflection_accessible($icp_method);
 foreach ([
     'int_gen',
     'null_gen',
@@ -3606,7 +3612,7 @@ upay_assert(
 // so we can assert exact-value deletion (value_provided=true), never a
 // blanket key delete (value_provided=false).
 $cp_method = $reflection->getMethod('create_provenance');
-$cp_method->setAccessible(true);
+upay_make_reflection_accessible($cp_method);
 
 function upay_run_create_provenance_race($scenario_name, $failure_injection, $post_assert_extra = null) {
     global $gen;
@@ -4053,7 +4059,7 @@ upay_assert_eq($ctx['state'], 'valid', 'SEM14-SEM14-X-1 valid secret -> valid', 
 
 // --- SEM14-Y: parse_strict_nonneg_int requires explicit generation for history ---
 $psni_method = $reflection->getMethod('parse_strict_nonneg_int');
-$psni_method->setAccessible(true);
+upay_make_reflection_accessible($psni_method);
 foreach ([0, 5, '0', '5'] as $i => $v) {
     $out_y = 0;
     @$r = $psni_method->invoke(null, $v, $out_y);
@@ -4100,7 +4106,7 @@ $cti_class = '\\UPayments\\Token\\CustomerTokenIdentity';
 
 // is_valid_canonical_token: integer 12345678 must FAIL (not a string).
 $ref_canonical = (new ReflectionClass($cti_class))->getMethod('is_valid_canonical_token');
-$ref_canonical->setAccessible(true);
+upay_make_reflection_accessible($ref_canonical);
 foreach ([
     'TT-CT-1 int 12345678'      => [12345678, false],
     'TT-CT-2 float 12345678.0'  => [12345678.0, false],
@@ -4125,7 +4131,7 @@ foreach ([
 
 // is_valid_legacy_token: integer must FAIL.
 $ref_legacy = (new ReflectionClass($cti_class))->getMethod('is_valid_legacy_token');
-$ref_legacy->setAccessible(true);
+upay_make_reflection_accessible($ref_legacy);
 foreach ([
     'TT-LT-1 int 2147483647'   => [2147483647, false],
     'TT-LT-2 float'            => [1.5, false],
@@ -4146,7 +4152,7 @@ foreach ([
 
 // classify_create_token_response: provider returns int customerUniqueToken.
 $ref_ctr = (new ReflectionClass($cti_class))->getMethod('classify_create_token_response');
-$ref_ctr->setAccessible(true);
+upay_make_reflection_accessible($ref_ctr);
 $transport_int_token = [
     'transport_ok' => true,
     'curl_errno'   => 0,
@@ -4229,7 +4235,7 @@ upay_assert_eq(
 
 // verify_card_membership: provider card entry int token must never match submitted string.
 $ref_vcm = (new ReflectionClass($cti_class))->getMethod('verify_card_membership');
-$ref_vcm->setAccessible(true);
+upay_make_reflection_accessible($ref_vcm);
 $caller_returns_int_card = function ($token) {
     return [
         'result' => 'success',
@@ -4276,11 +4282,11 @@ upay_assert_eq(
 // The new rollback_provenance() returns a structured result. Each race must
 // produce ok=false with a distinct reason observable through last_rollback_state().
 $ref_record = (new ReflectionClass($cti_class))->getMethod('record_rollback_state');
-$ref_record->setAccessible(true);
+upay_make_reflection_accessible($ref_record);
 $ref_reset = (new ReflectionClass($cti_class))->getMethod('reset_rollback_state_for_tests');
-$ref_reset->setAccessible(true);
+upay_make_reflection_accessible($ref_reset);
 $ref_last = (new ReflectionClass($cti_class))->getMethod('last_rollback_state');
-$ref_last->setAccessible(true);
+upay_make_reflection_accessible($ref_last);
 
 // RR-1: rollback delete fails (no inserted record exists)
 upay_reset_state();
@@ -4288,7 +4294,7 @@ $state =& upay_test_state();
 $state['usermeta'][200] = []; // no record at all
 $ref_reset->invoke(null);
 $rollback_race1 = $reflection->getMethod('rollback_provenance');
-$rollback_race1->setAccessible(true);
+upay_make_reflection_accessible($rollback_race1);
 $r1 = $rollback_race1->invoke(null, 200, 'upay_provenance_user_200', ['version' => 3, 'kind' => 'canonical']);
 upay_assert_eq(
     $r1['ok'],
@@ -4310,7 +4316,7 @@ $state['usermeta'][201] = ['upay_provenance_user_201' => [['version' => 3, 'kind
 $state['force_user_cache_refresh_failure'] = true;
 $ref_reset->invoke(null);
 $rollback_race3 = $reflection->getMethod('rollback_provenance');
-$rollback_race3->setAccessible(true);
+upay_make_reflection_accessible($rollback_race3);
 $r3 = $rollback_race3->invoke(null, 201, 'upay_provenance_user_201', ['version' => 3, 'kind' => 'canonical', 'token' => 'abc']);
 upay_assert_eq(
     $r3['ok'],
@@ -4336,7 +4342,7 @@ $target_record = ['version' => 3, 'kind' => 'canonical', 'token' => 'xyz_race'];
 $state['usermeta'][202] = ['upay_provenance_user_202' => [$target_record, $target_record]];
 $ref_reset->invoke(null);
 $rollback_race5 = $reflection->getMethod('rollback_provenance');
-$rollback_race5->setAccessible(true);
+upay_make_reflection_accessible($rollback_race5);
 $r5 = $rollback_race5->invoke(null, 202, 'upay_provenance_user_202', $target_record);
 upay_assert_eq(
     $r5['ok'],
@@ -4358,7 +4364,7 @@ $state =& upay_test_state();
 $state['usermeta'][203] = [];
 $ref_reset->invoke(null);
 $rollback_race7 = $reflection->getMethod('rollback_provenance');
-$rollback_race7->setAccessible(true);
+upay_make_reflection_accessible($rollback_race7);
 $r7 = $rollback_race7->invoke(null, 203, 'upay_provenance_user_203', $target_record);
 upay_assert_eq(
     $r7['ok'],
@@ -4382,7 +4388,7 @@ $state['usermeta'][204] = ['upay_provenance_user_204' => [
 ]];
 $ref_reset->invoke(null);
 $rollback_race9 = $reflection->getMethod('rollback_provenance');
-$rollback_race9->setAccessible(true);
+upay_make_reflection_accessible($rollback_race9);
 $r9 = $rollback_race9->invoke(null, 204, 'upay_provenance_user_204', ['version' => 3, 'kind' => 'canonical', 'token' => 'will_be_removed']);
 upay_assert_eq(
     $r9['ok'],
@@ -4443,7 +4449,7 @@ upay_assert_eq(
 // transport body and asserts the EXACT resulting classification.
 
 $ref_ctr = (new ReflectionClass($cti_class))->getMethod('classify_create_token_response');
-$ref_ctr->setAccessible(true);
+upay_make_reflection_accessible($ref_ctr);
 
 // CTR-1..CTR-10: HTTP status variants
 $transport_variants = [
@@ -4549,7 +4555,7 @@ foreach ([
 // card tokens and assert exact membership.
 
 $ref_vcm = (new ReflectionClass($cti_class))->getMethod('verify_card_membership');
-$ref_vcm->setAccessible(true);
+upay_make_reflection_accessible($ref_vcm);
 
 // Note: signature is verify_card_membership($card_token, $customer_token, callable $get_saved_cards_caller)
 // The customer_token must be 8-18 digits per the production regex.
@@ -4609,7 +4615,7 @@ foreach ($vcm_invalid_results as $name => $callable) {
 // Drive the production validator with shape/type variants and assert exact outcome.
 
 $ref_vpr = (new ReflectionClass($cti_class))->getMethod('validate_provenance_record');
-$ref_vpr->setAccessible(true);
+upay_make_reflection_accessible($ref_vpr);
 
 $valid_gen = str_repeat('a', 32);    // 32 hex chars
 $valid_scope = str_repeat('a', 32); // matches
