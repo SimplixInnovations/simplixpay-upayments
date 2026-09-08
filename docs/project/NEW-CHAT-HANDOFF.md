@@ -1,167 +1,140 @@
-# SUPCheckout for UPayments — Clean Chat Handoff
+# SUPCheckout for UPayments — Continuation Handoff
 
-Use this file with root `AGENTS.md`, `PROJECT-STATUS.md`, `OWNER-HANDOFF.md`, `NAMING-IDENTITY-STANDARD.md`, `docs/COMPATIBILITY.md` and `RELEASE-ENGINEERING.md`.
+Use this file with root [`AGENTS.md`](../../AGENTS.md), [`PROJECT-STATUS.md`](PROJECT-STATUS.md), [`OWNER-HANDOFF.md`](OWNER-HANDOFF.md), [`NAMING-IDENTITY-STANDARD.md`](NAMING-IDENTITY-STANDARD.md), [`../COMPATIBILITY.md`](../COMPATIBILITY.md) and [`RELEASE-ENGINEERING.md`](RELEASE-ENGINEERING.md).
 
 ## Identity
 
-- Formal product: **SUPCheckout for UPayments**
-- Short product/family: **SUPCheckout**
-- Provider: **UPayments**
+- Product: **SUPCheckout for UPayments**
+- Short name: **SUPCheckout**
 - Maintainer: **Simplix Innovations**
+- Provider: **UPayments**
+- Repository: `SimplixInnovations/supcheckout`
 - Technical slug / text domain: `supcheckout`
-- PHP namespace root: `Simplixi\SUPCheckout`
+- PHP namespace: `Simplixi\SUPCheckout`
 - Package root: `supcheckout/`
-- First-stable physical bootstrap: `UPayments.php`
-- Canonical first-stable basename: `supcheckout/UPayments.php`
-- Development version: **0.1.0**
-- Canonical GitHub repository: `SimplixInnovations/supcheckout`
-- Canonical plugin/package slug: `supcheckout`
+- First-stable bootstrap: `supcheckout/UPayments.php`
+- Development version: `0.1.0`
 
-The word `for` is human-facing relationship copy only and must never be encoded into technical identifiers.
+`for` is human-facing relationship wording only. Never encode it into repository, package, WordPress.org, namespace, REST, CSS/JS or artifact identifiers.
 
-## Program state
+## Current state
 
-- Repository Foundation & Readiness — **DONE / VERIFIED**
-- Phase 0 release identity/updater ownership — **DONE / VERIFIED**
+The engineering program is pre-release but mature:
+
+- Repository Foundation — **DONE / VERIFIED**
+- Phase 0 release identity — **DONE / VERIFIED**
 - Phase 9I historical identity migration — **DONE / VERIFIED**
-- Provider Contract & Payment Lifecycle — **DONE / VERIFIED**
-- Security Threat-Model Closure — **DONE / VERIFIED**
+- Provider payment lifecycle — **DONE / VERIFIED**
+- Security threat-model closure — **DONE / VERIFIED**
 - Architecture A1-A5 — **DONE / VERIFIED**
-- Quality Platform Q1-Q19 — **DONE / VERIFIED; closed at Q19**
-- Quality Platform Q16 migration-core analysis: **DONE / VERIFIED**
-- Quality Platform Q17 payment-runtime analysis: **DONE / VERIFIED**
-- Enterprise Task 8 release-candidate closeout — **DONE / VERIFIED**
+- Quality Platform Q1-Q19 — **DONE / VERIFIED; permanently closed at Q19**
 - Enterprise Tasks 1-8 — **DONE / VERIFIED**
-- Final SUPCheckout product/namespace/text-domain/package migration — **DONE / VERIFIED — PR #67 merged and post-merge certified**
-- Deterministic release + packaged runtime — **DONE / VERIFIED**
-- Both real pre-stable package roots → SUPCheckout migration/rollback — **CI-CERTIFIED on current candidate**
-- WordPress.org packaged Plugin Check — **DONE / VERIFIED / strict zero-warning/error gate**
-- Public stable release — **NO**
-- WordPress.org publication — **NO**
-- Repository rename — **DONE / VERIFIED — `SimplixInnovations/supcheckout`**
+- SUPCheckout identity/repository migration — **DONE / VERIFIED**
+- Final pre-clone runtime/QA closure — **DONE / VERIFIED**
+- Deterministic packaged release controls — **DONE / VERIFIED**
+- Public tag / GitHub Release — **not created**
+- WordPress.org publication — **not performed**
+- Owner local acceptance — **pending after final enterprise-audit merge**
 
-Never invent Q20. Live GitHub evidence wins over recorded SHAs.
+Do not invent Q20. New work uses named, bounded tasks.
 
-## Certification anchors
+## Latest runtime-bearing certified baseline
 
-### Historical pre-stable SUCheckout baseline
+Runtime-bearing merge:
 
-- PR #58 certified head: `5bf84dccb880733da45c1f922d43554af69a33dc`;
-- squash merge: `6aabc4fcb0606567a11637ea07fe081fed4c7f85`;
-- post-merge Quality #764 — **SUCCESS**;
-- Compatibility #292 — **16/16 SUCCESS**;
-- Release Artifact #243 — **SUCCESS**;
-- Provider Sandbox #207 — **SUCCESS**;
-- WordPress.org #101 — **SUCCESS**;
-- CodeQL/main-security #579 — **SUCCESS**;
-- official packaged Plugin Check — **0 blocking errors**.
+`1354b8e6f801a847a5fa9b5b657e77647384bdbc`
 
-### Final SUPCheckout identity migration
+Certified PR #75 head:
 
-- PR #67 certified head: `0059f365883fa4edd6a2d623c7b370d38d3f565c`;
-- squash merge: `7547e59a2d5ef6d49b059851c6899a2d9987b16a`;
-- post-merge Quality #896 — **SUCCESS**;
-- Compatibility #424 — **16/16 SUCCESS**;
-- Release Artifact #373 — **SUCCESS**;
-- Provider Sandbox #334 — **SUCCESS**;
-- WordPress.org #231 — **SUCCESS**;
-- CodeQL/main-security #717 — **SUCCESS**;
-- repository rename — **COMPLETE**;
-- obsolete remote branches — **CLEANED; main-only topology verified before coordinate reconciliation**.
-- coordinate-closure PR #68 exact head: `0e6ef6334282a83a428da7ee793daa98360c2bcc` — **FULL EXACT-HEAD STACK SUCCESS**;
-- PR #68 squash merge: `05fec942cc8fbeb58cfd0bd41f0ef5fdb86f966f`;
-- post-merge Quality #901, Compatibility #429 (**16/16**), Release Artifact #378, Provider Sandbox #339, WordPress.org #236 and CodeQL #723 — **SUCCESS**;
-- PR #68 closeout state before documentation-only PR #69: **main only**, with open PRs/issues, tags and releases **empty**.
+`9474955e2d5438ccc9c0334b52dc0f72be557a86`
 
-### Final control-plane closeout
+Fresh post-merge evidence:
 
-- PR #59 squash merge: `9591c431e1eb56fe40ca60147afdf9f3f909a212`;
-- fresh main Quality #773 — **SUCCESS**;
-- Compatibility #301 — **all 16 cells SUCCESS**;
-- Release Artifact #252 — **SUCCESS**;
-- Provider Sandbox #216 — **SUCCESS**;
-- WordPress.org #110 — **SUCCESS**;
-- CodeQL/main-security #588 — **SUCCESS**.
+- Quality #958 — **SUCCESS**
+- H12 Regression Harness — **SUCCESS**
+- Compatibility #486 — **16/16 SUCCESS**
+- Release Artifact #434 — **SUCCESS**
+- Provider Sandbox #386 — **SUCCESS**
+- WordPress.org #289 — **SUCCESS / strict Plugin Check**
+- CodeQL/main-security #780 — **SUCCESS**
 
-Later docs-only commits may advance `main`; always verify live release evidence.
+Later documentation/presentation-only commits may advance `main` without changing that runtime baseline. Always inspect live GitHub/source/CI before making a release claim.
 
 ## Protected compatibility identities
 
-Do not search/replace these for cosmetic naming:
+Never mechanically rename:
 
 - gateway/payment ID `upayments`;
 - `woocommerce_upayments_settings`;
 - Blocks / Store API identity `upayments`;
 - callback `wc_upayments`;
-- historical `_upay_*` metadata;
-- provider order identities such as `UPayments_order_id`;
-- `upayments_token_identity_secret_v2` and provenance/scope/generation state;
-- `upay_process_subscriptions`;
-- billing-attempt table/state;
-- historical order payment method `upayments`;
-- provider API request/response/schema terminology.
+- `_upay_*` historical metadata;
+- provider order identity such as `UPayments_order_id`;
+- token/provenance/scope/generation identities;
+- `upay_process_subscriptions` and billing-attempt state;
+- historical order payment-method values;
+- frozen Phase 9I migration identities;
+- public compatibility wrapper `getAPIUrlForRetreiveCards()`;
+- normalized `whitelabled` compatibility shape.
 
-## First-stable bootstrap decision
+Changing one requires an approved migration with precedence, upgrade, rollback/failure semantics and regression evidence.
 
-The first-stable package intentionally uses `UPayments.php`.
+## First-stable bootstrap
 
-Real WordPress qualification proved that directly renaming an already-active physical bootstrap can strand the stored plugin basename. A future physical filename `supcheckout.php` is separately gated and is **not** required before the first release.
+`UPayments.php` is intentionally retained.
 
-## Verified enterprise surfaces
+Real WordPress upgrade qualification proved that physically renaming an already-active plugin main file can strand WordPress's stored plugin basename. A future `supcheckout.php` migration is a separate release-sensitive project, not unfinished first-release cleanup.
 
-- 16-cell real WordPress/WooCommerce/PHP × legacy/HPOS matrix;
-- Classic and Cart/Checkout Blocks registration/availability;
-- real Woo order CRUD;
-- bounded public-sandbox Charge initialization;
-- provider-authenticated payment status binding;
-- saved-card/token provenance boundaries;
-- subscription eligibility/pre-dispatch boundaries;
-- one additional-merchant allocation only;
-- non-destructive activation/deactivation/uninstall retention;
-- Git-HEAD-bound deterministic ZIP + checksum + per-file manifest;
-- packaged legacy/HPOS runtime smoke;
-- legacy-root → canonical-root migration and rollback;
-- official Plugin Check on the exact unpacked release artifact.
+## Permanent engineering controls
 
-## Final repository-admin closure
+Do not weaken or bypass:
 
-PR #75 exact head `9474955e2d5438ccc9c0334b52dc0f72be557a86` completed the final pre-clone runtime/QA closure and squash-merged as GitHub-verified `1354b8e6f801a847a5fa9b5b657e77647384bdbc`. Fresh main evidence is Quality #958, Compatibility #486 (**16/16**), Release Artifact #434, Provider Sandbox #386, strict WordPress.org #289 and CodeQL/main-security #780 — all **SUCCESS**. The deterministic `supcheckout-0.1.0.zip` is 56 files with SHA-256 `e85ef026cf43f2254625c2fd1c97e328dc37581dfea4f058c59c0434b11a360d`.
+- Quality/H12 gates;
+- 16-cell compatibility certification;
+- deterministic release artifact/verifier;
+- packaged legacy + HPOS smoke;
+- historical package-root migration/rollback matrix;
+- strict official WordPress Plugin Check;
+- CodeQL/security analysis;
+- architecture, provider, security, Quality Platform and SUPCheckout-specific regression harnesses.
 
-About/topics and the Main Rule remain correct. Protected UPayments/provider/persisted identities and both historical package roots remain intact. Public tags/releases/WordPress.org publication remain absent. Persistent remote topology after the runtime merge is `main` plus the known stale unprotected `hardening/deep-release-audit-cleanup` branch; the documentation closeout branch is temporary. Runtime-closeout open PRs/issues before this documentation PR were **0 / 0**.
+Payment/security ambiguity fails closed. Browser redirect/callback payload alone is never financial truth. Non-idempotent operations are not blindly retried.
 
-## What remains
+## Supported and unsupported boundaries
 
-Owner/admin/local sequence is controlled by `OWNER-HANDOFF.md`:
+Repository evidence includes Classic checkout, Blocks registration/availability, HPOS/legacy storage, authenticated provider status binding, saved-card/token provenance boundaries, subscription eligibility/pre-dispatch safeguards and one additional merchant allocation.
 
-1. after this documentation PR merges, delete the known stale `hardening/deep-release-audit-cleanup` remote branch only after verifying no owner work is needed;
-2. verify local `origin` points directly to the canonical repository and prune stale refs;
-3. run isolated local acceptance and real WooCommerce smoke against final `origin/main`;
-4. apply approved launch branding and visual/accessibility acceptance;
-5. explicitly choose the first public version;
-6. release/tag/WordPress.org only after exact-main verification and owner approval.
+External/manual qualification remains required for production payment completion, real wallet/device completion, WPML/WCML/multilingual/multicurrency/RTL, broad browser/theme/accessibility, performance/load, penetration/PCI/legal evidence and live subscription auto-deduction.
 
-## External/manual and unsupported boundaries
+Automatic WooCommerce refunds and arbitrary marketplace multi-split are unsupported.
 
-External/manual:
+## Repository state rule
 
-- production merchant payment completion;
-- real wallet/account/device completion;
-- WPML/WCML/multilingual/multicurrency/RTL;
-- browser/device/theme/accessibility;
-- representative performance/load;
-- penetration testing / PCI / legal-compliance attestation;
-- live subscription auto-deduction;
-- provider webhook signature until a stable documented contract exists.
+The owner deleted the last stale remote branch before the final enterprise audit. Outside temporary active audit work, the desired topology is `main` only, with no open PRs/issues/tags/releases before publication.
 
-Unsupported:
+The Main Rule must continue to require:
 
-- automatic Woo refunds;
-- arbitrary marketplace multi-split beyond one additional merchant.
+- `Governance`
+- `H12 Regression Harness`
+- `Compatibility Gate`
+- `Release Gate`
+
+with squash-only merging, linear history, deletion/non-fast-forward protection and no bypass actors.
+
+## Next owner action
+
+After the final enterprise-audit PR is merged and post-merge certified:
+
+1. create a completely fresh clone from `https://github.com/SimplixInnovations/supcheckout.git`;
+2. follow [`OWNER-HANDOFF.md`](OWNER-HANDOFF.md) exactly;
+3. run local Composer/standalone/H12 acceptance;
+4. build and verify the deterministic ZIP from final `origin/main`;
+5. perform disposable/staging WooCommerce smoke;
+6. send complete command output and manual-smoke findings back for final audit;
+7. choose the first public version and authorize publication separately.
 
 ## Historical evidence rule
 
-Former SimplixPay identity, old repository names and historical run numbers may remain inside historical phase/quality evidence where they were true at the time. Do not rewrite history to remove every old token.
+Old SimplixPay/SUCheckout names, old repository coordinates and old SHAs may remain in historical phase/quality/spec/plan records when they were true at that milestone. Do not rewrite historical evidence into current branding.
 
-## Merge discipline
-
-External AI/bot output is evidence to reproduce, not authority. Future changes require exact-head review, applicable permanent checks, valid-thread resolution, squash merge and post-merge verification. Runtime/release-sensitive changes require the full permanent release-sensitive suite.
+Live evidence and living authority documents control current decisions.
