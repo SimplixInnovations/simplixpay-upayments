@@ -23,7 +23,7 @@
 | Final pre-clone runtime/QA closure | **DONE / VERIFIED — PR #75** |
 | Repository-control/docs closeout | **DONE / VERIFIED — PR #76** |
 | Final enterprise repository audit | **IN PROGRESS on a temporary review branch; no runtime migration planned** |
-| Quality Platform Q1-Q19 | **DONE / VERIFIED — permanently closed at Q19** |
+| Historical Quality Platform Q1-Q19 | **DONE / VERIFIED — numbered sequence permanently closed** |
 | Enterprise Tasks 1-8 | **DONE / VERIFIED — historical evidence retained** |
 | Public Git tag / GitHub Release | **NOT CREATED** |
 | WordPress.org publication | **NOT PERFORMED** |
