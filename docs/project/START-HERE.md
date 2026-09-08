@@ -82,11 +82,11 @@ The last fully closed `main` before this continuity-documentation task was:
 
 That commit is PR #78's documentation-only reconciliation after the final enterprise repository audit.
 
-The latest runtime-bearing certified `main` remains:
+The latest runtime-bearing **CI-certified `main`** is:
 
-`1354b8e6f801a847a5fa9b5b657e77647384bdbc`
+`902c23caad1461e63c816fdc5252855d9dc4f9e4`
 
-That is PR #75's squash merge. Later PRs #76, #77 and #78 reconciled documentation/presentation and repository-control truth without changing the certified runtime-bearing baseline.
+That is PR #84's squash merge from exact certified head `199d4a4f2f17cd982b2c869c9ef6eee794c05fd1`. The PR head passed **40/40 checks** and the byte-identical squash tree passed **39/39 post-merge checks**. The canonical runtime package is **56 files**, SHA-256 `90ac844d37938e5cbb7e9a9ee3e8923b904bf8cf978c62adf2a8994a4b7462ce`. Owner technical acceptance has **not** yet accepted this fixed baseline; a new fresh-clone owner acceptance is required.
 
 ### Approach 2
 
@@ -119,7 +119,9 @@ PR #80 then hardened the **owner-acceptance and permanent current-PHP evidence l
 
 PR #82 then closed a release-engineering defect discovered by independent Windows owner acceptance: the exact same **56-file / 56-path per-file manifest** produced different DEFLATE ZIP bytes on Windows and Ubuntu. PR #82 replaced environment-dependent DEFLATE output with deterministic `ZIP_STORED` entries, strengthened ZIP metadata verification, and made Release Gate depend on canonical + Ubuntu + Windows artifact equality. Final exact PR head `af309e8c668e9def7d94e533f1c553b1b937eae6` passed **40/40 checks**. It squash-merged as `c1f70164ebcd13fc6e7a5d3c70830a9070ecf898`; the merge tree is byte-identical to the certified PR-head tree, and merged `main` passed **39/39 checks**, including the new cross-platform determinism gate and Release Gate. The canonical package is **56 files**, SHA-256 `24efa28f2803976f4f9437d6b66e55922c26c13143ea291634db31b8506ffd63`, reproduced identically by Ubuntu and Windows builds. PR #82 changed release tooling/control/test/docs only and no production plugin runtime/package-source file.
 
-Owner technical acceptance is still **PENDING**. PR #82 is the current release-engineering baseline that must now be independently accepted; it does not itself constitute owner acceptance.
+PR #84 then fixed the first-party **B-X1 malformed gateway-settings defect** found by the 2026-09-08 fresh-clone owner acceptance. The exact PR head `199d4a4f2f17cd982b2c869c9ef6eee794c05fd1` passed **40/40 checks**. The permanent regression now executes against the exact packaged ZIP in both legacy and HPOS `packaged-runtime` jobs and is a transitive dependency of Release Gate. PR #84 squash-merged as `902c23caad1461e63c816fdc5252855d9dc4f9e4`; its tree is byte-identical to the reviewed PR head and post-merge `main` passed **39/39 checks**. The canonical package is **56 files**, SHA-256 `90ac844d37938e5cbb7e9a9ee3e8923b904bf8cf978c62adf2a8994a4b7462ce`.
+
+Owner technical acceptance remains **NOT ACCEPTED**. The prior rejection is valid evidence that B-X1 existed before PR #84; PR #84 fixes and CI-certifies that defect, but it does not substitute for the required fresh-clone owner re-acceptance. Approach 3 remains blocked until that re-acceptance returns **ACCEPTED BASELINE**.
 
 ## 5. Program sequence — mandatory current decision
 
@@ -209,19 +211,19 @@ This table is the compact operational state. It is not a substitute for GitHub P
 |---|---|
 | Program phase | **Owner technical acceptance preparation** |
 | Approach 2 | **DONE / VERIFIED / CLOSED** |
-| Owner technical acceptance | **NOT ACCEPTED on 2026-09-08 — first-party defect B-X1; owner re-acceptance required after the fix lands on `main`** |
+| Owner technical acceptance | **NOT ACCEPTED on 2026-09-08 — B-X1 is fixed and CI-certified on `main` by PR #84; fresh-clone owner re-acceptance required** |
 | Accepted owner baseline | **NONE YET** |
 | Approach 3 | **BLOCKED until owner technical acceptance passes** |
 | Full UI/UX / branding / broad launch testing | **DEFERRED until after Approach 3** |
 | Public release authorization | **NOT GRANTED** |
 | Current program gate | **Fresh-clone owner technical acceptance** |
 | Next substantive action | Fresh clone + owner acceptance per `OWNER-HANDOFF.md` |
-| Runtime-bearing certified baseline | `1354b8e6f801a847a5fa9b5b657e77647384bdbc` |
-| Latest current-stack hardening merge | `c1f70164ebcd13fc6e7a5d3c70830a9070ecf898` — PR #82 |
-| Expected active branch / PR outside temporary work | **Branch `fix/malformed-gateway-settings-fail-closed` — verify live GitHub** |
-| Local fresh-clone owner acceptance (2026-09-08) | **NOT ACCEPTED — B-X1 (retained `UPayments.php` enableUpaymentsGateway filter crashes on non-array `woocommerce_upayments_settings`); owner re-acceptance required after the fix lands on `main`** |
+| Latest runtime-bearing CI-certified `main` | `902c23caad1461e63c816fdc5252855d9dc4f9e4` — PR #84; owner re-acceptance pending |
+| Latest current-stack hardening merge | `902c23caad1461e63c816fdc5252855d9dc4f9e4` — PR #84 |
+| Expected active branch / PR outside temporary work | **None — verified post-PR #84; repository topology returned to `main` only** |
+| Local fresh-clone owner acceptance (2026-09-08) | **NOT ACCEPTED — B-X1 found. PR #84 fixes B-X1 on `main`; a new fresh-clone acceptance is now required to establish an accepted baseline** |
 | Last retained full runtime/package evidence | **PR #77 post-merge: Quality #978, Compatibility #506, Release #454, Provider #397, WordPress.org #309, CodeQL #800** |
-| Latest current-stack release/QA evidence | **PR #82 exact head `af309e8c668e9def7d94e533f1c553b1b937eae6`: 40/40 SUCCESS incl. Release Gate + canonical/Linux/Windows equality; merge `c1f70164ebcd13fc6e7a5d3c70830a9070ecf898`: identical tree + 39/39 post-merge checks; compatibility remains 18/18; canonical ZIP 56 files / SHA-256 `24efa28f2803976f4f9437d6b66e55922c26c13143ea291634db31b8506ffd63`** |
+| Latest current-stack release/QA evidence | **PR #84 exact head `199d4a4f2f17cd982b2c869c9ef6eee794c05fd1`: 40/40 SUCCESS; B-X1 permanently gated in packaged legacy + HPOS; merge `902c23caad1461e63c816fdc5252855d9dc4f9e4`: byte-identical tree + 39/39 post-merge checks; compatibility remains 18/18; canonical ZIP 56 files / SHA-256 `90ac844d37938e5cbb7e9a9ee3e8923b904bf8cf978c62adf2a8994a4b7462ce`** |
 | Source of live truth | **GitHub + exact source/check evidence** |
 
 ### Operational tracking model
