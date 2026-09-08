@@ -1,7 +1,7 @@
 # SUPCheckout for UPayments — Project Status
 
 **Status document:** canonical living engineering state
-**Last reconciled:** 2026-09-07
+**Last reconciled:** 2026-09-08
 **Canonical GitHub repository:** `SimplixInnovations/supcheckout`
 **Canonical plugin/package slug:** `supcheckout`
 **Development version:** `0.1.0`
@@ -14,7 +14,7 @@
 |---|---|
 | Product | **SUPCheckout for UPayments** |
 | Product family | **SUPCheckout** |
-| Production maturity | **Pre-release / final SUPCheckout identity merged and post-merge certified** |
+| Production maturity | **Pre-release / final pre-clone runtime/QA closure merged and post-merge certified** |
 | Canonical technical slug | `supcheckout` |
 | WordPress text domain | `supcheckout` |
 | PHP namespace | `Simplixi\SUPCheckout` |
@@ -250,43 +250,46 @@ Passing this gate does **not** publish the plugin or guarantee manual directory 
 
 ## Current certified repository state
 
-Live verification on 2026-09-07 confirms:
+Live verification on 2026-09-08 confirms:
 
 - canonical repository `SimplixInnovations/supcheckout`;
-- `main` as the only remote branch;
-- zero open PRs/issues, zero tags and zero GitHub Releases;
+- runtime-bearing PR #75 exact head `9474955e2d5438ccc9c0334b52dc0f72be557a86` squash-merged as GitHub-verified `1354b8e6f801a847a5fa9b5b657e77647384bdbc`;
+- persistent remote topology after the runtime merge is `main` plus the known stale unprotected `hardening/deep-release-audit-cleanup` branch; the documentation closeout branch is temporary and must auto-delete on merge;
+- runtime-closeout open PRs/issues before this documentation branch: **0 / 0**;
+- public tags/GitHub Releases: **0 / 0**;
 - evidence-safe About description/homepage/topics;
 - squash-only merge policy with merged-branch deletion;
 - active Main Rule requiring `Governance`, `H12 Regression Harness`, `Compatibility Gate` and `Release Gate` under strict up-to-date checking;
 - deletion, non-fast-forward/force-push and linear-history protections retained;
 - PR flow and review-thread resolution retained;
-- official packaged Plugin Check runs with `strict: true` and the exact-main result reports no findings.
+- official packaged Plugin Check runs with `strict: true`.
 
-Latest runtime-bearing certified `main`: `bfadff34142a3a676258e8dc0774bd31287c0138`. Documentation-only descendants may advance `main`; live GitHub evidence is authoritative for the exact current documentation commit.
+Latest runtime-bearing certified `main`: `1354b8e6f801a847a5fa9b5b657e77647384bdbc`.
 
-PR #71 exact head `a820b7feff765aa99e2321c6cc930baa57793fac` passed the complete stack and squash-merged to that main. Fresh post-merge evidence:
+PR #75 exact head `9474955e2d5438ccc9c0334b52dc0f72be557a86` passed Quality #957, Compatibility #485 (**16/16**), Release Artifact #433, Provider Sandbox #385, strict WordPress.org #288 and CodeQL. Fresh post-merge evidence on the exact runtime-bearing main:
 
-- Quality #927 — **SUCCESS**;
-- H12 PHP — **1927 PASS / 0 FAIL**;
-- H12 Blocks — **144 PASS / 0 FAIL**;
-- Compatibility #455 — **16/16 SUCCESS**;
-- Release Artifact #404 / Release Gate — **SUCCESS**;
-- Provider Sandbox #365 — **SUCCESS**;
-- WordPress.org Submission Check #262 — **SUCCESS / strict package gate**;
-- CodeQL/main-security #749 — **SUCCESS**;
-- PR #71 runtime-baseline ZIP `supcheckout-0.1.0.zip` — SHA-256 `0436256b16605b9b2db91aa8a7865ecec6cae7ef00fa515048d9643e50ad990a`, 74 files;
-- current documentation-reconciled package candidate (same runtime; distributed README updated) — SHA-256 `ffdf69d55169e61bb64b1b8401f435bf4c6bbcfaced6750ad9a12cda4a6200ef`, 74 files.
+- Quality #958 — **SUCCESS**;
+- H12 Regression Harness — **SUCCESS**;
+- Compatibility #486 — **16/16 SUCCESS**;
+- Release Artifact #434 / Release Gate — **SUCCESS**, including packaged legacy/HPOS and both historical package-root migration/rollback families;
+- Provider Sandbox #386 — **SUCCESS**;
+- WordPress.org Submission Check #289 — **SUCCESS / strict package gate**;
+- CodeQL/main-security #780 — **SUCCESS**;
+- deterministic `supcheckout-0.1.0.zip` — SHA-256 `e85ef026cf43f2254625c2fd1c97e328dc37581dfea4f058c59c0434b11a360d`, **56 files**.
+
+The runtime/QA closure removed only proven dead/debug/non-persisted first-party residue and canonicalized living QA names. Protected UPayments/provider/persisted identities, both historical package roots, the first-stable `UPayments.php` bootstrap and development version `0.1.0` remain unchanged.
 
 ## Remaining owner/admin/local work
 
-Repository rename, metadata/topics, Main Rule hardening, branch cleanup and living-coordinate reconciliation are complete. Remaining work is:
+Repository rename, metadata/topics, Main Rule hardening and living-coordinate reconciliation are complete. One known stale unprotected remote branch remains outside the connected deletion capability. Remaining work is:
 
-1. verify the owner's local `origin` points directly to `SimplixInnovations/supcheckout`;
-2. run the documented isolated local acceptance suite;
-3. apply approved SUPCheckout launch branding and visual/accessibility acceptance;
-4. choose the first public version explicitly (`0.1.0` early release vs `1.0.0` first stable);
-5. run a version-promotion PR if required;
-6. tag/release/submit to WordPress.org only after explicit approval.
+1. after this documentation closeout merges, delete remote `hardening/deep-release-audit-cleanup` only after confirming it contains no needed owner work;
+2. verify the owner's local `origin` points directly to `SimplixInnovations/supcheckout` and prune stale refs;
+3. run the documented isolated local acceptance suite against the final exact `origin/main`;
+4. apply approved SUPCheckout launch branding and visual/accessibility acceptance;
+5. choose the first public version explicitly (`0.1.0` early release vs `1.0.0` first stable);
+6. run a version-promotion PR if required;
+7. tag/release/submit to WordPress.org only after explicit approval.
 
 The exact commands and checks are in `docs/project/OWNER-HANDOFF.md`.
 

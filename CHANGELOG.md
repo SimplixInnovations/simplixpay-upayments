@@ -8,6 +8,16 @@ The project is still in pre-release engineering hardening. Entries below are eng
 
 ## [Unreleased]
 
+### Final pre-clone repository closure
+
+- PR #75 exact head `9474955e2d5438ccc9c0334b52dc0f72be557a86` removed proven dead/debug runtime residue, consolidated the provider logo, corrected living first-party QA/control naming, removed the unreferenced legacy order-details template, and preserved dynamically referenced wallet assets.
+- Protected UPayments/provider/persisted identities, frozen lifecycle/migration keys, both historical package roots, first-stable `UPayments.php` bootstrap and development version `0.1.0` were not migrated.
+- PR #75 passed Quality #957, Compatibility #485 (**16/16**), Release Artifact #433, Provider Sandbox #385, strict WordPress.org #288 and CodeQL, then squash-merged as GitHub-verified `1354b8e6f801a847a5fa9b5b657e77647384bdbc`.
+- Fresh merged-main Quality #958, Compatibility #486 (**16/16**), Release Artifact #434, Provider Sandbox #386, strict WordPress.org #289 and CodeQL/main-security #780 all succeeded.
+- Deterministic `supcheckout-0.1.0.zip`: SHA-256 `e85ef026cf43f2254625c2fd1c97e328dc37581dfea4f058c59c0434b11a360d`, 56 files.
+- No public tag, GitHub Release, WordPress.org publication or version promotion is introduced by this closeout.
+
+
 ### Canonical repository-coordinate closure
 
 - Post-rename coordinate PR #68 exact head `0e6ef6334282a83a428da7ee793daa98360c2bcc` passed the full Quality/H12, 16-cell Compatibility, deterministic Release Artifact/migration, Provider Sandbox, packaged WordPress.org and CodeQL stack.

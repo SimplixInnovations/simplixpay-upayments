@@ -1,8 +1,8 @@
 # SUPCheckout for UPayments — Owner Handoff
 
-**Engineering migration:** FINAL SUPCHECKOUT IDENTITY — DONE / VERIFIED (PR #67)
-**Migration scope:** identity/runtime + canonical repository coordinate
-**Latest runtime-bearing certified `main`:** `bfadff34142a3a676258e8dc0774bd31287c0138`
+**Engineering migration:** FINAL PRE-CLONE RUNTIME/QA CLOSURE — DONE / VERIFIED (PR #75)
+**Migration scope:** compatibility-safe runtime/QA cleanup + canonical owner handoff
+**Latest runtime-bearing certified `main`:** `1354b8e6f801a847a5fa9b5b657e77647384bdbc`
 **Canonical GitHub repository:** `SimplixInnovations/supcheckout`
 **Canonical plugin/package slug:** `supcheckout`
 **Development version:** `0.1.0`
@@ -10,7 +10,7 @@
 
 This is the authoritative owner/admin/local/release sequence. It does not reopen Quality Platform Q1-Q19 and it does not authorize publication by itself.
 
-Fresh verification on final SUPCheckout `main` `7547e59a2d5ef6d49b059851c6899a2d9987b16a`:
+Historical verification on the final identity-migration `main` `7547e59a2d5ef6d49b059851c6899a2d9987b16a`:
 
 - Quality #896 — **SUCCESS**
 - Compatibility #424 — **16/16 SUCCESS**
@@ -20,18 +20,17 @@ Fresh verification on final SUPCheckout `main` `7547e59a2d5ef6d49b059851c6899a2d
 - CodeQL/main-security #717 — **SUCCESS**
 - official packaged Plugin Check — **0 blocking errors**
 
-The repository rename to `SimplixInnovations/supcheckout` and the dedicated living-coordinate reconciliation are complete. PR #68 exact head `0e6ef6334282a83a428da7ee793daa98360c2bcc` passed Quality #900, Compatibility #428 (**16/16**), Release Artifact #377, Provider Sandbox #338, WordPress.org #235 and CodeQL #722, then squash-merged as `05fec942cc8fbeb58cfd0bd41f0ef5fdb86f966f`. Fresh post-merge Quality #901, Compatibility #429 (**16/16**), Release Artifact #378, Provider Sandbox #339, WordPress.org #236 and CodeQL #723 all succeeded. Final remote topology is `main` only.
+The repository rename to `SimplixInnovations/supcheckout` and the dedicated living-coordinate reconciliation are complete. PR #68 exact head `0e6ef6334282a83a428da7ee793daa98360c2bcc` passed Quality #900, Compatibility #428 (**16/16**), Release Artifact #377, Provider Sandbox #338, WordPress.org #235 and CodeQL #722, then squash-merged as `05fec942cc8fbeb58cfd0bd41f0ef5fdb86f966f`. Fresh post-merge Quality #901, Compatibility #429 (**16/16**), Release Artifact #378, Provider Sandbox #339, WordPress.org #236 and CodeQL #723 all succeeded. At that PR #68 closeout, remote topology was `main` only.
 
 Current strict release-engineering baseline:
 
-- PR #71 exact head `a820b7feff765aa99e2321c6cc930baa57793fac` passed Quality #926, Compatibility #454 (**16/16**), Release Artifact #403, Provider Sandbox #364, strict WordPress.org #261 and CodeQL #748;
-- squash merge `bfadff34142a3a676258e8dc0774bd31287c0138`;
-- post-merge Quality #927, Compatibility #455 (**16/16**), Release Artifact #404, Provider Sandbox #365, strict WordPress.org #262 and CodeQL #749 — **SUCCESS**;
-- official packaged Plugin Check uses `strict: true`; exact-main artifact result: `Success: Checks complete. No errors found.`;
-- PR #71 runtime-baseline deterministic ZIP: `supcheckout-0.1.0.zip`, SHA-256 `0436256b16605b9b2db91aa8a7865ecec6cae7ef00fa515048d9643e50ad990a`, 74 files;
-- current documentation-reconciled package candidate (runtime unchanged; distributed README updated): SHA-256 `ffdf69d55169e61bb64b1b8401f435bf4c6bbcfaced6750ad9a12cda4a6200ef`, 74 files;
-- repository remains `main` only with zero open PRs/issues, tags or releases after PR #71 closeout.
-
+- PR #75 exact head `9474955e2d5438ccc9c0334b52dc0f72be557a86` passed Quality #957, Compatibility #485 (**16/16**), Release Artifact #433, Provider Sandbox #385, strict WordPress.org #288 and CodeQL;
+- squash merge `1354b8e6f801a847a5fa9b5b657e77647384bdbc` is GitHub-signature verified and has the exact certified source tree from the PR head;
+- post-merge Quality #958, Compatibility #486 (**16/16**), Release Artifact #434, Provider Sandbox #386, strict WordPress.org #289 and CodeQL/main-security #780 — **SUCCESS**;
+- official packaged Plugin Check remains `strict: true`;
+- deterministic `supcheckout-0.1.0.zip`: SHA-256 `e85ef026cf43f2254625c2fd1c97e328dc37581dfea4f058c59c0434b11a360d`, **56 files**;
+- persistent remote topology after PR #75 is `main` plus known stale unprotected branch `hardening/deep-release-audit-cleanup`; this documentation branch is temporary and must auto-delete after merge;
+- runtime-closeout open PRs/issues before this documentation PR: **0 / 0**; public tags/releases remain **0 / 0**.
 
 ## Golden identity rule
 
@@ -93,68 +92,43 @@ Required result:
 
 Do **not** use `git reset --hard` or `git clean -fdx` on the normal owner working copy merely to perform acceptance. Preserve intentional local work first.
 
-## A2. Branch cleanup — completed; retain this procedure for future hygiene
+## A2. Branch cleanup — one known stale remote remains
 
-In GitHub, confirm the final docs PR is merged and there are no other intended open PRs.
-
-Then locally:
+Do this **after the documentation closeout PR is merged**. First inspect live state:
 
 ```bash
-git fetch --prune origin
+git fetch --prune --tags origin
 git branch -r
 git worktree list
 ```
 
-As of the final documentation audit, non-main branches included closeout/historical/Dependabot branches such as:
+The only known persistent non-`main` remote at the runtime-closeout boundary is:
 
-- `dependabot/github_actions/github-actions-055219aa09`
-- `docs/final-sucheckout-owner-closeout`
-- `docs/sucheckout-final-documentation-hardening`
-- `docs/sucheckout-final-documentation-hardening-v2`
-- `enterprise/release-identity-migration-decision`
-- `release/wordpress-org-submission-readiness`
+- `origin/hardening/deep-release-audit-cleanup`
 
-This list is a snapshot, not a command to delete blindly. **Live branch/PR state wins.**
-
-Delete every non-`main` remote branch only after confirming it is superseded and has no intended open PR. For the known superseded branches:
+The connected GitHub capability cannot delete branch refs. Delete it only after confirming it contains no intentional owner work and is not needed by a worktree:
 
 ```bash
-git push origin --delete dependabot/github_actions/github-actions-055219aa09
-git push origin --delete docs/final-sucheckout-owner-closeout
-git push origin --delete docs/sucheckout-final-documentation-hardening
-git push origin --delete docs/sucheckout-final-documentation-hardening-v2
-git push origin --delete enterprise/release-identity-migration-decision
-git push origin --delete release/wordpress-org-submission-readiness
+git push origin --delete hardening/deep-release-audit-cleanup
 git fetch --prune origin
 git branch -r
 ```
 
-If GitHub auto-deleted any branch, a delete command may report that the remote ref does not exist; that is harmless. Do not create it again.
-
-Expected clean remote state:
+Expected remote state after that owner action:
 
 ```text
 origin/HEAD -> origin/main
 origin/main
 ```
 
-For matching local branches, first inspect `git worktree list`. Delete only branches not used by a worktree and not containing needed local work.
+If a matching local branch exists, inspect `git worktree list` first. Delete the local branch only when it is not attached to a worktree and contains no needed work:
 
-PowerShell-safe example:
-
-```powershell
-git worktree list
-git branch
-# Delete only verified obsolete local branches, one at a time:
-git branch -D docs/final-sucheckout-owner-closeout
-git branch -D docs/sucheckout-final-documentation-hardening
-git branch -D docs/sucheckout-final-documentation-hardening-v2
-git branch -D enterprise/release-identity-migration-decision
-git branch -D release/wordpress-org-submission-readiness
+```bash
+git branch -D hardening/deep-release-audit-cleanup
 git worktree prune
 ```
 
-The Dependabot branch normally exists only remotely; delete a local counterpart only if one actually exists.
+Do not recreate an already auto-deleted temporary documentation branch.
 
 ## A3. GitHub repository rename — completed
 
@@ -271,7 +245,7 @@ Verified evidence:
 - CodeQL #722 — **SUCCESS**;
 - squash merge `05fec942cc8fbeb58cfd0bd41f0ef5fdb86f966f`;
 - post-merge Quality #901, Compatibility #429 (**16/16**), Release Artifact #378, Provider Sandbox #339, WordPress.org #236 and CodeQL #723 — **SUCCESS**;
-- final remote topology — **main only**.
+- remote topology at the PR #68 historical closeout — **main only**.
 
 ---
 
@@ -342,14 +316,14 @@ composer quality
 High-value standalone contracts:
 
 ```bash
-php tests/harness/sucheckout-identity-migration-harness.php
-php tests/harness/sucheckout-namespace-migration-harness.php
-php tests/harness/sucheckout-frontend-identity-harness.php
-php tests/harness/sucheckout-residue-harness.php
+php tests/harness/supcheckout-identity-migration-harness.php
+php tests/harness/supcheckout-namespace-migration-harness.php
+php tests/harness/supcheckout-frontend-identity-harness.php
+php tests/harness/supcheckout-residue-harness.php
 php tests/harness/wordpress-org-runtime-harness.php
 php tests/harness/wordpress-org-submission-harness.php
-php tests/harness/sucheckout-http-transport-harness.php
-php tests/harness/sucheckout-provenance-db-failure-harness.php
+php tests/harness/supcheckout-http-transport-harness.php
+php tests/harness/supcheckout-provenance-db-failure-harness.php
 php tests/harness/phase-9g-h12-php-harness.php
 node --check tests/harness/phase-9g-h12-blocks-harness.js
 node tests/harness/phase-9g-h12-blocks-harness.js
@@ -574,14 +548,14 @@ Unsupported in the current certified feature set:
 - [x] final SUPCheckout identity PR merged from exact green head
 - [ ] normal clone synchronized; `HEAD == origin/main`; worktree clean
 - [x] no legitimate open PRs remained before this coordinate-closure PR
-- [x] all superseded non-main branches removed
+- [ ] delete the known stale `hardening/deep-release-audit-cleanup` branch after this docs merge, after verifying no owner work is needed
 - [x] repository renamed and canonical coordinate verified as `SimplixInnovations/supcheckout`
 - [x] About description/homepage/topics verified against the evidence-safe set
 - [ ] local `origin` updated to `https://github.com/SimplixInnovations/supcheckout.git`
 - [x] post-rename repository controls and Main Rule verified
 - [x] `Main Rule` requires `Governance`, `H12 Regression Harness`, `Compatibility Gate` and `Release Gate`
 - [x] coordinate-only living-link PR #68 merged from exact green head
-- [x] final branch audit shows only `main`
+- [ ] final owner branch audit shows only `main` after the stale branch is deleted
 
 ## Local acceptance
 

@@ -2,9 +2,26 @@
 
 This document is the public compatibility truth. A capability is **Verified** only when exact reproducible evidence exists. External/manual requirements and unsupported features are named explicitly rather than inferred from green CI.
 
-**Current posture:** pre-release final SUPCheckout identity is merged and post-merge certified. Repository rename is complete; publication remains a separate owner decision.
+**Current posture:** pre-release final pre-clone runtime/QA closure is merged and post-merge certified. Repository rename is complete; publication remains a separate owner decision.
 
 ## Certification anchors
+
+### Final pre-clone runtime/QA closure baseline
+
+PR #75 certified head `9474955e2d5438ccc9c0334b52dc0f72be557a86` squash-merged as GitHub-verified `1354b8e6f801a847a5fa9b5b657e77647384bdbc`.
+
+Fresh post-merge evidence:
+
+- Quality #958 — **SUCCESS**;
+- Compatibility #486 — **16/16 SUCCESS**;
+- Release Artifact #434 — **SUCCESS**, including packaged legacy/HPOS plus both historical package-root migration/rollback families;
+- Provider Sandbox #386 — **SUCCESS**;
+- WordPress.org Submission Check #289 — **SUCCESS / strict packaged Plugin Check**;
+- CodeQL/main-security #780 — **SUCCESS**;
+- deterministic `supcheckout-0.1.0.zip` — SHA-256 `e85ef026cf43f2254625c2fd1c97e328dc37581dfea4f058c59c0434b11a360d`, 56 files.
+
+The closure removes proven dead/debug/non-persisted first-party residue and canonicalizes living QA/control identity without changing protected UPayments payment/persisted identities or public feature claims.
+
 
 ### Final SUPCheckout identity baseline
 
