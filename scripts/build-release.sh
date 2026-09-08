@@ -98,11 +98,14 @@ if not entries:
 manifest_lines = []
 zip_path.parent.mkdir(parents=True, exist_ok=True)
 
+# Use stored entries rather than DEFLATE. DEFLATE byte streams can differ
+# across zlib implementations/versions even when source bytes and metadata are
+# identical. ZIP_STORED makes the canonical package byte-for-byte reproducible
+# across supported Windows and Linux owner/CI environments.
 with zipfile.ZipFile(
     zip_path,
     mode="w",
-    compression=zipfile.ZIP_DEFLATED,
-    compresslevel=9,
+    compression=zipfile.ZIP_STORED,
     strict_timestamps=True,
 ) as archive:
     for relative, object_sha in entries:
@@ -115,8 +118,8 @@ with zipfile.ZipFile(
         info = zipfile.ZipInfo(archive_name, date_time=(1980, 1, 1, 0, 0, 0))
         info.create_system = 3
         info.external_attr = (0o100644 << 16)
-        info.compress_type = zipfile.ZIP_DEFLATED
-        archive.writestr(info, blob, compress_type=zipfile.ZIP_DEFLATED, compresslevel=9)
+        info.compress_type = zipfile.ZIP_STORED
+        archive.writestr(info, blob, compress_type=zipfile.ZIP_STORED)
         manifest_lines.append(f"{hashlib.sha256(blob).hexdigest()}  {archive_name}\n")
 
 manifest_path.write_text("".join(manifest_lines), encoding="utf-8", newline="\n")

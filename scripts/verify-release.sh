@@ -66,6 +66,14 @@ with zipfile.ZipFile(zip_path, "r") as archive:
             raise SystemExit(f"Path escapes canonical root: {name}")
         if "\\" in name or name.startswith("/") or "\x00" in name:
             raise SystemExit(f"Unsafe artifact path: {name}")
+        if info.compress_type != zipfile.ZIP_STORED:
+            raise SystemExit(f"Non-deterministic compression method: {name}")
+        if info.date_time != (1980, 1, 1, 0, 0, 0):
+            raise SystemExit(f"Non-deterministic ZIP timestamp: {name}")
+        if info.create_system != 3:
+            raise SystemExit(f"Non-deterministic ZIP creator system: {name}")
+        if (info.external_attr >> 16) != 0o100644:
+            raise SystemExit(f"Non-deterministic ZIP mode: {name}")
         rel = name[len(prefix):]
         if posixpath.normpath(rel) != rel or rel in ("", ".", "..") or rel.startswith("../"):
             raise SystemExit(f"Unsafe normalized path: {name}")

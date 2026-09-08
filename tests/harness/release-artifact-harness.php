@@ -129,6 +129,19 @@ release_assert(
         && strpos($verify, 'HEAD:.distignore') !== false,
     'verifier binds packaged bytes to Git HEAD'
 );
+release_assert(
+    strpos($build, 'compression=zipfile.ZIP_STORED') !== false
+        && strpos($build, 'info.compress_type = zipfile.ZIP_STORED') !== false
+        && strpos($build, 'ZIP_DEFLATED') === false,
+    'builder uses cross-platform deterministic stored ZIP entries'
+);
+release_assert(
+    strpos($verify, 'info.compress_type != zipfile.ZIP_STORED') !== false
+        && strpos($verify, 'Non-deterministic ZIP timestamp') !== false
+        && strpos($verify, 'Non-deterministic ZIP creator system') !== false
+        && strpos($verify, 'Non-deterministic ZIP mode') !== false,
+    'verifier enforces deterministic ZIP container metadata'
+);
 release_assert(strpos($installer, 'SUPCHECKOUT_PLUGIN_SLUG:-supcheckout') !== false, 'real installer defaults to canonical SUPCheckout root');
 
 release_assert(strpos($workflow, "-name 'supcheckout-*.zip'") !== false, 'release workflow selects canonical SUPCheckout artifacts');
@@ -147,6 +160,13 @@ release_assert(strpos($workflow, 'SUPCHECKOUT_UPGRADE_PHASE=verify-legacy-rollba
 release_assert(strpos($workflow, 'plugin delete "$SUPCHECKOUT_LEGACY_SLUG"') !== false, 'migration job ends with selected pre-stable package removed');
 release_assert(strpos($workflow, 'actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a') !== false, 'artifact upload action is immutably pinned');
 release_assert(strpos($workflow, 'actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c') !== false, 'artifact download action is immutably pinned');
+release_assert(strpos($workflow, 'os: [ubuntu-latest, windows-latest]') !== false, 'release workflow certifies Linux and Windows artifact construction');
+release_assert(strpos($workflow, 'name: Cross-platform deterministic release') !== false, 'release workflow compares cross-platform evidence');
+release_assert(strpos($workflow, 'cmp "$CANONICAL_SIDECAR" linux/Linux.zip.sha256') !== false, 'release workflow binds Linux ZIP hash to canonical artifact');
+release_assert(strpos($workflow, 'cmp "$CANONICAL_SIDECAR" windows/Windows.zip.sha256') !== false, 'release workflow binds Windows ZIP hash to canonical artifact');
+release_assert(strpos($workflow, 'cmp "$CANONICAL_MANIFEST" linux/Linux.manifest.sha256') !== false, 'release workflow binds Linux manifest to canonical artifact');
+release_assert(strpos($workflow, 'cmp "$CANONICAL_MANIFEST" windows/Windows.manifest.sha256') !== false, 'release workflow binds Windows manifest to canonical artifact');
+release_assert(strpos($workflow, 'CROSS_PLATFORM_RESULT:') !== false, 'Release Gate consumes cross-platform determinism result');
 
 if ($version !== '') {
     $tmp = sys_get_temp_dir() . '/supcheckout-release-' . getmypid() . '-' . substr(hash('sha256', __FILE__), 0, 8);
