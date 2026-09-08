@@ -78,6 +78,7 @@ if (isset($transport_calls[0])) {
     sut_assert($call['url'] === 'https://sandboxapi.upayments.com/api/v1/charge', 'POST targets exact provider route');
     sut_assert(isset($args['method']) && $args['method'] === 'POST', 'POST method is explicit');
     sut_assert(isset($args['timeout']) && (int) $args['timeout'] === 15, 'transport timeout remains bounded at 15 seconds');
+    sut_assert(isset($args['limit_response_size']) && (int) $args['limit_response_size'] === 1048576, 'provider response body remains bounded to 1 MiB');
     sut_assert(isset($args['redirection']) && (int) $args['redirection'] === 0, 'redirect following remains disabled');
     sut_assert(isset($args['sslverify']) && $args['sslverify'] === true, 'TLS certificate verification remains enabled');
     sut_assert(isset($args['user-agent']) && $args['user-agent'] === 'SUPCheckoutTransportTest/1', 'user agent is preserved');

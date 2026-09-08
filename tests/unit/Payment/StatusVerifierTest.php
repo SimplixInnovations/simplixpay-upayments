@@ -113,6 +113,7 @@ final class StatusVerifierTest extends TestCase {
         $call = $GLOBALS['supcheckout_test_http_calls'][0];
         self::assertSame('https://sandboxapi.upayments.com/api/v1/get-payment-status/track-abc', $call['url']);
         self::assertSame(15, $call['args']['timeout']);
+        self::assertSame(1048576, $call['args']['limit_response_size']);
         self::assertSame(0, $call['args']['redirection']);
         self::assertTrue($call['args']['sslverify']);
         self::assertSame('application/json', $call['args']['headers']['Accept']);
