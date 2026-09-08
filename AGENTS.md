@@ -223,5 +223,5 @@ Documentation/presentation-only changes still require all workflows triggered by
 
 If required verification fails:
 
-`NOT APPROVED.`  
+`NOT APPROVED.`
 `DO NOT MERGE.`
