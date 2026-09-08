@@ -37,6 +37,7 @@ The engineering program is pre-release but mature:
 - Final pre-clone runtime/QA closure — **DONE / VERIFIED**
 - Final enterprise repository audit — **DONE / VERIFIED — PR #77**
 - Current-stable PHP / owner-acceptance hardening — **DONE / VERIFIED — PR #80; owner acceptance itself remains pending**
+- Cross-platform deterministic release hardening — **DONE / VERIFIED — PR #82; owner acceptance itself remains pending**
 - Approach 2 — **DONE / VERIFIED / CLOSED for owner acceptance**
 - Deterministic packaged release controls — **DONE / VERIFIED**
 - Owner technical acceptance — **pending on a fresh clone of final certified `main`**
@@ -71,7 +72,9 @@ Later documentation/presentation-only commits may advance `main` without changin
 
 Final enterprise repository audit PR #77 certified exact head `4b00ef838f8da0a14d5963697d2584dcd6d82f4d` and squash-merged as GitHub-verified `bf4a46195013edb7699d5142f2c1400d99357fe2`. Fresh post-merge Quality #978, Compatibility #506 (**16/16**), Release Artifact #454, Provider Sandbox #397, strict WordPress.org #309 and CodeQL/main-security #800 all succeeded. The deterministic package remained 56 files with SHA-256 `32776f23f02de2fa7be14a5c84ebdcddb9b2f2d348366deade826bca86e58da3`.
 
-Latest current-stack QA hardening is PR #80. Final exact PR head `717c34d16a5fdc5548b045751bdf53dbdb936a76` passed **35/35 checks** with Quality + H12 on PHP 8.5, an **18/18** real compatibility matrix including PHP 8.5 legacy/HPOS, Release Gate and CodeQL. It squash-merged as `65e39c5da4fee6462e219bbb0ec21038f831c6b1`; the merged tree is identical to the certified PR tree, and post-merge `main` passed **26/26 triggered checks**. No production runtime/package-source file changed and the deterministic package remained 56 files / SHA-256 `32776f23f02de2fa7be14a5c84ebdcddb9b2f2d348366deade826bca86e58da3`. Owner acceptance must now be rerun against the final reconciled `main` before Approach 3.
+PR #80 is the latest current-stable PHP acceptance hardening. Final exact PR head `717c34d16a5fdc5548b045751bdf53dbdb936a76` passed **35/35 checks** with Quality + H12 on PHP 8.5, an **18/18** real compatibility matrix including PHP 8.5 legacy/HPOS, Release Gate and CodeQL. It squash-merged as `65e39c5da4fee6462e219bbb0ec21038f831c6b1`; the merged tree is identical to the certified PR tree, and post-merge `main` passed **26/26 triggered checks**. No production runtime/package-source file changed.
+
+Latest release-engineering hardening is PR #82. Independent Windows acceptance proved the old DEFLATE container was not cross-platform byte-deterministic even though the 56-file manifest was identical. PR #82 final exact head `af309e8c668e9def7d94e533f1c553b1b937eae6` passed **40/40 checks** and squash-merged as `c1f70164ebcd13fc6e7a5d3c70830a9070ecf898`; the merge tree is identical to the certified PR tree and post-merge `main` passed **39/39 checks**. The canonical `ZIP_STORED` package is **56 files**, SHA-256 `24efa28f2803976f4f9437d6b66e55922c26c13143ea291634db31b8506ffd63`, reproduced identically by canonical Ubuntu, explicit Ubuntu and Windows builds. Owner acceptance must now be rerun against the final reconciled `main` before Approach 3.
 
 ## Protected compatibility identities
 
