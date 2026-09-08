@@ -133,8 +133,8 @@ q4_assert(
         && q4_contains($quality_record, 'Q16 is DONE / VERIFIED'),
     'quality record closes Q4 and advances beyond it'
 );
-q4_assert(q4_contains($status, '| Quality Platform Q16 migration-core analysis | **DONE / VERIFIED** |'), 'project status advances beyond Quality Platform Q4');
-q4_assert((preg_match('/Quality Platform Q1-Q([0-9]+) are \\*\\*DONE \\/ VERIFIED\\*\\*\\./', $readme, $q4_readme_range_matches) === 1 && isset($q4_readme_range_matches[1]) && (int) $q4_readme_range_matches[1] > 4), 'README advances beyond Quality Platform Q4');
+q4_assert(q4_contains($status, '| Quality Platform Q1-Q19 | **DONE / VERIFIED — permanently closed at Q19** |'), 'project status records the closed Quality Platform Q1-Q19');
+q4_assert(q4_contains($readme, 'docs/project/PROJECT-STATUS.md'), 'README delegates current engineering state to project status');
 q4_assert(
     q4_contains($audit, 'Q1-Q16 progressively added locked toolchain and bounded module evidence')
         && q4_contains($audit, 'Q17 adds payment-runtime checkout/lifecycle characterization'),

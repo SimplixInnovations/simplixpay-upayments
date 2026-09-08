@@ -140,8 +140,8 @@ foreach (array(
     q6_assert(q6_contains($quality_record, $closure_evidence), "Q6 closure evidence is pinned: {$closure_evidence}");
 }
 q6_assert(q6_contains($quality_record, 'Q16 is DONE / VERIFIED'), 'quality record advances beyond Q6');
-q6_assert(q6_contains($status, '| Quality Platform Q16 migration-core analysis | **DONE / VERIFIED** |'), 'project status advances beyond Quality Platform Q6');
-q6_assert((preg_match('/Quality Platform Q1-Q([0-9]+) are \\*\\*DONE \\/ VERIFIED\\*\\*\\./', $readme, $q6_readme_range_matches) === 1 && isset($q6_readme_range_matches[1]) && (int) $q6_readme_range_matches[1] > 6), 'README advances beyond Quality Platform Q6');
+q6_assert(q6_contains($status, '| Quality Platform Q1-Q19 | **DONE / VERIFIED — permanently closed at Q19** |'), 'project status records the closed Quality Platform Q1-Q19');
+q6_assert(q6_contains($readme, 'docs/project/PROJECT-STATUS.md'), 'README delegates current engineering state to project status');
 q6_assert(
     !q6_contains($playbook, 'Last verified implementation main SHA: 651e604659d1891e0f7d05b8e684edb4aa31c2b1')
         && !q6_contains($playbook, 'Canonical implementation tree: 07f944a3adbbdbf6953ea96512555cb6b16286fe'),
