@@ -3614,7 +3614,7 @@ upay_assert(
 $cp_method = $reflection->getMethod('create_provenance');
 upay_make_reflection_accessible($cp_method);
 
-function upay_run_create_provenance_race($scenario_name, $failure_injection, $post_assert_extra = null) {
+function upay_run_create_provenance_race($scenario_name, $failure_injection, $post_assert_extra = null, $expectation = 'rollback_clean') {
     global $gen;
     $state =& upay_test_state();
     upay_reset_state();
@@ -3623,11 +3623,46 @@ function upay_run_create_provenance_race($scenario_name, $failure_injection, $po
     $state['usermeta'][200] = [];
     $state['delete_user_meta_calls'] = [];
 
-    // Apply the failure injection BEFORE invoking create_provenance. The
-    // injection modifies the state that the harness stubs consult.
-    $failure_injection($state);
+    // Derive the exact current production identity context before injecting the
+    // race. Hard-coded pseudo-scopes can cause create_provenance() to reject
+    // before the intended write/rollback seam and therefore create false PASSes.
+    $identity_context = \UPayments\Token\CustomerTokenIdentity::read_existing_identity_context('live_key', false);
+    $scope_fingerprint = isset($identity_context['scope']) && is_string($identity_context['scope'])
+        ? $identity_context['scope']
+        : null;
+    $expected_generation = isset($identity_context['generation_id']) && is_string($identity_context['generation_id'])
+        ? $identity_context['generation_id']
+        : null;
+    $blog_id = (string) get_current_blog_id();
+    $meta_key = $scope_fingerprint !== null
+        ? \UPayments\Token\CustomerTokenIdentity::get_user_meta_key($blog_id, $scope_fingerprint)
+        : null;
 
-    $result = $GLOBALS['cp_method_ref']->invoke(null, 200, 'live_key', false, 'live_key_live', $gen, 'canonical', '12345678', 'create');
+    if ($identity_context['state'] !== 'valid'
+        || $scope_fingerprint === null
+        || $expected_generation === null
+        || $meta_key === null
+    ) {
+        throw new RuntimeException($scenario_name . ': harness could not establish a valid current identity context');
+    }
+
+    // Apply the failure injection AFTER deriving the baseline context so a
+    // rotation fixture can target production's first/final context reads.
+    // The state is intentionally passed by reference: race toggles must mutate
+    // the shared harness state rather than a copy.
+    $failure_injection($state, $scope_fingerprint, $meta_key);
+
+    $result = $GLOBALS['cp_method_ref']->invoke(
+        null,
+        200,
+        'live_key',
+        false,
+        $scope_fingerprint,
+        $expected_generation,
+        'canonical',
+        '12345678',
+        'create_201'
+    );
 
     upay_assert_eq(
         $result,
@@ -3636,99 +3671,108 @@ function upay_run_create_provenance_race($scenario_name, $failure_injection, $po
         'helper_unit_runtime'
     );
 
-    // The meta key for the inserted record must either be absent entirely
-    // or contain zero records matching what we tried to insert.
-    $blog_id = (string) get_current_blog_id();
-    $meta_key = \UPayments\Token\CustomerTokenIdentity::get_user_meta_key($blog_id, 'live_key_live');
-    $remaining = $state['usermeta'][200][$meta_key] ?? [];
+    $remaining = isset($state['usermeta'][200][$meta_key]) && is_array($state['usermeta'][200][$meta_key])
+        ? $state['usermeta'][200][$meta_key]
+        : [];
+    $rollback_calls = array_values(array_filter(
+        $state['delete_user_meta_calls'],
+        function ($call) use ($meta_key) {
+            return $call['key'] === $meta_key && $call['user_id'] === 200;
+        }
+    ));
+    $exact_value_used = false;
+    foreach ($rollback_calls as $call) {
+        if ($call['value_provided'] === true) {
+            $exact_value_used = true;
+            break;
+        }
+    }
+
+    if ($expectation === 'rollback_clean') {
+        $seam_ok = $state['usermeta_writes'] === 1
+            && count($remaining) === 0
+            && $exact_value_used;
+    } elseif ($expectation === 'rollback_preserve_concurrent') {
+        $seam_ok = $state['usermeta_writes'] === 1
+            && count($remaining) === 1
+            && $exact_value_used;
+    } elseif ($expectation === 'preexisting_reject') {
+        $seam_ok = $state['usermeta_writes'] === 0
+            && count($remaining) === 1
+            && count($rollback_calls) === 0
+            && isset($remaining[0]['preexisting_fixture'])
+            && $remaining[0]['preexisting_fixture'] === true;
+    } else {
+        throw new RuntimeException($scenario_name . ': unknown race expectation ' . $expectation);
+    }
+
     upay_assert(
-        count($remaining) === 0,
-        "$scenario_name meta key empty after rollback (got " . count($remaining) . " records)",
+        $seam_ok,
+        "$scenario_name intended create/rollback seam was actually exercised",
         'helper_unit_runtime'
     );
 
-    // The compensating delete MUST have used exact-value semantics. If
-    // value_provided=false is observed, production is doing a blanket
-    // key delete (forbidden by Residual Correction #15).
-    $rollback_calls = array_filter($state['delete_user_meta_calls'], function ($c) use ($meta_key) {
-        return $c['key'] === $meta_key && $c['user_id'] === 200;
-    });
-    $rollback_calls = array_values($rollback_calls);
-    if (count($rollback_calls) > 0) {
-        $exact_value_used = false;
-        foreach ($rollback_calls as $c) {
-            if ($c['value_provided'] === true) {
-                $exact_value_used = true;
-                break;
-            }
-        }
-        upay_assert(
-            $exact_value_used,
-            "$scenario_name rollback used delete_user_meta with exact value (no blanket key delete)",
-            'helper_unit_runtime'
-        );
-    }
     if ($post_assert_extra !== null) {
-        $post_assert_extra($state, $result);
+        $post_assert_extra($state, $result, $scope_fingerprint, $meta_key);
     }
 }
 $GLOBALS['cp_method_ref'] = $cp_method;
 
-// RACE-1: force_refresh_user_meta fails (clean_user_cache throws)
+// RACE-1: force_refresh_user_meta fails after the production insert.
 // Production must roll back the inserted record via exact-value delete_user_meta.
 upay_run_create_provenance_race(
     'RACE-1 force_refresh_user_meta failure',
-    function ($state) {
+    function (&$state, $scope_fingerprint, $meta_key) {
         $state['force_user_cache_refresh_failure'] = true;
     }
 );
 
-// RACE-2: Readback returns 2 values (duplicate write race). Production must
-// detect count mismatch and roll back.
+// RACE-2: Authoritative readback observes an additional concurrent value.
+// Production must delete only its exact inserted record and preserve the
+// unrelated concurrent value.
 upay_run_create_provenance_race(
-    'RACE-2 readback count mismatch (duplicate race)',
-    function ($state) {
-        // After add_user_meta inserts, we inject a second value in the same
-        // meta key before the readback. The harness's get_user_meta returns
-        // all values; production checks count() === 1 and rolls back.
-        $GLOBALS['_race2_seen_insert'] = false;
-        // No pre-staging — we rely on the post-insert callback below.
+    'RACE-2 readback count mismatch (concurrent writer)',
+    function (&$state, $scope_fingerprint, $meta_key) {
+        $state['inject_user_meta_after_add'] = [
+            'user_id' => 200,
+            'key' => $meta_key,
+            'value' => ['concurrent_fixture' => true],
+        ];
     },
-    function ($state, $result) {
-        // Verify production called the rollback path.
-        $blog_id = (string) get_current_blog_id();
-        $meta_key = \UPayments\Token\CustomerTokenIdentity::get_user_meta_key($blog_id, 'live_key_live');
-        $remaining = $state['usermeta'][200][$meta_key] ?? [];
+    function ($state, $result, $scope_fingerprint, $meta_key) {
+        $remaining = isset($state['usermeta'][200][$meta_key]) && is_array($state['usermeta'][200][$meta_key])
+            ? $state['usermeta'][200][$meta_key]
+            : [];
         upay_assert(
-            count($remaining) === 0,
-            'RACE-2 readback count mismatch: meta key clean after rollback',
+            count($remaining) === 1
+                && isset($remaining[0]['concurrent_fixture'])
+                && $remaining[0]['concurrent_fixture'] === true
+                && $state['inject_user_meta_after_add'] === null,
+            'RACE-2 concurrent value preserved and one-shot race fixture consumed',
             'helper_unit_runtime'
         );
-    }
+    },
+    'rollback_preserve_concurrent'
 );
 
-// RACE-3: Final-context mismatch (secret rotated between pre-insert and
-// post-insert reads). Production must roll back.
+// RACE-3: The secret rotates after production's pre-insert context read.
+// Production's final context re-read must detect the mismatch and roll back.
 upay_run_create_provenance_race(
     'RACE-3 final identity context mismatch (secret rotated)',
-    function ($state) {
-        // Pre-insert ctx is captured under the initial secret. After the
-        // first read_existing_identity_context call returns valid, we mutate
-        // the option to simulate a rotation. Production's final re-read sees
-        // a different generation and rolls back.
+    function (&$state, $scope_fingerprint, $meta_key) {
         $state['secret_mutation_after_first_read'] = true;
     }
 );
 
-// RACE-4: meta_key already exists (pre-existing provenance under same scope).
-// Production must reject without writing.
+// RACE-4: The exact scoped meta key already exists before create_provenance.
+// Production must reject before writing and must not delete the existing value.
 upay_run_create_provenance_race(
-    'RACE-4 metadata_exists returns true (key collision)',
-    function ($state) {
-        $blog_id = (string) get_current_blog_id();
-        $meta_key = \UPayments\Token\CustomerTokenIdentity::get_user_meta_key($blog_id, 'live_key_live');
-        $state['usermeta'][200][$meta_key] = [['preexisting' => true]];
-    }
+    'RACE-4 metadata_exists rejects pre-existing scoped provenance',
+    function (&$state, $scope_fingerprint, $meta_key) {
+        $state['usermeta'][200][$meta_key] = [['preexisting_fixture' => true]];
+    },
+    null,
+    'preexisting_reject'
 );
 
 // =========================================================================
