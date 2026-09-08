@@ -24,12 +24,13 @@
 | Repository-control/docs closeout | **DONE / VERIFIED — PR #76** |
 | Final enterprise repository audit | **DONE / VERIFIED — PR #77** |
 | Current-stable PHP acceptance hardening | **DONE / VERIFIED — PR #80; independent owner acceptance still pending** |
-| Cross-platform deterministic release hardening | **DONE / VERIFIED — PR #82; independent owner acceptance still pending** |
+| Cross-platform deterministic release hardening | **DONE / VERIFIED — PR #82** |
+| B-X1 malformed gateway-settings hotfix | **DONE / VERIFIED / MERGED — PR #84; owner fresh-clone re-acceptance still required** |
 | Approach 2 | **DONE / VERIFIED / CLOSED for owner acceptance** |
 | Continuity bootstrap / session authority | **ACTIVE — `START-HERE.md` is mandatory** |
 | Quality Platform Q1-Q19 | **DONE / VERIFIED — permanently closed at Q19** |
 | Enterprise Tasks 1-8 | **DONE / VERIFIED — historical evidence retained** |
-| Owner technical acceptance | **NOT ACCEPTED on 2026-09-08 — first-party defect B-X1 in retained `UPayments.php` enableUpaymentsGateway filter; narrowly-bounded hotfix branch `fix/malformed-gateway-settings-fail-closed` open against `main`; owner re-acceptance required after that fix lands on `main`** |
+| Owner technical acceptance | **NOT ACCEPTED on 2026-09-08 — B-X1 is fixed and CI-certified on `main` by PR #84; fresh-clone owner re-acceptance is now required** |
 | Approach 3 architecture modernization | **NOT STARTED — blocked until owner technical acceptance passes** |
 | Full UI/UX / branding / broad launch testing | **DEFERRED until after Approach 3** |
 | Public Git tag / GitHub Release | **NOT CREATED** |
@@ -49,27 +50,21 @@ The owner acceptance before Approach 3 is deliberately **technical and bounded**
 
 Every new session must start with [`START-HERE.md`](START-HERE.md) and verify live GitHub/source/check state before relying on this recorded status.
 
-## Current certified runtime baseline
+## Current runtime-bearing CI-certified main
 
-The latest runtime-bearing certified `main` is:
+The latest runtime-bearing **CI-certified `main`** is:
 
-`1354b8e6f801a847a5fa9b5b657e77647384bdbc`
+`902c23caad1461e63c816fdc5252855d9dc4f9e4`
 
-This is the squash merge of PR #75 from exact certified head:
+This is the squash merge of PR #84 from exact certified head:
 
-`9474955e2d5438ccc9c0334b52dc0f72be557a86`
+`199d4a4f2f17cd982b2c869c9ef6eee794c05fd1`
 
-Fresh post-merge runtime evidence:
+The PR head passed **40/40 checks**. GitHub verified that the squash merge tree is byte-identical to the reviewed PR-head tree, and post-merge `main` passed **39/39 checks**, including Quality/H12, the **18/18** compatibility matrix and Compatibility Gate, Release Gate, packaged legacy + HPOS B-X1 execution, strict Plugin Check, provider sandbox and CodeQL. The canonical package is **56 files**, SHA-256 `90ac844d37938e5cbb7e9a9ee3e8923b904bf8cf978c62adf2a8994a4b7462ce`.
 
-- Quality Gates #958 — **SUCCESS**;
-- H12 Regression Harness — **SUCCESS**;
-- Compatibility Certification #486 — **16/16 SUCCESS**;
-- Release Artifact #434 / Release Gate — **SUCCESS**;
-- Provider Sandbox #386 — **SUCCESS**;
-- WordPress.org Submission Check #289 — **SUCCESS / strict packaged Plugin Check**;
-- CodeQL/main-security #780 — **SUCCESS**.
+This is **not yet an owner-accepted baseline**. The 2026-09-08 fresh-clone owner acceptance remains **NOT ACCEPTED** because it found B-X1 before PR #84. A new fresh-clone owner acceptance must pass before Approach 3 is authorized.
 
-PR #76 subsequently reconciled living owner/project documentation without changing plugin runtime behavior.
+Historical predecessor: PR #75 merge `1354b8e6f801a847a5fa9b5b657e77647384bdbc` remains retained evidence for the earlier runtime milestone.
 
 PR #77 completed the final enterprise repository audit and presentation closeout from exact certified head `4b00ef838f8da0a14d5963697d2584dcd6d82f4d`, squash-merging as GitHub-verified `bf4a46195013edb7699d5142f2c1400d99357fe2`. The PR changed no production runtime/package execution path: 62 runtime/package paths were compared against its base with zero blob differences.
 
@@ -92,9 +87,11 @@ PR #80 squash-merged as `65e39c5da4fee6462e219bbb0ec21038f831c6b1`. GitHub verif
 
 PR #82 closed a cross-platform release determinism defect exposed during independent Windows owner acceptance. The exact same 56-file manifest was reproduced locally and in Ubuntu CI, but DEFLATE ZIP bytes differed by platform. PR #82 switched canonical release entries to `ZIP_STORED`, made the verifier enforce compression method/timestamp/creator-system/mode, and added canonical + Ubuntu + Windows byte-equality evidence as a Release Gate dependency. Final exact PR head `af309e8c668e9def7d94e533f1c553b1b937eae6` passed **40/40 checks** and squash-merged as `c1f70164ebcd13fc6e7a5d3c70830a9070ecf898`; the merge tree is identical to the certified PR tree. Post-merge `main` passed **39/39 checks**. The current canonical package is **56 files**, SHA-256 `24efa28f2803976f4f9437d6b66e55922c26c13143ea291634db31b8506ffd63`, identical across canonical Ubuntu, explicit Ubuntu and explicit Windows builds. No production plugin runtime/package-source file changed.
 
+PR #84 closed B-X1, the first-party malformed `woocommerce_upayments_settings` fault found by the fresh-clone owner acceptance. The production patch is a narrow fail-closed `is_array()` boundary in the retained `enableUpaymentsGateway()` filter. Permanent regression coverage proves malformed-state storage preservation and unrelated COD availability and executes against the exact packaged ZIP in both legacy and HPOS. Exact head `199d4a4f2f17cd982b2c869c9ef6eee794c05fd1` passed **40/40 checks** and squash-merged as `902c23caad1461e63c816fdc5252855d9dc4f9e4`; the merge tree is identical to the reviewed PR tree and post-merge `main` passed **39/39 checks**. The canonical package remains **56 files**, SHA-256 `90ac844d37938e5cbb7e9a9ee3e8923b904bf8cf978c62adf2a8994a4b7462ce`. Owner re-acceptance remains mandatory.
+
 ## Repository state
 
-The owner deleted the final stale remote cleanup branch on 2026-09-08. After PR #77 merged and its branch auto-deleted, verified remote topology returned to:
+The owner deleted the final stale remote cleanup branch on 2026-09-08. After PR #84 merged and its hotfix branch auto-deleted, live GitHub verification again returned the remote topology to:
 
 ```text
 main
