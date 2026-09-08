@@ -9,8 +9,8 @@
 <h1 align="center">SUPCheckout for UPayments</h1>
 
 <p align="center">
-  WooCommerce payment integration for UPayments, engineered with deterministic releases,<br>
-  compatibility certification and payment-state safeguards.
+  WooCommerce payment gateway integration for UPayments with certified Classic and Blocks compatibility,<br>
+  deterministic releases and payment-state safeguards.
 </p>
 
 <p align="center">
@@ -34,15 +34,15 @@
   <a href="#compatibility">Compatibility</a> ·
   <a href="#security-and-payment-integrity">Security</a> ·
   <a href="docs/COMPATIBILITY.md">Certification</a> ·
-  <a href="SUPPORT.md">Support</a> ·
-  <a href="docs/project/OWNER-HANDOFF.md">Owner handoff</a>
+  <a href="#build-the-development-package">Development</a> ·
+  <a href="SUPPORT.md">Support</a>
 </p>
 
 ---
 
 ## Overview
 
-**SUPCheckout for UPayments** connects WooCommerce checkout to UPayments while keeping WooCommerce order state, provider verification and merchant-data compatibility explicit.
+**SUPCheckout for UPayments** connects WooCommerce checkout to UPayments while preserving WooCommerce order semantics, authenticated provider verification and merchant-data compatibility.
 
 SUPCheckout is intentionally **UPayments-specific**. Other payment providers belong in separate products/repositories; this codebase is not a generic payment-orchestration platform.
 

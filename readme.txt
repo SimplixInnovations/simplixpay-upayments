@@ -7,13 +7,13 @@ Stable tag: 0.1.0
 License: MIT
 License URI: https://opensource.org/license/mit/
 
-WooCommerce payment integration for merchants using UPayments.
+WooCommerce payment gateway integration for UPayments.
 
 == Description ==
 
 **SUPCheckout for UPayments** connects WooCommerce checkout to the UPayments payment service.
 
-The plugin is developed and maintained by Simplix Innovations. UPayments is the external payment provider used by the integration; its names and trademarks remain the property of their respective owners.
+SUPCheckout is developed and maintained by Simplix Innovations. UPayments is the external payment provider used by the integration; its names and trademarks remain the property of their respective owners.
 
 = Core capabilities =
 
