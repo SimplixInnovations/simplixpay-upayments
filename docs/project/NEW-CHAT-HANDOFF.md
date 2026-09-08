@@ -1,6 +1,10 @@
 # SUPCheckout for UPayments — Continuation Handoff
 
+**Mandatory first step for every new chat/session:** read [`START-HERE.md`](START-HERE.md) and verify live GitHub/source/check state before relying on this compact handoff.
+
 Use this file with root [`AGENTS.md`](../../AGENTS.md), [`PROJECT-STATUS.md`](PROJECT-STATUS.md), [`OWNER-HANDOFF.md`](OWNER-HANDOFF.md), [`NAMING-IDENTITY-STANDARD.md`](NAMING-IDENTITY-STANDARD.md), [`../COMPATIBILITY.md`](../COMPATIBILITY.md) and [`RELEASE-ENGINEERING.md`](RELEASE-ENGINEERING.md).
+
+Chat memory is never authority. If this file conflicts with live evidence or another living authority, stop and reconcile current truth first.
 
 ## Identity
 
@@ -32,10 +36,13 @@ The engineering program is pre-release but mature:
 - SUPCheckout identity/repository migration — **DONE / VERIFIED**
 - Final pre-clone runtime/QA closure — **DONE / VERIFIED**
 - Final enterprise repository audit — **DONE / VERIFIED — PR #77**
+- Approach 2 — **DONE / VERIFIED / CLOSED for owner acceptance**
 - Deterministic packaged release controls — **DONE / VERIFIED**
+- Owner technical acceptance — **pending on a fresh clone of final certified `main`**
+- Approach 3 architecture modernization — **not started; blocked until owner technical acceptance passes**
+- Full UI/UX / branding / broad launch testing — **deferred until after Approach 3**
 - Public tag / GitHub Release — **not created**
 - WordPress.org publication — **not performed**
-- Owner local acceptance — **pending on a fresh clone of final certified `main`**
 
 Do not invent Q20. New work uses named, bounded tasks.
 
@@ -124,6 +131,14 @@ The Main Rule must continue to require:
 
 with squash-only merging, linear history, deletion/non-fast-forward protection and no bypass actors.
 
+## Current program sequence
+
+The approved sequence is:
+
+`Approach 2 closed → fresh-clone owner technical acceptance → accepted baseline → Approach 3 architecture modernization → Approach 3 re-certification → full UI/UX/branding/accessibility/broad launch testing → explicit release decision.`
+
+Do **not** start Approach 3 before owner technical acceptance. Do **not** require final UI/UX or branding completion before Approach 3; those remain post-Approach-3 launch work unless fresh evidence proves an earlier blocker.
+
 ## Next owner action
 
 Before beginning owner acceptance, confirm the current `main` is fully green and the repository has returned to the required closed topology. Then:
@@ -132,9 +147,11 @@ Before beginning owner acceptance, confirm the current `main` is fully green and
 2. follow [`OWNER-HANDOFF.md`](OWNER-HANDOFF.md) exactly;
 3. run local Composer/standalone/H12 acceptance;
 4. build and verify the deterministic ZIP from final `origin/main`;
-5. perform disposable/staging WooCommerce smoke;
+5. perform bounded disposable/staging WooCommerce smoke;
 6. send complete command output and manual-smoke findings back for owner-acceptance review;
-7. choose the first public version and authorize publication separately.
+7. if accepted, begin Approach 3 as a new bounded architecture program;
+8. defer final UI/UX/branding/broad launch qualification until Approach 3 is re-certified;
+9. choose the first public version and authorize publication separately.
 
 ## Historical evidence rule
 

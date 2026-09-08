@@ -6,15 +6,26 @@ These instructions apply repository-wide. Nested instructions may tighten them b
 
 Before substantive work, read in this order:
 
-1. `docs/project/PROJECT-STATUS.md` — current verified state
-2. `docs/project/OWNER-HANDOFF.md` — fresh-clone/local/release sequence
-3. `docs/project/NAMING-IDENTITY-STANDARD.md` — canonical identity and protected IDs
-4. `docs/COMPATIBILITY.md` — public compatibility/evidence boundary
-5. `docs/project/NEW-CHAT-HANDOFF.md` — compact continuation context
-6. `docs/project/RELEASE-ENGINEERING.md` — deterministic package/migration contract
-7. `docs/project/ENTERPRISE-CERTIFICATION.md` — retained certification evidence
-8. relevant historical phase/quality records when touching their contracts
-9. `docs/project/BASELINE-H12.md` when token/saved-card/subscription identity is relevant
+1. `docs/project/START-HERE.md` — mandatory session bootstrap, program sequence and current operational gate
+2. `docs/project/PROJECT-STATUS.md` — current verified engineering state
+3. `docs/project/OWNER-HANDOFF.md` — fresh-clone/local/release sequence
+4. `docs/project/NAMING-IDENTITY-STANDARD.md` — canonical identity and protected IDs
+5. `docs/COMPATIBILITY.md` — public compatibility/evidence boundary
+6. `docs/project/NEW-CHAT-HANDOFF.md` — compact continuation context
+7. `docs/project/RELEASE-ENGINEERING.md` — deterministic package/migration contract
+8. `docs/project/ENTERPRISE-CERTIFICATION.md` — retained certification evidence
+9. relevant historical phase/quality records when touching their contracts
+10. `docs/project/BASELINE-H12.md` when token/saved-card/subscription identity is relevant
+
+### Session-bootstrap rule
+
+Never begin substantive work from chat memory, an old handoff message or a copied SHA alone.
+
+Every new chat, machine, clone, worktree or developer/AI-agent session must first follow `docs/project/START-HERE.md` and verify live GitHub/source/check state. If live evidence and a living document differ, stop and reconcile current truth before implementation or release claims.
+
+When program-level truth changes—owner acceptance state, Approach 3 authorization, release authorization, next substantive action or runtime-bearing baseline—update the living continuity/status authorities in the same bounded workstream.
+
+For every substantive active task, the open GitHub PR is the canonical task-level work ledger. Its body/comments/checks must make the work reconstructable from a new session by recording the base SHA, current exact head, scope/non-scope, current verification gate, blockers/failures, next action and merge-readiness evidence. `START-HERE.md` remains the program-level ledger; do not turn it into an append-only task diary.
 
 ## Canonical identity
 
@@ -63,6 +74,14 @@ Historical records may intentionally contain former product names, repository co
 ## Current engineering state
 
 Repository Foundation, Phase 0, Phase 9I, Provider Payment Lifecycle, Security Threat Model, Architecture A1-A5, Quality Platform Q1-Q19 and Enterprise Tasks 1-8 are **DONE / VERIFIED**.
+
+Approach 2 repository-wide enterprise audit/presentation closeout is **DONE / VERIFIED / CLOSED for owner acceptance**.
+
+The mandatory program sequence is:
+
+`Approach 2 closed → fresh-clone owner technical acceptance → accepted baseline → Approach 3 architecture modernization → Approach 3 re-certification → full UI/UX/branding/accessibility/broad launch testing → explicit release decision.`
+
+Approach 3 is **not authorized** until the owner technical-acceptance baseline passes. Final UI/UX, branding and exhaustive launch validation are intentionally deferred until after Approach 3 unless fresh evidence makes one an earlier blocker.
 
 The numbered Quality Platform is permanently closed at Q19. **Never invent Q20 for continuity.**
 
