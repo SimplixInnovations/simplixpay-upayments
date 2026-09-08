@@ -26,6 +26,19 @@ Fresh post-merge evidence:
 
 Later documentation/presentation-only descendants may advance `main` without changing this runtime baseline. Release decisions must always verify the exact current candidate.
 
+### Latest current-stack compatibility hardening
+
+The runtime-bearing baseline above remains unchanged because PR #80 changed no production plugin runtime/package-source file. PR #80 specifically strengthened current-stable PHP acceptance and the evidence required to support the matrix below:
+
+- final exact PR head: `717c34d16a5fdc5548b045751bdf53dbdb936a76`;
+- final PR result: **35/35 SUCCESS**, including Quality + H12 on PHP 8.5, **18/18 compatibility**, Release Gate and CodeQL;
+- deterministic package: **56 files**, SHA-256 `32776f23f02de2fa7be14a5c84ebdcddb9b2f2d348366deade826bca86e58da3`;
+- squash merge: `65e39c5da4fee6462e219bbb0ec21038f831c6b1`;
+- merged Git tree: **identical** to the certified PR-head tree;
+- post-merge `main`: **26/26 triggered checks SUCCESS**, including PHP 8.5 Quality/H12, Compatibility Gate and CodeQL.
+
+Release Gate did not trigger again on the post-merge push; its successful evidence belongs to the identical final PR tree. One PR migration job initially failed before migration execution because GitHub's artifact service returned HTTP 403; the same job was rerun successfully, after which Release Gate passed. No plugin or migration failure was waived.
+
 ## Platform matrix
 
 Every certified row uses a real WordPress/WooCommerce installation and exercises both legacy order storage and HPOS authoritative storage.
