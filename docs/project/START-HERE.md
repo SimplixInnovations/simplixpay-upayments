@@ -218,7 +218,7 @@ This table is the compact operational state. It is not a substitute for GitHub P
 | Latest current-stack QA hardening merge | `65e39c5da4fee6462e219bbb0ec21038f831c6b1` — PR #80 |
 | Expected active branch / PR outside temporary work | **None — verify live GitHub** |
 | Last retained full runtime/package evidence | **PR #77 post-merge: Quality #978, Compatibility #506, Release #454, Provider #397, WordPress.org #309, CodeQL #800** |
-| Latest current-stack QA/compatibility evidence | **PR #80 exact head `717c34d1…`: 35/35 SUCCESS incl. Release Gate; merge `65e39c5d…`: identical tree + 26/26 triggered post-merge checks; compatibility 18/18; ZIP unchanged at 56 files / SHA-256 `32776f23…e58da3`** |
+| Latest current-stack QA/compatibility evidence | **PR #80 exact head `717c34d16a5fdc5548b045751bdf53dbdb936a76`: 35/35 SUCCESS incl. Release Gate; merge `65e39c5da4fee6462e219bbb0ec21038f831c6b1`: identical tree + 26/26 triggered post-merge checks; compatibility 18/18; ZIP unchanged at 56 files / SHA-256 `32776f23f02de2fa7be14a5c84ebdcddb9b2f2d348366deade826bca86e58da3`** |
 | Source of live truth | **GitHub + exact source/check evidence** |
 
 ### Operational tracking model
