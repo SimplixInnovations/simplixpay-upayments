@@ -9,7 +9,6 @@
          failOnDeprecation="true"
          failOnNotice="true"
          failOnPhpunitDeprecation="true"
-         failOnPhpunitNotice="true"
          failOnPhpunitWarning="true">
     <testsuites>
         <testsuite name="SUPCheckout pure unit tests">
