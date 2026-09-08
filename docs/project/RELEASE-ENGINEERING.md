@@ -112,7 +112,9 @@ The builder/verifier requires:
 - no dependence on mutable worktree/staged-index state;
 - sorted archive paths;
 - fixed timestamps and file modes;
-- deterministic compression settings within the defined toolchain;
+- cross-platform deterministic ZIP container bytes using stored entries rather than environment-dependent DEFLATE output;
+- fixed timestamps, creator-system metadata and file modes enforced by the verifier;
+- Linux/Windows CI builds whose ZIP sidecars and per-file manifests must be byte-identical;
 - ZIP SHA-256 sidecar;
 - sorted per-file SHA-256 manifest;
 - explicit release-path allowlist;
@@ -249,7 +251,7 @@ CI artifacts are verification artifacts, not public releases.
 
 The latest runtime-bearing certified baseline is `1354b8e6f801a847a5fa9b5b657e77647384bdbc` (PR #75). Fresh post-merge evidence is Quality #958, Compatibility #486 (**16/16**), Release Artifact #434, Provider Sandbox #386, strict WordPress.org #289 and CodeQL/main-security #780 — all **SUCCESS**.
 
-Later documentation/presentation-only commits may legitimately change deterministic ZIP bytes without changing runtime behavior. Therefore this document does not freeze a package SHA for a moving pre-release documentation head. The authoritative package fingerprint for owner acceptance is the SHA-256 sidecar generated and verified from the exact final `origin/main` being accepted.
+Later documentation/presentation-only commits may legitimately change deterministic ZIP bytes between commits without changing runtime behavior. For one exact Git tree, however, Linux CI and Windows owner builds must reproduce the same ZIP SHA-256. A local sidecar that differs from exact-head CI is a release blocker, not an acceptable toolchain variation.
 
 Live repository topology, open PR/issue state and exact-head checks must be verified at the time of a release decision; historical `main`-only snapshots are not substitutes for current evidence.
 

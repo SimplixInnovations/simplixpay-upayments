@@ -82,6 +82,95 @@ jobs:
           if-no-files-found: error
           retention-days: 7
 
+  cross-platform-build:
+    name: Cross-platform build (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ env.RELEASE_SOURCE_SHA }}
+          fetch-depth: 0
+          persist-credentials: false
+
+      - uses: actions/setup-python@83679a892e2d95755f2dac6acb0bfd1e9ac5d548 # v6.1.0
+        with:
+          python-version: '3.14'
+
+      - uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # v2.37.2
+        with:
+          php-version: '8.5'
+          extensions: zip
+          coverage: none
+          tools: none
+
+      - name: Build and verify exact candidate
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          if ! command -v python3 >/dev/null 2>&1; then
+            SHIM_DIR="${TMPDIR:-/tmp}/supcheckout-python3-$"
+            mkdir -p "$SHIM_DIR"
+            cat > "$SHIM_DIR/python3" <<'EOF'
+          #!/usr/bin/env bash
+          exec python "$@"
+          EOF
+            chmod +x "$SHIM_DIR/python3"
+            export PATH="$SHIM_DIR:$PATH"
+          fi
+
+          python3 --version
+          rm -rf cross-platform-output cross-platform-evidence
+          mkdir -p cross-platform-output cross-platform-evidence
+          bash scripts/build-release.sh cross-platform-output
+          ZIP="$(find cross-platform-output -maxdepth 1 -type f -name 'supcheckout-*.zip' -print -quit)"
+          test -n "$ZIP"
+          bash scripts/verify-release.sh "$ZIP"
+          cp "$ZIP.sha256" "cross-platform-evidence/${RUNNER_OS}.zip.sha256"
+          MANIFEST="$(find cross-platform-output -maxdepth 1 -type f -name 'supcheckout-*.manifest.sha256' -print -quit)"
+          test -n "$MANIFEST"
+          cp "$MANIFEST" "cross-platform-evidence/${RUNNER_OS}.manifest.sha256"
+
+      - name: Upload cross-platform evidence
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: supcheckout-cross-platform-${{ runner.os }}-${{ env.RELEASE_SOURCE_SHA }}
+          path: cross-platform-evidence/
+          if-no-files-found: error
+          retention-days: 7
+
+  cross-platform-determinism:
+    name: Cross-platform deterministic release
+    needs: cross-platform-build
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Download Linux evidence
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: supcheckout-cross-platform-Linux-${{ env.RELEASE_SOURCE_SHA }}
+          path: linux
+
+      - name: Download Windows evidence
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: supcheckout-cross-platform-Windows-${{ env.RELEASE_SOURCE_SHA }}
+          path: windows
+
+      - name: Require byte-identical package evidence
+        shell: bash
+        run: |
+          set -euo pipefail
+          cat linux/Linux.zip.sha256
+          cat windows/Windows.zip.sha256
+          cmp linux/Linux.zip.sha256 windows/Windows.zip.sha256
+          cmp linux/Linux.manifest.sha256 windows/Windows.manifest.sha256
+
   packaged-runtime:
     name: Packaged WP 7.1 / WC 11.1.0 / PHP 8.3 / ${{ matrix.storage }}
     needs: artifact-build
@@ -352,18 +441,20 @@ jobs:
   release-gate:
     name: Release Gate
     if: ${{ always() }}
-    needs: [artifact-build, packaged-runtime, package-identity-migration]
+    needs: [artifact-build, cross-platform-determinism, packaged-runtime, package-identity-migration]
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
       - name: Require complete release certification
         env:
           ARTIFACT_RESULT: ${{ needs.artifact-build.result }}
+          CROSS_PLATFORM_RESULT: ${{ needs.cross-platform-determinism.result }}
           PACKAGED_RUNTIME_RESULT: ${{ needs.packaged-runtime.result }}
           PACKAGE_MIGRATION_RESULT: ${{ needs.package-identity-migration.result }}
         shell: bash
         run: |
           set -euo pipefail
           test "$ARTIFACT_RESULT" = "success"
+          test "$CROSS_PLATFORM_RESULT" = "success"
           test "$PACKAGED_RUNTIME_RESULT" = "success"
           test "$PACKAGE_MIGRATION_RESULT" = "success"

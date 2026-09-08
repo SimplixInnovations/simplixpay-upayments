@@ -117,6 +117,8 @@ wp --info
 py -3 --version
 ```
 
+On Windows, run release scripts with **Git for Windows Bash**, not WSL Bash, when the acceptance checkout is a Windows Git worktree. WSL cannot reliably resolve the Windows-path `.git` worktree pointer.
+
 Release scripts invoke `python3`. If Windows Git Bash exposes `py` but not `python3`, use a temporary shell-local shim:
 
 ```bash
@@ -212,12 +214,13 @@ Required:
 - build succeeds;
 - verifier succeeds;
 - calculated ZIP hash exactly matches the generated `.sha256` sidecar;
+- for the same exact Git tree, the local Windows/Linux owner artifact SHA-256 exactly matches the cross-platform CI artifact SHA-256;
 - package contains one `supcheckout/` root;
 - package includes `supcheckout/UPayments.php` and `readme.txt`;
 - package excludes development/tests/CI/docs/tooling according to `.distignore`;
 - package includes no secrets or local artifacts.
 
-The final local sidecar is authoritative for the exact final Git `HEAD`. Documentation changes can legitimately change the ZIP hash even when plugin runtime code is unchanged.
+The final local sidecar is authoritative only when it agrees with cross-platform CI for the same exact Git tree. Documentation changes can legitimately change the ZIP hash between different commits, but platform/toolchain variation must not change the ZIP hash for one commit.
 
 ## B5. Install only into disposable/staging WordPress
 
