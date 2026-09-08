@@ -85,23 +85,15 @@ Approach 3 is **not authorized** until the owner technical-acceptance baseline p
 
 The numbered Quality Platform is permanently closed at Q19. **Never invent Q20 for continuity.**
 
-Latest runtime-bearing certified baseline:
+Latest runtime-bearing **CI-certified main** (owner re-acceptance pending):
 
-`1354b8e6f801a847a5fa9b5b657e77647384bdbc`
+`902c23caad1461e63c816fdc5252855d9dc4f9e4`
 
-This is PR #75's squash merge from exact certified head `9474955e2d5438ccc9c0334b52dc0f72be557a86`.
+This is PR #84's squash merge from exact certified head `199d4a4f2f17cd982b2c869c9ef6eee794c05fd1`. The reviewed PR head passed **40/40 checks**; the byte-identical squash tree on `main` passed **39/39 post-merge checks**, including the permanent packaged-runtime B-X1 regression in legacy and HPOS and the required Release Gate. The canonical package remains **56 files**, SHA-256 `90ac844d37938e5cbb7e9a9ee3e8923b904bf8cf978c62adf2a8994a4b7462ce`.
 
-Fresh runtime evidence:
+Owner technical acceptance remains **NOT ACCEPTED** because the 2026-09-08 fresh-clone acceptance found B-X1 before this fix. B-X1 is now fixed and CI-certified on `main`, but only a new owner fresh-clone acceptance can establish the accepted baseline and unlock Approach 3.
 
-- Quality #958 — SUCCESS
-- H12 Regression Harness — SUCCESS
-- Compatibility #486 — 16/16 SUCCESS
-- Release Artifact #434 — SUCCESS
-- Provider Sandbox #386 — SUCCESS
-- WordPress.org #289 — SUCCESS / strict packaged Plugin Check
-- CodeQL/main-security #780 — SUCCESS
-
-PR #76 subsequently reconciled living project/owner documentation without changing plugin runtime behavior.
+PR #75 (`1354b8e6f801a847a5fa9b5b657e77647384bdbc`) remains a historical certified runtime milestone, not the current runtime-bearing main.
 
 The owner deleted the final stale remote branch before the final enterprise repository audit. Outside temporary active work, desired topology is **main only**.
 
