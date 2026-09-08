@@ -2,6 +2,8 @@
 
 This directory is the engineering control plane for **SUPCheckout for UPayments**.
 
+Every new AI-agent, developer, reviewer, owner or release session starts with [`START-HERE.md`](START-HERE.md). Chat history is context only; it is never a substitute for live repository verification.
+
 The governing rule is simple:
 
 > **Living documents own current truth; historical documents preserve milestone truth.**
@@ -12,23 +14,25 @@ Do not rewrite historical evidence merely to make old milestones look as though 
 
 For a new engineering or release session:
 
-1. [`../../AGENTS.md`](../../AGENTS.md) — repository-wide engineering, compatibility and merge rules
-2. [`PROJECT-STATUS.md`](PROJECT-STATUS.md) — current verified state
-3. [`OWNER-HANDOFF.md`](OWNER-HANDOFF.md) — fresh-clone, local-acceptance and release sequence
-4. [`NAMING-IDENTITY-STANDARD.md`](NAMING-IDENTITY-STANDARD.md) — canonical SUPCheckout identity and protected compatibility IDs
-5. [`../COMPATIBILITY.md`](../COMPATIBILITY.md) — public compatibility/certification boundary
-6. [`NEW-CHAT-HANDOFF.md`](NEW-CHAT-HANDOFF.md) — compact continuation context
-7. [`RELEASE-ENGINEERING.md`](RELEASE-ENGINEERING.md) — deterministic artifact and migration/release contract
-8. [`ENTERPRISE-CERTIFICATION.md`](ENTERPRISE-CERTIFICATION.md) — retained certification evidence
-9. [`MASTER-ENGINEERING-PLAYBOOK.md`](MASTER-ENGINEERING-PLAYBOOK.md) — broader permanent engineering discipline
-10. [`ARCHITECTURE-CODE-QUALITY.md`](ARCHITECTURE-CODE-QUALITY.md) — architecture and code-quality controls
-11. [`QUALITY-PLATFORM.md`](QUALITY-PLATFORM.md) — permanent closed Q1-Q19 record
-12. [`BASELINE-H12.md`](BASELINE-H12.md) — historical token/saved-card/subscription evidence anchors when needed
+1. [`START-HERE.md`](START-HERE.md) — mandatory session bootstrap, exact program sequence and operational gate
+2. [`../../AGENTS.md`](../../AGENTS.md) — repository-wide engineering, compatibility and merge rules
+3. [`PROJECT-STATUS.md`](PROJECT-STATUS.md) — current verified state
+4. [`OWNER-HANDOFF.md`](OWNER-HANDOFF.md) — fresh-clone, local-acceptance and release sequence
+5. [`NAMING-IDENTITY-STANDARD.md`](NAMING-IDENTITY-STANDARD.md) — canonical SUPCheckout identity and protected compatibility IDs
+6. [`../COMPATIBILITY.md`](../COMPATIBILITY.md) — public compatibility/certification boundary
+7. [`NEW-CHAT-HANDOFF.md`](NEW-CHAT-HANDOFF.md) — compact continuation context
+8. [`RELEASE-ENGINEERING.md`](RELEASE-ENGINEERING.md) — deterministic artifact and migration/release contract
+9. [`ENTERPRISE-CERTIFICATION.md`](ENTERPRISE-CERTIFICATION.md) — retained certification evidence
+10. [`MASTER-ENGINEERING-PLAYBOOK.md`](MASTER-ENGINEERING-PLAYBOOK.md) — broader permanent engineering discipline
+11. [`ARCHITECTURE-CODE-QUALITY.md`](ARCHITECTURE-CODE-QUALITY.md) — architecture and code-quality controls
+12. [`QUALITY-PLATFORM.md`](QUALITY-PLATFORM.md) — permanent closed Q1-Q19 record
+13. [`BASELINE-H12.md`](BASELINE-H12.md) — historical token/saved-card/subscription evidence anchors when needed
 
 ## Living current-state documents
 
 Reconcile these when verified project truth changes:
 
+- `START-HERE.md` — program-level phase/gate/next-action continuity;
 - `PROJECT-STATUS.md`
 - `OWNER-HANDOFF.md`
 - `NAMING-IDENTITY-STANDARD.md`
@@ -59,6 +63,7 @@ Do not bulk-rebrand these records. Preserve milestone facts.
 
 | Question | Authority |
 |---|---|
+| How must a new session bootstrap, and what program gate controls the next step? | `START-HERE.md` |
 | Where are we now? | `PROJECT-STATUS.md` |
 | What should the owner do next? | `OWNER-HANDOFF.md` |
 | What is the canonical name/slug/namespace/bootstrap? | `NAMING-IDENTITY-STANDARD.md` |
@@ -90,12 +95,13 @@ Existing provider/payment/persisted compatibility identities are not renamed mer
 ## Precedence
 
 1. Freshly verified live GitHub/source/provider evidence.
-2. `PROJECT-STATUS.md` for current engineering state.
-3. `OWNER-HANDOFF.md` for owner/local/release actions.
-4. `NAMING-IDENTITY-STANDARD.md` for identity.
-5. `docs/COMPATIBILITY.md` for public claims.
-6. `RELEASE-ENGINEERING.md` for artifact/migration/release mechanics.
-7. `AGENTS.md` / `MASTER-ENGINEERING-PLAYBOOK.md` for permanent engineering discipline.
-8. Historical records for milestone evidence only.
+2. `START-HERE.md` for session bootstrap, program sequencing and current operational gate.
+3. `PROJECT-STATUS.md` for current engineering state.
+4. `OWNER-HANDOFF.md` for owner/local/release actions.
+5. `NAMING-IDENTITY-STANDARD.md` for identity.
+6. `docs/COMPATIBILITY.md` for public claims.
+7. `RELEASE-ENGINEERING.md` for artifact/migration/release mechanics.
+8. `AGENTS.md` / `MASTER-ENGINEERING-PLAYBOOK.md` for permanent engineering discipline.
+9. Historical records for milestone evidence only.
 
 When documents appear inconsistent, first determine whether one is a historical snapshot. Never “fix” historical truth by rewriting it into current branding.
