@@ -162,7 +162,10 @@ release_assert(strpos($workflow, 'actions/upload-artifact@043fb46d1a93c77aae656e
 release_assert(strpos($workflow, 'actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c') !== false, 'artifact download action is immutably pinned');
 release_assert(strpos($workflow, 'os: [ubuntu-latest, windows-latest]') !== false, 'release workflow certifies Linux and Windows artifact construction');
 release_assert(strpos($workflow, 'name: Cross-platform deterministic release') !== false, 'release workflow compares cross-platform evidence');
-release_assert(strpos($workflow, 'cmp linux/Linux.zip.sha256 windows/Windows.zip.sha256') !== false, 'release workflow requires identical Linux/Windows ZIP hashes');
+release_assert(strpos($workflow, 'cmp "$CANONICAL_SIDECAR" linux/Linux.zip.sha256') !== false, 'release workflow binds Linux ZIP hash to canonical artifact');
+release_assert(strpos($workflow, 'cmp "$CANONICAL_SIDECAR" windows/Windows.zip.sha256') !== false, 'release workflow binds Windows ZIP hash to canonical artifact');
+release_assert(strpos($workflow, 'cmp "$CANONICAL_MANIFEST" linux/Linux.manifest.sha256') !== false, 'release workflow binds Linux manifest to canonical artifact');
+release_assert(strpos($workflow, 'cmp "$CANONICAL_MANIFEST" windows/Windows.manifest.sha256') !== false, 'release workflow binds Windows manifest to canonical artifact');
 release_assert(strpos($workflow, 'CROSS_PLATFORM_RESULT:') !== false, 'Release Gate consumes cross-platform determinism result');
 
 if ($version !== '') {

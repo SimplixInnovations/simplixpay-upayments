@@ -111,10 +111,9 @@ The builder/verifier requires:
 - distribution path set and bytes from exact Git `HEAD` tree/blobs;
 - no dependence on mutable worktree/staged-index state;
 - sorted archive paths;
-- fixed timestamps and file modes;
 - cross-platform deterministic ZIP container bytes using stored entries rather than environment-dependent DEFLATE output;
 - fixed timestamps, creator-system metadata and file modes enforced by the verifier;
-- Linux/Windows CI builds whose ZIP sidecars and per-file manifests must be byte-identical;
+- canonical, Linux and Windows CI builds whose ZIP sidecars and per-file manifests must be byte-identical;
 - ZIP SHA-256 sidecar;
 - sorted per-file SHA-256 manifest;
 - explicit release-path allowlist;
