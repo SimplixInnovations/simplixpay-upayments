@@ -6,7 +6,7 @@
 **Latest runtime-bearing certified baseline:** `1354b8e6f801a847a5fa9b5b657e77647384bdbc`
 **Public tag / GitHub Release / WordPress.org publication:** not yet created
 
-This document assumes the owner will create a **completely fresh local clone** after the final enterprise repository audit is merged. It does not authorize publication by itself.
+The final enterprise repository audit has merged and been post-merge certified. This document assumes the owner will now create a **completely fresh local clone** for independent acceptance. It does not authorize publication by itself.
 
 ## 1. Golden identity
 
@@ -314,7 +314,7 @@ A full accessibility certification remains separate evidence.
 
 # D. GitHub repository verification
 
-After the final audit merge, verify live GitHub state:
+Before local acceptance and any release decision, verify live GitHub state:
 
 - default branch: `main`;
 - remote branches: `main` only outside temporary active work;
@@ -350,7 +350,7 @@ Do not create a public tag, GitHub Release or WordPress.org submission until the
 
 ---
 
-# F. What to send back for final audit
+# F. What to send back for owner-acceptance review
 
 Provide the complete terminal output for:
 
