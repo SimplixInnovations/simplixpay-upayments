@@ -52,8 +52,8 @@ q1_assert(isset($composer['autoload-dev']['psr-4']['Simplixi\\SUPCheckout\\Tests
 q1_assert(isset($composer['config']['allow-plugins']) && $composer['config']['allow-plugins'] === false, 'Composer plugin execution is disabled');
 
 $required_dev = array(
-    'phpstan/phpstan' => '^2.2',
-    'phpunit/phpunit' => '^11.5',
+    'phpstan/phpstan' => '^2.2.13',
+    'phpunit/phpunit' => '^13.3',
     'squizlabs/php_codesniffer' => '^3.13.6',
     'wp-coding-standards/wpcs' => '^3.4.1',
 );
