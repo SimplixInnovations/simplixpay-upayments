@@ -8,6 +8,20 @@
 
 The final enterprise repository audit has merged and been post-merge certified. This document assumes the owner will now create a **completely fresh local clone** for independent acceptance. It does not authorize publication by itself.
 
+Before using this procedure in a new chat, machine, clone or session, read [`START-HERE.md`](START-HERE.md) and verify live GitHub/source/check state.
+
+## Program sequencing boundary
+
+This owner acceptance is the mandatory technical gate between closed **Approach 2** and future **Approach 3** architecture modernization.
+
+Approved sequence:
+
+`Approach 2 closed → fresh-clone owner technical acceptance → accepted baseline → Approach 3 → Approach 3 re-certification → full UI/UX/branding/accessibility/broad launch testing → explicit release decision.`
+
+Do **not** begin Approach 3 before this acceptance establishes the independent regression baseline.
+
+This acceptance is intentionally bounded. Final UI/UX, branding, broad accessibility certification and exhaustive launch testing do **not** have to be finished before Approach 3. They remain post-Approach-3 launch work unless fresh evidence shows an earlier blocker.
+
 ## 1. Golden identity
 
 Human-facing product:
@@ -332,7 +346,11 @@ Before local acceptance and any release decision, verify live GitHub state:
 
 ---
 
-# E. Release decision
+# E. Post-acceptance and release decision
+
+If the technical acceptance above passes, record the exact accepted Git SHA and local package checksum as the **Approach 2 owner-accepted baseline**. That acceptance authorizes planning/starting Approach 3; it does not authorize publication.
+
+Approach 3 must then be independently scoped, implemented and re-certified before the launch-facing UI/UX/branding/broad-validation program is treated as final.
 
 The repository may be engineering-ready while publication remains intentionally unapproved.
 
@@ -382,3 +400,14 @@ cat dist/supcheckout-0.1.0.zip.sha256
 ```
 
 Also provide a short manual-smoke report covering Classic, Blocks, HPOS/legacy where practical, sandbox success/decline/cancel, settings masking and browser/admin console errors.
+
+For the acceptance review, also state explicitly:
+
+- exact accepted `HEAD` / `origin/main` SHA;
+- generated ZIP SHA-256;
+- whether all required automated acceptance commands passed;
+- whether bounded merchant-facing smoke passed;
+- any environment limitation that prevented a requested check;
+- final verdict: **ACCEPTED BASELINE** or **NOT ACCEPTED**.
+
+Only **ACCEPTED BASELINE** unlocks Approach 3.
