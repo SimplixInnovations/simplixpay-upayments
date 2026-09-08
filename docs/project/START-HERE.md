@@ -115,9 +115,11 @@ Recorded post-merge evidence for that runtime/package-equivalent state includes:
 
 PR #78 then reconciled the living status/owner handoff only. Any future session must still verify the live current `main` and current checks rather than treating the evidence above as a substitute for freshness.
 
-PR #80 then hardened the **owner-acceptance and permanent current-PHP evidence layer** after fresh local PHP 8.5 acceptance exposed deprecated/stale test constructs. Its final exact head `717c34d16a5fdc5548b045751bdf53dbdb936a76` passed **35/35 checks**, including PHP 8.5 Quality, PHP 8.5 H12, the expanded **18/18** real compatibility matrix, Release Gate and CodeQL. It squash-merged as `65e39c5da4fee6462e219bbb0ec21038f831c6b1`. The merged Git tree is byte-identical to the certified PR-head tree; post-merge `main` then passed **26/26 triggered checks**, including PHP 8.5 Quality/H12, Compatibility Gate and CodeQL. Release Gate did not re-trigger on the post-merge push and must not be falsely reported as a post-merge run. PR #80 changed **no production plugin runtime/package-source file**. The deterministic package remained **56 files**, SHA-256 `32776f23f02de2fa7be14a5c84ebdcddb9b2f2d348366deade826bca86e58da3`.
+PR #80 then hardened the **owner-acceptance and permanent current-PHP evidence layer** after fresh local PHP 8.5 acceptance exposed deprecated/stale test constructs. Its final exact head `717c34d16a5fdc5548b045751bdf53dbdb936a76` passed **35/35 checks**, including PHP 8.5 Quality, PHP 8.5 H12, the expanded **18/18** real compatibility matrix, Release Gate and CodeQL. It squash-merged as `65e39c5da4fee6462e219bbb0ec21038f831c6b1`. The merged Git tree is byte-identical to the certified PR-head tree; post-merge `main` then passed **26/26 triggered checks**, including PHP 8.5 Quality/H12, Compatibility Gate and CodeQL. Release Gate did not re-trigger on the post-merge push and must not be falsely reported as a post-merge run. PR #80 changed **no production plugin runtime/package-source file**. The deterministic package at that historical packaging contract remained **56 files**, SHA-256 `32776f23f02de2fa7be14a5c84ebdcddb9b2f2d348366deade826bca86e58da3`.
 
-Owner technical acceptance is still **PENDING**. PR #80 strengthens the baseline that must now be independently accepted; it does not itself constitute owner acceptance.
+PR #82 then closed a release-engineering defect discovered by independent Windows owner acceptance: the exact same **56-file / 56-path per-file manifest** produced different DEFLATE ZIP bytes on Windows and Ubuntu. PR #82 replaced environment-dependent DEFLATE output with deterministic `ZIP_STORED` entries, strengthened ZIP metadata verification, and made Release Gate depend on canonical + Ubuntu + Windows artifact equality. Final exact PR head `af309e8c668e9def7d94e533f1c553b1b937eae6` passed **40/40 checks**. It squash-merged as `c1f70164ebcd13fc6e7a5d3c70830a9070ecf898`; the merge tree is byte-identical to the certified PR-head tree, and merged `main` passed **39/39 checks**, including the new cross-platform determinism gate and Release Gate. The canonical package is **56 files**, SHA-256 `24efa28f2803976f4f9437d6b66e55922c26c13143ea291634db31b8506ffd63`, reproduced identically by Ubuntu and Windows builds. PR #82 changed release tooling/control/test/docs only and no production plugin runtime/package-source file.
+
+Owner technical acceptance is still **PENDING**. PR #82 is the current release-engineering baseline that must now be independently accepted; it does not itself constitute owner acceptance.
 
 ## 5. Program sequence — mandatory current decision
 
@@ -215,10 +217,10 @@ This table is the compact operational state. It is not a substitute for GitHub P
 | Current program gate | **Fresh-clone owner technical acceptance** |
 | Next substantive action | Fresh clone + owner acceptance per `OWNER-HANDOFF.md` |
 | Runtime-bearing certified baseline | `1354b8e6f801a847a5fa9b5b657e77647384bdbc` |
-| Latest current-stack QA hardening merge | `65e39c5da4fee6462e219bbb0ec21038f831c6b1` — PR #80 |
+| Latest current-stack hardening merge | `c1f70164ebcd13fc6e7a5d3c70830a9070ecf898` — PR #82 |
 | Expected active branch / PR outside temporary work | **None — verify live GitHub** |
 | Last retained full runtime/package evidence | **PR #77 post-merge: Quality #978, Compatibility #506, Release #454, Provider #397, WordPress.org #309, CodeQL #800** |
-| Latest current-stack QA/compatibility evidence | **PR #80 exact head `717c34d16a5fdc5548b045751bdf53dbdb936a76`: 35/35 SUCCESS incl. Release Gate; merge `65e39c5da4fee6462e219bbb0ec21038f831c6b1`: identical tree + 26/26 triggered post-merge checks; compatibility 18/18; ZIP unchanged at 56 files / SHA-256 `32776f23f02de2fa7be14a5c84ebdcddb9b2f2d348366deade826bca86e58da3`** |
+| Latest current-stack release/QA evidence | **PR #82 exact head `af309e8c668e9def7d94e533f1c553b1b937eae6`: 40/40 SUCCESS incl. Release Gate + canonical/Linux/Windows equality; merge `c1f70164ebcd13fc6e7a5d3c70830a9070ecf898`: identical tree + 39/39 post-merge checks; compatibility remains 18/18; canonical ZIP 56 files / SHA-256 `24efa28f2803976f4f9437d6b66e55922c26c13143ea291634db31b8506ffd63`** |
 | Source of live truth | **GitHub + exact source/check evidence** |
 
 ### Operational tracking model

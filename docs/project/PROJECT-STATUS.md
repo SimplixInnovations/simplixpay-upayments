@@ -24,6 +24,7 @@
 | Repository-control/docs closeout | **DONE / VERIFIED — PR #76** |
 | Final enterprise repository audit | **DONE / VERIFIED — PR #77** |
 | Current-stable PHP acceptance hardening | **DONE / VERIFIED — PR #80; independent owner acceptance still pending** |
+| Cross-platform deterministic release hardening | **DONE / VERIFIED — PR #82; independent owner acceptance still pending** |
 | Approach 2 | **DONE / VERIFIED / CLOSED for owner acceptance** |
 | Continuity bootstrap / session authority | **ACTIVE — `START-HERE.md` is mandatory** |
 | Quality Platform Q1-Q19 | **DONE / VERIFIED — permanently closed at Q19** |
@@ -88,6 +89,8 @@ Documentation/control-plane descendants may advance `main` without changing the 
 PR #80 closed the fresh-owner-acceptance PHP 8.5 cleanliness gap without changing production plugin runtime/package-source files. Final certified PR head `717c34d16a5fdc5548b045751bdf53dbdb936a76` passed **35/35 checks**: PHP 8.5 Quality, PHP 8.5 H12 with emitted PHP deprecations/warnings/notices treated as failures, the expanded **18/18** compatibility matrix including PHP 8.5 legacy + HPOS, Release Gate and CodeQL. Its deterministic ZIP remained **56 files**, SHA-256 `32776f23f02de2fa7be14a5c84ebdcddb9b2f2d348366deade826bca86e58da3`.
 
 PR #80 squash-merged as `65e39c5da4fee6462e219bbb0ec21038f831c6b1`. GitHub verified that the merged tree is identical to the 35/35-certified PR-head tree. The merged `main` then passed **26/26 triggered checks**, including Quality/H12 on PHP 8.5, Compatibility Gate and CodeQL. Release Gate was successful on the identical PR tree but did not trigger again on the post-merge push. One migration job on the PR initially hit a GitHub artifact-service HTTP 403 before migration execution; a job-only rerun succeeded and Release Gate then passed. No product defect was waived.
+
+PR #82 closed a cross-platform release determinism defect exposed during independent Windows owner acceptance. The exact same 56-file manifest was reproduced locally and in Ubuntu CI, but DEFLATE ZIP bytes differed by platform. PR #82 switched canonical release entries to `ZIP_STORED`, made the verifier enforce compression method/timestamp/creator-system/mode, and added canonical + Ubuntu + Windows byte-equality evidence as a Release Gate dependency. Final exact PR head `af309e8c668e9def7d94e533f1c553b1b937eae6` passed **40/40 checks** and squash-merged as `c1f70164ebcd13fc6e7a5d3c70830a9070ecf898`; the merge tree is identical to the certified PR tree. Post-merge `main` passed **39/39 checks**. The current canonical package is **56 files**, SHA-256 `24efa28f2803976f4f9437d6b66e55922c26c13143ea291634db31b8506ffd63`, identical across canonical Ubuntu, explicit Ubuntu and explicit Windows builds. No production plugin runtime/package-source file changed.
 
 ## Repository state
 
@@ -157,6 +160,8 @@ Compatibility headers and public claims must not be broadened beyond real matrix
 Every release-sensitive candidate must preserve:
 
 - deterministic Git-HEAD-bound ZIP construction;
+- byte-identical canonical/Ubuntu/Windows ZIP output for the same exact Git tree;
+- `ZIP_STORED` entries plus fixed timestamp/creator-system/file-mode metadata;
 - ZIP SHA-256 sidecar;
 - per-file SHA-256 manifest;
 - source-byte/tamper verification;
@@ -167,7 +172,7 @@ Every release-sensitive candidate must preserve:
 - dependency audit where applicable;
 - CodeQL/security analysis.
 
-The exact package hash is intentionally generated from the final Git `HEAD`; documentation included in the distribution can change that hash without changing runtime code. For owner acceptance, the locally generated `.sha256` sidecar on the exact final `origin/main` is authoritative.
+The exact package hash is intentionally generated from the final Git `HEAD`; documentation included in the distribution can change that hash between commits without changing runtime code. For one exact Git tree, the local owner artifact must match the canonical/Ubuntu/Windows CI SHA-256. A platform-dependent hash difference is a release blocker.
 
 ## Security/payment invariants
 
