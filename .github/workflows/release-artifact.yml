@@ -268,6 +268,24 @@ jobs:
           SUPCHECKOUT_CERT_PHASE: verify
         run: /tmp/wp-cli.phar eval-file "$GITHUB_WORKSPACE/tests/integration/PluginActivationTest.php" --path="$RUNNER_TEMP/wordpress"
 
+      # B-X1 regression: the activation sentinel deliberately leaves a stdClass
+      # payload at woocommerce_upayments_settings. Reset to a clean canonical
+      # state BEFORE the malformed-gateway-settings regression runs, then
+      # exercise the live woocommerce_available_payment_gateways filter over
+      # each malformed shape and assert it fails closed without mutating
+      # storage. The verify phase ends by restoring the clean canonical
+      # state so every subsequent packaged-runtime test sees a configured,
+      # array-shaped settings option.
+      - name: Seed clean canonical gateway settings for B-X1 regression
+        env:
+          SUPCHECKOUT_CERT_PHASE: seed
+        run: /tmp/wp-cli.phar eval-file "$GITHUB_WORKSPACE/tests/integration/MalformedGatewaySettingsTest.php" --path="$RUNNER_TEMP/wordpress"
+
+      - name: Verify packaged malformed gateway settings fail closed
+        env:
+          SUPCHECKOUT_CERT_PHASE: verify
+        run: /tmp/wp-cli.phar eval-file "$GITHUB_WORKSPACE/tests/integration/MalformedGatewaySettingsTest.php" --path="$RUNNER_TEMP/wordpress"
+
       - name: Verify packaged release support metadata
         run: /tmp/wp-cli.phar eval-file "$GITHUB_WORKSPACE/tests/integration/ReleaseMetadataTest.php" --path="$RUNNER_TEMP/wordpress"
 
