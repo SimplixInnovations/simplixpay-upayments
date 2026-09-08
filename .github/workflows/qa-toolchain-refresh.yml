@@ -1,0 +1,46 @@
+name: QA Toolchain Lock Refresh
+
+on:
+  push:
+    branches:
+      - chore/qa-toolchain-2026-09
+
+permissions:
+  contents: read
+
+concurrency:
+  group: qa-toolchain-refresh-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  refresh-lock:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # v2.37.2
+        with:
+          php-version: '8.5'
+          coverage: none
+          tools: composer:2.10.3
+
+      - name: Resolve current supported QA dependencies
+        run: composer update phpunit/phpunit phpstan/phpstan --with-all-dependencies --no-interaction --prefer-dist --no-progress
+
+      - name: Validate resolved QA toolchain
+        run: |
+          composer validate --strict
+          composer audit --locked --no-interaction
+          composer quality
+
+      - name: Upload resolved Composer lock
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: qa-toolchain-lock-${{ github.sha }}
+          path: composer.lock
+          if-no-files-found: error
+          retention-days: 1
