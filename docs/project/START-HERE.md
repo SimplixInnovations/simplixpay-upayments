@@ -115,6 +115,10 @@ Recorded post-merge evidence for that runtime/package-equivalent state includes:
 
 PR #78 then reconciled the living status/owner handoff only. Any future session must still verify the live current `main` and current checks rather than treating the evidence above as a substitute for freshness.
 
+PR #80 then hardened the **owner-acceptance and permanent current-PHP evidence layer** after fresh local PHP 8.5 acceptance exposed deprecated/stale test constructs. Its final exact head `717c34d16a5fdc5548b045751bdf53dbdb936a76` passed **35/35 checks**, including PHP 8.5 Quality, PHP 8.5 H12, the expanded **18/18** real compatibility matrix, Release Gate and CodeQL. It squash-merged as `65e39c5da4fee6462e219bbb0ec21038f831c6b1`. The merged Git tree is byte-identical to the certified PR-head tree; post-merge `main` then passed **26/26 triggered checks**, including PHP 8.5 Quality/H12, Compatibility Gate and CodeQL. Release Gate did not re-trigger on the post-merge push and must not be falsely reported as a post-merge run. PR #80 changed **no production plugin runtime/package-source file**. The deterministic package remained **56 files**, SHA-256 `32776f23f02de2fa7be14a5c84ebdcddb9b2f2d348366deade826bca86e58da3`.
+
+Owner technical acceptance is still **PENDING**. PR #80 strengthens the baseline that must now be independently accepted; it does not itself constitute owner acceptance.
+
 ## 5. Program sequence — mandatory current decision
 
 The approved enterprise sequence is:
@@ -211,9 +215,10 @@ This table is the compact operational state. It is not a substitute for GitHub P
 | Current program gate | **Fresh-clone owner technical acceptance** |
 | Next substantive action | Fresh clone + owner acceptance per `OWNER-HANDOFF.md` |
 | Runtime-bearing certified baseline | `1354b8e6f801a847a5fa9b5b657e77647384bdbc` |
-| Last closed `main` entering this continuity task | `148296e5ac1f6a6748661781522e3a840a27d3de` |
+| Latest current-stack QA hardening merge | `65e39c5da4fee6462e219bbb0ec21038f831c6b1` — PR #80 |
 | Expected active branch / PR outside temporary work | **None — verify live GitHub** |
 | Last retained full runtime/package evidence | **PR #77 post-merge: Quality #978, Compatibility #506, Release #454, Provider #397, WordPress.org #309, CodeQL #800** |
+| Latest current-stack QA/compatibility evidence | **PR #80 exact head `717c34d1…`: 35/35 SUCCESS incl. Release Gate; merge `65e39c5d…`: identical tree + 26/26 triggered post-merge checks; compatibility 18/18; ZIP unchanged at 56 files / SHA-256 `32776f23…e58da3`** |
 | Source of live truth | **GitHub + exact source/check evidence** |
 
 ### Operational tracking model
