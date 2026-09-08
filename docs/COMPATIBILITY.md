@@ -32,6 +32,7 @@ Every certified row uses a real WordPress/WooCommerce installation and exercises
 
 | WordPress | WooCommerce | PHP | Legacy storage | HPOS |
 |---|---|---:|---|---|
+| 7.1 | 11.1.0 | 8.5 | **Verified** | **Verified** |
 | 7.1 | 11.1.0 | 8.4 | **Verified** | **Verified** |
 | 7.1 | 11.1.0 | 8.3 | **Verified** | **Verified** |
 | 7.0.4 | 11.1.0 | 8.3 | **Verified** | **Verified** |
@@ -41,7 +42,7 @@ Every certified row uses a real WordPress/WooCommerce installation and exercises
 | 6.9.7 | 10.8.1 | 8.3 | **Verified** | **Verified** |
 | 6.9.7 | 10.8.1 | 7.4 | **Verified** | **Verified** |
 
-WooCommerce 11.1 requires WordPress 7.0+, so WordPress 6.9 / WooCommerce 11.1 is intentionally excluded as upstream-invalid. PHP 7.4 is the supported compatibility floor, not a recommendation for new production deployments.
+WooCommerce 11.1 requires WordPress 7.0+, so WordPress 6.9 / WooCommerce 11.1 is intentionally excluded as upstream-invalid. PHP 7.4 is the supported compatibility floor, not a recommendation for new production deployments. The current-stable PHP branch is also certified on the current WordPress/WooCommerce stack; compatibility-only code required for the floor must not execute deprecated behavior on current PHP.
 
 Public metadata derived from this matrix:
 
@@ -109,7 +110,7 @@ The permanent evidence stack is intentionally layered:
 
 - Quality Platform Q1-Q19 historical regressions — **closed / retained**;
 - H12 PHP and Blocks regressions;
-- real 16-cell compatibility matrix;
+- real 18-cell compatibility matrix, including current-stable PHP 8.5 on legacy storage and HPOS;
 - deterministic release artifact builder/verifier;
 - packaged legacy/HPOS smoke;
 - historical package-root migration/rollback certification;

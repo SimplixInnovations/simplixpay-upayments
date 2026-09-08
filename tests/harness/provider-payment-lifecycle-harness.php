@@ -296,7 +296,9 @@ namespace {
     }
     function private_call($class, $method, array $args = array()) {
         $r = new \ReflectionMethod($class, $method);
-        $r->setAccessible(true);
+        if (\PHP_VERSION_ID < 80100) {
+            $r->setAccessible(true);
+        }
         return $r->invokeArgs(null, $args);
     }
 

@@ -98,6 +98,8 @@ $GLOBALS['__upay_test_state'] = [
     // process_payment call counter (so we can detect re-entrancy)
     'process_payment_calls' => 0,
     'uuid_counter' => 0,
+    // Optional one-shot concurrent user-meta fixture, consumed by add_user_meta().
+    'inject_user_meta_after_add' => null,
 ];
 
 function &upay_test_state() {
@@ -136,6 +138,7 @@ function upay_reset_state() {
         'bootstrap_call_count' => 0,
         'process_payment_calls' => 0,
         'uuid_counter' => 0,
+        'inject_user_meta_after_add' => null,
     ];
 }
 
@@ -226,6 +229,22 @@ function add_user_meta($user_id, $key, $value, $unique = false) {
     if ($unique && count($state['usermeta'][$user_id][$key]) > 0) return false;
     $state['usermeta'][$user_id][$key][] = $value;
     $state['usermeta_writes']++;
+
+    // One-shot race fixture: simulate a concurrent writer after the production
+    // insert but before production's authoritative readback. This is test-only
+    // state and deliberately does not increment the production write counter.
+    $injection = isset($state['inject_user_meta_after_add']) && is_array($state['inject_user_meta_after_add'])
+        ? $state['inject_user_meta_after_add']
+        : null;
+    if (is_array($injection)
+        && isset($injection['user_id'], $injection['key'], $injection['value'])
+        && $injection['user_id'] === $user_id
+        && $injection['key'] === $key
+    ) {
+        $state['usermeta'][$user_id][$key][] = $injection['value'];
+        $state['inject_user_meta_after_add'] = null;
+    }
+
     return true;
 }
 function update_user_meta($user_id, $key, $value, $prev_value = '') {

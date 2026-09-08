@@ -172,9 +172,9 @@ composer audit --locked
 composer quality
 ```
 
-Any failure is a release blocker until understood.
+Any failure is a release blocker until understood. First-party PHP/PHPUnit deprecations, notices and warnings are also blockers: the unit configuration must return a clean result with no reported issues on the current stable PHP quality lane. Do not suppress or baseline an issue merely to obtain a green acceptance result.
 
-Supported runtime floor is PHP 7.4. Older syntax-only checks do not broaden runtime certification.
+The owner should use the latest stable patch of the current PHP branch where practical. GitHub CI owns the exact current-stable quality lane and cross-version runtime matrix. Supported runtime floor is PHP 7.4; compatibility-only branches required for that floor must not execute deprecated behavior on current PHP. Older syntax-only checks do not broaden runtime certification.
 
 ## B3. High-value standalone contracts
 

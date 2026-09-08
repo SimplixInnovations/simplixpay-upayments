@@ -5,7 +5,11 @@
          cacheDirectory=".phpunit.cache"
          colors="true"
          failOnRisky="true"
-         failOnWarning="true">
+         failOnWarning="true"
+         failOnDeprecation="true"
+         failOnNotice="true"
+         failOnPhpunitDeprecation="true"
+         failOnPhpunitWarning="true">
     <testsuites>
         <testsuite name="SUPCheckout pure unit tests">
             <directory suffix="Test.php">tests/unit</directory>

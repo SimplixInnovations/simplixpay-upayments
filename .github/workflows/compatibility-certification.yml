@@ -29,6 +29,7 @@ jobs:
       matrix:
         cell:
           - current
+          - current-php85
           - current-php84
           - previous
           - floor-old-wc
@@ -42,6 +43,10 @@ jobs:
             wordpress: '7.1'
             woocommerce: '11.1.0'
             php: '8.3'
+          - cell: current-php85
+            wordpress: '7.1'
+            woocommerce: '11.1.0'
+            php: '8.5'
           - cell: current-php84
             wordpress: '7.1'
             woocommerce: '11.1.0'
