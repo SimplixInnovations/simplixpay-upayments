@@ -25,6 +25,8 @@ Every new chat, machine, clone, worktree or developer/AI-agent session must firs
 
 When program-level truth changes—owner acceptance state, Approach 3 authorization, release authorization, next substantive action or runtime-bearing baseline—update the living continuity/status authorities in the same bounded workstream.
 
+For every substantive active task, the open GitHub PR is the canonical task-level work ledger. Its body/comments/checks must make the work reconstructable from a new session by recording the base SHA, current exact head, scope/non-scope, current verification gate, blockers/failures, next action and merge-readiness evidence. `START-HERE.md` remains the program-level ledger; do not turn it into an append-only task diary.
+
 ## Canonical identity
 
 - Product: **SUPCheckout for UPayments**
