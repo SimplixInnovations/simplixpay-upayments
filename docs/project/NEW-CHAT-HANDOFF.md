@@ -31,10 +31,11 @@ The engineering program is pre-release but mature:
 - Enterprise Tasks 1-8 — **DONE / VERIFIED**
 - SUPCheckout identity/repository migration — **DONE / VERIFIED**
 - Final pre-clone runtime/QA closure — **DONE / VERIFIED**
+- Final enterprise repository audit — **DONE / VERIFIED — PR #77**
 - Deterministic packaged release controls — **DONE / VERIFIED**
 - Public tag / GitHub Release — **not created**
 - WordPress.org publication — **not performed**
-- Owner local acceptance — **pending after final enterprise-audit merge**
+- Owner local acceptance — **pending on a fresh clone of final certified `main`**
 
 Do not invent Q20. New work uses named, bounded tasks.
 
@@ -59,6 +60,8 @@ Fresh post-merge evidence:
 - CodeQL/main-security #780 — **SUCCESS**
 
 Later documentation/presentation-only commits may advance `main` without changing that runtime baseline. Always inspect live GitHub/source/CI before making a release claim.
+
+Final enterprise repository audit PR #77 certified exact head `4b00ef838f8da0a14d5963697d2584dcd6d82f4d` and squash-merged as GitHub-verified `bf4a46195013edb7699d5142f2c1400d99357fe2`. Fresh post-merge Quality #978, Compatibility #506 (**16/16**), Release Artifact #454, Provider Sandbox #397, strict WordPress.org #309 and CodeQL/main-security #800 all succeeded. The deterministic package remained 56 files with SHA-256 `32776f23f02de2fa7be14a5c84ebdcddb9b2f2d348366deade826bca86e58da3`.
 
 ## Protected compatibility identities
 
@@ -110,7 +113,7 @@ Automatic WooCommerce refunds and arbitrary marketplace multi-split are unsuppor
 
 ## Repository state rule
 
-The owner deleted the last stale remote branch before the final enterprise audit. Outside temporary active audit work, the desired topology is `main` only, with no open PRs/issues/tags/releases before publication.
+PR #77 completed the final enterprise repository audit and its branch auto-deleted. The verified closed repository topology is `main` only, with no open PRs/issues/tags/releases before publication. Any later temporary work branch must be scoped, reviewed and removed after merge.
 
 The Main Rule must continue to require:
 
@@ -123,14 +126,14 @@ with squash-only merging, linear history, deletion/non-fast-forward protection a
 
 ## Next owner action
 
-After the final enterprise-audit PR is merged and post-merge certified:
+Before beginning owner acceptance, confirm the current `main` is fully green and the repository has returned to the required closed topology. Then:
 
 1. create a completely fresh clone from `https://github.com/SimplixInnovations/supcheckout.git`;
 2. follow [`OWNER-HANDOFF.md`](OWNER-HANDOFF.md) exactly;
 3. run local Composer/standalone/H12 acceptance;
 4. build and verify the deterministic ZIP from final `origin/main`;
 5. perform disposable/staging WooCommerce smoke;
-6. send complete command output and manual-smoke findings back for final audit;
+6. send complete command output and manual-smoke findings back for owner-acceptance review;
 7. choose the first public version and authorize publication separately.
 
 ## Historical evidence rule
