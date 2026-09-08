@@ -141,7 +141,9 @@ function a2_assert_same($expected, $actual, $message) {
 
 function a2_call($object, $method, array $arguments = array()) {
     $reflection = new ReflectionMethod($object, $method);
-    $reflection->setAccessible(true);
+    if (\PHP_VERSION_ID < 80100) {
+        $reflection->setAccessible(true);
+    }
     return $reflection->invokeArgs($object, $arguments);
 }
 
