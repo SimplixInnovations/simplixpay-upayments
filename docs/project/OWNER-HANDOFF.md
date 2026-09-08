@@ -1,9 +1,9 @@
 # SUPCheckout for UPayments — Owner Handoff
 
-**Purpose:** authoritative fresh-clone, local-acceptance and release-decision sequence  
-**Canonical GitHub repository:** `SimplixInnovations/supcheckout`  
-**Development version:** `0.1.0`  
-**Latest runtime-bearing certified baseline:** `1354b8e6f801a847a5fa9b5b657e77647384bdbc`  
+**Purpose:** authoritative fresh-clone, local-acceptance and release-decision sequence
+**Canonical GitHub repository:** `SimplixInnovations/supcheckout`
+**Development version:** `0.1.0`
+**Latest runtime-bearing certified baseline:** `1354b8e6f801a847a5fa9b5b657e77647384bdbc`
 **Public tag / GitHub Release / WordPress.org publication:** not yet created
 
 This document assumes the owner will create a **completely fresh local clone** after the final enterprise repository audit is merged. It does not authorize publication by itself.
