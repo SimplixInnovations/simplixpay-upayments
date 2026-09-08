@@ -29,7 +29,7 @@
 | WordPress.org publication | **NOT PERFORMED** |
 | Owner local acceptance | **PENDING on a fresh clone after final audit merge** |
 
-The Quality Platform row above records the historical numbered program, which is permanently closed at Q19. No Q20 is justified. New work must use named, bounded engineering/release tasks rather than extending the historical numbered platform for continuity.
+Historical Quality Platform Q1-Q19 is the retained numbered engineering program and is permanently closed. No Q20 is justified. New work must use named, bounded engineering/release tasks rather than extending the historical numbered platform for continuity.
 
 ## Current certified runtime baseline
 
