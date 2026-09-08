@@ -125,17 +125,20 @@ Real WordPress qualification proved that directly renaming an already-active phy
 
 ## Final repository-admin closure
 
-Live GitHub state is reconciled: About/topics are correct; Main Rule requires `Governance`, `H12 Regression Harness`, `Compatibility Gate` and `Release Gate`; only `main` remains; no open PRs/issues/tags/releases exist. Latest runtime-bearing certified `main` is `bfadff34142a3a676258e8dc0774bd31287c0138` with Quality #927, Compatibility #455 (**16/16**), Release Artifact #404, Provider Sandbox #365, strict WordPress.org #262 and CodeQL #749 all **SUCCESS**. PR #71 made official packaged Plugin Check `strict: true`; the exact-main result reports no findings. The PR #71 runtime-baseline ZIP SHA-256 is `0436256b16605b9b2db91aa8a7865ecec6cae7ef00fa515048d9643e50ad990a` (74 files). The current documentation-reconciled package candidate, whose runtime is unchanged but whose distributed README is updated, has SHA-256 `ffdf69d55169e61bb64b1b8401f435bf4c6bbcfaced6750ad9a12cda4a6200ef` (74 files).
+PR #75 exact head `9474955e2d5438ccc9c0334b52dc0f72be557a86` completed the final pre-clone runtime/QA closure and squash-merged as GitHub-verified `1354b8e6f801a847a5fa9b5b657e77647384bdbc`. Fresh main evidence is Quality #958, Compatibility #486 (**16/16**), Release Artifact #434, Provider Sandbox #386, strict WordPress.org #289 and CodeQL/main-security #780 — all **SUCCESS**. The deterministic `supcheckout-0.1.0.zip` is 56 files with SHA-256 `e85ef026cf43f2254625c2fd1c97e328dc37581dfea4f058c59c0434b11a360d`.
+
+About/topics and the Main Rule remain correct. Protected UPayments/provider/persisted identities and both historical package roots remain intact. Public tags/releases/WordPress.org publication remain absent. Persistent remote topology after the runtime merge is `main` plus the known stale unprotected `hardening/deep-release-audit-cleanup` branch; the documentation closeout branch is temporary. Runtime-closeout open PRs/issues before this documentation PR were **0 / 0**.
 
 ## What remains
 
 Owner/admin/local sequence is controlled by `OWNER-HANDOFF.md`:
 
-1. verify local `origin` points directly to the canonical repository;
-2. run isolated local acceptance and real WooCommerce smoke;
-3. apply approved launch branding and visual/accessibility acceptance;
-4. explicitly choose the first public version;
-5. release/tag/WordPress.org only after exact-main verification and owner approval.
+1. after this documentation PR merges, delete the known stale `hardening/deep-release-audit-cleanup` remote branch only after verifying no owner work is needed;
+2. verify local `origin` points directly to the canonical repository and prune stale refs;
+3. run isolated local acceptance and real WooCommerce smoke against final `origin/main`;
+4. apply approved launch branding and visual/accessibility acceptance;
+5. explicitly choose the first public version;
+6. release/tag/WordPress.org only after exact-main verification and owner approval.
 
 ## External/manual and unsupported boundaries
 

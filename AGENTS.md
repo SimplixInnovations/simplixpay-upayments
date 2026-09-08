@@ -95,15 +95,15 @@ Post-rename coordinate closure:
 - squash merge: `05fec942cc8fbeb58cfd0bd41f0ef5fdb86f966f`;
 - post-merge Quality #901, Compatibility #429 (**16/16**), Release Artifact #378, Provider Sandbox #339, WordPress.org #236 and CodeQL #723 — **SUCCESS**;
 - PR #68 closeout state, before the documentation-only PR #69 opened, was `main` only with no open PRs/issues, tags or releases;
-- repository-admin state is fully reconciled: evidence-safe About/topics, strict four-check Main Rule, protective rules and `main`-only topology are verified; local acceptance/branding/publication remain owner actions.
+- at the PR #68 closeout, repository-admin state was fully reconciled with evidence-safe About/topics, the strict four-check Main Rule, protective rules and `main`-only topology; later hardening work created new temporary branches, so live topology must always be rechecked.
 
 
 
-Latest runtime-bearing certified repository baseline: `bfadff34142a3a676258e8dc0774bd31287c0138` — Quality #927, Compatibility #455 (**16/16**), Release Artifact #404, Provider Sandbox #365, strict WordPress.org #262 and CodeQL #749 all **SUCCESS**. The packaged Plugin Check gate is `strict: true` and the exact-main result contains no reported findings.
+Latest runtime-bearing certified repository baseline: `1354b8e6f801a847a5fa9b5b657e77647384bdbc` (PR #75 squash merge from certified head `9474955e2d5438ccc9c0334b52dc0f72be557a86`) — post-merge Quality #958, Compatibility #486 (**16/16**), Release Artifact #434, Provider Sandbox #386, strict WordPress.org #289 and CodeQL/main-security #780 all **SUCCESS**. The deterministic `supcheckout-0.1.0.zip` is 56 files with SHA-256 `e85ef026cf43f2254625c2fd1c97e328dc37581dfea4f058c59c0434b11a360d`; the packaged Plugin Check gate remains `strict: true`.
 
 Every future candidate must pass the permanent exact-head gates appropriate to its scope before merge or release.
 
-No public tag, GitHub Release or WordPress.org publication exists yet. Repository administration is complete; local owner acceptance, launch branding/visual acceptance and publication remain owner actions documented in `OWNER-HANDOFF.md`.
+No public tag, GitHub Release or WordPress.org publication exists yet. Repository controls are complete. One known stale unprotected remote branch, `hardening/deep-release-audit-cleanup`, remains for owner cleanup after the documentation closeout merges; local owner acceptance, launch branding/visual acceptance and publication remain owner actions documented in `OWNER-HANDOFF.md`.
 
 ## First-stable plugin identity
 
