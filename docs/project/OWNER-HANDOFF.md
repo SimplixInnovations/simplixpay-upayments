@@ -3,7 +3,9 @@
 **Purpose:** authoritative fresh-clone, local-acceptance and release-decision sequence
 **Canonical GitHub repository:** `SimplixInnovations/supcheckout`
 **Development version:** `0.1.0`
-**Latest runtime-bearing certified baseline:** `1354b8e6f801a847a5fa9b5b657e77647384bdbc`
+**Latest runtime-bearing CI-certified main:** `902c23caad1461e63c816fdc5252855d9dc4f9e4`
+**Owner technical acceptance:** **NOT ACCEPTED on 2026-09-08; B-X1 is fixed by PR #84, fresh-clone re-acceptance is required**
+**Canonical package at the PR #84 runtime tree:** **56 files; SHA-256 `90ac844d37938e5cbb7e9a9ee3e8923b904bf8cf978c62adf2a8994a4b7462ce`**
 **Public tag / GitHub Release / WordPress.org publication:** not yet created
 
 The final enterprise repository audit has merged and been post-merge certified. This document assumes the owner will now create a **completely fresh local clone** for independent acceptance. It does not authorize publication by itself.
