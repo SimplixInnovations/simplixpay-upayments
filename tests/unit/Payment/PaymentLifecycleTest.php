@@ -190,7 +190,10 @@ final class PaymentLifecycleTest extends TestCase {
         );
 
         $method = new \ReflectionMethod(PaymentLifecycle::class, 'apply_captured');
-        $method->setAccessible(true);
+        // PHP < 8.1 requires explicit reflection accessibility; PHP 8.1+ does not.
+        if (\PHP_VERSION_ID < 80100) {
+            $method->setAccessible(true);
+        }
         $result = $method->invoke(null, new \stdClass(), $order, $transaction);
 
         self::assertTrue($result);
@@ -214,7 +217,10 @@ final class PaymentLifecycleTest extends TestCase {
         );
 
         $method = new \ReflectionMethod(PaymentLifecycle::class, 'apply_captured');
-        $method->setAccessible(true);
+        // PHP < 8.1 requires explicit reflection accessibility; PHP 8.1+ does not.
+        if (\PHP_VERSION_ID < 80100) {
+            $method->setAccessible(true);
+        }
         $result = $method->invoke(null, new \stdClass(), $order, $transaction);
 
         self::assertFalse($result);
@@ -238,7 +244,10 @@ final class PaymentLifecycleTest extends TestCase {
         );
 
         $method = new \ReflectionMethod(PaymentLifecycle::class, 'apply_captured');
-        $method->setAccessible(true);
+        // PHP < 8.1 requires explicit reflection accessibility; PHP 8.1+ does not.
+        if (\PHP_VERSION_ID < 80100) {
+            $method->setAccessible(true);
+        }
 
         try {
             $method->invoke(null, new \stdClass(), $order, $transaction);
