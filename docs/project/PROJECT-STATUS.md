@@ -23,13 +23,29 @@
 | Final pre-clone runtime/QA closure | **DONE / VERIFIED — PR #75** |
 | Repository-control/docs closeout | **DONE / VERIFIED — PR #76** |
 | Final enterprise repository audit | **DONE / VERIFIED — PR #77** |
+| Approach 2 | **DONE / VERIFIED / CLOSED for owner acceptance** |
+| Continuity bootstrap / session authority | **ACTIVE — `START-HERE.md` is mandatory** |
 | Quality Platform Q1-Q19 | **DONE / VERIFIED — permanently closed at Q19** |
 | Enterprise Tasks 1-8 | **DONE / VERIFIED — historical evidence retained** |
+| Owner technical acceptance | **PENDING on a fresh clone of final certified `main`** |
+| Approach 3 architecture modernization | **NOT STARTED — blocked until owner technical acceptance passes** |
+| Full UI/UX / branding / broad launch testing | **DEFERRED until after Approach 3** |
 | Public Git tag / GitHub Release | **NOT CREATED** |
 | WordPress.org publication | **NOT PERFORMED** |
-| Owner local acceptance | **PENDING on a fresh clone of final certified `main`** |
 
 Historical Quality Platform Q1-Q19 is the retained numbered engineering program and is permanently closed. No Q20 is justified. New work must use named, bounded engineering/release tasks rather than extending the historical numbered platform for continuity.
+
+## Current program sequence
+
+The approved enterprise sequence is:
+
+`Approach 2 closed → fresh-clone owner technical acceptance → accept/freeze the exact baseline → Approach 3 architecture modernization → re-certify Approach 3 → full UI/UX/branding/accessibility/broad launch testing → explicit version/release decision.`
+
+This sequencing is mandatory because it preserves a clean regression boundary. If a defect appears during Approach 3, the team must be able to determine whether it existed on the independently accepted Approach 2 baseline or was introduced by modernization.
+
+The owner acceptance before Approach 3 is deliberately **technical and bounded**. It does not require completion of final UI/UX, branding, broad accessibility certification or exhaustive launch testing. Those remain real launch work, intentionally scheduled after Approach 3 unless fresh evidence makes one an earlier blocker.
+
+Every new session must start with [`START-HERE.md`](START-HERE.md) and verify live GitHub/source/check state before relying on this recorded status.
 
 ## Current certified runtime baseline
 
@@ -176,12 +192,15 @@ Automatic WooCommerce refunds and arbitrary marketplace multi-split remain unsup
 
 1. Create a **fresh clone** directly from `https://github.com/SimplixInnovations/supcheckout.git`.
 2. Verify the new clone is exact `origin/main` with no inherited local branches, worktrees, stashes or build residue.
-3. Run the isolated local acceptance suite in [`OWNER-HANDOFF.md`](OWNER-HANDOFF.md).
-4. Build and verify the deterministic `supcheckout-0.1.0.zip` from exact final `main`.
-5. Perform disposable/staging WooCommerce merchant-facing smoke, including Classic, Blocks, HPOS/legacy where practical and UPayments sandbox behavior.
-6. Complete launch-branding/visual/accessibility acceptance.
-7. Explicitly choose the first public version (`0.1.0` early release or a separately approved `1.0.0` first stable).
-8. Tag/release/submit to WordPress.org only after explicit owner approval.
+3. Run the isolated technical acceptance suite in [`OWNER-HANDOFF.md`](OWNER-HANDOFF.md).
+4. Build and verify the deterministic `supcheckout-0.1.0.zip` from that exact final `main`.
+5. Perform bounded disposable/staging WooCommerce smoke, including Classic, Blocks, HPOS/legacy where practical and UPayments sandbox behavior.
+6. Return the complete automated output and bounded manual-smoke evidence for owner-acceptance review.
+7. If that exact baseline is accepted, begin **Approach 3** as a separately scoped architecture-modernization program.
+8. Re-certify the completed Approach 3 result against the accepted baseline and all permanent payment/security/compatibility controls.
+9. Then complete full UI/UX, branding, accessibility, broad browser/device/theme/manual qualification and other launch-facing work.
+10. Explicitly choose the first public version (`0.1.0` early release or a separately approved `1.0.0` first stable).
+11. Tag/release/submit to WordPress.org only after explicit owner approval.
 
 ## Historical program anchors
 
