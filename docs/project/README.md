@@ -64,6 +64,7 @@ Do not bulk-rebrand these records. Preserve milestone facts.
 | Question | Authority |
 |---|---|
 | How must a new session bootstrap, and what program gate controls the next step? | `START-HERE.md` |
+| What substantive work is happening right now? | live open GitHub PR(s), then the `START-HERE.md` program ledger |
 | Where are we now? | `PROJECT-STATUS.md` |
 | What should the owner do next? | `OWNER-HANDOFF.md` |
 | What is the canonical name/slug/namespace/bootstrap? | `NAMING-IDENTITY-STANDARD.md` |
