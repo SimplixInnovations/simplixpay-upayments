@@ -1,8 +1,8 @@
 # SUPCheckout for UPayments — Project Status
 
-**Status document:** canonical living engineering state  
-**Last reconciled:** 2026-09-08  
-**Canonical repository:** `SimplixInnovations/supcheckout`  
+**Status document:** canonical living engineering state
+**Last reconciled:** 2026-09-08
+**Canonical repository:** `SimplixInnovations/supcheckout`
 **Development version:** `0.1.0`
 
 > Fresh repository/source/CI/provider evidence wins over recorded status. Historical documents preserve milestone truth and are not rewritten to match later branding.
