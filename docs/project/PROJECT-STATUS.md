@@ -23,6 +23,7 @@
 | Final pre-clone runtime/QA closure | **DONE / VERIFIED — PR #75** |
 | Repository-control/docs closeout | **DONE / VERIFIED — PR #76** |
 | Final enterprise repository audit | **DONE / VERIFIED — PR #77** |
+| Current-stable PHP acceptance hardening | **DONE / VERIFIED — PR #80; independent owner acceptance still pending** |
 | Approach 2 | **DONE / VERIFIED / CLOSED for owner acceptance** |
 | Continuity bootstrap / session authority | **ACTIVE — `START-HERE.md` is mandatory** |
 | Quality Platform Q1-Q19 | **DONE / VERIFIED — permanently closed at Q19** |
@@ -83,6 +84,10 @@ Fresh PR #77 post-merge evidence on exact `main`:
 - deterministic `supcheckout-0.1.0.zip` — SHA-256 `32776f23f02de2fa7be14a5c84ebdcddb9b2f2d348366deade826bca86e58da3`, **56 files**.
 
 Documentation/control-plane descendants may advance `main` without changing the runtime-bearing baseline. Live GitHub evidence is authoritative for the exact current commit.
+
+PR #80 closed the fresh-owner-acceptance PHP 8.5 cleanliness gap without changing production plugin runtime/package-source files. Final certified PR head `717c34d16a5fdc5548b045751bdf53dbdb936a76` passed **35/35 checks**: PHP 8.5 Quality, PHP 8.5 H12 with emitted PHP deprecations/warnings/notices treated as failures, the expanded **18/18** compatibility matrix including PHP 8.5 legacy + HPOS, Release Gate and CodeQL. Its deterministic ZIP remained **56 files**, SHA-256 `32776f23f02de2fa7be14a5c84ebdcddb9b2f2d348366deade826bca86e58da3`.
+
+PR #80 squash-merged as `65e39c5da4fee6462e219bbb0ec21038f831c6b1`. GitHub verified that the merged tree is identical to the 35/35-certified PR-head tree. The merged `main` then passed **26/26 triggered checks**, including Quality/H12 on PHP 8.5, Compatibility Gate and CodeQL. Release Gate was successful on the identical PR tree but did not trigger again on the post-merge push. One migration job on the PR initially hit a GitHub artifact-service HTTP 403 before migration execution; a job-only rerun succeeded and Release Gate then passed. No product defect was waived.
 
 ## Repository state
 
