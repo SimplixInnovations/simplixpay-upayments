@@ -1773,6 +1773,17 @@ function enableUpaymentsGateway($available_gateways)
 
         $settings = get_option("woocommerce_upayments_settings");
 
+        // Defensive boundary: the persisted gateway option may not be an array
+        // (migration residue, manual DB repair, partial upgrades, or any caller
+        // that stored a non-array value). The plugin does not rewrite the
+        // option, but this filter must still not crash the front-end on the
+        // raw persisted shape. A non-array is treated as "not configured" and
+        // the gateway is removed from the available set (fail-closed).
+        if (!is_array($settings)) {
+            unset($available_gateways["upayments"]);
+            return $available_gateways;
+        }
+
         if (empty($settings["api_key"])){
             unset($available_gateways["upayments"]);
         }

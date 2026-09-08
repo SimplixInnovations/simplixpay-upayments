@@ -209,7 +209,7 @@ This table is the compact operational state. It is not a substitute for GitHub P
 |---|---|
 | Program phase | **Owner technical acceptance preparation** |
 | Approach 2 | **DONE / VERIFIED / CLOSED** |
-| Owner technical acceptance | **PENDING** |
+| Owner technical acceptance | **NOT ACCEPTED on 2026-09-08 — first-party defect B-X1; owner re-acceptance required after the fix lands on `main`** |
 | Accepted owner baseline | **NONE YET** |
 | Approach 3 | **BLOCKED until owner technical acceptance passes** |
 | Full UI/UX / branding / broad launch testing | **DEFERRED until after Approach 3** |
@@ -218,7 +218,8 @@ This table is the compact operational state. It is not a substitute for GitHub P
 | Next substantive action | Fresh clone + owner acceptance per `OWNER-HANDOFF.md` |
 | Runtime-bearing certified baseline | `1354b8e6f801a847a5fa9b5b657e77647384bdbc` |
 | Latest current-stack hardening merge | `c1f70164ebcd13fc6e7a5d3c70830a9070ecf898` — PR #82 |
-| Expected active branch / PR outside temporary work | **None — verify live GitHub** |
+| Expected active branch / PR outside temporary work | **Branch `fix/malformed-gateway-settings-fail-closed` — verify live GitHub** |
+| Local fresh-clone owner acceptance (2026-09-08) | **NOT ACCEPTED — B-X1 (retained `UPayments.php` enableUpaymentsGateway filter crashes on non-array `woocommerce_upayments_settings`); owner re-acceptance required after the fix lands on `main`** |
 | Last retained full runtime/package evidence | **PR #77 post-merge: Quality #978, Compatibility #506, Release #454, Provider #397, WordPress.org #309, CodeQL #800** |
 | Latest current-stack release/QA evidence | **PR #82 exact head `af309e8c668e9def7d94e533f1c553b1b937eae6`: 40/40 SUCCESS incl. Release Gate + canonical/Linux/Windows equality; merge `c1f70164ebcd13fc6e7a5d3c70830a9070ecf898`: identical tree + 39/39 post-merge checks; compatibility remains 18/18; canonical ZIP 56 files / SHA-256 `24efa28f2803976f4f9437d6b66e55922c26c13143ea291634db31b8506ffd63`** |
 | Source of live truth | **GitHub + exact source/check evidence** |

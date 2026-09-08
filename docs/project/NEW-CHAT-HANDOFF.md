@@ -40,7 +40,7 @@ The engineering program is pre-release but mature:
 - Cross-platform deterministic release hardening — **DONE / VERIFIED — PR #82; owner acceptance itself remains pending**
 - Approach 2 — **DONE / VERIFIED / CLOSED for owner acceptance**
 - Deterministic packaged release controls — **DONE / VERIFIED**
-- Owner technical acceptance — **pending on a fresh clone of final certified `main`**
+- Owner technical acceptance — **NOT ACCEPTED on 2026-09-08 — first-party defect B-X1 in retained `UPayments.php` enableUpaymentsGateway filter; narrowly-bounded hotfix branch `fix/malformed-gateway-settings-fail-closed` open against `main`; owner re-acceptance required after that fix lands on `main`**
 - Approach 3 architecture modernization — **not started; blocked until owner technical acceptance passes**
 - Full UI/UX / branding / broad launch testing — **deferred until after Approach 3**
 - Public tag / GitHub Release — **not created**

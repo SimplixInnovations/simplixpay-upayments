@@ -29,7 +29,7 @@
 | Continuity bootstrap / session authority | **ACTIVE — `START-HERE.md` is mandatory** |
 | Quality Platform Q1-Q19 | **DONE / VERIFIED — permanently closed at Q19** |
 | Enterprise Tasks 1-8 | **DONE / VERIFIED — historical evidence retained** |
-| Owner technical acceptance | **PENDING on a fresh clone of final certified `main`** |
+| Owner technical acceptance | **NOT ACCEPTED on 2026-09-08 — first-party defect B-X1 in retained `UPayments.php` enableUpaymentsGateway filter; narrowly-bounded hotfix branch `fix/malformed-gateway-settings-fail-closed` open against `main`; owner re-acceptance required after that fix lands on `main`** |
 | Approach 3 architecture modernization | **NOT STARTED — blocked until owner technical acceptance passes** |
 | Full UI/UX / branding / broad launch testing | **DEFERRED until after Approach 3** |
 | Public Git tag / GitHub Release | **NOT CREATED** |
