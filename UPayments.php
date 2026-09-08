@@ -491,8 +491,9 @@ function woocommerceUpaymentsInit() {
 
             $request_args = array(
                 'method'      => $method,
-                'timeout'     => 15,
-                'redirection' => 0,
+                'timeout'             => 15,
+                'limit_response_size' => 1048576,
+                'redirection'         => 0,
                 'sslverify'   => true,
                 'user-agent'  => $this->getUserAgent(),
                 'headers'     => array(

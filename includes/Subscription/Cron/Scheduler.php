@@ -458,8 +458,9 @@ class Scheduler
             $request_url = $gateway->getAPIUrl('auto-deduct');
             $request_args = [
                 'method'      => 'POST',
-                'timeout'     => 15,
-                'redirection' => 0,
+                'timeout'             => 15,
+                'limit_response_size' => 1048576,
+                'redirection'         => 0,
                 'sslverify'   => true,
                 'user-agent'  => $gateway->getUserAgent(),
                 'headers'     => [
