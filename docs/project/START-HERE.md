@@ -204,24 +204,39 @@ This table is the compact operational state. It is not a substitute for GitHub P
 | Program phase | **Owner technical acceptance preparation** |
 | Approach 2 | **DONE / VERIFIED / CLOSED** |
 | Owner technical acceptance | **PENDING** |
+| Accepted owner baseline | **NONE YET** |
 | Approach 3 | **BLOCKED until owner technical acceptance passes** |
 | Full UI/UX / branding / broad launch testing | **DEFERRED until after Approach 3** |
 | Public release authorization | **NOT GRANTED** |
+| Current program gate | **Fresh-clone owner technical acceptance** |
 | Next substantive action | Fresh clone + owner acceptance per `OWNER-HANDOFF.md` |
 | Runtime-bearing certified baseline | `1354b8e6f801a847a5fa9b5b657e77647384bdbc` |
 | Last closed `main` entering this continuity task | `148296e5ac1f6a6748661781522e3a840a27d3de` |
-| Source of live truth | GitHub + exact source/check evidence |
+| Expected active branch / PR outside temporary work | **None — verify live GitHub** |
+| Last retained full runtime/package evidence | **PR #77 post-merge: Quality #978, Compatibility #506, Release #454, Provider #397, WordPress.org #309, CodeQL #800** |
+| Source of live truth | **GitHub + exact source/check evidence** |
+
+### Operational tracking model
+
+Use three layers of truth:
+
+1. **Program state — this file.** Phase, gates, accepted baseline, next program action and release authorization live here.
+2. **Active task state — the open GitHub PR.** Every substantive task PR must identify its base SHA, current exact head, scope/non-scope, current verification gate, blockers/failures, next action and evidence used for merge readiness. The open PR is the canonical active-work ledger for that task.
+3. **Durable history — merged PRs, commits, CI and retained project evidence.** Do not duplicate an endless event stream into this file.
+
+Therefore, when a future session asks “what is happening right now?”, it must inspect live branches/open PRs first. If an open task exists, read its PR body/comments/checks together with this program-level ledger. If none exists, the next action in this table controls.
 
 ### Ledger maintenance rule
 
 Update this table whenever one of these changes materially:
 
 - active program phase;
-- owner acceptance state;
+- owner acceptance state or accepted owner baseline;
 - Approach 3 state;
 - release authorization;
+- current program gate;
 - the next substantive action;
-- the runtime-bearing baseline.
+- the runtime-bearing baseline or retained full-stack evidence anchor.
 
 Do not append a forever-growing event log here. Durable event history belongs in PRs, commits, CI, project-status evidence and retained historical records.
 
