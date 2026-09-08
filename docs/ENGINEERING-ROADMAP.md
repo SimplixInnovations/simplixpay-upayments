@@ -127,15 +127,15 @@ Post-merge:
 - PR #68 closeout state before documentation-only PR #69 — **main only**, with open PRs/issues, tags and releases — **empty**
 
 
-## Final repository-admin closure
+## Historical repository-admin closure
 
-Repository/admin state is fully reconciled: canonical About/topics are correct, Main Rule requires all four aggregate/quality checks, protections remain intact, branch topology is `main` only, and no open PRs/issues/tags/releases exist.
+At the PR #68 coordinate-closure milestone, repository/admin state was reconciled with canonical About/topics, the four required Main Rule checks, protective rules, `main`-only topology and no open PRs/issues/tags/releases. That is historical milestone evidence, not a permanent assertion about whatever temporary review branch may exist later.
 
-Latest runtime-bearing certified `main`: `bfadff34142a3a676258e8dc0774bd31287c0138` with Quality #927, Compatibility #455 (**16/16**), Release Artifact #404, Provider Sandbox #365, strict WordPress.org #262 and CodeQL #749 all **SUCCESS**. PR #71 permanently ratcheted official packaged Plugin Check to `strict: true` and eliminated the previously reported warning surface without weakening protected compatibility identities.
+The latest runtime-bearing certified baseline is `1354b8e6f801a847a5fa9b5b657e77647384bdbc` from PR #75. Fresh post-merge evidence is Quality #958, Compatibility #486 (**16/16**), Release Artifact #434, Provider Sandbox #386, strict WordPress.org #289 and CodeQL/main-security #780 — all **SUCCESS**.
 
 ## Current owner/admin/local stage
 
-Engineering does not need another invented phase. Repository rename and obsolete-branch cleanup are complete. The remaining sequence is controlled by `docs/project/OWNER-HANDOFF.md`:
+Engineering does not need another invented numbered phase. Repository rename and obsolete persistent-branch cleanup are complete; temporary review branches remain normal during bounded work. The remaining owner sequence is controlled by `docs/project/OWNER-HANDOFF.md`:
 
 1. verify the owner's local `origin` points directly to `SimplixInnovations/supcheckout`;
 2. run isolated local owner acceptance from exact `origin/main`;

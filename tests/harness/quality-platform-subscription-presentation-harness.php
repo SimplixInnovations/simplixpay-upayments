@@ -130,10 +130,10 @@ q15_assert(q15_git_blob_sha($q15_root . '/includes/Subscription/Cron/CycleClaim.
 q15_assert(q15_contains($workflow, 'tests/harness/quality-platform-subscription-presentation-harness.php'), 'Q15 harness remains mandatory in Quality Gates');
 q15_assert(q15_contains($workflow, 'if: ${{ always() }}'), 'protected H12 aggregator still always runs');
 q15_assert(q15_contains($workflow, "reject_across_live_records 'CURRENT / Q14'"), 'Governance rejects stale current-Q14 markers');
-q15_assert(q15_contains($agents, 'quality-platform-subscription-presentation-harness.php'), 'root execution rules keep Q15 mandatory');
+q15_assert(q15_contains($agents, 'Quality Platform Q1-Q19 harnesses;'), 'AGENTS keeps the closed Quality Platform harness set mandatory');
 q15_assert(q15_contains($quality, 'Q16 is DONE / VERIFIED'), 'quality record advances beyond Q15');
-q15_assert(q15_contains($status, '| Quality Platform Q16 migration-core analysis | **DONE / VERIFIED** |'), 'project status advances beyond Q15');
-q15_assert((preg_match('/Quality Platform Q1-Q([0-9]+) are \\*\\*DONE \\/ VERIFIED\\*\\*\\./', $readme, $q15_readme_range_matches) === 1 && isset($q15_readme_range_matches[1]) && (int) $q15_readme_range_matches[1] > 15), 'README advances beyond Q15');
+q15_assert(q15_contains($status, '| Quality Platform Q1-Q19 | **DONE / VERIFIED — permanently closed at Q19** |'), 'project status records the closed Quality Platform Q1-Q19');
+q15_assert(q15_contains($readme, 'docs/project/PROJECT-STATUS.md'), 'README delegates current engineering state to project status');
 q15_assert(q15_contains($roadmap, 'Q17 payment-runtime checkout-orchestration/lifecycle'), 'roadmap names the finite Q17 closeout');
 q15_assert(q15_contains($quality, 'enterprise-critical risk'), 'quality record prohibits meaningless Q-sequence extension');
 

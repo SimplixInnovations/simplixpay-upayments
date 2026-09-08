@@ -117,8 +117,8 @@ namespace {
     );
     q18_assert(
         is_string($agents_source)
-        && strpos($agents_source, 'quality-platform-blocks-availability-harness.php') !== false,
-        'AGENTS keeps Q18 mandatory'
+        && strpos($agents_source, 'Quality Platform Q1-Q19 harnesses;') !== false,
+        'AGENTS keeps the closed Quality Platform harness set mandatory'
     );
 
     echo "\nQ18 Blocks Availability Enforcement: " . $pass . " PASS / " . $fail . " FAIL\n";

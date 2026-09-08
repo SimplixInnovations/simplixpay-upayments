@@ -9,24 +9,36 @@
 - Canonical maintainer account: `@SimplixInnovationsAdmin`
 - Contact: info@simplixi.com
 - Location: United Arab Emirates
-- Official WooCommerce Agency Partner profile: https://woocommerce.com/development-services/simplix-innovations-woocommerce-full-service-agency/232995338/
+- WooCommerce Agency Partner profile: https://woocommerce.com/development-services/simplix-innovations-woocommerce-full-service-agency/232995338/
 
-WooCommerce currently lists Simplix Innovations as a Woo Agency Partner. That external credential reflects the agency's broader WooCommerce practice; it is not an endorsement by WooCommerce or UPayments of this specific plugin.
+The WooCommerce Agency Partner listing reflects Simplix Innovations' broader WooCommerce practice. SUPCheckout product ownership, support, testing and release responsibility remain with Simplix Innovations.
 
 ## Responsibilities
 
-Simplix Innovations owns the modifications, release process, compatibility evidence, testing strategy, security response, documentation and support policy for **SUPCheckout for UPayments**.
+Simplix Innovations owns:
 
-UPayments remains responsible for its payment platform, merchant accounts, settlements, commercial services, API availability and official provider policies.
+- SUPCheckout source modifications and architecture decisions;
+- release packaging and publication decisions;
+- compatibility and regression evidence;
+- security response and coordinated fixes;
+- repository governance and documentation;
+- plugin support policy.
+
+UPayments remains responsible for its payment platform, merchant accounts, settlements, acquiring/commercial services, API availability and provider policies.
 
 ## Canonical authorship policy
 
-Canonical repository changes are reviewed and landed under the Simplix Innovations maintenance process. Automated systems such as Dependabot may open proposals, but bot-authored changes are not evidence of acceptance and should be independently reviewed before merge.
+Repository changes are reviewed and landed through the Simplix Innovations maintenance process. Automated systems such as Dependabot may open proposals, but automated authorship is never acceptance evidence by itself.
 
-Where a commit is intended to map to `SimplixInnovationsAdmin`, its author email must be associated with that GitHub account. `info@simplixi.com` is the desired Simplix engineering/business author address for locally authored commits once verified on the account.
+Where a locally authored commit is intended to map to `SimplixInnovationsAdmin`, its author email must be associated with that GitHub account. `info@simplixi.com` is the preferred Simplix engineering/business author address once verified on the account.
 
 ## Provenance
 
-The standalone canonical product history begins with a clean root. Complete historical upstream/fork engineering provenance is retained separately in `SimplixInnovations/upayments-woocommerce`, `UPSTREAM.md`, `NOTICE.md` and the archived H12 engineering changelog.
+The standalone SUPCheckout repository has its own canonical product history. Earlier upstream/fork engineering provenance remains auditable through:
+
+- `UPSTREAM.md`;
+- `NOTICE.md`;
+- `docs/history/H12-ENGINEERING-CHANGELOG.md`;
+- the preserved `SimplixInnovations/upayments-woocommerce` engineering archive.
 
 Canonical repository code ownership is defined in `.github/CODEOWNERS`.

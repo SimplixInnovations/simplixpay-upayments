@@ -7,71 +7,65 @@ Stable tag: 0.1.0
 License: MIT
 License URI: https://opensource.org/license/mit/
 
-Independent UPayments payment gateway integration for WooCommerce by Simplix Innovations.
+WooCommerce payment gateway integration for UPayments.
 
 == Description ==
 
-**SUPCheckout for UPayments** connects WooCommerce stores to the external UPayments payment service.
+**SUPCheckout for UPayments** connects WooCommerce checkout to the UPayments payment service.
 
-SUPCheckout is independently engineered and maintained by Simplix Innovations. UPayments is the payment provider and owner of its respective names and trademarks. This plugin does not imply endorsement or official distribution by UPayments, and it does not imply UPayments sponsorship or ownership of SUPCheckout.
+SUPCheckout is developed and maintained by Simplix Innovations. UPayments is the external payment provider used by the integration; its names and trademarks remain the property of their respective owners.
 
-The canonical technical slug and text domain are `supcheckout`. The word "for" is part of the human-facing product name only.
-
-= Current certified boundaries =
-
-The current release engineering program includes evidence for:
+= Core capabilities =
 
 * WooCommerce Classic checkout registration.
 * Cart / Checkout Blocks registration and availability.
-* WooCommerce HPOS and legacy order storage in the documented compatibility matrix.
+* HPOS and legacy order-storage support in the documented compatibility matrix.
 * Authenticated provider-status verification before financial order-state transitions.
-* Saved-card/token provenance and eligibility boundaries.
-* Subscription eligibility/pre-dispatch boundaries.
+* Saved-card/token provenance and eligibility safeguards.
+* Subscription eligibility and pre-dispatch safeguards.
 * One additional-merchant allocation boundary.
 * Deterministic release packaging and official WordPress Plugin Check against the packaged artifact.
 
-Payment-method and wallet availability depends on the merchant's UPayments account, provider configuration, plugin settings, checkout context, and provider/device eligibility.
+Payment-method and wallet availability depends on the merchant's UPayments account, provider configuration, plugin settings, checkout context and device/account eligibility.
 
-Automatic WooCommerce refunds and arbitrary marketplace multi-split routing are not supported by the current certified feature boundary. Live subscription auto-deduction requires separately validated provider setup and evidence.
+Automatic WooCommerce refunds and arbitrary marketplace multi-split routing are not supported by the current feature boundary. Live subscription auto-deduction requires separately validated provider/account setup and is not broadly certified by repository CI.
 
 = External service =
 
-This plugin communicates with UPayments APIs to initialize and verify payment operations and, when enabled and supported by the merchant's provider configuration, related payment features.
+SUPCheckout communicates with UPayments APIs to initialize and verify payment operations and, where enabled and supported by the merchant account, related payment features.
 
-Data sent to UPayments may include payment/order/customer information and provider-token data required for the selected API operation. The exact fields depend on the transaction and enabled feature.
+Depending on the operation, information sent to UPayments may include order, payment, customer and provider-token data required to process or verify the transaction. A UPayments merchant account and API credentials are required for production use.
 
-A UPayments merchant account and API credentials are required for production use.
+* UPayments developer documentation: https://developers.upayments.com/reference/overview
+* UPayments terms of service: https://upayments.com/en/terms-of-service
 
-* UPayments API documentation: https://developers.upayments.com/reference/overview
-* UPayments terms and policies: https://upayments.com/en/terms-of-service
-
-Do not use production credentials while performing initial test/sandbox validation.
+Use UPayments sandbox/test mode for initial validation. Do not place production credentials in test environments, issue reports or public logs.
 
 == Installation ==
 
 1. Install and activate WooCommerce.
 2. Install and activate SUPCheckout for UPayments.
-3. Open WooCommerce payment settings and configure your UPayments credentials and required gateway options.
-4. Validate the integration using UPayments sandbox/test mode before enabling production transactions.
-5. Confirm your UPayments account is enabled for any payment methods or wallet features you intend to offer.
+3. Open WooCommerce payment settings and configure the UPayments gateway.
+4. Validate checkout using UPayments sandbox/test mode.
+5. Confirm the merchant account is enabled for each payment method or wallet you intend to offer before enabling production transactions.
 
 == Frequently Asked Questions ==
 
 = Does SUPCheckout process payments itself? =
 
-No. SUPCheckout integrates WooCommerce with the external UPayments payment service. UPayments is the payment provider.
+No. SUPCheckout is the WooCommerce integration layer. Payment services are provided by UPayments.
 
-= Is this an official UPayments plugin? =
+= Who maintains SUPCheckout? =
 
-SUPCheckout is independently engineered and maintained by Simplix Innovations. It does not imply endorsement or official distribution by UPayments.
+Simplix Innovations develops and maintains SUPCheckout. UPayments remains responsible for its payment platform, merchant accounts, settlement, commercial services and provider policies.
 
 = Does every UPayments payment method automatically become available? =
 
-No. Availability depends on the merchant's UPayments account, provider configuration, plugin settings, checkout context, and the capabilities supported by the account/device.
+No. Availability depends on the merchant's UPayments account, provider configuration, plugin settings, checkout context and account/device eligibility.
 
 = Does SUPCheckout support WooCommerce Blocks and HPOS? =
 
-The current certified compatibility matrix includes Cart / Checkout Blocks registration/availability and both HPOS and legacy order storage in exact tested WordPress/WooCommerce/PHP cells.
+Yes within the documented certified matrix. Repository certification includes Cart / Checkout Blocks registration/availability plus HPOS and legacy order storage in exact WordPress/WooCommerce/PHP cells.
 
 = Are automatic WooCommerce refunds supported? =
 
@@ -79,7 +73,7 @@ No. Automatic WooCommerce refunds are outside the current supported feature boun
 
 = Does SUPCheckout support marketplace split payments? =
 
-The current certified boundary supports one additional merchant allocation only. Arbitrary multi-split marketplace routing is not supported.
+The current verified boundary supports one additional merchant allocation. Arbitrary marketplace multi-split routing is not supported.
 
 = Does SUPCheckout support subscription auto-deduction? =
 
@@ -87,13 +81,19 @@ Subscription eligibility and pre-dispatch behavior are covered by repository tes
 
 = Is WPML, WCML, multicurrency or RTL certified? =
 
-The source uses the canonical `supcheckout` text domain, but WPML/WCML, multicurrency, multilingual and RTL behavior require separate real-environment validation before those compatibility claims are made.
+Not currently. Those environments require separate real-world validation before compatibility is claimed.
+
+== Privacy ==
+
+SUPCheckout itself does not add an independent analytics or advertising service. Payment-related data is sent to UPayments only as required for enabled payment operations. Merchants remain responsible for configuring their store, privacy notices and UPayments account in accordance with applicable requirements.
+
+Do not expose merchant credentials, card data, customer tokens, private webhook payloads or unnecessary personal data in logs or support requests.
 
 == Changelog ==
 
 = 0.1.0 =
-* Pre-release SUPCheckout identity and release-engineering closeout.
+* Development-line SUPCheckout identity and release-engineering closeout.
 * Canonical package/text-domain identity: `supcheckout`.
-* Certified Classic and Blocks registration plus HPOS/legacy order-storage matrix.
-* Added deterministic package verification, legacy package-root migration/rollback certification, WordPress HTTP transport hardening, and permanent official WordPress Plugin Check gating.
-* Retained required historical UPayments payment/settings/token/subscription identifiers for compatibility rather than renaming persisted merchant data cosmetically.
+* Classic and Blocks registration plus HPOS/legacy order-storage certification matrix.
+* Deterministic package verification, historical package-root migration/rollback qualification, hardened WordPress HTTP transport and permanent official WordPress Plugin Check gating.
+* Historical UPayments payment/settings/token/subscription identifiers retained where required for merchant compatibility.

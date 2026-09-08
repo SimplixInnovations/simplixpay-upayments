@@ -94,8 +94,8 @@ jobs:
         run: |
           set -euo pipefail
           grep -Fq '<h1 align="center">SUPCheckout for UPayments</h1>' README.md
-          grep -Fq '| Canonical technical slug | `supcheckout` |' docs/project/PROJECT-STATUS.md
-          grep -Fq '| WordPress text domain | `supcheckout` |' docs/project/PROJECT-STATUS.md
+          grep -Fq '| Technical slug / text domain | `supcheckout` |' docs/project/PROJECT-STATUS.md
+          grep -Fq '| PHP namespace | `Simplixi\SUPCheckout` |' docs/project/PROJECT-STATUS.md
           grep -Fq '**Canonical GitHub repository:** `SimplixInnovations/supcheckout`' docs/project/OWNER-HANDOFF.md
           grep -Fq '`supcheckout/UPayments.php`' docs/project/PROJECT-STATUS.md
           grep -Fq 'No Q20 is justified.' docs/project/PROJECT-STATUS.md

@@ -1,12 +1,23 @@
 # Changelog
 
-- Final repository-control hardening: upgraded release artifact upload/download actions to current Node-24 generations, added stable `Compatibility Gate` and `Release Gate` aggregate contexts for branch-protection use, and reconciled the owner ruleset handoff. No plugin runtime/provider/persisted identity changed.
-
 All notable **SUPCheckout for UPayments** product changes are documented here.
 
 The project is still in pre-release engineering hardening. Entries below are engineering milestones and do not imply a merchant-facing stable release. The independent Simplix development line is `0.x`; `1.0.0` remains reserved for the first release that satisfies the stable-release gates.
 
 ## [Unreleased]
+
+### Final enterprise repository audit and presentation closeout
+
+- Rebuilt the public repository landing page around product capabilities, compatibility, security, development and support instead of migration-era notices and internal-program narrative.
+- Simplified WordPress.org, support, contribution, maintainer and provenance copy while retaining clear external-service, privacy, trademark and merchant-safety boundaries.
+- Removed eight unreferenced repository-only legacy screenshots; runtime wallet/payment assets remain because checkout resolves them directly or dynamically.
+- Reconciled living project-control documents and permanent quality contracts so current truth is owned by the designated authority documents rather than duplicated into the public README.
+- No production payment runtime, provider contract, persisted identity, package basename, development version, public tag, GitHub Release or WordPress.org publication is changed by this audit.
+
+### Repository-control hardening
+
+- Upgraded release artifact upload/download actions to current Node-24 generations, added stable `Compatibility Gate` and `Release Gate` aggregate contexts for branch-protection use, and reconciled the owner ruleset handoff. No plugin runtime/provider/persisted identity changed.
+
 
 ### Final pre-clone repository closure
 

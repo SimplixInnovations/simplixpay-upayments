@@ -1,7 +1,7 @@
 # SUPCheckout for UPayments — Historical Enterprise Foundation & Re-certification Context
 
 **Historical status:** TASKS 1–8 DONE / VERIFIED under the former pre-rebrand product identity
-**Current engineering state:** final SUPCheckout identity merged and post-merge certified; repository rename complete; public release pending
+**Current authoritative state:** see `PROJECT-STATUS.md`; this document preserves historical certification and re-certification evidence
 **Canonical GitHub repository:** `SimplixInnovations/supcheckout`
 **Canonical plugin/package slug:** `supcheckout`
 

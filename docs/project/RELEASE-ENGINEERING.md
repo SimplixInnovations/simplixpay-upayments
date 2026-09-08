@@ -247,7 +247,11 @@ These records remain historical truth. They are not rewritten to claim that old 
 
 CI artifacts are verification artifacts, not public releases.
 
-Repository-admin state is closed and verified on live GitHub: canonical metadata/topics, four required Main Rule checks, protective rules, `main`-only topology and zero open PRs/issues/tags/releases. Latest runtime-bearing certified `main` is `bfadff34142a3a676258e8dc0774bd31287c0138`, with Quality #927, Compatibility #455 (**16/16**), Release Artifact #404, Provider Sandbox #365, strict WordPress.org #262 and CodeQL #749 all **SUCCESS**. The PR #71 runtime-baseline `supcheckout-0.1.0.zip` is Git-HEAD-bound, 74 files, SHA-256 `0436256b16605b9b2db91aa8a7865ecec6cae7ef00fa515048d9643e50ad990a`; official packaged Plugin Check is strict and reports no findings. The current documentation-reconciled package candidate keeps the same runtime contract but updates distributed README bytes, so its deterministic SHA-256 is `ffdf69d55169e61bb64b1b8401f435bf4c6bbcfaced6750ad9a12cda4a6200ef` (74 files).
+The latest runtime-bearing certified baseline is `1354b8e6f801a847a5fa9b5b657e77647384bdbc` (PR #75). Fresh post-merge evidence is Quality #958, Compatibility #486 (**16/16**), Release Artifact #434, Provider Sandbox #386, strict WordPress.org #289 and CodeQL/main-security #780 — all **SUCCESS**.
+
+Later documentation/presentation-only commits may legitimately change deterministic ZIP bytes without changing runtime behavior. Therefore this document does not freeze a package SHA for a moving pre-release documentation head. The authoritative package fingerprint for owner acceptance is the SHA-256 sidecar generated and verified from the exact final `origin/main` being accepted.
+
+Live repository topology, open PR/issue state and exact-head checks must be verified at the time of a release decision; historical `main`-only snapshots are not substitutes for current evidence.
 
 Remaining owner/admin actions are controlled by `OWNER-HANDOFF.md`:
 
