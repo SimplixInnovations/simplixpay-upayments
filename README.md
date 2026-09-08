@@ -2,248 +2,109 @@
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset=".github/assets/simplix-innovations-logo-white.svg">
     <source media="(prefers-color-scheme: light)" srcset=".github/assets/simplix-innovations-logo-black.svg">
-    <img src=".github/assets/simplix-innovations-logo-black.svg" alt="Simplix Innovations" width="280">
+    <img src=".github/assets/simplix-innovations-logo-black.svg" alt="Simplix Innovations" width="260">
   </picture>
 </p>
 
 <h1 align="center">SUPCheckout for UPayments</h1>
 
-<p align="center"><strong>Independent UPayments payment gateway integration for WooCommerce</strong><br>engineered and maintained by <a href="https://simplixi.com">Simplix Innovations</a></p>
-
 <p align="center">
-  <a href="https://github.com/SimplixInnovations/supcheckout/actions/workflows/quality-gates.yml"><img alt="Quality Gates" src="https://github.com/SimplixInnovations/supcheckout/actions/workflows/quality-gates.yml/badge.svg?branch=main"></a>
-  <a href="LICENSE"><img alt="MIT License" src="https://img.shields.io/badge/License-MIT-2ea44f?style=flat-square"></a>
-  <a href="SECURITY.md"><img alt="Security Policy" src="https://img.shields.io/badge/Security-Private%20Reporting-2ea44f?style=flat-square"></a>
-  <img alt="Version 0.1.0" src="https://img.shields.io/badge/Version-0.1.0-2563eb?style=flat-square">
-  <img alt="Maturity: Pre-release" src="https://img.shields.io/badge/Maturity-Pre--release-f59e0b?style=flat-square">
+  WooCommerce payment integration for UPayments, engineered with deterministic releases,<br>
+  compatibility certification and payment-state safeguards.
 </p>
 
-> [!IMPORTANT]
-> **SUPCheckout for UPayments** is independently engineered and maintained by **Simplix Innovations**. UPayments is the external payment-service provider and owns its respective names and trademarks. This project does not imply UPayments endorsement, ownership or official distribution.
+<p align="center">
+  <a href="https://github.com/SimplixInnovations/supcheckout/actions/workflows/quality-gates.yml"><img alt="Quality Gates" src="https://img.shields.io/github/actions/workflow/status/SimplixInnovations/supcheckout/quality-gates.yml?branch=main&label=Quality&style=flat-square"></a>
+  <a href="https://github.com/SimplixInnovations/supcheckout/actions/workflows/compatibility-certification.yml"><img alt="Compatibility Certification" src="https://img.shields.io/github/actions/workflow/status/SimplixInnovations/supcheckout/compatibility-certification.yml?branch=main&label=Compatibility&style=flat-square"></a>
+  <a href="https://github.com/SimplixInnovations/supcheckout/actions/workflows/release-artifact.yml"><img alt="Release Artifact" src="https://img.shields.io/github/actions/workflow/status/SimplixInnovations/supcheckout/release-artifact.yml?branch=main&label=Release%20Artifact&style=flat-square"></a>
+  <a href="https://github.com/SimplixInnovations/supcheckout/actions/workflows/provider-sandbox-certification.yml"><img alt="Provider Sandbox" src="https://img.shields.io/github/actions/workflow/status/SimplixInnovations/supcheckout/provider-sandbox-certification.yml?branch=main&label=Provider%20Sandbox&style=flat-square"></a>
+  <a href="https://github.com/SimplixInnovations/supcheckout/actions/workflows/wordpress-org-submission-check.yml"><img alt="WordPress.org Submission Check" src="https://img.shields.io/github/actions/workflow/status/SimplixInnovations/supcheckout/wordpress-org-submission-check.yml?branch=main&label=Plugin%20Check&style=flat-square"></a>
+</p>
 
-> [!NOTE]
-> The canonical GitHub repository is `SimplixInnovations/supcheckout`. The final SUPCheckout identity migration is merged and post-merge certified; public release/version publication remains a separate owner decision.
+<p align="center">
+  <a href="LICENSE"><img alt="MIT License" src="https://img.shields.io/badge/License-MIT-2f6f52?style=flat-square"></a>
+  <img alt="Development version 0.1.0" src="https://img.shields.io/badge/Development-0.1.0-285e46?style=flat-square">
+  <img alt="WordPress 6.9 through 7.1" src="https://img.shields.io/badge/WordPress-6.9%E2%80%937.1-21759b?style=flat-square">
+  <img alt="WooCommerce 10.8 through 11.1" src="https://img.shields.io/badge/WooCommerce-10.8%E2%80%9311.1-96588a?style=flat-square">
+  <img alt="PHP 7.4, 8.3 and 8.4" src="https://img.shields.io/badge/PHP-7.4%20%7C%208.3%20%7C%208.4-777bb4?style=flat-square">
+</p>
 
-## What SUPCheckout is
+<p align="center">
+  <a href="#overview">Overview</a> ·
+  <a href="#compatibility">Compatibility</a> ·
+  <a href="#security-and-payment-integrity">Security</a> ·
+  <a href="docs/COMPATIBILITY.md">Certification</a> ·
+  <a href="SUPPORT.md">Support</a> ·
+  <a href="docs/project/OWNER-HANDOFF.md">Owner handoff</a>
+</p>
 
-**SUPCheckout is permanently UPayments-specific.** Other payment providers are developed as independent Simplix products/repositories, while any future cross-provider orchestration or fraud platform remains a separate project. This repository will not become a multi-provider runtime.
+---
 
-SUPCheckout connects WooCommerce checkout to UPayments while preserving WooCommerce order semantics, provider-authenticated payment truth and compatibility with historical merchant/payment data that must not be renamed merely for branding.
+## Overview
 
-The current engineering line includes:
+**SUPCheckout for UPayments** connects WooCommerce checkout to UPayments while keeping WooCommerce order state, provider verification and merchant-data compatibility explicit.
 
-- Classic WooCommerce checkout registration;
-- Cart / Checkout Blocks registration and availability;
-- HPOS and legacy order storage support in the certified matrix;
-- authenticated provider-status verification before financial state transitions;
-- saved-card/token provenance boundaries;
-- subscription eligibility/pre-dispatch boundaries;
-- one additional-merchant allocation boundary;
-- deterministic source-bound release packaging;
-- explicit legacy package-root → SUPCheckout package-root migration qualification;
-- official WordPress Plugin Check against the actual deterministic release package.
+SUPCheckout is intentionally **UPayments-specific**. Other payment providers belong in separate products/repositories; this codebase is not a generic payment-orchestration platform.
 
-## Current status
+### What is covered
 
-Quality Platform Q1-Q19 are **DONE / VERIFIED**. Enterprise Tasks 1-8 are **DONE / VERIFIED** and retained as historical evidence. Enterprise Release Candidate Closeout is **DONE / VERIFIED**. The numbered Quality Platform is permanently closed at Q19; no Q20 is justified.
-
-| Historical program | Status |
+| Capability | Repository status |
 |---|---|
-| Quality Platform Q1-Q19 | **DONE / VERIFIED** |
-| Enterprise Tasks 1-8 | **DONE / VERIFIED** |
+| WooCommerce Classic checkout | Verified |
+| Cart / Checkout Blocks registration and availability | Verified |
+| HPOS and legacy order storage | Verified in the certified matrix |
+| Authenticated provider-status verification | Verified |
+| Saved-card/token provenance boundaries | Verified |
+| Subscription eligibility and pre-dispatch safeguards | Verified |
+| One additional-merchant allocation | Verified boundary |
+| Deterministic ZIP, checksum and manifest | Permanent release gate |
+| Historical package-root migration/rollback | Permanent release gate |
+| Official WordPress Plugin Check on the packaged artifact | Strict gate |
+| Automatic WooCommerce refunds | Not supported |
+| Arbitrary marketplace multi-split | Not supported |
+| Live subscription auto-deduction | External/manual qualification required |
 
-The **SUPCheckout identity migration and first-party naming cleanup are DONE / VERIFIED**. No public stable tag, GitHub Release or WordPress.org publication has been created yet.
+Payment-method and wallet availability still depends on the merchant's UPayments account, provider configuration, plugin settings and device/account eligibility.
 
-| Area | Current position |
+## Compatibility
+
+The current certified matrix covers exact WordPress, WooCommerce, PHP and order-storage combinations rather than broad untested ranges.
+
+| Platform | Certified scope |
+|---|---|
+| WordPress | 6.9.x, 7.0.x and 7.1 cells |
+| WooCommerce | 10.8.x, 11.0.x and 11.1.x cells |
+| PHP | 7.4, 8.3 and 8.4 cells |
+| Order storage | Legacy + HPOS |
+| Checkout | Classic + Cart / Checkout Blocks registration/availability |
+
+See [`docs/COMPATIBILITY.md`](docs/COMPATIBILITY.md) for the exact evidence boundary and unsupported/external-manual cases.
+
+## Release status
+
+The repository is on development line **0.1.0**. A public Git tag, GitHub Release and WordPress.org publication have **not** been created yet.
+
+`main` is protected by required Quality, H12 Regression, Compatibility and Release gates. The release pipeline builds a deterministic package from Git `HEAD`, verifies its source bytes, exercises packaged WordPress/WooCommerce installs and runs the official WordPress Plugin Check against the unpacked artifact.
+
+Current engineering evidence belongs in [`docs/project/PROJECT-STATUS.md`](docs/project/PROJECT-STATUS.md); retained milestone evidence belongs in [`docs/project/ENTERPRISE-CERTIFICATION.md`](docs/project/ENTERPRISE-CERTIFICATION.md).
+
+## Technical identity
+
+| Surface | Canonical identity |
 |---|---|
 | Product | **SUPCheckout for UPayments** |
-| Product family | **SUPCheckout** |
-| Canonical GitHub repository | `SimplixInnovations/supcheckout` |
-| Technical slug | `supcheckout` |
+| Short name | **SUPCheckout** |
+| Repository / package slug | `supcheckout` |
 | WordPress text domain | `supcheckout` |
 | PHP namespace | `Simplixi\SUPCheckout` |
-| Development version | `0.1.0` |
-| Canonical package root | `supcheckout/` |
-| First-stable bootstrap | `UPayments.php` — qualified compatibility exception |
-| Canonical basename | `supcheckout/UPayments.php` |
-| Classic checkout | **Verified** |
-| Cart / Checkout Blocks | **Verified** |
-| HPOS | **Verified / declared compatible** |
-| WordPress | 6.9 series through 7.1 in exact certified cells |
-| WooCommerce | 10.8 series through 11.1 in exact certified cells |
-| PHP runtime | 7.4, 8.3 and 8.4 in exact certified cells |
-| Provider sandbox Charge initialization | **Verified — bounded** |
-| Deterministic ZIP/checksum/manifest | **Verified / permanent gate** |
-| Official Plugin Check | **Strict zero-warning/error gate on certified package** |
-| Automatic Woo refunds | **Unsupported** |
-| Arbitrary marketplace multi-split | **Unsupported** |
-| Stable public release | **Not yet published** |
+| Package root | `supcheckout/` |
+| First-stable bootstrap | `supcheckout/UPayments.php` |
 
-### Certification anchors
+The physical `UPayments.php` bootstrap is intentional. Real upgrade qualification showed that renaming an already-active plugin main file can strand WordPress's stored plugin basename. A future physical rename requires its own migration contract and evidence.
 
-Final SUPCheckout identity and repository-coordinate closure:
+Some UPayments-facing/persisted identities are also intentionally retained for merchant compatibility, including the gateway ID `upayments`, `woocommerce_upayments_settings`, callback identity `wc_upayments`, historical `_upay_*` metadata and related token/subscription state. See [`docs/project/NAMING-IDENTITY-STANDARD.md`](docs/project/NAMING-IDENTITY-STANDARD.md).
 
-- PR #67 certified head `0059f365883fa4edd6a2d623c7b370d38d3f565c` and squash merge `7547e59a2d5ef6d49b059851c6899a2d9987b16a`;
-- post-merge PR #67 Quality #896, Compatibility #424 (**16/16**), Release Artifact #373, Provider Sandbox #334, WordPress.org #231 and CodeQL #717 — **SUCCESS**;
-- repository renamed to `SimplixInnovations/supcheckout`;
-- coordinate-closure PR #68 exact head `0e6ef6334282a83a428da7ee793daa98360c2bcc` passed Quality #900, Compatibility #428 (**16/16**), Release Artifact #377, Provider Sandbox #338, WordPress.org #235 and CodeQL #722;
-- PR #68 squash-merged as `05fec942cc8fbeb58cfd0bd41f0ef5fdb86f966f`;
-- post-merge Quality #901, Compatibility #429 (**16/16**), Release Artifact #378, Provider Sandbox #339, WordPress.org #236 and CodeQL #723 — **SUCCESS**;
-- PR #68 closeout state, before documentation-only PR #69 opened, was `main` only with no open PRs/issues, tags or releases.
-
-
-Runtime-bearing SUPCheckout migration:
-
-- PR #58 certified head `5bf84dccb880733da45c1f922d43554af69a33dc`;
-- squash merge `6aabc4fcb0606567a11637ea07fe081fed4c7f85`;
-- post-merge Quality #764, Compatibility #292 (**16/16**), Release Artifact #243, Provider Sandbox #207, WordPress.org #101 and CodeQL #579 — **SUCCESS**.
-
-Documentation/control-plane closeout:
-
-- squash merge `9591c431e1eb56fe40ca60147afdf9f3f909a212`;
-- fresh main Quality #773, Compatibility #301 (**16/16**), Release Artifact #252, Provider Sandbox #216, WordPress.org #110 and CodeQL #588 — **SUCCESS**.
-
-Latest first-party naming cleanup:
-
-- PR #61 squash merge `efe937c67343242b7ccf3396a67b3cf2ce35ebac`;
-- remaining safe retired first-party runtime/control identifiers migrated to canonical SUPCheckout equivalents while protected UPayments/persisted contracts remained unchanged;
-- fresh main Quality #781, Compatibility #309 (**16/16**), Release Artifact #258, Provider Sandbox #221, WordPress.org #116 and CodeQL #595 — **SUCCESS**.
-
-Strict WordPress.org package hardening:
-
-- PR #71 exact head `a820b7feff765aa99e2321c6cc930baa57793fac` passed Quality #926, Compatibility #454 (**16/16**), Release Artifact #403, Provider Sandbox #364, strict WordPress.org #261 and CodeQL #748;
-- PR #71 squash-merged as `bfadff34142a3a676258e8dc0774bd31287c0138`;
-- post-merge Quality #927, Compatibility #455 (**16/16**), Release Artifact #404, Provider Sandbox #365, strict WordPress.org #262 and CodeQL #749 — **SUCCESS**;
-- official packaged Plugin Check is configured with `strict: true`; the exact-main result artifact reports `Success: Checks complete. No errors found.`;
-- deterministic `supcheckout-0.1.0.zip` on that exact main has SHA-256 `0436256b16605b9b2db91aa8a7865ecec6cae7ef00fa515048d9643e50ad990a` and 74 files.
-
-See [`docs/project/PROJECT-STATUS.md`](docs/project/PROJECT-STATUS.md) for the living state and [`docs/COMPATIBILITY.md`](docs/COMPATIBILITY.md) for the public evidence boundary.
-
-## Identity architecture
-
-The SUPCheckout rebrand deliberately separates **first-party product identity** from **provider/persisted compatibility identity**.
-
-### Canonical first-party identity
-
-- human name: **SUPCheckout for UPayments**;
-- technical slug/text domain: `supcheckout`;
-- namespace: `Simplixi\SUPCheckout`;
-- release package: `supcheckout-X.Y.Z.zip`;
-- package root: `supcheckout/`.
-
-The word **for** is human-facing relationship copy only and never appears in technical identifiers such as the slug, text domain, repository target or ZIP name.
-
-### Protected compatibility identities
-
-Do **not** mechanically rename these:
-
-- gateway/payment method ID `upayments`;
-- `woocommerce_upayments_settings`;
-- Blocks / Store API identity `upayments`;
-- callback `wc_upayments`;
-- historical `_upay_*` metadata;
-- provider-order identities such as `UPayments_order_id`;
-- `upayments_token_identity_secret_v2` and token provenance/scope/generation state;
-- `upay_process_subscriptions` and billing-attempt state;
-- historical order payment-method values.
-
-These are payment/merchant compatibility contracts, not stale branding residue.
-
-### Why `UPayments.php` remains
-
-Real WordPress upgrade qualification proved that deleting/renaming an already-active physical `UPayments.php` can strand WordPress's stored plugin basename. Therefore the first-stable SUPCheckout package intentionally uses:
-
-```text
-supcheckout/UPayments.php
-```
-
-A future physical rename to `supcheckout.php` requires a separately approved and tested migration. It is not an unfinished requirement for the first release.
-
-## Release artifact
-
-Build and verify the current development artifact with:
-
-```bash
-bash scripts/build-release.sh dist
-bash scripts/verify-release.sh dist/supcheckout-0.1.0.zip
-sha256sum dist/supcheckout-0.1.0.zip
-cat dist/supcheckout-0.1.0.zip.sha256
-```
-
-The release contract provides:
-
-- one `supcheckout/` ZIP root;
-- exact file set/bytes from Git `HEAD` under `.distignore`;
-- deterministic ordering/timestamps/modes;
-- ZIP SHA-256 sidecar;
-- sorted per-file SHA-256 manifest;
-- source-byte verification and tamper rejection;
-- real packaged WordPress/WooCommerce activation and order-storage smoke;
-- legacy-root → canonical-root migration/rollback qualification;
-- official WordPress Plugin Check against the unpacked deterministic package.
-
-Development/test/control files are excluded from the public package.
-
-## Repository administration
-
-Repository administration is closed and verified: canonical About/topics, strict four-check Main Rule, squash-only merging, deletion/non-fast-forward/linear-history protection, `main`-only branch topology, and no open PRs/issues/tags/releases. Latest runtime-bearing certified `main`: `bfadff34142a3a676258e8dc0774bd31287c0138` with Quality #927, Compatibility #455 (**16/16**), Release Artifact #404, Provider Sandbox #365, strict WordPress.org #262 and CodeQL #749 all green.
-
-## Local owner acceptance
-
-The authoritative local and owner-administration sequence is documented in:
-
-[`docs/project/OWNER-HANDOFF.md`](docs/project/OWNER-HANDOFF.md)
-
-It includes:
-
-1. verify local `origin` points directly to the canonical repository;
-2. isolated local Composer/H12/SUPCheckout quality acceptance;
-3. deterministic ZIP build/verification;
-4. disposable WordPress/WooCommerce install;
-5. Classic + Blocks + HPOS + bounded sandbox smoke;
-6. approved launch branding/visual/accessibility acceptance;
-7. explicit release/version and WordPress.org publication decision.
-
-## Compatibility and evidence boundaries
-
-Repository CI does **not** establish claims requiring external systems, commercial plugins, devices or organizational review. These remain external/manual unless separately certified:
-
-- production merchant payment completion;
-- Apple Pay / Google Pay / Samsung Pay completion on real eligible accounts/devices;
-- WPML/WCML, multilingual, multicurrency and RTL;
-- broad browser/device/theme/accessibility testing;
-- representative-store performance/load thresholds;
-- penetration testing, PCI or legal/compliance attestation;
-- UPayments webhook-signature trust until a stable documented verification contract exists;
-- live subscription auto-deduction.
-
-Automatic WooCommerce refunds and arbitrary marketplace multi-split remain unsupported.
-
-## Security and payment truth
-
-- Browser redirects and webhook bodies are not financial truth by themselves.
-- Paid state requires provider-authenticated verification and exact order/transaction/economic binding.
-- Non-idempotent Charge/refund/recurring operations are never blindly retried.
-- Checkout does not depend on third-party font/icon CDNs.
-- Uninstall is non-destructive by default.
-- Merchant secrets, card data and token/provenance secrets must never be exposed in diagnostics, browser output or CI logs.
-
-See [`SECURITY.md`](SECURITY.md), [`docs/project/PROVIDER-PAYMENT-LIFECYCLE.md`](docs/project/PROVIDER-PAYMENT-LIFECYCLE.md) and [`docs/project/SECURITY-THREAT-MODEL.md`](docs/project/SECURITY-THREAT-MODEL.md).
-
-## Engineering records
-
-- [`docs/project/PROJECT-STATUS.md`](docs/project/PROJECT-STATUS.md) — living canonical state
-- [`docs/project/OWNER-HANDOFF.md`](docs/project/OWNER-HANDOFF.md) — exact owner/admin/local/release checklist
-- [`docs/project/NAMING-IDENTITY-STANDARD.md`](docs/project/NAMING-IDENTITY-STANDARD.md) — canonical SUPCheckout identity and protected IDs
-- [`docs/COMPATIBILITY.md`](docs/COMPATIBILITY.md) — public compatibility/evidence matrix
-- [`docs/project/ENTERPRISE-CERTIFICATION.md`](docs/project/ENTERPRISE-CERTIFICATION.md) — enterprise and SUPCheckout certification evidence
-- [`docs/project/RELEASE-ENGINEERING.md`](docs/project/RELEASE-ENGINEERING.md) — deterministic artifact/migration contract
-- [`docs/project/QUALITY-PLATFORM.md`](docs/project/QUALITY-PLATFORM.md) — permanent historical Q1-Q19 record
-- [`docs/project/README.md`](docs/project/README.md) — control-document map and precedence
-
-Historical phase documents deliberately retain historical SimplixPay names/SHAs where those were true at the time. They are evidence, not current branding.
-
-## Development
+## Build the development package
 
 The production plugin has no runtime Composer dependency. Composer is development tooling only.
 
@@ -252,10 +113,64 @@ composer install --no-interaction --prefer-dist
 composer validate --strict
 composer audit --locked
 composer quality
+
+rm -rf dist
+bash scripts/build-release.sh dist
+bash scripts/verify-release.sh dist/supcheckout-0.1.0.zip
+sha256sum dist/supcheckout-0.1.0.zip
+cat dist/supcheckout-0.1.0.zip.sha256
 ```
 
-CI additionally owns the real compatibility matrix, deterministic packaged-runtime certification, provider sandbox qualification, official WordPress Plugin Check and CodeQL/security checks.
+The artifact contract provides:
+
+- one `supcheckout/` ZIP root;
+- exact distributable bytes sourced from Git `HEAD`;
+- deterministic ordering, timestamps and modes;
+- ZIP SHA-256 sidecar;
+- sorted per-file SHA-256 manifest;
+- source-byte verification and tamper rejection;
+- packaged legacy/HPOS activation and order-storage smoke;
+- historical package-root migration/rollback qualification.
+
+## Security and payment integrity
+
+SUPCheckout treats browser redirects and callback/webhook bodies as signals, not financial truth by themselves.
+
+- Paid state requires authenticated provider verification and exact order/transaction/economic binding.
+- Non-idempotent payment operations are not blindly retried.
+- Checkout does not rely on third-party font/icon CDNs.
+- Merchant secrets, card data and token/provenance secrets must not appear in diagnostics, browser output or CI logs.
+- Uninstall is non-destructive by default.
+
+Report suspected vulnerabilities privately using [`SECURITY.md`](SECURITY.md).
+
+## Engineering documentation
+
+| Document | Purpose |
+|---|---|
+| [`docs/project/PROJECT-STATUS.md`](docs/project/PROJECT-STATUS.md) | Current verified engineering state |
+| [`docs/COMPATIBILITY.md`](docs/COMPATIBILITY.md) | Public compatibility/certification boundary |
+| [`docs/project/OWNER-HANDOFF.md`](docs/project/OWNER-HANDOFF.md) | Fresh-clone, local acceptance and release sequence |
+| [`docs/project/NAMING-IDENTITY-STANDARD.md`](docs/project/NAMING-IDENTITY-STANDARD.md) | Canonical identity + protected compatibility IDs |
+| [`docs/project/RELEASE-ENGINEERING.md`](docs/project/RELEASE-ENGINEERING.md) | Deterministic package/release contract |
+| [`docs/project/SECURITY-THREAT-MODEL.md`](docs/project/SECURITY-THREAT-MODEL.md) | Security boundaries and threat-model evidence |
+| [`docs/project/ARCHITECTURE-CODE-QUALITY.md`](docs/project/ARCHITECTURE-CODE-QUALITY.md) | Architecture and code-quality controls |
+| [`docs/project/README.md`](docs/project/README.md) | Project-control document map and precedence |
+
+Historical records intentionally preserve former product names, repository coordinates and milestone SHAs when those were true at the time.
+
+## Support
+
+For reproducible plugin defects and compatibility reports, use GitHub Issues and follow [`SUPPORT.md`](SUPPORT.md). Security findings must use the private process in [`SECURITY.md`](SECURITY.md).
+
+Commercial WooCommerce engineering and production support are available through [Simplix Innovations](https://simplixi.com).
+
+## Service relationship and provenance
+
+SUPCheckout is developed and maintained by **Simplix Innovations** and integrates WooCommerce with the external **UPayments** payment service. UPayments names and trademarks remain the property of their respective owners.
+
+Source lineage, attribution and trademark boundaries are documented in [`NOTICE.md`](NOTICE.md) and [`UPSTREAM.md`](UPSTREAM.md).
 
 ## License
 
-MIT. See [`LICENSE`](LICENSE), [`NOTICE.md`](NOTICE.md) and [`UPSTREAM.md`](UPSTREAM.md).
+MIT. See [`LICENSE`](LICENSE).
