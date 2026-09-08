@@ -1,9 +1,9 @@
 # SUPCheckout Final Enterprise Repository Audit — Design Specification
 
-**Date:** 2026-09-08  
-**Status:** Approved design, pending implementation-plan approval gate  
-**Repository:** `SimplixInnovations/supcheckout`  
-**Baseline main:** `2f05e72dc96c9bd1dae977e7316023e1a8ea15d9`  
+**Date:** 2026-09-08
+**Status:** Approved design, pending implementation-plan approval gate
+**Repository:** `SimplixInnovations/supcheckout`
+**Baseline main:** `2f05e72dc96c9bd1dae977e7316023e1a8ea15d9`
 **Audit branch / PR:** `hardening/final-enterprise-repository-audit` / PR #77
 
 ## 1. Purpose
