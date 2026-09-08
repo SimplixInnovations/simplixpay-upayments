@@ -6,7 +6,7 @@
 $transport_calls = array();
 $transport_response = array('response' => array('code' => 201), 'body' => '{"ok":true}');
 
-final class SUCheckout_Transport_Error {}
+final class SUPCheckout_Transport_Error {}
 
 function wp_remote_request($url, $args = array()) {
     global $transport_calls, $transport_response;
@@ -14,7 +14,7 @@ function wp_remote_request($url, $args = array()) {
     return $transport_response;
 }
 function is_wp_error($value) {
-    return $value instanceof SUCheckout_Transport_Error;
+    return $value instanceof SUPCheckout_Transport_Error;
 }
 function wp_remote_retrieve_response_code($response) {
     return is_array($response) && isset($response['response']['code'])
@@ -27,7 +27,7 @@ function wp_remote_retrieve_body($response) {
 
 require __DIR__ . '/_bootstrap.php';
 
-class SUCheckout_Production_Transport_Testable extends WC_Upayments {
+class SUPCheckout_Production_Transport_Testable extends WC_Upayments {
     public function __construct() {}
     public function call_transport($route, $method, $body = null) {
         return parent::execute_upayments_request($route, $method, $body);
@@ -36,7 +36,7 @@ class SUCheckout_Production_Transport_Testable extends WC_Upayments {
         return 'https://sandboxapi.upayments.com/api/v1/' . ltrim((string) $route, '/');
     }
     public function getUserAgent() {
-        return 'SUCheckoutTransportTest/1';
+        return 'SUPCheckoutTransportTest/1';
     }
 }
 
@@ -61,11 +61,11 @@ sut_assert(
     'production gateway transport is WordPress HTTP API before behavioral dispatch'
 );
 if ($fail !== 0) {
-    echo "\nSUCheckout Production HTTP Transport: {$pass} PASS / {$fail} FAIL\n";
+    echo "\nSUPCheckout Production HTTP Transport: {$pass} PASS / {$fail} FAIL\n";
     exit(1);
 }
 
-$gateway = new SUCheckout_Production_Transport_Testable();
+$gateway = new SUPCheckout_Production_Transport_Testable();
 $gateway->apiKey = 'test-secret';
 
 $transport_calls = array();
@@ -80,7 +80,7 @@ if (isset($transport_calls[0])) {
     sut_assert(isset($args['timeout']) && (int) $args['timeout'] === 15, 'transport timeout remains bounded at 15 seconds');
     sut_assert(isset($args['redirection']) && (int) $args['redirection'] === 0, 'redirect following remains disabled');
     sut_assert(isset($args['sslverify']) && $args['sslverify'] === true, 'TLS certificate verification remains enabled');
-    sut_assert(isset($args['user-agent']) && $args['user-agent'] === 'SUCheckoutTransportTest/1', 'user agent is preserved');
+    sut_assert(isset($args['user-agent']) && $args['user-agent'] === 'SUPCheckoutTransportTest/1', 'user agent is preserved');
     sut_assert(isset($args['headers']['Accept']) && $args['headers']['Accept'] === 'application/json', 'Accept header is preserved');
     sut_assert(isset($args['headers']['Content-Type']) && $args['headers']['Content-Type'] === 'application/json', 'Content-Type header is preserved');
     sut_assert(isset($args['headers']['Authorization']) && $args['headers']['Authorization'] === 'Bearer test-secret', 'Bearer authorization is preserved');
@@ -100,7 +100,7 @@ sut_assert(!isset($transport_calls[0]['args']['body']), 'GET request sends no bo
 sut_assert($result['transport_ok'] === true && $result['http_status'] === 200, 'GET 200 succeeds');
 
 $transport_calls = array();
-$transport_response = new SUCheckout_Transport_Error();
+$transport_response = new SUPCheckout_Transport_Error();
 $result = $gateway->call_transport('charge', 'POST', '{}');
 sut_assert(count($transport_calls) === 1, 'WP_Error still represents one attempted request');
 sut_assert($result['transport_ok'] === false && $result['http_status'] === 0, 'WP_Error fails closed with zero HTTP status');
@@ -117,5 +117,5 @@ $result = $gateway->call_transport('charge', 'DELETE', null);
 sut_assert(count($transport_calls) === 0, 'unsupported HTTP method performs no request');
 sut_assert($result['transport_ok'] === false && $result['http_status'] === 0, 'unsupported HTTP method fails closed');
 
-echo "\nSUCheckout Production HTTP Transport: {$pass} PASS / {$fail} FAIL\n";
+echo "\nSUPCheckout Production HTTP Transport: {$pass} PASS / {$fail} FAIL\n";
 exit($fail === 0 ? 0 : 1);

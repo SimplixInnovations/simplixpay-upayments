@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<ruleset name="SimplixPay risk-focused foundation">
+<ruleset name="SUPCheckout risk-focused foundation">
     <description>Risk-focused WordPress security checks for the first pure-module quality tranche.</description>
 
     <arg name="extensions" value="php"/>

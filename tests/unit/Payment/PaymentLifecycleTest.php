@@ -161,23 +161,23 @@ final class PaymentLifecycleCompletionHookOrder {
 final class PaymentLifecycleTest extends TestCase {
     protected function setUp(): void {
         require_once dirname(__DIR__, 2) . '/support/wordpress-payment-runtime.php';
-        \simplixpay_test_reset_payment_runtime();
+        \supcheckout_test_reset_payment_runtime();
     }
 
     public function test_reconcile_rejects_noncanonical_order_ids_before_woo_lookup(): void {
         foreach (array("42\n", '42 ', '+42', '42.0', '4e1', '042', 42.0) as $invalid) {
-            \simplixpay_test_reset_payment_runtime();
+            \supcheckout_test_reset_payment_runtime();
 
             PaymentLifecycle::reconcile_order($invalid);
 
-            self::assertSame(array(), $GLOBALS['simplixpay_test_wc_get_order_calls'], var_export($invalid, true));
+            self::assertSame(array(), $GLOBALS['supcheckout_test_wc_get_order_calls'], var_export($invalid, true));
         }
     }
 
     public function test_reconcile_keeps_positive_integer_order_ids_compatible(): void {
         PaymentLifecycle::reconcile_order(42);
 
-        self::assertSame(array(42), $GLOBALS['simplixpay_test_wc_get_order_calls']);
+        self::assertSame(array(42), $GLOBALS['supcheckout_test_wc_get_order_calls']);
     }
 
     public function test_successful_payment_complete_hooks_observe_provider_capture_metadata(): void {

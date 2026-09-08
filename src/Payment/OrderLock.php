@@ -154,7 +154,7 @@ final class OrderLock {
         try {
             return bin2hex(random_bytes(16));
         } catch (\Throwable $e) {
-            return hash('sha256', uniqid('simplixpay-upay-lock-', true) . '|' . microtime(true));
+            return hash('sha256', uniqid('supcheckout-upay-lock-', true) . '|' . microtime(true));
         }
     }
 

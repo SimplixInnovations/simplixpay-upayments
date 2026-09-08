@@ -107,11 +107,11 @@ q5_assert(q5_contains($tests, "'failure extra key'" ) || q5_contains($tests, "'e
 q5_assert(q5_contains($tests, "'non-strict status'"), 'provider failure matrix covers non-boolean success');
 q5_assert(q5_contains($tests, "'malformed button'"), 'provider failure matrix covers invalid button flags');
 
-q5_assert(q5_contains($fixture, 'class SimplixPay_Test_Availability_WPDB'), 'unit fixture provides deterministic advisory-lock database');
+q5_assert(q5_contains($fixture, 'class SUPCheckout_Test_Availability_WPDB'), 'unit fixture provides deterministic advisory-lock database');
 q5_assert(q5_contains($fixture, "strpos(\$statement['query'], 'SELECT GET_LOCK(') === 0"), 'unit fixture executes advisory-lock acquisition semantics');
 q5_assert(q5_contains($fixture, "strpos(\$statement['query'], 'SELECT RELEASE_LOCK(') === 0"), 'unit fixture executes advisory-lock release semantics');
 q5_assert(q5_contains($fixture, 'function get_transient(') && q5_contains($fixture, 'function set_transient('), 'unit fixture provides deterministic transient persistence');
-q5_assert(q5_contains($option_fixture, 'simplixpay_test_update_option_result'), 'option fixture exposes deterministic gate-write failure');
+q5_assert(q5_contains($option_fixture, 'supcheckout_test_update_option_result'), 'option fixture exposes deterministic gate-write failure');
 q5_assert(q5_contains($analysis_stubs, 'public $prefix;'), 'analysis stubs declare the bounded wpdb prefix');
 q5_assert(q5_contains($analysis_stubs, 'function get_transient('), 'analysis stubs declare transient reads');
 q5_assert(q5_contains($analysis_stubs, 'function get_current_blog_id('), 'analysis stubs declare multisite lock scope');

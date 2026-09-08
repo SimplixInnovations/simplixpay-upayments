@@ -10,14 +10,14 @@ use UPayments\Token\CustomerTokenIdentity;
 
 final class MigrationPreflightTest extends TestCase {
     protected function setUp(): void {
-        \simplixpay_test_reset_migration_core();
+        \supcheckout_test_reset_migration_core();
     }
 
     public function test_invalid_inputs_fail_closed_before_history_access(): void {
         self::assertSame('invalid_user_id', MigrationPreflight::inspect(0, 'api-key', false)['reason']);
         self::assertSame('invalid_api_key', MigrationPreflight::inspect(1, '', false)['reason']);
         self::assertSame('invalid_test_mode', MigrationPreflight::inspect(1, 'api-key', 'no')['reason']);
-        self::assertSame(array(), $GLOBALS['simplixpay_test_status_orders']);
+        self::assertSame(array(), $GLOBALS['supcheckout_test_status_orders']);
     }
 
     public function test_fresh_user_is_clean_and_unscoped_legacy_history_is_migratable(): void {
@@ -25,7 +25,7 @@ final class MigrationPreflightTest extends TestCase {
         self::assertSame(MigrationPreflight::CLEAN, $fresh['classification']);
         self::assertSame('no_migration_required', $fresh['reason']);
 
-        $GLOBALS['simplixpay_test_status_orders'][10] = new \SimplixPay_Test_Migration_Core_Order(10, 1, '12345678');
+        $GLOBALS['supcheckout_test_status_orders'][10] = new \SUPCheckout_Test_Migration_Core_Order(10, 1, '12345678');
         $legacy = MigrationPreflight::inspect(1, 'api-key', false);
 
         self::assertSame(MigrationPreflight::MIGRATABLE, $legacy['classification']);
@@ -38,8 +38,8 @@ final class MigrationPreflightTest extends TestCase {
     }
 
     public function test_cross_user_token_conflict_remains_blocked(): void {
-        $GLOBALS['simplixpay_test_status_orders'][10] = new \SimplixPay_Test_Migration_Core_Order(10, 1, '12345678');
-        $GLOBALS['simplixpay_test_status_orders'][11] = new \SimplixPay_Test_Migration_Core_Order(11, 2, '12345678');
+        $GLOBALS['supcheckout_test_status_orders'][10] = new \SUPCheckout_Test_Migration_Core_Order(10, 1, '12345678');
+        $GLOBALS['supcheckout_test_status_orders'][11] = new \SUPCheckout_Test_Migration_Core_Order(11, 2, '12345678');
 
         $result = MigrationPreflight::inspect(1, 'api-key', false);
 
@@ -48,8 +48,8 @@ final class MigrationPreflightTest extends TestCase {
     }
 
     public function test_terminal_newline_order_identifier_is_rejected_as_indeterminate(): void {
-        $GLOBALS['simplixpay_test_status_orders'][10] = new \SimplixPay_Test_Migration_Core_Order(10, 1, '12345678');
-        $GLOBALS['simplixpay_test_migration_core']['order_ids_override'] = array("10\n");
+        $GLOBALS['supcheckout_test_status_orders'][10] = new \SUPCheckout_Test_Migration_Core_Order(10, 1, '12345678');
+        $GLOBALS['supcheckout_test_migration_core']['order_ids_override'] = array("10\n");
 
         $result = MigrationPreflight::inspect(1, 'api-key', false);
 
@@ -58,11 +58,11 @@ final class MigrationPreflightTest extends TestCase {
     }
 
     public function test_terminal_newline_generation_is_not_accepted_as_identity_context(): void {
-        $secret = \simplixpay_test_migration_secret();
-        $GLOBALS['simplixpay_test_options'][CustomerTokenIdentity::SECRET_OPTION] = $secret;
-        $GLOBALS['simplixpay_test_migration_core']['context_override'] = array(
+        $secret = \supcheckout_test_migration_secret();
+        $GLOBALS['supcheckout_test_options'][CustomerTokenIdentity::SECRET_OPTION] = $secret;
+        $GLOBALS['supcheckout_test_migration_core']['context_override'] = array(
             'state' => CustomerTokenIdentity::SECRET_VALID,
-            'scope' => \simplixpay_test_migration_scope('api-key', false, $secret),
+            'scope' => \supcheckout_test_migration_scope('api-key', false, $secret),
             'generation_id' => str_repeat('b', 32) . "\n",
         );
 

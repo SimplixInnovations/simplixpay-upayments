@@ -3,16 +3,16 @@
 namespace Simplixi\SUPCheckout\Payment;
 
 function time() {
-    return isset($GLOBALS['simplixpay_test_payment_runtime_time'])
-        ? (int) $GLOBALS['simplixpay_test_payment_runtime_time']
+    return isset($GLOBALS['supcheckout_test_payment_runtime_time'])
+        ? (int) $GLOBALS['supcheckout_test_payment_runtime_time']
         : \time();
 }
 
 function wp_generate_uuid4() {
-    $next = isset($GLOBALS['simplixpay_test_payment_runtime_uuid_sequence'])
-        ? (int) $GLOBALS['simplixpay_test_payment_runtime_uuid_sequence'] + 1
+    $next = isset($GLOBALS['supcheckout_test_payment_runtime_uuid_sequence'])
+        ? (int) $GLOBALS['supcheckout_test_payment_runtime_uuid_sequence'] + 1
         : 1;
-    $GLOBALS['simplixpay_test_payment_runtime_uuid_sequence'] = $next;
+    $GLOBALS['supcheckout_test_payment_runtime_uuid_sequence'] = $next;
 
     return sprintf('00000000-0000-4000-8000-%012x', $next);
 }
@@ -58,7 +58,7 @@ final class CheckoutOrchestratorGateway {
 final class CheckoutOrchestratorTest extends TestCase {
     protected function setUp(): void {
         require_once dirname(__DIR__, 2) . '/support/wordpress-payment-runtime.php';
-        \simplixpay_test_reset_payment_runtime();
+        \supcheckout_test_reset_payment_runtime();
     }
 
     public function test_process_rejects_noncanonical_order_ids_before_woo_lookup(): void {
@@ -69,12 +69,12 @@ final class CheckoutOrchestratorTest extends TestCase {
         );
 
         foreach (array("42\n", '42 ', '+42', '42.0', '4e1', '042') as $invalid) {
-            \simplixpay_test_reset_payment_runtime();
+            \supcheckout_test_reset_payment_runtime();
 
             $result = $orchestrator->process($invalid);
 
             self::assertSame('failure', $result['result'], var_export($invalid, true));
-            self::assertSame(array(), $GLOBALS['simplixpay_test_wc_get_order_calls'], var_export($invalid, true));
+            self::assertSame(array(), $GLOBALS['supcheckout_test_wc_get_order_calls'], var_export($invalid, true));
         }
     }
 
@@ -86,7 +86,7 @@ final class CheckoutOrchestratorTest extends TestCase {
             '10.000',
             array(new \WC_Order_Item_Product(new \WC_Product('simple')))
         );
-        $GLOBALS['simplixpay_test_status_orders'][42] = $order;
+        $GLOBALS['supcheckout_test_status_orders'][42] = $order;
         $requests = array();
 
         $orchestrator = new CheckoutOrchestrator(
@@ -114,7 +114,7 @@ final class CheckoutOrchestratorTest extends TestCase {
             '10.000',
             array(new \WC_Order_Item_Product(new \WC_Product('simple')))
         );
-        $GLOBALS['simplixpay_test_status_orders'][42] = $order;
+        $GLOBALS['supcheckout_test_status_orders'][42] = $order;
         $requests = array();
 
         $orchestrator = new CheckoutOrchestrator(
@@ -143,7 +143,7 @@ final class CheckoutOrchestratorTest extends TestCase {
             '10.000',
             array(new \WC_Order_Item_Product(new \WC_Product('simple')))
         );
-        $GLOBALS['simplixpay_test_status_orders'][42] = $order;
+        $GLOBALS['supcheckout_test_status_orders'][42] = $order;
         $requests = array();
 
         $orchestrator = new CheckoutOrchestrator(
@@ -171,7 +171,7 @@ final class CheckoutOrchestratorTest extends TestCase {
         $result = $orchestrator->process(42);
 
         self::assertSame('failure', $result['result']);
-        self::assertSame(array(42), $GLOBALS['simplixpay_test_wc_get_order_calls']);
+        self::assertSame(array(42), $GLOBALS['supcheckout_test_wc_get_order_calls']);
     }
 
     public function test_classic_rejects_explicitly_opted_out_subscription_product_before_provider_request(): void {
@@ -189,8 +189,8 @@ final class CheckoutOrchestratorTest extends TestCase {
             '10.000',
             array(new \WC_Order_Item_Product($product))
         );
-        $GLOBALS['simplixpay_test_status_orders'][42] = $order;
-        $GLOBALS['simplixpay_test_subscription_presentation']['meta'][789]['_upay_disable_subscription'] = 'yes';
+        $GLOBALS['supcheckout_test_status_orders'][42] = $order;
+        $GLOBALS['supcheckout_test_subscription_presentation']['meta'][789]['_upay_disable_subscription'] = 'yes';
 
         $request_body_calls = 0;
         $provider_requests = array();
@@ -234,8 +234,8 @@ final class CheckoutOrchestratorTest extends TestCase {
             '10.000',
             array(new \WC_Order_Item_Product($product))
         );
-        $GLOBALS['simplixpay_test_status_orders'][42] = $order;
-        $GLOBALS['simplixpay_test_subscription_presentation']['meta'][789]['_upay_disable_subscription'] = 'yes';
+        $GLOBALS['supcheckout_test_status_orders'][42] = $order;
+        $GLOBALS['supcheckout_test_subscription_presentation']['meta'][789]['_upay_disable_subscription'] = 'yes';
 
         $request_body_calls = 0;
         $provider_requests = array();
@@ -271,7 +271,7 @@ final class CheckoutOrchestratorTest extends TestCase {
     }
 
     public function test_same_second_retries_use_distinct_provider_order_ids(): void {
-        $GLOBALS['simplixpay_test_payment_runtime_time'] = 1700000000;
+        $GLOBALS['supcheckout_test_payment_runtime_time'] = 1700000000;
         $gateway = new CheckoutOrchestratorGateway();
         $order = new \WC_Order(
             42,
@@ -279,7 +279,7 @@ final class CheckoutOrchestratorTest extends TestCase {
             '10.000',
             array(new \WC_Order_Item_Product(new \WC_Product('simple')))
         );
-        $GLOBALS['simplixpay_test_status_orders'][42] = $order;
+        $GLOBALS['supcheckout_test_status_orders'][42] = $order;
         $provider_order_ids = array();
 
         $orchestrator = new CheckoutOrchestrator(

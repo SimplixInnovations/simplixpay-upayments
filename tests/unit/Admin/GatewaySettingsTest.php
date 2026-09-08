@@ -7,7 +7,7 @@ use Simplixi\SUPCheckout\Admin\GatewaySettings;
 
 final class GatewaySettingsTest extends TestCase {
     protected function setUp(): void {
-        \simplixpay_test_reset_gateway_settings();
+        \supcheckout_test_reset_gateway_settings();
     }
 
     public function test_fields_preserve_exact_keys_order_and_runtime_defaults(): void {
@@ -206,27 +206,27 @@ final class GatewaySettingsTest extends TestCase {
             'dependencies' => array(),
             'version'      => '0.1.0',
             'media'        => 'all',
-        )), $GLOBALS['simplixpay_test_gateway_settings']['styles']);
+        )), $GLOBALS['supcheckout_test_gateway_settings']['styles']);
         self::assertSame(array('upayments-multimerchant-repeater', 'upayments-admin-logic'), array_column(
-            $GLOBALS['simplixpay_test_gateway_settings']['scripts'],
+            $GLOBALS['supcheckout_test_gateway_settings']['scripts'],
             'handle'
         ));
-        self::assertSame(array('jquery'), $GLOBALS['simplixpay_test_gateway_settings']['scripts'][0]['dependencies']);
-        self::assertTrue($GLOBALS['simplixpay_test_gateway_settings']['scripts'][0]['in_footer']);
+        self::assertSame(array('jquery'), $GLOBALS['supcheckout_test_gateway_settings']['scripts'][0]['dependencies']);
+        self::assertTrue($GLOBALS['supcheckout_test_gateway_settings']['scripts'][0]['in_footer']);
         self::assertSame(array(array(
             'handle' => 'woocommerce_admin_styles',
             'css'    => '.upayments-disabled-setting { opacity: 0.5; pointer-events: none; }',
-        )), $GLOBALS['simplixpay_test_gateway_settings']['inline_styles']);
+        )), $GLOBALS['supcheckout_test_gateway_settings']['inline_styles']);
 
-        \simplixpay_test_reset_gateway_settings();
+        \supcheckout_test_reset_gateway_settings();
         GatewaySettings::enqueue_admin_assets(
             'https://example.test/plugin/',
             'upayments',
             array('page' => 'wc-settings', 'tab' => 'checkout', 'section' => 'other'),
             'other_screen'
         );
-        self::assertSame(array(), $GLOBALS['simplixpay_test_gateway_settings']['styles']);
-        self::assertSame(array(), $GLOBALS['simplixpay_test_gateway_settings']['scripts']);
-        self::assertSame(array(), $GLOBALS['simplixpay_test_gateway_settings']['inline_styles']);
+        self::assertSame(array(), $GLOBALS['supcheckout_test_gateway_settings']['styles']);
+        self::assertSame(array(), $GLOBALS['supcheckout_test_gateway_settings']['scripts']);
+        self::assertSame(array(), $GLOBALS['supcheckout_test_gateway_settings']['inline_styles']);
     }
 }

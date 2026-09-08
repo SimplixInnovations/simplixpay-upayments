@@ -5,8 +5,8 @@
  * payment-method availability tests. Development-only; excluded from builds.
  */
 
-if (!class_exists('SimplixPay_Test_Availability_WPDB')) {
-    final class SimplixPay_Test_Availability_WPDB {
+if (!class_exists('SUPCheckout_Test_Availability_WPDB')) {
+    final class SUPCheckout_Test_Availability_WPDB {
         public $prefix = 'wp_7_';
 
         public function prepare($query) {
@@ -32,22 +32,22 @@ if (!class_exists('SimplixPay_Test_Availability_WPDB')) {
 
             $lock_name = (string) $statement['args'][0];
             if (strpos($statement['query'], 'SELECT GET_LOCK(') === 0) {
-                ++$GLOBALS['simplixpay_test_availability']['lock_acquires'];
-                $callback = $GLOBALS['simplixpay_test_availability']['populate_on_lock'];
+                ++$GLOBALS['supcheckout_test_availability']['lock_acquires'];
+                $callback = $GLOBALS['supcheckout_test_availability']['populate_on_lock'];
                 if (is_callable($callback)) {
                     call_user_func($callback);
-                    $GLOBALS['simplixpay_test_availability']['populate_on_lock'] = null;
+                    $GLOBALS['supcheckout_test_availability']['populate_on_lock'] = null;
                 }
-                $result = $GLOBALS['simplixpay_test_availability']['lock_result'];
+                $result = $GLOBALS['supcheckout_test_availability']['lock_result'];
                 if ($result === '1' || $result === 1) {
-                    $GLOBALS['simplixpay_test_availability']['locks'][$lock_name] = true;
+                    $GLOBALS['supcheckout_test_availability']['locks'][$lock_name] = true;
                 }
                 return $result;
             }
 
             if (strpos($statement['query'], 'SELECT RELEASE_LOCK(') === 0) {
-                ++$GLOBALS['simplixpay_test_availability']['lock_releases'];
-                unset($GLOBALS['simplixpay_test_availability']['locks'][$lock_name]);
+                ++$GLOBALS['supcheckout_test_availability']['lock_releases'];
+                unset($GLOBALS['supcheckout_test_availability']['locks'][$lock_name]);
                 return '1';
             }
 
@@ -56,10 +56,10 @@ if (!class_exists('SimplixPay_Test_Availability_WPDB')) {
     }
 }
 
-if (!function_exists('simplixpay_test_reset_availability')) {
-    function simplixpay_test_reset_availability() {
-        simplixpay_test_reset_wp_options();
-        $GLOBALS['simplixpay_test_availability'] = array(
+if (!function_exists('supcheckout_test_reset_availability')) {
+    function supcheckout_test_reset_availability() {
+        supcheckout_test_reset_wp_options();
+        $GLOBALS['supcheckout_test_availability'] = array(
             'transients'      => array(),
             'transient_ttls'  => array(),
             'lock_result'     => '1',
@@ -68,22 +68,22 @@ if (!function_exists('simplixpay_test_reset_availability')) {
             'lock_releases'   => 0,
             'populate_on_lock' => null,
         );
-        $GLOBALS['wpdb'] = new SimplixPay_Test_Availability_WPDB();
+        $GLOBALS['wpdb'] = new SUPCheckout_Test_Availability_WPDB();
     }
 }
 
 if (!function_exists('get_transient')) {
     function get_transient($name) {
-        return array_key_exists($name, $GLOBALS['simplixpay_test_availability']['transients'])
-            ? $GLOBALS['simplixpay_test_availability']['transients'][$name]
+        return array_key_exists($name, $GLOBALS['supcheckout_test_availability']['transients'])
+            ? $GLOBALS['supcheckout_test_availability']['transients'][$name]
             : false;
     }
 }
 
 if (!function_exists('set_transient')) {
     function set_transient($name, $value, $expiration = 0) {
-        $GLOBALS['simplixpay_test_availability']['transients'][$name] = $value;
-        $GLOBALS['simplixpay_test_availability']['transient_ttls'][$name] = $expiration;
+        $GLOBALS['supcheckout_test_availability']['transients'][$name] = $value;
+        $GLOBALS['supcheckout_test_availability']['transient_ttls'][$name] = $expiration;
         return true;
     }
 }
@@ -95,7 +95,7 @@ if (!function_exists('get_current_blog_id')) {
 }
 
 if (!defined('DB_NAME')) {
-    define('DB_NAME', 'simplixpay_test_database');
+    define('DB_NAME', 'supcheckout_test_database');
 }
 
-simplixpay_test_reset_availability();
+supcheckout_test_reset_availability();

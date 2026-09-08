@@ -5,15 +5,15 @@
 
 require_once __DIR__ . '/bootstrap.php';
 
-sucheckout_cert_assert(
+supcheckout_cert_assert(
     class_exists('Automattic\\WooCommerce\\Blocks\\Payments\\PaymentMethodRegistry'),
     'WooCommerce Blocks PaymentMethodRegistry is available'
 );
-sucheckout_cert_assert(
+supcheckout_cert_assert(
     did_action('woocommerce_blocks_loaded') > 0,
     'WooCommerce Blocks loaded hook fired in the real runtime'
 );
-sucheckout_cert_assert(
+supcheckout_cert_assert(
     false !== has_action('woocommerce_blocks_payment_method_type_registration'),
     'SUPCheckout registered a server-side Blocks payment-method callback'
 );
@@ -40,21 +40,21 @@ $cases = array(
 );
 
 foreach ($cases as $label => $case) {
-    sucheckout_cert_store_option_raw('woocommerce_upayments_settings', $case['settings']);
+    supcheckout_cert_store_option_raw('woocommerce_upayments_settings', $case['settings']);
 
     $registry = new Automattic\WooCommerce\Blocks\Payments\PaymentMethodRegistry();
     $registry->initialize();
 
-    sucheckout_cert_assert($registry->is_registered('upayments'), 'Blocks registry contains upayments for case ' . $label);
+    supcheckout_cert_assert($registry->is_registered('upayments'), 'Blocks registry contains upayments for case ' . $label);
 
     $integration = $registry->get_registered('upayments');
-    sucheckout_cert_assert($integration instanceof WCGatewayUPaymentsBlocks, 'Blocks registry returns SUPCheckout integration for case ' . $label);
-    sucheckout_cert_assert($integration->is_active() === $case['active'], 'Blocks availability is exact for case ' . $label);
-    sucheckout_cert_assert(
+    supcheckout_cert_assert($integration instanceof WCGatewayUPaymentsBlocks, 'Blocks registry returns SUPCheckout integration for case ' . $label);
+    supcheckout_cert_assert($integration->is_active() === $case['active'], 'Blocks availability is exact for case ' . $label);
+    supcheckout_cert_assert(
         array('products') === $integration->get_supported_features(),
         'Blocks supported-feature contract remains products-only for case ' . $label
     );
 }
 
-sucheckout_cert_store_option_raw('woocommerce_upayments_settings', $original_settings);
-sucheckout_cert_note('Blocks registration and availability certification complete');
+supcheckout_cert_store_option_raw('woocommerce_upayments_settings', $original_settings);
+supcheckout_cert_note('Blocks registration and availability certification complete');

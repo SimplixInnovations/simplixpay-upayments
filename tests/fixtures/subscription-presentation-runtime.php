@@ -57,7 +57,7 @@ namespace {
         public function get_user_id() { return $this->user_id; }
     }
 
-    final class SimplixPay_Test_Presentation_Item {
+    final class SUPCheckout_Test_Presentation_Item {
         public $product;
         public $writes = array();
 

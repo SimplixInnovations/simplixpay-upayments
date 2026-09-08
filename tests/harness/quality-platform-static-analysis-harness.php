@@ -35,7 +35,7 @@ function q2_contains($source, $needle) {
  * @param string $root Repository root.
  * @return array<int,array{path:string,line:int,function:string,domain:string}>
  */
-function q2_sucheckout_i18n_violations($root) {
+function q2_supcheckout_i18n_violations($root) {
     $functions = array(
         '__' => 1,
         '_e' => 1,
@@ -261,7 +261,7 @@ q2_assert(q2_contains($workflow, "reject_across_live_records 'CURRENT / Q1**'"),
  * canonical first-party translation/metadata boundary established before the
  * first public release.
  */
-$q2_i18n_violations = q2_sucheckout_i18n_violations($q2_root);
+$q2_i18n_violations = q2_supcheckout_i18n_violations($q2_root);
 foreach ($q2_i18n_violations as $violation) {
     q2_assert(
         false,

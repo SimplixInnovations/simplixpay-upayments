@@ -7,16 +7,16 @@ use Simplixi\SUPCheckout\Payment\StatusRateGate;
 
 final class StatusRateGateTest extends TestCase {
     protected function setUp(): void {
-        \simplixpay_test_reset_wp_options();
+        \supcheckout_test_reset_wp_options();
     }
 
     public function test_invalid_gateway_or_empty_salt_fails_before_option_mutation(): void {
         self::assertFalse(StatusRateGate::acquire(null));
         self::assertFalse(StatusRateGate::acquire(new \stdClass()));
 
-        $GLOBALS['simplixpay_test_wp_salt'] = '';
+        $GLOBALS['supcheckout_test_wp_salt'] = '';
         self::assertFalse(StatusRateGate::acquire($this->gateway('secret', false)));
-        self::assertSame(array(), $GLOBALS['simplixpay_test_options']);
+        self::assertSame(array(), $GLOBALS['supcheckout_test_options']);
     }
 
     public function test_exactly_thirty_atomic_slots_are_available_per_minute(): void {
@@ -29,7 +29,7 @@ final class StatusRateGateTest extends TestCase {
         self::assertFalse(StatusRateGate::acquire($gateway));
         self::assertSame(30, StatusRateGate::limit_per_minute());
 
-        $slot_names = array_filter(array_keys($GLOBALS['simplixpay_test_options']), function ($name) {
+        $slot_names = array_filter(array_keys($GLOBALS['supcheckout_test_options']), function ($name) {
             return strpos($name, 'simplixpay_upay_status_v1_') === 0
                 && substr($name, -7) !== '_bucket';
         });
@@ -45,11 +45,11 @@ final class StatusRateGateTest extends TestCase {
         self::assertTrue(StatusRateGate::acquire($test_a));
         self::assertTrue(StatusRateGate::acquire($live_b));
 
-        $names = implode('\n', array_keys($GLOBALS['simplixpay_test_options']));
+        $names = implode('\n', array_keys($GLOBALS['supcheckout_test_options']));
         self::assertStringNotContainsString('credential-a', $names);
         self::assertStringNotContainsString('credential-b', $names);
 
-        $markers = array_filter(array_keys($GLOBALS['simplixpay_test_options']), function ($name) {
+        $markers = array_filter(array_keys($GLOBALS['supcheckout_test_options']), function ($name) {
             return substr($name, -7) === '_bucket';
         });
         self::assertCount(3, $markers);
@@ -60,7 +60,7 @@ final class StatusRateGateTest extends TestCase {
         self::assertTrue(StatusRateGate::acquire($gateway));
 
         $marker = null;
-        foreach (array_keys($GLOBALS['simplixpay_test_options']) as $name) {
+        foreach (array_keys($GLOBALS['supcheckout_test_options']) as $name) {
             if (substr($name, -7) === '_bucket') {
                 $marker = $name;
                 break;
@@ -70,16 +70,16 @@ final class StatusRateGateTest extends TestCase {
 
         $scope = substr($marker, strlen('simplixpay_upay_status_v1_'), 16);
         $old_bucket = '200001010000';
-        $GLOBALS['simplixpay_test_options'][$marker] = $old_bucket;
+        $GLOBALS['supcheckout_test_options'][$marker] = $old_bucket;
         for ($slot = 0; $slot < 30; $slot++) {
             $old_name = 'simplixpay_upay_status_v1_' . $scope . '_' . $old_bucket . '_' . $slot;
-            $GLOBALS['simplixpay_test_options'][$old_name] = 1;
+            $GLOBALS['supcheckout_test_options'][$old_name] = 1;
         }
 
         self::assertTrue(StatusRateGate::acquire($gateway));
         for ($slot = 0; $slot < 30; $slot++) {
             $old_name = 'simplixpay_upay_status_v1_' . $scope . '_' . $old_bucket . '_' . $slot;
-            self::assertArrayNotHasKey($old_name, $GLOBALS['simplixpay_test_options']);
+            self::assertArrayNotHasKey($old_name, $GLOBALS['supcheckout_test_options']);
         }
     }
 

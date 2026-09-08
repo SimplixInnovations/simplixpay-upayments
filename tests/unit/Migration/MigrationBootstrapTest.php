@@ -14,31 +14,31 @@ final class MigrationBootstrapTest extends TestCase {
     }
 
     protected function setUp(): void {
-        \simplixpay_test_reset_migration_bootstrap();
+        \supcheckout_test_reset_migration_bootstrap();
     }
 
     public function test_public_boot_is_inert_outside_admin_and_cli_contexts(): void {
         MigrationBootstrap::boot();
 
-        self::assertSame(array(), $GLOBALS['simplixpay_test_action_calls']);
+        self::assertSame(array(), $GLOBALS['supcheckout_test_action_calls']);
         self::assertSame(array(), \WP_CLI::$commands);
     }
 
     public function test_public_boot_registers_only_the_admin_menu_in_admin_context(): void {
-        $GLOBALS['simplixpay_test_admin_context'] = true;
+        $GLOBALS['supcheckout_test_admin_context'] = true;
 
         MigrationBootstrap::boot();
 
         self::assertSame(array(
             array('admin_menu', array(MigrationAdmin::class, 'register'), 10, 1),
-        ), $GLOBALS['simplixpay_test_action_calls']);
+        ), $GLOBALS['supcheckout_test_action_calls']);
         self::assertSame(array(), \WP_CLI::$commands);
     }
 
     public function test_cli_context_registers_only_the_canonical_command(): void {
         $this->bootForContext(true, false);
 
-        self::assertSame(array(), $GLOBALS['simplixpay_test_action_calls']);
+        self::assertSame(array(), $GLOBALS['supcheckout_test_action_calls']);
         self::assertSame(array(
             array('simplixpay-upayments migration', MigrationCliCommand::class),
         ), \WP_CLI::$commands);
@@ -49,7 +49,7 @@ final class MigrationBootstrapTest extends TestCase {
 
         self::assertSame(array(
             array('admin_menu', array(MigrationAdmin::class, 'register'), 10, 1),
-        ), $GLOBALS['simplixpay_test_action_calls']);
+        ), $GLOBALS['supcheckout_test_action_calls']);
         self::assertSame(array(
             array('simplixpay-upayments migration', MigrationCliCommand::class),
         ), \WP_CLI::$commands);

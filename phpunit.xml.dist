@@ -7,7 +7,7 @@
          failOnRisky="true"
          failOnWarning="true">
     <testsuites>
-        <testsuite name="SimplixPay pure unit tests">
+        <testsuite name="SUPCheckout pure unit tests">
             <directory suffix="Test.php">tests/unit</directory>
         </testsuite>
     </testsuites>

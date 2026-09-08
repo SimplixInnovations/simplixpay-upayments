@@ -1,6 +1,6 @@
 <?php
 /**
- * SUCheckout real WordPress/WooCommerce certification assertions.
+ * SUPCheckout real WordPress/WooCommerce certification assertions.
  */
 
 if (!defined('ABSPATH')) {
@@ -12,7 +12,7 @@ if (!defined('ABSPATH')) {
  * @param string $message   Failure message.
  * @return void
  */
-function sucheckout_cert_assert($condition, $message) {
+function supcheckout_cert_assert($condition, $message) {
     if ($condition) {
         if (defined('WP_CLI') && WP_CLI) {
             WP_CLI::log('PASS: ' . $message);
@@ -27,7 +27,7 @@ function sucheckout_cert_assert($condition, $message) {
  * @param string $message Evidence note.
  * @return void
  */
-function sucheckout_cert_note($message) {
+function supcheckout_cert_note($message) {
     if (defined('WP_CLI') && WP_CLI) {
         WP_CLI::log('CERT: ' . $message);
     }
@@ -37,7 +37,7 @@ function sucheckout_cert_note($message) {
  * Persist an option without firing update_option hooks.
  *
  * This is used only to characterize malformed storage that may already exist
- * before WooCommerce/SUCheckout boots. It intentionally bypasses observers so
+ * before WooCommerce/SUPCheckout boots. It intentionally bypasses observers so
  * the certification target is the plugin's read boundary, not Woo's settings
  * change hook.
  *
@@ -45,7 +45,7 @@ function sucheckout_cert_note($message) {
  * @param mixed  $value Raw option value.
  * @return void
  */
-function sucheckout_cert_store_option_raw($name, $value) {
+function supcheckout_cert_store_option_raw($name, $value) {
     global $wpdb;
 
     $exists = $wpdb->get_var(
@@ -77,7 +77,7 @@ function sucheckout_cert_store_option_raw($name, $value) {
         );
     }
 
-    sucheckout_cert_assert(false !== $result, 'raw certification option persistence succeeds: ' . $name);
+    supcheckout_cert_assert(false !== $result, 'raw certification option persistence succeeds: ' . $name);
     wp_cache_delete($name, 'options');
     wp_cache_delete('alloptions', 'options');
 

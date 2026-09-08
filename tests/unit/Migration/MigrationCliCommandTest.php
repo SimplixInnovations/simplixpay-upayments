@@ -12,8 +12,8 @@ use Simplixi\SUPCheckout\Migration\MigrationCliCommand;
 
 final class MigrationCliCommandTest extends TestCase {
     protected function setUp(): void {
-        \simplixpay_test_reset_migration_bootstrap();
-        \simplixpay_test_reset_wp_options();
+        \supcheckout_test_reset_migration_bootstrap();
+        \supcheckout_test_reset_wp_options();
     }
 
     public static function invalidRequestProvider(): array {

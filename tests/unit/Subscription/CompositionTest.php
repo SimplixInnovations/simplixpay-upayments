@@ -9,7 +9,7 @@ use Simplixi\SUPCheckout\Subscription\Presentation;
 
 final class CompositionTest extends TestCase {
     protected function setUp(): void {
-        \simplixpay_test_reset_subscription_composition();
+        \supcheckout_test_reset_subscription_composition();
     }
 
     public function test_registers_exact_presentation_hook_topology(): void {
@@ -35,7 +35,7 @@ final class CompositionTest extends TestCase {
             array('action', 'woocommerce_my_account_my_orders_column_order_type', array($presentation, 'render_account_order_type'), 10, 1),
             array('action', 'woocommerce_my_account_my_orders_column_order_status', array($presentation, 'render_account_subscription_status'), 10, 1),
             array('action', 'woocommerce_admin_order_data_after_billing_address', array($presentation, 'render_admin_order_summary'), 10, 1),
-        ), $GLOBALS['simplixpay_test_hook_calls']);
+        ), $GLOBALS['supcheckout_test_hook_calls']);
     }
 
     public function test_registers_only_exact_gateway_instance_hooks(): void {
@@ -46,7 +46,7 @@ final class CompositionTest extends TestCase {
         self::assertSame(array(
             array('filter', 'woocommerce_add_to_cart_validation', array($gateway, 'restrictMixedCartProducts'), 10, 3),
             array('action', 'woocommerce_before_shop_loop_item_title', array($gateway, 'renderSubscriptionBadgeInProductList'), 9, 1),
-        ), $GLOBALS['simplixpay_test_hook_calls']);
+        ), $GLOBALS['supcheckout_test_hook_calls']);
     }
 
     public function test_legacy_modules_keep_exact_root_dependencies_and_initializers(): void {

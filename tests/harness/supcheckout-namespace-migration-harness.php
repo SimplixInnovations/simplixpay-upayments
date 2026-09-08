@@ -8,7 +8,7 @@ $root = dirname(__DIR__, 2);
 $pass = 0;
 $fail = 0;
 
-function sucheckout_ns_assert($condition, $message) {
+function supcheckout_ns_assert($condition, $message) {
     global $pass, $fail;
     if ($condition) {
         ++$pass;
@@ -21,19 +21,19 @@ function sucheckout_ns_assert($condition, $message) {
 
 $composer_path = $root . '/composer.json';
 $composer = json_decode((string) file_get_contents($composer_path), true);
-sucheckout_ns_assert(is_array($composer), 'composer.json decodes');
+supcheckout_ns_assert(is_array($composer), 'composer.json decodes');
 
 if (is_array($composer)) {
-    sucheckout_ns_assert(
+    supcheckout_ns_assert(
         isset($composer['name']) && $composer['name'] === 'simplix-innovations/supcheckout',
         'Composer package is canonical SUPCheckout package'
     );
-    sucheckout_ns_assert(
+    supcheckout_ns_assert(
         isset($composer['autoload']['psr-4']['Simplixi\\SUPCheckout\\'])
             && $composer['autoload']['psr-4']['Simplixi\\SUPCheckout\\'] === 'src/',
         'Composer production PSR-4 root is canonical SUPCheckout namespace'
     );
-    sucheckout_ns_assert(
+    supcheckout_ns_assert(
         isset($composer['autoload-dev']['psr-4']['Simplixi\\SUPCheckout\\Tests\\'])
             && $composer['autoload-dev']['psr-4']['Simplixi\\SUPCheckout\\Tests\\'] === 'tests/unit/',
         'Composer test PSR-4 root is canonical SUPCheckout namespace'
@@ -88,10 +88,10 @@ if (strpos($bootstrap, $canonical) !== false) {
 
 sort($legacy_files);
 foreach ($legacy_files as $path) {
-    sucheckout_ns_assert(false, "retired first-party namespace remains: {$path}");
+    supcheckout_ns_assert(false, "retired first-party namespace remains: {$path}");
 }
-sucheckout_ns_assert(count($legacy_files) === 0, 'no retired first-party namespace remains in executable/test PHP');
-sucheckout_ns_assert($canonical_files >= 20, 'canonical SUPCheckout namespace is established across first-party code');
+supcheckout_ns_assert(count($legacy_files) === 0, 'no retired first-party namespace remains in executable/test PHP');
+supcheckout_ns_assert($canonical_files >= 20, 'canonical SUPCheckout namespace is established across first-party code');
 
 echo "\nSUPCheckout Namespace Migration: {$pass} PASS / {$fail} FAIL\n";
 exit($fail === 0 ? 0 : 1);

@@ -74,7 +74,7 @@ foreach (array('wp_remote_','curl_','process_payment','add_meta_data(','save_met
 foreach (array('invalid_inputs_fail_closed_before_history_access','fresh_user_is_clean_and_unscoped_legacy_history_is_migratable','cross_user_token_conflict_remains_blocked','terminal_newline_order_identifier_is_rejected_as_indeterminate','terminal_newline_generation_is_not_accepted_as_identity_context') as $name) q16_assert(q16_has($preflight_tests, $name), 'preflight test: ' . $name);
 foreach (array('user_id_parser_preserves_exact_canonical_contract','bounded_clean_page_writes_redacted_checkpoint_and_resumes','trailing_newline_reason_cannot_be_reused_as_durable_checkpoint','invalid_windows_fail_before_execution_or_checkpoint_mutation') as $name) q16_assert(q16_has($batch_tests, $name), 'batch test: ' . $name);
 foreach (array('clean_user_is_idempotent_without_lock_or_mutation','dry_run_migratable_user_performs_no_identity_mutation','existing_secret_legacy_orphan_migrates_to_exact_legacy_provenance','invalid_inputs_fail_closed_before_preflight') as $name) q16_assert(q16_has($executor_tests, $name), 'executor test: ' . $name);
-q16_assert(q16_has($fixture, 'SimplixPay_Test_Migration_Core_WPDB'), 'fixture models deterministic DB boundary');
+q16_assert(q16_has($fixture, 'SUPCheckout_Test_Migration_Core_WPDB'), 'fixture models deterministic DB boundary');
 q16_assert(q16_has($stubs, 'namespace UPayments\\Token'), 'stub models H12 namespace');
 q16_assert(q16_has($bootstrap, "require __DIR__ . '/support/wordpress-migration-core.php';"), 'PHPUnit bootstrap loads migration fixture');
 

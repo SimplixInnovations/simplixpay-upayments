@@ -37,8 +37,8 @@ namespace UPayments\Token {
             }
 
             public static function read_existing_identity_context($api_key, $is_test_mode) {
-                if ($GLOBALS['simplixpay_test_migration_core']['context_override'] !== null) {
-                    return $GLOBALS['simplixpay_test_migration_core']['context_override'];
+                if ($GLOBALS['supcheckout_test_migration_core']['context_override'] !== null) {
+                    return $GLOBALS['supcheckout_test_migration_core']['context_override'];
                 }
 
                 $secret = self::read_existing_secret_record();
@@ -56,18 +56,18 @@ namespace UPayments\Token {
             }
 
             public static function read_provenance($user_id, $scope, $generation) {
-                if (isset($GLOBALS['simplixpay_test_migration_core']['provenance'][$user_id][$scope][$generation])) {
+                if (isset($GLOBALS['supcheckout_test_migration_core']['provenance'][$user_id][$scope][$generation])) {
                     return array(
                         'state' => self::STATE_VALID,
-                        'record' => $GLOBALS['simplixpay_test_migration_core']['provenance'][$user_id][$scope][$generation],
+                        'record' => $GLOBALS['supcheckout_test_migration_core']['provenance'][$user_id][$scope][$generation],
                     );
                 }
                 return array('state' => self::STATE_ABSENT, 'record' => null);
             }
 
             public static function inspect_current_user_prior_provenance($user_id, $generation) {
-                if ($GLOBALS['simplixpay_test_migration_core']['prior_provenance_override'] !== null) {
-                    return $GLOBALS['simplixpay_test_migration_core']['prior_provenance_override'];
+                if ($GLOBALS['supcheckout_test_migration_core']['prior_provenance_override'] !== null) {
+                    return $GLOBALS['supcheckout_test_migration_core']['prior_provenance_override'];
                 }
                 return array('state' => 'none');
             }
@@ -132,10 +132,10 @@ namespace UPayments\Token {
             }
 
             public static function create_provenance($user_id, $api_key, $is_test_mode, $scope, $generation, $kind, $token, $source) {
-                if ($GLOBALS['simplixpay_test_migration_core']['create_provenance_result'] !== true) {
+                if ($GLOBALS['supcheckout_test_migration_core']['create_provenance_result'] !== true) {
                     return false;
                 }
-                $GLOBALS['simplixpay_test_migration_core']['provenance'][$user_id][$scope][$generation] = array(
+                $GLOBALS['supcheckout_test_migration_core']['provenance'][$user_id][$scope][$generation] = array(
                     'version' => 3,
                     'kind' => $kind,
                     'token' => $token,
@@ -148,7 +148,7 @@ namespace UPayments\Token {
             }
 
             public static function force_refresh_user_meta($user_id) {
-                return $GLOBALS['simplixpay_test_migration_core']['user_refresh_result'] === true;
+                return $GLOBALS['supcheckout_test_migration_core']['user_refresh_result'] === true;
             }
 
             private function __construct() {
@@ -158,7 +158,7 @@ namespace UPayments\Token {
 }
 
 namespace {
-    final class SimplixPay_Test_Migration_Core_Order {
+    final class SUPCheckout_Test_Migration_Core_Order {
         public $id;
         public $customer_id;
         public $meta = array();
@@ -177,7 +177,7 @@ namespace {
         }
     }
 
-    final class SimplixPay_Test_Migration_Core_WPDB {
+    final class SUPCheckout_Test_Migration_Core_WPDB {
         public $usermeta = 'wp_usermeta';
 
         public function esc_like($value) {
@@ -191,7 +191,7 @@ namespace {
         }
 
         public function get_var($prepared) {
-            if ($GLOBALS['simplixpay_test_migration_core']['db_failure']) {
+            if ($GLOBALS['supcheckout_test_migration_core']['db_failure']) {
                 return false;
             }
 
@@ -200,7 +200,7 @@ namespace {
                 return 1;
             }
             if (strpos($query, 'SELECT meta_key FROM') !== false) {
-                return $GLOBALS['simplixpay_test_migration_core']['global_provenance_exists']
+                return $GLOBALS['supcheckout_test_migration_core']['global_provenance_exists']
                     ? '_upay_customer_token_v2_b1_fixture'
                     : null;
             }
@@ -208,19 +208,19 @@ namespace {
         }
 
         public function get_results($prepared) {
-            if ($GLOBALS['simplixpay_test_migration_core']['db_failure']) {
+            if ($GLOBALS['supcheckout_test_migration_core']['db_failure']) {
                 return null;
             }
-            return $GLOBALS['simplixpay_test_migration_core']['global_provenance_rows'];
+            return $GLOBALS['supcheckout_test_migration_core']['global_provenance_rows'];
         }
     }
 
-    function simplixpay_test_reset_migration_core() {
-        if (function_exists('simplixpay_test_reset_wp_options')) {
-            simplixpay_test_reset_wp_options();
+    function supcheckout_test_reset_migration_core() {
+        if (function_exists('supcheckout_test_reset_wp_options')) {
+            supcheckout_test_reset_wp_options();
         }
 
-        $GLOBALS['simplixpay_test_migration_core'] = array(
+        $GLOBALS['supcheckout_test_migration_core'] = array(
             'context_override' => null,
             'prior_provenance_override' => null,
             'provenance' => array(),
@@ -236,11 +236,11 @@ namespace {
             'user_meta' => array(),
             'user_meta_fail' => array(),
         );
-        $GLOBALS['simplixpay_test_status_orders'] = array();
-        $GLOBALS['wpdb'] = new SimplixPay_Test_Migration_Core_WPDB();
+        $GLOBALS['supcheckout_test_status_orders'] = array();
+        $GLOBALS['wpdb'] = new SUPCheckout_Test_Migration_Core_WPDB();
     }
 
-    function simplixpay_test_migration_secret($generation = null) {
+    function supcheckout_test_migration_secret($generation = null) {
         if ($generation === null) {
             $generation = str_repeat('b', 32);
         }
@@ -257,7 +257,7 @@ namespace {
         );
     }
 
-    function simplixpay_test_migration_scope($api_key, $is_test_mode, $secret_record) {
+    function supcheckout_test_migration_scope($api_key, $is_test_mode, $secret_record) {
         $mode = $is_test_mode ? 'test' : 'live';
         return substr(hash_hmac('sha256', '1|' . $mode . '|' . $api_key, $secret_record['secret']), 0, 32);
     }
@@ -270,18 +270,18 @@ namespace {
 
     if (!function_exists('wc_get_orders')) {
         function wc_get_orders($args) {
-            if ($GLOBALS['simplixpay_test_migration_core']['query_exception']) {
+            if ($GLOBALS['supcheckout_test_migration_core']['query_exception']) {
                 throw new \RuntimeException('synthetic migration query exception');
             }
 
-            if ($GLOBALS['simplixpay_test_migration_core']['order_ids_override'] !== null
+            if ($GLOBALS['supcheckout_test_migration_core']['order_ids_override'] !== null
                 && !isset($args['meta_query'])
             ) {
-                $ids = $GLOBALS['simplixpay_test_migration_core']['order_ids_override'];
+                $ids = $GLOBALS['supcheckout_test_migration_core']['order_ids_override'];
             } else {
                 $ids = array();
-                foreach ($GLOBALS['simplixpay_test_status_orders'] as $id => $order) {
-                    if (!$order instanceof SimplixPay_Test_Migration_Core_Order) {
+                foreach ($GLOBALS['supcheckout_test_status_orders'] as $id => $order) {
+                    if (!$order instanceof SUPCheckout_Test_Migration_Core_Order) {
                         continue;
                     }
                     if (isset($args['meta_query'])) {
@@ -301,11 +301,11 @@ namespace {
 
             $limit = isset($args['limit']) ? (int) $args['limit'] : 20;
             $page = isset($args['paged']) ? (int) $args['paged'] : 1;
-            $total = $GLOBALS['simplixpay_test_migration_core']['query_total_override'];
+            $total = $GLOBALS['supcheckout_test_migration_core']['query_total_override'];
             if ($total === null) {
                 $total = count($ids);
             }
-            $max_pages = $GLOBALS['simplixpay_test_migration_core']['query_max_pages_override'];
+            $max_pages = $GLOBALS['supcheckout_test_migration_core']['query_max_pages_override'];
             if ($max_pages === null) {
                 $max_pages = $total === 0 ? 0 : (int) ceil($total / $limit);
             }
@@ -320,30 +320,30 @@ namespace {
 
     if (!function_exists('get_user_meta')) {
         function get_user_meta($user_id, $key, $single = false) {
-            if (!isset($GLOBALS['simplixpay_test_migration_core']['user_meta'][$user_id])
-                || !array_key_exists($key, $GLOBALS['simplixpay_test_migration_core']['user_meta'][$user_id])
+            if (!isset($GLOBALS['supcheckout_test_migration_core']['user_meta'][$user_id])
+                || !array_key_exists($key, $GLOBALS['supcheckout_test_migration_core']['user_meta'][$user_id])
             ) {
                 return $single ? '' : array();
             }
-            $value = $GLOBALS['simplixpay_test_migration_core']['user_meta'][$user_id][$key];
+            $value = $GLOBALS['supcheckout_test_migration_core']['user_meta'][$user_id][$key];
             return $single ? $value : array($value);
         }
     }
 
     if (!function_exists('update_user_meta')) {
         function update_user_meta($user_id, $key, $value, $prev_value = '') {
-            if (!empty($GLOBALS['simplixpay_test_migration_core']['user_meta_fail'][$user_id])) {
+            if (!empty($GLOBALS['supcheckout_test_migration_core']['user_meta_fail'][$user_id])) {
                 return false;
             }
-            if (!isset($GLOBALS['simplixpay_test_migration_core']['user_meta'][$user_id])) {
-                $GLOBALS['simplixpay_test_migration_core']['user_meta'][$user_id] = array();
+            if (!isset($GLOBALS['supcheckout_test_migration_core']['user_meta'][$user_id])) {
+                $GLOBALS['supcheckout_test_migration_core']['user_meta'][$user_id] = array();
             }
-            if (array_key_exists($key, $GLOBALS['simplixpay_test_migration_core']['user_meta'][$user_id])
-                && $GLOBALS['simplixpay_test_migration_core']['user_meta'][$user_id][$key] === $value
+            if (array_key_exists($key, $GLOBALS['supcheckout_test_migration_core']['user_meta'][$user_id])
+                && $GLOBALS['supcheckout_test_migration_core']['user_meta'][$user_id][$key] === $value
             ) {
                 return false;
             }
-            $GLOBALS['simplixpay_test_migration_core']['user_meta'][$user_id][$key] = $value;
+            $GLOBALS['supcheckout_test_migration_core']['user_meta'][$user_id][$key] = $value;
             return true;
         }
     }
@@ -358,5 +358,5 @@ namespace {
         }
     }
 
-    simplixpay_test_reset_migration_core();
+    supcheckout_test_reset_migration_core();
 }

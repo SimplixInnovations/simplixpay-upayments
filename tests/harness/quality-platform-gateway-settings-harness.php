@@ -117,7 +117,7 @@ q6_assert(q6_contains($tests, "'api_key'         => 'must-not-survive'"), 'sanit
 q6_assert(q6_contains($tests, "'merchant_id'     => 'must-not-survive'"), 'sanitizer test rejects merchant-ID retention');
 q6_assert(q6_contains($tests, 'assertStringNotContainsString(\'<script>\''), 'renderer test rejects raw script output');
 
-q6_assert(q6_contains($fixture, 'function simplixpay_test_reset_gateway_settings()'), 'unit fixture resets deterministic asset state');
+q6_assert(q6_contains($fixture, 'function supcheckout_test_reset_gateway_settings()'), 'unit fixture resets deterministic asset state');
 q6_assert(q6_contains($fixture, 'function wp_enqueue_style('), 'unit fixture records enqueued styles');
 q6_assert(q6_contains($fixture, 'function wp_enqueue_script('), 'unit fixture records enqueued scripts');
 q6_assert(q6_contains($fixture, 'function wp_add_inline_style('), 'unit fixture records inline styles');

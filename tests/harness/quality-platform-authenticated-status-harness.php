@@ -108,8 +108,8 @@ foreach (array(
     q4_assert(q4_contains($tests, $test_name), "status-verifier test exists: {$test_name}");
 }
 
-q4_assert(q4_contains($http_fixture, 'simplixpay_test_http_calls'), 'HTTP fixture records exact outbound calls');
-q4_assert(q4_contains($http_fixture, 'SimplixPay_Test_WP_Error'), 'HTTP fixture exposes deterministic network failure');
+q4_assert(q4_contains($http_fixture, 'supcheckout_test_http_calls'), 'HTTP fixture records exact outbound calls');
+q4_assert(q4_contains($http_fixture, 'SUPCheckout_Test_WP_Error'), 'HTTP fixture exposes deterministic network failure');
 q4_assert(q4_contains($analysis_stubs, 'function wp_remote_get('), 'analysis stubs declare bounded WordPress HTTP transport');
 q4_assert(q4_contains($analysis_stubs, 'function is_wp_error('), 'analysis stubs declare WordPress error classification');
 

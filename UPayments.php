@@ -187,7 +187,7 @@ function woocommerceUpaymentsInit() {
         public function __construct() {
             // Define ID, title, description, and settings.
             $this->id                 = 'upayments';
-            $this->icon = UP_PLUGIN_URL . "assets/images/logo.png";
+            $this->icon = UP_PLUGIN_URL . "assets/images/upayment.png";
             $this->method_title       = __("UPayments", 'supcheckout');
             $this->method_description = __("UPayments payment integration for WooCommerce. Available payment methods depend on your UPayments account and provider configuration.
             Supports Classic and Block Checkout. Subscription auto-deduction requires separately validated provider setup.", 'supcheckout');
@@ -278,13 +278,7 @@ function woocommerceUpaymentsInit() {
             });
 
             add_filter('woocommerce_default_gateway', function ($default) {
-                wc_get_logger()->info(
-                    'Default gateway filter hit. Current default: ' . $default,
-                    ['source' => 'upayments-debug']
-                );
-
                 if ($this->get_option('make_default_gateway') === 'yes') {
-                    wc_get_logger()->info('UPayments set as default', ['source' => 'upayments-debug']);
                     return 'upayments';
                 }
 
@@ -1200,7 +1194,7 @@ function woocommerceUpaymentsInit() {
                 }
             }
             if ($gateway_id == "upayments"){
-                $icon = '<span>Pay securely with <img src="'.UP_PLUGIN_URL.'assets/images/upayment.png" alt="UPayemnts"  title="UPayments" style="height: 24px !important; padding-left:4px;"/></span>';
+                $icon = '<span>Pay securely with <img src="'.UP_PLUGIN_URL.'assets/images/upayment.png" alt="UPayments"  title="UPayments" style="height: 24px !important; padding-left:4px;"/></span>';
             }
             return $icon;
         }

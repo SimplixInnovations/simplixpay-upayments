@@ -43,7 +43,7 @@ mkdir -p "$WP_PATH"
 
 "$WP_CLI_BIN" core install \
   --path="$WP_PATH" \
-  --url="http://sucheckout.test" \
+  --url="http://supcheckout.test" \
   --title="SUPCheckout Certification" \
   --admin_user="cert-admin" \
   --admin_password="cert-password-not-production" \
