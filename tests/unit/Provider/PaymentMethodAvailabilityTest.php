@@ -305,7 +305,10 @@ final class PaymentMethodAvailabilityTest extends TestCase {
 
     private function invoke_private($object, $method) {
         $reflection = new ReflectionMethod($object, $method);
-        $reflection->setAccessible(true);
+        // PHP < 8.1 requires explicit reflection accessibility; PHP 8.1+ does not.
+        if (\PHP_VERSION_ID < 80100) {
+            $reflection->setAccessible(true);
+        }
         return $reflection->invoke($object);
     }
 }
