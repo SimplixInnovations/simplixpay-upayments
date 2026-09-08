@@ -3357,7 +3357,7 @@ $cp_method = $reflection->getMethod('create_provenance');
 upay_make_reflection_accessible($cp_method);
 upay_reset_state();
 upay_set_secret('live_key', 'live_secret_test_' . str_repeat('a', 20), 'live', $gen);
-$result = $cp_method->invoke(null, 100, 'live_key', false, 'wrong_fingerprint', $gen, 'canonical', '12345678', 'create');
+$result = $cp_method->invoke(null, 100, 'live_key', false, 'wrong_fingerprint', $gen, 'canonical', '12345678', 'create_201');
 upay_assert_eq($result, false, 'SEM14-SEM14-N-1 invalid fingerprint rejected', 'helper_unit_runtime');
 $exists = get_user_meta(100, 'upay_provenance_user_100', true);
 upay_assert_eq($exists, '', 'SEM14-SEM14-N-2 compensating delete: provenance not present', 'helper_unit_runtime');
@@ -4084,7 +4084,7 @@ update_user_meta(101, 'upay_provenance_user_101', wp_json_encode([
     'record_type' => 'canonical_v3',
     'scope' => 'fingerprint_' . $gen,
 ]));
-$result = $cp_method->invoke(null, 101, 'live_key', false, 'wrong_fingerprint', $gen, 'canonical', '12345678', 'create');
+$result = $cp_method->invoke(null, 101, 'live_key', false, 'wrong_fingerprint', $gen, 'canonical', '12345678', 'create_201');
 upay_assert_eq($result, false, 'SEM14-SEM14-V-1 mismatched fingerprint rejected', 'helper_unit_runtime');
 // Pre-write rejection: existing meta is NOT deleted (function never reached write stage).
 $existing_meta = get_user_meta(101, 'upay_provenance_user_101', true);
