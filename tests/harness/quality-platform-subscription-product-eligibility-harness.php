@@ -199,8 +199,8 @@ q19_assert(
 );
 q19_assert(
     is_string($agents_source)
-    && strpos($agents_source, 'quality-platform-subscription-product-eligibility-harness.php') !== false,
-    'AGENTS keeps Q19 permanent gate mandatory'
+    && strpos($agents_source, 'Quality Platform Q1-Q19 harnesses;') !== false,
+    'AGENTS keeps the closed Quality Platform harness set mandatory'
 );
 
 $closed_quality_current_markers = array(

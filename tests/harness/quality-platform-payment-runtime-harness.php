@@ -170,7 +170,7 @@ foreach (array(
 }
 q17_assert(q17_has($workflow, 'tests/harness/quality-platform-payment-runtime-harness.php'), 'Q17 harness is mandatory');
 q17_assert(q17_has($workflow, 'if: ${{ always() }}'), 'H12 aggregator always runs');
-q17_assert(q17_has($agents, 'quality-platform-payment-runtime-harness.php'), 'AGENTS keeps Q17 mandatory');
+q17_assert(q17_has($agents, 'Quality Platform Q1-Q19 harnesses;'), 'AGENTS keeps the closed Quality Platform harness set mandatory');
 
 foreach (array(
     '2c5d8e9213086c88147f5d1d26247d58f1cbc81b',
@@ -188,17 +188,24 @@ foreach (array(
 }
 
 q17_assert(q17_has($quality, '## Closed Q17 contract') && q17_has($quality, '**Status:** DONE / VERIFIED (Q1-Q19)'), 'quality record closes Q17 and advances into closed Q1-Q19 state');
-q17_assert(q17_has($status, '| Quality Platform Q17 payment-runtime analysis | **DONE / VERIFIED** |'), 'project status preserves Q17 completion row');
-q17_assert(q17_has($status, '| Final SUPCheckout identity migration |'), 'project status advances beyond Q17 into final SUPCheckout identity migration with permanent certification');
-q17_assert(q17_has($status, '## Task 8 — DONE / VERIFIED') && q17_has($status, '| Quality Platform Q17 payment-runtime analysis | **DONE / VERIFIED** |'), 'project status keeps Q17 closure evidence through verified Task 8 closeout');
-q17_assert(preg_match('/\\| Quality Platform Q1-Q([0-9]+) \\| \\*\\*DONE \\/ VERIFIED\\*\\* \\|/', $readme, $q17_readme_range_matches) === 1 && isset($q17_readme_range_matches[1]) && (int) $q17_readme_range_matches[1] >= 17, 'README completion table includes Q17 or a later verified gate');
-q17_assert(q17_has($readme, 'Enterprise Release Candidate Closeout is **DONE / VERIFIED**.'), 'README advances beyond Q17 into verified release-candidate state');
+q17_assert(
+    q17_has($status, '| Quality Platform Q1-Q19 | **DONE / VERIFIED — permanently closed at Q19** |'),
+    'project status records the closed Quality Platform Q1-Q19'
+);
+q17_assert(
+    q17_has($status, '| Final pre-clone runtime/QA closure | **DONE / VERIFIED — PR #75** |'),
+    'project status advances beyond historical Q17 into the certified pre-clone runtime closure'
+);
+q17_assert(
+    q17_has($readme, 'docs/project/PROJECT-STATUS.md'),
+    'README delegates current engineering state to project status'
+);
 q17_assert(q17_has($playbook, '**Q17 / DONE / VERIFIED — PAYMENT-RUNTIME CLOSEOUT**') && q17_has($playbook, '7. Enterprise Compatibility Certification — **CURRENT**.'), 'playbook closes Q17 and advances into named certification');
 q17_assert(!q17_has($playbook, '**Q17 / PLANNED PAYMENT-RUNTIME CLOSEOUT**'), 'playbook removes stale planned-Q17 marker');
 q17_assert(!q17_has($playbook, 'current program gate is **Full Automated Quality Platform — Q16**'), 'playbook removes lowercase stale Q16 current-gate marker');
 q17_assert(q17_has($audit, 'new enterprise-critical evidence independently demonstrates another bounded risk'), 'repository audit preserves bounded post-Q17 extension policy');
-q17_assert(q17_has($handoff, 'Quality Platform Q17 payment-runtime analysis: **DONE / VERIFIED**'), 'handoff preserves Q17 completion');
-q17_assert(q17_has($handoff, '- Enterprise Task 8 release-candidate closeout — **DONE / VERIFIED**'), 'handoff advances beyond Q17 into verified Task 8 closeout');
+q17_assert(q17_has($handoff, '- Quality Platform Q1-Q19 — **DONE / VERIFIED; permanently closed at Q19**'), 'handoff records the closed Quality Platform');
+q17_assert(q17_has($handoff, '- Enterprise Tasks 1-8 — **DONE / VERIFIED**'), 'handoff records the historical enterprise task closure');
 
 echo "\nQ17 Payment Runtime Analysis: " . $pass . " PASS / " . $fail . " FAIL\n";
 exit($fail === 0 ? 0 : 1);
