@@ -103,8 +103,7 @@ foreach (array('function submitUpayButton', 'function submitSavedCard', 'functio
 }
 sufi_assert(strpos($new_template, 'supCheckout.') !== false, 'new checkout template invokes canonical JS namespace');
 
-sufi_assert(!is_file($root . '/assets/screenshots/7-Upayments-Payment- Interface-Form.png'), 'invalid screenshot filename with spaces is absent');
-sufi_assert(is_file($root . '/assets/screenshots/7-Upayments-Payment-Interface-Form.png'), 'normalized screenshot filename is present');
+sufi_assert(!is_dir($root . '/assets/screenshots'), 'legacy repository screenshot source directory is absent');
 
 echo "\nSUPCheckout Frontend Identity: {$pass} PASS / {$fail} FAIL\n";
 exit($fail === 0 ? 0 : 1);
