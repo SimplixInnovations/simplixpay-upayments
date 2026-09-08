@@ -4,18 +4,36 @@ Thank you for helping improve **SUPCheckout for UPayments**.
 
 ## Current contribution model
 
-The canonical repository is maintained under the Simplix Innovations engineering program. Public bug reports, compatibility reports, reproduction cases and technical evidence are welcome through GitHub Issues.
+SUPCheckout is maintained under the Simplix Innovations engineering and release process.
 
-External code pull requests are **not accepted by default**. Payment-risk ownership, canonical authorship and long-term release responsibility remain inside the Simplix Innovations maintenance process. Open a code PR only when a maintainer explicitly requests it.
+Public bug reports, compatibility reports, reproduction cases and technical evidence are welcome through GitHub Issues. External code pull requests are **not accepted by default** because payment-flow ownership, compatibility migrations and release responsibility remain inside the maintainer process.
+
+Open a code pull request only when a maintainer explicitly requests one.
 
 ## Before reporting a defect
 
-Record the smallest reproducible case and include WordPress, WooCommerce, PHP, plugin version/commit, checkout mode, HPOS state, multilingual stack, theme, payment feature, expected/actual behavior and sanitized evidence.
+Provide the smallest reproducible case and include, where relevant:
 
-Never include secrets, card data, customer tokens, customer PII or production database exports. Security findings belong in the private process described in `SECURITY.md`.
+- SUPCheckout version or exact commit;
+- WordPress, WooCommerce and PHP versions;
+- Classic or Blocks checkout;
+- HPOS or legacy order storage;
+- relevant theme/plugins and payment feature;
+- expected vs actual behavior;
+- sanitized logs or screenshots.
+
+Never include API keys, bearer tokens, card data, customer/card tokens, customer PII, token-identity secrets/provenance or production database exports. Security findings belong in the private process described in [`SECURITY.md`](SECURITY.md).
 
 ## Engineering standard for requested changes
 
-Read `AGENTS.md` and the project control documents first. Requested changes must be phase-scoped, reviewable, backward-conscious and supported by evidence. Payment-flow behavior, persisted IDs and provider contracts must not be changed casually.
+Read [`AGENTS.md`](AGENTS.md) and the relevant project-control documents before implementation.
 
-Every change should document requirement/root cause, scope, payment/security risk, compatibility impact, validation, rollback/recovery considerations and documentation updates.
+Requested changes must be:
+
+- narrowly scoped and reviewable;
+- backward-conscious;
+- explicit about payment/security impact;
+- covered by reproducible validation;
+- accompanied by migration and rollback/recovery reasoning when persistent identity or financial state is affected.
+
+Payment-flow behavior, persisted IDs and provider contracts must not be changed for naming or cosmetic uniformity.
