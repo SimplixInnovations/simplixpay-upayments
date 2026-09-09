@@ -126,6 +126,7 @@ a3_assert_same('no', $fields['make_default_gateway']['default'], 'default-gatewa
 a3_assert_same('UPayments', $fields['title']['default'], 'checkout title default remains method title');
 a3_assert_same('Gateway description', $fields['description']['default'], 'checkout description default remains method description');
 a3_assert_same('', $fields['api_key']['default'], 'API key default remains empty');
+a3_assert_same('password', $fields['api_key']['type'], 'API key uses a masked WooCommerce password control');
 a3_assert_same('no', $fields['debug']['default'], 'debug logging remains opt-in');
 a3_assert_same('no', $fields['test_mode']['default'], 'test mode remains opt-in');
 a3_assert_same('yes', $fields['is_order_complete']['default'], 'paid-order completed setting remains enabled by default');

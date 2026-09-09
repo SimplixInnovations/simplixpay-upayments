@@ -41,6 +41,7 @@ final class GatewaySettingsTest extends TestCase {
         self::assertSame('UPayments', $fields['title']['default']);
         self::assertSame('Provider description', $fields['description']['default']);
         self::assertSame('', $fields['api_key']['default']);
+        self::assertSame('password', $fields['api_key']['type']);
         self::assertSame('yes', $fields['enable_save_card']['default']);
         self::assertSame('no', $fields['enable_multimerchant']['default']);
         self::assertSame('multimerchant_repeater', $fields['multimerchant_accounts']['type']);

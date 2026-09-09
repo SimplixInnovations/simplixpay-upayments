@@ -37,7 +37,7 @@ return array(
     ),
     'api_key' => array(
         'title' => 'Api Key',
-        'type' => 'text',
+        'type' => 'password',
         'description' => 'Copy/paste values from UPayments dashboard',
         'default' => '',
         'desc_tip' => true,

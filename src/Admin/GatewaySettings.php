@@ -49,7 +49,7 @@ final class GatewaySettings {
             ),
             'api_key' => array(
                 'title' => __('Api Key', 'supcheckout'),
-                'type' => 'text',
+                'type' => 'password',
                 'description' => __('Copy/paste values from UPayments dashboard', 'supcheckout'),
                 'default' => '',
                 'desc_tip' => true,
