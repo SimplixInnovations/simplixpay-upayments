@@ -92,7 +92,7 @@ Current exact evidence:
 - canonical deterministic ZIP — **51 files**, SHA-256 `58eba75019416f39a09211c87e7ccbcbb635834fb20bc890e9efbd5fec859655`;
 - canonical, Linux and Windows package evidence — **byte-identical**.
 
-The bounded pre-acceptance hardening chain after the rejected 2026-09-08 owner run is closed:
+The bounded pre-acceptance hardening chain after the pre-acceptance B-X1 owner run is closed:
 
 - PR #84 — B-X1 malformed gateway-settings fail-closed fix;
 - PR #91 — Blocks and Classic runtime eligibility parity;
@@ -105,9 +105,15 @@ The bounded pre-acceptance hardening chain after the rejected 2026-09-08 owner r
 
 The installable package contains `readme.txt` and `LICENSE`; repository-only `README.md`, `CHANGELOG.md` and `SECURITY.md` are excluded.
 
-Owner technical acceptance remains **NOT ACCEPTED**. Accepted owner baseline: **NONE**. Automated certification does not substitute for the independent fresh-clone owner gate.
+Owner technical acceptance is **ACCEPTED** for this repository against the following frozen coordinates:
 
-Living-document-only descendants may advance `main` after this runtime anchor without changing distributable bytes. A new session must resolve live `main` and verify that its distributable package still matches the certified package before owner acceptance.
+- **Accepted Approach 2 baseline:** `0c883d609906676966002eb022a82a9656eeacc5`
+- **Accepted package:** `supcheckout-0.1.0.zip` — 51 files
+- **Accepted package SHA-256:** `58eba75019416f39a09211c87e7ccbcbb635834fb20bc890e9efbd5fec859655`
+
+A new session must resolve live `main` and confirm the accepted-baseline coordinates above are still authoritative before treating any related work as acceptable. Living-document-only descendants may advance `main` after the accepted runtime anchor without changing distributable bytes.
+
+The pre-acceptance B-X1 malformed-settings rejection closed by PR #84 remains historical evidence that documented the gaps closed by PRs #91-#97; the current owner technical acceptance verdict supersedes it but does not erase it.
 
 ## 5. Program sequence — mandatory current decision
 
@@ -133,30 +139,17 @@ Tag / GitHub Release / WordPress.org publication only with explicit owner approv
 
 ### Current gate
 
-**Owner fresh-clone technical acceptance is the next authorized substantive step.**
+**Owner fresh-clone technical acceptance has been completed and the accepted Approach 2 baseline is frozen.**
 
-Approach 3 must **not** begin until the owner acceptance baseline is independently established.
+The current next substantive program is **Approach 3 architecture modernization** — now `AUTHORIZED / NOT STARTED`. Approach 3 must use the frozen accepted baseline as its regression reference coordinate and must be independently re-certified against it before launch-facing work is treated as final.
 
-This acceptance is intentionally bounded. It does **not** require finishing the final UI/UX, branding, broad accessibility certification or exhaustive launch test matrix before Approach 3.
-
-The pre-Approach-3 owner acceptance should establish, at minimum:
-
-- exact fresh-clone identity and clean Git state;
-- Composer validation/audit/quality;
-- high-value identity, migration, security and H12 harnesses;
-- deterministic package build/verifier/checksum;
-- disposable/staging install and activation;
-- basic Classic and Blocks sanity;
-- basic UPayments sandbox success/decline/cancel behavior where credentials/environment allow;
-- enough merchant-facing smoke to prove the certified baseline behaves outside GitHub CI.
-
-The purpose is to create a defensible regression boundary: if Approach 3 later introduces a defect, the team can distinguish it from a defect that already existed in the accepted Approach 2 baseline.
+This acceptance was intentionally bounded. It did **not** require finishing the final UI/UX, branding, broad accessibility certification or exhaustive launch test matrix before Approach 3.
 
 ## 6. Approach 3 boundary
 
-**Status: NOT STARTED / BLOCKED BY OWNER TECHNICAL ACCEPTANCE.**
+**Status: AUTHORIZED / NOT STARTED.**
 
-When owner acceptance passes, Approach 3 becomes the next engineering program.
+Owner technical acceptance has completed and the accepted Approach 2 baseline `0c883d609906676966002eb022a82a9656eeacc5` is the regression reference coordinate for all Approach 3 work. Any change to runtime/package bytes requires a new acceptance event.
 
 Approach 3 must begin with a fresh architecture assessment of the accepted source and classify proposed modernization as:
 
@@ -170,7 +163,7 @@ Do not interpret “Approach 3” as permission to refactor everything.
 
 Protected payment/provider/persisted identities remain compatibility contracts. Architectural modernization must preserve or explicitly migrate them with upgrade, rollback/failure and regression evidence.
 
-Approach 3 must be bounded, branch-based, reviewable and re-certified before launch-facing work is treated as final.
+Approach 3 must be bounded, branch-based, reviewable and re-certified against the accepted baseline before launch-facing work is treated as final.
 
 ## 7. Deferred launch/product work
 
@@ -193,20 +186,21 @@ Do not report these deferred items as Approach 2 defects unless fresh evidence s
 
 | Field | Current value |
 |---|---|
-| Program phase | **Ready for fresh-clone owner technical acceptance after living-state reconciliation** |
+| Program phase | **Approach 3 architecture modernization (next authorized program)** |
 | Approach 2 / pre-acceptance engineering | **DONE / VERIFIED** |
-| Owner technical acceptance | **NOT ACCEPTED — fresh-clone re-acceptance required** |
-| Accepted owner baseline | **NONE YET** |
-| Approach 3 | **BLOCKED until owner technical acceptance passes** |
+| Owner technical acceptance | **ACCEPTED** |
+| Accepted Approach 2 baseline | **`0c883d609906676966002eb022a82a9656eeacc5`** |
+| Accepted package | **`supcheckout-0.1.0.zip` — 51 files / SHA-256 `58eba75019416f39a09211c87e7ccbcbb635834fb20bc890e9efbd5fec859655`** |
+| Approach 3 | **AUTHORIZED / NOT STARTED** |
 | Full UI/UX / branding / broad launch testing | **DEFERRED until after Approach 3** |
 | Public release authorization | **NOT GRANTED** |
-| Current program gate | **Fresh-clone owner technical acceptance** |
-| Next substantive action | Fresh clone + owner acceptance per `OWNER-HANDOFF.md` |
-| Latest runtime-bearing CI-certified `main` | `82d1fdaee91ee6bde6c26dfcc7ceb974d0d59847` — PR #97 |
+| Current program gate | **Approach 3 architecture modernization** |
+| Next substantive action | Scope Approach 3 against frozen baseline `0c883d609906676966002eb022a82a9656eeacc5` |
+| Latest runtime-bearing CI-certified `main` (historical anchor) | `82d1fdaee91ee6bde6c26dfcc7ceb974d0d59847` — PR #97 |
 | Runtime exact-head evidence | **41/41 post-merge checks; H12 1936/0 PHP + 150/0 Blocks; compatibility 20/20; Release 69/0; WordPress.org readiness 31/0** |
 | Canonical runtime package | **51 files / SHA-256 `58eba75019416f39a09211c87e7ccbcbb635834fb20bc890e9efbd5fec859655`** |
 | Expected closed topology outside temporary work | **`main` only; no open PRs/issues** |
-| Local owner acceptance | **NOT ACCEPTED; prior B-X1 rejection remains historical evidence, all known repository pre-acceptance blockers now fixed/certified** |
+| Local owner acceptance | **ACCEPTED for baseline `0c883d609906676966002eb022a82a9656eeacc5` (pre-acceptance B-X1 malformed-settings rejection closed by PR #84 remains historical evidence)** |
 | Source of live truth | **GitHub + exact source/check/package evidence** |
 
 Documentation-only reconciliation may advance the live `main` SHA while leaving the runtime-bearing anchor and 51-file package byte-identical.
@@ -317,6 +311,4 @@ If any of those answers are unknown, the session is **not bootstrapped yet**.
 
 ## 13. Immediate next step
 
-Follow [`OWNER-HANDOFF.md`](OWNER-HANDOFF.md) from a completely fresh clone and return the requested terminal output plus the bounded manual-smoke report.
-
-Only after that evidence is reviewed and the exact baseline is accepted should Approach 3 begin.
+Scope **Approach 3 architecture modernization** against the frozen accepted baseline `0c883d609906676966002eb022a82a9656eeacc5` per §6. Do not begin Approach 3 implementation in the same session that performs this scoping unless the program-level ledger has first been updated to record the new active task.

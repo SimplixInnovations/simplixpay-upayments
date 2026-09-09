@@ -23,7 +23,7 @@ Never begin substantive work from chat memory, an old handoff message or a copie
 
 Every new chat, machine, clone, worktree or developer/AI-agent session must first follow `docs/project/START-HERE.md` and verify live GitHub/source/check state. If live evidence and a living document differ, stop and reconcile current truth before implementation or release claims.
 
-When program-level truth changes—owner acceptance state, Approach 3 authorization, release authorization, next substantive action or runtime-bearing baseline—update the living continuity/status authorities in the same bounded workstream.
+When program-level truth changes—owner acceptance state, Approach 3 authorization, release authorization, next substantive action or runtime-bearing baseline—update the living continuity/status authorities in the same bounded workstream. The current program-level ledger is anchored at the owner-accepted Approach 2 baseline `0c883d609906676966002eb022a82a9656eeacc5`; any change to runtime/package bytes requires a new acceptance event.
 
 For every substantive active task, the open GitHub PR is the canonical task-level work ledger. Its body/comments/checks must make the work reconstructable from a new session by recording the base SHA, current exact head, scope/non-scope, current verification gate, blockers/failures, next action and merge-readiness evidence. `START-HERE.md` remains the program-level ledger; do not turn it into an append-only task diary.
 
@@ -81,7 +81,7 @@ Mandatory sequence:
 
 `pre-acceptance engineering closed → fresh-clone owner technical acceptance → accepted baseline → Approach 3 architecture modernization → Approach 3 re-certification → full UI/UX/branding/accessibility/broad launch testing → explicit release decision.`
 
-Approach 3 is **not authorized** until owner technical acceptance passes.
+Approach 3 is now **AUTHORIZED / NOT STARTED** for this repository against the frozen owner-accepted Approach 2 baseline.
 
 Latest runtime-bearing CI-certified `main`:
 
@@ -91,7 +91,7 @@ This is PR #97's squash merge from exact certified head `1f2a0b8d35f96008be6ccfe
 
 PRs #91-#97 closed the post-owner-rejection pre-acceptance gaps: Classic/Blocks runtime eligibility parity, admin isolation/dead repeater cleanup, PHP 8.2 current-stack certification, distribution cleanup, saved-card last-four presentation, opaque browser saved-card handles and removal of the unnecessary numeric WordPress user ID from browser localization.
 
-Owner technical acceptance remains **NOT ACCEPTED** and the accepted owner baseline remains **NONE**. A fresh clone of the final reconciled `origin/main` must pass `OWNER-HANDOFF.md` before Approach 3.
+Owner technical acceptance is **ACCEPTED** for the frozen Approach 2 baseline `0c883d609906676966002eb022a82a9656eeacc5` and accepted package SHA-256 `58eba75019416f39a09211c87e7ccbcbb635834fb20bc890e9efbd5fec859655`. The pre-acceptance B-X1 malformed-settings rejection closed by PR #84 remains historical evidence that documented the gaps closed by PRs #91-#97; the current owner technical acceptance verdict supersedes it but does not erase it.
 
 Outside bounded active work, required remote topology is **main only**. The superseded #98 branch was explicitly cleaned up after #97 merged.
 

@@ -26,7 +26,7 @@ Fresh post-merge evidence:
 - CodeQL — **SUCCESS**;
 - deterministic package — **51 files**, SHA-256 `58eba75019416f39a09211c87e7ccbcbb635834fb20bc890e9efbd5fec859655`, byte-identical across canonical/Linux/Windows evidence.
 
-Owner technical acceptance remains **NOT ACCEPTED**; this automated anchor does not authorize Approach 3 or publication.
+Owner technical acceptance is **ACCEPTED** for the frozen Approach 2 baseline 0c883d609906676966002eb022a82a9656eeacc5 and accepted package SHA-256 58eba75019416f39a09211c87e7ccbcbb635834fb20bc890e9efbd5fec859655. Owner technical acceptance does not authorize publication; Approach 3 architecture modernization is now AUTHORIZED / NOT STARTED against the frozen accepted baseline.
 
 ### Current-stack and pre-acceptance hardening
 

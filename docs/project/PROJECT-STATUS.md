@@ -4,8 +4,11 @@
 **Last reconciled:** 2026-09-09
 **Canonical repository:** `SimplixInnovations/supcheckout`
 **Development version:** `0.1.0`
+**Owner technical acceptance:** **ACCEPTED**
+**Accepted Approach 2 baseline:** **`0c883d609906676966002eb022a82a9656eeacc5`**
+**Accepted package:** `supcheckout-0.1.0.zip` — 51 files, SHA-256 `58eba75019416f39a09211c87e7ccbcbb635834fb20bc890e9efbd5fec859655`
 
-> Fresh repository/source/CI/provider evidence wins over recorded status. Historical documents preserve milestone truth and are not rewritten to match later branding.
+> Fresh repository/source/CI/provider evidence wins over recorded status. Historical documents preserve milestone truth and are not rewritten to match later branding. The pre-acceptance B-X1 malformed-settings rejection closed by PR #84 remains historical evidence that documented the gaps closed by PRs #91-#97; the current owner technical acceptance verdict supersedes it but does not erase it.
 
 ## Executive status
 
@@ -24,9 +27,10 @@
 | Quality Platform Q1-Q19 | **DONE / VERIFIED — permanently closed at Q19** |
 | PRs #91-#97 bounded pre-acceptance hardening | **DONE / VERIFIED / MERGED** |
 | Compatibility matrix | **20 runtime cells — VERIFIED** |
-| Owner technical acceptance | **NOT ACCEPTED — fresh-clone re-acceptance required** |
-| Accepted owner baseline | **NONE** |
-| Approach 3 architecture modernization | **NOT STARTED — blocked until owner technical acceptance passes** |
+| Owner technical acceptance | **ACCEPTED** |
+| Accepted Approach 2 baseline | **`0c883d609906676966002eb022a82a9656eeacc5`** |
+| Accepted package | **`supcheckout-0.1.0.zip` — 51 files / SHA-256 `58eba75019416f39a09211c87e7ccbcbb635834fb20bc890e9efbd5fec859655`** |
+| Approach 3 architecture modernization | **AUTHORIZED / NOT STARTED** |
 | Full UI/UX / branding / broad launch testing | **DEFERRED until after Approach 3** |
 | Public GitHub Release | **NOT CREATED** |
 | WordPress.org publication | **NOT PERFORMED** |
@@ -41,7 +45,7 @@ The owner gate is deliberately technical and bounded. It does not require final 
 
 ## Current runtime-bearing CI-certified main
 
-Latest runtime-bearing merge:
+Historical runtime-bearing merge (pre-acceptance CI anchor):
 
 `82d1fdaee91ee6bde6c26dfcc7ceb974d0d59847`
 
@@ -62,9 +66,17 @@ Fresh post-merge evidence on `82d1fdaee91ee6bde6c26dfcc7ceb974d0d59847`:
 - canonical deterministic package — **51 files**, SHA-256 `58eba75019416f39a09211c87e7ccbcbb635834fb20bc890e9efbd5fec859655`;
 - canonical/Linux/Windows ZIP and manifest evidence — **byte-identical**.
 
-This is **not an owner-accepted baseline**. Automated certification establishes the candidate; only a fresh-clone owner acceptance can accept it and unlock Approach 3.
+## Current owner-accepted Approach 2 baseline
 
-Repository-only living-document descendants may advance live `main` without changing this runtime-bearing anchor or distributable package. Live GitHub evidence remains authoritative.
+| Field | Value |
+|---|---|
+| Accepted baseline SHA | `0c883d609906676966002eb022a82a9656eeacc5` |
+| Accepted package | `supcheckout-0.1.0.zip` |
+| Accepted package SHA-256 | `58eba75019416f39a09211c87e7ccbcbb635834fb20bc890e9efbd5fec859655` |
+| Accepted package file count | `51` |
+| Owner technical acceptance verdict | **ACCEPTED** |
+
+The accepted baseline is the exact runtime anchor that Approach 3 must use as its regression/reference coordinate. Documentation-only reconciliation may advance live `main` after this baseline without changing distributable bytes; any accepted-runtime change requires a new acceptance event. Live GitHub evidence remains authoritative.
 
 ## Repository state
 
@@ -160,19 +172,17 @@ Repository certification does not replace:
 
 Automatic WooCommerce refunds and arbitrary marketplace multi-split remain unsupported.
 
-## Remaining owner work
+## Current remaining program
 
-1. Create a **fresh clone** directly from `https://github.com/SimplixInnovations/supcheckout.git`.
-2. Verify the new clone is exact `origin/main` with no inherited local branches, worktrees, stashes or build residue.
-3. Run the isolated technical acceptance suite in [`OWNER-HANDOFF.md`](OWNER-HANDOFF.md).
-4. Build and verify the deterministic `supcheckout-0.1.0.zip` from that exact final `main`.
-5. Perform bounded disposable/staging WooCommerce smoke, including Classic, Blocks, HPOS/legacy where practical and UPayments sandbox behavior.
-6. Return the complete automated output and bounded manual-smoke evidence for owner-acceptance review.
-7. If that exact baseline is accepted, begin **Approach 3** as a separately scoped architecture-modernization program.
-8. Re-certify the completed Approach 3 result against the accepted baseline and all permanent payment/security/compatibility controls.
-9. Then complete full UI/UX, branding, accessibility, broad browser/device/theme/manual qualification and other launch-facing work.
-10. Explicitly choose the first public version (`0.1.0` early release or a separately approved `1.0.0` first stable).
-11. Tag/release/submit to WordPress.org only after explicit owner approval.
+The owner-accepted Approach 2 baseline is frozen. The remaining program is sequenced:
+
+1. **Approach 3 architecture modernization** — AUTHORIZED, NOT STARTED. Must be independently scoped, branched, implemented and re-certified against the frozen baseline `0c883d609906676966002eb022a82a9656eeacc5` and its accepted package SHA-256.
+2. **Approach 3 re-certification** — required before launch-facing work is treated as final.
+3. **Post-Approach-3 launch program** — final UI/UX, branding, accessibility, broad browser/device/theme/manual qualification and other launch-facing work.
+4. **Explicit version decision** — choose first public version (early `0.1.0` release or separately approved `1.0.0` first stable) under an explicit dedicated PR with the full release-sensitive gate stack re-run.
+5. **Publication** — Tag, GitHub Release and WordPress.org submission only after explicit owner approval. Owner technical acceptance does not authorize publication.
+
+The fresh-clone procedural source-of-truth for any future acceptance event remains [`OWNER-HANDOFF.md`](OWNER-HANDOFF.md). Earlier 2026-09-08 B-X1 fresh-clone rejection is preserved as historical evidence; this current accepted baseline supersedes it for the purpose of identifying the regression reference coordinate going forward.
 
 ## Historical program anchors
 
