@@ -225,9 +225,9 @@ const handleSubscriptionChange = (plan, interval) => {
                                 const brand = typeof card.brand === 'string' ? card.brand : '';
                                 return createElement('button',
                                     {
-                                        key: token || index,
+                                        key: selection || index,
                                         type: 'button',
-                                        className: `upay-payment-method ${upayData.card_token === token ? 'active' : ''}`,
+                                        className: `upay-payment-method ${upayData.card_token === selection ? 'active' : ''}`,
                                         onClick: () => handleMethodClick('cc', selection),
                                             style: {
                                                 display: 'flex',
