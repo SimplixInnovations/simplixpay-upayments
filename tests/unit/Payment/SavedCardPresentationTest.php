@@ -38,6 +38,9 @@ final class SavedCardPresentationTest extends TestCase {
         self::assertSame('', SavedCardPresentation::last_four(array('number' => '12')));
         self::assertSame('', SavedCardPresentation::last_four(array('last4' => array('4242'))));
         self::assertSame('', SavedCardPresentation::last_four(array('number' => new \stdClass())));
+        self::assertSame('', SavedCardPresentation::last_four(array('number' => 4111111111114242)));
+        self::assertSame('', SavedCardPresentation::last_four(array('last4' => 4242)));
+        self::assertSame('', SavedCardPresentation::last_four(array('last4' => true)));
     }
 
     public function test_display_label_never_contains_more_than_last_four_digits(): void {
