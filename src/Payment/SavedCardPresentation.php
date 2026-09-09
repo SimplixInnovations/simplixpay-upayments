@@ -83,14 +83,13 @@ final class SavedCardPresentation {
      * @param array<string, mixed> $card Provider saved-card shape.
      * @return array{token:string,label:string,brand:string}|null
      */
-    public static function for_blocks(array $card, string $fallback): ?array {
-        $token = self::token($card);
-        if ($token === null) {
+    public static function for_blocks(array $card, string $fallback, string $selection): ?array {
+        if (self::token($card) === null || !SavedCardSelection::is_handle($selection)) {
             return null;
         }
 
         return array(
-            'token' => $token,
+            'selection' => $selection,
             'label' => self::label($card, $fallback),
             'brand' => self::safe_brand($card),
         );
