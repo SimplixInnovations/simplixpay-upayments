@@ -111,7 +111,7 @@ defined( 'ABSPATH' ) || exit;
                             continue;
                         }
                         $card_token = (string) $cardValue['token'];
-                        $card_display_label = \Simplixi\SUPCheckout\Payment\SavedCardPresentation::label($cardValue);
+                        $card_display_label = \Simplixi\SUPCheckout\Payment\SavedCardPresentation::label($cardValue, __('Saved card', 'supcheckout'));
                     ?>
 
                         <button type="button" value="<?php echo esc_attr($card_token); ?>" onclick="supCheckout.submitSavedCard(this)" class="upay-payment-method" id="upay-button-cc">
