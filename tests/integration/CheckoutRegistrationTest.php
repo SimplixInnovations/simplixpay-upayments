@@ -21,20 +21,32 @@ supcheckout_cert_assert(
 $original_settings = get_option('woocommerce_upayments_settings');
 
 $cases = array(
-    'enabled' => array(
-        'settings' => array('enabled' => 'yes'),
+    'configured-enabled' => array(
+        'settings' => array('enabled' => 'yes', 'api_key' => 'certification-key'),
+        'active'   => true,
+    ),
+    'configured-default-enabled' => array(
+        'settings' => array('api_key' => 'certification-key'),
         'active'   => true,
     ),
     'disabled' => array(
-        'settings' => array('enabled' => 'no'),
+        'settings' => array('enabled' => 'no', 'api_key' => 'certification-key'),
         'active'   => false,
     ),
-    'fresh-default' => array(
+    'fresh-unconfigured' => array(
         'settings' => array(),
-        'active'   => true,
+        'active'   => false,
+    ),
+    'missing-api-key' => array(
+        'settings' => array('enabled' => 'yes'),
+        'active'   => false,
+    ),
+    'blank-api-key' => array(
+        'settings' => array('enabled' => 'yes', 'api_key' => '   '),
+        'active'   => false,
     ),
     'malformed-object' => array(
-        'settings' => (object) array('enabled' => 'yes'),
+        'settings' => (object) array('enabled' => 'yes', 'api_key' => 'certification-key'),
         'active'   => false,
     ),
 );

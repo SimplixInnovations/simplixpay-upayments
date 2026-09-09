@@ -21,8 +21,8 @@ const { registerPaymentMethod } = wc.wcBlocksRegistry;
         product_type,
         plugin_url,
         translation
-    } = settings;        
-    
+    } = settings;
+
     const Content = (props) => {
         const { useDispatch, useSelect } = wp.data;
         const { useEffect, useState, createElement } = wp.element;
@@ -73,7 +73,7 @@ const { registerPaymentMethod } = wc.wcBlocksRegistry;
                 ...currentData,
                 ...newData
             });
-        };            
+        };
 
         // Section AK: Subscription handler uses current store state.
 const handleSubscriptionChange = (plan, interval) => {
@@ -148,7 +148,7 @@ const handleSubscriptionChange = (plan, interval) => {
             'div',
             { className: 'upay-payment-container' },
 
-            toast.show && createElement('div', { 
+            toast.show && createElement('div', {
                 className: 'wc-toast show',
                 style: {
                     position: 'fixed', top: '30px', right: '30px', background: '#F23232',
@@ -161,7 +161,7 @@ const handleSubscriptionChange = (plan, interval) => {
             is_subscription_enabled && hasCustomTypeProduct && is_whitelabled && payment_icons && payment_icons.cc && createElement(
                 'div',
                 { className: 'upay-subscription-wrapper', style: { marginBottom: '20px', padding: '15px', background: '#f9f9f9', borderRadius: '8px', border: '1px solid #eee' } },
-                createElement('label', { style: { display: 'block', fontWeight: 'bold', marginBottom: '5px' } }, 
+                createElement('label', { style: { display: 'block', fontWeight: 'bold', marginBottom: '5px' } },
                     'Purchase Type ', createElement('span', { style: { color: 'red' } }, '*')
                 ),
                 createElement('select', {
@@ -195,67 +195,67 @@ const handleSubscriptionChange = (plan, interval) => {
 
             createElement('div', { className: 'form-row form-row-wide' },
                 is_whitelabled ? createElement('div', { className: 'payment-sections' },
-                    
+
                     is_logged_in && Array.isArray(saved_cards) && saved_cards.length > 0 && [
-                        createElement('h3', { 
-                                key: 'title-saved', 
-                                style: { 
-                                    fontSize: '16px', 
-                                    fontWeight: 'bold', 
-                                    margin: '20px 0 10px' 
-                                } 
+                        createElement('h3', {
+                                key: 'title-saved',
+                                style: {
+                                    fontSize: '16px',
+                                    fontWeight: 'bold',
+                                    margin: '20px 0 10px'
+                                }
                             }, 'Pay Using Saved Cards'
                         ),
-                        createElement('div', { 
-                            key: 'list-saved', 
+                        createElement('div', {
+                            key: 'list-saved',
                             className: 'saved-cards-group'
                         },
-                        saved_cards.map((card, index) => 
+                        saved_cards.map((card, index) =>
                             {
                                 if (!card || typeof card !== 'object') return null;
                                 const token = typeof card.token === 'string' && card.token !== '' ? card.token : null;
                                 if (!token) return null;
                                 const number = typeof card.number === 'string' ? card.number : '';
                                 const brand = typeof card.brand === 'string' ? card.brand : '';
-                                return createElement('button', 
+                                return createElement('button',
                                     {
                                         key: token || index,
                                         type: 'button',
                                         className: `upay-payment-method ${upayData.card_token === token ? 'active' : ''}`,
                                         onClick: () => handleMethodClick('cc', token),
-                                            style: { 
-                                                display: 'flex', 
-                                                width: '100%', 
-                                                padding: '12px', 
-                                                marginBottom: '8px', 
-                                                alignItems: 'center', 
-                                                borderRadius: '4px', 
-                                                background: '#fff', 
+                                            style: {
+                                                display: 'flex',
+                                                width: '100%',
+                                                padding: '12px',
+                                                marginBottom: '8px',
+                                                alignItems: 'center',
+                                                borderRadius: '4px',
+                                                background: '#fff',
                                                 border: upayData.card_token === token ? '2px solid #007cba' : '1px solid #ccc',
                                                 cursor: 'pointer'
                                             }
                                     },
-                                    createElement('span', { className: 'payment-method-icon' }, 
-                                        createElement('img', { 
-                                            src: `${plugin_url}assets/images/cc.png`, 
-                                            style: { 
-                                                height: '24px' 
-                                            } 
+                                    createElement('span', { className: 'payment-method-icon' },
+                                        createElement('img', {
+                                            src: `${plugin_url}assets/images/cc.png`,
+                                            style: {
+                                                height: '24px'
+                                            }
                                         })
                                     ),
-                                    createElement('span', { 
-                                        style: { 
-                                            marginLeft: '10px', 
-                                            flexGrow: 1, 
-                                            textAlign: 'left', 
-                                            fontSize: '14px' 
+                                    createElement('span', {
+                                        style: {
+                                            marginLeft: '10px',
+                                            flexGrow: 1,
+                                            textAlign: 'left',
+                                            fontSize: '14px'
                                         }
                                     }, `${number} (${brand})`),
-                                    createElement('span', { 
-                                        style: { 
-                                            marginLeft: 'auto', 
-                                            fontWeight: '600' 
-                                        } 
+                                    createElement('span', {
+                                        style: {
+                                            marginLeft: 'auto',
+                                            fontWeight: '600'
+                                        }
                                     }, `${cart_total} ${currency_display}`),
                                     createElement('span', {
                               className: 'upay-chevron',
@@ -271,92 +271,92 @@ const handleSubscriptionChange = (plan, interval) => {
                         )
                     ],
 
-                    createElement('h3', { 
-                        style: { 
-                            fontSize: '16px', 
-                            fontWeight: 'bold', 
+                    createElement('h3', {
+                        style: {
+                            fontSize: '16px',
+                            fontWeight: 'bold',
                             margin: '25px 0 10px'
-                        } 
+                        }
                     }, 'Choose Payment Method'),
-                    createElement('div', { 
-                        className: 'normal-methods-group' 
+                    createElement('div', {
+                        className: 'normal-methods-group'
                     },
                     Object.entries(payment_icons).map(([key, label]) => (
-                        createElement('button', 
+                        createElement('button',
                                 {
                                     key: key,
                                     type: 'button',
                                     className: `upay-payment-method ${upayData.upayment_payment_type === key && !upayData.card_token ? 'active' : ''}`,
                                     onClick: () => handleMethodClick(key),
-                                    style: { 
-                                        display: 'flex', 
-                                        width: '100%', 
-                                        padding: '12px', 
-                                        marginBottom: '8px', 
-                                        alignItems: 'center', 
-                                        borderRadius: '4px', 
-                                        background: '#fff', 
-                                        border: (upayData.upayment_payment_type === key && !upayData.card_token) ? '2px solid #007cba' : '1px solid #ccc' 
+                                    style: {
+                                        display: 'flex',
+                                        width: '100%',
+                                        padding: '12px',
+                                        marginBottom: '8px',
+                                        alignItems: 'center',
+                                        borderRadius: '4px',
+                                        background: '#fff',
+                                        border: (upayData.upayment_payment_type === key && !upayData.card_token) ? '2px solid #007cba' : '1px solid #ccc'
                                     }
                                 },
-                                createElement('span', { className: 'payment-method-icon' }, 
+                                createElement('span', { className: 'payment-method-icon' },
                                     (() => {
                                         if (key === 'apple-pay-knet') {
                                             return [
-                                                createElement('img', { 
-                                                    key: 'apple', 
-                                                    src: `${plugin_url}assets/images/apple-pay.png`, 
-                                                    style: { 
-                                                        height: '24px', 
-                                                        marginRight: '5px' 
-                                                    } 
+                                                createElement('img', {
+                                                    key: 'apple',
+                                                    src: `${plugin_url}assets/images/apple-pay.png`,
+                                                    style: {
+                                                        height: '24px',
+                                                        marginRight: '5px'
+                                                    }
                                                 }),
-                                                createElement('img', { 
-                                                    key: 'knet', 
-                                                    src: `${plugin_url}assets/images/knet.png`, 
-                                                    style: { 
-                                                        height: '24px' 
-                                                    } 
+                                                createElement('img', {
+                                                    key: 'knet',
+                                                    src: `${plugin_url}assets/images/knet.png`,
+                                                    style: {
+                                                        height: '24px'
+                                                    }
                                                 })
                                             ];
                                         } else if (key === 'apple-pay') {
                                             return [
-                                                createElement('img', { 
-                                                    key: 'apple', 
-                                                    src: `${plugin_url}assets/images/apple-pay.png`, 
-                                                    style: { 
-                                                        height: '24px', 
-                                                        marginRight: '5px' 
-                                                    } 
+                                                createElement('img', {
+                                                    key: 'apple',
+                                                    src: `${plugin_url}assets/images/apple-pay.png`,
+                                                    style: {
+                                                        height: '24px',
+                                                        marginRight: '5px'
+                                                    }
                                                 }),
-                                                createElement('img', { 
-                                                    key: 'cc', 
-                                                    src: `${plugin_url}assets/images/cc.png`, 
-                                                    style: { 
-                                                        height: '24px' 
-                                                    } 
+                                                createElement('img', {
+                                                    key: 'cc',
+                                                    src: `${plugin_url}assets/images/cc.png`,
+                                                    style: {
+                                                        height: '24px'
+                                                    }
                                                 })
                                             ];
                                         }
-                                        return createElement('img', { 
-                                            src: `${plugin_url}assets/images/${key}.png`, 
-                                            style: { 
-                                                height: '24px' 
-                                            } 
+                                        return createElement('img', {
+                                            src: `${plugin_url}assets/images/${key}.png`,
+                                            style: {
+                                                height: '24px'
+                                            }
                                         });
                                     })()
                                 ),
-                                createElement('span', { 
-                                    style: { 
-                                        marginLeft: '10px', 
-                                        fontWeight: '600' 
-                                    } 
+                                createElement('span', {
+                                    style: {
+                                        marginLeft: '10px',
+                                        fontWeight: '600'
+                                    }
                                 }, label),
-                                createElement('span', { 
-                                    style: { 
-                                        marginLeft: 'auto', 
-                                        fontWeight: '600' 
-                                    } 
+                                createElement('span', {
+                                    style: {
+                                        marginLeft: 'auto',
+                                        fontWeight: '600'
+                                    }
                                 }, `${cart_total} ${currency_display}`),
                                 createElement('span', {
                               className: 'upay-chevron',
@@ -372,23 +372,23 @@ const handleSubscriptionChange = (plan, interval) => {
                     ),
 
                     is_logged_in && save_card_enabled && upayData.upayment_payment_type === 'cc' && !upayData.card_token && (
-                        createElement('div', { 
-                                style: { 
-                                    display: 'flex', 
-                                    justifyContent: 'space-between', 
-                                    alignItems: 'center', 
-                                    padding: '15px', 
-                                    borderTop: '1px solid #eee', 
-                                    marginTop: '10px' 
-                                } 
+                        createElement('div', {
+                                style: {
+                                    display: 'flex',
+                                    justifyContent: 'space-between',
+                                    alignItems: 'center',
+                                    padding: '15px',
+                                    borderTop: '1px solid #eee',
+                                    marginTop: '10px'
+                                }
                             },
-                            createElement('label', { 
-                                style: { 
-                                    fontSize: '0.9em' 
-                                } 
+                            createElement('label', {
+                                style: {
+                                    fontSize: '0.9em'
+                                }
                             }, translation.save_card_label || 'Save card for future use?'),
-                            createElement('label', { 
-                                    className: 'switch' 
+                            createElement('label', {
+                                    className: 'switch'
                                 },
                                 createElement('input', {
                                     type: 'checkbox',
@@ -427,7 +427,7 @@ const handleSubscriptionChange = (plan, interval) => {
             )
         );
     };
-    
+
     registerPaymentMethod({
         name: 'upayments',
         label: 'UPayments',
@@ -442,7 +442,7 @@ const handleSubscriptionChange = (plan, interval) => {
         supports: {
             features: [ 'products' ],
         },
-        
+
         onPaymentMethodChange: () => {
             return true;
         }
