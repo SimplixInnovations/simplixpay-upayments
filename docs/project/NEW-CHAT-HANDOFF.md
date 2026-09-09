@@ -35,7 +35,7 @@ Pre-release engineering is mature and the repository-side pre-acceptance blocker
 - Owner technical acceptance — **ACCEPTED**
 - Accepted Approach 2 baseline — **`0c883d609906676966002eb022a82a9656eeacc5`**
 - Accepted package — **`supcheckout-0.1.0.zip` — 51 files / SHA-256 `58eba75019416f39a09211c87e7ccbcbb635834fb20bc890e9efbd5fec859655`**
-- Approach 3 — **AUTHORIZED / NOT STARTED**
+- Approach 3 — **ARCHITECTURE APPROVED / T1 NOT STARTED**
 - Full UI/UX/branding/broad launch testing — **DEFERRED until after Approach 3**
 - Public GitHub Release / WordPress.org publication — **NOT PERFORMED**
 
@@ -63,7 +63,7 @@ Evidence on merged `main`:
 - canonical/Linux/Windows package evidence — **byte-identical**;
 - closed topology after duplicate #98 cleanup — **main only**.
 
-Owner technical acceptance is **ACCEPTED** for this repository against the frozen baseline `0c883d609906676966002eb022a82a9656eeacc5` and accepted package SHA-256 `58eba75019416f39a09211c87e7ccbcbb635834fb20bc890e9efbd5fec859655`. The next gate is **Approach 3 architecture modernization** against that baseline; documentation-only descendants may still advance `main` while retaining the same certified distributable package.
+Owner technical acceptance is **ACCEPTED** for this repository against the frozen baseline `0c883d609906676966002eb022a82a9656eeacc5` and accepted package SHA-256 `58eba75019416f39a09211c87e7ccbcbb635834fb20bc890e9efbd5fec859655`. The Approach 3 architecture decision is now **APPROVED / RECORDED**; the next gate is runtime-neutral T1 `t01-architecture-guardrails-and-active-callback-characterization`. Documentation/control descendants may advance `main` while retaining the same certified distributable package.
 
 The pre-acceptance B-X1 malformed-settings rejection closed by PR #84 remains historical evidence; the current owner technical acceptance verdict supersedes it but does not erase it.
 
@@ -134,18 +134,18 @@ The approved sequence is:
 
 `Approach 2 closed → fresh-clone owner technical acceptance → accepted baseline → Approach 3 architecture modernization → Approach 3 re-certification → full UI/UX/branding/accessibility/broad launch testing → explicit release decision.`
 
-Owner technical acceptance has been completed and the Approach 2 baseline is accepted. Approach 3 is now **AUTHORIZED / NOT STARTED**. Do not require final UI/UX or branding completion before Approach 3; those remain post-Approach-3 launch work unless fresh evidence proves an earlier blocker.
+Owner technical acceptance has been completed and the Approach 2 baseline is accepted. Approach 3 architecture is now **APPROVED / RECORDED** and T1 has **NOT STARTED**. The approved style is incremental strangler modernization around A1-A5 and the already-active `PaymentLifecycle` callback strangler. Do not require final UI/UX or branding completion before Approach 3; those remain post-Approach-3 launch work unless fresh evidence proves an earlier blocker.
 
 ## Next owner action
 
-Before beginning Approach 3, confirm:
+Before beginning an Approach 3 implementation tranche, confirm:
 
 1. the live repository topology is `main` only with no unintended open PRs/issues/tags/releases;
 2. the frozen accepted Approach 2 baseline is still **`0c883d609906676966002eb022a82a9656eeacc5`** and its accepted package SHA-256 is still **`58eba75019416f39a09211c87e7ccbcbb635834fb20bc890e9efbd5fec859655`**.
 
 Then:
 
-1. scope Approach 3 as a new bounded architecture-modernization program against the frozen baseline;
+1. read `.ai-architect/` and execute the approved bounded tranche against the frozen baseline;
 2. branch, implement and re-certify Approach 3 against the accepted baseline;
 3. defer final UI/UX/branding/broad launch qualification until Approach 3 is re-certified;
 4. choose the first public version and authorize publication separately.
