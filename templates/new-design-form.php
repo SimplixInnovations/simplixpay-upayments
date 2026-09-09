@@ -10,69 +10,11 @@
 
 defined( 'ABSPATH' ) || exit;
 
-// phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound, WordPress.Security.NonceVerification.Recommended -- WooCommerce template locals and read-only provider-return status flags; this template performs no request-authorized state change.
+// phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- WooCommerce template locals are intentionally scoped to the template include.
 ?>
-<style>
-    .wc-toast {
-    position: fixed;
-    top: 30px;
-    right: 30px;
-    background: #F23232;
-    color: #fff;
-    padding: 12px 18px;
-    border-radius: 6px;
-    opacity: 0;
-    pointer-events: none;
-    transform: translateY(10px);
-    transition: all 0.3s ease;
-    z-index: 99999;
-}
-
-.wc-toast.show {
-    opacity: 1;
-    transform: translateY(0);
-}
-</style>
 <div id="wc-toast" class="wc-toast"></div>
 <div class="supcheckout form-row form-row-wide">
-    <?php 
-    if (isset($_GET["cancelled"])){
-        $notice_html = '<div class="woocommerce-NoticeGroup woocommerce-NoticeGroup-checkout"><div class="woocommerce-error alert-color">'
-            . esc_html__('Payment canceled by customer', 'supcheckout')
-            . '</div></div>';
-    ?>
-        <script>
-            let message = <?php echo wp_json_encode($notice_html, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT); ?>;
-            jQuery(document).ready(function(){
-                jQuery('.woocommerce-notices-wrapper:first').html(message);
-            });
-        </script>
     <?php
-    } elseif (isset($_GET["failed"])){
-        $notice_html = '<div class="woocommerce-NoticeGroup woocommerce-NoticeGroup-checkout"><div class="woocommerce-error alert-color">'
-            . esc_html__('Payment error from UPayments', 'supcheckout')
-            . '</div></div>';
-    ?>
-        <script>
-            let message = <?php echo wp_json_encode($notice_html, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT); ?>;
-            jQuery(document).ready(function(){
-                jQuery('.woocommerce-notices-wrapper:first').html(message);
-            });
-        </script>
-    <?php
-    } elseif (isset($_GET["suspected"])) {
-        $notice_html = '<div class="woocommerce-NoticeGroup woocommerce-NoticeGroup-checkout"><div class="woocommerce-error alert-color">'
-            . esc_html__('Payment failed for suspected fraud.', 'supcheckout')
-            . '</div></div>';
-    ?>
-        <script>
-            let message = <?php echo wp_json_encode($notice_html, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT); ?>;
-            jQuery(document).ready(function(){
-                jQuery('.woocommerce-notices-wrapper:first').html(message);
-            });
-        </script>
-    <?php 
-    } 
         $icons = array();
         $total = WC()->cart->get_total('');
         $language = get_locale();
