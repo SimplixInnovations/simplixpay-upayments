@@ -114,6 +114,9 @@ foreach (array(
 ) as $label => $template_source) {
     sufi_assert(strpos($template_source, '$_GET[') === false, $label . ' does not trust query flags for payment notices');
     sufi_assert(strpos($template_source, '<script>') === false, $label . ' emits no inline payment-notice script');
+    if ($label === 'new checkout template') {
+        sufi_assert(strpos($template_source, '<style>') === false, 'new checkout template emits no inline style block');
+    }
 }
 
 
