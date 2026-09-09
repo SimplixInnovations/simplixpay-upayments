@@ -47,12 +47,12 @@ dependency_rules:
     reason: Canonical callback/reconciliation lifecycle.
   - rule: deny
     from: inward payment/provider services
-    to: service discovery or reverse lookup through WC_Upayments
-    reason: No service-locator/reverse gateway dependency.
+    to: new service discovery or reverse lookup through WC_Upayments/WooCommerce registries beyond characterized exceptions
+    reason: No new service-locator/reverse gateway dependency; existing accepted A5/lifecycle lookups are explicit ratchet exceptions.
   - rule: deny
     from: src/Payment/*
-    to: new ambient request superglobal parsing
-    reason: Platform request parsing belongs at explicit edge entrypoints; existing PaymentLifecycle is grandfathered until safely consolidated.
+    to: new ambient request superglobal parsing beyond characterized exceptions
+    reason: Platform request parsing should migrate toward explicit edges; existing accepted A5/lifecycle reads are frozen as non-growing exceptions.
   - rule: deny
     from: production code
     to: new provider HTTP egress site
@@ -61,6 +61,25 @@ dependency_rules:
     from: Approach 3
     to: generic multi-provider interfaces/frameworks
     reason: Repository is permanently UPayments-specific.
+accepted_ambient_dependencies:
+  policy: non-growing ratchet; reductions are allowed, additions require architecture review
+  files:
+    src/Payment/CheckoutOrchestrator.php:
+      superglobals:
+        '$_POST': 2
+      wc_calls: 20
+      reason: accepted A5 Classic checkout/session compatibility boundary
+    src/Payment/CheckoutPayload.php:
+      superglobals:
+        '$_SERVER': 4
+      wc_calls: 0
+      reason: accepted A5 request-context compatibility boundary
+    src/Payment/PaymentLifecycle.php:
+      superglobals:
+        '$_GET': 1
+        '$_POST': 1
+      wc_calls: 2
+      reason: accepted callback parsing plus current Woo gateway/cart compatibility lookup
 identity_contracts:
   product_name: SUPCheckout for UPayments
   slug: supcheckout
