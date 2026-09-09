@@ -363,83 +363,50 @@ function woocommerceUpaymentsInit() {
          * alter payment state.
          */
         public function thankyou_page($order_id) {
-            if (!$order_id) {return;}
+            if (!$order_id) {
+                return;
+            }
 
             $order = wc_get_order($order_id);
+            if (!$order instanceof WC_Order) {
+                return;
+            }
 
-            if (!$order) {return;}
+            $status = (string) $order->get_status();
+            $state = 'pending';
 
-            $payment_status = $order->get_meta('UPayments_Result');
-            $upayment_id    = $order->get_meta('UPayments_PaymentID');
-
-            $style = "width: 100%;  margin-bottom: 1rem; background: #212B5F; padding: 20px; color: #fff; font-size: 22px;";
-
-            // Display-only: derive the displayed status from the verified
-            // order state. No field from $_GET is allowed to mutate the order.
-            $status = $order->get_status();
+            if (method_exists($order, 'is_paid') && $order->is_paid()) {
+                $state = 'success';
+                $message = __('Your payment is successful with UPayments.', 'supcheckout');
+            } elseif ($status === 'failed') {
+                $state = 'failed';
+                $message = __('Your payment was not completed with UPayments.', 'supcheckout');
+            } elseif ($status === 'cancelled') {
+                $state = 'cancelled';
+                $message = __('Your order was cancelled.', 'supcheckout');
+            } elseif ($status === 'refunded') {
+                $state = 'refunded';
+                $message = __('Your payment has been refunded.', 'supcheckout');
+            } elseif ($status === 'wait') {
+                $message = __('We are verifying your payment status with UPayments. Please wait.', 'supcheckout');
+            } else {
+                $message = __('Your payment status is pending. We will update the order when UPayments confirms the final status.', 'supcheckout');
+            }
             ?>
-                <div class="upayments-thankyou-wrapper" data-order-id="<?php echo esc_attr($order_id); ?>">
-            <?php 
-                if ($status == "wait"){
-            ?>
-                <style>
-                    .payment-panel-wait .img-container {
-                        text-align: center;
-                    }
-                    .payment-panel-wait .img-container img{
-                        display: inline-block !important;
-                    }
-                </style>
-                <div class="payment-panel-wait">
-                    <h3><?php esc_html_e("We are retrieving your payment status from UPayments, please wait...", 'supcheckout'); ?></h3>
-                    <div class="img-container"><img src="<?php echo esc_url(UP_PLUGIN_URL . 'assets/images/loader.gif'); ?>" alt="" /></div>
-                </div>
-            <?php
-            } 
-            ?>
-                <div class="payment-panel-wait">
-                    <h3><?php esc_html_e('We are retrieving your payment status...', 'supcheckout' ); ?></h3>
-                </div>
-                <div class="payment-panel-pending" style="<?php echo esc_attr($status === "pending" ? "display: block" : "display: none"); ?>">
-                    <div style="<?php echo esc_attr($style); ?>">
-                        <?php esc_html_e("Your payment status is pending, we will update the status as soon as we receive notification from UPayments.", 'supcheckout'); ?>
-                    </div>
-                </div>
-                <div class="payment-panel-completed" style="<?php echo esc_attr($status === "completed" ? "display: block" : "display: none"); ?>">
-                    <div style="<?php echo esc_attr($style); ?>">
-                    <?php esc_html_e("Your payment is successful with UPayments.", 'supcheckout'); ?>
-                        <img style="width:100px" src="<?php echo esc_url(UP_PLUGIN_URL . 'assets/images/check.png'); ?>"/>
-                    </div>
-                </div>
-                <div class="payment-panel-failed" style="<?php echo esc_attr($status === "failed" ? "display: block" : "display: none"); ?>">
-                    <div style="<?php echo esc_attr($style); ?>">
-                    <?php esc_html_e("Your payment is failed with UPayments.", 'supcheckout'); ?>
-                    </div>
-                </div>
-                <div class="payment-panel-cancelled" style="<?php echo esc_attr($status === "cancelled" ? "display: block" : "display: none"); ?>">
-                    <div style="<?php echo esc_attr($style); ?>">
-                        <?php esc_html_e("Your order is cancelled.", 'supcheckout'); ?>
-                    </div>
-                </div>
-                <div class="payment-panel-error" style="display: none">
-                    <div class="message-holder">
-                        <?php esc_html_e("Something went wrong, please contact the merchant.", 'supcheckout'); ?>
-                    </div>
-                </div>
-                <div class="upayment-status-holder" style="display: none">
-                    <li class="woocommerce-order-overview__payment-status status">
-                        <?php esc_html_e("Payment Status:", 'supcheckout'); ?>
-                        <strong id="upayment-status-holder-strong"><?php echo esc_html($payment_status); ?></strong>
-                    </li>
-                </div>
-                <div class="upayment-id-holder" style="display: none">
-                    <li class="woocommerce-order-overview__payment-id payment-id">
-                        <?php esc_html_e("UPayment ID:", 'supcheckout'); ?>
-                        <strong id="upayment-id-holder-strong"><?php echo esc_html($upayment_id); ?></strong>
-                    </li>
+            <div class="upayments-thankyou-wrapper" data-order-id="<?php echo esc_attr($order_id); ?>">
+                <div
+                    class="supcheckout-payment-status supcheckout-payment-status--<?php echo esc_attr($state); ?>"
+                    <?php echo $state === 'pending' ? 'aria-live="polite"' : ''; ?>
+                >
+                    <?php if ($state === 'pending') : ?>
+                        <span class="supcheckout-payment-status__spinner" aria-hidden="true"></span>
+                    <?php elseif ($state === 'success') : ?>
+                        <span class="supcheckout-payment-status__success-mark" aria-hidden="true">✓</span>
+                    <?php endif; ?>
+                    <p><?php echo esc_html($message); ?></p>
                 </div>
             </div>
-        <?php
+            <?php
         }
 
         public function get_payment_staus()
@@ -1119,18 +1086,19 @@ function woocommerceUpaymentsInit() {
 
             if (is_checkout() && !is_wc_endpoint_url()) {
                 if ($this->get_option('use_new_design') == 'yes') {
-                    // Load New Design specific resources (Modal handling, modern API SDK)
                     wp_enqueue_style('supcheckout-checkout-new-style', $plugin_url . 'assets/css/new-design.css', array(), SUPCHECKOUT_VERSION );
                     wp_enqueue_script('supcheckout-checkout-new-script', $plugin_url . 'assets/js/new-upay.js', array('jquery'), SUPCHECKOUT_VERSION, true );
-                } else {
-                    // Load legacy inline-form handling without the inherited empty stylesheet.
-                    wp_enqueue_script('supcheckout-checkout-legacy-script', $plugin_url . 'assets/js/old-upay.js', array('jquery'), SUPCHECKOUT_VERSION, true );
                 }
-                wp_enqueue_script('supcheckout-subscription-checkout', $plugin_url. 'assets/js/subscription-checkout.js', array('jquery'),SUPCHECKOUT_VERSION,true);
-                wp_localize_script('supcheckout-subscription-checkout', 'wcUser', [
-                    'isLoggedIn' => is_user_logged_in(),
-                    'userId'     => get_current_user_id(),
-                ]);
+
+                if ($this->autoDeduction === 'yes'
+                    && \UPayments\Subscription\Helpers\Utils::cartHasCustomType()
+                ) {
+                    wp_enqueue_script('supcheckout-subscription-checkout', $plugin_url . 'assets/js/subscription-checkout.js', array('jquery'), SUPCHECKOUT_VERSION, true);
+                    wp_localize_script('supcheckout-subscription-checkout', 'wcUser', array(
+                        'isLoggedIn' => is_user_logged_in(),
+                        'userId'     => get_current_user_id(),
+                    ));
+                }
             }            
         }
 

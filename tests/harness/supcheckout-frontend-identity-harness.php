@@ -41,7 +41,6 @@ foreach (array(
     'supcheckout-customer',
     'supcheckout-checkout-new-style',
     'supcheckout-checkout-new-script',
-    'supcheckout-checkout-legacy-script',
     'supcheckout-subscription-checkout',
 ) as $handle) {
     sufi_assert(strpos($gateway, "'" . $handle . "'") !== false, 'canonical first-party enqueue handle exists: ' . $handle);
@@ -54,6 +53,7 @@ foreach (array(
     'custom-checkout-old-style',
     'custom-checkout-old-script',
     'upayments-subscription-checkout',
+    'supcheckout-checkout-legacy-script',
 ) as $retired) {
     sufi_assert(strpos($gateway, "'" . $retired . "'") === false, 'retired/generic first-party enqueue handle absent: ' . $retired);
 }
@@ -81,6 +81,9 @@ foreach (array(
     'assets/images/disabled.gif',
     'assets/js/upay.js',
     'assets/images/logo.png',
+    'assets/js/old-upay.js',
+    'assets/images/loader.gif',
+    'assets/images/check.png',
 ) as $dead_asset) {
     sufi_assert(!is_file($root . '/' . $dead_asset), 'proven dead runtime asset is absent: ' . $dead_asset);
 }
