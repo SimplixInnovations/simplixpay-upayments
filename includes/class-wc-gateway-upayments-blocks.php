@@ -176,7 +176,24 @@ class WCGatewayUPaymentsBlocks extends AbstractPaymentMethodType {
                         if (!is_array($card)) {
                             continue;
                         }
-                        $presented = \Simplixi\SUPCheckout\Payment\SavedCardPresentation::for_blocks($card, __('Saved card', 'supcheckout'));
+                        $provider_token = \Simplixi\SUPCheckout\Payment\SavedCardPresentation::token($card);
+                        if ($provider_token === null) {
+                            continue;
+                        }
+                        $selection = \Simplixi\SUPCheckout\Payment\SavedCardSelection::create(
+                            $provider_token,
+                            (int) $user_id,
+                            $api_key,
+                            $is_test_mode
+                        );
+                        if ($selection === null) {
+                            continue;
+                        }
+                        $presented = \Simplixi\SUPCheckout\Payment\SavedCardPresentation::for_blocks(
+                            $card,
+                            __('Saved card', 'supcheckout'),
+                            $selection
+                        );
                         if ($presented === null) {
                             continue;
                         }
