@@ -140,6 +140,12 @@ sufi_assert(strpos($subscription_js, "showToast(") === false, 'subscription chec
 sufi_assert(strpos($subscription_js, ".val('0')") !== false, 'one-time subscription state normalizes interval to zero');
 sufi_assert(strpos($customer_css, '.woocommerce .order-again') === false, 'SUPCheckout customer CSS does not style unrelated WooCommerce order-again controls');
 
+// Browser data-minimization contract: the subscription helper needs only a
+// boolean login state. The numeric WordPress user ID is server-side identity
+// and must not be localized into first-party checkout JavaScript without a
+// demonstrated browser requirement.
+sufi_assert(strpos($gateway, "'userId'     => get_current_user_id()") === false, 'subscription browser context does not expose numeric WordPress user ID');
+
 
 echo "\nSUPCheckout Frontend Identity: {$pass} PASS / {$fail} FAIL\n";
 exit($fail === 0 ? 0 : 1);
