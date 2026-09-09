@@ -28,7 +28,9 @@ Later documentation/presentation-only descendants may advance `main` without cha
 
 ### Latest current-stack compatibility hardening
 
-The runtime-bearing baseline above remains unchanged because PR #80 changed no production plugin runtime/package-source file. PR #80 specifically strengthened current-stable PHP acceptance and the evidence required to support the matrix below:
+The runtime-bearing baseline above remains unchanged because the current-stack compatibility changes below do not modify production plugin runtime/package-source files.
+
+PR #80 strengthened current-stable PHP acceptance:
 
 - final exact PR head: `717c34d16a5fdc5548b045751bdf53dbdb936a76`;
 - final PR result: **35/35 SUCCESS**, including Quality + H12 on PHP 8.5, **18/18 compatibility**, Release Gate and CodeQL;
@@ -39,6 +41,17 @@ The runtime-bearing baseline above remains unchanged because PR #80 changed no p
 
 Release Gate did not trigger again on the post-merge push; its successful evidence belongs to the identical final PR tree. One PR migration job initially failed before migration execution because GitHub's artifact service returned HTTP 403; the same job was rerun successfully, after which Release Gate passed. No plugin or migration failure was waived.
 
+PR #93 extends the real runtime matrix to PHP 8.2 on the current WordPress/WooCommerce stack:
+
+- exact certified PR head: `52cd037f1e43fcd5b767ce610c15e6a1d718a0d8`;
+- WordPress **7.1** / WooCommerce **11.1.0** / PHP **8.2** is exercised in both legacy storage and HPOS;
+- Compatibility Certification #588 — **20/20 runtime cells SUCCESS**;
+- Quality Gates #1060 — **SUCCESS**;
+- Release Artifact #530 — **SUCCESS**;
+- PHP 8.0 and 8.1 are intentionally not added as certification lanes merely to enlarge the matrix.
+
+PR #93 changes certification infrastructure/documentation only; it does not change payment/provider behavior, persisted identities, package runtime source, or the supported PHP floor.
+
 ## Platform matrix
 
 Every certified row uses a real WordPress/WooCommerce installation and exercises both legacy order storage and HPOS authoritative storage.
@@ -48,6 +61,7 @@ Every certified row uses a real WordPress/WooCommerce installation and exercises
 | 7.1 | 11.1.0 | 8.5 | **Verified** | **Verified** |
 | 7.1 | 11.1.0 | 8.4 | **Verified** | **Verified** |
 | 7.1 | 11.1.0 | 8.3 | **Verified** | **Verified** |
+| 7.1 | 11.1.0 | 8.2 | **Verified** | **Verified** |
 | 7.0.4 | 11.1.0 | 8.3 | **Verified** | **Verified** |
 | 7.0.4 | 11.0.1 | 8.3 | **Verified** | **Verified** |
 | 7.0.4 | 10.8.1 | 8.3 | **Verified** | **Verified** |
@@ -55,7 +69,7 @@ Every certified row uses a real WordPress/WooCommerce installation and exercises
 | 6.9.7 | 10.8.1 | 8.3 | **Verified** | **Verified** |
 | 6.9.7 | 10.8.1 | 7.4 | **Verified** | **Verified** |
 
-WooCommerce 11.1 requires WordPress 7.0+, so WordPress 6.9 / WooCommerce 11.1 is intentionally excluded as upstream-invalid. PHP 7.4 is the supported compatibility floor, not a recommendation for new production deployments. The current-stable PHP branch is also certified on the current WordPress/WooCommerce stack; compatibility-only code required for the floor must not execute deprecated behavior on current PHP.
+WooCommerce 11.1 requires WordPress 7.0+, so WordPress 6.9 / WooCommerce 11.1 is intentionally excluded as upstream-invalid. PHP 7.4 is the supported compatibility floor, not a recommendation for new production deployments. Current PHP branches are certified on the current WordPress/WooCommerce stack; compatibility-only code required for the floor must not execute deprecated behavior on current PHP.
 
 Public metadata derived from this matrix:
 
@@ -123,7 +137,7 @@ The permanent evidence stack is intentionally layered:
 
 - Quality Platform Q1-Q19 historical regressions — **closed / retained**;
 - H12 PHP and Blocks regressions;
-- real 18-cell compatibility matrix, including current-stable PHP 8.5 on legacy storage and HPOS;
+- real 20-cell compatibility matrix, including PHP 8.2, 8.3, 8.4 and 8.5 current-stack lanes plus the PHP 7.4 compatibility floor;
 - deterministic release artifact builder/verifier;
 - packaged legacy/HPOS smoke;
 - historical package-root migration/rollback certification;
