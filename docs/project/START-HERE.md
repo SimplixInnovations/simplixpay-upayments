@@ -141,17 +141,17 @@ Tag / GitHub Release / WordPress.org publication only with explicit owner approv
 
 **Owner fresh-clone technical acceptance has been completed and the accepted Approach 2 baseline is frozen.**
 
-The current next substantive program is **Approach 3 architecture modernization** — now `AUTHORIZED / NOT STARTED`. Approach 3 must use the frozen accepted baseline as its regression reference coordinate and must be independently re-certified against it before launch-facing work is treated as final.
+The current next substantive program is **Approach 3 architecture modernization**. Its architecture decision is **APPROVED / RECORDED** and implementation has **NOT STARTED**. The first tranche is `t01-architecture-guardrails-and-active-callback-characterization`, a runtime-neutral guardrail/characterization tranche. Approach 3 must use the frozen accepted baseline as its regression reference coordinate and must be independently re-certified against it before launch-facing work is treated as final.
 
 This acceptance was intentionally bounded. It did **not** require finishing the final UI/UX, branding, broad accessibility certification or exhaustive launch test matrix before Approach 3.
 
 ## 6. Approach 3 boundary
 
-**Status: AUTHORIZED / NOT STARTED.**
+**Status: ARCHITECTURE APPROVED / T1 NOT STARTED.**
 
 Owner technical acceptance has completed and the accepted Approach 2 baseline `0c883d609906676966002eb022a82a9656eeacc5` is the regression reference coordinate for all Approach 3 work. Any change to runtime/package bytes requires a new acceptance event.
 
-Approach 3 must begin with a fresh architecture assessment of the accepted source and classify proposed modernization as:
+The fresh architecture assessment is complete and recorded in `.ai-architect/`. Approach 3 implementation must follow the approved incremental-strangler contract and classify each proposed modernization as:
 
 - **Keep**
 - **Improve**
@@ -186,16 +186,16 @@ Do not report these deferred items as Approach 2 defects unless fresh evidence s
 
 | Field | Current value |
 |---|---|
-| Program phase | **Approach 3 architecture modernization (next authorized program)** |
+| Program phase | **Approach 3 architecture modernization — architecture approved; T1 next** |
 | Approach 2 / pre-acceptance engineering | **DONE / VERIFIED** |
 | Owner technical acceptance | **ACCEPTED** |
 | Accepted Approach 2 baseline | **`0c883d609906676966002eb022a82a9656eeacc5`** |
 | Accepted package | **`supcheckout-0.1.0.zip` — 51 files / SHA-256 `58eba75019416f39a09211c87e7ccbcbb635834fb20bc890e9efbd5fec859655`** |
-| Approach 3 | **AUTHORIZED / NOT STARTED** |
+| Approach 3 | **ARCHITECTURE APPROVED / T1 NOT STARTED** |
 | Full UI/UX / branding / broad launch testing | **DEFERRED until after Approach 3** |
 | Public release authorization | **NOT GRANTED** |
-| Current program gate | **Approach 3 architecture modernization** |
-| Next substantive action | Scope Approach 3 against frozen baseline `0c883d609906676966002eb022a82a9656eeacc5` |
+| Current program gate | **Approach 3 T1 — architecture guardrails and active callback characterization** |
+| Next substantive action | Execute runtime-neutral T1 `t01-architecture-guardrails-and-active-callback-characterization` against frozen baseline `0c883d609906676966002eb022a82a9656eeacc5` |
 | Latest runtime-bearing CI-certified `main` (historical anchor) | `82d1fdaee91ee6bde6c26dfcc7ceb974d0d59847` — PR #97 |
 | Runtime exact-head evidence | **41/41 post-merge checks; H12 1936/0 PHP + 150/0 Blocks; compatibility 20/20; Release 69/0; WordPress.org readiness 31/0** |
 | Canonical runtime package | **51 files / SHA-256 `58eba75019416f39a09211c87e7ccbcbb635834fb20bc890e9efbd5fec859655`** |
@@ -311,4 +311,4 @@ If any of those answers are unknown, the session is **not bootstrapped yet**.
 
 ## 13. Immediate next step
 
-Scope **Approach 3 architecture modernization** against the frozen accepted baseline `0c883d609906676966002eb022a82a9656eeacc5` per §6. Do not begin Approach 3 implementation in the same session that performs this scoping unless the program-level ledger has first been updated to record the new active task.
+Execute **Approach 3 T1 — `t01-architecture-guardrails-and-active-callback-characterization`** against the frozen accepted baseline `0c883d609906676966002eb022a82a9656eeacc5` per §6 and the recorded `.ai-architect/` contract. T1 is runtime-neutral and must preserve the accepted 51-file package byte-for-byte.
