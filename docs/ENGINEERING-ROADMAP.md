@@ -148,7 +148,7 @@ Owner technical acceptance has been **ACCEPTED** for the frozen Approach 2 basel
 
 The procedure in `docs/project/OWNER-HANDOFF.md` is retained as a reusable regression/re-acceptance contract; it remains available for any future acceptance event whenever fresh evidence invalidates the current accepted baseline. The current remaining program is:
 
-1. scope and implement **Approach 3 architecture modernization** against the frozen accepted baseline (now `AUTHORIZED / NOT STARTED`);
+1. execute approved **Approach 3 T1 — `t01-architecture-guardrails-and-active-callback-characterization`** against the frozen accepted baseline; architecture scoping is complete and recorded in `.ai-architect/`;
 2. re-certify Approach 3 against the accepted baseline and permanent payment/security/compatibility controls;
 3. apply approved launch branding and visual/accessibility acceptance;
 4. explicitly choose the first public version under a dedicated PR with the full release-sensitive gate stack re-run;
