@@ -7357,6 +7357,7 @@ $_semantic_ledger = [
     'SP-SELECTED'    => ['entrypoint' => 'Store process_payment',  'outcome' => 'Retrieve authorization/Charge'],
     'SP-MISMATCH'    => ['entrypoint' => 'Store process_payment',  'outcome' => 'Retrieve rejection/no Charge'],
     'BLOCKS-SAN'     => ['entrypoint' => 'get_payment_method_data','outcome' => 'real sanitizer'],
+    'CLASSIC-PAN'    => ['entrypoint' => 'Classic template render',  'outcome' => 'last-four-only card presentation'],
     'MALFORMED-CARD' => ['entrypoint' => 'process_payment',        'outcome' => 'strict failure/no mutation'],
     'HOSTILE'        => ['entrypoint' => 'Store process_payment',  'outcome' => 'hostile Classic POST isolation'],
     // Residual Correction #29: explicit ledger families for the honest
@@ -7506,7 +7507,8 @@ $_expected_family_baseline = array(
     'SP-SAVE-CARD'        => 24,
     'SP-SELECTED'         => 20,
     'SP-MISMATCH'         => 15,
-    'BLOCKS-SAN'          => 6,
+    'BLOCKS-SAN'          => 8,
+    'CLASSIC-PAN'         => 3,
     'MALFORMED-CARD'      => 56,
     'HOSTILE'             => 3,
     'ECON-E2E'            => 24,
@@ -7532,13 +7534,13 @@ $_expected_family_baseline = array(
 //   PROBE-RECOVERY (§5):     2 snapshot/restoration assertions =  2
 //                                                   TOTAL       = 21
 $_expected_categories = array(
-    'semantic_runtime'    => 368,
+    'semantic_runtime'    => 373,
     'helper_unit_runtime' => 841,
     'static_source'       => 46,
     'harness_self_test'   => 662,    // 641 baseline + 21 §4/§5/§7 probes
     'lint_tooling'        => 10,
 );
-$_expected_total_pass    = 1927;    // 368 + 841 + 46 + 662 + 10
+$_expected_total_pass    = 1932;    // 373 + 841 + 46 + 662 + 10
 $_expected_total_fail    = 0;
 $_family_mismatch        = 0;
 $_category_mismatch      = 0;
