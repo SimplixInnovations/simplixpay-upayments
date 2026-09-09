@@ -1098,7 +1098,6 @@ function woocommerceUpaymentsInit() {
                     wp_enqueue_script('supcheckout-subscription-checkout', $plugin_url . 'assets/js/subscription-checkout.js', array('jquery'), SUPCHECKOUT_VERSION, true);
                     wp_localize_script('supcheckout-subscription-checkout', 'wcUser', array(
                         'isLoggedIn' => is_user_logged_in(),
-                        'userId'     => get_current_user_id(),
                     ));
                 }
             }            
