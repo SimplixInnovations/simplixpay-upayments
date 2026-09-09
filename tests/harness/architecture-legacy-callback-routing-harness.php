@@ -218,6 +218,13 @@ $cases = array(
 foreach ($cases as $scenario => $expectations) {
     $result = t2_run_child($scenario);
 
+    if ($result['stderr'] !== '') {
+        echo '  child stderr [' . $scenario . ']: ' . trim($result['stderr']) . "\n";
+    }
+    if ($result['stdout'] !== '' && $result['exit'] !== 0) {
+        echo '  child stdout [' . $scenario . ']: ' . trim($result['stdout']) . "\n";
+    }
+
     t2_assert(
         $result['stderr'] === '',
         $scenario . ' has no bootstrap/runtime stderr'
