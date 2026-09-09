@@ -101,6 +101,15 @@ $blocks_js = sec_source('assets/js/upayments-block.js');
 $workflow = sec_source('.github/workflows/quality-gates.yml');
 $security_doc = sec_source('docs/project/SECURITY-THREAT-MODEL.md');
 
+sec_assert(
+    strpos($gateway, "'isLoggedIn' => is_user_logged_in()") !== false,
+    'subscription checkout browser context keeps only the required authentication boolean'
+);
+sec_assert(
+    strpos($gateway, "'userId'     => get_current_user_id()") === false,
+    'subscription checkout browser context does not expose the numeric WordPress user id'
+);
+
 // Public route must be intercepted before the inherited priority-10 dispatcher.
 sec_assert(strpos($lifecycle, "require_once dirname(__DIR__) . '/Security/PublicOrderStatus.php';") !== false, 'payment lifecycle loads hardened public status boundary');
 sec_assert(strpos($lifecycle, 'PublicOrderStatus::handle();') !== false, 'priority-5 lifecycle handles legacy status poll');
