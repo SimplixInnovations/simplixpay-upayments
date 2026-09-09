@@ -402,6 +402,7 @@ function makeSettings(overrides) {
         translation: {
             save_card_label: 'Save card',
             saved_cards_label: 'Saved Cards',
+            saved_card_fallback: 'Saved card',
             other_options_label: 'Other Options',
         },
     }, overrides);
