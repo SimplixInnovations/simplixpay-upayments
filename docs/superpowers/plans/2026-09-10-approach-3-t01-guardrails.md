@@ -41,7 +41,7 @@
 - [x] Characterize browser callback routing into `PaymentLifecycle::process_order_status`.
 - [x] Characterize webhook routing into `PaymentLifecycle::process_order_status`.
 - [x] Characterize terminal redirect/response behavior and prove the priority-5 handler terminates before legacy priority 10 under the canonical route.
-- [x] Characterize legacy methods separately as compatibility surfaces.
+- [x] Inventory/pin legacy method identities separately as retained compatibility surfaces; direct behavioral characterization is explicitly deferred and required before those public methods are modified.
 - [x] Verify a controlled contract break goes RED, restore, then verify GREEN.
 
 ## Task 3 — Register permanent gates
