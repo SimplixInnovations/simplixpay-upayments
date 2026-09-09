@@ -28,7 +28,7 @@ Pre-release engineering is mature and the repository-side pre-acceptance blocker
 - Repository Foundation / Phase 0 / Phase 9I — **DONE / VERIFIED**
 - Provider lifecycle / Security threat model — **DONE / VERIFIED**
 - Architecture A1-A5 — **DONE / VERIFIED**
-- Quality Platform Q1-Q19 — **DONE / VERIFIED; permanently closed**
+- Quality Platform Q1-Q19 — **DONE / VERIFIED; permanently closed at Q19**
 - Enterprise Tasks 1-8 — **DONE / VERIFIED**
 - Approach 2 — **DONE / VERIFIED**
 - PRs #91-#97 bounded pre-acceptance hardening — **DONE / VERIFIED / MERGED**

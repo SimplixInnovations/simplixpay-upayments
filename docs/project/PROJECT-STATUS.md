@@ -20,6 +20,7 @@
 | Provider scope | **UPayments only** |
 | Development version | `0.1.0` |
 | Approach 2 / pre-acceptance engineering | **DONE / VERIFIED** |
+| Final pre-clone runtime/QA closure | **DONE / VERIFIED — PR #75** |
 | Quality Platform Q1-Q19 | **DONE / VERIFIED — permanently closed at Q19** |
 | PRs #91-#97 bounded pre-acceptance hardening | **DONE / VERIFIED / MERGED** |
 | Compatibility matrix | **20 runtime cells — VERIFIED** |
