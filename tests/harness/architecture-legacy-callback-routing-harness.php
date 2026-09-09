@@ -32,6 +32,10 @@ function add_filter($hook, $callback, $priority = 10, $accepted_args = 1) {
     return true;
 }
 
+function register_activation_hook($file, $callback) {
+    return true;
+}
+
 function sanitize_text_field($value) {
     return is_scalar($value) ? trim((string) $value) : '';
 }
