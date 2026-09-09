@@ -30,6 +30,7 @@ require_once __DIR__ . '/src/Provider/EndpointResolver.php';
 require_once __DIR__ . '/src/Provider/PaymentMethodAvailability.php';
 require_once __DIR__ . '/src/Payment/CheckoutPayload.php';
 require_once __DIR__ . '/src/Payment/CheckoutOrchestrator.php';
+require_once __DIR__ . '/src/Payment/SavedCardPresentation.php';
 require_once __DIR__ . '/src/Subscription/Presentation.php';
 require_once __DIR__ . '/src/Subscription/Composition.php';
 require_once __DIR__ . '/includes/Token/CustomerTokenIdentity.php';
