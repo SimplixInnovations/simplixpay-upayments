@@ -226,26 +226,40 @@ final class GatewaySettingsTest extends TestCase {
             'version'      => '0.1.0',
             'media'        => 'all',
         )), $GLOBALS['supcheckout_test_gateway_settings']['styles']);
-        self::assertSame(array('upayments-multimerchant-repeater', 'upayments-admin-logic'), array_column(
+        self::assertSame(array('upayments-admin-logic'), array_column(
             $GLOBALS['supcheckout_test_gateway_settings']['scripts'],
             'handle'
         ));
         self::assertSame(array('jquery'), $GLOBALS['supcheckout_test_gateway_settings']['scripts'][0]['dependencies']);
         self::assertTrue($GLOBALS['supcheckout_test_gateway_settings']['scripts'][0]['in_footer']);
-        self::assertSame(array(array(
-            'handle' => 'woocommerce_admin_styles',
-            'css'    => '.upayments-disabled-setting { opacity: 0.5; pointer-events: none; }',
-        )), $GLOBALS['supcheckout_test_gateway_settings']['inline_styles']);
+        self::assertCount(1, $GLOBALS['supcheckout_test_gateway_settings']['inline_styles']);
+        self::assertSame(
+            'woocommerce_admin_styles',
+            $GLOBALS['supcheckout_test_gateway_settings']['inline_styles'][0]['handle']
+        );
+        $inlineCss = $GLOBALS['supcheckout_test_gateway_settings']['inline_styles'][0]['css'];
+        self::assertStringContainsString('.upayments-disabled-setting', $inlineCss);
+        foreach (array(
+            'iban_number',
+            'cc_charge',
+            'cc_charge_type',
+            'knet_charge',
+            'knet_charge_type',
+        ) as $legacyField) {
+            self::assertStringContainsString('#woocommerce_upayments_' . $legacyField, $inlineCss);
+        }
+        self::assertStringNotContainsString('input[style*="display:none"]', $inlineCss);
 
         \supcheckout_test_reset_gateway_settings();
         GatewaySettings::enqueue_admin_assets(
             'https://example.test/plugin/',
             'upayments',
             array('page' => 'wc-settings', 'tab' => 'checkout', 'section' => 'other'),
-            'other_screen'
+            'woocommerce_page_wc-settings'
         );
         self::assertSame(array(), $GLOBALS['supcheckout_test_gateway_settings']['styles']);
         self::assertSame(array(), $GLOBALS['supcheckout_test_gateway_settings']['scripts']);
         self::assertSame(array(), $GLOBALS['supcheckout_test_gateway_settings']['inline_styles']);
+        self::assertFileDoesNotExist(dirname(__DIR__, 3) . '/assets/js/multimerchant-repeater.js');
     }
 }

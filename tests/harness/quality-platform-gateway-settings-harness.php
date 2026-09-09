@@ -81,7 +81,7 @@ foreach (array(
     q6_assert(q6_contains($settings, $escape_marker), "renderer retains context escape: {$escape_marker}");
 }
 q6_assert(substr_count($settings, '<tbody>') === 1, 'renderer remains one additional allocation row');
-q6_assert(q6_contains($settings, "\$query['section'] == \$gateway_id"), 'multimerchant assets remain gateway-section scoped');
+q6_assert(q6_contains($settings, "\$query['section'] === \$gateway_id"), 'SUPCheckout admin assets require the exact gateway section');
 q6_assert(q6_contains($settings, "\$screen_id === 'woocommerce_page_wc-settings'"), 'admin logic remains Woo settings-screen scoped');
 q6_assert(q6_contains($settings, "\$query['tab'] === 'checkout'"), 'admin logic remains checkout-tab scoped');
 q6_assert(!q6_contains($settings, "'3.0.0'"), 'admin asset version is not frozen to the inherited release');

@@ -435,10 +435,10 @@ arch_assert(arch_contains($naming, '**Canonical slug:** `supcheckout`'), 'canoni
 
 $gatewayPath = $root . '/UPayments.php';
 $gatewaySize = is_file($gatewayPath) ? filesize($gatewayPath) : false;
-// Advanced to 88358 by PR #91 (fix/blocks-runtime-availability-parity):
-// share the checkout runtime-eligibility predicate between Classic and Blocks
-// while retaining protected payment/provider identities and behavior seams.
-$acceptedGatewayBytes = 88358;
+// Advanced to 87931 by PR #92 (fix/admin-settings-isolation-cleanup):
+// remove globally injected admin presentation CSS; exact gateway settings
+// presentation now lives behind the Admin adapter scope.
+$acceptedGatewayBytes = 87931;
 arch_assert(is_int($gatewaySize) && $gatewaySize === $acceptedGatewayBytes, 'UPayments.php matches current exact architecture ratchet');
 arch_assert($gatewayClassTokens !== array(), 'legacy WC_Upayments gateway compatibility class remains executable');
 arch_assert(arch_contains($gateway, "add_filter(\"woocommerce_payment_gateways\", \"addUpaymentsGatewayClass\")"), 'WooCommerce gateway registration remains characterized');

@@ -339,20 +339,41 @@ final class GatewaySettings {
      * @return void
      */
     public static function enqueue_admin_assets($plugin_url, $gateway_id, array $query, $screen_id) {
-        if (isset($query['page'], $query['tab'], $query['section'])
-            && $query['page'] == 'wc-settings'
-            && $query['tab'] == 'checkout'
-            && $query['section'] == $gateway_id
-        ) {
-            wp_enqueue_style('upayments-multimerchant-style', $plugin_url . 'assets/css/admin-style.css', array(), \Simplixi\SUPCheckout\Release\Identity::VERSION);
-            wp_enqueue_script('upayments-multimerchant-repeater', $plugin_url . 'assets/js/multimerchant-repeater.js', array('jquery'), \Simplixi\SUPCheckout\Release\Identity::VERSION, true);
+        $is_gateway_settings = $screen_id === 'woocommerce_page_wc-settings'
+            && isset($query['page'], $query['tab'], $query['section'])
+            && $query['page'] === 'wc-settings'
+            && $query['tab'] === 'checkout'
+            && $query['section'] === $gateway_id;
+
+        if (!$is_gateway_settings) {
+            return;
         }
 
-        if ($screen_id === 'woocommerce_page_wc-settings'
-            && isset($query['tab']) && $query['tab'] === 'checkout'
-        ) {
-            wp_enqueue_script('upayments-admin-logic', $plugin_url . 'assets/js/admin-settings.js', array('jquery'), \Simplixi\SUPCheckout\Release\Identity::VERSION, true);
-            wp_add_inline_style('woocommerce_admin_styles', '.upayments-disabled-setting { opacity: 0.5; pointer-events: none; }');
-        }
+        wp_enqueue_style(
+            'upayments-multimerchant-style',
+            $plugin_url . 'assets/css/admin-style.css',
+            array(),
+            \Simplixi\SUPCheckout\Release\Identity::VERSION
+        );
+        wp_enqueue_script(
+            'upayments-admin-logic',
+            $plugin_url . 'assets/js/admin-settings.js',
+            array('jquery'),
+            \Simplixi\SUPCheckout\Release\Identity::VERSION,
+            true
+        );
+
+        $hidden_compatibility_rows = implode(', ', array(
+            '.woocommerce table.form-table tr:has(#woocommerce_upayments_iban_number)',
+            '.woocommerce table.form-table tr:has(#woocommerce_upayments_cc_charge)',
+            '.woocommerce table.form-table tr:has(#woocommerce_upayments_cc_charge_type)',
+            '.woocommerce table.form-table tr:has(#woocommerce_upayments_knet_charge)',
+            '.woocommerce table.form-table tr:has(#woocommerce_upayments_knet_charge_type)',
+        ));
+        wp_add_inline_style(
+            'woocommerce_admin_styles',
+            '.upayments-disabled-setting { opacity: 0.5; pointer-events: none; } '
+                . $hidden_compatibility_rows . ' { display: none; }'
+        );
     }
 }
