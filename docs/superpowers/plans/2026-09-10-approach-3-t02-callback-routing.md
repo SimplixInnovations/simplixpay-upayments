@@ -13,19 +13,19 @@
 
 ## Task 2 — RED: executable direct-entrypoint regression
 
-- [ ] Add `tests/harness/architecture-legacy-callback-routing-harness.php`.
-- [ ] Execute the real `WC_Upayments::check_ipn_response()` entrypoint in child processes without running its constructor.
-- [ ] Override legacy status/browser/webhook methods with distinct sentinels.
-- [ ] Assert desired direct-entrypoint browser/webhook/public-status behavior belongs to `PaymentLifecycle`/`PublicOrderStatus`, with legacy sentinels absent.
-- [ ] Register the harness in Quality Gates.
-- [ ] Run exact-head CI and capture the expected RED failure on the unchanged production base. RED must be behavioral (legacy sentinel observed), not a harness/bootstrap error.
+- [x] Add `tests/harness/architecture-legacy-callback-routing-harness.php`.
+- [x] Execute the real `WC_Upayments::check_ipn_response()` entrypoint in child processes without running its constructor.
+- [x] Override legacy status/browser/webhook methods with distinct sentinels.
+- [x] Assert desired direct-entrypoint browser/webhook/public-status behavior belongs to `PaymentLifecycle`/`PublicOrderStatus`, with legacy sentinels absent.
+- [x] Register the harness in Quality Gates.
+- [x] Run exact-head CI and capture the expected RED failure on unchanged production at `09b2c1758652ce57fb5ef39008b168dad347e927`: all three legacy sentinels observed with empty stderr.
 
 ## Task 3 — GREEN: minimal production delegation
 
-- [ ] Change only `WC_Upayments::check_ipn_response()` so it delegates to `\Simplixi\SUPCheckout\Payment\PaymentLifecycle::handle_callback()`.
-- [ ] Retain defensive terminal `exit()`.
-- [ ] Do not modify `return_from_upayments()`, `web_hook_handler()`, or `verify_payment_status()`.
-- [ ] Re-run the direct-entrypoint harness and require GREEN.
+- [x] Change only `WC_Upayments::check_ipn_response()` so it delegates to `\Simplixi\SUPCheckout\Payment\PaymentLifecycle::handle_callback()`.
+- [x] Retain defensive terminal `exit()`.
+- [x] Do not modify `return_from_upayments()`, `web_hook_handler()`, or `verify_payment_status()`.
+- [x] Re-run the direct-entrypoint harness: implementation head `86224692d88fd7738e396859456a65bf1bd92caa` produced 25 PASS / 0 FAIL.
 
 ## Task 4 — Full exact-head certification
 
