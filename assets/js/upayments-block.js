@@ -215,7 +215,11 @@ const handleSubscriptionChange = (plan, interval) => {
                                 if (!card || typeof card !== 'object') return null;
                                 const token = typeof card.token === 'string' && card.token !== '' ? card.token : null;
                                 if (!token) return null;
-                                const label = typeof card.label === 'string' && card.label !== '' ? card.label : 'Saved card';
+                                const fallbackLabel = translation && typeof translation.saved_card_fallback === 'string'
+                                    ? translation.saved_card_fallback
+                                    : '';
+                                const label = typeof card.label === 'string' && card.label !== '' ? card.label : fallbackLabel;
+                                if (!label) return null;
                                 const brand = typeof card.brand === 'string' ? card.brand : '';
                                 return createElement('button',
                                     {
