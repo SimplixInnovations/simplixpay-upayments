@@ -84,9 +84,20 @@ final class SavedCardPresentationTest extends TestCase {
         self::assertSame('', SavedCardPresentation::safe_brand(array('brand' => str_repeat('V', 33))));
     }
 
+    public function test_presentation_token_is_strict_string_without_whitespace(): void {
+        self::assertSame('card-token_ABC.123', SavedCardPresentation::token(array('token' => 'card-token_ABC.123')));
+        self::assertNull(SavedCardPresentation::token(array('token' => 12345678)));
+        self::assertNull(SavedCardPresentation::token(array('token' => true)));
+        self::assertNull(SavedCardPresentation::token(array('token' => '')));
+        self::assertNull(SavedCardPresentation::token(array('token' => '   ')));
+        self::assertNull(SavedCardPresentation::token(array('token' => ' token ')));
+        self::assertNull(SavedCardPresentation::token(array()));
+    }
+
     public function test_blocks_card_rejects_non_string_or_blank_tokens(): void {
         self::assertNull(SavedCardPresentation::for_blocks(array('token' => 1234, 'number' => '4242'), 'Saved card'));
         self::assertNull(SavedCardPresentation::for_blocks(array('token' => '', 'number' => '4242'), 'Saved card'));
         self::assertNull(SavedCardPresentation::for_blocks(array('number' => '4242'), 'Saved card'));
+        self::assertNull(SavedCardPresentation::for_blocks(array('token' => ' token ', 'number' => '4242'), 'Saved card'));
     }
 }
