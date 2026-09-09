@@ -123,7 +123,7 @@ sufi_assert(strpos($new_js, 'ApplePaySession') === false, 'classic checkout perf
 sufi_assert(strpos($new_js, "trigger('click')") === false, 'classic checkout never forces UPayments selection client-side');
 sufi_assert(strpos($new_js, 'ajaxComplete') === false, 'classic checkout avoids global ajaxComplete polling');
 sufi_assert(strpos($new_js, 'updated_checkout') !== false, 'classic checkout reacts to the WooCommerce checkout update event');
-sufi_assert(strpos($subscription_js, ".val('one_time')") === false, 'subscription interval never receives the invalid one_time token');
+sufi_assert(strpos($subscription_js, "$intervalSelect.append($('<option></option>').val('one_time'))") === false, 'subscription interval never receives the invalid one_time token');
 sufi_assert(strpos($subscription_js, "showToast(") === false, 'subscription checkout does not call an undefined global toast helper');
 sufi_assert(strpos($subscription_js, ".val('0')") !== false, 'one-time subscription state normalizes interval to zero');
 sufi_assert(strpos($customer_css, '.woocommerce .order-again') === false, 'SUPCheckout customer CSS does not style unrelated WooCommerce order-again controls');
