@@ -64,13 +64,14 @@ final class SavedCardPresentationTest extends TestCase {
             'last4'  => $raw,
             'number' => $raw,
             'brand'  => 'Visa',
-        ), 'Saved card');
+        ), 'Saved card', 'sc1_' . str_repeat('a', 64));
 
         self::assertSame(array(
-            'token' => 'card-token',
+            'selection' => 'sc1_' . str_repeat('a', 64),
             'label' => '•••• 4242',
             'brand' => 'Visa',
         ), $card);
+        self::assertArrayNotHasKey('token', $card);
         self::assertArrayNotHasKey('number', $card);
         self::assertArrayNotHasKey('last4', $card);
         self::assertStringNotContainsString('4111', $card['label']);
@@ -95,9 +96,11 @@ final class SavedCardPresentationTest extends TestCase {
     }
 
     public function test_blocks_card_rejects_non_string_or_blank_tokens(): void {
-        self::assertNull(SavedCardPresentation::for_blocks(array('token' => 1234, 'number' => '4242'), 'Saved card'));
-        self::assertNull(SavedCardPresentation::for_blocks(array('token' => '', 'number' => '4242'), 'Saved card'));
-        self::assertNull(SavedCardPresentation::for_blocks(array('number' => '4242'), 'Saved card'));
-        self::assertNull(SavedCardPresentation::for_blocks(array('token' => ' token ', 'number' => '4242'), 'Saved card'));
+        $selection = 'sc1_' . str_repeat('a', 64);
+        self::assertNull(SavedCardPresentation::for_blocks(array('token' => 1234, 'number' => '4242'), 'Saved card', $selection));
+        self::assertNull(SavedCardPresentation::for_blocks(array('token' => '', 'number' => '4242'), 'Saved card', $selection));
+        self::assertNull(SavedCardPresentation::for_blocks(array('number' => '4242'), 'Saved card', $selection));
+        self::assertNull(SavedCardPresentation::for_blocks(array('token' => ' token ', 'number' => '4242'), 'Saved card', $selection));
+        self::assertNull(SavedCardPresentation::for_blocks(array('token' => 'card-token', 'number' => '4242'), 'Saved card', 'card-token'));
     }
 }
