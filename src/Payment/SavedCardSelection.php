@@ -47,7 +47,7 @@ final class SavedCardSelection {
      * @param mixed $is_test_mode Current provider mode.
      */
     public static function resolve($handle, array $cards, $user_id, $api_key, $is_test_mode): ?string {
-        if (!self::is_handle($handle)) {
+        if (!is_string($handle) || !self::is_handle($handle)) {
             return null;
         }
 
