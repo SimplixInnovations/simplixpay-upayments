@@ -169,6 +169,16 @@ final class StatusVerifierTest extends TestCase {
         );
 
         $this->reset_fixtures();
+        $GLOBALS['supcheckout_test_http_response'] = array(
+            'response' => array('code' => 201),
+            'body'     => str_repeat('x', 1048576),
+        );
+        $this->assert_unauthenticated_failure(
+            'invalid_status_response',
+            StatusVerifier::verify($gateway, $order, 'track-oversized')
+        );
+
+        $this->reset_fixtures();
         $GLOBALS['supcheckout_test_http_response'] = array('response' => array('code' => 201), 'body' => '{bad-json');
         $this->assert_unauthenticated_failure(
             'invalid_status_response',

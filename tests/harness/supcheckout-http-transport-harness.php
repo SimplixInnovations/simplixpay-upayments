@@ -114,6 +114,15 @@ sut_assert($result['transport_ok'] === false && $result['http_status'] === 500, 
 sut_assert($result['body'] === '{"error":true}', 'non-2xx response body remains available for bounded caller classification');
 
 $transport_calls = array();
+$transport_response = array('response' => array('code' => 201), 'body' => str_repeat('x', 1048576));
+$result = $gateway->call_transport('charge', 'POST', '{}');
+sut_assert(count($transport_calls) === 1, 'response-cap case dispatches exactly one request');
+sut_assert($result['transport_ok'] === false, 'response body at the 1 MiB cap fails closed');
+sut_assert($result['http_status'] === 201, 'response-cap failure preserves HTTP status for diagnostics');
+sut_assert($result['body'] === null, 'response-cap failure does not expose a potentially truncated body');
+sut_assert($result['curl_errno'] === 0, 'response-cap failure is not misclassified as a raw transport error');
+
+$transport_calls = array();
 $result = $gateway->call_transport('charge', 'DELETE', null);
 sut_assert(count($transport_calls) === 0, 'unsupported HTTP method performs no request');
 sut_assert($result['transport_ok'] === false && $result['http_status'] === 0, 'unsupported HTTP method fails closed');

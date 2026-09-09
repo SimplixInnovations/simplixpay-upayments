@@ -74,6 +74,12 @@ final class StatusVerifier {
         if (!is_string($body) || $body === '') {
             return self::base_result('empty_response');
         }
+        // A body exactly at the WordPress read cap may be truncated. Treat it
+        // as an invalid/ambiguous provider response so reconciliation remains
+        // bounded and fail closed.
+        if (strlen($body) >= 1048576) {
+            return self::base_result('invalid_status_response');
+        }
 
         $decoded = json_decode($body, true);
         if (!is_array($decoded)

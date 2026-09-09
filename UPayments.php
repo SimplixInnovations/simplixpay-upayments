@@ -519,8 +519,16 @@ function woocommerceUpaymentsInit() {
             $status = (int) wp_remote_retrieve_response_code($response);
             $response_body = wp_remote_retrieve_body($response);
 
+            // WordPress truncates at limit_response_size. A body that reaches
+            // the cap is therefore ambiguous and must never be treated as a
+            // complete provider response.
+            if (!is_string($response_body) || strlen($response_body) >= 1048576) {
+                $outcome['http_status'] = $status;
+                return $outcome;
+            }
+
             $outcome['http_status']  = $status;
-            $outcome['body']         = is_string($response_body) ? $response_body : '';
+            $outcome['body']         = $response_body;
             $outcome['transport_ok'] = ($status >= 200) && ($status < 300);
 
             return $outcome;
