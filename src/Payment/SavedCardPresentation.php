@@ -81,7 +81,7 @@ final class SavedCardPresentation {
      * localized settings. Card number sources are intentionally omitted.
      *
      * @param array<string, mixed> $card Provider saved-card shape.
-     * @return array{token:string,label:string,brand:string}|null
+     * @return array{selection:string,label:string,brand:string}|null
      */
     public static function for_blocks(array $card, string $fallback, string $selection): ?array {
         if (self::token($card) === null || !SavedCardSelection::is_handle($selection)) {
