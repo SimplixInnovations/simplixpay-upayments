@@ -32,6 +32,20 @@ final class SavedCardPresentation {
     }
 
     /**
+     * Return a provider card token only when it is already a strict,
+     * whitespace-free string. Presentation code must never coerce token types.
+     *
+     * @param array<string, mixed> $card Provider saved-card shape.
+     */
+    public static function token(array $card): ?string {
+        if (!isset($card['token']) || !is_string($card['token']) || $card['token'] === '') {
+            return null;
+        }
+
+        return preg_match('/\s/', $card['token']) === 1 ? null : $card['token'];
+    }
+
+    /**
      * Return a short, digit-free provider brand suitable for presentation.
      *
      * @param array<string, mixed> $card Provider saved-card shape.
@@ -70,12 +84,13 @@ final class SavedCardPresentation {
      * @return array{token:string,label:string,brand:string}|null
      */
     public static function for_blocks(array $card, string $fallback): ?array {
-        if (!isset($card['token']) || !is_string($card['token']) || trim($card['token']) === '') {
+        $token = self::token($card);
+        if ($token === null) {
             return null;
         }
 
         return array(
-            'token' => $card['token'],
+            'token' => $token,
             'label' => self::label($card, $fallback),
             'brand' => self::safe_brand($card),
         );
