@@ -78,6 +78,7 @@ if (isset($transport_calls[0])) {
     sut_assert($call['url'] === 'https://sandboxapi.upayments.com/api/v1/charge', 'POST targets exact provider route');
     sut_assert(isset($args['method']) && $args['method'] === 'POST', 'POST method is explicit');
     sut_assert(isset($args['timeout']) && (int) $args['timeout'] === 15, 'transport timeout remains bounded at 15 seconds');
+    sut_assert(isset($args['limit_response_size']) && (int) $args['limit_response_size'] === 1048576, 'provider response body remains bounded to 1 MiB');
     sut_assert(isset($args['redirection']) && (int) $args['redirection'] === 0, 'redirect following remains disabled');
     sut_assert(isset($args['sslverify']) && $args['sslverify'] === true, 'TLS certificate verification remains enabled');
     sut_assert(isset($args['user-agent']) && $args['user-agent'] === 'SUPCheckoutTransportTest/1', 'user agent is preserved');
@@ -111,6 +112,15 @@ $transport_response = array('response' => array('code' => 500), 'body' => '{"err
 $result = $gateway->call_transport('charge', 'POST', '{}');
 sut_assert($result['transport_ok'] === false && $result['http_status'] === 500, 'non-2xx HTTP response is not transport-ok');
 sut_assert($result['body'] === '{"error":true}', 'non-2xx response body remains available for bounded caller classification');
+
+$transport_calls = array();
+$transport_response = array('response' => array('code' => 201), 'body' => str_repeat('x', 1048576));
+$result = $gateway->call_transport('charge', 'POST', '{}');
+sut_assert(count($transport_calls) === 1, 'response-cap case dispatches exactly one request');
+sut_assert($result['transport_ok'] === false, 'response body at the 1 MiB cap fails closed');
+sut_assert($result['http_status'] === 201, 'response-cap failure preserves HTTP status for diagnostics');
+sut_assert($result['body'] === null, 'response-cap failure does not expose a potentially truncated body');
+sut_assert($result['curl_errno'] === 0, 'response-cap failure is not misclassified as a raw transport error');
 
 $transport_calls = array();
 $result = $gateway->call_transport('charge', 'DELETE', null);

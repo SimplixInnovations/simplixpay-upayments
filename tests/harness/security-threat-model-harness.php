@@ -153,7 +153,9 @@ sec_assert(strpos($subscription_presentation, "current_user_can('edit_post', \$p
 // Existing verified trust boundaries must remain intact.
 sec_assert(strpos($lifecycle, '$_REQUEST') === false, 'payment lifecycle continues to exclude $_REQUEST');
 sec_assert(strpos($lifecycle, "add_action(self::CALLBACK_HOOK, array(__CLASS__, 'handle_callback'), 5)") !== false, 'hardened payment callback retains priority 5');
-sec_assert(strpos($status_verifier, "'redirection' => 0") !== false, 'provider status transport keeps redirects disabled');
+sec_assert(preg_match("/'redirection'\\s*=>\\s*0/", $status_verifier) === 1, 'provider status transport keeps redirects disabled');
+sec_assert(preg_match("/'limit_response_size'\\s*=>\\s*1048576/", $status_verifier) === 1, 'provider status transport bounds response bodies to 1 MiB');
+sec_assert(strpos($status_verifier, 'strlen($body) >= 1048576') !== false, 'provider status transport rejects a body that reaches the read cap');
 sec_assert(strpos($status_verifier, "'sslverify'   => true") !== false, 'provider status transport keeps TLS verification');
 sec_assert(strpos($status_verifier, "sandboxapi.upayments.com") !== false && strpos($status_verifier, "apiv2api.upayments.com") !== false, 'status verifier retains exact UPayments host allowlist');
 sec_assert(strpos($status_verifier, "'Authorization' => 'Bearer ' . \$gateway->apiKey") !== false, 'provider status authority remains server-side Bearer authenticated');

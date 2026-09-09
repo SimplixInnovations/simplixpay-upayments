@@ -66,7 +66,9 @@ q4_assert(
         && q4_contains($tests, "'wrong path'       => array('path_prefix', '/api/v2/')"),
     'sandbox/live allowlist and every forbidden URL component have executable characterization'
 );
-q4_assert(q4_contains($verifier, "'redirection' => 0"), 'status transport forbids redirects');
+q4_assert(preg_match("/'redirection'\\s*=>\\s*0/", $verifier) === 1, 'status transport forbids redirects');
+q4_assert(preg_match("/'limit_response_size'\\s*=>\\s*1048576/", $verifier) === 1, 'status transport bounds response bodies to 1 MiB');
+q4_assert(q4_contains($verifier, 'strlen($body) >= 1048576'), 'status transport rejects a body that reaches the read cap');
 q4_assert(q4_contains($verifier, "'sslverify'   => true"), 'status transport retains TLS verification');
 q4_assert(q4_contains($verifier, "'Authorization' => 'Bearer ' . \$gateway->apiKey"), 'Bearer credential remains status-only transport state');
 q4_assert(q4_contains($verifier, '$http_status !== 201'), 'status transport requires exact HTTP 201');
@@ -94,7 +96,8 @@ q4_assert(q4_contains($verifier, "hash_equals(\$local_canonical, \$verified_cano
 q4_assert(q4_contains($verifier, "'captured_payment_id_missing'"), 'captured status still requires a provider payment ID');
 
 q4_assert(substr_count($tests, 'public function test_') >= 7, 'StatusVerifier has focused PHPUnit characterization');
-q4_assert(substr_count($tests, 'assert_unauthenticated_failure') === 6, 'every transport/envelope failure asserts unauthenticated and unbound state');
+q4_assert(substr_count($tests, 'assert_unauthenticated_failure') === 7, 'every transport/envelope failure asserts unauthenticated and unbound state');
+q4_assert(q4_contains($tests, "'track-oversized'"), 'oversized status response is explicitly characterized as unauthenticated failure');
 foreach (array(
     'invalid_boundaries_fail_before_rate_or_http_mutation',
     'disallowed_destination_is_rejected_before_bearer_or_rate_slot',

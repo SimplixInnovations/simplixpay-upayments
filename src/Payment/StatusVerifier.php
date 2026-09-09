@@ -51,8 +51,9 @@ final class StatusVerifier {
         }
 
         $response = wp_remote_get($url, array(
-            'timeout'     => 15,
-            'redirection' => 0,
+            'timeout'             => 15,
+            'limit_response_size' => 1048576,
+            'redirection'         => 0,
             'sslverify'   => true,
             'headers'     => array(
                 'Accept'        => 'application/json',
@@ -72,6 +73,12 @@ final class StatusVerifier {
         $body = wp_remote_retrieve_body($response);
         if (!is_string($body) || $body === '') {
             return self::base_result('empty_response');
+        }
+        // A body exactly at the WordPress read cap may be truncated. Treat it
+        // as an invalid/ambiguous provider response so reconciliation remains
+        // bounded and fail closed.
+        if (strlen($body) >= 1048576) {
+            return self::base_result('invalid_status_response');
         }
 
         $decoded = json_decode($body, true);

@@ -458,8 +458,9 @@ class Scheduler
             $request_url = $gateway->getAPIUrl('auto-deduct');
             $request_args = [
                 'method'      => 'POST',
-                'timeout'     => 15,
-                'redirection' => 0,
+                'timeout'             => 15,
+                'limit_response_size' => 1048576,
+                'redirection'         => 0,
                 'sslverify'   => true,
                 'user-agent'  => $gateway->getUserAgent(),
                 'headers'     => [
@@ -583,7 +584,11 @@ class Scheduler
         $logger = wc_get_logger();
 
         // ---- 1. Transport-level outcome ----
-        if ($response === false || $response === '' || $curl_errno !== 0) {
+        if ($response === false
+            || $response === ''
+            || $curl_errno !== 0
+            || (is_string($response) && strlen($response) >= 1048576)
+        ) {
             CycleClaim::mark_held($cycle_key, $owner_token, $curl_errno, $http_code);
             $logger->info(
                 'HTTP transport failure; cycle held.',
