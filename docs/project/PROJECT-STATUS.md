@@ -30,7 +30,7 @@
 | Owner technical acceptance | **ACCEPTED** |
 | Accepted Approach 2 baseline | **`0c883d609906676966002eb022a82a9656eeacc5`** |
 | Accepted package | **`supcheckout-0.1.0.zip` — 51 files / SHA-256 `58eba75019416f39a09211c87e7ccbcbb635834fb20bc890e9efbd5fec859655`** |
-| Approach 3 architecture modernization | **ARCHITECTURE APPROVED / T1 NOT STARTED** |
+| Approach 3 architecture modernization | **ARCHITECTURE APPROVED / T1 DONE / VERIFIED / RUNTIME MODERNIZATION NOT STARTED** |
 | Full UI/UX / branding / broad launch testing | **DEFERRED until after Approach 3** |
 | Public GitHub Release | **NOT CREATED** |
 | WordPress.org publication | **NOT PERFORMED** |
@@ -176,7 +176,7 @@ Automatic WooCommerce refunds and arbitrary marketplace multi-split remain unsup
 
 The owner-accepted Approach 2 baseline is frozen. The remaining program is sequenced:
 
-1. **Approach 3 architecture modernization** — architecture decision APPROVED / RECORDED; T1 NOT STARTED. The approved direction is incremental strangler modernization around A1-A5 and the existing `PaymentLifecycle` callback strangler. First execute runtime-neutral `t01-architecture-guardrails-and-active-callback-characterization`, then select runtime-bearing consolidation work from its evidence. All work remains anchored to frozen baseline `0c883d609906676966002eb022a82a9656eeacc5` and its accepted package SHA-256.
+1. **Approach 3 architecture modernization** — architecture decision APPROVED / RECORDED; T1 `t01-architecture-guardrails-and-active-callback-characterization` DONE / VERIFIED on merged main `beb89ac0c4d8c0e9b7c8b2de1e13c237bbd37b15`. T1 preserved the accepted package byte-for-byte and established permanent active-callback/provider-egress/ambient-dependency guardrails. Runtime-bearing modernization has not started. The next action is a separately recorded bounded runtime decision from T1 evidence; all work remains anchored to frozen baseline `0c883d609906676966002eb022a82a9656eeacc5` and its accepted package SHA-256.
 2. **Approach 3 re-certification** — required before launch-facing work is treated as final.
 3. **Post-Approach-3 launch program** — final UI/UX, branding, accessibility, broad browser/device/theme/manual qualification and other launch-facing work.
 4. **Explicit version decision** — choose first public version (early `0.1.0` release or separately approved `1.0.0` first stable) under an explicit dedicated PR with the full release-sensitive gate stack re-run.
