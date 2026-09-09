@@ -57,7 +57,12 @@ foreach (array(
 q6_assert(substr_count($settings, "'type' =>") === 21, 'gateway settings retain exactly 21 ordered fields');
 q6_assert(q6_contains($settings, "\$settings['enable_save_card'] = 'yes';"), 'subscriptions still force saved-card support');
 q6_assert(q6_contains($settings, "empty(\$post_data['woocommerce_upayments_api_key'])"), 'API credential remains required before save');
-q6_assert((bool) preg_match("/'api_key'\\s*=>\\s*array\\([^)]*'type'\\s*=>\\s*'password'/s", $settings), 'API credential is rendered through a masked password control');
+$api_key_field_start = strpos($settings, "'api_key' => array(");
+$debug_field_start = strpos($settings, "'debug' => array(");
+$api_key_field_source = ($api_key_field_start !== false && $debug_field_start !== false && $debug_field_start > $api_key_field_start)
+    ? substr($settings, $api_key_field_start, $debug_field_start - $api_key_field_start)
+    : '';
+q6_assert(q6_contains($api_key_field_source, "'type' => 'password'"), 'API credential is rendered through a masked password control');
 foreach (array('iban_number', 'cc_charge', 'cc_charge_type', 'knet_charge', 'knet_charge_type') as $field) {
     q6_assert(q6_contains($settings, "'woocommerce_upayments_{$field}'"), "runtime allocation identity remains protected: {$field}");
     q6_assert(q6_contains($settings, "'{$field}' =>"), "sanitizer retains bounded allocation field: {$field}");
