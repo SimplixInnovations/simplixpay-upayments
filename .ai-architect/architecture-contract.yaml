@@ -151,7 +151,7 @@ tranches:
       - Pin Release Identity -> PaymentLifecycle bootstrap
       - Pin wc_upayments priority-5 PaymentLifecycle callback before priority-10 legacy gateway callback
       - Executable characterization of active browser/webhook/public-status/reconciliation routing
-      - Characterize legacy callback methods as compatibility surfaces separately
+      - Inventory/pin legacy callback method identities as compatibility surfaces; direct behavior remains deferred until before modification
       - Pin accepted provider HTTP egress inventory and reject new egress sites
       - Pin verification/locking/state-mutation responsibility map
       - Keep UPayments.php exactly 87995 bytes
