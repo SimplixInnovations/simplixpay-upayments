@@ -5971,8 +5971,8 @@ $blocks_saved_cards = $blocks_data['saved_cards'] ?? [];
 
 upay_assert_eq($blocks_gw->saved_cards_calls, 1, 'BLOCKS-SAN-0 getSavedCardsForCurrentUser called exactly once by real Blocks method', 'semantic_runtime');
 upay_assert_eq(count($blocks_saved_cards), 1, 'BLOCKS-SAN-1 exactly 1 saved card after real Blocks sanitization', 'semantic_runtime');
-upay_assert_eq(count($blocks_saved_cards) >= 1 ? $blocks_saved_cards[0]['token'] : null, '1234567890123456', 'BLOCKS-SAN-2 token is strict string', 'semantic_runtime');
-upay_assert_eq(count($blocks_saved_cards) >= 1 ? is_string($blocks_saved_cards[0]['token']) : false, true, 'BLOCKS-SAN-2b token remains string type', 'semantic_runtime');
+upay_assert_eq(count($blocks_saved_cards) >= 1 ? array_key_exists('token', $blocks_saved_cards[0]) : true, false, 'BLOCKS-SAN-2 provider card token never enters Blocks settings', 'semantic_runtime');
+upay_assert_eq(count($blocks_saved_cards) >= 1 ? (isset($blocks_saved_cards[0]['selection']) && is_string($blocks_saved_cards[0]['selection']) && preg_match('/^sc1_[0-9a-f]{64}$/D', $blocks_saved_cards[0]['selection']) === 1) : false, true, 'BLOCKS-SAN-2b Blocks receives only canonical opaque saved-card selection handle', 'semantic_runtime');
 upay_assert_eq(count($blocks_saved_cards) >= 1 ? ($blocks_saved_cards[0]['label'] ?? null) : null, '•••• 4242', 'BLOCKS-SAN-3 hostile provider PAN is reduced to last-four-only label', 'semantic_runtime');
 upay_assert_eq(count($blocks_saved_cards) >= 1 ? array_key_exists('number', $blocks_saved_cards[0]) : true, false, 'BLOCKS-SAN-3b raw provider number never enters Blocks settings', 'semantic_runtime');
 upay_assert_eq(count($blocks_saved_cards) >= 1 ? array_key_exists('last4', $blocks_saved_cards[0]) : true, false, 'BLOCKS-SAN-3c provider last4 source never enters Blocks settings', 'semantic_runtime');
@@ -5998,6 +5998,8 @@ if (class_exists('Simplixi\\SUPCheckout\\Payment\\SavedCardPresentation', false)
     upay_assert_eq(strpos($classic_saved_card_html, '•••• 4242') !== false, true, 'CLASSIC-PAN-3 rendered Classic HTML contains bounded last-four label', 'semantic_runtime');
     upay_assert_eq(substr_count($classic_saved_card_html, 'onclick="supCheckout.submitSavedCard(this)"'), 1, 'CLASSIC-PAN-4 Classic renders only strict-string provider card tokens', 'semantic_runtime');
     upay_assert_eq(substr_count($classic_saved_card_html, 'id="upay-button-cc"'), 1, 'CLASSIC-PAN-5 Classic saved-card controls do not duplicate the normal CC DOM id', 'semantic_runtime');
+    upay_assert_eq(strpos($classic_saved_card_html, '1234567890123456') === false, true, 'CLASSIC-PAN-6 provider card token absent from rendered Classic HTML', 'semantic_runtime');
+    upay_assert_eq(preg_match('/value="sc1_[0-9a-f]{64}"/', $classic_saved_card_html) === 1, true, 'CLASSIC-PAN-7 Classic saved-card control carries only an opaque selection handle', 'semantic_runtime');
 } else {
     upay_assert_eq(false, true, 'CLASSIC-PAN-0 production bootstrap loads SavedCardPresentation before Classic rendering', 'semantic_runtime');
 }
