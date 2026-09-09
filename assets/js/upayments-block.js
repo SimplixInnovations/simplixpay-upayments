@@ -95,12 +95,13 @@ const handleSubscriptionChange = (plan, interval) => {
 };
 
         // Section AJ: Method transitions use current store state.
-        const handleMethodClick = (type, token = null) => {
-            if (token) {
-                // Saved card selected: always clear save_card.
+        const handleMethodClick = (type, cardSelection = null) => {
+            if (cardSelection) {
+                // Saved card selected: the historical card_token extension key
+                // carries only an opaque server-verifiable selection handle.
                 updateCheckout({
                     upayment_payment_type: type,
-                    card_token: token,
+                    card_token: cardSelection,
                     save_card: '0'
                 });
                 showToast("Saved card selected");
