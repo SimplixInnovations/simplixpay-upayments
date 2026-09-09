@@ -1056,19 +1056,37 @@ class CheckoutOrchestrator {
                     : null;
 
                 $gateway = $this->gateway;
-                $membership_valid = CustomerTokenIdentity::verify_card_membership(
-                    $credit_card_token,
-                    $canonical_token,
-                    function($token) use ($gateway) {
-                        return $gateway->getSavedCards($token);
-                    }
-                );
 
-                if (!$membership_valid) {
+                // Browser-facing saved-card controls carry an opaque selection
+                // handle. Transitional legacy clients may still submit a provider
+                // token directly. In both cases authorize from ONE fresh Retrieve:
+                // handle resolution first, exact legacy membership second.
+                $saved_cards_result = $gateway->getSavedCards($canonical_token);
+                if (!is_array($saved_cards_result)
+                    || !isset($saved_cards_result['result'])
+                    || $saved_cards_result['result'] !== 'success'
+                    || !isset($saved_cards_result['data'])
+                    || !is_array($saved_cards_result['data'])
+                ) {
                     wc_add_notice(__('Please select a valid payment method.', 'supcheckout'), 'error');
                     return array('result' => 'failure', 'redirect' => wc_get_checkout_url());
                 }
 
+                $resolved_card_token = SavedCardSelection::resolve_submission(
+                    $credit_card_token,
+                    $saved_cards_result['data'],
+                    $user_id,
+                    $gateway->apiKey,
+                    (bool) $gateway->getMode()
+                );
+                if ($resolved_card_token === null) {
+                    wc_add_notice(__('Please select a valid payment method.', 'supcheckout'), 'error');
+                    return array('result' => 'failure', 'redirect' => wc_get_checkout_url());
+                }
+
+                // Only the real provider token crosses the server-side persistence
+                // and Charge boundaries. The browser handle never does.
+                $credit_card_token = $resolved_card_token;
                 $isSaveCard = false;
             }
             // CASE: Save Card or subscription requires canonical token.

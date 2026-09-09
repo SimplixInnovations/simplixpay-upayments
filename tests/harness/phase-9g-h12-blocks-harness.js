@@ -787,12 +787,12 @@ record(true, 'H-ST-1 harness initializes', 'harness');
 // ────────────────────────────────────────────────────────────
 
 {
-    const card_token = 'card_token_1';
+    const card_token = 'sc1_1111111111111111111111111111111111111111111111111111111111111111';
     const scene = buildScene(makeSettings({
         is_logged_in: true,
         save_card_enabled: true,
         saved_cards: [
-            { token: card_token, label: '•••• 1234', brand: 'Visa' },
+            { selection: card_token, label: '•••• 1234', brand: 'Visa' },
         ],
     }));
     const tree = renderScene(scene);
@@ -822,7 +822,7 @@ record(true, 'H-ST-1 harness initializes', 'harness');
         is_logged_in: true,
         save_card_enabled: true,
         saved_cards: [
-            { token: 'hostile_card_token', label: '•••• 4242', number: rawPan, brand: 'Visa' },
+            { selection: 'sc1_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa', token: 'hostile_provider_card_token', label: '•••• 4242', number: rawPan, brand: 'Visa' },
         ],
     }));
     const tree = renderScene(scene);
@@ -836,6 +836,17 @@ record(true, 'H-ST-1 harness initializes', 'harness');
             'B-PAN-3 raw provider PAN is absent from rendered Blocks text', 'runtime');
         record(leaves.every(function (text) { return text.indexOf('4111') === -1 && text.indexOf('1111') === -1; }),
             'B-PAN-4 earlier PAN groups are absent from rendered Blocks text', 'runtime');
+        const cardButton = findButtonByLabel(tree, '•••• 4242 (Visa)', { mode: 'exact' });
+        if (cardButton === null) {
+            record(false, 'B-PAN-5 hostile saved-card button found', 'runtime');
+        } else {
+            cardButton.props.onClick({ preventDefault: function () {}, stopPropagation: function () {} });
+            const selected = (scene.extStore['upayments'] || {}).card_token;
+            record(selected === 'sc1_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
+                'B-PAN-6 browser state stores only opaque saved-card selection handle', 'runtime');
+            record(selected !== 'hostile_provider_card_token',
+                'B-PAN-7 raw provider card token never enters Blocks extension state', 'runtime');
+        }
     }
 }
 
@@ -992,13 +1003,13 @@ record(true, 'H-ST-1 harness initializes', 'harness');
 // ────────────────────────────────────────────────────────────
 
 {
-    const card_token = 'card_token_SCD';
+    const card_token = 'sc1_2222222222222222222222222222222222222222222222222222222222222222';
     const scene = buildScene(makeSettings({
         is_logged_in: true,
         save_card_enabled: true,
         payment_icons: { knet: 'KNET', cc: 'Credit Card' },
         saved_cards: [
-            { token: card_token, label: '•••• 4321', brand: 'Master' },
+            { selection: card_token, label: '•••• 4321', brand: 'Master' },
         ],
     }));
     const r1 = renderScene(scene);
@@ -1027,13 +1038,13 @@ record(true, 'H-ST-1 harness initializes', 'harness');
 // ────────────────────────────────────────────────────────────
 
 {
-    const card_token = 'card_token_SCD_KNET';
+    const card_token = 'sc1_3333333333333333333333333333333333333333333333333333333333333333';
     const scene = buildScene(makeSettings({
         is_logged_in: true,
         save_card_enabled: true,
         payment_icons: { knet: 'KNET', cc: 'Credit Card' },
         saved_cards: [
-            { token: card_token, label: '•••• 5555', brand: 'Visa' },
+            { selection: card_token, label: '•••• 5555', brand: 'Visa' },
         ],
     }));
     const r1 = renderScene(scene);
@@ -1060,13 +1071,13 @@ record(true, 'H-ST-1 harness initializes', 'harness');
 // ────────────────────────────────────────────────────────────
 
 {
-    const card_token = 'card_token_CHAIN';
+    const card_token = 'sc1_4444444444444444444444444444444444444444444444444444444444444444';
     const scene = buildScene(makeSettings({
         is_logged_in: true,
         save_card_enabled: true,
         payment_icons: { knet: 'KNET', cc: 'Credit Card' },
         saved_cards: [
-            { token: card_token, label: '•••• 7777', brand: 'Visa' },
+            { selection: card_token, label: '•••• 7777', brand: 'Visa' },
         ],
     }));
     const r1 = renderScene(scene);
@@ -1101,13 +1112,13 @@ record(true, 'H-ST-1 harness initializes', 'harness');
 // ────────────────────────────────────────────────────────────
 
 {
-    const card_token = 'card_token_STALE';
+    const card_token = 'sc1_5555555555555555555555555555555555555555555555555555555555555555';
     const scene = buildScene(makeSettings({
         is_logged_in: true,
         save_card_enabled: true,
         payment_icons: { knet: 'KNET', cc: 'Credit Card' },
         saved_cards: [
-            { token: card_token, label: '•••• 9999', brand: 'Visa' },
+            { selection: card_token, label: '•••• 9999', brand: 'Visa' },
         ],
     }));
     const r1 = renderScene(scene);
@@ -1303,7 +1314,7 @@ record(true, 'H-ST-1 harness initializes', 'harness');
     const scene = buildScene(makeSettings({
         is_logged_in: true,
         saved_cards: [
-            { token: 'card_token_E', label: '•••• 1111', brand: 'Visa' },
+            { selection: 'sc1_7777777777777777777777777777777777777777777777777777777777777777', label: '•••• 1111', brand: 'Visa' },
         ],
     }));
     const editTree = renderEditTree(scene);
@@ -1465,13 +1476,13 @@ record(true, 'H-ST-1 harness initializes', 'harness');
 // ────────────────────────────────────────────────────────────
 
 {
-    const card_token = 'card_token_R';
+    const card_token = 'sc1_6666666666666666666666666666666666666666666666666666666666666666';
     const scene = buildScene(makeSettings({
         is_logged_in: true,
         save_card_enabled: true,
         payment_icons: { knet: 'KNET', cc: 'Credit Card' },
         saved_cards: [
-            { token: card_token, label: '•••• 2222', brand: 'Visa' },
+            { selection: card_token, label: '•••• 2222', brand: 'Visa' },
         ],
     }));
     const r1 = renderScene(scene);
@@ -1588,8 +1599,8 @@ record(true, 'H-ST-1 harness initializes', 'harness');
         save_card_enabled: true,
         payment_icons: { knet: 'KNET', cc: 'Credit Card' },
         saved_cards: [
-            { token: 'A1', label: '•••• 0001', brand: 'Visa' },
-            { token: 'B2', label: '•••• 0002', brand: 'Master' },
+            { selection: 'sc1_8888888888888888888888888888888888888888888888888888888888888888', label: '•••• 0001', brand: 'Visa' },
+            { selection: 'sc1_9999999999999999999999999999999999999999999999999999999999999999', label: '•••• 0002', brand: 'Master' },
         ],
     }));
     const tree = renderScene(scene);
@@ -1603,7 +1614,7 @@ record(true, 'H-ST-1 harness initializes', 'harness');
         if (bButton !== null) {
             bButton.props.onClick({ preventDefault: function () {}, stopPropagation: function () {} });
             const ns = scene.extStore['upayments'] || {};
-            record(ns.card_token === 'B2', 'B-MULTI-3 second card click sets token=B2', 'runtime');
+            record(ns.card_token === 'sc1_9999999999999999999999999999999999999999999999999999999999999999', 'B-MULTI-3 second card click sets token=B2', 'runtime');
         }
     }
 }
@@ -1658,7 +1669,7 @@ record(true, 'H-ST-1 harness initializes', 'harness');
         save_card_enabled: true,
         payment_icons: { knet: 'KNET', cc: 'Credit Card' },
         saved_cards: [
-            { token: 'S1', label: '•••• 1111', brand: 'Visa' },
+            { selection: 'sc1_cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc', label: '•••• 1111', brand: 'Visa' },
         ],
     }));
     if (!scene.registered) {
@@ -1716,7 +1727,7 @@ record(true, 'H-ST-1 harness initializes', 'harness');
         save_card_enabled: true,
         payment_icons: { knet: 'KNET', cc: 'Credit Card' },
         saved_cards: [
-            { token: 'TOAST_TOKEN', label: '•••• 9999', brand: 'Visa' },
+            { selection: 'sc1_dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd', label: '•••• 9999', brand: 'Visa' },
         ],
     }));
     if (!scene.registered) {
@@ -1789,8 +1800,8 @@ record(true, 'H-ST-1 harness initializes', 'harness');
     record(src.indexOf('useSelect') !== -1, 'BS-7 source uses useSelect', 'static');
     record(src.indexOf('createElement') !== -1, 'BS-8 source uses createElement', 'static');
     record(/card_token:\s*null/.test(src), 'BS-9 source has card_token: null (clear) path', 'static');
-    record(/handleMethodClick\s*=\s*\(type,?\s*token\s*=\s*null\)/.test(src),
-        'BS-10 source handleMethodClick default token=null', 'static');
+    record(/handleMethodClick\s*=\s*\(type,?\s*cardSelection\s*=\s*null\)/.test(src),
+        'BS-10 source handleMethodClick default cardSelection=null', 'static');
     record(/type === ['"]cc['"]/.test(src), 'BS-11 source has type === cc branch', 'static');
     record(/save_card:\s*['"]0['"]/.test(src), 'BS-12 source has save_card: "0" branch', 'static');
     record(/save_card:\s*['"]1['"]/.test(src), 'BS-13 source has save_card: "1" branch', 'static');

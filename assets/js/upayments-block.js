@@ -95,12 +95,13 @@ const handleSubscriptionChange = (plan, interval) => {
 };
 
         // Section AJ: Method transitions use current store state.
-        const handleMethodClick = (type, token = null) => {
-            if (token) {
-                // Saved card selected: always clear save_card.
+        const handleMethodClick = (type, cardSelection = null) => {
+            if (cardSelection) {
+                // Saved card selected: the historical card_token extension key
+                // carries only an opaque server-verifiable selection handle.
                 updateCheckout({
                     upayment_payment_type: type,
-                    card_token: token,
+                    card_token: cardSelection,
                     save_card: '0'
                 });
                 showToast("Saved card selected");
@@ -213,8 +214,10 @@ const handleSubscriptionChange = (plan, interval) => {
                         saved_cards.map((card, index) =>
                             {
                                 if (!card || typeof card !== 'object') return null;
-                                const token = typeof card.token === 'string' && card.token !== '' ? card.token : null;
-                                if (!token) return null;
+                                const selection = typeof card.selection === 'string' && /^sc1_[0-9a-f]{64}$/.test(card.selection)
+                                    ? card.selection
+                                    : null;
+                                if (!selection) return null;
                                 const fallbackLabel = translation && typeof translation.saved_card_fallback === 'string'
                                     ? translation.saved_card_fallback
                                     : '';
@@ -223,10 +226,10 @@ const handleSubscriptionChange = (plan, interval) => {
                                 const brand = typeof card.brand === 'string' ? card.brand : '';
                                 return createElement('button',
                                     {
-                                        key: token || index,
+                                        key: selection || index,
                                         type: 'button',
-                                        className: `upay-payment-method ${upayData.card_token === token ? 'active' : ''}`,
-                                        onClick: () => handleMethodClick('cc', token),
+                                        className: `upay-payment-method ${upayData.card_token === selection ? 'active' : ''}`,
+                                        onClick: () => handleMethodClick('cc', selection),
                                             style: {
                                                 display: 'flex',
                                                 width: '100%',
@@ -235,7 +238,7 @@ const handleSubscriptionChange = (plan, interval) => {
                                                 alignItems: 'center',
                                                 borderRadius: '4px',
                                                 background: '#fff',
-                                                border: upayData.card_token === token ? '2px solid #007cba' : '1px solid #ccc',
+                                                border: upayData.card_token === selection ? '2px solid #007cba' : '1px solid #ccc',
                                                 cursor: 'pointer'
                                             }
                                     },

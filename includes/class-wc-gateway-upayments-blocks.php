@@ -110,6 +110,8 @@ class WCGatewayUPaymentsBlocks extends AbstractPaymentMethodType {
             // 2. Saved-card retrieval gated on a single normalized availability state.
             $user_id = get_current_user_id();
             $is_logged_in = $user_id > 0;
+            $api_key = '';
+            $is_test_mode = false;
 
             // Normalize availability once, validate once, then pass the EXACT state
             // into the saved-card helper. Retrieve is allowed only when ALL are true:
@@ -176,7 +178,24 @@ class WCGatewayUPaymentsBlocks extends AbstractPaymentMethodType {
                         if (!is_array($card)) {
                             continue;
                         }
-                        $presented = \Simplixi\SUPCheckout\Payment\SavedCardPresentation::for_blocks($card, __('Saved card', 'supcheckout'));
+                        $provider_token = \Simplixi\SUPCheckout\Payment\SavedCardPresentation::token($card);
+                        if ($provider_token === null) {
+                            continue;
+                        }
+                        $selection = \Simplixi\SUPCheckout\Payment\SavedCardSelection::create(
+                            $provider_token,
+                            (int) $user_id,
+                            $api_key,
+                            $is_test_mode
+                        );
+                        if ($selection === null) {
+                            continue;
+                        }
+                        $presented = \Simplixi\SUPCheckout\Payment\SavedCardPresentation::for_blocks(
+                            $card,
+                            __('Saved card', 'supcheckout'),
+                            $selection
+                        );
                         if ($presented === null) {
                             continue;
                         }

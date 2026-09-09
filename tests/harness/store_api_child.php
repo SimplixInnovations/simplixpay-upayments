@@ -143,6 +143,7 @@ $body_value = getenv('UPAY_BODY');
 $payload = null;
 $submitted_token_candidate = null;
 $submitted_card_token = null;
+$submitted_card_selection = null;
 if (is_string($body_value) && $body_value !== '') {
     $decoded = json_decode($body_value, true);
     if (is_array($decoded)) {
@@ -519,14 +520,26 @@ if (is_array($identity_setup_decoded) && ($identity_setup_decoded['setup_mode'] 
         $state['established_token'] = $established_token;
         $state['established_scope'] = $established['scope'];
         $state['established_generation'] = $established['secret_generation_id'];
-        // Use the distinct card_token from setup (B), not the established token (A).
+        // Use the distinct provider card token from setup (B), but put only
+        // its opaque selection handle into the simulated browser Store body.
         $card_token_b = $identity_setup_decoded['card_token'] ?? null;
-        if ($card_token_b !== null) {
+        if (is_string($card_token_b) && $card_token_b !== '') {
+            $card_selection = \Simplixi\SUPCheckout\Payment\SavedCardSelection::create(
+                $card_token_b,
+                (int) $state['current_user_id'],
+                'test_api_key',
+                false
+            );
             $body_decoded = json_decode($gateway->input_body, true);
-            if (is_array($body_decoded) && isset($body_decoded['extensions']['upayments'])) {
-                $body_decoded['extensions']['upayments']['card_token'] = $card_token_b;
+            if ($card_selection !== null
+                && is_array($body_decoded)
+                && isset($body_decoded['extensions']['upayments'])
+            ) {
+                $body_decoded['extensions']['upayments']['card_token'] = $card_selection;
                 $gateway->input_body = wp_json_encode($body_decoded);
+                // Retrieve fixture still returns the real provider card token.
                 $submitted_card_token = $card_token_b;
+                $submitted_card_selection = $card_selection;
             }
         }
         // Reset transport and mutation counters for the actual process_payment run.
@@ -648,6 +661,7 @@ $out = [
     'payload_decoded'                => $payload,
     'submitted_token_candidate'      => $submitted_token_candidate,
     'submitted_card_token'           => $submitted_card_token,
+    'submitted_card_selection'       => $submitted_card_selection,
     'established_token'              => $final['established_token'] ?? null,
     'create_token_response_token'    => $create_token_response_token,
     'retrieve_response_cards'        => $retrieve_response_cards,
