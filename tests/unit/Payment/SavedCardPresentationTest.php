@@ -42,7 +42,7 @@ final class SavedCardPresentationTest extends TestCase {
 
     public function test_display_label_never_contains_more_than_last_four_digits(): void {
         $raw = '4111 1111 1111 4242';
-        $label = SavedCardPresentation::label(array('number' => $raw));
+        $label = SavedCardPresentation::label(array('number' => $raw), 'Saved card');
 
         self::assertSame('•••• 4242', $label);
         self::assertStringNotContainsString($raw, $label);
@@ -51,7 +51,7 @@ final class SavedCardPresentationTest extends TestCase {
     }
 
     public function test_display_label_is_generic_when_last_four_is_unavailable(): void {
-        self::assertSame('Saved card', SavedCardPresentation::label(array('number' => 'x')));
+        self::assertSame('Saved card', SavedCardPresentation::label(array('number' => 'x'), 'Saved card'));
     }
 
     public function test_blocks_card_contract_never_contains_provider_number_or_last4(): void {
@@ -61,7 +61,7 @@ final class SavedCardPresentationTest extends TestCase {
             'last4'  => $raw,
             'number' => $raw,
             'brand'  => 'Visa',
-        ));
+        ), 'Saved card');
 
         self::assertSame(array(
             'token' => 'card-token',
@@ -82,8 +82,8 @@ final class SavedCardPresentationTest extends TestCase {
     }
 
     public function test_blocks_card_rejects_non_string_or_blank_tokens(): void {
-        self::assertNull(SavedCardPresentation::for_blocks(array('token' => 1234, 'number' => '4242')));
-        self::assertNull(SavedCardPresentation::for_blocks(array('token' => '', 'number' => '4242')));
-        self::assertNull(SavedCardPresentation::for_blocks(array('number' => '4242')));
+        self::assertNull(SavedCardPresentation::for_blocks(array('token' => 1234, 'number' => '4242'), 'Saved card'));
+        self::assertNull(SavedCardPresentation::for_blocks(array('token' => '', 'number' => '4242'), 'Saved card'));
+        self::assertNull(SavedCardPresentation::for_blocks(array('number' => '4242'), 'Saved card'));
     }
 }
