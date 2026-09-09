@@ -135,15 +135,24 @@ The latest runtime-bearing certified baseline is `82d1fdaee91ee6bde6c26dfcc7ceb9
 
 ## Current owner/admin/local stage
 
-Engineering does not need another invented numbered phase. Repository rename and obsolete persistent-branch cleanup are complete; temporary review branches remain normal during bounded work. The remaining owner sequence is controlled by `docs/project/OWNER-HANDOFF.md`:
+Engineering does not need another invented numbered phase. Repository rename and obsolete persistent-branch cleanup are complete; temporary review branches remain normal during bounded work.
 
-1. verify the owner's local `origin` points directly to `SimplixInnovations/supcheckout`;
-2. run isolated local owner acceptance from exact `origin/main`;
-3. build and verify the deterministic ZIP;
-4. perform disposable WordPress/WooCommerce Classic/Blocks/HPOS/bounded-sandbox smoke;
-5. apply approved launch branding and visual/accessibility acceptance;
-6. explicitly choose the first public version;
-7. tag/GitHub Release/WordPress.org publication only after exact-main certification and owner approval.
+Owner technical acceptance has been **ACCEPTED** for the frozen Approach 2 baseline:
+
+| Field | Value |
+|---|---|
+| Accepted baseline SHA | `0c883d609906676966002eb022a82a9656eeacc5` |
+| Accepted package | `supcheckout-0.1.0.zip` |
+| Accepted package SHA-256 | `58eba75019416f39a09211c87e7ccbcbb635834fb20bc890e9efbd5fec859655` |
+| Accepted package file count | `51` |
+
+The procedure in `docs/project/OWNER-HANDOFF.md` is retained as a reusable regression/re-acceptance contract; it remains available for any future acceptance event whenever fresh evidence invalidates the current accepted baseline. The current remaining program is:
+
+1. scope and implement **Approach 3 architecture modernization** against the frozen accepted baseline (now `AUTHORIZED / NOT STARTED`);
+2. re-certify Approach 3 against the accepted baseline and permanent payment/security/compatibility controls;
+3. apply approved launch branding and visual/accessibility acceptance;
+4. explicitly choose the first public version under a dedicated PR with the full release-sensitive gate stack re-run;
+5. tag/GitHub Release/WordPress.org publication only after exact-main certification and explicit owner approval. Owner technical acceptance does not authorize publication.
 
 ## External/manual evidence track
 

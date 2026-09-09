@@ -3,12 +3,15 @@
 **Purpose:** authoritative fresh-clone, local-acceptance and release-decision sequence
 **Canonical GitHub repository:** `SimplixInnovations/supcheckout`
 **Development version:** `0.1.0`
-**Latest runtime-bearing CI-certified main:** `82d1fdaee91ee6bde6c26dfcc7ceb974d0d59847`
-**Owner technical acceptance:** **NOT ACCEPTED; all known repository pre-acceptance blockers through PR #97 are fixed/certified, fresh-clone re-acceptance is required**
-**Canonical package at the PR #97 runtime tree:** **51 files; SHA-256 `58eba75019416f39a09211c87e7ccbcbb635834fb20bc890e9efbd5fec859655`**
-**Public tag / GitHub Release / WordPress.org publication:** not yet created
+**Latest runtime-bearing CI-certified main (historical):** `82d1fdaee91ee6bde6c26dfcc7ceb974d0d59847`
+**Owner technical acceptance:** **ACCEPTED**
+**Accepted Approach 2 baseline:** **`0c883d609906676966002eb022a82a9656eeacc5`**
+**Accepted package SHA-256:** **`58eba75019416f39a09211c87e7ccbcbb635834fb20bc890e9efbd5fec859655`**
+**Accepted package:** `supcheckout-0.1.0.zip` — **51 files**
+**Approach 3 architecture modernization:** **AUTHORIZED / NOT STARTED**
+**Public tag / GitHub Release / WordPress.org publication:** **not yet created — publication remains NOT AUTHORIZED**
 
-The final pre-acceptance runtime hardening through PR #97 has merged and been post-merge certified. Living-document-only descendants may advance `main` without changing the runtime package. The owner must create a **completely fresh local clone** of the final reconciled `origin/main` for independent acceptance. This document does not authorize publication by itself.
+The final pre-acceptance runtime hardening through PR #97 has merged and been post-merge certified. Living-document-only descendants may advance `main` without changing the runtime package. The owner-accepted technical baseline is the exact commit listed above; it supersedes prior CI-certified runtime anchors for the purpose of identifying the regression reference coordinate going forward. This document remains a reusable freshness/regression procedure for future baseline re-acceptance, not a substitute for such re-acceptance when fresh evidence invalidates it. This document does not authorize publication by itself.
 
 Before using this procedure in a new chat, machine, clone or session, read [`START-HERE.md`](START-HERE.md) and verify live GitHub/source/check state.
 
@@ -353,11 +356,15 @@ Before local acceptance and any release decision, verify live GitHub state:
 
 # E. Post-acceptance and release decision
 
-If the technical acceptance above passes, record the exact accepted Git SHA and local package checksum as the **Approach 2 owner-accepted baseline**. That acceptance authorizes planning/starting Approach 3; it does not authorize publication.
+The technical acceptance above has been completed for the **Approach 2 owner-accepted baseline**:
 
-Approach 3 must then be independently scoped, implemented and re-certified before the launch-facing UI/UX/branding/broad-validation program is treated as final.
+- **Accepted baseline:** `0c883d609906676966002eb022a82a9656eeacc5`
+- **Accepted package:** `supcheckout-0.1.0.zip` — 51 files
+- **Accepted package SHA-256:** `58eba75019416f39a09211c87e7ccbcbb635834fb20bc890e9efbd5fec859655`
 
-The repository may be engineering-ready while publication remains intentionally unapproved.
+That acceptance authorizes planning/starting Approach 3 architecture modernization; it does **not** authorize publication.
+
+Approach 3 must then be independently scoped, implemented and re-certified against the frozen baseline above before the launch-facing UI/UX/branding/broad-validation program is treated as final. The repository may be engineering-ready while publication remains intentionally unapproved. Any future re-acceptance event must produce a new documented baseline SHA + package SHA-256 and must preserve the historical anchor above.
 
 Before the first public release, decide explicitly:
 
@@ -416,3 +423,16 @@ For the acceptance review, also state explicitly:
 - final verdict: **ACCEPTED BASELINE** or **NOT ACCEPTED**.
 
 Only **ACCEPTED BASELINE** unlocks Approach 3.
+
+### Current accepted baseline (recorded)
+
+The verdict **ACCEPTED BASELINE** has been issued for this repository against the following frozen coordinates:
+
+| Field | Value |
+|---|---|
+| Accepted Approach 2 baseline SHA | `0c883d609906676966002eb022a82a9656eeacc5` |
+| Accepted artifact | `supcheckout-0.1.0.zip` |
+| Accepted package SHA-256 | `58eba75019416f39a09211c87e7ccbcbb635834fb20bc890e9efbd5fec859655` |
+| Accepted package file count | `51` |
+
+The pre-acceptance B-X1 malformed-settings rejection closed by PR #84 remains historical evidence that documented the gaps closed by PRs #91-#97.

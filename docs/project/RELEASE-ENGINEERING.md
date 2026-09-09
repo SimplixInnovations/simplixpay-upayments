@@ -1,9 +1,11 @@
 # SUPCheckout for UPayments — Release Engineering
 
-**Current status:** pre-release runtime/package engineering certified through PR #97; fresh-clone owner technical acceptance and explicit release administration pending
+**Current status:** pre-release runtime/package engineering certified through PR #97; owner technical acceptance COMPLETED for frozen Approach 2 baseline `0c883d609906676966002eb022a82a9656eeacc5`; Approach 3 architecture modernization AUTHORIZED / NOT STARTED; explicit release administration (tag/GitHub Release/WordPress.org publication) remains NOT AUTHORIZED
 **Canonical GitHub repository:** `SimplixInnovations/supcheckout`
 **Canonical plugin/package slug:** `supcheckout`
 **Development version:** `0.1.0`
+**Accepted Approach 2 baseline:** `0c883d609906676966002eb022a82a9656eeacc5`
+**Accepted package:** `supcheckout-0.1.0.zip` — **51 files**, SHA-256 `58eba75019416f39a09211c87e7ccbcbb635834fb20bc890e9efbd5fec859655`
 
 ## Certification anchors
 
@@ -248,6 +250,13 @@ These records remain historical truth. They are not rewritten to claim that old 
 CI artifacts are verification artifacts, not public releases.
 
 The latest runtime-bearing certified baseline is `82d1fdaee91ee6bde6c26dfcc7ceb974d0d59847` (PR #97). Fresh merged-main evidence is **41/41 check-runs SUCCESS**, including H12 **1936/0 PHP + 150/0 Blocks**, **20/20** compatibility plus Compatibility Gate, Release Artifact **69/0** plus Release Gate, Provider Sandbox, WordPress.org readiness **31/0** plus official packaged Plugin Check and CodeQL. The canonical package is **51 files**, SHA-256 `58eba75019416f39a09211c87e7ccbcbb635834fb20bc890e9efbd5fec859655`.
+
+The owner-accepted Approach 2 baseline is the **frozen regression reference coordinate for all Approach 3 work**:
+
+- Accepted baseline SHA: `0c883d609906676966002eb022a82a9656eeacc5`
+- Accepted package: `supcheckout-0.1.0.zip` (51 files, SHA-256 `58eba75019416f39a09211c87e7ccbcbb635834fb20bc890e9efbd5fec859655`).
+
+Owner technical acceptance does not authorize publication. Public tag, GitHub Release and WordPress.org submission require a separate explicit owner authorization.
 
 Repository-only documentation/presentation commits are excluded from the installable package and therefore should not change canonical ZIP bytes. Any distributable-file change may change the hash. For one exact distributable tree, Linux CI and Windows owner builds must reproduce the same ZIP SHA-256; a differing sidecar is a release blocker.
 
