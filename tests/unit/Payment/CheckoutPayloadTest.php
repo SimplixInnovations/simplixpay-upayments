@@ -52,6 +52,23 @@ final class CheckoutPayloadTest extends TestCase {
             'https://pay.example/redirect',
             CheckoutPayload::normalize_upayments_redirect_url(' https://pay.example/redirect ')
         );
+        // UPayments currently documents HTTP sandbox links for some whitelabel
+        // wallet methods; preserve provider compatibility while rejecting URL
+        // authority credentials that can visually obscure the actual host.
+        self::assertSame(
+            'http://sandboxapi.upayments.com/get-pay-by-apple',
+            CheckoutPayload::normalize_upayments_redirect_url('http://sandboxapi.upayments.com/get-pay-by-apple')
+        );
+        self::assertNull(
+            CheckoutPayload::normalize_upayments_redirect_url('https://user@pay.example/redirect')
+        );
+        self::assertNull(
+            CheckoutPayload::normalize_upayments_redirect_url('https://user:pass@pay.example/redirect')
+        );
+        self::assertSame(
+            'https://pay.example/redirect?email=user@example.com',
+            CheckoutPayload::normalize_upayments_redirect_url('https://pay.example/redirect?email=user@example.com')
+        );
         self::assertNull(CheckoutPayload::normalize_upayments_redirect_url('javascript:alert(1)'));
         self::assertNull(
             CheckoutPayload::normalize_upayments_redirect_url("https://pay.example/ok\r\nX-Test: bad")

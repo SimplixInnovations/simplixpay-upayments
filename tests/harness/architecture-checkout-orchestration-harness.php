@@ -121,6 +121,10 @@ a5_same(false, CheckoutPayload::classify_checkout_request_context(true, '/wc/sto
 a5_same(false, CheckoutPayload::classify_checkout_request_context(false, '/wc/store/v1/checkout', 'POST'), 'request classifier requires REST context');
 
 a5_same('https://pay.example/redirect', CheckoutPayload::normalize_upayments_redirect_url(' https://pay.example/redirect '), 'redirect validator trims valid HTTPS URL');
+a5_same('http://sandboxapi.upayments.com/get-pay-by-apple', CheckoutPayload::normalize_upayments_redirect_url('http://sandboxapi.upayments.com/get-pay-by-apple'), 'redirect validator preserves documented UPayments HTTP sandbox links');
+a5_same(null, CheckoutPayload::normalize_upayments_redirect_url('https://user@pay.example/redirect'), 'redirect validator rejects URL username authority');
+a5_same(null, CheckoutPayload::normalize_upayments_redirect_url('https://user:pass@pay.example/redirect'), 'redirect validator rejects URL username/password authority');
+a5_same('https://pay.example/redirect?email=user@example.com', CheckoutPayload::normalize_upayments_redirect_url('https://pay.example/redirect?email=user@example.com'), 'redirect validator does not over-reject at-sign outside URL authority');
 a5_same(null, CheckoutPayload::normalize_upayments_redirect_url('javascript:alert(1)'), 'redirect validator rejects non-HTTP scheme');
 a5_same(null, CheckoutPayload::normalize_upayments_redirect_url("https://pay.example/ok\r\nX-Test: bad"), 'redirect validator rejects CRLF injection');
 a5_same('abc', CheckoutPayload::truncate_provider_text('abcdef', 3), 'provider text truncation obeys character ceiling');

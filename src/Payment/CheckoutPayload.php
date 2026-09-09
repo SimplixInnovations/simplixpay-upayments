@@ -472,6 +472,12 @@ class CheckoutPayload {
         if ($parts === false || !isset($parts['scheme']) || !isset($parts['host'])) {
             return null;
         }
+        // Payment links never require URL authority credentials. Reject both
+        // username-only and username/password forms so a provider response
+        // cannot visually obscure or alter the effective redirect authority.
+        if (array_key_exists('user', $parts) || array_key_exists('pass', $parts)) {
+            return null;
+        }
         $scheme = strtolower($parts['scheme']);
         if ($scheme !== 'http' && $scheme !== 'https') {
             return null;
