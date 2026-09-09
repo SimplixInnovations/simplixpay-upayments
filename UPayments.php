@@ -1767,20 +1767,6 @@ function enableUpaymentsGateway($available_gateways)
     return $available_gateways;
 }
 
-add_action('admin_head', function () {
-    ?>
-    <style>
-        /* hide the entire row if input is hidden */
-        .woocommerce table.form-table tr:has(input[style*="display:none"]) {
-            display: none;
-        }
-        .upay-status-active { color: #2ecc71; font-weight: 600; }
-        .upay-status-paused { color: #f39c12; font-weight: 600; }
-        .upay-status-cancelled { color: #e74c3c; font-weight: 600; }
-    </style>
-    <?php
-});
-
 // Declare compatibility with WooCommerce's Cart & Checkout blocks (WooBlocks)
 add_action( 'before_woocommerce_init', function() {
     if ( class_exists( \Automattic\WooCommerce\Utilities\FeaturesUtil::class ) ) {
