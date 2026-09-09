@@ -8,7 +8,7 @@
 **Accepted Approach 2 baseline:** **`0c883d609906676966002eb022a82a9656eeacc5`**
 **Accepted package SHA-256:** **`58eba75019416f39a09211c87e7ccbcbb635834fb20bc890e9efbd5fec859655`**
 **Accepted package:** `supcheckout-0.1.0.zip` — **51 files**
-**Approach 3 architecture modernization:** **AUTHORIZED / NOT STARTED**
+**Approach 3 architecture modernization:** **ARCHITECTURE APPROVED / T1 NOT STARTED**
 **Public tag / GitHub Release / WordPress.org publication:** **not yet created — publication remains NOT AUTHORIZED**
 
 The final pre-acceptance runtime hardening through PR #97 has merged and been post-merge certified. Living-document-only descendants may advance `main` without changing the runtime package. The owner-accepted technical baseline is the exact commit listed above; it supersedes prior CI-certified runtime anchors for the purpose of identifying the regression reference coordinate going forward. This document remains a reusable freshness/regression procedure for future baseline re-acceptance, not a substitute for such re-acceptance when fresh evidence invalidates it. This document does not authorize publication by itself.
@@ -362,9 +362,9 @@ The technical acceptance above has been completed for the **Approach 2 owner-acc
 - **Accepted package:** `supcheckout-0.1.0.zip` — 51 files
 - **Accepted package SHA-256:** `58eba75019416f39a09211c87e7ccbcbb635834fb20bc890e9efbd5fec859655`
 
-That acceptance authorizes planning/starting Approach 3 architecture modernization; it does **not** authorize publication.
+That acceptance authorized Approach 3 architecture modernization. The architecture decision is now approved/recorded; runtime-neutral T1 `t01-architecture-guardrails-and-active-callback-characterization` is the next implementation gate. This does **not** authorize publication.
 
-Approach 3 must then be independently scoped, implemented and re-certified against the frozen baseline above before the launch-facing UI/UX/branding/broad-validation program is treated as final. The repository may be engineering-ready while publication remains intentionally unapproved. Any future re-acceptance event must produce a new documented baseline SHA + package SHA-256 and must preserve the historical anchor above.
+Approach 3 architecture scoping is complete and recorded in `.ai-architect/`. Its approved tranches must be implemented and re-certified against the frozen baseline above before the launch-facing UI/UX/branding/broad-validation program is treated as final. The repository may be engineering-ready while publication remains intentionally unapproved. Any future re-acceptance event must produce a new documented baseline SHA + package SHA-256 and must preserve the historical anchor above.
 
 Before the first public release, decide explicitly:
 
