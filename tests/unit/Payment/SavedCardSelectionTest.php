@@ -74,6 +74,38 @@ final class SavedCardSelectionTest extends TestCase {
         self::assertSame($valid, SavedCardSelection::resolve($handle, $cards, 42, 'merchant-api-key', false));
     }
 
+    public function test_submission_resolution_uses_handle_then_exact_legacy_membership(): void {
+        $cards = array(
+            array('token' => 'provider-card-A'),
+            array('token' => 'provider-card-B'),
+        );
+        $handle = SavedCardSelection::create('provider-card-B', 42, 'merchant-api-key', false);
+
+        self::assertSame(
+            'provider-card-B',
+            SavedCardSelection::resolve_submission($handle, $cards, 42, 'merchant-api-key', false)
+        );
+        self::assertSame(
+            'provider-card-A',
+            SavedCardSelection::resolve_submission('provider-card-A', $cards, 42, 'merchant-api-key', false)
+        );
+        self::assertNull(
+            SavedCardSelection::resolve_submission('foreign-provider-card', $cards, 42, 'merchant-api-key', false)
+        );
+
+        $handle_shaped_provider_token = 'sc1_' . str_repeat('a', 64);
+        self::assertSame(
+            $handle_shaped_provider_token,
+            SavedCardSelection::resolve_submission(
+                $handle_shaped_provider_token,
+                array(array('token' => $handle_shaped_provider_token)),
+                42,
+                'merchant-api-key',
+                false
+            )
+        );
+    }
+
     public function test_is_handle_accepts_only_canonical_handle_shape(): void {
         $handle = SavedCardSelection::create('provider-card-token', 42, 'merchant-api-key', false);
 
