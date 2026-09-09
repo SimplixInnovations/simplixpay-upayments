@@ -73,6 +73,14 @@ final class SavedCardPresentationTest extends TestCase {
         self::assertStringNotContainsString('4111', $card['label']);
     }
 
+    public function test_blocks_brand_is_short_digit_free_provider_text_only(): void {
+        self::assertSame('Visa', SavedCardPresentation::safe_brand(array('brand' => ' Visa ')));
+        self::assertSame('American Express', SavedCardPresentation::safe_brand(array('brand' => 'American Express')));
+        self::assertSame('', SavedCardPresentation::safe_brand(array('brand' => 'Visa 4111 1111 1111 4242')));
+        self::assertSame('', SavedCardPresentation::safe_brand(array('brand' => 1234)));
+        self::assertSame('', SavedCardPresentation::safe_brand(array('brand' => str_repeat('V', 33))));
+    }
+
     public function test_blocks_card_rejects_non_string_or_blank_tokens(): void {
         self::assertNull(SavedCardPresentation::for_blocks(array('token' => 1234, 'number' => '4242')));
         self::assertNull(SavedCardPresentation::for_blocks(array('token' => '', 'number' => '4242')));
