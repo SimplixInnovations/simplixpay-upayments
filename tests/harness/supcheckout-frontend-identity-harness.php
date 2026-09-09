@@ -108,6 +108,15 @@ foreach (array('function submitUpayButton', 'function submitSavedCard', 'functio
 }
 sufi_assert(strpos($new_template, 'supCheckout.') !== false, 'new checkout template invokes canonical JS namespace');
 
+foreach (array(
+    'new checkout template' => $new_template,
+    'legacy checkout template' => $old_template,
+) as $label => $template_source) {
+    sufi_assert(strpos($template_source, '$_GET[') === false, $label . ' does not trust query flags for payment notices');
+    sufi_assert(strpos($template_source, '<script>') === false, $label . ' emits no inline payment-notice script');
+}
+
+
 sufi_assert(!is_dir($root . '/assets/screenshots'), 'legacy repository screenshot source directory is absent');
 
 sufi_assert(strpos($gateway, "'supcheckout-checkout-legacy-script'") === false, 'obsolete legacy checkout script handle is absent');
