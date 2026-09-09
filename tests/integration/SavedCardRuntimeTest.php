@@ -6,10 +6,12 @@
 require_once __DIR__ . '/bootstrap.php';
 
 use Simplixi\SUPCheckout\Payment\SavedCardPresentation;
+use Simplixi\SUPCheckout\Payment\SavedCardSelection;
 use UPayments\Token\CustomerTokenIdentity;
 
 supcheckout_cert_assert(class_exists(CustomerTokenIdentity::class), 'customer token identity boundary is loaded');
 supcheckout_cert_assert(class_exists(SavedCardPresentation::class), 'saved-card presentation boundary is loaded by the production plugin bootstrap');
+supcheckout_cert_assert(class_exists(SavedCardSelection::class), 'saved-card selection boundary is loaded by the production plugin bootstrap');
 supcheckout_cert_assert('•••• 4242' === SavedCardPresentation::label(array('number' => '4111 1111 1111 4242'), 'Saved card'), 'saved-card presentation exposes only last four in packaged runtime');
 
 delete_option(CustomerTokenIdentity::SECRET_OPTION);
@@ -87,6 +89,26 @@ $cards = CustomerTokenIdentity::get_saved_cards_for_current_user(
 
 supcheckout_cert_assert(is_array($cards) && 'success' === $cards['result'], 'saved cards load for valid current provenance');
 supcheckout_cert_assert(1 === $retrieve_calls, 'valid saved-card retrieval performs exactly one callback');
+
+$selection = SavedCardSelection::create($card_token, $user_id, 'certification-api-key', true);
+supcheckout_cert_assert(
+    is_string($selection) && 1 === preg_match('/^sc1_[0-9a-f]{64}$/D', $selection),
+    'saved-card browser selection is an opaque canonical handle'
+);
+supcheckout_cert_assert(
+    false === strpos($selection, $card_token),
+    'saved-card browser selection does not expose the provider card token'
+);
+supcheckout_cert_assert(
+    $card_token === SavedCardSelection::resolve(
+        $selection,
+        $cards['data'],
+        $user_id,
+        'certification-api-key',
+        true
+    ),
+    'opaque saved-card selection resolves only against fresh provider cards'
+);
 
 $membership_calls = 0;
 $membership_reader = function ($token) use (&$membership_calls, $customer_token, $card_token) {
