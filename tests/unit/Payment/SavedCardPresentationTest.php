@@ -6,10 +6,21 @@ use PHPUnit\Framework\TestCase;
 use Simplixi\SUPCheckout\Payment\SavedCardPresentation;
 
 final class SavedCardPresentationTest extends TestCase {
-    public function test_prefers_explicit_last_four_over_provider_number(): void {
+    public function test_prefers_only_valid_explicit_last_four_over_provider_number(): void {
         self::assertSame('4242', SavedCardPresentation::last_four(array(
             'last4'  => '4242',
             'number' => '5555 5555 5555 4444',
+        )));
+        self::assertSame('4242', SavedCardPresentation::last_four(array(
+            'last4' => '•••• 4242',
+        )));
+
+        self::assertSame('4444', SavedCardPresentation::last_four(array(
+            'last4'  => '4111 1111 1111 4242',
+            'number' => '5555 5555 5555 4444',
+        )));
+        self::assertSame('', SavedCardPresentation::last_four(array(
+            'last4' => '4111 1111 1111 4242',
         )));
     }
 
@@ -43,13 +54,28 @@ final class SavedCardPresentationTest extends TestCase {
         self::assertSame('Saved card', SavedCardPresentation::label(array('number' => 'x')));
     }
 
-    public function test_saved_card_template_does_not_echo_provider_number_into_presentation_attributes(): void {
-        $template = file_get_contents(dirname(__DIR__, 3) . '/templates/new-design-form.php');
+    public function test_blocks_card_contract_never_contains_provider_number_or_last4(): void {
+        $raw = '4111 1111 1111 4242';
+        $card = SavedCardPresentation::for_blocks(array(
+            'token'  => 'card-token',
+            'last4'  => $raw,
+            'number' => $raw,
+            'brand'  => 'Visa',
+        ));
 
-        self::assertIsString($template);
-        self::assertStringContainsString('SavedCardPresentation::label', $template);
-        self::assertStringNotContainsString('esc_html($card_number_raw)', $template);
-        self::assertStringNotContainsString('esc_attr($card_number_raw)', $template);
-        self::assertStringNotContainsString('title="<?php echo esc_attr($card_number_raw); ?>"', $template);
+        self::assertSame(array(
+            'token' => 'card-token',
+            'label' => '•••• 4242',
+            'brand' => 'Visa',
+        ), $card);
+        self::assertArrayNotHasKey('number', $card);
+        self::assertArrayNotHasKey('last4', $card);
+        self::assertStringNotContainsString('4111', $card['label']);
+    }
+
+    public function test_blocks_card_rejects_non_string_or_blank_tokens(): void {
+        self::assertNull(SavedCardPresentation::for_blocks(array('token' => 1234, 'number' => '4242')));
+        self::assertNull(SavedCardPresentation::for_blocks(array('token' => '', 'number' => '4242')));
+        self::assertNull(SavedCardPresentation::for_blocks(array('number' => '4242')));
     }
 }
