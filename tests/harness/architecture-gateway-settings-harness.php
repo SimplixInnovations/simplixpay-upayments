@@ -309,6 +309,11 @@ a3_assert(strpos($gateway_source, 'input[style*="display:none"]') === false, 'ga
 a3_assert(!is_file($root . '/assets/js/multimerchant-repeater.js'), 'dead multimerchant repeater runtime is deleted');
 $admin_css = file_get_contents($root . '/assets/css/admin-style.css');
 a3_assert(is_string($admin_css) && strpos($admin_css, '.multimerchant-row-template') === false, 'stale repeater-template CSS is deleted');
+$admin_js = file_get_contents($root . '/assets/js/admin-settings.js');
+a3_assert(is_string($admin_js), 'live admin settings script is readable');
+a3_assert(strpos($admin_js, "if (\n        !\$newDesignCheckbox.length") !== false, 'admin settings script fails closed when exact gateway DOM is absent');
+a3_assert(strpos($admin_js, "typeof originalChecked !== 'undefined'") !== false, 'save-card state is restored only after a prior state was captured');
+a3_assert(strpos($admin_js, "\$multiMerchantCheckbox.on('change', toggleMultiMerchantState)") !== false, 'multimerchant presentation responds to live setting changes');
 a3_assert(strpos($gateway_source, 'wc_input_multimerchant_repeater') === false, 'gateway monolith no longer owns allocation HTML');
 a3_assert(strpos($gateway_source, "'enabled' => array(") === false, 'gateway monolith no longer owns settings schema');
 foreach (array('init_form_fields', 'process_admin_options', 'generate_multimerchant_repeater_html', 'validate_multimerchant_repeater_field', 'admin_enqueue_scripts') as $method) {
