@@ -72,56 +72,42 @@ Read in this order after this file:
 
 Historical documents may contain former product names, old repository coordinates and old SHAs because those facts were true at the time. Do not bulk-rewrite historical evidence into current branding.
 
-## 4. Exact program state at the Approach 2 handoff
+## 4. Current certified pre-acceptance baseline
 
-### Repository baseline entering this continuity bootstrap
+Latest runtime-bearing CI-certified `main`:
 
-The last fully closed `main` before this continuity-documentation task was:
+`82d1fdaee91ee6bde6c26dfcc7ceb974d0d59847`
 
-`148296e5ac1f6a6748661781522e3a840a27d3de`
+PR #97 squash-merged from exact certified head `1f2a0b8d35f96008be6ccfeb10c67fffcd3be5c0`. Post-merge `main` completed **41/41 check-runs successfully**.
 
-That commit is PR #78's documentation-only reconciliation after the final enterprise repository audit.
+Current exact evidence:
 
-The latest runtime-bearing **CI-certified `main`** is:
+- H12 PHP — **1936 PASS / 0 FAIL**;
+- H12 Blocks — **150 PASS / 0 FAIL**;
+- real compatibility — **20/20 runtime cells SUCCESS** plus **Compatibility Gate SUCCESS**;
+- Release Artifact — **69 PASS / 0 FAIL**;
+- WordPress.org readiness — **31 PASS / 0 FAIL**, plus official packaged Plugin Check **SUCCESS**;
+- bounded UPayments Provider Sandbox — **SUCCESS**;
+- CodeQL — **SUCCESS**;
+- canonical deterministic ZIP — **51 files**, SHA-256 `58eba75019416f39a09211c87e7ccbcbb635834fb20bc890e9efbd5fec859655`;
+- canonical, Linux and Windows package evidence — **byte-identical**.
 
-`902c23caad1461e63c816fdc5252855d9dc4f9e4`
+The bounded pre-acceptance hardening chain after the rejected 2026-09-08 owner run is closed:
 
-That is PR #84's squash merge from exact certified head `199d4a4f2f17cd982b2c869c9ef6eee794c05fd1`. The PR head passed **40/40 checks** and the byte-identical squash tree passed **39/39 post-merge checks**. The canonical runtime package is **56 files**, SHA-256 `90ac844d37938e5cbb7e9a9ee3e8923b904bf8cf978c62adf2a8994a4b7462ce`. Owner technical acceptance has **not** yet accepted this fixed baseline; a new fresh-clone owner acceptance is required.
+- PR #84 — B-X1 malformed gateway-settings fail-closed fix;
+- PR #91 — Blocks and Classic runtime eligibility parity;
+- PR #92 — admin isolation and dead multimerchant repeater cleanup;
+- PR #93 — PHP 8.2 current-stack certification, expanding the real matrix to 20 cells;
+- PR #94 — installable-package cleanup of repository-only documents;
+- PR #95 — last-four-only saved-card presentation;
+- PR #96 — opaque saved-card browser handles so provider card tokens do not enter browser state;
+- PR #97 — removal of the unnecessary numeric WordPress user ID from subscription browser localization.
 
-### Approach 2
+The installable package contains `readme.txt` and `LICENSE`; repository-only `README.md`, `CHANGELOG.md` and `SECURITY.md` are excluded.
 
-**Status: DONE / VERIFIED / CLOSED for owner acceptance.**
+Owner technical acceptance remains **NOT ACCEPTED**. Accepted owner baseline: **NONE**. Automated certification does not substitute for the independent fresh-clone owner gate.
 
-Approach 2 completed the repository-wide enterprise audit, release-control reconciliation and presentation closeout. It did not identify an evidence-backed reason for another speculative production-runtime change.
-
-PR #77 completed the final enterprise repository audit from certified head:
-
-`4b00ef838f8da0a14d5963697d2584dcd6d82f4d`
-
-and squash-merged as:
-
-`bf4a46195013edb7699d5142f2c1400d99357fe2`
-
-Recorded post-merge evidence for that runtime/package-equivalent state includes:
-
-- Quality Gates #978 — **SUCCESS**;
-- H12 Regression Harness — **SUCCESS**;
-- Compatibility Certification #506 — **16/16 SUCCESS**;
-- Release Artifact #454 / Release Gate — **SUCCESS**;
-- Provider Sandbox #397 — **SUCCESS**;
-- WordPress.org Submission Check #309 — **SUCCESS / strict packaged Plugin Check**;
-- CodeQL/main-security #800 — **SUCCESS**;
-- deterministic `supcheckout-0.1.0.zip` — SHA-256 `32776f23f02de2fa7be14a5c84ebdcddb9b2f2d348366deade826bca86e58da3`, 56 files.
-
-PR #78 then reconciled the living status/owner handoff only. Any future session must still verify the live current `main` and current checks rather than treating the evidence above as a substitute for freshness.
-
-PR #80 then hardened the **owner-acceptance and permanent current-PHP evidence layer** after fresh local PHP 8.5 acceptance exposed deprecated/stale test constructs. Its final exact head `717c34d16a5fdc5548b045751bdf53dbdb936a76` passed **35/35 checks**, including PHP 8.5 Quality, PHP 8.5 H12, the expanded **18/18** real compatibility matrix, Release Gate and CodeQL. It squash-merged as `65e39c5da4fee6462e219bbb0ec21038f831c6b1`. The merged Git tree is byte-identical to the certified PR-head tree; post-merge `main` then passed **26/26 triggered checks**, including PHP 8.5 Quality/H12, Compatibility Gate and CodeQL. Release Gate did not re-trigger on the post-merge push and must not be falsely reported as a post-merge run. PR #80 changed **no production plugin runtime/package-source file**. The deterministic package at that historical packaging contract remained **56 files**, SHA-256 `32776f23f02de2fa7be14a5c84ebdcddb9b2f2d348366deade826bca86e58da3`.
-
-PR #82 then closed a release-engineering defect discovered by independent Windows owner acceptance: the exact same **56-file / 56-path per-file manifest** produced different DEFLATE ZIP bytes on Windows and Ubuntu. PR #82 replaced environment-dependent DEFLATE output with deterministic `ZIP_STORED` entries, strengthened ZIP metadata verification, and made Release Gate depend on canonical + Ubuntu + Windows artifact equality. Final exact PR head `af309e8c668e9def7d94e533f1c553b1b937eae6` passed **40/40 checks**. It squash-merged as `c1f70164ebcd13fc6e7a5d3c70830a9070ecf898`; the merge tree is byte-identical to the certified PR-head tree, and merged `main` passed **39/39 checks**, including the new cross-platform determinism gate and Release Gate. The canonical package is **56 files**, SHA-256 `24efa28f2803976f4f9437d6b66e55922c26c13143ea291634db31b8506ffd63`, reproduced identically by Ubuntu and Windows builds. PR #82 changed release tooling/control/test/docs only and no production plugin runtime/package-source file.
-
-PR #84 then fixed the first-party **B-X1 malformed gateway-settings defect** found by the 2026-09-08 fresh-clone owner acceptance. The exact PR head `199d4a4f2f17cd982b2c869c9ef6eee794c05fd1` passed **40/40 checks**. The permanent regression now executes against the exact packaged ZIP in both legacy and HPOS `packaged-runtime` jobs and is a transitive dependency of Release Gate. PR #84 squash-merged as `902c23caad1461e63c816fdc5252855d9dc4f9e4`; its tree is byte-identical to the reviewed PR head and post-merge `main` passed **39/39 checks**. The canonical package is **56 files**, SHA-256 `90ac844d37938e5cbb7e9a9ee3e8923b904bf8cf978c62adf2a8994a4b7462ce`.
-
-Owner technical acceptance remains **NOT ACCEPTED**. The prior rejection is valid evidence that B-X1 existed before PR #84; PR #84 fixes and CI-certifies that defect, but it does not substitute for the required fresh-clone owner re-acceptance. Approach 3 remains blocked until that re-acceptance returns **ACCEPTED BASELINE**.
+Living-document-only descendants may advance `main` after this runtime anchor without changing distributable bytes. A new session must resolve live `main` and verify that its distributable package still matches the certified package before owner acceptance.
 
 ## 5. Program sequence — mandatory current decision
 
@@ -205,26 +191,25 @@ Do not report these deferred items as Approach 2 defects unless fresh evidence s
 
 ## 8. Active-work ledger
 
-This table is the compact operational state. It is not a substitute for GitHub PRs, commits or CI.
-
 | Field | Current value |
 |---|---|
-| Program phase | **Owner technical acceptance preparation** |
-| Approach 2 | **DONE / VERIFIED / CLOSED** |
-| Owner technical acceptance | **NOT ACCEPTED on 2026-09-08 — B-X1 is fixed and CI-certified on `main` by PR #84; fresh-clone owner re-acceptance required** |
+| Program phase | **Ready for fresh-clone owner technical acceptance after living-state reconciliation** |
+| Approach 2 / pre-acceptance engineering | **DONE / VERIFIED** |
+| Owner technical acceptance | **NOT ACCEPTED — fresh-clone re-acceptance required** |
 | Accepted owner baseline | **NONE YET** |
 | Approach 3 | **BLOCKED until owner technical acceptance passes** |
 | Full UI/UX / branding / broad launch testing | **DEFERRED until after Approach 3** |
 | Public release authorization | **NOT GRANTED** |
 | Current program gate | **Fresh-clone owner technical acceptance** |
 | Next substantive action | Fresh clone + owner acceptance per `OWNER-HANDOFF.md` |
-| Latest runtime-bearing CI-certified `main` | `902c23caad1461e63c816fdc5252855d9dc4f9e4` — PR #84; owner re-acceptance pending |
-| Latest current-stack hardening merge | `902c23caad1461e63c816fdc5252855d9dc4f9e4` — PR #84 |
-| Expected active branch / PR outside temporary work | **None — verified post-PR #84; repository topology returned to `main` only** |
-| Local fresh-clone owner acceptance (2026-09-08) | **NOT ACCEPTED — B-X1 found. PR #84 fixes B-X1 on `main`; a new fresh-clone acceptance is now required to establish an accepted baseline** |
-| Last retained full runtime/package evidence | **PR #77 post-merge: Quality #978, Compatibility #506, Release #454, Provider #397, WordPress.org #309, CodeQL #800** |
-| Latest current-stack release/QA evidence | **PR #84 exact head `199d4a4f2f17cd982b2c869c9ef6eee794c05fd1`: 40/40 SUCCESS; B-X1 permanently gated in packaged legacy + HPOS; merge `902c23caad1461e63c816fdc5252855d9dc4f9e4`: byte-identical tree + 39/39 post-merge checks; compatibility remains 18/18; canonical ZIP 56 files / SHA-256 `90ac844d37938e5cbb7e9a9ee3e8923b904bf8cf978c62adf2a8994a4b7462ce`** |
-| Source of live truth | **GitHub + exact source/check evidence** |
+| Latest runtime-bearing CI-certified `main` | `82d1fdaee91ee6bde6c26dfcc7ceb974d0d59847` — PR #97 |
+| Runtime exact-head evidence | **41/41 post-merge checks; H12 1936/0 PHP + 150/0 Blocks; compatibility 20/20; Release 69/0; WordPress.org readiness 31/0** |
+| Canonical runtime package | **51 files / SHA-256 `58eba75019416f39a09211c87e7ccbcbb635834fb20bc890e9efbd5fec859655`** |
+| Expected closed topology outside temporary work | **`main` only; no open PRs/issues** |
+| Local owner acceptance | **NOT ACCEPTED; prior B-X1 rejection remains historical evidence, all known repository pre-acceptance blockers now fixed/certified** |
+| Source of live truth | **GitHub + exact source/check/package evidence** |
+
+Documentation-only reconciliation may advance the live `main` SHA while leaving the runtime-bearing anchor and 51-file package byte-identical.
 
 ### Operational tracking model
 

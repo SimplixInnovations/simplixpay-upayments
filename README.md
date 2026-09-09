@@ -26,7 +26,7 @@
   <img alt="Development version 0.1.0" src="https://img.shields.io/badge/Development-0.1.0-285e46?style=flat-square">
   <img alt="WordPress 6.9 through 7.1" src="https://img.shields.io/badge/WordPress-6.9%E2%80%937.1-21759b?style=flat-square">
   <img alt="WooCommerce 10.8 through 11.1" src="https://img.shields.io/badge/WooCommerce-10.8%E2%80%9311.1-96588a?style=flat-square">
-  <img alt="PHP 7.4, 8.3 and 8.4" src="https://img.shields.io/badge/PHP-7.4%20%7C%208.3%20%7C%208.4-777bb4?style=flat-square">
+  <img alt="PHP 7.4, 8.2, 8.3, 8.4 and 8.5" src="https://img.shields.io/badge/PHP-7.4%20%7C%208.2%20%7C%208.3%20%7C%208.4%20%7C%208.5-777bb4?style=flat-square">
 </p>
 
 <p align="center">
@@ -74,7 +74,7 @@ The current certified matrix covers exact WordPress, WooCommerce, PHP and order-
 |---|---|
 | WordPress | 6.9.x, 7.0.x and 7.1 cells |
 | WooCommerce | 10.8.x, 11.0.x and 11.1.x cells |
-| PHP | 7.4, 8.3 and 8.4 cells |
+| PHP | 7.4 compatibility floor; 8.2, 8.3, 8.4 and 8.5 current-stack cells |
 | Order storage | Legacy + HPOS |
 | Checkout | Classic + Cart / Checkout Blocks registration/availability |
 

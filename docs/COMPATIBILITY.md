@@ -8,49 +8,40 @@ This document is the public compatibility source of truth. A capability is **Ver
 
 Latest runtime-bearing certified merge:
 
-`1354b8e6f801a847a5fa9b5b657e77647384bdbc`
+`82d1fdaee91ee6bde6c26dfcc7ceb974d0d59847`
 
-Certified PR #75 head:
+Certified PR #97 head:
 
-`9474955e2d5438ccc9c0334b52dc0f72be557a86`
+`1f2a0b8d35f96008be6ccfeb10c67fffcd3be5c0`
 
 Fresh post-merge evidence:
 
-- Quality #958 — **SUCCESS**;
-- H12 Regression Harness — **SUCCESS**;
-- Compatibility #486 — **16/16 SUCCESS**;
-- Release Artifact #434 — **SUCCESS**, including packaged legacy/HPOS plus historical package-root migration/rollback;
-- Provider Sandbox #386 — **SUCCESS**;
-- WordPress.org Submission Check #289 — **SUCCESS / strict packaged Plugin Check**;
-- CodeQL/main-security #780 — **SUCCESS**.
+- exact merged-main check-runs — **41/41 SUCCESS**;
+- H12 PHP — **1936 PASS / 0 FAIL**;
+- H12 Blocks — **150 PASS / 0 FAIL**;
+- Compatibility Certification — **20/20 runtime cells SUCCESS** + Compatibility Gate;
+- Release Artifact — **69 PASS / 0 FAIL** + Release Gate;
+- Provider Sandbox — **SUCCESS**;
+- WordPress.org readiness — **31 PASS / 0 FAIL** + official packaged Plugin Check;
+- CodeQL — **SUCCESS**;
+- deterministic package — **51 files**, SHA-256 `58eba75019416f39a09211c87e7ccbcbb635834fb20bc890e9efbd5fec859655`, byte-identical across canonical/Linux/Windows evidence.
 
-Later documentation/presentation-only descendants may advance `main` without changing this runtime baseline. Release decisions must always verify the exact current candidate.
+Owner technical acceptance remains **NOT ACCEPTED**; this automated anchor does not authorize Approach 3 or publication.
 
-### Latest current-stack compatibility hardening
+### Current-stack and pre-acceptance hardening
 
-The runtime-bearing baseline above remains unchanged because the current-stack compatibility changes below do not modify production plugin runtime/package-source files.
+The current real matrix includes PHP **8.2, 8.3, 8.4 and 8.5** on WordPress 7.1 / WooCommerce 11.1.0, plus the supported PHP **7.4 compatibility floor** on WordPress 6.9.7 / WooCommerce 10.8.1. PHP 8.0 and 8.1 are intentionally not added merely to enlarge the matrix.
 
-PR #80 strengthened current-stable PHP acceptance:
+Post-owner-rejection hardening relevant to public compatibility and checkout safety:
 
-- final exact PR head: `717c34d16a5fdc5548b045751bdf53dbdb936a76`;
-- final PR result: **35/35 SUCCESS**, including Quality + H12 on PHP 8.5, **18/18 compatibility**, Release Gate and CodeQL;
-- deterministic package: **56 files**, SHA-256 `32776f23f02de2fa7be14a5c84ebdcddb9b2f2d348366deade826bca86e58da3`;
-- squash merge: `65e39c5da4fee6462e219bbb0ec21038f831c6b1`;
-- merged Git tree: **identical** to the certified PR-head tree;
-- post-merge `main`: **26/26 triggered checks SUCCESS**, including PHP 8.5 Quality/H12, Compatibility Gate and CodeQL.
+- PR #91 aligned Blocks runtime availability with Classic fail-closed eligibility;
+- PR #93 added PHP 8.2 legacy + HPOS current-stack runtime certification, expanding the matrix to 20 cells;
+- PR #94 removed repository-only documentation from the installable package;
+- PR #95 enforced last-four-only saved-card presentation;
+- PR #96 replaced provider saved-card browser token exposure with opaque server-resolved handles;
+- PR #97 removed the unused numeric WordPress user ID from subscription browser localization.
 
-Release Gate did not trigger again on the post-merge push; its successful evidence belongs to the identical final PR tree. One PR migration job initially failed before migration execution because GitHub's artifact service returned HTTP 403; the same job was rerun successfully, after which Release Gate passed. No plugin or migration failure was waived.
-
-PR #93 extends the real runtime matrix to PHP 8.2 on the current WordPress/WooCommerce stack:
-
-- exact certified PR head: `52cd037f1e43fcd5b767ce610c15e6a1d718a0d8`;
-- WordPress **7.1** / WooCommerce **11.1.0** / PHP **8.2** is exercised in both legacy storage and HPOS;
-- Compatibility Certification #588 — **20/20 runtime cells SUCCESS**;
-- Quality Gates #1060 — **SUCCESS**;
-- Release Artifact #530 — **SUCCESS**;
-- PHP 8.0 and 8.1 are intentionally not added as certification lanes merely to enlarge the matrix.
-
-PR #93 changes certification infrastructure/documentation only; it does not change payment/provider behavior, persisted identities, package runtime source, or the supported PHP floor.
+These changes do not broaden SUPCheckout beyond the UPayments-specific feature/support boundary documented below.
 
 ## Platform matrix
 

@@ -1,6 +1,6 @@
 # SUPCheckout for UPayments — Release Engineering
 
-**Current status:** pre-release SUPCheckout identity + repository coordinate closure merged and post-merge certified; local acceptance/release administration pending
+**Current status:** pre-release runtime/package engineering certified through PR #97; fresh-clone owner technical acceptance and explicit release administration pending
 **Canonical GitHub repository:** `SimplixInnovations/supcheckout`
 **Canonical plugin/package slug:** `supcheckout`
 **Development version:** `0.1.0`
@@ -40,27 +40,26 @@ At PR #68 closeout, before documentation-only PR #69 opened, remote topology was
 
 ### Runtime-bearing release baseline
 
-PR #58 certified head:
+Latest runtime-bearing merge:
 
-`5bf84dccb880733da45c1f922d43554af69a33dc`
+`82d1fdaee91ee6bde6c26dfcc7ceb974d0d59847`
 
-Runtime-bearing merge:
+Certified PR #97 head:
 
-`6aabc4fcb0606567a11637ea07fe081fed4c7f85`
+`1f2a0b8d35f96008be6ccfeb10c67fffcd3be5c0`
 
-Post-merge evidence:
+Fresh merged-main evidence:
 
-- Quality #764 — **SUCCESS**;
-- Compatibility #292 — **16/16 SUCCESS**;
-- Release Artifact #243 — **SUCCESS**;
-- packaged WordPress 7.1 / WooCommerce 11.1.0 / PHP 8.3 legacy — **SUCCESS**;
-- packaged WordPress 7.1 / WooCommerce 11.1.0 / PHP 8.3 HPOS — **SUCCESS**;
-- legacy-root migration WordPress 7.1 / WooCommerce 11.1.0 — **SUCCESS**;
-- legacy-root migration WordPress 6.9.7 / WooCommerce 10.8.1 — **SUCCESS**;
-- WordPress.org Submission Check #101 — **SUCCESS**;
-- Provider Sandbox #207 — **SUCCESS**;
-- CodeQL/main-security #579 — **SUCCESS**;
-- official packaged Plugin Check — **0 blocking errors**.
+- **41/41 check-runs SUCCESS**;
+- H12 — **1936/0 PHP + 150/0 Blocks**;
+- Compatibility — **20/20 runtime cells + Compatibility Gate SUCCESS**;
+- Release Artifact — **69/0 + Release Gate SUCCESS**;
+- WordPress.org readiness — **31/0 + official packaged Plugin Check SUCCESS**;
+- bounded Provider Sandbox and CodeQL — **SUCCESS**;
+- canonical deterministic ZIP — **51 files**, SHA-256 `58eba75019416f39a09211c87e7ccbcbb635834fb20bc890e9efbd5fec859655`;
+- canonical/Linux/Windows sidecars and manifests — **byte-identical**.
+
+The package contract excludes repository-only `README.md`, `CHANGELOG.md` and `SECURITY.md`; it retains WordPress `readme.txt` and `LICENSE`.
 
 ### Final control-plane closeout
 
@@ -248,9 +247,9 @@ These records remain historical truth. They are not rewritten to claim that old 
 
 CI artifacts are verification artifacts, not public releases.
 
-The latest runtime-bearing certified baseline is `1354b8e6f801a847a5fa9b5b657e77647384bdbc` (PR #75). Fresh post-merge evidence is Quality #958, Compatibility #486 (**16/16**), Release Artifact #434, Provider Sandbox #386, strict WordPress.org #289 and CodeQL/main-security #780 — all **SUCCESS**.
+The latest runtime-bearing certified baseline is `82d1fdaee91ee6bde6c26dfcc7ceb974d0d59847` (PR #97). Fresh merged-main evidence is **41/41 check-runs SUCCESS**, including H12 **1936/0 PHP + 150/0 Blocks**, **20/20** compatibility plus Compatibility Gate, Release Artifact **69/0** plus Release Gate, Provider Sandbox, WordPress.org readiness **31/0** plus official packaged Plugin Check and CodeQL. The canonical package is **51 files**, SHA-256 `58eba75019416f39a09211c87e7ccbcbb635834fb20bc890e9efbd5fec859655`.
 
-Later documentation/presentation-only commits may legitimately change deterministic ZIP bytes between commits without changing runtime behavior. For one exact Git tree, however, Linux CI and Windows owner builds must reproduce the same ZIP SHA-256. A local sidecar that differs from exact-head CI is a release blocker, not an acceptable toolchain variation.
+Repository-only documentation/presentation commits are excluded from the installable package and therefore should not change canonical ZIP bytes. Any distributable-file change may change the hash. For one exact distributable tree, Linux CI and Windows owner builds must reproduce the same ZIP SHA-256; a differing sidecar is a release blocker.
 
 Live repository topology, open PR/issue state and exact-head checks must be verified at the time of a release decision; historical `main`-only snapshots are not substitutes for current evidence.
 

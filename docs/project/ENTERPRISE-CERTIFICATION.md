@@ -40,7 +40,7 @@ This closes the original identity-migration certification only. Repository renam
 
 PR #59 later reconciled living owner/control documentation as `9591c431e1eb56fe40ca60147afdf9f3f909a212` without changing runtime behavior. PR #61 then removed the remaining retired pre-rebrand first-party constants/certification-control prefixes while preserving protected UPayments compatibility identities.
 
-Current runtime-bearing certified `main`: `efe937c67343242b7ccf3396a67b3cf2ce35ebac`.
+Runtime-bearing certified `main` at this historical naming-reconciliation milestone: `efe937c67343242b7ccf3396a67b3cf2ce35ebac`.
 
 Fresh post-merge evidence on that exact SHA:
 
@@ -72,7 +72,7 @@ The canonical repository was then renamed to `SimplixInnovations/supcheckout`. N
 
 PR #47 established the permanent real WordPress/WooCommerce/MySQL certification matrix. PR #48 derived public support metadata and Woo feature declarations only from that executable evidence.
 
-Permanent matrix: **16/16** WordPress/WooCommerce/PHP × legacy/HPOS cells:
+Historical matrix established at that certification milestone: **16/16** WordPress/WooCommerce/PHP × legacy/HPOS cells. The current expanded matrix is owned by `docs/COMPATIBILITY.md`:
 
 | WordPress | WooCommerce | PHP | Legacy | HPOS |
 |---|---|---:|---|---|

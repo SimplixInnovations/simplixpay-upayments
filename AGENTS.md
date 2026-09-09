@@ -75,29 +75,27 @@ Historical records may intentionally contain former product names, repository co
 
 Repository Foundation, Phase 0, Phase 9I, Provider Payment Lifecycle, Security Threat Model, Architecture A1-A5, Quality Platform Q1-Q19 and Enterprise Tasks 1-8 are **DONE / VERIFIED**.
 
-Approach 2 repository-wide enterprise audit/presentation closeout is **DONE / VERIFIED / CLOSED for owner acceptance**.
+Approach 2 and the bounded pre-acceptance hardening sequence are **DONE / VERIFIED**. The numbered Quality Platform is permanently closed at Q19. **Never invent Q20 for continuity.**
 
-The mandatory program sequence is:
+Mandatory sequence:
 
-`Approach 2 closed → fresh-clone owner technical acceptance → accepted baseline → Approach 3 architecture modernization → Approach 3 re-certification → full UI/UX/branding/accessibility/broad launch testing → explicit release decision.`
+`pre-acceptance engineering closed → fresh-clone owner technical acceptance → accepted baseline → Approach 3 architecture modernization → Approach 3 re-certification → full UI/UX/branding/accessibility/broad launch testing → explicit release decision.`
 
-Approach 3 is **not authorized** until the owner technical-acceptance baseline passes. Final UI/UX, branding and exhaustive launch validation are intentionally deferred until after Approach 3 unless fresh evidence makes one an earlier blocker.
+Approach 3 is **not authorized** until owner technical acceptance passes.
 
-The numbered Quality Platform is permanently closed at Q19. **Never invent Q20 for continuity.**
+Latest runtime-bearing CI-certified `main`:
 
-Latest runtime-bearing **CI-certified main** (owner re-acceptance pending):
+`82d1fdaee91ee6bde6c26dfcc7ceb974d0d59847`
 
-`902c23caad1461e63c816fdc5252855d9dc4f9e4`
+This is PR #97's squash merge from exact certified head `1f2a0b8d35f96008be6ccfeb10c67fffcd3be5c0`. Merged `main` completed **41/41 check-runs successfully**. Permanent evidence includes H12 **1936/0 PHP + 150/0 Blocks**, the **20/20 runtime compatibility matrix + Compatibility Gate**, Release Artifact **69/0**, WordPress.org readiness **31/0** plus official packaged Plugin Check, bounded Provider Sandbox and CodeQL. The canonical deterministic package is **51 files**, SHA-256 `58eba75019416f39a09211c87e7ccbcbb635834fb20bc890e9efbd5fec859655`, with canonical/Linux/Windows byte equality.
 
-This is PR #84's squash merge from exact certified head `199d4a4f2f17cd982b2c869c9ef6eee794c05fd1`. The reviewed PR head passed **40/40 checks**; the byte-identical squash tree on `main` passed **39/39 post-merge checks**, including the permanent packaged-runtime B-X1 regression in legacy and HPOS and the required Release Gate. The canonical package remains **56 files**, SHA-256 `90ac844d37938e5cbb7e9a9ee3e8923b904bf8cf978c62adf2a8994a4b7462ce`.
+PRs #91-#97 closed the post-owner-rejection pre-acceptance gaps: Classic/Blocks runtime eligibility parity, admin isolation/dead repeater cleanup, PHP 8.2 current-stack certification, distribution cleanup, saved-card last-four presentation, opaque browser saved-card handles and removal of the unnecessary numeric WordPress user ID from browser localization.
 
-Owner technical acceptance remains **NOT ACCEPTED** because the 2026-09-08 fresh-clone acceptance found B-X1 before this fix. B-X1 is now fixed and CI-certified on `main`, but only a new owner fresh-clone acceptance can establish the accepted baseline and unlock Approach 3.
+Owner technical acceptance remains **NOT ACCEPTED** and the accepted owner baseline remains **NONE**. A fresh clone of the final reconciled `origin/main` must pass `OWNER-HANDOFF.md` before Approach 3.
 
-PR #75 (`1354b8e6f801a847a5fa9b5b657e77647384bdbc`) remains a historical certified runtime milestone, not the current runtime-bearing main.
+Outside bounded active work, required remote topology is **main only**. The superseded #98 branch was explicitly cleaned up after #97 merged.
 
-The owner deleted the final stale remote branch before the final enterprise repository audit. Outside temporary active work, desired topology is **main only**.
-
-No public tag, GitHub Release or WordPress.org publication exists yet. Local owner acceptance, launch visual/accessibility acceptance and publication remain explicit owner decisions.
+No public GitHub Release or WordPress.org publication exists. Tag/publication decisions remain explicit owner actions.
 
 ## Protected compatibility identities
 
@@ -219,7 +217,7 @@ External AI/bot output is an evidence request, not authority.
 Before merging runtime/release-sensitive work require the exact head to satisfy, at minimum:
 
 - Quality/H12 green;
-- Compatibility 16/16 green;
+- Compatibility Gate green with all 20 runtime cells successful;
 - Release Artifact including packaged + migration cells green;
 - bounded Provider Sandbox green when applicable;
 - WordPress.org Submission Check green;

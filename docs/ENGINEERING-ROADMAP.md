@@ -131,7 +131,7 @@ Post-merge:
 
 At the PR #68 coordinate-closure milestone, repository/admin state was reconciled with canonical About/topics, the four required Main Rule checks, protective rules, `main`-only topology and no open PRs/issues/tags/releases. That is historical milestone evidence, not a permanent assertion about whatever temporary review branch may exist later.
 
-The latest runtime-bearing certified baseline is `1354b8e6f801a847a5fa9b5b657e77647384bdbc` from PR #75. Fresh post-merge evidence is Quality #958, Compatibility #486 (**16/16**), Release Artifact #434, Provider Sandbox #386, strict WordPress.org #289 and CodeQL/main-security #780 — all **SUCCESS**.
+The latest runtime-bearing certified baseline is `82d1fdaee91ee6bde6c26dfcc7ceb974d0d59847` from PR #97. Fresh merged-main evidence is **41/41 check-runs SUCCESS**, including H12 **1936/0 PHP + 150/0 Blocks**, **20/20** compatibility plus Compatibility Gate, Release Artifact **69/0** plus Release Gate, Provider Sandbox, WordPress.org readiness **31/0** plus official packaged Plugin Check and CodeQL. Canonical package: **51 files**, SHA-256 `58eba75019416f39a09211c87e7ccbcbb635834fb20bc890e9efbd5fec859655`.
 
 ## Current owner/admin/local stage
 
