@@ -3,7 +3,7 @@ project:
   name: SUPCheckout for UPayments
   repository: SimplixInnovations/supcheckout
   provider_scope: UPayments-only
-  php_namespace: Simplixi\\SUPCheckout
+  php_namespace: 'Simplixi\SUPCheckout'
   runtime_floor: PHP >= 7.4
 decision:
   style: incremental strangler modernization
@@ -61,17 +61,43 @@ dependency_rules:
     from: Approach 3
     to: generic multi-provider interfaces/frameworks
     reason: Repository is permanently UPayments-specific.
+identity_contracts:
+  product_name: SUPCheckout for UPayments
+  slug: supcheckout
+  plugin_folder: supcheckout/
+  first_stable_bootstrap: UPayments.php
+  first_stable_basename: supcheckout/UPayments.php
+  text_domain: supcheckout
+  composer_package: simplix-innovations/supcheckout
+  php_namespace_root: 'Simplixi\SUPCheckout'
+  global_php_prefix: supcheckout_
+  constants_prefix: 'SUPCHECKOUT_*'
+  css_component_root: .supcheckout
+  css_custom_properties: '--supcheckout-*'
+  js_namespace: supCheckout
+  localized_js_config: supCheckoutConfig
+  rest_namespace: supcheckout/v1
+  action_scheduler_group: supcheckout
+  logger_source: supcheckout
+  release_zip_pattern: supcheckout-X.Y.Z.zip
 protected_contracts:
   - UPayments.php physical bootstrap
   - WC_Upayments class identity
-  - upayments gateway/Blocks payment method ID
+  - WCGatewayUPaymentsBlocks class identity
+  - upayments gateway/payment/Blocks identity
   - woocommerce_upayments_settings
   - wc_upayments
-  - _upay_* and UPayments_order_id metadata
-  - H12 token/provenance/scope/generation identities
-  - upay_process_subscriptions and billing-attempt identities
+  - _upay_* historical metadata
+  - UPayments_order_id and related provider-order identities
+  - upayments_token_identity_secret_v2 and H12 provenance/scope/generation identities
+  - upay_process_subscriptions
+  - upay_hourly_cron_job historical cleanup identity
+  - '{$wpdb->prefix}upayments_billing_attempts'
+  - historical order payment-method identity
+  - frozen Phase 9I migration identities
+  - provider API field/path/schema terminology
   - getAPIUrlForRetreiveCards()
-  - whitelabled
+  - whitelabled normalized compatibility field
   - CustomerTokenIdentity.php protected blob
   - Scheduler.php and CycleClaim.php protected subscription blobs
 forbidden_architecture:
