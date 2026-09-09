@@ -5806,7 +5806,16 @@ $selected_hostile = [
 ];
 $result_selected_card = upay_run_store_api_child('SP-SELECTED-CARD', true, '/wc/store/v1/checkout', 'POST', $selected_card_body, $selected_card_setup, 'match', $selected_hostile);
 
-upay_assert_eq($result_selected_card['path'] ?? null, 'store_api', 'SP-SELECTED-CARD Store-API route confirmed', 'harness_self_test');
+upay_assert_eq(
+    ($result_selected_card['path'] ?? null) === 'store_api'
+        && isset($result_selected_card['submitted_card_selection'])
+        && is_string($result_selected_card['submitted_card_selection'])
+        && preg_match('/^sc1_[0-9a-f]{64}$/D', $result_selected_card['submitted_card_selection']) === 1
+        && $result_selected_card['submitted_card_selection'] !== $CARD_TOKEN_B,
+    true,
+    'SP-SELECTED-CARD Store fixture submits opaque browser selection handle',
+    'harness_self_test'
+);
 upay_assert_eq((int) ($result_selected_card['create_token_calls'] ?? 0), 0, 'SP-SELECTED-CARD Create=0', 'semantic_runtime');
 upay_assert_eq((int) ($result_selected_card['retrieve_calls'] ?? 0), 1, 'SP-SELECTED-CARD Retrieve=1', 'semantic_runtime');
 upay_assert_eq((int) ($result_selected_card['charge_calls'] ?? 0), 1, 'SP-SELECTED-CARD Charge=1', 'semantic_runtime');
