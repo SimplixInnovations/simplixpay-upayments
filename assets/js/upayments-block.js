@@ -215,7 +215,11 @@ const handleSubscriptionChange = (plan, interval) => {
                                 if (!card || typeof card !== 'object') return null;
                                 const token = typeof card.token === 'string' && card.token !== '' ? card.token : null;
                                 if (!token) return null;
-                                const number = typeof card.number === 'string' ? card.number : '';
+                                const fallbackLabel = translation && typeof translation.saved_card_fallback === 'string'
+                                    ? translation.saved_card_fallback
+                                    : '';
+                                const label = typeof card.label === 'string' && card.label !== '' ? card.label : fallbackLabel;
+                                if (!label) return null;
                                 const brand = typeof card.brand === 'string' ? card.brand : '';
                                 return createElement('button',
                                     {
@@ -250,7 +254,7 @@ const handleSubscriptionChange = (plan, interval) => {
                                             textAlign: 'left',
                                             fontSize: '14px'
                                         }
-                                    }, `${number} (${brand})`),
+                                    }, brand ? `${label} (${brand})` : label),
                                     createElement('span', {
                                         style: {
                                             marginLeft: 'auto',

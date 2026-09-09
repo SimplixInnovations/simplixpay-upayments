@@ -28,6 +28,7 @@ function upay_ledger_family_for($description) {
     static $rules = array(
         // Most specific first.
         array('BLOCKS-SAN',       'BLOCKS-SAN'),
+        array('CLASSIC-PAN',      'CLASSIC-PAN'),
         array('MALFORMED-CARD',   'MALFORMED-CARD'),
         array('MM-VALID-FIXED',   'MM'),
         array('MM-VALID-PERCENTAGE', 'MM'),

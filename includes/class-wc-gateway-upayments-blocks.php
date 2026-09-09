@@ -169,16 +169,18 @@ class WCGatewayUPaymentsBlocks extends AbstractPaymentMethodType {
                     && isset($savedCards['data'])
                     && is_array($savedCards['data'])
                 ) {
-                    // Section T: Sanitize each saved card entry.
+                    // Saved-card presentation is normalized server-side so
+                    // provider number/last4 source fields never enter Blocks settings.
                     $sanitized = array();
                     foreach ($savedCards['data'] as $card) {
-                        if (!is_array($card)) continue;
-                        if (!isset($card['token']) || !is_string($card['token']) || $card['token'] === '') continue;
-                        $sanitized[] = array(
-                            'token' => $card['token'],
-                            'number' => isset($card['number']) && is_scalar($card['number']) ? (string) $card['number'] : '',
-                            'brand' => isset($card['brand']) && is_scalar($card['brand']) ? (string) $card['brand'] : '',
-                        );
+                        if (!is_array($card)) {
+                            continue;
+                        }
+                        $presented = \Simplixi\SUPCheckout\Payment\SavedCardPresentation::for_blocks($card, __('Saved card', 'supcheckout'));
+                        if ($presented === null) {
+                            continue;
+                        }
+                        $sanitized[] = $presented;
                     }
                     $saved_cards = $sanitized;
                 }
@@ -226,6 +228,7 @@ class WCGatewayUPaymentsBlocks extends AbstractPaymentMethodType {
             'translation'               => [
                 'save_card_label'       => __('For faster and more secure checkout. Save your card details.', 'supcheckout'),
                 'saved_cards_label'     => __('Saved Cards', 'supcheckout'),
+                'saved_card_fallback'   => __('Saved card', 'supcheckout'),
                 'other_options_label'   => __('Other Options', 'supcheckout'),
             ],
             'supports'    => [ 'products' ],

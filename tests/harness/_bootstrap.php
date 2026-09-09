@@ -130,7 +130,7 @@ function upay_reset_state() {
         'create_token_calls' => 0, 'retrieve_calls' => 0,
         'availability_calls' => 0, 'charge_calls' => 0,
         'last_charge_body' => null,
-        'current_user_id' => 0, 'post' => [],
+        'current_user_id' => 0, 'wc_cart' => null, 'post' => [],
         'request_uri' => '/checkout/', 'request_method' => 'POST',
         'rest_request' => false, 'input_body' => null,
         'lock_held_names' => [],
@@ -334,9 +334,11 @@ function esc_html__($text, $domain = '') { return $text; }
 function esc_attr__($text, $domain = '') { return $text; }
 function esc_attr($text) { return htmlspecialchars((string) $text, ENT_QUOTES, 'UTF-8'); }
 function esc_html($text) { return htmlspecialchars((string) $text, ENT_QUOTES, 'UTF-8'); }
+function esc_html_e($text, $domain = '') { echo esc_html($text); }
 function esc_url($url) { return $url; }
 function esc_url_raw($url) { return $url; }
 function wp_kses($content, $allowed_html) { return $content; }
+function wp_kses_post($content) { return $content; }
 function get_current_blog_id() { return 1; }
 function get_current_user_id() { return upay_test_state()['current_user_id']; }
 function is_user_logged_in() { return get_current_user_id() > 0; }
@@ -815,8 +817,9 @@ function upay_set_availability_response($r) { upay_test_state()['availability_re
 function WC() {
     return new class {
         public $session;
-        public $cart = null;
+        public $cart;
         public function __construct() {
+            $this->cart = upay_test_state()['wc_cart'] ?? null;
             $this->session = new class {
                 public function set($k, $v) {
                     if ($k === 'refresh_totals') upay_test_state()['session_refresh_totals']++;

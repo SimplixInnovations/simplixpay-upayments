@@ -5,9 +5,12 @@
 
 require_once __DIR__ . '/bootstrap.php';
 
+use Simplixi\SUPCheckout\Payment\SavedCardPresentation;
 use UPayments\Token\CustomerTokenIdentity;
 
 supcheckout_cert_assert(class_exists(CustomerTokenIdentity::class), 'customer token identity boundary is loaded');
+supcheckout_cert_assert(class_exists(SavedCardPresentation::class), 'saved-card presentation boundary is loaded by the production plugin bootstrap');
+supcheckout_cert_assert('•••• 4242' === SavedCardPresentation::label(array('number' => '4111 1111 1111 4242'), 'Saved card'), 'saved-card presentation exposes only last four in packaged runtime');
 
 delete_option(CustomerTokenIdentity::SECRET_OPTION);
 

@@ -402,6 +402,7 @@ function makeSettings(overrides) {
         translation: {
             save_card_label: 'Save card',
             saved_cards_label: 'Saved Cards',
+            saved_card_fallback: 'Saved card',
             other_options_label: 'Other Options',
         },
     }, overrides);
@@ -643,7 +644,7 @@ record(true, 'H-ST-1 harness initializes', 'harness');
             ]},
         ],
     };
-    const match = findButtonByLabel(tree, '****1234 (Visa)', { mode: 'exact' });
+    const match = findButtonByLabel(tree, '•••• 1234 (Visa)', { mode: 'exact' });
     record(match === null, 'H-ST-20a similar-prefix card does not match wrong lookup', 'harness');
 }
 {
@@ -651,12 +652,12 @@ record(true, 'H-ST-1 harness initializes', 'harness');
     const tree = {
         tag: 'div', props: {},
         children: [
-            { tag: 'button', props: { onClick: function () {}, 'data-card': '****1234 (Visa)' }, children: [
+            { tag: 'button', props: { onClick: function () {}, 'data-card': '•••• 1234 (Visa)' }, children: [
                 { tag: 'span', props: {}, children: ['Other Text'] },
             ]},
         ],
     };
-    const match = findButtonByLabel(tree, '****1234 (Visa)', { mode: 'exact' });
+    const match = findButtonByLabel(tree, '•••• 1234 (Visa)', { mode: 'exact' });
     record(match === null, 'H-ST-20b prop-only value does not satisfy leaf lookup', 'harness');
 }
 {
@@ -665,14 +666,14 @@ record(true, 'H-ST-1 harness initializes', 'harness');
         tag: 'div', props: {},
         children: [
             { tag: 'button', props: { onClick: function () {} }, children: [
-                { tag: 'span', props: {}, children: ['****1234 (Visa)'] },
+                { tag: 'span', props: {}, children: ['•••• 1234 (Visa)'] },
             ]},
             { tag: 'button', props: { onClick: function () {} }, children: [
                 { tag: 'span', props: {}, children: ['****12345 (Visa)'] },
             ]},
         ],
     };
-    const match1 = findButtonByLabel(tree, '****1234 (Visa)', { mode: 'exact' });
+    const match1 = findButtonByLabel(tree, '•••• 1234 (Visa)', { mode: 'exact' });
     const match2 = findButtonByLabel(tree, '****12345 (Visa)', { mode: 'exact' });
     record(match1 !== null && match2 !== null, 'H-ST-20c both same-prefix cards found', 'harness');
     record(match1 !== match2, 'H-ST-20d same-prefix cards resolve to different buttons', 'harness');
@@ -791,14 +792,14 @@ record(true, 'H-ST-1 harness initializes', 'harness');
         is_logged_in: true,
         save_card_enabled: true,
         saved_cards: [
-            { token: card_token, number: '****1234', brand: 'Visa' },
+            { token: card_token, label: '•••• 1234', brand: 'Visa' },
         ],
     }));
     const tree = renderScene(scene);
     if (tree == null) {
         record(false, 'B-SCC-1 tree renders for saved-cards scene', 'runtime');
     } else {
-        const cardButton = findButtonByLabel(tree, '****1234 (Visa)', { mode: 'exact' });
+        const cardButton = findButtonByLabel(tree, '•••• 1234 (Visa)', { mode: 'exact' });
         if (cardButton === null) {
             record(false, 'B-SCC-2 saved card button found by exact number', 'runtime');
         } else {
@@ -808,6 +809,33 @@ record(true, 'H-ST-1 harness initializes', 'harness');
             record(ns.save_card === '0', 'B-SCC-4 saved card click clears save_card', 'runtime');
             record(ns.upayment_payment_type === 'cc', 'B-SCC-5 saved card click sets upayment_payment_type=cc', 'runtime');
         }
+    }
+}
+
+// ────────────────────────────────────────────────────────────
+// B-PAN-*: Blocks render must ignore any raw provider number field.
+// ────────────────────────────────────────────────────────────
+
+{
+    const rawPan = '4111 1111 1111 4242';
+    const scene = buildScene(makeSettings({
+        is_logged_in: true,
+        save_card_enabled: true,
+        saved_cards: [
+            { token: 'hostile_card_token', label: '•••• 4242', number: rawPan, brand: 'Visa' },
+        ],
+    }));
+    const tree = renderScene(scene);
+    if (tree == null) {
+        record(false, 'B-PAN-1 tree renders for hostile saved-card scene', 'runtime');
+    } else {
+        const leaves = getLeafTextStrings(tree);
+        record(leaves.indexOf('•••• 4242 (Visa)') !== -1,
+            'B-PAN-2 Blocks renders only bounded saved-card label', 'runtime');
+        record(leaves.every(function (text) { return text.indexOf(rawPan) === -1; }),
+            'B-PAN-3 raw provider PAN is absent from rendered Blocks text', 'runtime');
+        record(leaves.every(function (text) { return text.indexOf('4111') === -1 && text.indexOf('1111') === -1; }),
+            'B-PAN-4 earlier PAN groups are absent from rendered Blocks text', 'runtime');
     }
 }
 
@@ -970,11 +998,11 @@ record(true, 'H-ST-1 harness initializes', 'harness');
         save_card_enabled: true,
         payment_icons: { knet: 'KNET', cc: 'Credit Card' },
         saved_cards: [
-            { token: card_token, number: '****4321', brand: 'Master' },
+            { token: card_token, label: '•••• 4321', brand: 'Master' },
         ],
     }));
     const r1 = renderScene(scene);
-    const cardButton = r1 ? findButtonByLabel(r1, '****4321 (Master)', { mode: 'exact' }) : null;
+    const cardButton = r1 ? findButtonByLabel(r1, '•••• 4321 (Master)', { mode: 'exact' }) : null;
     if (cardButton === null) {
         record(false, 'B-SCD-0 saved card button missing', 'runtime');
     } else {
@@ -1005,11 +1033,11 @@ record(true, 'H-ST-1 harness initializes', 'harness');
         save_card_enabled: true,
         payment_icons: { knet: 'KNET', cc: 'Credit Card' },
         saved_cards: [
-            { token: card_token, number: '****5555', brand: 'Visa' },
+            { token: card_token, label: '•••• 5555', brand: 'Visa' },
         ],
     }));
     const r1 = renderScene(scene);
-    const cardButton = r1 ? findButtonByLabel(r1, '****5555 (Visa)', { mode: 'exact' }) : null;
+    const cardButton = r1 ? findButtonByLabel(r1, '•••• 5555 (Visa)', { mode: 'exact' }) : null;
     if (cardButton === null) {
         record(false, 'B-SCD-KNET-0 saved card button missing', 'runtime');
     } else {
@@ -1038,11 +1066,11 @@ record(true, 'H-ST-1 harness initializes', 'harness');
         save_card_enabled: true,
         payment_icons: { knet: 'KNET', cc: 'Credit Card' },
         saved_cards: [
-            { token: card_token, number: '****7777', brand: 'Visa' },
+            { token: card_token, label: '•••• 7777', brand: 'Visa' },
         ],
     }));
     const r1 = renderScene(scene);
-    const cardButton = r1 ? findButtonByLabel(r1, '****7777 (Visa)', { mode: 'exact' }) : null;
+    const cardButton = r1 ? findButtonByLabel(r1, '•••• 7777 (Visa)', { mode: 'exact' }) : null;
     if (cardButton === null) {
         record(false, 'B-SCD-CC-KNET-0 saved card button missing', 'runtime');
     } else {
@@ -1079,11 +1107,11 @@ record(true, 'H-ST-1 harness initializes', 'harness');
         save_card_enabled: true,
         payment_icons: { knet: 'KNET', cc: 'Credit Card' },
         saved_cards: [
-            { token: card_token, number: '****9999', brand: 'Visa' },
+            { token: card_token, label: '•••• 9999', brand: 'Visa' },
         ],
     }));
     const r1 = renderScene(scene);
-    const cardButton = r1 ? findButtonByLabel(r1, '****9999 (Visa)', { mode: 'exact' }) : null;
+    const cardButton = r1 ? findButtonByLabel(r1, '•••• 9999 (Visa)', { mode: 'exact' }) : null;
     if (cardButton === null) {
         record(false, 'B-SCD-STALE-0 saved card button missing', 'runtime');
     } else {
@@ -1275,13 +1303,13 @@ record(true, 'H-ST-1 harness initializes', 'harness');
     const scene = buildScene(makeSettings({
         is_logged_in: true,
         saved_cards: [
-            { token: 'card_token_E', number: '****1111', brand: 'Visa' },
+            { token: 'card_token_E', label: '•••• 1111', brand: 'Visa' },
         ],
     }));
     const editTree = renderEditTree(scene);
     record(editTree !== null, 'B-EDIT-1 edit tree renders', 'runtime');
     if (editTree !== null) {
-        const cardButton = findButtonByLabel(editTree, '****1111 (Visa)', { mode: 'exact' });
+        const cardButton = findButtonByLabel(editTree, '•••• 1111 (Visa)', { mode: 'exact' });
         record(cardButton !== null, 'B-EDIT-2 saved card button found in edit tree', 'runtime');
     }
 }
@@ -1443,11 +1471,11 @@ record(true, 'H-ST-1 harness initializes', 'harness');
         save_card_enabled: true,
         payment_icons: { knet: 'KNET', cc: 'Credit Card' },
         saved_cards: [
-            { token: card_token, number: '****2222', brand: 'Visa' },
+            { token: card_token, label: '•••• 2222', brand: 'Visa' },
         ],
     }));
     const r1 = renderScene(scene);
-    const cardButton = r1 ? findButtonByLabel(r1, '****2222 (Visa)', { mode: 'exact' }) : null;
+    const cardButton = r1 ? findButtonByLabel(r1, '•••• 2222 (Visa)', { mode: 'exact' }) : null;
     if (cardButton === null) {
         record(false, 'B-SCC-RECLICK-0 saved card button missing', 'runtime');
     } else {
@@ -1455,7 +1483,7 @@ record(true, 'H-ST-1 harness initializes', 'harness');
         const ns1 = scene.extStore['upayments'] || {};
         record(ns1.card_token === card_token, 'B-SCC-RECLICK-1 first click sets token', 'runtime');
         const r2 = renderScene(scene);
-        const cardButton2 = r2 ? findButtonByLabel(r2, '****2222 (Visa)', { mode: 'exact' }) : null;
+        const cardButton2 = r2 ? findButtonByLabel(r2, '•••• 2222 (Visa)', { mode: 'exact' }) : null;
         if (cardButton2 === null) {
             record(false, 'B-SCC-RECLICK-2 button missing after first click', 'runtime');
         } else {
@@ -1560,16 +1588,16 @@ record(true, 'H-ST-1 harness initializes', 'harness');
         save_card_enabled: true,
         payment_icons: { knet: 'KNET', cc: 'Credit Card' },
         saved_cards: [
-            { token: 'A1', number: '****0001', brand: 'Visa' },
-            { token: 'B2', number: '****0002', brand: 'Master' },
+            { token: 'A1', label: '•••• 0001', brand: 'Visa' },
+            { token: 'B2', label: '•••• 0002', brand: 'Master' },
         ],
     }));
     const tree = renderScene(scene);
     if (tree === null) {
         record(false, 'B-MULTI-0 tree renders', 'runtime');
     } else {
-        const aButton = findButtonByLabel(tree, '****0001 (Visa)', { mode: 'exact' });
-        const bButton = findButtonByLabel(tree, '****0002 (Master)', { mode: 'exact' });
+        const aButton = findButtonByLabel(tree, '•••• 0001 (Visa)', { mode: 'exact' });
+        const bButton = findButtonByLabel(tree, '•••• 0002 (Master)', { mode: 'exact' });
         record(aButton !== null, 'B-MULTI-1 first saved card button found', 'runtime');
         record(bButton !== null, 'B-MULTI-2 second saved card button found', 'runtime');
         if (bButton !== null) {
@@ -1607,7 +1635,7 @@ record(true, 'H-ST-1 harness initializes', 'harness');
             'B-INDEP-3 content and edit slots are 2 distinct instances', 'runtime');
 
         // Trigger a "use saved card" interaction in the edit slot only.
-        const editCardBtn = findButtonByLabel(editTree, '****1111 (Visa)', { mode: 'exact' });
+        const editCardBtn = findButtonByLabel(editTree, '•••• 1111 (Visa)', { mode: 'exact' });
         // No saved cards in this scene — edit slot must NOT auto-select.
         record(editCardBtn === null, 'B-INDEP-4 edit slot has no saved card to pre-select', 'runtime');
 
@@ -1630,7 +1658,7 @@ record(true, 'H-ST-1 harness initializes', 'harness');
         save_card_enabled: true,
         payment_icons: { knet: 'KNET', cc: 'Credit Card' },
         saved_cards: [
-            { token: 'S1', number: '****1111', brand: 'Visa' },
+            { token: 'S1', label: '•••• 1111', brand: 'Visa' },
         ],
     }));
     if (!scene.registered) {
@@ -1688,7 +1716,7 @@ record(true, 'H-ST-1 harness initializes', 'harness');
         save_card_enabled: true,
         payment_icons: { knet: 'KNET', cc: 'Credit Card' },
         saved_cards: [
-            { token: 'TOAST_TOKEN', number: '****9999', brand: 'Visa' },
+            { token: 'TOAST_TOKEN', label: '•••• 9999', brand: 'Visa' },
         ],
     }));
     if (!scene.registered) {
@@ -1708,7 +1736,7 @@ record(true, 'H-ST-1 harness initializes', 'harness');
             'B-TOAST-4 edit has no toast before click', 'runtime');
 
         // Click saved card in content
-        const contentCardBtn = findButtonByLabel(contentTree, '****9999 (Visa)', { mode: 'exact' });
+        const contentCardBtn = findButtonByLabel(contentTree, '•••• 9999 (Visa)', { mode: 'exact' });
         if (contentCardBtn === null) {
             record(false, 'B-TOAST-5 saved card button found in content', 'runtime');
         } else {
@@ -1724,7 +1752,7 @@ record(true, 'H-ST-1 harness initializes', 'harness');
                 'B-TOAST-7 edit does NOT show toast after content click', 'runtime');
 
             // Now click saved card in edit
-            const editCardBtn = findButtonByLabel(editTreeAfterA, '****9999 (Visa)', { mode: 'exact' });
+            const editCardBtn = findButtonByLabel(editTreeAfterA, '•••• 9999 (Visa)', { mode: 'exact' });
             if (editCardBtn === null) {
                 record(false, 'B-TOAST-8 saved card button found in edit', 'runtime');
             } else {

@@ -107,18 +107,16 @@ defined( 'ABSPATH' ) || exit;
                         if (!is_array($cardValue)) {
                             continue;
                         }
-                        if (!isset($cardValue['token']) || !is_scalar($cardValue['token']) || trim((string) $cardValue['token']) === '') {
+                        $card_token = \Simplixi\SUPCheckout\Payment\SavedCardPresentation::token($cardValue);
+                        if ($card_token === null) {
                             continue;
                         }
-                        $card_token = (string) $cardValue['token'];
-                        $card_number_raw = isset($cardValue['number']) && is_scalar($cardValue['number']) ? (string) $cardValue['number'] : '';
-                        $card_number = esc_attr($card_number_raw);
-                        $card_number_text = esc_html($card_number_raw);
+                        $card_display_label = \Simplixi\SUPCheckout\Payment\SavedCardPresentation::label($cardValue, __('Saved card', 'supcheckout'));
                     ?>
 
-                        <button type="button" value="<?php echo esc_attr($card_token); ?>" onclick="supCheckout.submitSavedCard(this)" class="upay-payment-method" id="upay-button-cc">
-                        <span class="payment-method-icon"><img src="<?php echo esc_url(UP_PLUGIN_URL . 'assets/images/cc.png'); ?>" alt="<?php echo esc_attr($card_number_raw); ?>"  title="<?php echo esc_attr($card_number_raw); ?>"/></span>
-                        <span class="payment-method-label"><?php echo esc_html($card_number_raw); ?></span>
+                        <button type="button" value="<?php echo esc_attr($card_token); ?>" onclick="supCheckout.submitSavedCard(this)" class="upay-payment-method">
+                        <span class="payment-method-icon"><img src="<?php echo esc_url(UP_PLUGIN_URL . 'assets/images/cc.png'); ?>" alt=""/></span>
+                        <span class="payment-method-label"><?php echo esc_html($card_display_label); ?></span>
                         <span class="payment-method-price"><?php echo esc_html($total); ?> <?php echo wp_kses($currency, array()); ?></span>
                         <span class="payment-method-icon2"><span class="upay-chevron" aria-hidden="true">&#8250;</span></span>
                         </button>
