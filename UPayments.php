@@ -1103,7 +1103,7 @@ function woocommerceUpaymentsInit() {
         }
 
         /**
-         * Enqueue admin scripts for the custom repeater.
+         * Enqueue SUPCheckout gateway settings assets behind the exact admin route.
          */
         public function admin_enqueue_scripts() {
             $screen = get_current_screen();
