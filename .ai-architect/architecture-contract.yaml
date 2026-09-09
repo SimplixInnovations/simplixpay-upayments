@@ -142,6 +142,9 @@ provider_http_egress_baseline:
 tranches:
   t01:
     name: architecture-guardrails-and-active-callback-characterization
+    status: done_verified
+    merged_main_sha: beb89ac0c4d8c0e9b7c8b2de1e13c237bbd37b15
+    pull_request: 102
     runtime_change: false
     package_change: false
     requirements:
@@ -154,9 +157,13 @@ tranches:
       - Keep UPayments.php exactly 87995 bytes
       - Keep distributable package exactly 51 files and accepted SHA-256
   next_runtime_candidate:
-    name: legacy-callback-consolidation
+    name: legacy-callback-routing-consolidation
     preapproved_for_implementation: false
-    goal: Finish the existing strangler by retaining compatibility methods while eliminating duplicated legacy verification/state-mutation internals behind them where T1 characterization proves safe.
+    goal: First evaluate delegating the historical check_ipn_response compatibility fallback to the proven PaymentLifecycle path while retaining direct public legacy return/webhook methods unchanged until they receive explicit compatibility characterization.
+    evidence:
+      - T1 proves PaymentLifecycle owns the canonical wc_upayments route at priority 5 and terminates before priority 10
+      - current permanent tests do not directly characterize public return_from_upayments/web_hook_handler method behavior
+      - legacy verify_payment_status semantics differ materially from StatusVerifier and must not be deleted by assumption
 completion:
   runtime_tranche_gates:
     - Quality/H12 green
