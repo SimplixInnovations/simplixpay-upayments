@@ -148,11 +148,12 @@ Owner technical acceptance has been **ACCEPTED** for the frozen Approach 2 basel
 
 The procedure in `docs/project/OWNER-HANDOFF.md` is retained as a reusable regression/re-acceptance contract; it remains available for any future acceptance event whenever fresh evidence invalidates the current accepted baseline. The current remaining program is:
 
-1. execute approved **Approach 3 T1 — `t01-architecture-guardrails-and-active-callback-characterization`** against the frozen accepted baseline; architecture scoping is complete and recorded in `.ai-architect/`;
-2. re-certify Approach 3 against the accepted baseline and permanent payment/security/compatibility controls;
-3. apply approved launch branding and visual/accessibility acceptance;
-4. explicitly choose the first public version under a dedicated PR with the full release-sensitive gate stack re-run;
-5. tag/GitHub Release/WordPress.org publication only after exact-main certification and explicit owner approval. Owner technical acceptance does not authorize publication.
+1. **Approach 3 T1 — `t01-architecture-guardrails-and-active-callback-characterization` — DONE / VERIFIED** on merged main `beb89ac0c4d8c0e9b7c8b2de1e13c237bbd37b15`; the accepted 51-file package remained byte-identical;
+2. make the next bounded runtime architecture decision from T1 evidence before modifying callback/payment-authority code; the current candidate is legacy callback routing consolidation, not yet pre-approved;
+3. re-certify all runtime-bearing Approach 3 changes against the accepted baseline and permanent payment/security/compatibility controls;
+4. apply approved launch branding and visual/accessibility acceptance;
+5. explicitly choose the first public version under a dedicated PR with the full release-sensitive gate stack re-run;
+6. tag/GitHub Release/WordPress.org publication only after exact-main certification and explicit owner approval. Owner technical acceptance does not authorize publication.
 
 ## External/manual evidence track
 

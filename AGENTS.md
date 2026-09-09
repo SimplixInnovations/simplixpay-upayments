@@ -81,7 +81,7 @@ Mandatory sequence:
 
 `pre-acceptance engineering closed → fresh-clone owner technical acceptance → accepted baseline → Approach 3 architecture modernization → Approach 3 re-certification → full UI/UX/branding/accessibility/broad launch testing → explicit release decision.`
 
-Approach 3 architecture is **APPROVED / RECORDED** and T1 is **NOT STARTED**. The approved direction is incremental strangler modernization around A1-A5 and the already-active `PaymentLifecycle` callback strangler. The first tranche is runtime-neutral `t01-architecture-guardrails-and-active-callback-characterization` against the frozen owner-accepted Approach 2 baseline. Read `.ai-architect/` before Approach 3 implementation.
+Approach 3 architecture is **APPROVED / RECORDED** and T1 `t01-architecture-guardrails-and-active-callback-characterization` is **DONE / VERIFIED** on merged main `beb89ac0c4d8c0e9b7c8b2de1e13c237bbd37b15`. T1 added permanent architecture/callback guardrails without changing distributable runtime bytes; the frozen owner-accepted Approach 2 package remains the regression reference. The next substantive action is a separately recorded bounded runtime decision from T1 evidence. Read `.ai-architect/` before any Approach 3 runtime implementation.
 
 Latest runtime-bearing CI-certified `main`:
 

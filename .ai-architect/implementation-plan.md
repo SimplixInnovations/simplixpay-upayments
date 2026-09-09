@@ -53,7 +53,7 @@ Do not modify:
 8. `PaymentLifecycle::finish_callback()` terminates the request so the legacy priority-10 callback is normally shadowed on the canonical route.
 9. Active lifecycle status verification uses `StatusVerifier::verify()`.
 10. Active lifecycle concurrency protection uses `OrderLock`.
-11. Legacy gateway return/webhook/private verification methods remain present as compatibility surfaces and are characterized separately; they are not described as the primary callback runtime path.
+11. Legacy gateway return/webhook/private verification method identities remain present as compatibility surfaces and are inventoried separately; their direct behavior is not characterized by T1 and must be characterized before those methods are modified. They are not described as the primary callback runtime path.
 12. Provider HTTP egress locations remain exactly the accepted set:
     - gateway transport;
     - StatusVerifier;
@@ -76,6 +76,19 @@ Because T1 creates no packaged runtime file:
 ### Verification
 
 Require all repository gates triggered by the PR and inspect each required check individually. Do not merge with failures, pending required checks, unresolved valid review threads, package drift, or unexpected runtime-file changes.
+
+## T1 completion evidence
+
+**Status: DONE / VERIFIED.**
+
+- PR #102 certified exact head `aed57ca4ce3402362de65f604756bde5c256385c` with 40/40 successful checks.
+- Dependency-boundary harness: 11 PASS / 0 FAIL.
+- Active-callback characterization harness: 41 PASS / 0 FAIL.
+- Squash-merged main: `beb89ac0c4d8c0e9b7c8b2de1e13c237bbd37b15`, GitHub signature verified.
+- PR-head and merged-main Git trees are identical: `d158ec92ab83e849e5325cfa1dad4a01b5842efd`.
+- All 28 checks triggered on merged main succeeded.
+- Canonical/Linux/Windows release evidence remained exactly 51 files with SHA-256 `58eba75019416f39a09211c87e7ccbcbb635834fb20bc890e9efbd5fec859655`.
+- Runtime/package source changes in T1: zero.
 
 ## Next runtime decision after T1
 
