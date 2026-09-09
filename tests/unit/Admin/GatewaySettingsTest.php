@@ -47,6 +47,24 @@ final class GatewaySettingsTest extends TestCase {
         self::assertSame('multimerchant_repeater', $fields['multimerchant_accounts']['type']);
     }
 
+    public function test_runtime_eligibility_requires_exact_enabled_credentials_and_supported_currency(): void {
+        self::assertTrue(GatewaySettings::is_runtime_eligible(
+            array('enabled' => 'yes', 'api_key' => 'cert-key'),
+            'USD'
+        ));
+        self::assertTrue(GatewaySettings::is_runtime_eligible(
+            array('api_key' => 'cert-key'),
+            'KWD'
+        ));
+        self::assertFalse(GatewaySettings::is_runtime_eligible(array(), 'USD'));
+        self::assertFalse(GatewaySettings::is_runtime_eligible(array('enabled' => 'yes'), 'USD'));
+        self::assertFalse(GatewaySettings::is_runtime_eligible(array('enabled' => 'yes', 'api_key' => '   '), 'USD'));
+        self::assertFalse(GatewaySettings::is_runtime_eligible(array('enabled' => 'no', 'api_key' => 'cert-key'), 'USD'));
+        self::assertFalse(GatewaySettings::is_runtime_eligible(array('enabled' => true, 'api_key' => 'cert-key'), 'USD'));
+        self::assertFalse(GatewaySettings::is_runtime_eligible((object) array('enabled' => 'yes', 'api_key' => 'cert-key'), 'USD'));
+        self::assertFalse(GatewaySettings::is_runtime_eligible(array('enabled' => 'yes', 'api_key' => 'cert-key'), 'JPY'));
+    }
+
     public function test_dependency_normalization_forces_save_card_only_for_enabled_subscriptions(): void {
         $forced = GatewaySettings::normalize_dependencies(array(
             'enable_subscriptions' => 'yes',

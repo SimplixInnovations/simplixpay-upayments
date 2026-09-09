@@ -1750,19 +1750,9 @@ function enableUpaymentsGateway($available_gateways)
 
         $settings = get_option("woocommerce_upayments_settings");
 
-        // Defensive boundary: the persisted gateway option may not be an array
-        // (migration residue, manual DB repair, partial upgrades, or any caller
-        // that stored a non-array value). The plugin does not rewrite the
-        // option, but this filter must still not crash the front-end on the
-        // raw persisted shape. A non-array is treated as "not configured" and
-        // the gateway is removed from the available set (fail-closed).
-        if (!is_array($settings)) {
+        if (!GatewaySettings::is_runtime_eligible($settings, get_woocommerce_currency())) {
             unset($available_gateways["upayments"]);
             return $available_gateways;
-        }
-
-        if (empty($settings["api_key"])){
-            unset($available_gateways["upayments"]);
         }
 
         if (is_checkout() && isset($available_gateways['cod']) && (isset($settings['enable_autodeduction']) && $settings['enable_autodeduction'] === 'yes')) {
@@ -1774,11 +1764,6 @@ function enableUpaymentsGateway($available_gateways)
         }
     }
 
-    $supported_currencies = ["KWD", "SAR", "USD", "BHD", "EUR", "OMR", "QAR", "AED", ];
-    if (!in_array(get_woocommerce_currency() , $supported_currencies)){
-        unset($available_gateways["upayments"]);
-    }
-    
     return $available_gateways;
 }
 

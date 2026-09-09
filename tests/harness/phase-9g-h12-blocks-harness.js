@@ -380,6 +380,7 @@ function findSelect(tree) {
 function makeSettings(overrides) {
     overrides = overrides || {};
     return Object.assign({
+        availability_valid: true,
         is_whitelabled: true,
         payment_icons: {
             knet: 'KNET',
@@ -763,7 +764,12 @@ record(true, 'H-ST-1 harness initializes', 'harness');
     record(reg && reg.name === 'upayments', 'B-REG-2 name === upayments', 'runtime');
     record(reg && reg.ariaLabel === 'UPayments', 'B-REG-3 ariaLabel === UPayments', 'runtime');
     record(reg && typeof reg.canMakePayment === 'function' && reg.canMakePayment() === true,
-        'B-REG-4 canMakePayment returns true', 'runtime');
+        'B-REG-4 canMakePayment returns true only for explicit provider availability', 'runtime');
+    const unavailableScene = buildScene(makeSettings({ availability_valid: false }));
+    const unavailableReg = unavailableScene.registered;
+    record(unavailableReg && typeof unavailableReg.canMakePayment === 'function'
+        && unavailableReg.canMakePayment() === false,
+        'B-REG-4b canMakePayment fails closed when provider availability is false', 'runtime');
     record(reg && typeof reg.onPaymentMethodChange === 'function' && reg.onPaymentMethodChange() === true,
         'B-REG-5 onPaymentMethodChange returns true', 'runtime');
     record(reg && JSON.stringify(reg.supports.features) === JSON.stringify(['products']),
