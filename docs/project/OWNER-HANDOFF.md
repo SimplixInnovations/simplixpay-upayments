@@ -3,12 +3,12 @@
 **Purpose:** authoritative fresh-clone, local-acceptance and release-decision sequence
 **Canonical GitHub repository:** `SimplixInnovations/supcheckout`
 **Development version:** `0.1.0`
-**Latest runtime-bearing CI-certified main:** `902c23caad1461e63c816fdc5252855d9dc4f9e4`
-**Owner technical acceptance:** **NOT ACCEPTED on 2026-09-08; B-X1 is fixed by PR #84, fresh-clone re-acceptance is required**
-**Canonical package at the PR #84 runtime tree:** **56 files; SHA-256 `90ac844d37938e5cbb7e9a9ee3e8923b904bf8cf978c62adf2a8994a4b7462ce`**
+**Latest runtime-bearing CI-certified main:** `82d1fdaee91ee6bde6c26dfcc7ceb974d0d59847`
+**Owner technical acceptance:** **NOT ACCEPTED; all known repository pre-acceptance blockers through PR #97 are fixed/certified, fresh-clone re-acceptance is required**
+**Canonical package at the PR #97 runtime tree:** **51 files; SHA-256 `58eba75019416f39a09211c87e7ccbcbb635834fb20bc890e9efbd5fec859655`**
 **Public tag / GitHub Release / WordPress.org publication:** not yet created
 
-The final enterprise repository audit has merged and been post-merge certified. This document assumes the owner will now create a **completely fresh local clone** for independent acceptance. It does not authorize publication by itself.
+The final pre-acceptance runtime hardening through PR #97 has merged and been post-merge certified. Living-document-only descendants may advance `main` without changing the runtime package. The owner must create a **completely fresh local clone** of the final reconciled `origin/main` for independent acceptance. This document does not authorize publication by itself.
 
 Before using this procedure in a new chat, machine, clone or session, read [`START-HERE.md`](START-HERE.md) and verify live GitHub/source/check state.
 

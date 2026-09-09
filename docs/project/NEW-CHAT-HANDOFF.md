@@ -23,29 +23,20 @@ Chat memory is never authority. If this file conflicts with live evidence or ano
 
 ## Current state
 
-The engineering program is pre-release but mature:
+Pre-release engineering is mature and the repository-side pre-acceptance blocker set is closed through PR #97.
 
-- Repository Foundation — **DONE / VERIFIED**
-- Phase 0 release identity — **DONE / VERIFIED**
-- Phase 9I historical identity migration — **DONE / VERIFIED**
-- Provider payment lifecycle — **DONE / VERIFIED**
-- Security threat-model closure — **DONE / VERIFIED**
+- Repository Foundation / Phase 0 / Phase 9I — **DONE / VERIFIED**
+- Provider lifecycle / Security threat model — **DONE / VERIFIED**
 - Architecture A1-A5 — **DONE / VERIFIED**
-- Quality Platform Q1-Q19 — **DONE / VERIFIED; permanently closed at Q19**
+- Quality Platform Q1-Q19 — **DONE / VERIFIED; permanently closed**
 - Enterprise Tasks 1-8 — **DONE / VERIFIED**
-- SUPCheckout identity/repository migration — **DONE / VERIFIED**
-- Final pre-clone runtime/QA closure — **DONE / VERIFIED**
-- Final enterprise repository audit — **DONE / VERIFIED — PR #77**
-- Current-stable PHP / owner-acceptance hardening — **DONE / VERIFIED — PR #80; owner acceptance itself remains pending**
-- Cross-platform deterministic release hardening — **DONE / VERIFIED — PR #82**
-- B-X1 malformed gateway-settings hotfix — **DONE / VERIFIED / MERGED — PR #84**
-- Approach 2 — **DONE / VERIFIED / CLOSED for owner acceptance**
-- Deterministic packaged release controls — **DONE / VERIFIED**
-- Owner technical acceptance — **NOT ACCEPTED on 2026-09-08 — B-X1 is fixed and CI-certified on `main` by PR #84; fresh-clone owner re-acceptance required**
-- Approach 3 architecture modernization — **not started; blocked until owner technical acceptance passes**
-- Full UI/UX / branding / broad launch testing — **deferred until after Approach 3**
-- Public tag / GitHub Release — **not created**
-- WordPress.org publication — **not performed**
+- Approach 2 — **DONE / VERIFIED**
+- PRs #91-#97 bounded pre-acceptance hardening — **DONE / VERIFIED / MERGED**
+- Owner technical acceptance — **NOT ACCEPTED; fresh-clone re-acceptance required**
+- Accepted owner baseline — **NONE**
+- Approach 3 — **BLOCKED**
+- Full UI/UX/branding/broad launch testing — **DEFERRED until after Approach 3**
+- Public GitHub Release / WordPress.org publication — **NOT PERFORMED**
 
 Do not invent Q20. New work uses named, bounded tasks.
 
@@ -53,31 +44,25 @@ Do not invent Q20. New work uses named, bounded tasks.
 
 Runtime-bearing merge:
 
-`902c23caad1461e63c816fdc5252855d9dc4f9e4`
+`82d1fdaee91ee6bde6c26dfcc7ceb974d0d59847`
 
-Certified PR #84 head:
+PR #97 exact certified head:
 
-`199d4a4f2f17cd982b2c869c9ef6eee794c05fd1`
+`1f2a0b8d35f96008be6ccfeb10c67fffcd3be5c0`
 
-Evidence:
+Evidence on merged `main`:
 
-- exact PR head — **40/40 SUCCESS**
-- squash merge tree — **byte-identical to reviewed PR head**
-- post-merge `main` — **39/39 SUCCESS**
-- compatibility — **18/18 SUCCESS**
-- packaged B-X1 regression — **legacy + HPOS SUCCESS**
-- canonical package — **56 files**, SHA-256 `90ac844d37938e5cbb7e9a9ee3e8923b904bf8cf978c62adf2a8994a4b7462ce`
-- repository topology after merge — **`main` only; zero open PRs/issues**
+- **41/41 check-runs SUCCESS**;
+- H12 — **1936/0 PHP + 150/0 Blocks**;
+- compatibility — **20/20 runtime cells + aggregate gate SUCCESS**;
+- Release Artifact — **69/0 + Release Gate SUCCESS**;
+- WordPress.org readiness — **31/0 + official packaged Plugin Check SUCCESS**;
+- Provider Sandbox and CodeQL — **SUCCESS**;
+- canonical package — **51 files**, SHA-256 `58eba75019416f39a09211c87e7ccbcbb635834fb20bc890e9efbd5fec859655`;
+- canonical/Linux/Windows package evidence — **byte-identical**;
+- closed topology after duplicate #98 cleanup — **main only**.
 
-Owner technical acceptance is still **NOT ACCEPTED** and no owner-accepted baseline exists yet. The next gate is the fresh-clone re-acceptance against current `main`.
-
-Final enterprise repository audit PR #77 certified exact head `4b00ef838f8da0a14d5963697d2584dcd6d82f4d` and squash-merged as GitHub-verified `bf4a46195013edb7699d5142f2c1400d99357fe2`. Fresh post-merge Quality #978, Compatibility #506 (**16/16**), Release Artifact #454, Provider Sandbox #397, strict WordPress.org #309 and CodeQL/main-security #800 all succeeded. The deterministic package remained 56 files with SHA-256 `32776f23f02de2fa7be14a5c84ebdcddb9b2f2d348366deade826bca86e58da3`.
-
-PR #80 is the latest current-stable PHP acceptance hardening. Final exact PR head `717c34d16a5fdc5548b045751bdf53dbdb936a76` passed **35/35 checks** with Quality + H12 on PHP 8.5, an **18/18** real compatibility matrix including PHP 8.5 legacy/HPOS, Release Gate and CodeQL. It squash-merged as `65e39c5da4fee6462e219bbb0ec21038f831c6b1`; the merged tree is identical to the certified PR tree, and post-merge `main` passed **26/26 triggered checks**. No production runtime/package-source file changed.
-
-Latest release-engineering hardening is PR #82. Independent Windows acceptance proved the old DEFLATE container was not cross-platform byte-deterministic even though the 56-file manifest was identical. PR #82 final exact head `af309e8c668e9def7d94e533f1c553b1b937eae6` passed **40/40 checks** and squash-merged as `c1f70164ebcd13fc6e7a5d3c70830a9070ecf898`; the merge tree is identical to the certified PR tree and post-merge `main` passed **39/39 checks**. The canonical `ZIP_STORED` package is **56 files**, SHA-256 `24efa28f2803976f4f9437d6b66e55922c26c13143ea291634db31b8506ffd63`, reproduced identically by canonical Ubuntu, explicit Ubuntu and Windows builds. Owner acceptance must now be rerun against the final reconciled `main` before Approach 3.
-
-PR #84 is the latest runtime-bearing hardening. It fixes B-X1 with a narrow fail-closed `is_array()` guard in `enableUpaymentsGateway()`, adds permanent malformed-settings regression coverage, and gates that regression through the exact packaged legacy + HPOS runtime before Release Gate. Exact head `199d4a4f2f17cd982b2c869c9ef6eee794c05fd1` passed **40/40 checks**; squash merge `902c23caad1461e63c816fdc5252855d9dc4f9e4` has the same tree and passed **39/39 post-merge checks**. Canonical package: **56 files**, SHA-256 `90ac844d37938e5cbb7e9a9ee3e8923b904bf8cf978c62adf2a8994a4b7462ce`. The hotfix branch auto-deleted and GitHub returned to `main`-only topology. Owner fresh-clone re-acceptance is now the only gate before an accepted baseline and Approach 3.
+Owner acceptance is still **NOT ACCEPTED**. The next gate is fresh-clone technical acceptance against the final reconciled `origin/main`; documentation-only descendants may advance its SHA while retaining the same certified distributable package.
 
 ## Protected compatibility identities
 
@@ -109,7 +94,7 @@ Real WordPress upgrade qualification proved that physically renaming an already-
 Do not weaken or bypass:
 
 - Quality/H12 gates;
-- 18-cell compatibility certification, including current-stable PHP 8.5 legacy + HPOS;
+- 20-cell compatibility certification, including PHP 8.2, 8.3, 8.4 and 8.5 current-stack lanes plus the PHP 7.4 compatibility floor;
 - deterministic release artifact/verifier;
 - packaged legacy + HPOS smoke;
 - historical package-root migration/rollback matrix;
@@ -129,7 +114,7 @@ Automatic WooCommerce refunds and arbitrary marketplace multi-split are unsuppor
 
 ## Repository state rule
 
-PR #77 completed the final enterprise repository audit and its branch auto-deleted. The verified closed repository topology is `main` only, with no open PRs/issues/tags/releases before publication. Any later temporary work branch must be scoped, reviewed and removed after merge.
+The verified closed repository topology after PR #97 and superseded #98 cleanup is `main` only. Temporary work branches must be scoped, reviewed and removed after merge. Open PR/issue/tag/release state must still be verified live at each session/release boundary.
 
 The Main Rule must continue to require:
 
