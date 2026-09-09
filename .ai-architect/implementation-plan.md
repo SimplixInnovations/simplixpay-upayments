@@ -53,7 +53,7 @@ Do not modify:
 8. `PaymentLifecycle::finish_callback()` terminates the request so the legacy priority-10 callback is normally shadowed on the canonical route.
 9. Active lifecycle status verification uses `StatusVerifier::verify()`.
 10. Active lifecycle concurrency protection uses `OrderLock`.
-11. Legacy gateway return/webhook/private verification methods remain present as compatibility surfaces and are characterized separately; they are not described as the primary callback runtime path.
+11. Legacy gateway return/webhook/private verification method identities remain present as compatibility surfaces and are inventoried separately; their direct behavior is not characterized by T1 and must be characterized before those methods are modified. They are not described as the primary callback runtime path.
 12. Provider HTTP egress locations remain exactly the accepted set:
     - gateway transport;
     - StatusVerifier;
