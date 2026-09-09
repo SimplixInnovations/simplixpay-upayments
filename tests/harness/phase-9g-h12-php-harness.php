@@ -6005,7 +6005,7 @@ if (class_exists('Simplixi\\SUPCheckout\\Payment\\SavedCardPresentation', false)
     upay_assert_eq(strpos($classic_saved_card_html, '4111') === false, true, 'CLASSIC-PAN-1 hostile leading PAN group absent from rendered Classic HTML', 'semantic_runtime');
     upay_assert_eq(strpos($classic_saved_card_html, '1111') === false, true, 'CLASSIC-PAN-2 hostile middle PAN group absent from rendered Classic HTML', 'semantic_runtime');
     upay_assert_eq(strpos($classic_saved_card_html, '•••• 4242') !== false, true, 'CLASSIC-PAN-3 rendered Classic HTML contains bounded last-four label', 'semantic_runtime');
-    upay_assert_eq(substr_count($classic_saved_card_html, 'onclick="supCheckout.submitSavedCard(this)"'), 1, 'CLASSIC-PAN-4 Classic renders only strict-string provider card tokens', 'semantic_runtime');
+    upay_assert_eq(substr_count($classic_saved_card_html, 'onclick="supCheckout.submitSavedCard(this)"'), 1, 'CLASSIC-PAN-4 Classic renders exactly one saved-card submission control', 'semantic_runtime');
     upay_assert_eq(substr_count($classic_saved_card_html, 'id="upay-button-cc"'), 1, 'CLASSIC-PAN-5 Classic saved-card controls do not duplicate the normal CC DOM id', 'semantic_runtime');
     upay_assert_eq(strpos($classic_saved_card_html, '1234567890123456') === false, true, 'CLASSIC-PAN-6 provider card token absent from rendered Classic HTML', 'semantic_runtime');
     upay_assert_eq(preg_match('/value="sc1_[0-9a-f]{64}"/', $classic_saved_card_html) === 1, true, 'CLASSIC-PAN-7 Classic saved-card control carries only an opaque selection handle', 'semantic_runtime');
@@ -7521,7 +7521,7 @@ $_expected_family_baseline = array(
     'SP-SELECTED'         => 20,
     'SP-MISMATCH'         => 15,
     'BLOCKS-SAN'          => 8,
-    'CLASSIC-PAN'         => 5,
+    'CLASSIC-PAN'         => 7,
     'MALFORMED-CARD'      => 56,
     'HOSTILE'             => 3,
     'ECON-E2E'            => 24,
@@ -7547,13 +7547,13 @@ $_expected_family_baseline = array(
 //   PROBE-RECOVERY (§5):     2 snapshot/restoration assertions =  2
 //                                                   TOTAL       = 21
 $_expected_categories = array(
-    'semantic_runtime'    => 375,
+    'semantic_runtime'    => 377,
     'helper_unit_runtime' => 841,
     'static_source'       => 46,
     'harness_self_test'   => 662,    // 641 baseline + 21 §4/§5/§7 probes
     'lint_tooling'        => 10,
 );
-$_expected_total_pass    = 1934;    // 375 + 841 + 46 + 662 + 10
+$_expected_total_pass    = 1936;    // 377 + 841 + 46 + 662 + 10
 $_expected_total_fail    = 0;
 $_family_mismatch        = 0;
 $_category_mismatch      = 0;
