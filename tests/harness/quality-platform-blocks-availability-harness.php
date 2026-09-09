@@ -45,6 +45,7 @@ namespace {
             : '';
     }
 
+    require_once $root . '/src/Admin/GatewaySettings.php';
     require_once $blocks_file;
 
     class Q18BlocksAvailabilityProbe extends \WCGatewayUPaymentsBlocks {

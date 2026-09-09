@@ -1,6 +1,7 @@
 <?php
 // Use the necessary Blocks Interfaces
 use Automattic\WooCommerce\Blocks\Payments\Integrations\AbstractPaymentMethodType;
+use Simplixi\SUPCheckout\Admin\GatewaySettings;
 
 /**
  * UPayments Blocks Integration Class
@@ -39,13 +40,8 @@ class WCGatewayUPaymentsBlocks extends AbstractPaymentMethodType {
         /** @var mixed $settings Runtime option storage may be malformed despite the upstream PHPDoc. */
         $settings = $this->settings;
 
-        if (!is_object($this->gateway) || !is_array($settings)) {
-            return false;
-        }
-
-        $enabled = array_key_exists('enabled', $settings) ? $settings['enabled'] : 'yes';
-
-        return is_string($enabled) && $enabled === 'yes';
+        return is_object($this->gateway)
+            && GatewaySettings::is_runtime_eligible($settings, get_woocommerce_currency());
     }
 
     public function get_supported_features() {
@@ -88,6 +84,7 @@ class WCGatewayUPaymentsBlocks extends AbstractPaymentMethodType {
         $is_logged_in = false;
         $user_id = null;
         $product_details = null;
+        $availability_valid = false;
 
         // Safety check: ensure the gateway instance exists before calling methods
         $save_card_enabled = $this->gateway ? ($this->gateway->get_option('enable_save_card') === 'yes') : false;
@@ -99,11 +96,15 @@ class WCGatewayUPaymentsBlocks extends AbstractPaymentMethodType {
         $availability = null;
         if ( $this->gateway ) {
             $availability = $this->gateway->getPaymentIcons();
-            if ( is_array( $availability ) ) {
-                $icons = isset( $availability['payment'] ) && is_array( $availability['payment'] )
-                    ? $availability['payment']
-                    : array();
-                $whitelabled = isset( $availability['whitelabled'] ) && $availability['whitelabled'] === true;
+            if ( is_array( $availability )
+                && isset( $availability['payment'] )
+                && is_array( $availability['payment'] )
+                && array_key_exists( 'whitelabled', $availability )
+                && is_bool( $availability['whitelabled'] )
+            ) {
+                $icons = $availability['payment'];
+                $whitelabled = $availability['whitelabled'];
+                $availability_valid = !$whitelabled || !empty( $icons );
             }
 
             // 2. Saved-card retrieval gated on a single normalized availability state.
@@ -208,6 +209,7 @@ class WCGatewayUPaymentsBlocks extends AbstractPaymentMethodType {
 
         // 4. Return all data to the block
         return [
+            'availability_valid'         => $availability_valid,
             'is_whitelabled'            => $whitelabled,
             'payment_icons'             => $icons,
             'saved_cards'               => $saved_cards,

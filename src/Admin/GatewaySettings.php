@@ -10,6 +10,7 @@ namespace Simplixi\SUPCheckout\Admin;
  * merchant allocation only; it does not authorize arbitrary split routing.
  */
 final class GatewaySettings {
+    private const SUPPORTED_CURRENCIES = array('KWD', 'SAR', 'USD', 'BHD', 'EUR', 'OMR', 'QAR', 'AED');
     /**
      * Build the inherited WooCommerce gateway field schema.
      *
@@ -137,6 +138,35 @@ final class GatewaySettings {
                 'description' => __('Only Subscription Products are allowed at checkout If Subscription is enabled.', 'supcheckout'),
             ),
         );
+    }
+
+    /**
+     * Decide whether persisted gateway configuration is eligible to appear at checkout.
+     *
+     * This is a local configuration boundary only; provider-method availability is
+     * resolved separately and may still fail closed.
+     *
+     * @param mixed  $settings Persisted WooCommerce gateway option.
+     * @param mixed  $currency Current WooCommerce currency code.
+     * @return bool
+     */
+    public static function is_runtime_eligible($settings, $currency) {
+        if (!is_array($settings)) {
+            return false;
+        }
+
+        $enabled = array_key_exists('enabled', $settings) ? $settings['enabled'] : 'yes';
+        if (!is_string($enabled) || $enabled !== 'yes') {
+            return false;
+        }
+
+        $api_key = array_key_exists('api_key', $settings) ? $settings['api_key'] : '';
+        if (!is_string($api_key) || trim($api_key) === '') {
+            return false;
+        }
+
+        return is_string($currency)
+            && in_array($currency, self::SUPPORTED_CURRENCIES, true);
     }
 
     /**
