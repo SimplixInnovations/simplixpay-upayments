@@ -96,7 +96,8 @@ q4_assert(q4_contains($verifier, "hash_equals(\$local_canonical, \$verified_cano
 q4_assert(q4_contains($verifier, "'captured_payment_id_missing'"), 'captured status still requires a provider payment ID');
 
 q4_assert(substr_count($tests, 'public function test_') >= 7, 'StatusVerifier has focused PHPUnit characterization');
-q4_assert(substr_count($tests, 'assert_unauthenticated_failure') === 6, 'every transport/envelope failure asserts unauthenticated and unbound state');
+q4_assert(substr_count($tests, 'assert_unauthenticated_failure') === 7, 'every transport/envelope failure asserts unauthenticated and unbound state');
+q4_assert(q4_contains($tests, "'track-oversized'"), 'oversized status response is explicitly characterized as unauthenticated failure');
 foreach (array(
     'invalid_boundaries_fail_before_rate_or_http_mutation',
     'disallowed_destination_is_rejected_before_bearer_or_rate_slot',
