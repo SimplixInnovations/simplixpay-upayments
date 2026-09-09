@@ -435,10 +435,10 @@ arch_assert(arch_contains($naming, '**Canonical slug:** `supcheckout`'), 'canoni
 
 $gatewayPath = $root . '/UPayments.php';
 $gatewaySize = is_file($gatewayPath) ? filesize($gatewayPath) : false;
-// Advanced to 87996 by PR #95 (security/saved-card-presentation-boundary):
-// explicitly load the local SavedCardPresentation boundary from the production
-// bootstrap so packaged Classic/Blocks saved-card rendering cannot fatal.
-$acceptedGatewayBytes = 87996;
+// Advanced to 88058 by PR #96 (security/saved-card-browser-token-isolation):
+// explicitly load the local SavedCardSelection boundary from the production
+// bootstrap so packaged Classic/Blocks opaque saved-card handles are available.
+$acceptedGatewayBytes = 88058;
 arch_assert(is_int($gatewaySize) && $gatewaySize === $acceptedGatewayBytes, 'UPayments.php matches current exact architecture ratchet');
 arch_assert($gatewayClassTokens !== array(), 'legacy WC_Upayments gateway compatibility class remains executable');
 arch_assert(arch_contains($gateway, "add_filter(\"woocommerce_payment_gateways\", \"addUpaymentsGatewayClass\")"), 'WooCommerce gateway registration remains characterized');
