@@ -237,7 +237,7 @@ const handleSubscriptionChange = (plan, interval) => {
                                                 alignItems: 'center',
                                                 borderRadius: '4px',
                                                 background: '#fff',
-                                                border: upayData.card_token === token ? '2px solid #007cba' : '1px solid #ccc',
+                                                border: upayData.card_token === selection ? '2px solid #007cba' : '1px solid #ccc',
                                                 cursor: 'pointer'
                                             }
                                     },
