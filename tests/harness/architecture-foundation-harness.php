@@ -435,9 +435,9 @@ arch_assert(arch_contains($naming, '**Canonical slug:** `supcheckout`'), 'canoni
 
 $gatewayPath = $root . '/UPayments.php';
 $gatewaySize = is_file($gatewayPath) ? filesize($gatewayPath) : false;
-// Advanced to 91155 by PR #87 (fix/bounded-provider-response-size):
-// bounded WordPress HTTP response body in execute_upayments_request().
-$acceptedGatewayBytes = 91155;
+// Advanced to 91503 by PR #87 (fix/bounded-provider-response-size):
+// bounded WordPress HTTP response body plus fail-closed truncated-body guard.
+$acceptedGatewayBytes = 91503;
 arch_assert(is_int($gatewaySize) && $gatewaySize === $acceptedGatewayBytes, 'UPayments.php matches current exact architecture ratchet');
 arch_assert($gatewayClassTokens !== array(), 'legacy WC_Upayments gateway compatibility class remains executable');
 arch_assert(arch_contains($gateway, "add_filter(\"woocommerce_payment_gateways\", \"addUpaymentsGatewayClass\")"), 'WooCommerce gateway registration remains characterized');

@@ -66,7 +66,9 @@ q4_assert(
         && q4_contains($tests, "'wrong path'       => array('path_prefix', '/api/v2/')"),
     'sandbox/live allowlist and every forbidden URL component have executable characterization'
 );
-q4_assert(q4_contains($verifier, "'redirection' => 0"), 'status transport forbids redirects');
+q4_assert(preg_match("/'redirection'\\s*=>\\s*0/", $verifier) === 1, 'status transport forbids redirects');
+q4_assert(preg_match("/'limit_response_size'\\s*=>\\s*1048576/", $verifier) === 1, 'status transport bounds response bodies to 1 MiB');
+q4_assert(q4_contains($verifier, 'strlen($body) >= 1048576'), 'status transport rejects a body that reaches the read cap');
 q4_assert(q4_contains($verifier, "'sslverify'   => true"), 'status transport retains TLS verification');
 q4_assert(q4_contains($verifier, "'Authorization' => 'Bearer ' . \$gateway->apiKey"), 'Bearer credential remains status-only transport state');
 q4_assert(q4_contains($verifier, '$http_status !== 201'), 'status transport requires exact HTTP 201');

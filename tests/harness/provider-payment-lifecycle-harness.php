@@ -584,9 +584,11 @@ namespace {
     ok(strpos($lifecycle_source, "execute_upayments_request('charge'") === false && strpos($lifecycle_source, "getAPIUrl('charge") === false, 'reconciliation never dispatches Charge');
     ok(strpos($lifecycle_source, 'UNVERIFIED_TRACK_META') !== false, 'separate unverified callback cursor exists');
     ok(strpos($lifecycle_source, 'TRUSTED_REQUESTED_META') !== false && strpos($lifecycle_source, 'UNVERIFIED_REQUESTED_META') !== false, 'cursor state is scoped to provider Charge attempt identity');
-    ok(strpos($verifier_source, "'redirection' => 0") !== false, 'status lookup disables redirects');
-    ok(strpos($verifier_source, "'sslverify'   => true") !== false, 'status lookup enforces TLS');
-    ok(strpos($verifier_source, "'timeout'     => 15") !== false, 'status lookup has finite timeout');
+    ok(preg_match("/'redirection'\\s*=>\\s*0/", $verifier_source) === 1, 'status lookup disables redirects');
+    ok(preg_match("/'sslverify'\\s*=>\\s*true/", $verifier_source) === 1, 'status lookup enforces TLS');
+    ok(preg_match("/'timeout'\\s*=>\\s*15/", $verifier_source) === 1, 'status lookup has finite timeout');
+    ok(preg_match("/'limit_response_size'\\s*=>\\s*1048576/", $verifier_source) === 1, 'status lookup bounds provider responses to 1 MiB');
+    ok(strpos($verifier_source, 'strlen($body) >= 1048576') !== false, 'status lookup rejects a body that reaches the read cap');
     ok(strpos($verifier_source, "result_not_string_or_null") !== false, 'NULL result contract is explicit');
     ok(strpos($rate_source, 'LIMIT_PER_MINUTE = 30') !== false, 'status query ceiling is 30/min');
     ok(strpos($lock_source, 'replace_if_current') !== false && strpos($lock_source, 'delete_if_current') !== false, 'order lock uses conditional stale recovery/release');
