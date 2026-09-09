@@ -1,5 +1,6 @@
 /.cache/
 /.github/
+/.ai-architect/
 /.phpunit.cache/
 /tests/
 /assets/screenshots/
