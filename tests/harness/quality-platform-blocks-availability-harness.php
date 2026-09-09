@@ -38,6 +38,13 @@ namespace {
     q18_assert(is_file($blocks_file), 'Blocks adapter source exists');
     q18_assert(is_file($blocks_js), 'Blocks client source exists');
 
+    $GLOBALS['q18_currency'] = 'USD';
+    function get_woocommerce_currency() {
+        return isset($GLOBALS['q18_currency']) && is_string($GLOBALS['q18_currency'])
+            ? $GLOBALS['q18_currency']
+            : '';
+    }
+
     require_once $blocks_file;
 
     class Q18BlocksAvailabilityProbe extends \WCGatewayUPaymentsBlocks {
@@ -53,31 +60,42 @@ namespace {
     $probe = new Q18BlocksAvailabilityProbe('');
     $probe->set_gateway_for_test(new \stdClass());
 
-    $probe->set_settings_for_test(array('enabled' => 'yes'));
-    q18_assert($probe->is_active() === true, 'canonical enabled=yes with gateway exposes Blocks method');
+    $probe->set_settings_for_test(array('enabled' => 'yes', 'api_key' => 'cert-key'));
+    q18_assert($probe->is_active() === true, 'configured enabled gateway on supported currency exposes Blocks method');
 
     $probe->set_gateway_for_test(null);
-    q18_assert($probe->is_active() === false, 'enabled=yes without gateway fails closed');
+    q18_assert($probe->is_active() === false, 'configured gateway without runtime object fails closed');
 
     $probe->set_gateway_for_test(new \stdClass());
 
-    $probe->set_settings_for_test(array('enabled' => 'no'));
+    $probe->set_settings_for_test(array('enabled' => 'no', 'api_key' => 'cert-key'));
     q18_assert($probe->is_active() === false, 'enabled=no suppresses Blocks method');
 
     $probe->set_settings_for_test(array());
-    q18_assert($probe->is_active() === true, 'missing enabled flag preserves declared fresh-install default=yes');
+    q18_assert($probe->is_active() === false, 'fresh settings without API credential fail closed');
 
-    $probe->set_settings_for_test(array('enabled' => null));
+    $probe->set_settings_for_test(array('enabled' => 'yes'));
+    q18_assert($probe->is_active() === false, 'enabled gateway without API credential fails closed');
+
+    $probe->set_settings_for_test(array('enabled' => 'yes', 'api_key' => '   '));
+    q18_assert($probe->is_active() === false, 'whitespace-only API credential fails closed');
+
+    $probe->set_settings_for_test(array('enabled' => null, 'api_key' => 'cert-key'));
     q18_assert($probe->is_active() === false, 'explicit null enabled flag fails closed');
 
-    $probe->set_settings_for_test((object) array('enabled' => 'yes'));
+    $probe->set_settings_for_test((object) array('enabled' => 'yes', 'api_key' => 'cert-key'));
     q18_assert($probe->is_active() === false, 'object-valued gateway settings fail closed');
 
-    $probe->set_settings_for_test(array('enabled' => true));
+    $probe->set_settings_for_test(array('enabled' => true, 'api_key' => 'cert-key'));
     q18_assert($probe->is_active() === false, 'malformed boolean enabled flag fails closed');
 
-    $probe->set_settings_for_test(array('enabled' => 'YES'));
+    $probe->set_settings_for_test(array('enabled' => 'YES', 'api_key' => 'cert-key'));
     q18_assert($probe->is_active() === false, 'noncanonical enabled token fails closed');
+
+    $probe->set_settings_for_test(array('enabled' => 'yes', 'api_key' => 'cert-key'));
+    $GLOBALS['q18_currency'] = 'JPY';
+    q18_assert($probe->is_active() === false, 'unsupported store currency suppresses Blocks method');
+    $GLOBALS['q18_currency'] = 'USD';
 
     q18_assert($probe->get_name() === 'upayments', 'Blocks gateway identity remains upayments');
 
@@ -92,6 +110,21 @@ namespace {
         is_string($js_source)
         && strpos($js_source, "name: 'upayments'") !== false,
         'Blocks client registration identity remains upayments'
+    );
+    q18_assert(
+        is_string($blocks_source)
+        && strpos($blocks_source, "'availability_valid'") !== false,
+        'Blocks server data exposes explicit provider-availability truth'
+    );
+    q18_assert(
+        is_string($js_source)
+        && strpos($js_source, 'canMakePayment: () => availability_valid === true') !== false,
+        'Blocks client canMakePayment fails closed on provider availability'
+    );
+    q18_assert(
+        is_string($js_source)
+        && strpos($js_source, 'setTimeout(init, 100)') === false,
+        'Blocks bootstrap does not poll indefinitely for declared script dependencies'
     );
 
     $phpstan_source = file_get_contents($phpstan_file);
