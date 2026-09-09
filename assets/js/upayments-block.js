@@ -213,8 +213,10 @@ const handleSubscriptionChange = (plan, interval) => {
                         saved_cards.map((card, index) =>
                             {
                                 if (!card || typeof card !== 'object') return null;
-                                const token = typeof card.token === 'string' && card.token !== '' ? card.token : null;
-                                if (!token) return null;
+                                const selection = typeof card.selection === 'string' && /^sc1_[0-9a-f]{64}$/.test(card.selection)
+                                    ? card.selection
+                                    : null;
+                                if (!selection) return null;
                                 const fallbackLabel = translation && typeof translation.saved_card_fallback === 'string'
                                     ? translation.saved_card_fallback
                                     : '';
@@ -226,7 +228,7 @@ const handleSubscriptionChange = (plan, interval) => {
                                         key: token || index,
                                         type: 'button',
                                         className: `upay-payment-method ${upayData.card_token === token ? 'active' : ''}`,
-                                        onClick: () => handleMethodClick('cc', token),
+                                        onClick: () => handleMethodClick('cc', selection),
                                             style: {
                                                 display: 'flex',
                                                 width: '100%',
