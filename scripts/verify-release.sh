@@ -82,7 +82,8 @@ with zipfile.ZipFile(zip_path, "r") as archive:
         ".distignore", ".editorconfig", ".gitattributes", ".gitignore",
         "AGENTS.md", "composer.json", "composer.lock", "phpcs.xml.dist",
         "phpstan.neon.dist", "phpunit.xml.dist", "CONTRIBUTING.md",
-        "MAINTAINERS.md", "SUPPORT.md", "UPSTREAM.md",
+        "MAINTAINERS.md", "SUPPORT.md", "UPSTREAM.md", "README.md",
+        "CHANGELOG.md", "SECURITY.md",
     }
     forbidden_prefixes = (".github/", ".cache/", ".phpunit.cache/", "tests/", "vendor/", "docs/", "scripts/")
     rel_names = [n[len(prefix):] for n in names]
@@ -91,8 +92,7 @@ with zipfile.ZipFile(zip_path, "r") as archive:
             raise SystemExit(f"Forbidden development/control path: {rel}")
 
     allowed_exact = {
-        "UPayments.php", "index.php", "uninstall.php", "LICENSE",
-        "readme.txt", "README.md", "CHANGELOG.md", "SECURITY.md",
+        "UPayments.php", "index.php", "uninstall.php", "LICENSE", "readme.txt",
     }
     allowed_prefixes = ("src/", "includes/", "assets/", "templates/")
     for rel in rel_names:
@@ -154,8 +154,7 @@ with zipfile.ZipFile(zip_path, "r") as archive:
             raise SystemExit(f"ZIP bytes do not match Git HEAD source: {name}")
 
     required = {
-        "UPayments.php", "index.php", "uninstall.php", "LICENSE",
-        "readme.txt", "README.md", "CHANGELOG.md", "SECURITY.md",
+        "UPayments.php", "index.php", "uninstall.php", "LICENSE", "readme.txt",
         "src/Release/Identity.php",
         "includes/class-wc-gateway-upayments-blocks.php",
     }
