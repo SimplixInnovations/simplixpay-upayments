@@ -10,49 +10,11 @@
 
 defined( 'ABSPATH' ) || exit;
 
-// phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound, WordPress.Security.NonceVerification.Recommended -- WooCommerce template locals and read-only provider-return status flags; this template performs no request-authorized state change.
+// phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- WooCommerce template locals are intentionally scoped to the template include.
 ?>
 <div class="supcheckout form-row form-row-wide">
     <?php 
     echo wp_kses_post($gateway->description);
-    if (isset($_GET["cancelled"]))
-    {
-        $notice_html = '<div class="woocommerce-NoticeGroup woocommerce-NoticeGroup-checkout"><div class="woocommerce-error alert-color">'
-            . esc_html__('Payment canceled by customer', 'supcheckout')
-            . '</div></div>';
-    ?>
-    <script>
-        let message = <?php echo wp_json_encode($notice_html, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT); ?>;
-        jQuery(document).ready(function(){
-            jQuery('.woocommerce-notices-wrapper:first').html(message);
-        });
-    </script>
-    <?php
-    } elseif (isset($_GET["failed"])) {
-        $notice_html = '<div class="woocommerce-NoticeGroup woocommerce-NoticeGroup-checkout"><div class="woocommerce-error alert-color">'
-            . esc_html__('Payment error from UPayments', 'supcheckout')
-            . '</div></div>';
-    ?>
-    <script>
-        let message = <?php echo wp_json_encode($notice_html, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT); ?>;
-        jQuery(document).ready(function(){
-            jQuery('.woocommerce-notices-wrapper:first').html(message);
-        });
-    </script>
-    <?php
-    } elseif (isset($_GET["suspected"])){
-        $notice_html = '<div class="woocommerce-NoticeGroup woocommerce-NoticeGroup-checkout"><div class="woocommerce-error alert-color">'
-            . esc_html__('Payment failed for suspected fraud.', 'supcheckout')
-            . '</div></div>';
-    ?>
-    <script>
-        let message = <?php echo wp_json_encode($notice_html, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT); ?>;
-        jQuery(document).ready(function(){
-            jQuery('.woocommerce-notices-wrapper:first').html(message);
-        });
-    </script>
-    <?php 
-    }
     $icons = array();
     $whitelabled = false;
     

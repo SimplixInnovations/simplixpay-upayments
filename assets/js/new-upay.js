@@ -3,37 +3,13 @@
 
     const api = window.supCheckout = window.supCheckout || {};
 
-    function hidePlaceOrderButtonIfNeeded() {
+    function syncPlaceOrderButton() {
         const selectedPaymentMethod = $('input[name="payment_method"]:checked').val();
         if (selectedPaymentMethod === 'upayments') {
             $('button#place_order').hide();
         } else {
             $('button#place_order').show();
         }
-    }
-
-    function checkApplePayAvailability() {
-        const applePay = {
-            supportedByDevice: function () {
-                return 'ApplePaySession' in window;
-            },
-            getMerchantIdentifier: function () {
-                return 'merchant.com.upayments.ustore';
-            }
-        };
-
-        const merchantIdentifier = applePay.getMerchantIdentifier();
-        if (!merchantIdentifier || !applePay.supportedByDevice()) {
-            return;
-        }
-
-        if (window.ApplePaySession.canMakePayments()) {
-            return;
-        }
-
-        window.ApplePaySession.canMakePaymentsWithActiveCard(merchantIdentifier).catch(function () {
-            // Availability probing is advisory only; checkout remains provider-driven.
-        });
     }
 
     api.submitPaymentMethod = function (buttonValue) {
@@ -93,21 +69,8 @@
     };
 
     $(function () {
-        function refreshCheckoutUi() {
-            hidePlaceOrderButtonIfNeeded();
-            checkApplePayAvailability();
-        }
-
-        $('form.checkout').on('change', 'input[name="payment_method"]', refreshCheckoutUi);
-
-        refreshCheckoutUi();
-        window.setTimeout(refreshCheckoutUi, 500);
-
-        $(document).ajaxComplete(refreshCheckoutUi);
-
-        const paymentMethodId = 'upayments';
-        if ($('form.checkout').length > 0 && $('input[name="payment_method"]:checked').val() !== paymentMethodId) {
-            $('input[name="payment_method"][value="' + paymentMethodId + '"]').trigger('click');
-        }
+        $('form.checkout').on('change', 'input[name="payment_method"]', syncPlaceOrderButton);
+        $(document.body).on('updated_checkout', syncPlaceOrderButton);
+        syncPlaceOrderButton();
     });
 })(jQuery, window, document);
