@@ -1,6 +1,6 @@
 # SUPCheckout for UPayments — Release Engineering
 
-**Current status:** pre-release runtime/package engineering certified through PR #97; owner technical acceptance COMPLETED for frozen Approach 2 baseline `0c883d609906676966002eb022a82a9656eeacc5`; Approach 3 architecture modernization AUTHORIZED / NOT STARTED; explicit release administration (tag/GitHub Release/WordPress.org publication) remains NOT AUTHORIZED
+**Current status:** pre-release runtime/package engineering certified through PR #97; owner technical acceptance COMPLETED for frozen Approach 2 baseline `0c883d609906676966002eb022a82a9656eeacc5`; Approach 3 architecture decision APPROVED / RECORDED with runtime-neutral T1 NOT STARTED; explicit release administration (tag/GitHub Release/WordPress.org publication) remains NOT AUTHORIZED
 **Canonical GitHub repository:** `SimplixInnovations/supcheckout`
 **Canonical plugin/package slug:** `supcheckout`
 **Development version:** `0.1.0`
