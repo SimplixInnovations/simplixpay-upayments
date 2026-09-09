@@ -79,6 +79,53 @@ final class SavedCardSelection {
     }
 
     /**
+     * Resolve a selected-card checkout submission against one fresh provider
+     * card list. New UI submits opaque handles; legacy already-rendered/custom
+     * clients may still submit the provider token directly.
+     *
+     * A handle-shaped provider token remains backward compatible: if opaque
+     * resolution does not match, exact membership in the same fresh list is
+     * checked without a second provider Retrieve.
+     *
+     * @param mixed $submitted Browser-submitted selection/token value.
+     * @param array<mixed> $cards Fresh provider saved-card list.
+     * @param mixed $user_id Current WordPress user ID.
+     * @param mixed $api_key Current UPayments API key.
+     * @param mixed $is_test_mode Current provider mode.
+     */
+    public static function resolve_submission($submitted, array $cards, $user_id, $api_key, $is_test_mode): ?string {
+        $submitted_token = self::provider_token($submitted);
+        if ($submitted_token === null) {
+            return null;
+        }
+
+        if (self::is_handle($submitted_token)) {
+            $resolved = self::resolve($submitted_token, $cards, $user_id, $api_key, $is_test_mode);
+            if ($resolved !== null) {
+                return $resolved;
+            }
+        }
+
+        $legacy_match = null;
+        foreach ($cards as $card) {
+            if (!is_array($card) || !array_key_exists('token', $card)) {
+                continue;
+            }
+
+            $provider_token = self::provider_token($card['token']);
+            if ($provider_token === null || strlen($provider_token) !== strlen($submitted_token)) {
+                continue;
+            }
+
+            if (hash_equals($provider_token, $submitted_token)) {
+                $legacy_match = $provider_token;
+            }
+        }
+
+        return $legacy_match;
+    }
+
+    /**
      * @param mixed $value Candidate browser selection value.
      */
     public static function is_handle($value): bool {
