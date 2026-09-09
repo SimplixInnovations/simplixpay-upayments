@@ -255,10 +255,18 @@ a3_assert_same(
     $a3_assets['scripts'],
     'complete gateway settings script registration is exact and contains no dead repeater runtime'
 );
-a3_assert_same(
-    array(array('woocommerce_admin_styles', '.upayments-disabled-setting { opacity: 0.5; pointer-events: none; }')),
-    $a3_assets['inline'],
-    'complete disabled-row inline style registration is preserved'
+a3_assert_same(1, count($a3_assets['inline']), 'gateway settings register one scoped inline style payload');
+a3_assert_same('woocommerce_admin_styles', $a3_assets['inline'][0][0], 'scoped inline style targets WooCommerce admin styles');
+a3_assert(strpos($a3_assets['inline'][0][1], '.upayments-disabled-setting') !== false, 'save-card disabled-state styling is retained');
+foreach (array('iban_number', 'cc_charge', 'cc_charge_type', 'knet_charge', 'knet_charge_type') as $legacy_field) {
+    a3_assert(
+        strpos($a3_assets['inline'][0][1], '#woocommerce_upayments_' . $legacy_field) !== false,
+        "legacy {$legacy_field} row is hidden through an exact SUPCheckout field selector"
+    );
+}
+a3_assert(
+    strpos($a3_assets['inline'][0][1], 'input[style*="display:none"]') === false,
+    'scoped inline style contains no generic hidden-input selector'
 );
 
 a3_reset_assets();
