@@ -5951,7 +5951,7 @@ $blocks_gw->mock_payment_icons = [
 $blocks_gw->mock_saved_cards = [
     'result' => 'success',
     'data' => [
-        ['token' => '1234567890123456', 'number' => '****3456', 'brand' => 'Visa'],
+        ['token' => '1234567890123456', 'last4' => '4111 1111 1111 4242', 'number' => '4111 1111 1111 4242', 'brand' => 'Visa'],
         ['token' => 1234567890123456, 'number' => '****3456', 'brand' => 'Visa'],
         ['token' => 123.5, 'number' => '****3456', 'brand' => 'Visa'],
         ['token' => true, 'number' => '****3456', 'brand' => 'Visa'],
@@ -5973,8 +5973,32 @@ upay_assert_eq($blocks_gw->saved_cards_calls, 1, 'BLOCKS-SAN-0 getSavedCardsForC
 upay_assert_eq(count($blocks_saved_cards), 1, 'BLOCKS-SAN-1 exactly 1 saved card after real Blocks sanitization', 'semantic_runtime');
 upay_assert_eq(count($blocks_saved_cards) >= 1 ? $blocks_saved_cards[0]['token'] : null, '1234567890123456', 'BLOCKS-SAN-2 token is strict string', 'semantic_runtime');
 upay_assert_eq(count($blocks_saved_cards) >= 1 ? is_string($blocks_saved_cards[0]['token']) : false, true, 'BLOCKS-SAN-2b token remains string type', 'semantic_runtime');
-upay_assert_eq(count($blocks_saved_cards) >= 1 ? $blocks_saved_cards[0]['number'] : null, '****3456', 'BLOCKS-SAN-3 number preserved', 'semantic_runtime');
+upay_assert_eq(count($blocks_saved_cards) >= 1 ? ($blocks_saved_cards[0]['label'] ?? null) : null, '•••• 4242', 'BLOCKS-SAN-3 hostile provider PAN is reduced to last-four-only label', 'semantic_runtime');
+upay_assert_eq(count($blocks_saved_cards) >= 1 ? array_key_exists('number', $blocks_saved_cards[0]) : true, false, 'BLOCKS-SAN-3b raw provider number never enters Blocks settings', 'semantic_runtime');
+upay_assert_eq(count($blocks_saved_cards) >= 1 ? array_key_exists('last4', $blocks_saved_cards[0]) : true, false, 'BLOCKS-SAN-3c provider last4 source never enters Blocks settings', 'semantic_runtime');
 upay_assert_eq(count($blocks_saved_cards) >= 1 ? $blocks_saved_cards[0]['brand'] : null, 'Visa', 'BLOCKS-SAN-4 brand preserved', 'semantic_runtime');
+
+// Classic presentation must render hostile provider data without exposing any
+// PAN group outside the final four. This executes the real template rather
+// than inspecting variable names or source strings.
+if (class_exists('Simplixi\\SUPCheckout\\Payment\\SavedCardPresentation', false)) {
+    $state['wc_cart'] = new class {
+        public function get_total($context = '') {
+            return '12.50';
+        }
+    };
+    $gateway = $blocks_gw;
+    $save_card_enabled = true;
+    ob_start();
+    include $ROOT . '/templates/new-design-form.php';
+    $classic_saved_card_html = ob_get_clean();
+
+    upay_assert_eq(strpos($classic_saved_card_html, '4111') === false, true, 'CLASSIC-PAN-1 hostile leading PAN group absent from rendered Classic HTML', 'semantic_runtime');
+    upay_assert_eq(strpos($classic_saved_card_html, '1111') === false, true, 'CLASSIC-PAN-2 hostile middle PAN group absent from rendered Classic HTML', 'semantic_runtime');
+    upay_assert_eq(strpos($classic_saved_card_html, '•••• 4242') !== false, true, 'CLASSIC-PAN-3 rendered Classic HTML contains bounded last-four label', 'semantic_runtime');
+} else {
+    upay_assert_eq(false, true, 'CLASSIC-PAN-0 production bootstrap loads SavedCardPresentation before Classic rendering', 'semantic_runtime');
+}
 
 
 // ===========================================================================
