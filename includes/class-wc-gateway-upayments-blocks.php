@@ -176,7 +176,7 @@ class WCGatewayUPaymentsBlocks extends AbstractPaymentMethodType {
                         if (!is_array($card)) {
                             continue;
                         }
-                        $presented = \Simplixi\SUPCheckout\Payment\SavedCardPresentation::for_blocks($card);
+                        $presented = \Simplixi\SUPCheckout\Payment\SavedCardPresentation::for_blocks($card, __('Saved card', 'supcheckout'));
                         if ($presented === null) {
                             continue;
                         }
@@ -228,6 +228,7 @@ class WCGatewayUPaymentsBlocks extends AbstractPaymentMethodType {
             'translation'               => [
                 'save_card_label'       => __('For faster and more secure checkout. Save your card details.', 'supcheckout'),
                 'saved_cards_label'     => __('Saved Cards', 'supcheckout'),
+                'saved_card_fallback'   => __('Saved card', 'supcheckout'),
                 'other_options_label'   => __('Other Options', 'supcheckout'),
             ],
             'supports'    => [ 'products' ],
