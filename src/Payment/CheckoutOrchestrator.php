@@ -1057,55 +1057,36 @@ class CheckoutOrchestrator {
 
                 $gateway = $this->gateway;
 
-                if (SavedCardSelection::is_handle($credit_card_token)) {
-                    // Browser-facing saved-card controls carry only an opaque
-                    // selection handle. Resolve it against one fresh authenticated
-                    // provider Retrieve response before any token is persisted or
-                    // sent to Charge. The handle itself is never authorization.
-                    $saved_cards_result = $gateway->getSavedCards($canonical_token);
-                    if (!is_array($saved_cards_result)
-                        || !isset($saved_cards_result['result'])
-                        || $saved_cards_result['result'] !== 'success'
-                        || !isset($saved_cards_result['data'])
-                        || !is_array($saved_cards_result['data'])
-                    ) {
-                        wc_add_notice(__('Please select a valid payment method.', 'supcheckout'), 'error');
-                        return array('result' => 'failure', 'redirect' => wc_get_checkout_url());
-                    }
-
-                    $resolved_card_token = SavedCardSelection::resolve(
-                        $credit_card_token,
-                        $saved_cards_result['data'],
-                        $user_id,
-                        $gateway->apiKey,
-                        (bool) $gateway->getMode()
-                    );
-                    if ($resolved_card_token === null) {
-                        wc_add_notice(__('Please select a valid payment method.', 'supcheckout'), 'error');
-                        return array('result' => 'failure', 'redirect' => wc_get_checkout_url());
-                    }
-
-                    $credit_card_token = $resolved_card_token;
-                } else {
-                    // Transitional compatibility for already-rendered checkout
-                    // pages/custom clients that still submit a provider token.
-                    // New SUPCheckout UI never emits that token. The legacy value
-                    // remains acceptable only after the existing fresh membership
-                    // verification against the current customer's provider cards.
-                    $membership_valid = CustomerTokenIdentity::verify_card_membership(
-                        $credit_card_token,
-                        $canonical_token,
-                        function($token) use ($gateway) {
-                            return $gateway->getSavedCards($token);
-                        }
-                    );
-
-                    if (!$membership_valid) {
-                        wc_add_notice(__('Please select a valid payment method.', 'supcheckout'), 'error');
-                        return array('result' => 'failure', 'redirect' => wc_get_checkout_url());
-                    }
+                // Browser-facing saved-card controls carry an opaque selection
+                // handle. Transitional legacy clients may still submit a provider
+                // token directly. In both cases authorize from ONE fresh Retrieve:
+                // handle resolution first, exact legacy membership second.
+                $saved_cards_result = $gateway->getSavedCards($canonical_token);
+                if (!is_array($saved_cards_result)
+                    || !isset($saved_cards_result['result'])
+                    || $saved_cards_result['result'] !== 'success'
+                    || !isset($saved_cards_result['data'])
+                    || !is_array($saved_cards_result['data'])
+                ) {
+                    wc_add_notice(__('Please select a valid payment method.', 'supcheckout'), 'error');
+                    return array('result' => 'failure', 'redirect' => wc_get_checkout_url());
                 }
 
+                $resolved_card_token = SavedCardSelection::resolve_submission(
+                    $credit_card_token,
+                    $saved_cards_result['data'],
+                    $user_id,
+                    $gateway->apiKey,
+                    (bool) $gateway->getMode()
+                );
+                if ($resolved_card_token === null) {
+                    wc_add_notice(__('Please select a valid payment method.', 'supcheckout'), 'error');
+                    return array('result' => 'failure', 'redirect' => wc_get_checkout_url());
+                }
+
+                // Only the real provider token crosses the server-side persistence
+                // and Charge boundaries. The browser handle never does.
+                $credit_card_token = $resolved_card_token;
                 $isSaveCard = false;
             }
             // CASE: Save Card or subscription requires canonical token.
