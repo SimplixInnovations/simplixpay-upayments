@@ -33,6 +33,8 @@ $settings = sufi_read($root, 'src/Admin/GatewaySettings.php');
 $new_template = sufi_read($root, 'templates/new-design-form.php');
 $old_template = sufi_read($root, 'templates/old-design-form.php');
 $new_js = sufi_read($root, 'assets/js/new-upay.js');
+$subscription_js = sufi_read($root, 'assets/js/subscription-checkout.js');
+$customer_css = sufi_read($root, 'assets/css/customer.css');
 $blocks_js = sufi_read($root, 'assets/js/upayments-block.js');
 
 foreach (array(
@@ -104,6 +106,25 @@ foreach (array('function submitUpayButton', 'function submitSavedCard', 'functio
 sufi_assert(strpos($new_template, 'supCheckout.') !== false, 'new checkout template invokes canonical JS namespace');
 
 sufi_assert(!is_dir($root . '/assets/screenshots'), 'legacy repository screenshot source directory is absent');
+
+sufi_assert(strpos($gateway, "'supcheckout-checkout-legacy-script'") === false, 'obsolete legacy checkout script handle is absent');
+sufi_assert(!is_file($root . '/assets/js/old-upay.js'), 'obsolete legacy checkout script file is absent');
+sufi_assert(!is_file($root . '/assets/images/loader.gif'), 'oversized animated status loader is absent');
+sufi_assert(!is_file($root . '/assets/images/check.png'), 'oversized decorative success raster is absent');
+sufi_assert(strpos($gateway, 'assets/images/loader.gif') === false, 'gateway contains no animated status-loader reference');
+sufi_assert(strpos($gateway, 'assets/images/check.png') === false, 'gateway contains no decorative success-raster reference');
+sufi_assert(strpos($gateway, 'upayment-status-holder-strong') === false, 'dead hidden thank-you status holder is absent');
+sufi_assert(strpos($gateway, 'upayment-id-holder-strong') === false, 'dead hidden thank-you payment-ID holder is absent');
+sufi_assert(strpos($gateway, '$order->is_paid()') !== false, 'thank-you success rendering follows WooCommerce paid-state semantics');
+sufi_assert(strpos($new_js, 'ApplePaySession') === false, 'classic checkout performs no no-op Apple Pay capability polling');
+sufi_assert(strpos($new_js, "trigger('click')") === false, 'classic checkout never forces UPayments selection client-side');
+sufi_assert(strpos($new_js, 'ajaxComplete') === false, 'classic checkout avoids global ajaxComplete polling');
+sufi_assert(strpos($new_js, 'updated_checkout') !== false, 'classic checkout reacts to the WooCommerce checkout update event');
+sufi_assert(strpos($subscription_js, ".val('one_time')") === false, 'subscription interval never receives the invalid one_time token');
+sufi_assert(strpos($subscription_js, "showToast(") === false, 'subscription checkout does not call an undefined global toast helper');
+sufi_assert(strpos($subscription_js, ".val('0')") !== false, 'one-time subscription state normalizes interval to zero');
+sufi_assert(strpos($customer_css, '.woocommerce .order-again') === false, 'SUPCheckout customer CSS does not style unrelated WooCommerce order-again controls');
+
 
 echo "\nSUPCheckout Frontend Identity: {$pass} PASS / {$fail} FAIL\n";
 exit($fail === 0 ? 0 : 1);
