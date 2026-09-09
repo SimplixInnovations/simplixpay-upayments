@@ -1098,6 +1098,7 @@ function woocommerceUpaymentsInit() {
                     wp_enqueue_script('supcheckout-subscription-checkout', $plugin_url . 'assets/js/subscription-checkout.js', array('jquery'), SUPCHECKOUT_VERSION, true);
                     wp_localize_script('supcheckout-subscription-checkout', 'wcUser', array(
                         'isLoggedIn' => is_user_logged_in(),
+                        'userId'     => get_current_user_id(),
                     ));
                 }
             }            
@@ -1218,11 +1219,14 @@ function woocommerceUpaymentsInit() {
                 $this->log( 'Multimerchant enabled but no rules found. Using default credentials.', 'error' );
                 return $this->get_default_credentials();
             }
+
+            // --- Core Routing Logic ---
             
             foreach ( $rules as $rule ) {
                 $condition_type  = $rule['condition_type'] ?? '';
                 $condition_value = $rule['condition_value'] ?? '';
 
+                // If a rule has no condition, skip it (it won't match anything specific)
                 if ( empty( $condition_type ) || empty( $condition_value ) ) {
                     continue;
                 }
@@ -1231,16 +1235,19 @@ function woocommerceUpaymentsInit() {
 
                 switch ( $condition_type ) {
                     case 'fixed':
+                        // Check if the order currency matches the rule value (e.g., USD, EUR)
                         if ($condition_value === 'fixed') {
                             $match_found = true;
                         }
                         break;
                     case 'percentage':
+                        // Check if the billing country matches the rule value (e.g., US, DE)
                         if ($condition_value === 'percentage') {
                             $match_found = true;
                         }
                         break;
                     default:
+                        // Unhandled condition type
                         break;
                 }
 
@@ -1252,17 +1259,26 @@ function woocommerceUpaymentsInit() {
                     ];
                 }
             }
+            // 3. Fallback: If no custom rule matched, use default credentials
             $this->log( 'No specific routing rule matched. Using default credentials.', 'info' );
             return $this->get_default_credentials();
         }
 
         public function get_default_credentials() {
+            // Assuming your default credentials are stored as standard gateway options
             return [
                 'merchant_id' => $this->get_option( 'default_merchant_id' ),
                 'api_key'     => $this->get_option( 'default_api_key' ),
             ];
         }
 
+        /**
+         * Generate the inherited single additional-merchant settings row.
+         *
+         * @param string $key Field key.
+         * @param array  $data WooCommerce field data.
+         * @return string
+         */
         public function generate_multimerchant_repeater_html($key, $data) {
             return GatewaySettings::render_multimerchant(
                 $key,
@@ -1275,6 +1291,13 @@ function woocommerceUpaymentsInit() {
             );
         }
 
+        /**
+         * Preserve the public WooCommerce custom-field validation seam.
+         *
+         * @param string $key Field key.
+         * @param mixed  $value Raw field value.
+         * @return string
+         */
         public function validate_multimerchant_repeater_field($key, $value) {
             return GatewaySettings::sanitize_multimerchant_accounts($value);
         }
@@ -1299,7 +1322,7 @@ function woocommerceUpaymentsInit() {
             }
             return $mode;
         }
-
+        
         public function getAPIUrl($apiRoute = "")
         {
             return (new EndpointResolver($this->getMode()))->resolve($apiRoute);
@@ -1325,7 +1348,7 @@ function woocommerceUpaymentsInit() {
             }
             return $userAgent;
         }
-
+        
         public function getCurrencyCode($code)
         {
             return $code;
@@ -1346,6 +1369,15 @@ function woocommerceUpaymentsInit() {
             return password_hash($this->apiKey, PASSWORD_BCRYPT);
         }
 
+        /**
+         * Get customer unique token from phone.
+         *
+         * @deprecated Retained temporarily to avoid undefined-method breakage for
+         *             third-party customizations. New code must use CustomerTokenIdentity.
+         *             Future code-quality/public-API phase will decide final removal.
+         * @param string $phone Unused. Previously used as customer token.
+         * @return string Empty string. Phone is no longer used as token identity.
+         */
         public function getCustomerUniqueToken($phone)
         {
             return '';
@@ -1381,6 +1413,7 @@ function woocommerceUpaymentsInit() {
                 return null;
             }
 
+            // Strict request input: must be ASCII numeric, 8-18 digits.
             $token_str = $customer_token;
             if (!preg_match('/^[0-9]{8,18}$/', $token_str)) {
                 return null;
@@ -1432,6 +1465,17 @@ function woocommerceUpaymentsInit() {
             );
         }
 
+        /**
+         * Section AH: Defense in depth — require already-normalized payment state.
+         *
+         * This helper NEVER makes additional availability calls (e.g. getPaymentIcons()).
+         * The caller must supply the exact normalized availability state that has
+         * already been validated. When the caller cannot supply valid state, the
+         * helper fails closed and returns null.
+         *
+         * @param array|null $payment_data Already-normalized availability state.
+         * @return array|null Provider response on success, null on any failure.
+         */
         public function getSavedCardsForCurrentUser($payment_data)
         {
             $user_id = get_current_user_id();
@@ -1443,6 +1487,9 @@ function woocommerceUpaymentsInit() {
                 return null;
             }
 
+            // Strict structural validation of the supplied normalized state.
+            // Must be array; whitelabled MUST be exactly boolean true;
+            // payment MUST be array; payment['cc'] MUST be present (CC enabled).
             if (!is_array($payment_data)) {
                 return null;
             }
@@ -1456,6 +1503,7 @@ function woocommerceUpaymentsInit() {
             ) {
                 return null;
             }
+            // CC must be EXPLICITLY enabled (key present, scalar non-empty).
             if (!array_key_exists('cc', $payment_data['payment'])) {
                 return null;
             }
@@ -1475,6 +1523,10 @@ function woocommerceUpaymentsInit() {
             );
         }
 
+        /**
+         * UTF-8 safe provider text truncation.
+         * PHP 7.2 compatible, no mandatory mbstring dependency.
+         */
         private function truncate_provider_text($value, $max_chars) {
             return CheckoutPayload::truncate_provider_text($value, $max_chars);
         }
@@ -1483,15 +1535,21 @@ function woocommerceUpaymentsInit() {
         {
             $data = $this->getUpayPaymentMethods();
 
+            // Fail safely if upstream did not return a usable success payload.
             if (!is_array($data)
                 || !isset($data['result'])
                 || $data['result'] !== 'success') {
                 return;
             }
 
+            // Admin toggle (feature on/off)
             $isSubscriptionFeatureEnabled = ($this->autoDeduction === 'yes');
+
+            // Cart state
             $hasSubscriptionProduct = \UPayments\Subscription\Helpers\Utils::cartHasCustomType();
             $hasNormalProduct      = \UPayments\Subscription\Helpers\Utils::cartHasNormalProduct();
+
+            // Subscription context = feature enabled AND subscription product in cart
             $isSubscriptionContext = $isSubscriptionFeatureEnabled && $hasSubscriptionProduct && !$hasNormalProduct;
 
             $payment_methods = isset($data['payButtons']) && is_array($data['payButtons'])
@@ -1500,28 +1558,36 @@ function woocommerceUpaymentsInit() {
 
             $whitelabled = isset($data['isWhiteLabel']) && $data['isWhiteLabel'] === true;
             $methods     = [];
+
+            // Section P: Non-Whitelabel generic checkout must always be available.
             $methods['payment'] = array();
 
+            // If ONLY normal products in cart → allow all methods
             if (!$isSubscriptionContext) {
                 if (isset($payment_methods['knet']) && $payment_methods['knet'] === 1) {
                     $methods['payment']['knet'] = __('KNET', 'supcheckout');
                 }
+
                 if (isset($payment_methods['apple_pay_knet']) && $payment_methods['apple_pay_knet'] === 1) {
                     $methods['payment']['apple-pay-knet'] = __('Apple Pay KNET', 'supcheckout');
                 }
+
                 if (isset($payment_methods['credit_card']) && $payment_methods['credit_card'] === 1) {
                     $methods['payment']['cc'] = __('Credit Card', 'supcheckout');
                 }
+
                 if (isset($payment_methods['apple_pay']) && $payment_methods['apple_pay'] === 1) {
                     $methods['payment']['apple-pay'] = __('Apple Pay Credit Card', 'supcheckout');
                 }
+
                 if (isset($payment_methods['samsung_pay']) && $payment_methods['samsung_pay'] === 1) {
                     $methods['payment']['samsung-pay'] = __('Samsung Pay', 'supcheckout');
                 }
+
                 if (isset($payment_methods['google_pay']) && $payment_methods['google_pay'] === 1) {
                     $methods['payment']['google-pay'] = __('Google Pay', 'supcheckout');
                 }
-            } else {
+            } else { // If subscription product in cart → ONLY CC allowed (per API requirement)
                 if (isset($payment_methods['credit_card']) && $payment_methods['credit_card'] === 1) {
                     $methods['payment']['cc'] = __('Credit Card', 'supcheckout');
                 }
@@ -1533,30 +1599,49 @@ function woocommerceUpaymentsInit() {
 
         public function log($content, $level = 'debug')
         {
+            // Diagnostic logging is explicitly opt-in.
+            // WooCommerce checkbox values resolve to the string 'yes' or 'no';
+            // the string 'no' is truthy in PHP, so a loose check enables logging
+            // even when the merchant intends Debug = disabled.
             if ($this->debug !== 'yes') {
                 return;
             }
+
             if (!function_exists('wc_get_logger')) {
                 return;
             }
+
             $allowed_levels = array('debug', 'info', 'notice', 'warning', 'error');
             if (!in_array($level, $allowed_levels, true)) {
                 $level = 'debug';
             }
+
             if (is_array($content) || is_object($content)) {
                 $content = '[complex diagnostic data omitted]';
             }
+
             wc_get_logger()->{$level}(
                 (string) $content,
                 array('source' => 'upayments')
             );
         }
-
+        
+        /**
+         * initializeSubscriptionModule
+         * Handle Subscription Module Initialization If Enabled from Admin Settings
+         * @return void
+         */
         public function initializeSubscriptionModule()
         {
             SubscriptionComposition::initialize_legacy_modules();
         }
 
+        /**
+         * Build API payload for invoice / subscription
+         *
+         * @param WC_Order $order
+         * @return array
+         */
         protected function build_api_payload($order)
         {
             $payload = [
@@ -1570,8 +1655,11 @@ function woocommerceUpaymentsInit() {
             ];
 
             $plan = $order->get_meta('_upay_subscription_plan');
+
             if ($plan && $plan !== 'one_time') {
+
                 $interval = (int) $order->get_meta('_upay_subscription_interval');
+
                 $payload['subscription'] = [
                     'enabled'            => true,
                     'type'               => 'recurring',
@@ -1585,11 +1673,25 @@ function woocommerceUpaymentsInit() {
             return $payload;
         }
 
+        /**
+         * Render subscription summary in admin order view
+         *
+         * @param WC_Order $order
+         * @return array
+         */
         public function render_subscription_summary($order)
         {
             SubscriptionPresentation::render_admin_summary($order);
         }
 
+        /**
+         * restrictMixedCartProducts
+         * Function to restrict adding subscription products together with normal products in the cart
+         * @param  mixed $passed
+         * @param  mixed $product_id
+         * @param  mixed $quantity
+         * @return void
+         */
         public function restrictMixedCartProducts($passed, $product_id, $quantity)
         {
             return SubscriptionPresentation::restrict_mixed_cart_products(
@@ -1599,7 +1701,12 @@ function woocommerceUpaymentsInit() {
                 $this->domain
             );
         }
-
+        
+        /**
+         * renderSubscriptionBadgeInProductList
+         * Function to render subscription badge in product list if the product is subscription type
+         * @return void
+         */
         public function renderSubscriptionBadgeInProductList()
         {
             SubscriptionPresentation::render_subscription_badge();
@@ -1608,6 +1715,11 @@ function woocommerceUpaymentsInit() {
 
 }
 
+/**
+ * upaymentsMissingWcNotice
+ * If Woocommerce Plugin is not active/installed show admin notice to install/activate Woocommerce
+ * @return void
+ */
 function upaymentsMissingWcNotice() {
     ?>
     <div class="error notice">
@@ -1617,6 +1729,7 @@ function upaymentsMissingWcNotice() {
 }
 
 add_filter("woocommerce_payment_gateways", "addUpaymentsGatewayClass");
+// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedFunctionFound -- Legacy WooCommerce callback retained for compatibility.
 function addUpaymentsGatewayClass($methods)
 {
     $methods[] = "WC_UPayments";
@@ -1624,6 +1737,7 @@ function addUpaymentsGatewayClass($methods)
 }
 
 add_filter("woocommerce_available_payment_gateways", "enableUpaymentsGateway");
+// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedFunctionFound -- Legacy WooCommerce callback retained for compatibility.
 function enableUpaymentsGateway($available_gateways)
 {
     if (is_admin()){
@@ -1631,6 +1745,7 @@ function enableUpaymentsGateway($available_gateways)
     }
 
     if (isset($available_gateways["upayments"])){
+        // Move UPayments to the end unless merchant explicitly reordered
         $upay = $available_gateways['upayments'];
         unset($available_gateways['upayments']);
         $available_gateways['upayments'] = $upay;
@@ -1654,6 +1769,7 @@ function enableUpaymentsGateway($available_gateways)
     return $available_gateways;
 }
 
+// Declare compatibility with WooCommerce's Cart & Checkout blocks (WooBlocks)
 add_action( 'before_woocommerce_init', function() {
     if ( class_exists( \Automattic\WooCommerce\Utilities\FeaturesUtil::class ) ) {
         \Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility(
@@ -1669,6 +1785,7 @@ add_action( 'before_woocommerce_init', function() {
     }
 });
 
+// payment method registry
 add_action( 'woocommerce_blocks_loaded', function() {
     add_action( 'woocommerce_blocks_payment_method_type_registration', function( $payment_method_registry ) {
         require_once __DIR__ . '/includes/class-wc-gateway-upayments-blocks.php';
@@ -1679,6 +1796,7 @@ add_action( 'woocommerce_blocks_loaded', function() {
 });
 
 register_activation_hook(__FILE__, 'myPaymentPluginSetupCheckout');
+// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedFunctionFound -- Legacy activation callback retained for existing plugin lifecycle compatibility.
 function myPaymentPluginSetupCheckout() {
     if ( ! class_exists( 'WooCommerce' ) ) {
         add_action( 'admin_notices', 'upaymentsMissingWcNotice' );
@@ -1706,48 +1824,60 @@ function myPaymentPluginSetupCheckout() {
     if (!$has_shortcode && !$has_block && !$use_blocks) {
         wp_update_post([
             'ID'           => $checkout_page_id,
-            'post_content' => '[woocommerce_checkout]',
+            'post_content' => '[woocommerce_checkout]', // default: classic
         ]);
     }
 }
 
+/* Subscription Product Data Handler from product Data Page - Start */
 SubscriptionComposition::register_presentation_hooks();
 
+// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedFunctionFound -- Legacy WooCommerce subscription presentation callback retained for compatibility.
 function addCustomProductType( $types ){
     return SubscriptionPresentation::add_custom_product_type($types);
 }
 
+// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedFunctionFound -- Legacy WooCommerce subscription presentation callback retained for compatibility.
 function mapCustomProductClass( $classname, $product_type ) {
     return SubscriptionPresentation::map_custom_product_class($classname, $product_type);
 }
 
+// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedFunctionFound -- Legacy WooCommerce subscription presentation callback retained for compatibility.
 function customProductTypes() {
     SubscriptionPresentation::custom_product_types();
 }
 
+// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedFunctionFound -- Legacy WooCommerce subscription presentation callback retained for compatibility.
 function addCustomDataTab( $tabs ) {
     return SubscriptionPresentation::add_custom_data_tab($tabs);
 }
 
+// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedFunctionFound -- Legacy WooCommerce subscription presentation callback retained for compatibility.
 function addCustomDataPanel() {
     SubscriptionPresentation::add_custom_data_panel();
 }
 
+// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedFunctionFound -- Legacy WooCommerce subscription presentation callback retained for compatibility.
 function saveCustomFieldData( $post_id ) {
     SubscriptionPresentation::save_custom_field_data($post_id);
 }
 
+// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedFunctionFound -- Legacy WooCommerce subscription presentation callback retained for compatibility.
 function displayCustomFieldOnFrontend() {
     SubscriptionPresentation::display_custom_field_on_frontend();
 }
 
+// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedFunctionFound -- Legacy WooCommerce subscription presentation callback retained for compatibility.
 function displayCustomDataInCart( $item_data, $cart_item ) {
     return SubscriptionPresentation::display_custom_data_in_cart($item_data, $cart_item);
 }
 
+// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedFunctionFound -- Legacy WooCommerce subscription presentation callback retained for compatibility.
 function saveCustomDataToOrderItems( $item, $cart_item_key, $values, $order ) {
     SubscriptionPresentation::save_custom_data_to_order_items($item, $cart_item_key, $values, $order);
 }
+
+/* Subscription Product Data Handler from product Data Page - End */
 
 add_action('woocommerce_init', function () {
     require_once __DIR__ . '/includes/Subscription/Cron/Scheduler.php';
@@ -1784,12 +1914,15 @@ add_action('init', function () {
         return;
     }
 
+    // Authorization: nonce is CSRF protection, never object authorization.
     if (!is_user_logged_in() || get_current_user_id() !== (int) $order->get_user_id()) {
         wc_add_notice(__('Unauthorized request.', 'supcheckout'), 'error');
         wp_safe_redirect(wc_get_account_endpoint_url('orders'));
         exit;
     }
 
+    // Object contract: this customer action belongs only to manual UPayments
+    // subscription orders. Auto-deduction orders remain scheduler-controlled.
     $plan = $order->get_meta('_upay_subscription_plan');
     $interval = (int) $order->get_meta('_upay_subscription_interval');
     $allowed_intervals = array(
@@ -1820,6 +1953,7 @@ add_action('init', function () {
         exit;
     }
 
+    // Nonce verification: required for every state-changing action.
     $nonce = isset($_POST['_wpnonce']) && is_string($_POST['_wpnonce'])
         ? sanitize_text_field(wp_unslash($_POST['_wpnonce']))
         : '';
