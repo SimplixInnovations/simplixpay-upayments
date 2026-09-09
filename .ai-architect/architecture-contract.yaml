@@ -1,0 +1,130 @@
+version: 1
+project:
+  name: SUPCheckout for UPayments
+  repository: SimplixInnovations/supcheckout
+  provider_scope: UPayments-only
+  php_namespace: Simplixi\\SUPCheckout
+  runtime_floor: PHP >= 7.4
+decision:
+  style: incremental strangler modernization
+  variant: around proven A1-A5 seams and the existing PaymentLifecycle callback strangler
+  adr: .ai-architect/decisions/ADR-001-approach-3-strangler-modernization.md
+baselines:
+  live_main_at_decision: 0b153c661314669924c81e89fd71bfd2c734310b
+  frozen_accepted_approach_2_sha: 0c883d609906676966002eb022a82a9656eeacc5
+  accepted_package_sha256: 58eba75019416f39a09211c87e7ccbcbb635834fb20bc890e9efbd5fec859655
+  accepted_package_files: 51
+  upayments_php_bytes: 87995
+boundaries:
+  platform_edges:
+    - UPayments.php bootstrap and WC_Upayments compatibility gateway
+    - PaymentLifecycle::handle_callback active wc_upayments callback at priority 5
+    - WCGatewayUPaymentsBlocks compatibility-located Blocks adapter
+    - PublicOrderStatus
+  application_payment:
+    - CheckoutOrchestrator
+    - CheckoutPayload
+    - PaymentLifecycle
+    - StatusVerifier
+    - SavedCardSelection
+    - SavedCardPresentation
+    - OrderLock
+    - StatusRateGate
+  provider_infrastructure:
+    - EndpointResolver
+    - PaymentMethodAvailability
+    - WC_Upayments::execute_upayments_request current general transport
+    - StatusVerifier::verify current strict status transport
+    - protected Scheduler renewal transport
+dependency_rules:
+  - rule: allow
+    from: UPayments.php/WC_Upayments
+    to: src/*
+    reason: WooCommerce compatibility adapter may delegate inward.
+  - rule: allow
+    from: PaymentLifecycle
+    to: StatusVerifier, OrderLock, ProviderResult, PublicOrderStatus and explicit WooCommerce order APIs
+    reason: Canonical callback/reconciliation lifecycle.
+  - rule: deny
+    from: inward payment/provider services
+    to: service discovery or reverse lookup through WC_Upayments
+    reason: No service-locator/reverse gateway dependency.
+  - rule: deny
+    from: src/Payment/*
+    to: new ambient request superglobal parsing
+    reason: Platform request parsing belongs at explicit edge entrypoints; existing PaymentLifecycle is grandfathered until safely consolidated.
+  - rule: deny
+    from: production code
+    to: new provider HTTP egress site
+    reason: T1 freezes the accepted egress inventory; new sites require architecture review.
+  - rule: deny
+    from: Approach 3
+    to: generic multi-provider interfaces/frameworks
+    reason: Repository is permanently UPayments-specific.
+protected_contracts:
+  - UPayments.php physical bootstrap
+  - WC_Upayments class identity
+  - upayments gateway/Blocks payment method ID
+  - woocommerce_upayments_settings
+  - wc_upayments
+  - _upay_* and UPayments_order_id metadata
+  - H12 token/provenance/scope/generation identities
+  - upay_process_subscriptions and billing-attempt identities
+  - getAPIUrlForRetreiveCards()
+  - whitelabled
+  - CustomerTokenIdentity.php protected blob
+  - Scheduler.php and CycleClaim.php protected subscription blobs
+forbidden_architecture:
+  - ServiceRegistry or service locator
+  - heavyweight DI container
+  - generic PaymentProviderInterface solely for hypothetical future providers
+  - big-bang rewrite
+  - new parallel ReturnController/WebhookController architecture beside PaymentLifecycle
+  - protected identity migration without a separate approved contract
+provider_http_egress_baseline:
+  - path: UPayments.php
+    owner: WC_Upayments::execute_upayments_request
+    primitive: wp_remote_request
+    purpose: general gateway/provider requests
+  - path: src/Payment/StatusVerifier.php
+    owner: StatusVerifier::verify
+    primitive: wp_remote_get
+    purpose: active authenticated status verification
+  - path: includes/Subscription/Cron/Scheduler.php
+    owner: Scheduler renewal dispatch
+    primitive: wp_remote_request
+    purpose: protected subscription charge mutation
+tranches:
+  t01:
+    name: architecture-guardrails-and-active-callback-characterization
+    runtime_change: false
+    package_change: false
+    requirements:
+      - Pin Release Identity -> PaymentLifecycle bootstrap
+      - Pin wc_upayments priority-5 PaymentLifecycle callback before priority-10 legacy gateway callback
+      - Executable characterization of active browser/webhook/public-status/reconciliation routing
+      - Characterize legacy callback methods as compatibility surfaces separately
+      - Pin accepted provider HTTP egress inventory and reject new egress sites
+      - Pin verification/locking/state-mutation responsibility map
+      - Keep UPayments.php exactly 87995 bytes
+      - Keep distributable package exactly 51 files and accepted SHA-256
+  next_runtime_candidate:
+    name: legacy-callback-consolidation
+    preapproved_for_implementation: false
+    goal: Finish the existing strangler by retaining compatibility methods while eliminating duplicated legacy verification/state-mutation internals behind them where T1 characterization proves safe.
+completion:
+  runtime_tranche_gates:
+    - Quality/H12 green
+    - 20-cell Compatibility Matrix green
+    - Release Artifact green
+    - Provider Sandbox green when applicable
+    - WordPress.org Submission Check green
+    - CodeQL/security green
+    - zero unresolved valid review threads
+    - post-merge main verification
+  approach_3_closeout:
+    - all approved modernization tranches merged
+    - no protected identity regression
+    - fresh-clone owner technical re-acceptance
+    - new explicit owner-accepted Approach 3 baseline recorded
+  public_release_authorized: false
