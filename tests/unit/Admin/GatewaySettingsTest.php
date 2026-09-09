@@ -232,14 +232,23 @@ final class GatewaySettingsTest extends TestCase {
         ));
         self::assertSame(array('jquery'), $GLOBALS['supcheckout_test_gateway_settings']['scripts'][0]['dependencies']);
         self::assertTrue($GLOBALS['supcheckout_test_gateway_settings']['scripts'][0]['in_footer']);
-        self::assertStringContainsString(
-            '#woocommerce_upayments_iban_number',
-            $GLOBALS['supcheckout_test_gateway_settings']['inline_styles'][0]['css']
+        self::assertCount(1, $GLOBALS['supcheckout_test_gateway_settings']['inline_styles']);
+        self::assertSame(
+            'woocommerce_admin_styles',
+            $GLOBALS['supcheckout_test_gateway_settings']['inline_styles'][0]['handle']
         );
-        self::assertSame(array(array(
-            'handle' => 'woocommerce_admin_styles',
-            'css'    => '.upayments-disabled-setting { opacity: 0.5; pointer-events: none; }',
-        )), $GLOBALS['supcheckout_test_gateway_settings']['inline_styles']);
+        $inlineCss = $GLOBALS['supcheckout_test_gateway_settings']['inline_styles'][0]['css'];
+        self::assertStringContainsString('.upayments-disabled-setting', $inlineCss);
+        foreach (array(
+            'iban_number',
+            'cc_charge',
+            'cc_charge_type',
+            'knet_charge',
+            'knet_charge_type',
+        ) as $legacyField) {
+            self::assertStringContainsString('#woocommerce_upayments_' . $legacyField, $inlineCss);
+        }
+        self::assertStringNotContainsString('input[style*="display:none"]', $inlineCss);
 
         \supcheckout_test_reset_gateway_settings();
         GatewaySettings::enqueue_admin_assets(
