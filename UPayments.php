@@ -1025,16 +1025,10 @@ function woocommerceUpaymentsInit() {
 
         public function check_ipn_response()
         {
-            global $woocommerce;
-            // phpcs:disable WordPress.Security.NonceVerification.Recommended -- Read-only routing selector for external UPayments callback/status endpoints; state-changing authority remains provider-authenticated.
-            if (isset($_GET["get_order_status"])){
-                $this->get_payment_staus();
-            }elseif (isset($_GET["page"])){
-                $this->return_from_upayments();
-            }else{
-                $this->web_hook_handler();
-            }
-            // phpcs:enable WordPress.Security.NonceVerification.Recommended
+            // Historical priority-10 compatibility fallback. The canonical
+            // wc_upayments callback authority is PaymentLifecycle at priority 5;
+            // direct/fallback invocation must use the same verified lifecycle.
+            \Simplixi\SUPCheckout\Payment\PaymentLifecycle::handle_callback();
             exit();
         }
 

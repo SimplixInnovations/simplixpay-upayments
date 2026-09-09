@@ -299,6 +299,7 @@ jobs:
             tests/harness/architecture-checkout-orchestration-harness.php
             tests/harness/architecture-dependency-boundaries-harness.php
             tests/harness/architecture-active-callback-characterization-harness.php
+            tests/harness/architecture-legacy-callback-routing-harness.php
             tests/harness/quality-platform-foundation-harness.php
             tests/harness/quality-platform-static-analysis-harness.php
             tests/harness/quality-platform-payment-concurrency-harness.php
