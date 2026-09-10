@@ -20,16 +20,21 @@ if text.count(late) != 1:
 text = text.replace(late, '', 1)
 text = text.replace(marker, marker + late, 1)
 
-# Exact behavioral-order invariants.
-pos_fields = text.find('$this->init_form_fields();')
-pos_settings = text.find('$this->init_settings();')
-pos_title = text.find('$this->title = $this->get_option("title");')
+# Scope exact behavioral-order invariants to WC_Upayments::__construct().
+ctor_start = text.find('public function __construct()')
+ctor_end = text.find('public function init_form_fields()', ctor_start)
+if ctor_start < 0 or ctor_end < 0:
+    raise SystemExit('Constructor boundaries not found')
+ctor = text[ctor_start:ctor_end]
+pos_fields = ctor.find('$this->init_form_fields();')
+pos_settings = ctor.find('$this->init_settings();')
+pos_title = ctor.find('$this->title = $this->get_option("title");')
 if min(pos_fields, pos_settings, pos_title) < 0:
     raise SystemExit('Required constructor statements missing after transform')
 if not (pos_fields < pos_settings < pos_title):
     raise SystemExit('Initialization does not precede option-backed property hydration')
-if text.count('$this->init_form_fields();') != 1 or text.count('$this->init_settings();') != 1:
-    raise SystemExit('Initialization calls are not exactly once')
+if ctor.count('$this->init_form_fields();') != 1 or ctor.count('$this->init_settings();') != 1:
+    raise SystemExit('Constructor initialization calls are not exactly once')
 
 out = text.encode('utf-8')
 if len(out) != len(raw):
