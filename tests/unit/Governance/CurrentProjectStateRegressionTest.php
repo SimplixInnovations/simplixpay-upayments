@@ -7,6 +7,8 @@ use PHPUnit\Framework\TestCase;
 final class CurrentProjectStateRegressionTest extends TestCase {
     private const T3_MERGED_MAIN_SHA = 'a7a8bbfc3a1dc551127b7ead897c964e95c7cec9';
     private const T2_RUNTIME_BEARING_MAIN_SHA = '047cc86060efb97761d7a0cc4a3806f971ab6fe1';
+    private const POST_T3_CERTIFIED_RUNTIME_SHA = 'b06976ac689cfd0d469bd96b0d6a2b925c863747';
+    private const POST_T3_CERTIFIED_PACKAGE_SHA256 = 'a343a028e42f17a8d111de4e1a271c4e4bd51ba8cbbc1f0de89652b0d2480455';
 
     /**
      * Canonical living records that a fresh chat/agent may use to establish the
@@ -77,6 +79,22 @@ final class CurrentProjectStateRegressionTest extends TestCase {
             'Record T3 merge `a7a8bbfc3a1dc551127b7ead897c964e95c7cec9` as current runtime-bearing main.',
             $content
         );
+    }
+
+    public function test_certified_post_t3_runtime_package_evidence_is_exact_in_living_records(): void {
+        $expected = array(
+            'AGENTS.md' => 'Its deterministic package is 53 files / SHA-256 `' . self::POST_T3_CERTIFIED_PACKAGE_SHA256 . '`.',
+            'docs/project/START-HERE.md' => 'Its deterministic package is 53 files / SHA-256 `' . self::POST_T3_CERTIFIED_PACKAGE_SHA256 . '`.',
+            'docs/project/PROJECT-STATUS.md' => '- deterministic installable package — **53 files**, SHA-256 `' . self::POST_T3_CERTIFIED_PACKAGE_SHA256 . '`.',
+            'docs/project/OWNER-HANDOFF.md' => 'its deterministic 53-file candidate package SHA-256 is `' . self::POST_T3_CERTIFIED_PACKAGE_SHA256 . '`.',
+            'docs/project/NEW-CHAT-HANDOFF.md' => '- deterministic package — 53 files / SHA-256 `' . self::POST_T3_CERTIFIED_PACKAGE_SHA256 . '`.',
+        );
+
+        foreach ($expected as $path => $package_evidence) {
+            $content = self::read_repository_file($path);
+            self::assertStringContainsString(self::POST_T3_CERTIFIED_RUNTIME_SHA, $content, $path);
+            self::assertStringContainsString($package_evidence, $content, $path);
+        }
     }
 
     public function test_architecture_contract_records_t3_and_rejects_the_obsolete_t2_next_candidate(): void {
