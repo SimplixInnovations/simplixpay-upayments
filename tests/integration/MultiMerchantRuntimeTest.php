@@ -109,6 +109,55 @@ $result = supcheckout_cert_run_mm($order, $invalid_gateway, $calls);
 supcheckout_cert_assert('failure' === $result['result'], 'invalid multi-merchant configuration fails closed');
 supcheckout_cert_assert(array() === $calls, 'invalid multi-merchant configuration rejects before provider transport');
 
+// R1 settings persistence contract: an enabled additional-merchant allocation
+// is atomic. A validation error must not partially rewrite the gateway option.
+// Use WooCommerce's public Settings API set_post_data() so this exercises the
+// real gateway save method without relying on ambient WP-CLI $_POST state.
+if (!class_exists('WC_Admin_Settings', false)) {
+    require_once WC()->plugin_path() . '/includes/admin/class-wc-admin-settings.php';
+}
+
+$settings_key = 'woocommerce_upayments_settings';
+$settings_before_admin_probe = get_option($settings_key);
+$stable_settings = array(
+    'enabled'              => 'yes',
+    'title'                => 'Stable UPayments Title',
+    'api_key'              => 'stable-certification-key',
+    'enable_multimerchant' => 'yes',
+    'iban_number'          => 'KW81CBKU0000000000001234560101',
+    'cc_charge'            => '0.750',
+    'cc_charge_type'       => 'percentage',
+    'knet_charge'          => '0.900',
+    'knet_charge_type'     => 'fixed',
+);
+supcheckout_cert_store_option_raw($settings_key, $stable_settings);
+
+$admin_gateway = new WC_Upayments();
+$invalid_post = array(
+    'woocommerce_upayments_enabled'              => '1',
+    'woocommerce_upayments_title'                => 'MUTATED TITLE MUST NOT PERSIST',
+    'woocommerce_upayments_api_key'              => 'new-certification-key',
+    'woocommerce_upayments_enable_multimerchant' => '1',
+    'woocommerce_upayments_iban_number'          => '',
+    'woocommerce_upayments_cc_charge'            => '1.000',
+    'woocommerce_upayments_cc_charge_type'       => 'fixed',
+    'woocommerce_upayments_knet_charge'          => '2.000',
+    'woocommerce_upayments_knet_charge_type'     => 'percentage',
+);
+$admin_gateway->set_post_data($invalid_post);
+$admin_save_result = $admin_gateway->process_admin_options();
+$settings_after_invalid_admin_save = get_option($settings_key);
+
+supcheckout_cert_assert(
+    false === $admin_save_result,
+    'incomplete enabled multi-merchant settings report an unsuccessful save'
+);
+supcheckout_cert_assert(
+    $stable_settings === $settings_after_invalid_admin_save,
+    'incomplete enabled multi-merchant settings leave persisted gateway configuration byte-equivalent'
+);
+
+supcheckout_cert_store_option_raw($settings_key, $settings_before_admin_probe);
 $order->delete(true);
 wp_delete_post($product->get_id(), true);
 $_POST = array();
