@@ -25,7 +25,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          test "$(git rev-parse HEAD^)" = "3a1f1f09103e33a347d3ae5a12ceec703bf001a2"
+          test "$(git rev-parse HEAD^)" = "565ea0d8ffd95658e631291801ba2e3bd052b12f"
           test "$(git diff --name-only HEAD^ HEAD)" = ".github/workflows/tmp-presentation-checkbox-fix.yml"
           test -f scripts/tmp-presentation-checkbox-fix.py
 
@@ -41,14 +41,28 @@ jobs:
           set -euo pipefail
           mapfile -t changed < <(git diff --name-only)
           test "${#changed[@]}" -eq 2
-          printf '%s\n' "${changed[@]}" | grep -Fx 'UPayments.php'
-          printf '%s\n' "${changed[@]}" | grep -Fx 'tests/harness/architecture-foundation-harness.php'
-          grep -Fq "\$save_card_enabled = (\$this->get_option('enable_save_card') === 'yes');" UPayments.php
-          grep -Fq "'save_card_enabled' => \$save_card_enabled" UPayments.php
-          grep -Fq "\$use_new_design = (\$this->get_option('use_new_design') === 'yes');" UPayments.php
-          ! grep -Fq "('yes' == \$this->get_option('enable_save_card'))" UPayments.php
-          ! grep -Fq "('yes' == \$save_card_enabled)" UPayments.php
-          ! grep -Fq "\$this->get_option('use_new_design') == 'yes'" UPayments.php
+          test "${changed[0]}" = "UPayments.php"
+          test "${changed[1]}" = "tests/harness/architecture-foundation-harness.php"
+          python3 - <<'PY'
+          from pathlib import Path
+          text = Path('UPayments.php').read_text(encoding='utf-8')
+          required = (
+              "$save_card_enabled = ($this->get_option('enable_save_card') === 'yes');",
+              "'save_card_enabled' => $save_card_enabled",
+              "$use_new_design = ($this->get_option('use_new_design') === 'yes');",
+          )
+          forbidden = (
+              "('yes' == $this->get_option('enable_save_card'))",
+              "('yes' == $save_card_enabled)",
+              "$this->get_option('use_new_design') == 'yes'",
+          )
+          for pattern in required:
+              if pattern not in text:
+                  raise SystemExit('Missing required strict presentation expression: ' + pattern)
+          for pattern in forbidden:
+              if pattern in text:
+                  raise SystemExit('Legacy loose presentation expression remains: ' + pattern)
+          PY
 
       - name: Verify syntax and architecture ratchet
         shell: bash
@@ -64,6 +78,9 @@ jobs:
           git config user.name 'Simplix Innovations'
           git config user.email '136711735+SimplixInnovationsAdmin@users.noreply.github.com'
           git add UPayments.php tests/harness/architecture-foundation-harness.php
-          test -z "$(git diff --name-only -- . ':!UPayments.php' ':!tests/harness/architecture-foundation-harness.php')"
+          mapfile -t staged < <(git diff --cached --name-only)
+          test "${#staged[@]}" -eq 2
+          test "${staged[0]}" = "UPayments.php"
+          test "${staged[1]}" = "tests/harness/architecture-foundation-harness.php"
           git commit -m 'fix: enforce exact gateway presentation checkbox semantics'
           git push origin HEAD:audit/post-t3-ecosystem-hardening
