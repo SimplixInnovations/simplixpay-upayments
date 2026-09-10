@@ -22,6 +22,11 @@ namespace Simplixi\SUPCheckout\Gateway {
             ? $GLOBALS['supcheckout_test_gateway_availability_context']['currency']
             : '';
     }
+
+    function WC() {
+        ++$GLOBALS['supcheckout_test_gateway_availability_context']['wc_calls'];
+        return null;
+    }
 }
 
 namespace Simplixi\SUPCheckout\Tests\Gateway {
@@ -36,6 +41,7 @@ namespace Simplixi\SUPCheckout\Tests\Gateway {
                 'doing_ajax'  => false,
                 'is_checkout' => false,
                 'currency'    => 'USD',
+                'wc_calls'    => 0,
             );
         }
 
@@ -56,6 +62,7 @@ namespace Simplixi\SUPCheckout\Tests\Gateway {
 
             self::assertSame($cod, $result['cod']);
             self::assertArrayNotHasKey('upayments', $result);
+            self::assertSame(0, $GLOBALS['supcheckout_test_gateway_availability_context']['wc_calls']);
         }
 
         public function test_non_ajax_wp_admin_keeps_gateway_inventory_inert(): void {
@@ -72,9 +79,10 @@ namespace Simplixi\SUPCheckout\Tests\Gateway {
             );
 
             self::assertSame($gateways, Availability::filter($gateways));
+            self::assertSame(0, $GLOBALS['supcheckout_test_gateway_availability_context']['wc_calls']);
         }
 
-        public function test_admin_ajax_with_valid_settings_preserves_unrelated_gateways_and_upayments_identity(): void {
+        public function test_admin_ajax_with_valid_settings_preserves_unrelated_gateways_without_session_access(): void {
             $GLOBALS['supcheckout_test_gateway_availability_context']['is_admin'] = true;
             $GLOBALS['supcheckout_test_gateway_availability_context']['doing_ajax'] = true;
             \update_option(
@@ -92,6 +100,7 @@ namespace Simplixi\SUPCheckout\Tests\Gateway {
             self::assertSame(array('cod', 'upayments'), array_keys($result));
             self::assertSame($cod, $result['cod']);
             self::assertSame($upayments, $result['upayments']);
+            self::assertSame(0, $GLOBALS['supcheckout_test_gateway_availability_context']['wc_calls']);
         }
     }
 }
