@@ -13,6 +13,16 @@ use Simplixi\SUPCheckout\Provider\MultiMerchantContract;
  */
 final class GatewaySettings {
     private const SUPPORTED_CURRENCIES = array('KWD', 'SAR', 'USD', 'BHD', 'EUR', 'OMR', 'QAR', 'AED');
+
+    /**
+     * Return the canonical checkout currency allowlist for server/client parity.
+     *
+     * @return array<int, string>
+     */
+    public static function supported_currencies() {
+        return self::SUPPORTED_CURRENCIES;
+    }
+
     /**
      * Build the inherited WooCommerce gateway field schema.
      *
