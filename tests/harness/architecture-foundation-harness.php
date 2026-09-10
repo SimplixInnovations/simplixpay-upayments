@@ -393,6 +393,7 @@ $subscriptionPresentation = arch_read($root, 'src/Subscription/Presentation.php'
 $checkoutPayload = arch_read($root, 'src/Payment/CheckoutPayload.php');
 $checkoutOrchestrator = arch_read($root, 'src/Payment/CheckoutOrchestrator.php');
 $gatewayAvailability = arch_read($root, 'src/Gateway/Availability.php');
+$gatewayOrderPresentation = arch_read($root, 'src/Gateway/OrderPresentation.php');
 $gatewayTokens = arch_executable_tokens($gateway);
 $gatewayClassTokens = arch_class_body_tokens($gatewayTokens, 'WC_Upayments');
 $checkoutOrchestratorTokens = arch_executable_tokens($checkoutOrchestrator);
@@ -454,7 +455,9 @@ $gatewaySize = is_file($gatewayPath) ? filesize($gatewayPath) : false;
 // The frozen Approach 2/T1 87995-byte coordinate remains historical evidence.
 // Post-T3 E1 extracts the historical available-gateways policy to
 // src/Gateway/Availability.php while retaining the global callback as a thin adapter.
-$acceptedGatewayBytes = 86992;
+// R1 then extracts gateway-specific order-total presentation without expanding
+// the compatibility shell.
+$acceptedGatewayBytes = 86457;
 arch_assert(is_int($gatewaySize) && $gatewaySize === $acceptedGatewayBytes, 'UPayments.php matches current exact architecture ratchet');
 arch_assert($gatewayClassTokens !== array(), 'legacy WC_Upayments gateway compatibility class remains executable');
 arch_assert(arch_contains($gateway, "add_filter(\"woocommerce_payment_gateways\", \"addUpaymentsGatewayClass\")"), 'WooCommerce gateway registration remains characterized');
@@ -462,6 +465,7 @@ arch_assert(arch_contains($gateway, "add_filter(\"woocommerce_payment_gateways\"
 $publicMethods = array(
     'process_payment' => 'process_payment compatibility entry point remains public',
     'process_admin_options' => 'gateway settings save entry point remains public',
+    'add_order_item_totals' => 'order-total compatibility entry point remains public',
     'payment_fields' => 'classic checkout payment_fields entry point remains public',
     'return_from_upayments' => 'browser return compatibility entry point remains public',
     'web_hook_handler' => 'legacy webhook compatibility entry point remains public',
@@ -491,6 +495,8 @@ arch_assert(is_dir($root . '/src/Security'), 'Security module exists');
 arch_assert(is_file($root . '/src/Admin/GatewaySettings.php'), 'Admin GatewaySettings boundary exists');
 arch_assert(is_file($root . '/src/Gateway/Availability.php'), 'E1 Gateway Availability boundary exists');
 arch_assert(arch_contains($gatewayAvailability, 'namespace Simplixi\\SUPCheckout\\Gateway;'), 'E1 Gateway Availability uses SUPCheckout Gateway namespace');
+arch_assert(is_file($root . '/src/Gateway/OrderPresentation.php'), 'R1 Gateway OrderPresentation boundary exists');
+arch_assert(arch_contains($gatewayOrderPresentation, 'namespace Simplixi\\SUPCheckout\\Gateway;'), 'R1 Gateway OrderPresentation uses SUPCheckout Gateway namespace');
 arch_assert(is_file($root . '/src/Subscription/Composition.php'), 'Subscription Composition boundary exists');
 arch_assert(is_file($root . '/src/Subscription/Presentation.php'), 'Subscription Presentation boundary exists');
 arch_assert(is_file($root . '/src/Payment/CheckoutPayload.php'), 'A5 CheckoutPayload boundary exists');
@@ -547,6 +553,22 @@ arch_assert(
         && arch_contains($gatewayAvailability, "'enable_autodeduction'")
         && arch_contains($gatewayAvailability, "=== 'yes'"),
     'E1 Gateway Availability retains checkout-scoped auto-deduction COD policy'
+);
+arch_assert(
+    arch_has_token_sequence(
+        $resolvedPublicMethods['add_order_item_totals']['body'],
+        array(
+            'return', 'name:OrderPresentation', '::', 'name:add_order_item_totals', '(',
+            'variable:$total_rows', ',', 'variable:$order', ',', 'variable:$this', '->', 'name:id', ')', ';',
+        )
+    ),
+    'WC_Upayments::add_order_item_totals directly delegates to R1 OrderPresentation'
+);
+arch_assert(
+    arch_contains($gatewayOrderPresentation, 'get_payment_method()')
+        && arch_contains($gatewayOrderPresentation, 'UPayments_Result')
+        && arch_contains($gatewayOrderPresentation, 'UPayments_PaymentID'),
+    'R1 OrderPresentation keeps gateway identity guard and protected metadata ownership'
 );
 arch_assert(
     arch_has_token_sequence(
