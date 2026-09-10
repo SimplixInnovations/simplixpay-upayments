@@ -1169,10 +1169,9 @@ function woocommerceUpaymentsInit() {
             $this->init_settings();
             $prepared = GatewaySettings::prepare_post_data($this->get_post_data());
             if ($prepared['api_key_missing'] || $prepared['multimerchant_missing']) {
-                $message = $prepared['api_key_missing']
-                    ? "Please enter UPayments API Key"
-                    : "Please enter Multimerchant Configuration";
-                WC_Admin_Settings::add_error(__($message, 'supcheckout'));
+                WC_Admin_Settings::add_error($prepared['api_key_missing']
+                    ? __('Please enter UPayments API Key', 'supcheckout')
+                    : __('Please enter Multimerchant Configuration', 'supcheckout'));
                 return false;
             }
 
