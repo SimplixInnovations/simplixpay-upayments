@@ -33,16 +33,19 @@ jobs:
         run: |
           set -euo pipefail
           git diff --check
-          test "$(git diff --name-only | wc -l)" -eq 4
+          test "$(git diff --name-only | wc -l)" -eq 6
           git diff --name-only | grep -Fx 'UPayments.php'
           git diff --name-only | grep -Fx 'src/Admin/GatewaySettings.php'
+          git diff --name-only | grep -Fx 'src/Provider/MultiMerchantContract.php'
           git diff --name-only | grep -Fx 'src/Payment/CheckoutOrchestrator.php'
           git diff --name-only | grep -Fx 'src/Payment/CheckoutPayload.php'
+          git diff --name-only | grep -Fx 'tests/unit/Admin/GatewaySettingsTest.php'
           php -l UPayments.php
           php -l src/Admin/GatewaySettings.php
           php -l src/Provider/MultiMerchantContract.php
           php -l src/Payment/CheckoutPayload.php
           php -l src/Payment/CheckoutOrchestrator.php
+          php -l tests/unit/Admin/GatewaySettingsTest.php
 
       - name: Verify unit and static stack
         shell: bash
@@ -55,10 +58,10 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          test "$(git diff --name-only | wc -l)" -eq 4
+          test "$(git diff --name-only | wc -l)" -eq 6
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add UPayments.php src/Admin/GatewaySettings.php src/Payment/CheckoutOrchestrator.php src/Payment/CheckoutPayload.php
+          git add UPayments.php src/Admin/GatewaySettings.php src/Provider/MultiMerchantContract.php src/Payment/CheckoutOrchestrator.php src/Payment/CheckoutPayload.php tests/unit/Admin/GatewaySettingsTest.php
           git diff --cached --check
           git commit -m 'fix: align multi-merchant admin and runtime contracts'
           git push origin HEAD:audit/post-t3-ecosystem-hardening
