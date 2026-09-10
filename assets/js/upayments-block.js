@@ -10,6 +10,7 @@ const { registerPaymentMethod } = wc.wcBlocksRegistry;
     const settings = window.wc.wcSettings.getPaymentMethodData('upayments') || {};
     const {
         availability_valid,
+        supported_currencies = [],
         is_whitelabled,
         payment_icons,
         saved_cards,
@@ -435,6 +436,19 @@ const handleSubscriptionChange = (plan, interval) => {
         );
     };
 
+    const canMakePayment = (currentOrder) => {
+        const liveCurrency = currentOrder
+            && currentOrder.cartTotals
+            && typeof currentOrder.cartTotals.currency_code === 'string'
+            ? currentOrder.cartTotals.currency_code
+            : '';
+
+        return availability_valid === true
+            && liveCurrency !== ''
+            && Array.isArray(supported_currencies)
+            && supported_currencies.includes(liveCurrency);
+    };
+
     registerPaymentMethod({
         name: 'upayments',
         label: 'UPayments',
@@ -442,7 +456,7 @@ const handleSubscriptionChange = (plan, interval) => {
         content: wp.element.createElement(Content),
         edit: wp.element.createElement(Content),
 
-        canMakePayment: () => availability_valid === true,
+        canMakePayment: canMakePayment,
 
         ariaLabel: 'UPayments',
 
