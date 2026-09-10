@@ -1,6 +1,6 @@
 <?php
 /**
- * Real WooCommerce Blocks payment-method registration/availability certification.
+ * Real WooCommerce Classic + Blocks payment-method registration/availability certification.
  */
 
 require_once __DIR__ . '/bootstrap.php';
@@ -19,6 +19,7 @@ supcheckout_cert_assert(
 );
 
 $original_settings = get_option('woocommerce_upayments_settings');
+$original_currency = get_option('woocommerce_currency');
 
 $cases = array(
     'configured-enabled' => array(
@@ -68,5 +69,51 @@ foreach ($cases as $label => $case) {
     );
 }
 
+// E1: Classic availability must own the same deterministic local configuration
+// boundary as Blocks. This assertion calls WC_Upayments::is_available() directly
+// so admin-ajax/custom checkout code cannot depend on the outer
+// woocommerce_available_payment_gateways filter having executed first.
+$classic_cases = array(
+    'configured-supported-currency' => array(
+        'settings'  => array('enabled' => 'yes', 'api_key' => 'certification-key'),
+        'currency'  => 'KWD',
+        'available' => true,
+    ),
+    'disabled' => array(
+        'settings'  => array('enabled' => 'no', 'api_key' => 'certification-key'),
+        'currency'  => 'KWD',
+        'available' => false,
+    ),
+    'missing-api-key' => array(
+        'settings'  => array('enabled' => 'yes'),
+        'currency'  => 'KWD',
+        'available' => false,
+    ),
+    'blank-api-key' => array(
+        'settings'  => array('enabled' => 'yes', 'api_key' => '   '),
+        'currency'  => 'KWD',
+        'available' => false,
+    ),
+    'unsupported-currency' => array(
+        'settings'  => array('enabled' => 'yes', 'api_key' => 'certification-key'),
+        'currency'  => 'JPY',
+        'available' => false,
+    ),
+);
+
+foreach ($classic_cases as $label => $case) {
+    supcheckout_cert_store_option_raw('woocommerce_upayments_settings', $case['settings']);
+    update_option('woocommerce_currency', $case['currency'], false);
+    wp_cache_delete('woocommerce_currency', 'options');
+
+    $gateway = new WC_Upayments();
+    supcheckout_cert_assert(
+        $gateway->is_available() === $case['available'],
+        'Classic gateway availability is exact for case ' . $label
+    );
+}
+
 supcheckout_cert_store_option_raw('woocommerce_upayments_settings', $original_settings);
-supcheckout_cert_note('Blocks registration and availability certification complete');
+update_option('woocommerce_currency', $original_currency, false);
+wp_cache_delete('woocommerce_currency', 'options');
+supcheckout_cert_note('Classic and Blocks registration/availability certification complete');
