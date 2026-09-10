@@ -164,6 +164,9 @@ jobs:
       - name: Verify frontend asset scope
         run: /tmp/wp-cli.phar eval-file "$GITHUB_WORKSPACE/tests/integration/FrontendAssetScopeTest.php" --path="$RUNNER_TEMP/wordpress"
 
+      - name: Verify repeated embedded render ownership
+        run: /tmp/wp-cli.phar eval-file "$GITHUB_WORKSPACE/tests/integration/EmbeddedRenderOwnershipTest.php" --path="$RUNNER_TEMP/wordpress"
+
       - name: Verify real HTTP checkout request contexts
         env:
           WP_CLI_BIN: /tmp/wp-cli.phar
