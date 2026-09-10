@@ -93,7 +93,7 @@ replace_once(
 )
 replace_once(
     "src/Payment/CheckoutOrchestrator.php",
-    "if (!preg_match('/^[A-Z]{2}[0-9]{2}[A-Z0-9]{11,30}\\\\z/', $iban)) {",
+    r"if (!preg_match('/^[A-Z]{2}[0-9]{2}[A-Z0-9]{11,30}\z/', $iban)) {",
     "if (!MultiMerchantContract::is_valid_iban($iban)) {",
     "checkout IBAN validation",
 )
