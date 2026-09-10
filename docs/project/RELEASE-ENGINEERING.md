@@ -1,6 +1,6 @@
 # SUPCheckout for UPayments — Release Engineering
 
-**Current status:** pre-release runtime/package engineering certified through PR #97; owner technical acceptance COMPLETED for frozen Approach 2 baseline `0c883d609906676966002eb022a82a9656eeacc5`; Approach 3 architecture decision APPROVED / RECORDED; runtime-neutral T1 DONE / VERIFIED on merged main `beb89ac0c4d8c0e9b7c8b2de1e13c237bbd37b15` with the accepted 51-file package unchanged; runtime-bearing Approach 3 work NOT STARTED; explicit release administration (tag/GitHub Release/WordPress.org publication) remains NOT AUTHORIZED
+**Current status:** owner technical acceptance COMPLETED for frozen Approach 2 baseline `0c883d609906676966002eb022a82a9656eeacc5`; Approach 3 architecture decision APPROVED / RECORDED; T1 DONE / VERIFIED on merged main `beb89ac0c4d8c0e9b7c8b2de1e13c237bbd37b15`; runtime-bearing T2 DONE / VERIFIED on merged main `047cc86060efb97761d7a0cc4a3806f971ab6fe1` with deterministic non-accepted candidate package 51 files / SHA-256 `368aaa5cb1a75e6df41ff17bb2e2126431b49da5e6b8dfe508c718433009fc04`; frozen Approach 2 package remains the accepted regression baseline until Approach 3 closeout re-acceptance; explicit release administration (tag/GitHub Release/WordPress.org publication) remains NOT AUTHORIZED
 **Canonical GitHub repository:** `SimplixInnovations/supcheckout`
 **Canonical plugin/package slug:** `supcheckout`
 **Development version:** `0.1.0`
