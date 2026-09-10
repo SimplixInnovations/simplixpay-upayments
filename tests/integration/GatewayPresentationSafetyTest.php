@@ -1,10 +1,12 @@
 <?php
 /**
- * Real-runtime gateway presentation checkbox certification.
+ * Real-runtime gateway presentation and accessibility certification.
  *
  * Characterizes WooCommerce checkbox semantics at the gateway/template seam
  * without executing provider transport: wc_get_template is redirected to a
  * test-only fixture that records the selected template and extracted argument.
+ * Also ratchets structural accessibility invariants for both inherited Classic
+ * checkout templates.
  */
 
 require_once __DIR__ . '/bootstrap.php';
@@ -97,4 +99,43 @@ remove_all_filters('wc_get_template');
 supcheckout_cert_store_option_raw($settings_key, $settings_before_probe);
 unset($GLOBALS['supcheckout_payment_fields_probe']);
 
-supcheckout_cert_note('gateway presentation checkbox certification complete');
+$new_template_path = UP_PLUGIN_PATH . 'templates/new-design-form.php';
+$old_template_path = UP_PLUGIN_PATH . 'templates/old-design-form.php';
+$new_template = is_file($new_template_path) ? file_get_contents($new_template_path) : false;
+$old_template = is_file($old_template_path) ? file_get_contents($old_template_path) : false;
+
+supcheckout_cert_assert(is_string($new_template), 'new-design checkout template is readable for accessibility certification');
+supcheckout_cert_assert(is_string($old_template), 'old-design checkout template is readable for accessibility certification');
+
+$toast_tag = '';
+if (is_string($new_template)
+    && preg_match('/<div\b[^>]*\bid="wc-toast"[^>]*>/', $new_template, $toast_match) === 1
+) {
+    $toast_tag = $toast_match[0];
+}
+supcheckout_cert_assert($toast_tag !== '', 'new-design toast element exists');
+supcheckout_cert_assert(
+    strpos($toast_tag, 'role="status"') !== false
+        && strpos($toast_tag, 'aria-live="polite"') !== false
+        && strpos($toast_tag, 'aria-atomic="true"') !== false,
+    'new-design toast exposes one polite atomic status live region'
+);
+
+supcheckout_cert_assert(
+    is_string($new_template)
+        && strpos($new_template, '<label class="switch-border" for="chkSaveCard">') !== false,
+    'save-card switch has an explicit text-bearing label association'
+);
+supcheckout_cert_assert(
+    is_string($new_template)
+        && strpos($new_template, '<label class="switch">') === false
+        && strpos($new_template, '<span class="switch">') !== false,
+    'save-card switch contains no nested label element'
+);
+supcheckout_cert_assert(
+    is_string($old_template)
+        && preg_match('/<ul\b[^>]*>\s*<p\b/s', $old_template) !== 1,
+    'old-design payment list has no paragraph as a direct ul child'
+);
+
+supcheckout_cert_note('gateway presentation and accessibility certification complete');
