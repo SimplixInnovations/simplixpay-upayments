@@ -113,6 +113,36 @@ foreach ($classic_cases as $label => $case) {
     );
 }
 
+// Preserve the inherited WooCommerce availability contract as SUPCheckout adds
+// local API-key/currency eligibility. In particular, a gateway-level maximum
+// transaction amount must still suppress availability when a cart exists.
+if (!class_exists('SUPCheckoutAvailabilityLimitProbeGateway', false)) {
+    class SUPCheckoutAvailabilityLimitProbeGateway extends WC_Upayments {
+        protected function get_order_total() {
+            return 200.0;
+        }
+    }
+}
+
+supcheckout_cert_store_option_raw(
+    'woocommerce_upayments_settings',
+    array('enabled' => 'yes', 'api_key' => 'certification-key')
+);
+update_option('woocommerce_currency', 'KWD', false);
+wp_cache_delete('woocommerce_currency', 'options');
+
+$original_cart = WC()->cart;
+if (!$original_cart) {
+    WC()->cart = new WC_Cart();
+}
+$limit_gateway = new SUPCheckoutAvailabilityLimitProbeGateway();
+$limit_gateway->max_amount = 100;
+supcheckout_cert_assert(
+    $limit_gateway->is_available() === false,
+    'Classic gateway preserves WooCommerce inherited max-amount availability'
+);
+WC()->cart = $original_cart;
+
 supcheckout_cert_store_option_raw('woocommerce_upayments_settings', $original_settings);
 update_option('woocommerce_currency', $original_currency, false);
 wp_cache_delete('woocommerce_currency', 'options');
