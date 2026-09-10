@@ -64,11 +64,21 @@ set_gateway_state() {
   local currency="$1"
   local enabled="$2"
   local api_key="$3"
-  local settings
 
-  settings="$(php -r 'echo json_encode(array("enabled" => $argv[1], "api_key" => $argv[2]), JSON_UNESCAPED_SLASHES);' "$enabled" "$api_key")"
-  "$wp_cli" option update woocommerce_currency "$currency" --path="$wp_root" >/dev/null
-  "$wp_cli" option update woocommerce_upayments_settings "$settings" --format=json --path="$wp_root" >/dev/null
+  # WooCommerce's payment-gateway option hooks require the settings value to
+  # remain a PHP associative array. `wp option update --format=json` decodes a
+  # JSON object to stdClass, which fatals inside WooCommerce before the HTTP
+  # probe can execute. Persist the same canonical option shape WordPress uses.
+  "$wp_cli" eval '
+    update_option("woocommerce_currency", $args[0]);
+    update_option(
+        "woocommerce_upayments_settings",
+        array(
+            "enabled" => $args[1],
+            "api_key" => $args[2],
+        )
+    );
+  ' "$currency" "$enabled" "$api_key" --path="$wp_root" >/dev/null
   "$wp_cli" cache flush --path="$wp_root" >/dev/null
 }
 
