@@ -119,8 +119,12 @@ namespace {
     );
     q18_assert(
         is_string($js_source)
-        && strpos($js_source, 'canMakePayment: () => availability_valid === true') !== false,
-        'Blocks client canMakePayment fails closed on provider availability'
+        && strpos($js_source, 'const canMakePayment =') !== false
+        && strpos($js_source, 'availability_valid === true') !== false
+        && strpos($js_source, 'hasCurrentOrderTotal(cartData)') !== false
+        && strpos($js_source, 'supportedCurrencies.indexOf(currentCartCurrency(cartData)) !== -1') !== false
+        && strpos($js_source, 'canMakePayment,') !== false,
+        'Blocks client canMakePayment fails closed on provider availability and current live economics'
     );
     q18_assert(
         is_string($js_source)
