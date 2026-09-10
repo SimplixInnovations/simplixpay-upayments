@@ -158,7 +158,7 @@ tranches:
       - Keep distributable package exactly 51 files and accepted SHA-256
   t02:
     name: legacy-callback-routing-consolidation
-    status: in_progress
+    status: done_verified
     adr: .ai-architect/decisions/ADR-002-legacy-callback-routing-consolidation.md
     base_main_sha: 97bc88518550d02e4c9f38f766b583dd78e88986
     pull_request: 104
@@ -166,6 +166,11 @@ tranches:
     package_change: true
     gateway_bytes_before: 87995
     gateway_bytes_candidate: 87724
+    certified_head_sha: 4cff2dc6e6d11a4b3232a6d3d70d6280a59741c4
+    merged_main_sha: 047cc86060efb97761d7a0cc4a3806f971ab6fe1
+    merged_main_checks: 41/41 success
+    candidate_package_sha256: 368aaa5cb1a75e6df41ff17bb2e2126431b49da5e6b8dfe508c718433009fc04
+    candidate_package_files: 51
     requirements:
       - Preserve historical wc_upayments hook and check_ipn_response public method identity
       - Delegate only check_ipn_response fallback to PaymentLifecycle::handle_callback
@@ -176,6 +181,14 @@ tranches:
     evidence:
       - RED head 09b2c1758652ce57fb5ef39008b168dad347e927 reached all three legacy sentinels with empty stderr
       - GREEN implementation head 86224692d88fd7738e396859456a65bf1bd92caa produced 25 PASS / 0 FAIL in the T2 direct-entrypoint harness
+      - exact certified PR head 4cff2dc6e6d11a4b3232a6d3d70d6280a59741c4 completed 42/42 checks successfully
+      - squash-merged main 047cc86060efb97761d7a0cc4a3806f971ab6fe1 is Git-tree identical to the certified PR head
+      - merged-main post-merge checks completed 41/41 successfully
+      - merged-main T1 dependency guardrail remained 11 PASS / 0 FAIL
+      - merged-main T1 active callback characterization remained 41 PASS / 0 FAIL
+      - merged-main T2 direct-entrypoint harness remained 25 PASS / 0 FAIL
+      - canonical Linux and Windows packages are byte-identical at 51 files and SHA-256 368aaa5cb1a75e6df41ff17bb2e2126431b49da5e6b8dfe508c718433009fc04
+      - external Codex review was requested but unavailable because the account review quota was exhausted; zero unresolved GitHub review conversations remained and a separate exact-diff coordinator audit found no out-of-scope runtime change
   next_runtime_candidate:
     name: post-t02-evidence-review
     preapproved_for_implementation: false
