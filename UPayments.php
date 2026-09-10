@@ -1295,11 +1295,7 @@ function woocommerceUpaymentsInit() {
         }
 
         public function getMode() {
-            $mode = true;
-            if ($this->testMode == 'no') {
-                $mode = false;
-            }
-            return $mode;
+            return $this->testMode === 'yes';
         }
         
         public function getAPIUrl($apiRoute = "")
