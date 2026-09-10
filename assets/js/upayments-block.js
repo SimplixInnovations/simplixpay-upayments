@@ -154,6 +154,9 @@ const handleSubscriptionChange = (plan, interval) => {
 
             toast.show && createElement('div', {
                 className: 'wc-toast show',
+                role: 'status',
+                'aria-live': 'polite',
+                'aria-atomic': 'true',
                 style: {
                     position: 'fixed', top: '30px', right: '30px', background: '#F23232',
                     color: '#fff', padding: '12px 18px', borderRadius: '6px', zIndex: 99999,
@@ -248,6 +251,7 @@ const handleSubscriptionChange = (plan, interval) => {
                                     createElement('span', { className: 'payment-method-icon' },
                                         createElement('img', {
                                             src: `${plugin_url}assets/images/cc.png`,
+                                            alt: '',
                                             style: {
                                                 height: '24px'
                                             }
@@ -310,6 +314,7 @@ const handleSubscriptionChange = (plan, interval) => {
                                                 createElement('img', {
                                                     key: 'apple',
                                                     src: `${plugin_url}assets/images/apple-pay.png`,
+                                                    alt: '',
                                                     style: {
                                                         height: '24px',
                                                         marginRight: '5px'
@@ -318,6 +323,7 @@ const handleSubscriptionChange = (plan, interval) => {
                                                 createElement('img', {
                                                     key: 'knet',
                                                     src: `${plugin_url}assets/images/knet.png`,
+                                                    alt: '',
                                                     style: {
                                                         height: '24px'
                                                     }
@@ -328,6 +334,7 @@ const handleSubscriptionChange = (plan, interval) => {
                                                 createElement('img', {
                                                     key: 'apple',
                                                     src: `${plugin_url}assets/images/apple-pay.png`,
+                                                    alt: '',
                                                     style: {
                                                         height: '24px',
                                                         marginRight: '5px'
@@ -336,6 +343,7 @@ const handleSubscriptionChange = (plan, interval) => {
                                                 createElement('img', {
                                                     key: 'cc',
                                                     src: `${plugin_url}assets/images/cc.png`,
+                                                    alt: '',
                                                     style: {
                                                         height: '24px'
                                                     }
@@ -344,6 +352,7 @@ const handleSubscriptionChange = (plan, interval) => {
                                         }
                                         return createElement('img', {
                                             src: `${plugin_url}assets/images/${key}.png`,
+                                            alt: '',
                                             style: {
                                                 height: '24px'
                                             }
@@ -381,11 +390,12 @@ const handleSubscriptionChange = (plan, interval) => {
                                 }
                             },
                             createElement('label', {
+                                htmlFor: 'chkSaveCard',
                                 style: {
                                     fontSize: '0.9em'
                                 }
                             }, translation.save_card_label || 'Save card for future use?'),
-                            createElement('label', {
+                            createElement('span', {
                                     className: 'switch'
                                 },
                                 createElement('input', {
@@ -406,7 +416,7 @@ const handleSubscriptionChange = (plan, interval) => {
                         },
                             Object.keys(payment_icons).map(key => (
                                 key !== 'apple-pay-knet' && createElement('span', { key, style: { marginRight: '8px' } },
-                                    createElement('img', { src: `${plugin_url}assets/images/${key}.png`, style: { height: '22px' } })
+                                    createElement('img', { src: `${plugin_url}assets/images/${key}.png`, alt: '', style: { height: '22px' } })
                                 )
                             )),
                             createElement('span', {
