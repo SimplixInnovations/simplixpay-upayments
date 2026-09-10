@@ -89,3 +89,18 @@ T2 may merge only with:
 - post-merge main verification.
 
 Public release remains not authorized.
+
+
+## Outcome
+
+Implemented and verified by PR #104.
+
+- Exact certified PR head: `4cff2dc6e6d11a4b3232a6d3d70d6280a59741c4` — **42/42 checks SUCCESS**.
+- Squash-merged main: `047cc86060efb97761d7a0cc4a3806f971ab6fe1` — verified commit, Git-tree identical to the certified PR head.
+- Fresh merged-main checks: **41/41 SUCCESS**.
+- T2 direct-entrypoint harness: **25 PASS / 0 FAIL**.
+- Provider-egress/dependency guardrail: **11 PASS / 0 FAIL**.
+- Active callback characterization: **41 PASS / 0 FAIL**.
+- Deterministic candidate package: **51 files**, SHA-256 `368aaa5cb1a75e6df41ff17bb2e2126431b49da5e6b8dfe508c718433009fc04` across canonical/Linux/Windows.
+- The owner-accepted Approach 2 package SHA-256 `58eba75019416f39a09211c87e7ccbcbb635834fb20bc890e9efbd5fec859655` remains the frozen accepted baseline until Approach 3 re-acceptance.
+- External Codex review was attempted but unavailable because the account review quota was exhausted; no such approval is claimed. The PR merged with zero unresolved review conversations after a separate exact-diff coordinator audit.

@@ -29,18 +29,18 @@
 
 ## Task 4 — Full exact-head certification
 
-- [ ] Audit changed files and exact diff.
-- [ ] Require T1 dependency and active-callback harnesses green.
-- [ ] Require H12 and Quality Gates green.
-- [ ] Require full 20-cell compatibility success.
-- [ ] Require deterministic canonical/Linux/Windows package equality.
-- [ ] Record the new T2 candidate package SHA-256 and confirm 51 files.
-- [ ] Require Provider Sandbox, WordPress.org and CodeQL/security checks as triggered.
-- [ ] Require zero unresolved valid review threads.
+- [x] Audit changed files and exact diff: seven files total; exactly one runtime file (`UPayments.php`), limited to `check_ipn_response()`.
+- [x] Require T1 dependency and active-callback harnesses green: 11/0 and 41/0.
+- [x] Require H12 and Quality Gates green.
+- [x] Require full 20-cell compatibility success plus Compatibility Gate.
+- [x] Require deterministic canonical/Linux/Windows package equality.
+- [x] Record T2 candidate package: 51 files, SHA-256 `368aaa5cb1a75e6df41ff17bb2e2126431b49da5e6b8dfe508c718433009fc04`.
+- [x] Require Provider Sandbox, WordPress.org and CodeQL/security checks as triggered.
+- [x] Require zero unresolved valid review threads. External Codex review was attempted but unavailable due account review quota; no approval is claimed.
 
 ## Task 5 — Merge and continuity
 
-- [ ] Squash merge only after exact-head certification.
-- [ ] Verify signed/verified merged `main`, topology and post-merge checks.
-- [ ] Record T2 completion evidence without redefining the frozen owner-accepted Approach 2 baseline.
-- [ ] Do not modify the direct public legacy methods until a later tranche first adds their behavioral characterization.
+- [x] Squash merge only after exact-head certification: PR #104 merged.
+- [x] Verify signed/verified merged `main` `047cc86060efb97761d7a0cc4a3806f971ab6fe1`, main-only topology and 41/41 post-merge checks.
+- [x] Record T2 completion evidence without redefining the frozen owner-accepted Approach 2 baseline.
+- [x] Do not modify the direct public legacy methods until a later tranche first adds their behavioral characterization.

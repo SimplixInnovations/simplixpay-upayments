@@ -79,3 +79,14 @@ T1 may add a ratchet forbidding any additional provider HTTP egress beyond this 
 `t01-architecture-guardrails-and-active-callback-characterization`
 
 Control-plane/tests only. No production source or package-byte change.
+
+
+## Current Approach 3 execution state
+
+- T1 architecture guardrails/active callback characterization: **DONE / VERIFIED**, merged main `beb89ac0c4d8c0e9b7c8b2de1e13c237bbd37b15`.
+- T2 legacy callback routing consolidation: **DONE / VERIFIED**, merged main `047cc86060efb97761d7a0cc4a3806f971ab6fe1`.
+- T2 changed only the historical `WC_Upayments::check_ipn_response()` fallback to delegate to `PaymentLifecycle::handle_callback()`; direct public legacy return/webhook methods and private verification were intentionally untouched.
+- Fresh T2 merged-main checks: **41/41 SUCCESS**.
+- T2 deterministic candidate package: **51 files**, SHA-256 `368aaa5cb1a75e6df41ff17bb2e2126431b49da5e6b8dfe508c718433009fc04`.
+- Frozen owner-accepted Approach 2 baseline remains `0c883d609906676966002eb022a82a9656eeacc5` with accepted package SHA-256 `58eba75019416f39a09211c87e7ccbcbb635834fb20bc890e9efbd5fec859655`.
+- Next architecture evidence task: directly characterize `return_from_upayments()`, `web_hook_handler()`, and legacy `verify_payment_status()` behavior/call surface before any further consolidation.

@@ -8,25 +8,27 @@ This document is the public compatibility source of truth. A capability is **Ver
 
 Latest runtime-bearing certified merge:
 
-`82d1fdaee91ee6bde6c26dfcc7ceb974d0d59847`
+`047cc86060efb97761d7a0cc4a3806f971ab6fe1`
 
-Certified PR #97 head:
+Certified T2 PR #104 head:
 
-`1f2a0b8d35f96008be6ccfeb10c67fffcd3be5c0`
+`4cff2dc6e6d11a4b3232a6d3d70d6280a59741c4`
 
-Fresh post-merge evidence:
+Fresh runtime evidence:
 
-- exact merged-main check-runs — **41/41 SUCCESS**;
-- H12 PHP — **1936 PASS / 0 FAIL**;
-- H12 Blocks — **150 PASS / 0 FAIL**;
-- Compatibility Certification — **20/20 runtime cells SUCCESS** + Compatibility Gate;
-- Release Artifact — **69 PASS / 0 FAIL** + Release Gate;
+- exact T2 PR-head checks — **42/42 SUCCESS**;
+- fresh merged-main checks — **41/41 SUCCESS**;
+- T1 dependency/provider-egress guardrail — **11 PASS / 0 FAIL**;
+- T1 active callback characterization — **41 PASS / 0 FAIL**;
+- T2 direct legacy-fallback characterization — **25 PASS / 0 FAIL**;
+- Compatibility Certification — full 20-cell runtime matrix + **Compatibility Gate SUCCESS**;
+- Release Gate — **SUCCESS**;
 - Provider Sandbox — **SUCCESS**;
-- WordPress.org readiness — **31 PASS / 0 FAIL** + official packaged Plugin Check;
-- CodeQL — **SUCCESS**;
-- deterministic package — **51 files**, SHA-256 `58eba75019416f39a09211c87e7ccbcbb635834fb20bc890e9efbd5fec859655`, byte-identical across canonical/Linux/Windows evidence.
+- WordPress.org packaged Plugin Check — **SUCCESS**;
+- CodeQL/security — **SUCCESS**;
+- deterministic current candidate package — **51 files**, SHA-256 `368aaa5cb1a75e6df41ff17bb2e2126431b49da5e6b8dfe508c718433009fc04`, byte-identical across canonical/Linux/Windows evidence.
 
-Owner technical acceptance is **ACCEPTED** for the frozen Approach 2 baseline 0c883d609906676966002eb022a82a9656eeacc5 and accepted package SHA-256 58eba75019416f39a09211c87e7ccbcbb635834fb20bc890e9efbd5fec859655. Owner technical acceptance does not authorize publication. Approach 3 T1 is **DONE / VERIFIED** on merged main beb89ac0c4d8c0e9b7c8b2de1e13c237bbd37b15 and preserved the exact accepted 51-file package byte-for-byte; runtime-bearing Approach 3 work has not yet started.
+Owner technical acceptance remains **ACCEPTED** for the frozen **Approach 2 regression reference** `0c883d609906676966002eb022a82a9656eeacc5` and accepted package SHA-256 `58eba75019416f39a09211c87e7ccbcbb635834fb20bc890e9efbd5fec859655`. Those are accepted-reference coordinates, not the current runtime-bearing T2 bytes. T2 requires a new owner re-acceptance event at Approach 3 closeout. Publication remains unauthorized.
 
 ### Current-stack and pre-acceptance hardening
 
