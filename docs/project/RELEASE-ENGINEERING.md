@@ -40,26 +40,29 @@ Fresh post-merge evidence:
 At PR #68 closeout, before documentation-only PR #69 opened, remote topology was `main` only. No public tags/releases exist.
 
 
-### Runtime-bearing release baseline
+### Runtime-bearing release candidate
 
 Latest runtime-bearing merge:
 
-`82d1fdaee91ee6bde6c26dfcc7ceb974d0d59847`
+`047cc86060efb97761d7a0cc4a3806f971ab6fe1`
 
-Certified PR #97 head:
+Certified Approach 3 T2 PR #104 head:
 
-`1f2a0b8d35f96008be6ccfeb10c67fffcd3be5c0`
+`4cff2dc6e6d11a4b3232a6d3d70d6280a59741c4`
 
 Fresh merged-main evidence:
 
 - **41/41 check-runs SUCCESS**;
-- H12 — **1936/0 PHP + 150/0 Blocks**;
-- Compatibility — **20/20 runtime cells + Compatibility Gate SUCCESS**;
-- Release Artifact — **69/0 + Release Gate SUCCESS**;
-- WordPress.org readiness — **31/0 + official packaged Plugin Check SUCCESS**;
-- bounded Provider Sandbox and CodeQL — **SUCCESS**;
-- canonical deterministic ZIP — **51 files**, SHA-256 `58eba75019416f39a09211c87e7ccbcbb635834fb20bc890e9efbd5fec859655`;
-- canonical/Linux/Windows sidecars and manifests — **byte-identical**.
+- T1 dependency/provider-egress guardrail — **11/0**;
+- T1 active callback characterization — **41/0**;
+- T2 direct legacy-fallback characterization — **25/0**;
+- Compatibility Certification — full matrix + **Compatibility Gate SUCCESS**;
+- **Release Gate SUCCESS**;
+- WordPress.org packaged Plugin Check, Provider Sandbox and CodeQL/security — **SUCCESS**;
+- deterministic T2 candidate ZIP — **51 files**, SHA-256 `368aaa5cb1a75e6df41ff17bb2e2126431b49da5e6b8dfe508c718433009fc04`;
+- canonical/Linux/Windows package evidence — **byte-identical**.
+
+This is the **current runtime-bearing release candidate**, not yet the owner-accepted release baseline. The frozen owner-accepted Approach 2 reference remains `0c883d609906676966002eb022a82a9656eeacc5` with package SHA-256 `58eba75019416f39a09211c87e7ccbcbb635834fb20bc890e9efbd5fec859655` until Approach 3 closeout re-acceptance.
 
 The package contract excludes repository-only `README.md`, `CHANGELOG.md` and `SECURITY.md`; it retains WordPress `readme.txt` and `LICENSE`.
 
