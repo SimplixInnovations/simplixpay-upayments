@@ -1,0 +1,35 @@
+name: Temporary literal i18n fix runner
+
+on:
+  push:
+    branches:
+      - audit/post-t3-ecosystem-hardening
+    paths:
+      - .github/workflows/_temporary-run-literal-i18n-fix.yml
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: audit/post-t3-ecosystem-hardening
+          fetch-depth: 0
+          persist-credentials: true
+      - name: Apply literal i18n correction
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD^)" = "bced6bdc56e8a962747bf59bd61f3f721525d1f3"
+          python3 scripts/_temporary_apply_literal_i18n_fix.py
+          php -l UPayments.php
+          php tests/harness/architecture-foundation-harness.php
+          git diff --check
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add UPayments.php tests/harness/architecture-foundation-harness.php
+          git commit -m 'fix: keep settings validation strings literal'
+          git push origin HEAD:audit/post-t3-ecosystem-hardening
