@@ -167,6 +167,15 @@ WC()->session = $original_session;
 // Registry inspection outside checkout must be observational. A session-backed
 // account/custom integration that checks available gateways must not erase the
 // customer's already chosen checkout payment method as a side effect.
+supcheckout_cert_store_option_raw(
+    'woocommerce_upayments_settings',
+    array(
+        'enabled'              => 'yes',
+        'api_key'              => 'certification-key',
+        'make_default_gateway' => 'no',
+    )
+);
+supcheckout_cert_assert(!is_checkout(), 'Session-isolation fixture executes outside checkout context');
 if (!WC()->session) {
     WC()->session = new WC_Session_Handler();
     WC()->session->init();
