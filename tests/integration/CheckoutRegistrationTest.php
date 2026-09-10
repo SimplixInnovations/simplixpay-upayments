@@ -113,6 +113,24 @@ foreach ($classic_cases as $label => $case) {
     );
 }
 
+// WooCommerce gateway presentation must honor the merchant's configured title.
+// This is an observable storefront contract and is intentionally characterized
+// independently from provider mode or payment-state behavior.
+supcheckout_cert_store_option_raw(
+    'woocommerce_upayments_settings',
+    array(
+        'enabled'   => 'yes',
+        'api_key'   => 'certification-key',
+        'title'     => 'Configured SUPCheckout title',
+        'test_mode' => 'no',
+    )
+);
+$title_gateway = new WC_Upayments();
+supcheckout_cert_assert(
+    $title_gateway->get_title() === 'Configured SUPCheckout title',
+    'Classic gateway exposes the merchant-configured checkout title'
+);
+
 // Preserve the inherited WooCommerce availability contract as SUPCheckout adds
 // local API-key/currency eligibility. In particular, a gateway-level maximum
 // transaction amount must still suppress availability when a cart exists.
