@@ -24,19 +24,30 @@ final class MultiMerchantContract {
     }
 
     /**
-     * Validate a main-merchant commission token.
+     * Validate the canonical UPayments main-merchant commission grammar.
      *
      * Zero is provider-permitted. Signs, exponent notation, whitespace,
-     * commas, leading-zero ambiguity and values over the existing 22-byte
-     * provider token ceiling fail closed.
+     * commas and leading-zero ambiguity fail closed. Length is deliberately
+     * checked separately so checkout can preserve its existing two-stage
+     * lexical-then-serialization failure semantics.
      *
      * @param mixed $value Raw commission candidate.
      * @return bool
      */
-    public static function is_valid_commission($value) {
+    public static function is_valid_commission_lexeme($value) {
         return is_string($value)
-            && strlen($value) <= self::MAX_COMMISSION_TOKEN_LENGTH
             && preg_match('/^(?:0|[1-9][0-9]*)(?:\.[0-9]+)?$/', $value) === 1;
+    }
+
+    /**
+     * Validate a complete provider-bound commission JSON-number token.
+     *
+     * @param mixed $value Raw commission candidate.
+     * @return bool
+     */
+    public static function is_valid_commission_token($value) {
+        return self::is_valid_commission_lexeme($value)
+            && strlen($value) <= self::MAX_COMMISSION_TOKEN_LENGTH;
     }
 
     /**
