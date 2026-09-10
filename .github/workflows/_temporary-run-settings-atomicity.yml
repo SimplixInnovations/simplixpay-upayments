@@ -1,0 +1,34 @@
+name: Temporary settings patch runner
+
+on:
+  push:
+    branches:
+      - audit/post-t3-ecosystem-hardening
+    paths:
+      - .github/workflows/_temporary-run-settings-atomicity.yml
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: audit/post-t3-ecosystem-hardening
+          fetch-depth: 0
+          persist-credentials: true
+      - name: Apply patch
+        run: |
+          set -euo pipefail
+          python3 scripts/_temporary_apply_settings_atomicity.py
+          php -l UPayments.php
+          php tests/harness/architecture-foundation-harness.php
+          git diff --check
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add UPayments.php tests/harness/architecture-foundation-harness.php
+          git commit -m 'fix: reject incomplete multimerchant settings atomically'
+          git push origin HEAD:audit/post-t3-ecosystem-hardening
