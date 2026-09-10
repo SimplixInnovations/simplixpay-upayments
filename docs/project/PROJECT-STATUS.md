@@ -30,7 +30,7 @@
 | Owner technical acceptance | **ACCEPTED** |
 | Accepted Approach 2 baseline | **`0c883d609906676966002eb022a82a9656eeacc5`** |
 | Accepted package | **`supcheckout-0.1.0.zip` — 51 files / SHA-256 `58eba75019416f39a09211c87e7ccbcbb635834fb20bc890e9efbd5fec859655`** |
-| Approach 3 architecture modernization | **ARCHITECTURE APPROVED / T1 DONE / VERIFIED / RUNTIME MODERNIZATION NOT STARTED** |
+| Approach 3 architecture modernization | **ARCHITECTURE APPROVED / T1 DONE / VERIFIED / T2 DONE / VERIFIED / RUNTIME MODERNIZATION IN PROGRESS** |
 | Full UI/UX / branding / broad launch testing | **DEFERRED until after Approach 3** |
 | Public GitHub Release | **NOT CREATED** |
 | WordPress.org publication | **NOT PERFORMED** |
@@ -44,6 +44,23 @@ Historical Quality Platform Q1-Q19 is permanently closed. **No Q20 is justified.
 The owner gate is deliberately technical and bounded. It does not require final UI/UX, branding, broad accessibility certification or exhaustive launch testing.
 
 ## Current runtime-bearing CI-certified main
+
+Current Approach 3 runtime-bearing merged main:
+
+`047cc86060efb97761d7a0cc4a3806f971ab6fe1`
+
+Fresh post-merge T2 evidence:
+
+- **41/41 check-runs SUCCESS**;
+- T1 dependency/provider-egress guardrail — **11 PASS / 0 FAIL**;
+- T1 active callback characterization — **41 PASS / 0 FAIL**;
+- T2 direct legacy fallback characterization — **25 PASS / 0 FAIL**;
+- Compatibility Certification — full matrix + Compatibility Gate **SUCCESS**;
+- Release Gate, Provider Sandbox, WordPress.org Plugin Check and CodeQL/security — **SUCCESS**;
+- deterministic candidate package — **51 files**, SHA-256 `368aaa5cb1a75e6df41ff17bb2e2126431b49da5e6b8dfe508c718433009fc04` across canonical/Linux/Windows;
+- owner-accepted Approach 2 baseline/package remain unchanged pending Approach 3 closeout re-acceptance.
+
+Historical pre-acceptance runtime evidence follows.
 
 Historical runtime-bearing merge (pre-acceptance CI anchor):
 
@@ -176,7 +193,7 @@ Automatic WooCommerce refunds and arbitrary marketplace multi-split remain unsup
 
 The owner-accepted Approach 2 baseline is frozen. The remaining program is sequenced:
 
-1. **Approach 3 architecture modernization** — architecture decision APPROVED / RECORDED; T1 `t01-architecture-guardrails-and-active-callback-characterization` DONE / VERIFIED on merged main `beb89ac0c4d8c0e9b7c8b2de1e13c237bbd37b15`. T1 preserved the accepted package byte-for-byte and established permanent active-callback/provider-egress/ambient-dependency guardrails. Runtime-bearing modernization has not started. The next action is a separately recorded bounded runtime decision from T1 evidence; all work remains anchored to frozen baseline `0c883d609906676966002eb022a82a9656eeacc5` and its accepted package SHA-256.
+1. **Approach 3 architecture modernization** — architecture decision APPROVED / RECORDED; T1 DONE / VERIFIED on merged main `beb89ac0c4d8c0e9b7c8b2de1e13c237bbd37b15`; runtime-bearing T2 DONE / VERIFIED on merged main `047cc86060efb97761d7a0cc4a3806f971ab6fe1`. T2 consolidated only the historical priority-10 `check_ipn_response()` fallback onto `PaymentLifecycle`, retained terminal semantics and protected identities, and left direct legacy return/webhook/private verification behavior unchanged. Fresh merged-main certification was 41/41 SUCCESS; the deterministic T2 candidate package is 51 files / SHA-256 `368aaa5cb1a75e6df41ff17bb2e2126431b49da5e6b8dfe508c718433009fc04`. This candidate is **not** owner-accepted yet; the frozen accepted Approach 2 baseline/package remain the regression authority until Approach 3 closeout re-acceptance. Next action: characterize the direct legacy callback/verification surfaces before deciding further consolidation.
 2. **Approach 3 re-certification** — required before launch-facing work is treated as final.
 3. **Post-Approach-3 launch program** — final UI/UX, branding, accessibility, broad browser/device/theme/manual qualification and other launch-facing work.
 4. **Explicit version decision** — choose first public version (early `0.1.0` release or separately approved `1.0.0` first stable) under an explicit dedicated PR with the full release-sensitive gate stack re-run.
