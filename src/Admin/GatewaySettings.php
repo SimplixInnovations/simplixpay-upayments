@@ -176,8 +176,8 @@ final class GatewaySettings {
      * @return array{settings: array, forced_save_card: bool}
      */
     public static function normalize_dependencies(array $settings) {
-        $save_card = isset($settings['enable_save_card']) && !empty($settings['enable_save_card']);
-        $subscriptions = isset($settings['enable_subscriptions']) && !empty($settings['enable_subscriptions']);
+        $save_card = isset($settings['enable_save_card']) && $settings['enable_save_card'] === 'yes';
+        $subscriptions = isset($settings['enable_subscriptions']) && $settings['enable_subscriptions'] === 'yes';
         $forced = $subscriptions && !$save_card;
         if ($forced) {
             $settings['enable_save_card'] = 'yes';
@@ -267,7 +267,7 @@ final class GatewaySettings {
      * @param string   $key Field key.
      * @param array    $data WooCommerce field data.
      * @param callable $get_option Gateway option reader.
-     * @param string   $gateway_id Gateway compatibility ID.
+     * @param string   $gateway_id Gateway ID.
      * @param string   $domain Gateway text domain.
      * @return string
      */
