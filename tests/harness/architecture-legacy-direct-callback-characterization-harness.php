@@ -100,6 +100,8 @@ class WC_Order {
     public function save() { $this->save_count++; echo "ORDER_SAVED\n"; return $this->id; }
 }
 class WC_Payment_Gateway {
+    public $id = '';
+
     public function get_return_url($order = null) {
         return 'https://merchant.example.test/order-received/42/?key=wc_order_key_test';
     }
@@ -171,7 +173,9 @@ function t3_reset() {
 }
 function t3_verify($gateway, $order, $track) {
     $m = new ReflectionMethod(WC_Upayments::class, 'verify_payment_status');
-    $m->setAccessible(true);
+    if (PHP_VERSION_ID < 80100) {
+        $m->setAccessible(true);
+    }
     return $m->invoke($gateway, $order, $track);
 }
 function t3_assert($condition, $label) {
