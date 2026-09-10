@@ -4,6 +4,8 @@ namespace Simplixi\SUPCheckout\Gateway;
 
 use Simplixi\SUPCheckout\Admin\GatewaySettings;
 
+require_once __DIR__ . '/CheckoutAssets.php';
+
 /**
  * WooCommerce available-gateways compatibility adapter.
  *
@@ -61,3 +63,8 @@ final class Availability {
 
     private function __construct() {}
 }
+
+// Availability.php is a guaranteed Gateway-module bootstrap dependency of the
+// legacy adapter. Keep render-asset behavior in its dedicated boundary while
+// avoiding any global frontend enqueue.
+CheckoutAssets::bootstrap();

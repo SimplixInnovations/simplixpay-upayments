@@ -25,6 +25,7 @@ parameters:
         - src/Provider/PaymentMethodAvailability.php
         - src/Admin/GatewaySettings.php
         - src/Gateway/Availability.php
+        - src/Gateway/CheckoutAssets.php
         - src/Gateway/OrderPresentation.php
         - src/Security/PublicOrderStatus.php
         - src/Release/Identity.php
