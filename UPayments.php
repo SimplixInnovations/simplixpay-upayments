@@ -186,6 +186,24 @@ function woocommerceUpaymentsInit() {
             return PaymentMethodAvailability::classify_cached($cached);
         }
 
+        /**
+         * Own the gateway's deterministic local eligibility boundary.
+         *
+         * Third-party checkout code may call the gateway directly without first
+         * running WooCommerce's outer available-gateways filter (for example
+         * custom admin-ajax checkout flows). API credential and currency support
+         * therefore belong to the gateway instance itself, just as they do for
+         * the Blocks integration.
+         *
+         * @return bool
+         */
+        public function is_available() {
+            return GatewaySettings::is_runtime_eligible(
+                get_option('woocommerce_upayments_settings'),
+                get_woocommerce_currency()
+            );
+        }
+
         public function __construct() {
             // Define ID, title, description, and settings.
             $this->id                 = 'upayments';
@@ -1212,7 +1230,7 @@ function woocommerceUpaymentsInit() {
                 $this->log( 'Multimerchant enabled but no rules found. Using default credentials.', 'error' );
                 return $this->get_default_credentials();
             }
-
+            
             // --- Core Routing Logic ---
             
             foreach ( $rules as $rule ) {
