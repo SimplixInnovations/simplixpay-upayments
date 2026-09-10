@@ -36,7 +36,7 @@ final class MultiMerchantContract {
      */
     public static function is_valid_commission_lexeme($value) {
         return is_string($value)
-            && preg_match('/^(?:0|[1-9][0-9]*)(?:\.[0-9]+)?$/', $value) === 1;
+            && preg_match('/^(?:0|[1-9][0-9]*)(?:\.[0-9]+)?\z/', $value) === 1;
     }
 
     /**

@@ -2,6 +2,8 @@
 
 namespace Simplixi\SUPCheckout\Payment;
 
+use Simplixi\SUPCheckout\Provider\MultiMerchantContract;
+
 /**
  * Pure checkout request, decimal, payload, and redirect helpers.
  *
@@ -192,16 +194,7 @@ class CheckoutPayload {
      * @return string|null JSON-safe nonnegative number token or null.
      */
     public static function build_nonnegative_json_number_token($amount_str) {
-        if (!is_string($amount_str)) {
-            return null;
-        }
-        if (!preg_match('/^(?:0|[1-9][0-9]*)(?:\.[0-9]+)?$/', $amount_str)) {
-            return null;
-        }
-        if (preg_match('/\s/', $amount_str)) {
-            return null;
-        }
-        if (strlen($amount_str) > 22) {
+        if (!MultiMerchantContract::is_valid_commission_token($amount_str)) {
             return null;
         }
         return $amount_str;

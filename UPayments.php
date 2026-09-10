@@ -25,6 +25,7 @@ define("UP_PLUGIN_PATH", plugin_dir_path(__FILE__));
 define('UPAYMENTS_PLUGIN_FILE', __FILE__ );
 
 require_once __DIR__ . '/src/Release/Identity.php';
+require_once __DIR__ . '/src/Provider/MultiMerchantContract.php';
 require_once __DIR__ . '/src/Admin/GatewaySettings.php';
 require_once __DIR__ . '/src/Gateway/Availability.php';
 require_once __DIR__ . '/src/Gateway/OrderPresentation.php';

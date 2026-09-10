@@ -116,7 +116,7 @@ final class GatewaySettingsTest extends TestCase {
         $complete = array(
             'woocommerce_upayments_api_key'              => 'secret',
             'woocommerce_upayments_enable_multimerchant' => '1',
-            'woocommerce_upayments_iban_number'          => 'KW01',
+            'woocommerce_upayments_iban_number'          => 'KW81CBKU0000000000001234560101',
             'woocommerce_upayments_cc_charge'            => '1.000',
             'woocommerce_upayments_cc_charge_type'       => 'fixed',
             'woocommerce_upayments_knet_charge'          => '2.000',

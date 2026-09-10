@@ -2,6 +2,7 @@
 
 namespace Simplixi\SUPCheckout\Payment;
 
+use Simplixi\SUPCheckout\Provider\MultiMerchantContract;
 use UPayments\Token\CustomerTokenIdentity;
 
 /**
@@ -773,7 +774,7 @@ class CheckoutOrchestrator {
                 // Provider documentation states 25 chars, but observed real-world
                 // values reach 30 (e.g. Kuwait IBAN); we accept 15-34 to avoid
                 // over-rejecting while still catching wholesale garbage.
-                if (!preg_match('/^[A-Z]{2}[0-9]{2}[A-Z0-9]{11,30}\\z/', $iban)) {
+                if (!MultiMerchantContract::is_valid_iban($iban)) {
                     $gateway->log('MultiMerchant: invalid IBAN format.', 'warning');
                     wc_add_notice(__('Payment request could not be completed. Please try again.', 'supcheckout'), 'error');
                     return array('result' => 'failure', 'redirect' => wc_get_checkout_url());
@@ -783,24 +784,23 @@ class CheckoutOrchestrator {
                 // or leading-zero ambiguity. UPayments permits a main-merchant
                 // commission of exactly zero, so both zero and positive canonical
                 // decimals are valid at this field-specific boundary.
-                if (!preg_match('/^(?:0|[1-9][0-9]*)(?:\.[0-9]+)?$/', $knet_charge_raw)) {
+                if (!MultiMerchantContract::is_valid_commission_lexeme($knet_charge_raw)) {
                     $gateway->log('MultiMerchant: invalid knetCharge format.', 'warning');
                     wc_add_notice(__('Payment request could not be completed. Please try again.', 'supcheckout'), 'error');
                     return array('result' => 'failure', 'redirect' => wc_get_checkout_url());
                 }
-                if (!preg_match('/^(?:0|[1-9][0-9]*)(?:\.[0-9]+)?$/', $cc_charge_raw)) {
+                if (!MultiMerchantContract::is_valid_commission_lexeme($cc_charge_raw)) {
                     $gateway->log('MultiMerchant: invalid ccCharge format.', 'warning');
                     wc_add_notice(__('Payment request could not be completed. Please try again.', 'supcheckout'), 'error');
                     return array('result' => 'failure', 'redirect' => wc_get_checkout_url());
                 }
                 // Reject non-canonical charge-type forms exactly.
-                $valid_charge_types = array('fixed', 'percentage');
-                if (!in_array($knet_charge_type, $valid_charge_types, true)) {
+                if (!MultiMerchantContract::is_valid_charge_type($knet_charge_type)) {
                     $gateway->log('MultiMerchant: invalid knetChargeType.', 'warning');
                     wc_add_notice(__('Payment request could not be completed. Please try again.', 'supcheckout'), 'error');
                     return array('result' => 'failure', 'redirect' => wc_get_checkout_url());
                 }
-                if (!in_array($cc_charge_type, $valid_charge_types, true)) {
+                if (!MultiMerchantContract::is_valid_charge_type($cc_charge_type)) {
                     $gateway->log('MultiMerchant: invalid ccChargeType.', 'warning');
                     wc_add_notice(__('Payment request could not be completed. Please try again.', 'supcheckout'), 'error');
                     return array('result' => 'failure', 'redirect' => wc_get_checkout_url());

@@ -2,6 +2,8 @@
 
 namespace Simplixi\SUPCheckout\Admin;
 
+use Simplixi\SUPCheckout\Provider\MultiMerchantContract;
+
 /**
  * Gateway settings schema, validation and admin presentation adapter.
  *
@@ -229,6 +231,23 @@ final class GatewaySettings {
                     ) {
                         $multimerchant_missing = true;
                         break;
+                    }
+                }
+                if (!$multimerchant_missing) {
+                    $iban = $post_data['woocommerce_upayments_iban_number'];
+                    $cc_charge = $post_data['woocommerce_upayments_cc_charge'];
+                    $cc_charge_type = $post_data['woocommerce_upayments_cc_charge_type'];
+                    $knet_charge = $post_data['woocommerce_upayments_knet_charge'];
+                    $knet_charge_type = $post_data['woocommerce_upayments_knet_charge_type'];
+
+                    if (!MultiMerchantContract::is_valid_iban($iban)
+                        || !MultiMerchantContract::is_valid_commission_token($cc_charge)
+                        || !MultiMerchantContract::is_valid_charge_type($cc_charge_type)
+                        || !MultiMerchantContract::is_valid_commission_token($knet_charge)
+                        || !MultiMerchantContract::is_valid_charge_type($knet_charge_type)
+                    ) {
+                        $multimerchant_invalid = true;
+                        $multimerchant_missing = true;
                     }
                 }
             } else {
