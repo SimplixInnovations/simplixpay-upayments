@@ -203,8 +203,7 @@ function woocommerceUpaymentsInit() {
             Supports Classic and Block Checkout. Subscription auto-deduction requires separately validated provider setup.", 'supcheckout');
             $this->has_fields         = true; // Required for custom forms like Save Card/Design variations.
 
-            // Define user set variables
-            $this->title = '';
+            $this->title = $this->get_option("title");
             $this->description = $this->get_option("description");
             $this->debug = $this->get_option("debug");
             $this->apiKey = $this->get_option("api_key");
