@@ -16,11 +16,10 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
           fetch-depth: 1
-      - name: Print exact stale-ratchet contexts and bootstrap measurements
+      - name: Locate exact stale-ratchet sources and measurements
         shell: bash
         run: |
           set -euo pipefail
-          H='tests/harness/phase-9g-h12-php-harness.php'
           for needle in \
             'expected extracted production classes' \
             'requires extracted production classes exactly once' \
@@ -28,7 +27,7 @@ jobs:
             'normalized SHA-256' \
             'exact lines'; do
             echo "===== $needle ====="
-            grep -n -F -B 8 -A 12 "$needle" "$H" || true
+            grep -R -n -F -B 10 -A 14 --include='*.php' "$needle" tests/harness || true
           done
           echo '===== bootstrap measurements ====='
           python3 - <<'PY'
@@ -43,5 +42,3 @@ jobs:
           print('sha256_raw=',hashlib.sha256(b).hexdigest(),sep='')
           print('sha256_lf=',hashlib.sha256(normalized).hexdigest(),sep='')
           PY
-          echo '===== all UPayments hash/line source guards ====='
-          grep -n -E -B 5 -A 10 'UPayments\.php.*(sha|SHA|line|normalized)|normalized.*UPayments|exact lines' "$H" || true
