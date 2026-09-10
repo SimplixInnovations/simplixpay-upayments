@@ -8,7 +8,7 @@
 **Accepted Approach 2 baseline:** **`0c883d609906676966002eb022a82a9656eeacc5`**
 **Accepted package SHA-256:** **`58eba75019416f39a09211c87e7ccbcbb635834fb20bc890e9efbd5fec859655`**
 **Accepted package:** `supcheckout-0.1.0.zip` — **51 files**
-**Approach 3 architecture modernization:** **ARCHITECTURE APPROVED / T1 DONE / VERIFIED / RUNTIME MODERNIZATION NOT STARTED**
+**Approach 3 architecture modernization:** **ARCHITECTURE APPROVED / T1 DONE / VERIFIED / T2 DONE / VERIFIED / RUNTIME MODERNIZATION IN PROGRESS**
 **Public tag / GitHub Release / WordPress.org publication:** **not yet created — publication remains NOT AUTHORIZED**
 
 The final pre-acceptance runtime hardening through PR #97 has merged and been post-merge certified. Living-document-only descendants may advance `main` without changing the runtime package. The owner-accepted technical baseline is the exact commit listed above; it supersedes prior CI-certified runtime anchors for the purpose of identifying the regression reference coordinate going forward. This document remains a reusable freshness/regression procedure for future baseline re-acceptance, not a substitute for such re-acceptance when fresh evidence invalidates it. This document does not authorize publication by itself.
@@ -362,7 +362,7 @@ The technical acceptance above has been completed for the **Approach 2 owner-acc
 - **Accepted package:** `supcheckout-0.1.0.zip` — 51 files
 - **Accepted package SHA-256:** `58eba75019416f39a09211c87e7ccbcbb635834fb20bc890e9efbd5fec859655`
 
-That acceptance authorized Approach 3 architecture modernization. Runtime-neutral T1 `t01-architecture-guardrails-and-active-callback-characterization` is now **DONE / VERIFIED** on merged main `beb89ac0c4d8c0e9b7c8b2de1e13c237bbd37b15` and preserved the frozen accepted package byte-for-byte. The next gate is a separately recorded bounded runtime decision. This does **not** authorize publication.
+That acceptance authorized Approach 3 architecture modernization. Runtime-neutral T1 `t01-architecture-guardrails-and-active-callback-characterization` is **DONE / VERIFIED** on merged main `beb89ac0c4d8c0e9b7c8b2de1e13c237bbd37b15`. Runtime-bearing T2 `legacy-callback-routing-consolidation` is **DONE / VERIFIED** on merged main `047cc86060efb97761d7a0cc4a3806f971ab6fe1`; fresh post-merge checks were 41/41 SUCCESS and the deterministic T2 candidate package is 51 files / SHA-256 `368aaa5cb1a75e6df41ff17bb2e2126431b49da5e6b8dfe508c718433009fc04`. T2 does **not** redefine the owner-accepted Approach 2 baseline; a new acceptance event is required at Approach 3 closeout. This does **not** authorize publication.
 
 Approach 3 architecture scoping is complete and recorded in `.ai-architect/`. Its approved tranches must be implemented and re-certified against the frozen baseline above before the launch-facing UI/UX/branding/broad-validation program is treated as final. The repository may be engineering-ready while publication remains intentionally unapproved. Any future re-acceptance event must produce a new documented baseline SHA + package SHA-256 and must preserve the historical anchor above.
 
