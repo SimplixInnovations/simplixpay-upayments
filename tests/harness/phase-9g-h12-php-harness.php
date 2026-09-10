@@ -2166,7 +2166,7 @@ $VALID_IBAN = 'KW81CBKU0000000000001234560101';
 $mm_scenarios = [
     'MM-VALID-FIXED'      => ['type' => 'fixed',      'charge' => '0.900',  'iban' => $VALID_IBAN, 'valid' => true],
     'MM-VALID-PERCENTAGE' => ['type' => 'percentage', 'charge' => '10',     'iban' => $VALID_IBAN, 'valid' => true],
-    'MM-INVALID-ZERO'     => ['type' => 'fixed',      'charge' => '0',      'iban' => $VALID_IBAN, 'valid' => false],
+    'MM-VALID-ZERO'       => ['type' => 'fixed',      'charge' => '0',      'iban' => $VALID_IBAN, 'valid' => false, 'zero_valid' => true],
     'MM-INVALID-TYPE'     => ['type' => 'flat',       'charge' => '0.900',  'iban' => $VALID_IBAN, 'valid' => false],
     'MM-INVALID-IBAN'     => ['type' => 'fixed',      'charge' => '0.900',  'iban' => 'invalid_iban_xx', 'valid' => false],
     'MM-INVALID-EXPONENT' => ['type' => 'fixed',      'charge' => '1e2',    'iban' => $VALID_IBAN, 'valid' => false],
@@ -2191,7 +2191,22 @@ foreach ($mm_scenarios as $name => $scenario) {
     ]);
     $order = upay_make_order(20000 + $_pass_semantic_runtime + $_pass_static_source, '5.00', null, true);
     $res = upay_run_process_payment($gateway, $order, false, '/checkout/', 'POST');
-    if ($scenario['valid']) {
+    if (!empty($scenario['zero_valid'])) {
+        $mm_zero_charge_str = (string) ($state['last_charge_body'] ?? '');
+        $mm_zero_charge = json_decode($mm_zero_charge_str, true);
+        $mm_zero_entry = (is_array($mm_zero_charge) && isset($mm_zero_charge['extraMerchantData'][0]) && is_array($mm_zero_charge['extraMerchantData'][0]))
+            ? $mm_zero_charge['extraMerchantData'][0]
+            : array();
+        upay_assert_eq($res['result'] ?? null, 'success', $name . ' result=success', 'semantic_runtime');
+        upay_assert_eq($state['charge_calls'], 1, $name . ' Charge=1', 'semantic_runtime');
+        upay_assert_eq($state['create_token_calls'], 0, $name . ' Create=0', 'semantic_runtime');
+        upay_assert_eq($state['retrieve_calls'], 0, $name . ' Retrieve=0', 'semantic_runtime');
+        upay_assert_eq(is_array($mm_zero_charge) && count($mm_zero_charge['extraMerchantData'] ?? array()) === 1, true, $name . ' extraMerchantData count=1', 'semantic_runtime');
+        upay_assert_eq(($mm_zero_entry['knetCharge'] ?? null) === 0, true, $name . ' knetCharge is strict integer zero', 'semantic_runtime');
+        upay_assert_eq(($mm_zero_entry['ccCharge'] ?? null) === 0, true, $name . ' ccCharge is strict integer zero', 'semantic_runtime');
+        upay_assert_eq(preg_match('/"knetCharge"\s*:\s*0(?=\s*[,}])/', $mm_zero_charge_str), 1, $name . ' knetCharge raw token === 0', 'semantic_runtime');
+        upay_assert_eq(preg_match('/"ccCharge"\s*:\s*0(?=\s*[,}])/', $mm_zero_charge_str), 1, $name . ' ccCharge raw token === 0', 'semantic_runtime');
+    } elseif ($scenario['valid']) {
         upay_assert_eq($res['result'] ?? null, 'success', $name . ' result=success', 'semantic_runtime');
         upay_assert_eq($state['charge_calls'], 1, $name . ' Charge=1', 'semantic_runtime');
         upay_assert_eq($state['create_token_calls'], 0, $name . ' Create=0', 'semantic_runtime');
