@@ -3,8 +3,9 @@
  * Real-runtime regression for SUPCheckout frontend asset scope.
  *
  * Customer-facing gateway assets must not be loaded on unrelated frontend
- * requests. When checkout is renderable and the gateway is available, the
- * existing customer/new-design assets must still be enqueued.
+ * requests or when the gateway is unavailable. When checkout is renderable
+ * and the gateway is available, the existing customer/new-design assets must
+ * still be enqueued.
  */
 
 require_once __DIR__ . '/bootstrap.php';
@@ -13,10 +14,11 @@ supcheckout_cert_assert(class_exists('WC_Upayments'), 'SUPCheckout Classic gatew
 
 class SUPCheckout_FrontendAssetScopeProbe extends WC_Upayments {
     public $availability_checks = 0;
+    public $available = true;
 
     public function is_available() {
         ++$this->availability_checks;
-        return true;
+        return $this->available;
     }
 }
 
@@ -53,13 +55,34 @@ supcheckout_cert_assert(
 );
 
 add_filter('woocommerce_is_checkout', '__return_true', PHP_INT_MAX);
-supcheckout_cert_assert(is_checkout(), 'Asset-scope positive fixture forces WooCommerce checkout context');
+supcheckout_cert_assert(is_checkout(), 'Asset-scope checkout fixture forces WooCommerce checkout context');
 
+$gateway->available = false;
 $gateway->enqueue_scripts();
 
 supcheckout_cert_assert(
     $gateway->availability_checks === 1,
-    'Checkout asset scope evaluates gateway availability exactly once'
+    'Unavailable checkout evaluates gateway availability exactly once'
+);
+supcheckout_cert_assert(
+    !wp_style_is('supcheckout-customer', 'enqueued'),
+    'Unavailable checkout does not enqueue SUPCheckout customer CSS'
+);
+supcheckout_cert_assert(
+    !wp_style_is('supcheckout-checkout-new-style', 'enqueued'),
+    'Unavailable checkout does not enqueue SUPCheckout new-design CSS'
+);
+supcheckout_cert_assert(
+    !wp_script_is('supcheckout-checkout-new-script', 'enqueued'),
+    'Unavailable checkout does not enqueue SUPCheckout new-design script'
+);
+
+$gateway->available = true;
+$gateway->enqueue_scripts();
+
+supcheckout_cert_assert(
+    $gateway->availability_checks === 2,
+    'Available checkout performs one additional gateway availability evaluation'
 );
 supcheckout_cert_assert(
     wp_style_is('supcheckout-customer', 'enqueued'),
