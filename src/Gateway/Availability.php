@@ -43,7 +43,9 @@ final class Availability {
             }
 
             $wc = function_exists('WC') ? WC() : null;
-            if ($wc && $wc->session
+            if (is_checkout()
+                && $wc
+                && $wc->session
                 && $wc->session->get('chosen_payment_method') === 'upayments'
                 && isset($settings['make_default_gateway'])
                 && $settings['make_default_gateway'] !== 'yes'
