@@ -18,6 +18,9 @@ class SUPCheckoutPhpstanWooContainer {
 function is_admin() {}
 
 /** @return bool */
+function wp_doing_ajax() {}
+
+/** @return bool */
 function is_checkout() {}
 
 /** @return SUPCheckoutPhpstanWooContainer|null */
