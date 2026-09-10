@@ -24,10 +24,12 @@
     },
     "scripts": {
         "test:unit": "phpunit --configuration phpunit.xml.dist",
+        "test:checkout-js": "node tests/harness/e1-classic-subscription-state-harness.js",
         "analyse": "phpstan analyse --configuration=phpstan.neon.dist --no-progress --memory-limit=512M",
         "lint:phpcs": "phpcs --standard=phpcs.xml.dist",
         "quality": [
             "@test:unit",
+            "@test:checkout-js",
             "@analyse",
             "@lint:phpcs"
         ]
