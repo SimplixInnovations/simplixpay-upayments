@@ -1042,10 +1042,10 @@ function woocommerceUpaymentsInit() {
 
         // Frontend payment fields (must use feature flags for design)
         public function payment_fields() {
-            $save_card_enabled  = ('yes' == $this->get_option('enable_save_card'));
-            $template_args = array('gateway' => $this,'save_card_enabled' => ('yes' == $save_card_enabled));
+            $save_card_enabled = ($this->get_option('enable_save_card') === 'yes');
+            $template_args = array('gateway' => $this, 'save_card_enabled' => $save_card_enabled);
             // Check setting for design toggle
-            $use_new_design = ($this->get_option('use_new_design') == 'yes') ? true : false;
+            $use_new_design = ($this->get_option('use_new_design') === 'yes');
             
             wc_get_template(
                 $use_new_design ? 'new-design-form.php' : 'old-design-form.php',
