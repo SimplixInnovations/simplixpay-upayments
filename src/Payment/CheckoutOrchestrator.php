@@ -544,7 +544,7 @@ class CheckoutOrchestrator {
                 // Guest subscriptions must fail server-side.
                 if (!is_user_logged_in()) {
                     $gateway->log('Subscription checkout rejected for guest.');
-                    wc_add_notice(__("Please log in to purchase a subscription.", 'supcheckout'), 'error');
+                    wc_add_notice(__("Please log in to purchase a subscription.", 'supcheckout'), "error");
                     return ["result" => "failure", "redirect" => wc_get_checkout_url()];
                 }
                 // Subscription checkout requires cc.
