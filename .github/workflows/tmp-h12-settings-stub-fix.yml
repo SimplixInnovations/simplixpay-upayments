@@ -1,0 +1,52 @@
+name: Temporary H12 Settings Stub Repair
+
+on:
+  push:
+    branches:
+      - 'audit/post-t3-ecosystem-hardening'
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: audit/post-t3-ecosystem-hardening
+          fetch-depth: 0
+
+      - name: Apply, verify, and commit shared stub repair
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ "$GITHUB_ACTOR" == "github-actions[bot]" ]]; then
+            echo 'Bot follow-up: no mutation.'
+            exit 0
+          fi
+
+          python3 scripts/tmp-h12-settings-stub-fix.py
+          php -l tests/harness/_bootstrap.php
+
+          provider_output="$(php tests/harness/architecture-provider-endpoints-harness.php 2>&1)"
+          printf '%s\n' "$provider_output"
+          ! grep -Eq '^(PHP )?(Deprecated|Warning|Notice|Fatal error):' <<<"$provider_output"
+          grep -F 'Architecture Provider Endpoints:' <<<"$provider_output"
+          grep -F 'FAIL /' <<<"$provider_output" && exit 1 || true
+
+          h12_output="$(php tests/harness/phase-9g-h12-php-harness.php 2>&1)"
+          printf '%s\n' "$h12_output"
+          ! grep -Eq '^(PHP )?(Deprecated|Warning|Notice|Fatal error):' <<<"$h12_output"
+          grep -F 'FAIL: 0' <<<"$h12_output"
+
+          git diff --check
+          test "$(git diff --name-only | wc -l)" -eq 1
+          git diff --name-only | grep -Fx 'tests/harness/_bootstrap.php'
+
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add tests/harness/_bootstrap.php
+          git commit -m 'test: mirror WooCommerce settings state in H12 stub'
+          git push origin HEAD:audit/post-t3-ecosystem-hardening
