@@ -155,6 +155,9 @@ jobs:
       - name: Verify order completion preference safety
         run: /tmp/wp-cli.phar eval-file "$GITHUB_WORKSPACE/tests/integration/OrderCompletionPreferenceSafetyTest.php" --path="$RUNNER_TEMP/wordpress"
 
+      - name: Verify gateway presentation checkbox safety
+        run: /tmp/wp-cli.phar eval-file "$GITHUB_WORKSPACE/tests/integration/GatewayPresentationSafetyTest.php" --path="$RUNNER_TEMP/wordpress"
+
       - name: Select authoritative order store
         shell: bash
         run: |
