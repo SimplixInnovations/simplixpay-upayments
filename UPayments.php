@@ -186,22 +186,8 @@ function woocommerceUpaymentsInit() {
             return PaymentMethodAvailability::classify_cached($cached);
         }
 
-        /**
-         * Own the gateway's deterministic local eligibility boundary.
-         *
-         * Third-party checkout code may call the gateway directly without first
-         * running WooCommerce's outer available-gateways filter (for example
-         * custom admin-ajax checkout flows). API credential and currency support
-         * therefore belong to the gateway instance itself, just as they do for
-         * the Blocks integration.
-         *
-         * @return bool
-         */
         public function is_available() {
-            return GatewaySettings::is_runtime_eligible(
-                get_option('woocommerce_upayments_settings'),
-                get_woocommerce_currency()
-            );
+            return parent::is_available() && GatewaySettings::is_runtime_eligible(get_option('woocommerce_upayments_settings'), get_woocommerce_currency());
         }
 
         public function __construct() {
@@ -1756,17 +1742,12 @@ function enableUpaymentsGateway($available_gateways)
     }
 
     if (isset($available_gateways["upayments"])){
-        // Move UPayments to the end unless merchant explicitly reordered
+        // Keep UPayments last unless reordered.
         $upay = $available_gateways['upayments'];
         unset($available_gateways['upayments']);
         $available_gateways['upayments'] = $upay;
 
         $settings = get_option("woocommerce_upayments_settings");
-
-        if (!GatewaySettings::is_runtime_eligible($settings, get_woocommerce_currency())) {
-            unset($available_gateways["upayments"]);
-            return $available_gateways;
-        }
 
         if (is_checkout() && isset($available_gateways['cod']) && (isset($settings['enable_autodeduction']) && $settings['enable_autodeduction'] === 'yes')) {
             unset($available_gateways['cod']);
