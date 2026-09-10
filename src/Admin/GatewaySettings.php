@@ -188,17 +188,33 @@ final class GatewaySettings {
     /**
      * Validate/normalize the gateway post data before Woo field processing.
      *
+     * The raw WooCommerce checkbox contract is intentionally strict here: an
+     * unchecked checkbox is absent, while an enabled checkbox is the exact
+     * string "1". Any other present value is malformed and must fail before
+     * WooCommerce's generic checkbox validator can normalize it to "yes".
+     *
      * @param array $post_data WooCommerce gateway post data.
-     * @return array{post_data: array, api_key_missing: bool, multimerchant_missing: bool}
+     * @return array{post_data: array, api_key_missing: bool, multimerchant_missing: bool, multimerchant_invalid: bool}
      */
     public static function prepare_post_data(array $post_data) {
-        $api_key_missing = empty($post_data['woocommerce_upayments_api_key']);
+        $api_key = array_key_exists('woocommerce_upayments_api_key', $post_data)
+            ? $post_data['woocommerce_upayments_api_key']
+            : null;
+        $api_key_missing = !is_string($api_key) || trim($api_key) === '';
         $multimerchant_missing = false;
+        $multimerchant_invalid = false;
 
         if (!$api_key_missing) {
-            if (isset($post_data['woocommerce_upayments_enable_multimerchant'])
-                && $post_data['woocommerce_upayments_enable_multimerchant'] == 1
-            ) {
+            $checkbox_key = 'woocommerce_upayments_enable_multimerchant';
+            $checkbox_present = array_key_exists($checkbox_key, $post_data);
+
+            if ($checkbox_present && $post_data[$checkbox_key] !== '1') {
+                // Do not rewrite any submitted allocation value on malformed raw
+                // input. The existing gateway save path treats missing/invalid
+                // multi-merchant configuration as an atomic save failure.
+                $multimerchant_invalid = true;
+                $multimerchant_missing = true;
+            } elseif ($checkbox_present) {
                 $required = array(
                     'woocommerce_upayments_iban_number',
                     'woocommerce_upayments_cc_charge',
@@ -207,7 +223,10 @@ final class GatewaySettings {
                     'woocommerce_upayments_knet_charge_type',
                 );
                 foreach ($required as $key) {
-                    if (empty($post_data[$key])) {
+                    if (!array_key_exists($key, $post_data)
+                        || !is_string($post_data[$key])
+                        || $post_data[$key] === ''
+                    ) {
                         $multimerchant_missing = true;
                         break;
                     }
@@ -225,6 +244,7 @@ final class GatewaySettings {
             'post_data' => $post_data,
             'api_key_missing' => $api_key_missing,
             'multimerchant_missing' => $multimerchant_missing,
+            'multimerchant_invalid' => $multimerchant_invalid,
         );
     }
 
