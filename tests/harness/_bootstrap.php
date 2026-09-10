@@ -504,6 +504,8 @@ if (!class_exists('YahnisElsts\\PluginUpdateChecker\\v5p6\\PucFactory', false)) 
 if (!class_exists('WC_Payment_Gateway')) {
     class WC_Payment_Gateway {
         public $id; public $icon; public $method_title; public $method_description;
+        // Mirrors WC_Settings_API in WooCommerce 10.8.1 and 11.1.0.
+        public $settings = array();
         public $has_fields; public $title; public $description; public $debug;
         public $apiKey; public $isOrderComplete; public $testMode; public $charge;
         public $fromPluginEnabled; public $paymentData = [];
