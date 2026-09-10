@@ -64,7 +64,7 @@ No tranche below authorizes a public tag, GitHub Release, WordPress.org publicat
 
 Runtime-neutral.
 
-- Record T3 merge `a7a8bbfc3a1dc551127b7ead897c964e95c7cec9` as current runtime-bearing main.
+- Record T3 merge `a7a8bbfc3a1dc551127b7ead897c964e95c7cec9` as the latest merged Approach 3 main coordinate; the latest runtime-bearing merged main remains T2 `047cc86060efb97761d7a0cc4a3806f971ab6fe1` until another runtime-bearing tranche is merged.
 - Reconcile `START-HERE.md`, `PROJECT-STATUS.md`, `NEW-CHAT-HANDOFF.md`, `.ai-architect/implementation-plan.md`, `.ai-architect/architecture-contract.yaml` and other living authorities that still say T3 is next.
 - Add a governance ratchet that rejects contradictory Approach-3 current-state coordinates.
 - Keep accepted Approach-2 baseline coordinates intact as regression reference; do not rewrite historical evidence.
