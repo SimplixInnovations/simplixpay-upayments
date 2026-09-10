@@ -6,6 +6,7 @@ use PHPUnit\Framework\TestCase;
 
 final class CurrentProjectStateRegressionTest extends TestCase {
     private const T3_MERGED_MAIN_SHA = 'a7a8bbfc3a1dc551127b7ead897c964e95c7cec9';
+    private const T2_RUNTIME_BEARING_MAIN_SHA = '047cc86060efb97761d7a0cc4a3806f971ab6fe1';
 
     /**
      * Canonical living records that a fresh chat/agent may use to establish the
@@ -63,6 +64,19 @@ final class CurrentProjectStateRegressionTest extends TestCase {
 
         self::assertStringContainsString('**Status:** DONE / VERIFIED — RUNTIME-NEUTRAL', $content);
         self::assertStringNotContainsString('**Status:** IN PROGRESS', $content);
+    }
+
+    public function test_post_t3_plan_distinguishes_merged_t3_from_runtime_bearing_t2(): void {
+        $content = self::read_repository_file(
+            'docs/superpowers/plans/2026-09-10-post-t3-ecosystem-hardening.md'
+        );
+
+        self::assertStringContainsString(self::T3_MERGED_MAIN_SHA, $content);
+        self::assertStringContainsString(self::T2_RUNTIME_BEARING_MAIN_SHA, $content);
+        self::assertStringNotContainsString(
+            'Record T3 merge `a7a8bbfc3a1dc551127b7ead897c964e95c7cec9` as current runtime-bearing main.',
+            $content
+        );
     }
 
     public function test_architecture_contract_records_t3_and_rejects_the_obsolete_t2_next_candidate(): void {
