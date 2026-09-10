@@ -47,10 +47,15 @@ jQuery(function ($) {
     }
 
     toggleIntervalField(false);
-    $(document.body).on('change', 'select[name="upay_subscription_plan"]', function () {
-        toggleIntervalField(false);
-    });
-    $(document.body).on('updated_checkout', function () {
-        toggleIntervalField(true);
-    });
+    const $body = $(document.body);
+    $body
+        .off('change.supcheckoutSubscription', 'select[name="upay_subscription_plan"]')
+        .on('change.supcheckoutSubscription', 'select[name="upay_subscription_plan"]', function () {
+            toggleIntervalField(false);
+        });
+    $body
+        .off('updated_checkout.supcheckoutSubscription')
+        .on('updated_checkout.supcheckoutSubscription', function () {
+            toggleIntervalField(true);
+        });
 });
