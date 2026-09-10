@@ -2,23 +2,35 @@ name: Temporary Order Completion Fix Applicator
 
 on:
   push:
-    branches: [audit/post-t3-ecosystem-hardening]
+    branches:
+      - audit/post-t3-ecosystem-hardening
 
 permissions:
   contents: write
 
 jobs:
   apply:
-    if: ${{ github.actor != 'github-actions[bot]' }}
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
+      - name: Skip bot-triggered follow-up
+        id: actor
+        shell: bash
+        run: |
+          if [[ "$GITHUB_ACTOR" == "github-actions[bot]" ]]; then
+            echo 'run=false' >> "$GITHUB_OUTPUT"
+          else
+            echo 'run=true' >> "$GITHUB_OUTPUT"
+          fi
+
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        if: steps.actor.outputs.run == 'true'
         with:
           ref: audit/post-t3-ecosystem-hardening
           fetch-depth: 0
 
       - name: Apply exact guarded correction
+        if: steps.actor.outputs.run == 'true'
         shell: bash
         run: |
           set -euo pipefail
@@ -83,6 +95,7 @@ jobs:
           test "${changed[1]}" = "tests/harness/architecture-foundation-harness.php"
 
       - name: Commit exact correction
+        if: steps.actor.outputs.run == 'true'
         shell: bash
         run: |
           set -euo pipefail
