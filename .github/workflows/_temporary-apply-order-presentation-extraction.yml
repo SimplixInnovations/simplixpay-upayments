@@ -1,4 +1,4 @@
-name: Temporary order-presentation extraction applicator
+name: Temporary order-presentation ownership applicator
 
 on:
   push:
@@ -20,95 +20,78 @@ jobs:
           ref: audit/post-t3-ecosystem-hardening
           fetch-depth: 0
           persist-credentials: true
-      - name: Apply exact order-presentation extraction
+      - name: Own extracted order-presentation boundary
         shell: bash
         run: |
           set -euo pipefail
-          test "$(git rev-parse HEAD^)" = "84d48162da6160ea8bbd344cee20b92feea62079"
-          test "$(git hash-object UPayments.php)" = "d240d152beff5589a94cff48350ff5e8c292e215"
-          test ! -e src/Gateway/OrderPresentation.php
-
-          cat > src/Gateway/OrderPresentation.php <<'PHP'
-          <?php
-
-          namespace Simplixi\SUPCheckout\Gateway;
-
-          /**
-           * Gateway-specific WooCommerce order-total presentation.
-           *
-           * The global WooCommerce order-total filter invokes every registered
-           * callback for every gateway. This boundary therefore treats orders
-           * paid through another gateway as immutable foreign presentation data.
-           */
-          final class OrderPresentation {
-              /**
-               * Append verified UPayments metadata to a UPayments order only.
-               *
-               * @param array  $total_rows Existing WooCommerce total rows.
-               * @param mixed  $order WooCommerce order object.
-               * @param string $gateway_id SUPCheckout gateway ID.
-               * @return array
-               */
-              public static function add_order_item_totals($total_rows, $order, $gateway_id) {
-                  if (!$order instanceof \WC_Order
-                      || (string) $order->get_payment_method() !== (string) $gateway_id
-                  ) {
-                      return $total_rows;
-                  }
-
-                  $payment_status = $order->get_meta('UPayments_Result');
-                  $upayment_id = $order->get_meta('UPayments_PaymentID');
-                  $new_total_rows = array();
-
-                  foreach ($total_rows as $key => $total) {
-                      $new_total_rows[$key] = $total;
-                      if ('payment_method' === $key) {
-                          $new_total_rows['payment_status'] = array(
-                              'label' => 'Payment Status:',
-                              'value' => $payment_status,
-                          );
-                          if (!empty($upayment_id)) {
-                              $new_total_rows['upayment_id'] = array(
-                                  'label' => 'UPayment ID:',
-                                  'value' => $upayment_id,
-                              );
-                          }
-                      }
-                  }
-
-                  return $new_total_rows;
-              }
-
-              private function __construct() {}
-          }
-          PHP
+          test "$(git rev-parse HEAD^)" = "263c51f2defdf7928aee978e5ad30115abcbb8cf"
+          test "$(wc -c < UPayments.php | tr -d ' ')" = "86457"
+          test "$(git hash-object tests/harness/architecture-foundation-harness.php)" = "06af264a559eae83f9e082962e8afc3750212004"
+          test "$(git hash-object phpstan.neon.dist)" = "d5f4bec9b264966b0a15f91d0ec368b7e23e5425"
+          test "$(git hash-object phpcs.xml.dist)" = "4e7c8b6c3f393d7a5f00d6d6ea9748952f6333df"
 
           python3 <<'PY'
           from pathlib import Path
-          p = Path('UPayments.php')
+
+          p = Path('tests/harness/architecture-foundation-harness.php')
           s = p.read_text()
           replacements = [
-              ("require_once __DIR__ . '/src/Gateway/Availability.php';\n",
-               "require_once __DIR__ . '/src/Gateway/Availability.php';\nrequire_once __DIR__ . '/src/Gateway/OrderPresentation.php';\n"),
-              ("use Simplixi\\SUPCheckout\\Gateway\\Availability;\n",
-               "use Simplixi\\SUPCheckout\\Gateway\\Availability;\nuse Simplixi\\SUPCheckout\\Gateway\\OrderPresentation;\n"),
-              ('''        public function add_order_item_totals($total_rows, $order, $tax_display)\n        {\n            $payment_status = $order->get_meta('UPayments_Result');\n            $upayment_id = $order->get_meta('UPayments_PaymentID');\n\n            $new_total_rows = [];\n\n            foreach ($total_rows as $key => $total)\n            {\n                $new_total_rows[$key] = $total;\n                if ("payment_method" === $key)\n                {\n                    $new_total_rows["payment_status"] = ["label" => "Payment Status:", "value" => $payment_status, ];\n                    if (!empty($upayment_id))\n                    {\n                        $new_total_rows["upayment_id"] = ["label" => "UPayment ID:", "value" => $upayment_id, ];\n                    }\n                }\n            }\n\n            return $new_total_rows;\n        }\n''',
-               '''        public function add_order_item_totals($total_rows, $order, $tax_display)\n        {\n            return OrderPresentation::add_order_item_totals($total_rows, $order, $this->id);\n        }\n'''),
+              ("$gatewayAvailability = arch_read($root, 'src/Gateway/Availability.php');\n$gatewayTokens = arch_executable_tokens($gateway);\n",
+               "$gatewayAvailability = arch_read($root, 'src/Gateway/Availability.php');\n$gatewayOrderPresentation = arch_read($root, 'src/Gateway/OrderPresentation.php');\n$gatewayTokens = arch_executable_tokens($gateway);\n"),
+              ("// src/Gateway/Availability.php while retaining the global callback as a thin adapter.\n$acceptedGatewayBytes = 86992;\n",
+               "// src/Gateway/Availability.php while retaining the global callback as a thin adapter.\n// R1 then extracts gateway-specific order-total presentation without expanding\n// the compatibility shell.\n$acceptedGatewayBytes = 86457;\n"),
+              ("    'process_admin_options' => 'gateway settings save entry point remains public',\n",
+               "    'process_admin_options' => 'gateway settings save entry point remains public',\n    'add_order_item_totals' => 'order-total compatibility entry point remains public',\n"),
+              ("arch_assert(arch_contains($gatewayAvailability, 'namespace Simplixi\\\\SUPCheckout\\\\Gateway;'), 'E1 Gateway Availability uses SUPCheckout Gateway namespace');\n",
+               "arch_assert(arch_contains($gatewayAvailability, 'namespace Simplixi\\\\SUPCheckout\\\\Gateway;'), 'E1 Gateway Availability uses SUPCheckout Gateway namespace');\narch_assert(is_file($root . '/src/Gateway/OrderPresentation.php'), 'R1 Gateway OrderPresentation boundary exists');\narch_assert(arch_contains($gatewayOrderPresentation, 'namespace Simplixi\\\\SUPCheckout\\\\Gateway;'), 'R1 Gateway OrderPresentation uses SUPCheckout Gateway namespace');\n"),
+              ("arch_assert(\n    arch_has_token_sequence(\n        $resolvedPublicMethods['process_payment']['body'],\n",
+               "arch_assert(\n    arch_has_token_sequence(\n        $resolvedPublicMethods['add_order_item_totals']['body'],\n        array(\n            'return', 'name:OrderPresentation', '::', 'name:add_order_item_totals', '(',\n            'variable:$total_rows', ',', 'variable:$order', ',', 'variable:$this', '->', 'name:id', ')', ';',\n        )\n    ),\n    'WC_Upayments::add_order_item_totals directly delegates to R1 OrderPresentation'\n);\narch_assert(\n    arch_contains($gatewayOrderPresentation, 'get_payment_method()')\n        && arch_contains($gatewayOrderPresentation, 'UPayments_Result')\n        && arch_contains($gatewayOrderPresentation, 'UPayments_PaymentID'),\n    'R1 OrderPresentation keeps gateway identity guard and protected metadata ownership'\n);\narch_assert(\n    arch_has_token_sequence(\n        $resolvedPublicMethods['process_payment']['body'],\n"),
           ]
           for old, new in replacements:
               if s.count(old) != 1:
-                  raise SystemExit('replacement marker count != 1: ' + old[:100])
+                  raise SystemExit('architecture replacement marker count != 1: ' + old[:100])
               s = s.replace(old, new)
+          p.write_text(s, newline='\n')
+
+          p = Path('phpstan.neon.dist')
+          s = p.read_text()
+          scan = "        - tests/phpstan/gateway-availability-stubs.php\n"
+          path = "        - src/Gateway/Availability.php\n"
+          if s.count(scan) != 1 or s.count(path) != 1:
+              raise SystemExit('phpstan marker count mismatch')
+          s = s.replace(scan, scan + "        - tests/phpstan/gateway-order-presentation-stubs.php\n")
+          s = s.replace(path, path + "        - src/Gateway/OrderPresentation.php\n")
+          p.write_text(s, newline='\n')
+
+          p = Path('phpcs.xml.dist')
+          s = p.read_text()
+          marker = "    <file>src/Gateway/Availability.php</file>\n"
+          if s.count(marker) != 1:
+              raise SystemExit('phpcs marker count mismatch')
+          s = s.replace(marker, marker + "    <file>src/Gateway/OrderPresentation.php</file>\n")
           p.write_text(s, newline='\n')
           PY
 
-          php -l UPayments.php
-          php -l src/Gateway/OrderPresentation.php
+          cat > tests/phpstan/gateway-order-presentation-stubs.php <<'PHP'
+          <?php
+
+          /** Development-only WooCommerce order symbols for bounded PHPStan scope. */
+          class WC_Order {
+              /** @return string */
+              public function get_payment_method() { return ''; }
+
+              /** @return mixed */
+              public function get_meta($key, $single = true) {}
+          }
+          PHP
+
+          php -l tests/harness/architecture-foundation-harness.php
+          php -l tests/phpstan/gateway-order-presentation-stubs.php
+          php tests/harness/architecture-foundation-harness.php
           git diff --check
-          echo "UPAYMENTS_BYTES=$(wc -c < UPayments.php | tr -d ' ')"
 
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add UPayments.php src/Gateway/OrderPresentation.php
-          git commit -m 'fix: scope order totals to UPayments orders'
+          git add tests/harness/architecture-foundation-harness.php phpstan.neon.dist phpcs.xml.dist tests/phpstan/gateway-order-presentation-stubs.php
+          git commit -m 'test: own extracted order presentation boundary'
           git push origin HEAD:audit/post-t3-ecosystem-hardening
