@@ -15,10 +15,14 @@
 | Area | Current state |
 |---|---|
 | Product | **SUPCheckout for UPayments** |
+| Product family | **SUPCheckout** |
 | Technical slug / text domain | `supcheckout` |
 | PHP namespace | `Simplixi\SUPCheckout` |
+| Package root | `supcheckout/` |
+| First-stable bootstrap | `supcheckout/UPayments.php` — intentional compatibility exception |
 | Provider scope | **UPayments only** |
 | Approach 2 | **DONE / VERIFIED / OWNER ACCEPTED** |
+| Final pre-clone runtime/QA closure | **DONE / VERIFIED — PR #75** |
 | Quality Platform Q1-Q19 | **DONE / VERIFIED — permanently closed at Q19** |
 | Approach 3 T1 | **DONE / VERIFIED** |
 | Approach 3 T2 | **DONE / VERIFIED — runtime-bearing** |
