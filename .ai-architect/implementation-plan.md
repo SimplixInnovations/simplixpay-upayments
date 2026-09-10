@@ -101,3 +101,29 @@ First compare:
 - only then, if evidence justifies it, extracting a concrete UPayments transport without erasing endpoint-specific status security policy.
 
 The default desired result is **legacy callback consolidation behind preserved public compatibility methods**, not a parallel controller architecture.
+
+
+## T2 — legacy callback routing consolidation
+
+**Status: DONE / VERIFIED.**
+
+- Base main: `97bc88518550d02e4c9f38f766b583dd78e88986`.
+- PR #104 exact certified head: `4cff2dc6e6d11a4b3232a6d3d70d6280a59741c4`.
+- TDD RED head: `09b2c1758652ce57fb5ef39008b168dad347e927`; the unchanged gateway reached the browser/webhook/public-status legacy sentinels with empty stderr.
+- GREEN implementation: only `WC_Upayments::check_ipn_response()` was changed to delegate to `PaymentLifecycle::handle_callback()`, retaining terminal `exit()`.
+- Direct legacy public methods `return_from_upayments()`, `web_hook_handler()` and private `verify_payment_status()` were not modified.
+- Exact-head PR certification: **42/42 SUCCESS**.
+- T1 dependency/provider-egress guardrail: **11 PASS / 0 FAIL**.
+- T1 active callback characterization: **41 PASS / 0 FAIL**.
+- T2 direct-entrypoint characterization: **25 PASS / 0 FAIL**.
+- Gateway architecture ratchet: **87,724 bytes** (from historical Approach 2/T1 87,995 bytes).
+- Candidate package: **51 files**, canonical/Linux/Windows SHA-256 `368aaa5cb1a75e6df41ff17bb2e2126431b49da5e6b8dfe508c718433009fc04`.
+- Squash-merged main: `047cc86060efb97761d7a0cc4a3806f971ab6fe1`; merge commit verified and Git-tree identical to the certified PR head.
+- Fresh merged-main certification: **41/41 SUCCESS**.
+- External Codex review was requested but unavailable because the account code-review quota was exhausted; no independent Codex approval is claimed. GitHub had zero unresolved review conversations and a separate exact-diff coordinator audit found exactly one production file changed and no protected identity migration.
+- Frozen owner-accepted Approach 2 baseline/package remain unchanged until Approach 3 closeout owner re-acceptance.
+- Public release remains not authorized.
+
+## Next decision after T2
+
+Do not delete or rewrite the direct public legacy callback methods by assumption. The next tranche must first characterize their direct compatibility behavior and call surface, including the old private verification path, then decide whether any further consolidation has positive risk-adjusted value. Provider transport extraction remains unapproved.
