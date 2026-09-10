@@ -16,18 +16,27 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
           fetch-depth: 1
-      - name: Locate exact stale-ratchet owners repository-wide
+      - name: Identify failing permanent harness owners
         shell: bash
         run: |
           set -euo pipefail
-          for needle in \
-            'expected extracted production classes' \
-            'requires extracted production classes exactly once' \
-            'pins validated multi-merchant configuration' \
-            'normalized SHA-256' \
-            'exact lines'; do
-            echo "===== $needle ====="
-            grep -R -n -F -B 10 -A 14 --exclude-dir='.git' --exclude='temp-r1-h12-diagnostics.yml' "$needle" . || true
+          harnesses=(
+            tests/harness/architecture-foundation-harness.php
+            tests/harness/architecture-bootstrap-path-harness.php
+            tests/harness/architecture-checkout-orchestration-harness.php
+            tests/harness/architecture-dependency-boundaries-harness.php
+            tests/harness/quality-platform-gateway-settings-harness.php
+            tests/harness/quality-platform-payment-runtime-harness.php
+            tests/harness/phase-9g-h12-php-harness.php
+          )
+          for h in "${harnesses[@]}"; do
+            echo "===== $h ====="
+            set +e
+            output="$(php -d error_reporting=E_ALL -d display_errors=1 "$h" 2>&1)"
+            status=$?
+            set -e
+            printf '%s\n' "$output" | grep -E '^(FAIL:|Architecture|A5 |Quality|H12|Summary:|TOTAL:)' || true
+            echo "exit=$status"
           done
           echo '===== bootstrap measurements ====='
           python3 - <<'PY'
