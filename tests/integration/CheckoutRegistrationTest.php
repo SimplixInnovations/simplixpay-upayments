@@ -164,6 +164,29 @@ supcheckout_cert_assert(
 );
 WC()->session = $original_session;
 
+// Registry inspection outside checkout must be observational. A session-backed
+// account/custom integration that checks available gateways must not erase the
+// customer's already chosen checkout payment method as a side effect.
+if (!WC()->session) {
+    WC()->session = new WC_Session_Handler();
+    WC()->session->init();
+}
+WC()->session->set('chosen_payment_method', 'upayments');
+$non_checkout_gateways = array(
+    'upayments' => (object) array('id' => 'upayments'),
+    'cod'       => (object) array('id' => 'cod'),
+);
+$non_checkout_result = enableUpaymentsGateway($non_checkout_gateways);
+supcheckout_cert_assert(
+    isset($non_checkout_result['upayments']),
+    'Non-checkout availability inspection preserves eligible UPayments'
+);
+supcheckout_cert_assert(
+    WC()->session->get('chosen_payment_method') === 'upayments',
+    'Non-checkout availability inspection does not mutate chosen payment method'
+);
+WC()->session = $original_session;
+
 supcheckout_cert_store_option_raw('woocommerce_upayments_settings', $original_settings);
 update_option('woocommerce_currency', $original_currency, false);
 wp_cache_delete('woocommerce_currency', 'options');
