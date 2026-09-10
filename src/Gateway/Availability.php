@@ -4,6 +4,8 @@ namespace Simplixi\SUPCheckout\Gateway;
 
 use Simplixi\SUPCheckout\Admin\GatewaySettings;
 
+defined('ABSPATH') || exit;
+
 require_once __DIR__ . '/CheckoutAssets.php';
 
 /**
