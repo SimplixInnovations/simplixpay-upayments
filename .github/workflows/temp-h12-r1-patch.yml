@@ -1,0 +1,75 @@
+name: Temporary H12 R1 semantic patch
+
+on:
+  push:
+    branches:
+      - audit/post-t3-ecosystem-hardening
+
+permissions:
+  contents: write
+
+jobs:
+  patch-h12:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Check out exact branch head
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          fetch-depth: 0
+
+      - name: Set up PHP 8.5
+        uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240
+        with:
+          php-version: '8.5'
+          coverage: none
+          tools: none
+
+      - name: Apply exact zero-commission semantic patch
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+
+          path = Path('tests/harness/phase-9g-h12-php-harness.php')
+          source = path.read_text(encoding='utf-8')
+
+          old_case = "    'MM-INVALID-ZERO'     => ['type' => 'fixed',      'charge' => '0',      'iban' => $VALID_IBAN, 'valid' => false],"
+          new_case = "    'MM-VALID-ZERO'       => ['type' => 'fixed',      'charge' => '0',      'iban' => $VALID_IBAN, 'valid' => false, 'zero_valid' => true],"
+          if source.count(old_case) != 1:
+              raise SystemExit(f'expected exactly one obsolete zero scenario, found {source.count(old_case)}')
+          source = source.replace(old_case, new_case, 1)
+
+          old_branch = """    if ($scenario['valid']) {\n        upay_assert_eq($res['result'] ?? null, 'success', $name . ' result=success', 'semantic_runtime');"""
+          new_branch = """    if (!empty($scenario['zero_valid'])) {\n        $mm_zero_charge_str = (string) ($state['last_charge_body'] ?? '');\n        $mm_zero_charge = json_decode($mm_zero_charge_str, true);\n        $mm_zero_entry = (is_array($mm_zero_charge) && isset($mm_zero_charge['extraMerchantData'][0]) && is_array($mm_zero_charge['extraMerchantData'][0]))\n            ? $mm_zero_charge['extraMerchantData'][0]\n            : array();\n        upay_assert_eq($res['result'] ?? null, 'success', $name . ' result=success', 'semantic_runtime');\n        upay_assert_eq($state['charge_calls'], 1, $name . ' Charge=1', 'semantic_runtime');\n        upay_assert_eq($state['create_token_calls'], 0, $name . ' Create=0', 'semantic_runtime');\n        upay_assert_eq($state['retrieve_calls'], 0, $name . ' Retrieve=0', 'semantic_runtime');\n        upay_assert_eq(is_array($mm_zero_charge) && count($mm_zero_charge['extraMerchantData'] ?? array()) === 1, true, $name . ' extraMerchantData count=1', 'semantic_runtime');\n        upay_assert_eq(($mm_zero_entry['knetCharge'] ?? null) === 0, true, $name . ' knetCharge is strict integer zero', 'semantic_runtime');\n        upay_assert_eq(($mm_zero_entry['ccCharge'] ?? null) === 0, true, $name . ' ccCharge is strict integer zero', 'semantic_runtime');\n        upay_assert_eq(preg_match('/\"knetCharge\"\\s*:\\s*0(?=\\s*[,}])/', $mm_zero_charge_str), 1, $name . ' knetCharge raw token === 0', 'semantic_runtime');\n        upay_assert_eq(preg_match('/\"ccCharge\"\\s*:\\s*0(?=\\s*[,}])/', $mm_zero_charge_str), 1, $name . ' ccCharge raw token === 0', 'semantic_runtime');\n    } elseif ($scenario['valid']) {\n        upay_assert_eq($res['result'] ?? null, 'success', $name . ' result=success', 'semantic_runtime');"""
+          if source.count(old_branch) != 1:
+              raise SystemExit(f'expected exactly one MM valid branch anchor, found {source.count(old_branch)}')
+          source = source.replace(old_branch, new_branch, 1)
+
+          path.write_text(source, encoding='utf-8')
+          PY
+
+          changed="$(git diff --name-only)"
+          test "$changed" = "tests/harness/phase-9g-h12-php-harness.php"
+          git diff --check
+          php -l tests/harness/phase-9g-h12-php-harness.php
+          git diff -- tests/harness/phase-9g-h12-php-harness.php
+
+      - name: Execute complete H12 harness
+        shell: bash
+        run: |
+          set -euo pipefail
+          php -d error_reporting=E_ALL -d display_errors=1 tests/harness/phase-9g-h12-php-harness.php
+
+      - name: Commit exact H12 patch
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git diff --name-only)" = "tests/harness/phase-9g-h12-php-harness.php"
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add tests/harness/phase-9g-h12-php-harness.php
+          git diff --cached --check
+          git commit -m 'test: align H12 zero commission contract'
+          git push origin HEAD:audit/post-t3-ecosystem-hardening
