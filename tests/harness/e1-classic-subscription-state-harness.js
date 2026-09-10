@@ -206,6 +206,17 @@ console.log('Running e1-classic-subscription-state-harness.js');
     );
 }
 
+{
+    const scene = createScene(true);
+    scene.state.interval = '2';
+    scene.state.plan = 'weekly';
+    scene.trigger('change');
+    record(
+        scene.state.interval === '',
+        'deliberate plan change resets an inherited interval even when numeric value remains valid'
+    );
+}
+
 console.log('Classic subscription state results: ' + pass + ' passed, ' + fail + ' failed.');
 if (fail > 0) {
     process.exitCode = 1;
