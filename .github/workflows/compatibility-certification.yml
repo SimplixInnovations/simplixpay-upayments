@@ -152,6 +152,9 @@ jobs:
       - name: Verify provider environment fail-safe
         run: /tmp/wp-cli.phar eval-file "$GITHUB_WORKSPACE/tests/integration/ProviderModeSafetyTest.php" --path="$RUNNER_TEMP/wordpress"
 
+      - name: Verify order completion preference safety
+        run: /tmp/wp-cli.phar eval-file "$GITHUB_WORKSPACE/tests/integration/OrderCompletionPreferenceSafetyTest.php" --path="$RUNNER_TEMP/wordpress"
+
       - name: Select authoritative order store
         shell: bash
         run: |
