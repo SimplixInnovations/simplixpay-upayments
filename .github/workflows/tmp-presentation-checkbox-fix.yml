@@ -1,0 +1,69 @@
+name: Temporary Presentation Checkbox Fix
+
+on:
+  push:
+    branches:
+      - audit/post-t3-ecosystem-hardening
+    paths:
+      - .github/workflows/tmp-presentation-checkbox-fix.yml
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout exact branch head
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: audit/post-t3-ecosystem-hardening
+          fetch-depth: 2
+
+      - name: Verify one-time workflow preimage
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD^)" = "3a1f1f09103e33a347d3ae5a12ceec703bf001a2"
+          test "$(git diff --name-only HEAD^ HEAD)" = ".github/workflows/tmp-presentation-checkbox-fix.yml"
+          test -f scripts/tmp-presentation-checkbox-fix.py
+
+      - name: Apply exact-preimage presentation correction
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 scripts/tmp-presentation-checkbox-fix.py
+
+      - name: Verify bounded diff and strict semantics
+        shell: bash
+        run: |
+          set -euo pipefail
+          mapfile -t changed < <(git diff --name-only)
+          test "${#changed[@]}" -eq 2
+          printf '%s\n' "${changed[@]}" | grep -Fx 'UPayments.php'
+          printf '%s\n' "${changed[@]}" | grep -Fx 'tests/harness/architecture-foundation-harness.php'
+          grep -Fq "\$save_card_enabled = (\$this->get_option('enable_save_card') === 'yes');" UPayments.php
+          grep -Fq "'save_card_enabled' => \$save_card_enabled" UPayments.php
+          grep -Fq "\$use_new_design = (\$this->get_option('use_new_design') === 'yes');" UPayments.php
+          ! grep -Fq "('yes' == \$this->get_option('enable_save_card'))" UPayments.php
+          ! grep -Fq "('yes' == \$save_card_enabled)" UPayments.php
+          ! grep -Fq "\$this->get_option('use_new_design') == 'yes'" UPayments.php
+
+      - name: Verify syntax and architecture ratchet
+        shell: bash
+        run: |
+          set -euo pipefail
+          php -l UPayments.php
+          php tests/harness/architecture-foundation-harness.php
+
+      - name: Commit only verified production correction
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'Simplix Innovations'
+          git config user.email '136711735+SimplixInnovationsAdmin@users.noreply.github.com'
+          git add UPayments.php tests/harness/architecture-foundation-harness.php
+          test -z "$(git diff --name-only -- . ':!UPayments.php' ':!tests/harness/architecture-foundation-harness.php')"
+          git commit -m 'fix: enforce exact gateway presentation checkbox semantics'
+          git push origin HEAD:audit/post-t3-ecosystem-hardening
