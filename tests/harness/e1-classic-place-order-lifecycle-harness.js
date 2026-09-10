@@ -21,6 +21,10 @@ function record(condition, description) {
     }
 }
 
+function baseEvent(eventName) {
+    return String(eventName).split('.')[0];
+}
+
 function createScene(options) {
     options = options || {};
 
@@ -36,7 +40,7 @@ function createScene(options) {
         placeOrderClicks: 0,
         directFormSubmits: 0,
         formSubmitEvents: 0,
-        handlers: {},
+        handlers: [],
     };
 
     const checkbox = {
@@ -61,6 +65,18 @@ function createScene(options) {
             return null;
         },
     };
+
+    function removeOwnedHandlers(target, eventName, selector) {
+        state.handlers = state.handlers.filter(function (entry) {
+            if (entry.target !== target || entry.eventName !== eventName) {
+                return true;
+            }
+            if (typeof selector === 'string' && entry.selector !== selector) {
+                return true;
+            }
+            return false;
+        });
+    }
 
     function hiddenCollection(key) {
         return {
@@ -111,10 +127,17 @@ function createScene(options) {
                 return this;
             },
             on(eventName, selectorOrHandler, maybeHandler) {
-                const handler = typeof selectorOrHandler === 'function'
-                    ? selectorOrHandler
-                    : maybeHandler;
-                state.handlers['form:' + eventName] = handler;
+                const delegated = typeof selectorOrHandler === 'string';
+                state.handlers.push({
+                    target: 'form',
+                    eventName,
+                    selector: delegated ? selectorOrHandler : null,
+                    handler: delegated ? maybeHandler : selectorOrHandler,
+                });
+                return this;
+            },
+            off(eventName, selector) {
+                removeOwnedHandlers('form', eventName, selector);
                 return this;
             },
         };
@@ -122,8 +145,18 @@ function createScene(options) {
 
     function bodyCollection() {
         return {
-            on(eventName, handler) {
-                state.handlers['body:' + eventName] = handler;
+            on(eventName, selectorOrHandler, maybeHandler) {
+                const delegated = typeof selectorOrHandler === 'string';
+                state.handlers.push({
+                    target: 'body',
+                    eventName,
+                    selector: delegated ? selectorOrHandler : null,
+                    handler: delegated ? maybeHandler : selectorOrHandler,
+                });
+                return this;
+            },
+            off(eventName, selector) {
+                removeOwnedHandlers('body', eventName, selector);
                 return this;
             },
         };
@@ -154,9 +187,31 @@ function createScene(options) {
     };
 
     const sandbox = { console, document, window, jQuery: jquery };
-    vm.runInNewContext(source, sandbox, { filename: SOURCE });
+    function evaluateSource() {
+        vm.runInNewContext(source, sandbox, { filename: SOURCE });
+    }
+    evaluateSource();
 
-    return { state, api: window.supCheckout };
+    return {
+        state,
+        api: window.supCheckout,
+        rerun: evaluateSource,
+        addThirdPartyHandler(target, eventName, selector) {
+            state.handlers.push({ target, eventName, selector: selector || null, handler() {} });
+        },
+        countHandlers(target, eventName, selector) {
+            return state.handlers.filter(function (entry) {
+                return entry.target === target
+                    && baseEvent(entry.eventName) === eventName
+                    && (typeof selector !== 'string' || entry.selector === selector);
+            }).length;
+        },
+        countExactHandlers(target, eventName) {
+            return state.handlers.filter(function (entry) {
+                return entry.target === target && entry.eventName === eventName;
+            }).length;
+        },
+    };
 }
 
 console.log('Running e1-classic-place-order-lifecycle-harness.js');
@@ -215,6 +270,24 @@ console.log('Running e1-classic-place-order-lifecycle-harness.js');
     const scene = createScene({ selectedPaymentMethod: 'cod' });
     record(scene.state.placeOrderHidden === false,
         'non-UPayments selection leaves the canonical place-order control visible');
+}
+
+{
+    const scene = createScene();
+    scene.addThirdPartyHandler('body', 'updated_checkout.thirdParty');
+    scene.rerun();
+    record(
+        scene.countHandlers('form', 'change', 'input[name="payment_method"]') === 1,
+        'repeated modern checkout script evaluation owns exactly one payment-method change handler'
+    );
+    record(
+        scene.countHandlers('body', 'updated_checkout') === 2,
+        'repeated modern checkout script evaluation preserves one first-party and one third-party updated_checkout handler'
+    );
+    record(
+        scene.countExactHandlers('body', 'updated_checkout.thirdParty') === 1,
+        'modern checkout handler refresh preserves unrelated namespaced updated_checkout listeners'
+    );
 }
 
 console.log('Classic place-order lifecycle results: ' + pass + ' passed, ' + fail + ' failed.');
