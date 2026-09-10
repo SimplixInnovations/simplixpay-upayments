@@ -84,7 +84,9 @@ At that exact SHA:
 - WordPress.org Submission Check — **SUCCESS**;
 - Release Artifact — **SUCCESS**;
 - CodeQL — **SUCCESS**;
-- deterministic installable package — **51 files**, SHA-256 `a343a028e42f17a8d111de4e1a271c4e4bd51ba8cbbc1f0de89652b0d2480455`.
+- deterministic installable package — **53 files**, SHA-256 `a343a028e42f17a8d111de4e1a271c4e4bd51ba8cbbc1f0de89652b0d2480455`.
+
+The 53-file count above was independently re-read from the exact b069 installable ZIP during R0 reconciliation. The package SHA-256 is unchanged; the earlier living-document statement of 51 files for this specific b069 package was stale documentation, not a package mutation.
 
 That checkpoint contains bounded post-T3 correctness work plus the accessibility markup slice. Accessibility followed genuine TDD:
 
@@ -95,12 +97,14 @@ That checkpoint contains bounded post-T3 correctness work plus the accessibility
 
 ## R0 anti-staleness evidence
 
-R0 deliberately introduced a permanent current-state regression rather than silently editing prose.
+R0 deliberately introduced permanent current-state regression rather than silently editing prose.
 
 - Initial RED `f57518db74fa3c35c313cb3c1997663b85168d3b`: 194 tests / 1,183 assertions / 3 intended stale-state failures.
 - Expanded RED `55f9c8511ed7d322b6fb31358277e760140f834b`: 196 tests / 1,189 assertions / 5 intended failures after adding `AGENTS.md` and `START-HERE.md` to the living-authority coverage.
+- Reconciled candidate `98c8032a36bbae80648dc6271fcee811e2d6cad2`: full exact-head Quality/H12, Compatibility, Provider Sandbox, WordPress.org, Release Artifact and CodeQL stack succeeded; artifact inspection then exposed the stale b069 file-count claim.
+- Package-evidence RED `6db89738b861a7f98094dc4d87bda101e1730d55`: 198 tests / 1,228 assertions / exactly 1 intended failure against the stale 51-file b069 statement while Governance and syntax lanes remained clean.
 
-The permanent anti-staleness regression must remain GREEN after reconciliation. The live PR #108 exact head and checks determine whether R0 is under certification or closed; this document must not substitute for live evidence.
+The permanent anti-staleness/package-evidence regression must remain GREEN after reconciliation. Live PR #108 exact head and checks determine current state; this document must not substitute for live evidence.
 
 ## Remaining post-T3 program
 
