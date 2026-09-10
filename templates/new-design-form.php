@@ -12,7 +12,7 @@ defined( 'ABSPATH' ) || exit;
 
 // phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- WooCommerce template locals are intentionally scoped to the template include.
 ?>
-<div id="wc-toast" class="wc-toast"></div>
+<div id="wc-toast" class="wc-toast" role="status" aria-live="polite" aria-atomic="true"></div>
 <div class="supcheckout form-row form-row-wide">
     <?php
         $icons = array();
@@ -179,8 +179,8 @@ defined( 'ABSPATH' ) || exit;
                 </button>
             
             <?php if ($key_string == 'cc' && $save_card_enabled && $is_logged_in) { ?>
-                <label class="switch-border">For faster and more secure checkout. Save your card details.
-                    <label class="switch">
+                <label class="switch-border" for="chkSaveCard">For faster and more secure checkout. Save your card details.
+                    <span class="switch">
                         <?php
                             $checked = false;
                         ?>
@@ -190,7 +190,7 @@ defined( 'ABSPATH' ) || exit;
                             onclick="supCheckout.toggleSaveCard(<?php echo $is_logged_in ? 'true' : 'false'; ?>);"
                         >
                         <span class="slider round"></span>
-                    </label>
+                    </span>
                 </label>
             <?php
                     }
