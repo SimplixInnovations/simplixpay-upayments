@@ -131,7 +131,7 @@ Post-merge:
 
 At the PR #68 coordinate-closure milestone, repository/admin state was reconciled with canonical About/topics, the four required Main Rule checks, protective rules, `main`-only topology and no open PRs/issues/tags/releases. That is historical milestone evidence, not a permanent assertion about whatever temporary review branch may exist later.
 
-The latest runtime-bearing certified baseline is `82d1fdaee91ee6bde6c26dfcc7ceb974d0d59847` from PR #97. Fresh merged-main evidence is **41/41 check-runs SUCCESS**, including H12 **1936/0 PHP + 150/0 Blocks**, **20/20** compatibility plus Compatibility Gate, Release Artifact **69/0** plus Release Gate, Provider Sandbox, WordPress.org readiness **31/0** plus official packaged Plugin Check and CodeQL. Canonical package: **51 files**, SHA-256 `58eba75019416f39a09211c87e7ccbcbb635834fb20bc890e9efbd5fec859655`.
+The latest runtime-bearing certified `main` is Approach 3 T2 merge `047cc86060efb97761d7a0cc4a3806f971ab6fe1` from PR #104 (certified head `4cff2dc6e6d11a4b3232a6d3d70d6280a59741c4`). The PR head completed **42/42** checks and fresh merged main completed **41/41**, including T1 dependency/provider-egress **11/0**, T1 active callback **41/0**, T2 direct fallback **25/0**, full compatibility + Compatibility Gate, Release Gate, Provider Sandbox, WordPress.org packaged Plugin Check and CodeQL/security. Current deterministic candidate package: **51 files**, SHA-256 `368aaa5cb1a75e6df41ff17bb2e2126431b49da5e6b8dfe508c718433009fc04`. The owner-accepted Approach 2 SHA/package remain a separate frozen regression reference until Approach 3 re-acceptance.
 
 ## Current owner/admin/local stage
 
@@ -152,9 +152,9 @@ The procedure in `docs/project/OWNER-HANDOFF.md` is retained as a reusable regre
 2. **Approach 3 T2 — `legacy-callback-routing-consolidation` — DONE / VERIFIED** on merged main `047cc86060efb97761d7a0cc4a3806f971ab6fe1`; the priority-10 fallback now delegates to `PaymentLifecycle`, with 41/41 post-merge checks and deterministic 51-file candidate package SHA-256 `368aaa5cb1a75e6df41ff17bb2e2126431b49da5e6b8dfe508c718433009fc04`;
 3. characterize the direct public legacy return/webhook methods and private verification path before approving any further consolidation;
 4. re-certify all runtime-bearing Approach 3 changes against the accepted baseline and permanent payment/security/compatibility controls;
-4. apply approved launch branding and visual/accessibility acceptance;
-5. explicitly choose the first public version under a dedicated PR with the full release-sensitive gate stack re-run;
-6. tag/GitHub Release/WordPress.org publication only after exact-main certification and explicit owner approval. Owner technical acceptance does not authorize publication.
+5. apply approved launch branding and visual/accessibility acceptance;
+6. explicitly choose the first public version under a dedicated PR with the full release-sensitive gate stack re-run;
+7. tag/GitHub Release/WordPress.org publication only after exact-main certification and explicit owner approval. Owner technical acceptance does not authorize publication.
 
 ## External/manual evidence track
 
