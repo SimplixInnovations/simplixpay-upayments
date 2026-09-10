@@ -161,6 +161,9 @@ jobs:
       - name: Verify fresh gateway default hydration safety
         run: /tmp/wp-cli.phar eval-file "$GITHUB_WORKSPACE/tests/integration/GatewayFreshDefaultsSafetyTest.php" --path="$RUNNER_TEMP/wordpress"
 
+      - name: Verify frontend asset scope
+        run: /tmp/wp-cli.phar eval-file "$GITHUB_WORKSPACE/tests/integration/FrontendAssetScopeTest.php" --path="$RUNNER_TEMP/wordpress"
+
       - name: Select authoritative order store
         shell: bash
         run: |
