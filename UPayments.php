@@ -1062,11 +1062,11 @@ function woocommerceUpaymentsInit() {
          */
         public function enqueue_scripts() {
             $plugin_url = plugin_dir_url( __FILE__ );
-            wp_enqueue_style('supcheckout-customer', $plugin_url . 'assets/css/customer.css', array(), SUPCHECKOUT_VERSION );
             // Check if we are on the checkout page AND the gateway is active
             if ( ! is_checkout() || ! $this->is_available() ) {
                 return;
             }
+            wp_enqueue_style('supcheckout-customer', $plugin_url . 'assets/css/customer.css', array(), SUPCHECKOUT_VERSION );
             
             // Checkout must not depend on third-party font/icon CDNs.
             // Use site/system typography and plugin-local presentation only.
