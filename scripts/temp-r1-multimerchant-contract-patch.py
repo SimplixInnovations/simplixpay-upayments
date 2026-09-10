@@ -10,6 +10,22 @@ def replace_once(path, old, new, label):
     target.write_text(source.replace(old, new, 1), encoding="utf-8")
 
 
+def replace_unique_line(path, required_fragments, replacement, label):
+    target = Path(path)
+    lines = target.read_text(encoding="utf-8").splitlines(keepends=True)
+    matches = [
+        index for index, line in enumerate(lines)
+        if all(fragment in line for fragment in required_fragments)
+    ]
+    if len(matches) != 1:
+        raise SystemExit(f"{label}: expected exactly one guarded line, found {len(matches)}")
+    index = matches[0]
+    newline = "\r\n" if lines[index].endswith("\r\n") else "\n"
+    indent = lines[index][:-len(lines[index].lstrip())]
+    lines[index] = indent + replacement + newline
+    target.write_text("".join(lines), encoding="utf-8")
+
+
 replace_once(
     "UPayments.php",
     "require_once __DIR__ . '/src/Release/Identity.php';\nrequire_once __DIR__ . '/src/Admin/GatewaySettings.php';",
@@ -91,9 +107,9 @@ replace_once(
     "namespace Simplixi\\SUPCheckout\\Payment;\n\nuse Simplixi\\SUPCheckout\\Provider\\MultiMerchantContract;\nuse UPayments\\Token\\CustomerTokenIdentity;",
     "CheckoutOrchestrator import",
 )
-replace_once(
+replace_unique_line(
     "src/Payment/CheckoutOrchestrator.php",
-    r"if (!preg_match('/^[A-Z]{2}[0-9]{2}[A-Z0-9]{11,30}\z/', $iban)) {",
+    ("preg_match", "[A-Z]{2}[0-9]{2}[A-Z0-9]{11,30}", "$iban)) {"),
     "if (!MultiMerchantContract::is_valid_iban($iban)) {",
     "checkout IBAN validation",
 )
