@@ -361,6 +361,16 @@ $callbackWithoutTrailingComma = array(
 $settingsReadSequence = array(
     'variable:$settings', '=', 'name:get_option', '(', 'string:woocommerce_upayments_settings', ')', ';',
 );
+$availabilityDelegateSequence = array(
+    'return', 'name:Availability', '::', 'name:filter', '(', 'variable:$available_gateways', ')', ';',
+);
+$runtimeEligibilitySequence = array(
+    'name:GatewaySettings', '::', 'name:is_runtime_eligible', '(',
+    'variable:$settings', ',', 'name:get_woocommerce_currency', '(', ')', ')',
+);
+$sessionGuardSequence = array(
+    'variable:$wc', '&&', 'variable:$wc', '->', 'name:session',
+);
 $orderIdWriteSequence = array(
     'variable:$order', '->', 'name:add_meta_data', '(', 'string:UPayments_order_id', ',',
     'variable:$unique_order_id', ')', ';',
@@ -382,11 +392,15 @@ $subscriptionComposition = arch_read($root, 'src/Subscription/Composition.php');
 $subscriptionPresentation = arch_read($root, 'src/Subscription/Presentation.php');
 $checkoutPayload = arch_read($root, 'src/Payment/CheckoutPayload.php');
 $checkoutOrchestrator = arch_read($root, 'src/Payment/CheckoutOrchestrator.php');
+$gatewayAvailability = arch_read($root, 'src/Gateway/Availability.php');
 $gatewayTokens = arch_executable_tokens($gateway);
 $gatewayClassTokens = arch_class_body_tokens($gatewayTokens, 'WC_Upayments');
 $checkoutOrchestratorTokens = arch_executable_tokens($checkoutOrchestrator);
 $checkoutOrchestratorClassTokens = arch_class_body_tokens($checkoutOrchestratorTokens, 'CheckoutOrchestrator');
 $checkoutProcess = arch_direct_public_method($checkoutOrchestratorClassTokens, 'process');
+$gatewayAvailabilityTokens = arch_executable_tokens($gatewayAvailability);
+$gatewayAvailabilityClassTokens = arch_class_body_tokens($gatewayAvailabilityTokens, 'Availability');
+$gatewayAvailabilityFilter = arch_direct_public_method($gatewayAvailabilityClassTokens, 'filter');
 $availabilityBinding = arch_direct_top_level_filter_callback(
     $gatewayTokens,
     $availabilityFilterSequence,
@@ -438,7 +452,9 @@ $gatewaySize = is_file($gatewayPath) ? filesize($gatewayPath) : false;
 // Approach 3 T2 intentionally reduces the gateway shell by consolidating the
 // historical priority-10 check_ipn_response fallback onto PaymentLifecycle.
 // The frozen Approach 2/T1 87995-byte coordinate remains historical evidence.
-$acceptedGatewayBytes = 87724;
+// Post-T3 E1 extracts the historical available-gateways policy to
+// src/Gateway/Availability.php while retaining the global callback as a thin adapter.
+$acceptedGatewayBytes = 86992;
 arch_assert(is_int($gatewaySize) && $gatewaySize === $acceptedGatewayBytes, 'UPayments.php matches current exact architecture ratchet');
 arch_assert($gatewayClassTokens !== array(), 'legacy WC_Upayments gateway compatibility class remains executable');
 arch_assert(arch_contains($gateway, "add_filter(\"woocommerce_payment_gateways\", \"addUpaymentsGatewayClass\")"), 'WooCommerce gateway registration remains characterized');
@@ -473,6 +489,8 @@ arch_assert(is_dir($root . '/src/Migration'), 'Migration module exists');
 arch_assert(is_dir($root . '/src/Payment'), 'Payment module exists');
 arch_assert(is_dir($root . '/src/Security'), 'Security module exists');
 arch_assert(is_file($root . '/src/Admin/GatewaySettings.php'), 'Admin GatewaySettings boundary exists');
+arch_assert(is_file($root . '/src/Gateway/Availability.php'), 'E1 Gateway Availability boundary exists');
+arch_assert(arch_contains($gatewayAvailability, 'namespace Simplixi\\SUPCheckout\\Gateway;'), 'E1 Gateway Availability uses SUPCheckout Gateway namespace');
 arch_assert(is_file($root . '/src/Subscription/Composition.php'), 'Subscription Composition boundary exists');
 arch_assert(is_file($root . '/src/Subscription/Presentation.php'), 'Subscription Presentation boundary exists');
 arch_assert(is_file($root . '/src/Payment/CheckoutPayload.php'), 'A5 CheckoutPayload boundary exists');
@@ -508,8 +526,27 @@ arch_assert(
 );
 arch_assert($availabilityBinding['found'], 'enableUpaymentsGateway remains a direct top-level registered availability callback');
 arch_assert(
-    arch_has_token_sequence($availabilityBinding['body'], $settingsReadSequence),
-    'legacy WooCommerce settings option remains an executable direct global availability-callback read'
+    arch_has_token_sequence($availabilityBinding['body'], $availabilityDelegateSequence),
+    'legacy global availability callback directly delegates to the E1 Gateway Availability boundary'
+);
+arch_assert($gatewayAvailabilityFilter['found'], 'E1 Gateway Availability filter entry point is public and executable');
+arch_assert(
+    arch_has_token_sequence($gatewayAvailabilityFilter['body'], $settingsReadSequence),
+    'legacy WooCommerce settings option remains an executable availability-policy read behind the compatibility adapter'
+);
+arch_assert(
+    arch_has_token_sequence($gatewayAvailabilityFilter['body'], $runtimeEligibilitySequence),
+    'E1 Gateway Availability enforces deterministic runtime eligibility before presentation policy'
+);
+arch_assert(
+    arch_has_token_sequence($gatewayAvailabilityFilter['body'], $sessionGuardSequence),
+    'E1 Gateway Availability guards session-dependent policy before session access'
+);
+arch_assert(
+    arch_contains($gatewayAvailability, "is_checkout()")
+        && arch_contains($gatewayAvailability, "'enable_autodeduction'")
+        && arch_contains($gatewayAvailability, "=== 'yes'"),
+    'E1 Gateway Availability retains checkout-scoped auto-deduction COD policy'
 );
 arch_assert(
     arch_has_token_sequence(
