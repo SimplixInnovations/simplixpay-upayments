@@ -207,7 +207,9 @@ function woocommerceUpaymentsInit() {
             $this->description = $this->get_option("description");
             $this->debug = $this->get_option("debug");
             $this->apiKey = $this->get_option("api_key");
-            $this->isOrderComplete = $this->get_option('is_order_complete');
+            $this->isOrderComplete = array_key_exists('is_order_complete', $this->settings)
+              ? $this->settings['is_order_complete']
+              : 'yes';
             $this->testMode = $this->get_option("test_mode");
             $this->charge = $this->get_option('charge');
             $this->fromPluginEnabled = false;
@@ -1286,12 +1288,8 @@ function woocommerceUpaymentsInit() {
             return __("Woocommerce", 'supcheckout');
         }
 
-        public function getIsOrderComplete() {  
-            $flag = true;   
-            if ($this->isOrderComplete == 'no') { 
-                $flag = false;  
-            }   
-            return $flag;   
+        public function getIsOrderComplete() {
+            return $this->isOrderComplete === 'yes';
         }
 
         public function getMode() {
