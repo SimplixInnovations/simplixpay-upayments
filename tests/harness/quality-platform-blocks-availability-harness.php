@@ -119,11 +119,14 @@ namespace {
     );
     q18_assert(
         is_string($js_source)
-        && strpos($js_source, 'const canMakePayment =') !== false
+        && strpos($js_source, 'const canMakePayment = (currentOrder) =>') !== false
         && strpos($js_source, 'availability_valid === true') !== false
-        && strpos($js_source, 'hasCurrentOrderTotal(cartData)') !== false
-        && strpos($js_source, 'supportedCurrencies.indexOf(currentCartCurrency(cartData)) !== -1') !== false
-        && strpos($js_source, 'canMakePayment,') !== false,
+        && strpos($js_source, 'currentOrder.cartTotals') !== false
+        && strpos($js_source, "typeof currentOrder.cartTotals.currency_code === 'string'") !== false
+        && strpos($js_source, "liveCurrency !== ''") !== false
+        && strpos($js_source, 'Array.isArray(supported_currencies)') !== false
+        && strpos($js_source, 'supported_currencies.includes(liveCurrency)') !== false
+        && strpos($js_source, 'canMakePayment: canMakePayment') !== false,
         'Blocks client canMakePayment fails closed on provider availability and current live economics'
     );
     q18_assert(
