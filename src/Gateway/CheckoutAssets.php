@@ -94,10 +94,13 @@ final class CheckoutAssets {
             );
         }
 
-        // Preserve the canonical Classic subscription predicate. The handle
-        // check prevents duplicate localization when the normal checkout page
-        // already pre-enqueued this exact first-party script.
-        if ($gateway->autoDeduction === 'yes'
+        // Preserve the canonical Classic subscription predicate while failing
+        // closed if a legacy gateway instance does not expose the expected
+        // public state. The handle check prevents duplicate localization when
+        // the normal checkout page already pre-enqueued this first-party script.
+        $gateway_state = get_object_vars($gateway);
+        if (isset($gateway_state['autoDeduction'])
+            && $gateway_state['autoDeduction'] === 'yes'
             && class_exists(Utils::class)
             && Utils::cartHasCustomType()
             && ! wp_script_is('supcheckout-subscription-checkout', 'enqueued')
