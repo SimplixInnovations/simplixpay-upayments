@@ -1,0 +1,47 @@
+name: Temporary R1 H12 diagnostics
+
+on:
+  push:
+    branches:
+      - audit/post-t3-ecosystem-hardening
+
+permissions:
+  contents: read
+
+jobs:
+  diagnose:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          fetch-depth: 1
+      - name: Print exact stale-ratchet contexts and bootstrap measurements
+        shell: bash
+        run: |
+          set -euo pipefail
+          H='tests/harness/phase-9g-h12-php-harness.php'
+          for needle in \
+            'expected extracted production classes' \
+            'requires extracted production classes exactly once' \
+            'pins validated multi-merchant configuration' \
+            'normalized SHA-256' \
+            'exact lines'; do
+            echo "===== $needle ====="
+            grep -n -F -B 8 -A 12 "$needle" "$H" || true
+          done
+          echo '===== bootstrap measurements ====='
+          python3 - <<'PY'
+          from pathlib import Path
+          import hashlib
+          p=Path('UPayments.php')
+          b=p.read_bytes()
+          normalized=b.replace(b'\r\n',b'\n').replace(b'\r',b'\n')
+          print('bytes=',len(b),sep='')
+          print('lines_splitlines=',len(b.splitlines()),sep='')
+          print('newline_count=',b.count(b'\n'),sep='')
+          print('sha256_raw=',hashlib.sha256(b).hexdigest(),sep='')
+          print('sha256_lf=',hashlib.sha256(normalized).hexdigest(),sep='')
+          PY
+          echo '===== all UPayments hash/line source guards ====='
+          grep -n -E -B 5 -A 10 'UPayments\.php.*(sha|SHA|line|normalized)|normalized.*UPayments|exact lines' "$H" || true
