@@ -15,8 +15,6 @@ const { registerPaymentMethod } = wc.wcBlocksRegistry;
         saved_cards,
         is_logged_in,
         save_card_enabled,
-        cart_total,
-        currency_display,
         is_subscription_enabled,
         product_type,
         plugin_url,
@@ -27,7 +25,12 @@ const { registerPaymentMethod } = wc.wcBlocksRegistry;
         const { useDispatch, useSelect } = wp.data;
         const { useEffect, useState, createElement } = wp.element;
         const { setExtensionData } = useDispatch('wc/store/checkout');
-        const hasCustomTypeProduct = Array.isArray(product_type) && product_type.some(product => product.type === 'custom_type');
+        const liveCartItems = props && props.cartData && Array.isArray(props.cartData.cartItems)
+            ? props.cartData.cartItems
+            : null;
+        const hasCustomTypeProduct = Array.isArray(liveCartItems)
+            ? liveCartItems.some(product => product && product.type === 'custom_type')
+            : Array.isArray(product_type) && product_type.some(product => product && product.type === 'custom_type');
 
         const NAMESPACE = 'upayments';
 
@@ -259,12 +262,6 @@ const handleSubscriptionChange = (plan, interval) => {
                                         }
                                     }, brand ? `${label} (${brand})` : label),
                                     createElement('span', {
-                                        style: {
-                                            marginLeft: 'auto',
-                                            fontWeight: '600'
-                                        }
-                                    }, `${cart_total} ${currency_display}`),
-                                    createElement('span', {
                               className: 'upay-chevron',
                               'aria-hidden': 'true',
                               style: {
@@ -360,12 +357,6 @@ const handleSubscriptionChange = (plan, interval) => {
                                     }
                                 }, label),
                                 createElement('span', {
-                                    style: {
-                                        marginLeft: 'auto',
-                                        fontWeight: '600'
-                                    }
-                                }, `${cart_total} ${currency_display}`),
-                                createElement('span', {
                               className: 'upay-chevron',
                               'aria-hidden': 'true',
                               style: {
@@ -418,12 +409,11 @@ const handleSubscriptionChange = (plan, interval) => {
                                     createElement('img', { src: `${plugin_url}assets/images/${key}.png`, style: { height: '22px' } })
                                 )
                             )),
-                            createElement('span', { style: { marginLeft: 'auto', fontWeight: '600' } }, `${cart_total} ${currency_display}`),
                             createElement('span', {
                               className: 'upay-chevron',
                               'aria-hidden': 'true',
                               style: {
-                                  marginLeft: '10px',
+                                  marginLeft: 'auto',
                                   fontSize: '20px',
                                   lineHeight: '1'
                               }
