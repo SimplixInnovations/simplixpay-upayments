@@ -81,7 +81,7 @@ Mandatory sequence:
 
 `pre-acceptance engineering closed → fresh-clone owner technical acceptance → accepted baseline → Approach 3 architecture modernization → Approach 3 re-certification → full UI/UX/branding/accessibility/broad launch testing → explicit release decision.`
 
-Approach 3 architecture is **APPROVED / RECORDED** and T1 `t01-architecture-guardrails-and-active-callback-characterization` is **DONE / VERIFIED** on merged main `beb89ac0c4d8c0e9b7c8b2de1e13c237bbd37b15`. T1 added permanent architecture/callback guardrails without changing distributable runtime bytes; the frozen owner-accepted Approach 2 package remains the regression reference. The next substantive action is a separately recorded bounded runtime decision from T1 evidence. Read `.ai-architect/` before any Approach 3 runtime implementation.
+Approach 3 architecture is **APPROVED / RECORDED**. T1 `t01-architecture-guardrails-and-active-callback-characterization` is **DONE / VERIFIED** on merged main `beb89ac0c4d8c0e9b7c8b2de1e13c237bbd37b15`. Runtime-bearing T2 `legacy-callback-routing-consolidation` is **DONE / VERIFIED** on merged main `047cc86060efb97761d7a0cc4a3806f971ab6fe1`, with fresh post-merge 41/41 SUCCESS and deterministic 51-file candidate package SHA-256 `368aaa5cb1a75e6df41ff17bb2e2126431b49da5e6b8dfe508c718433009fc04`. The frozen owner-accepted Approach 2 package remains the regression reference until Approach 3 closeout re-acceptance. The next substantive action is direct characterization of the legacy return/webhook/private verification surfaces before any further consolidation. Read `.ai-architect/` before any Approach 3 runtime implementation.
 
 Latest runtime-bearing CI-certified `main`:
 
