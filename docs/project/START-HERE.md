@@ -107,7 +107,7 @@ The latest fully certified runtime-content checkpoint inside that PR before R0 c
 
 `b06976ac689cfd0d469bd96b0d6a2b925c863747`
 
-At that exact SHA, Quality Gates, the full 20-cell Compatibility matrix + Compatibility Gate, Provider Sandbox Certification, WordPress.org Submission Check, Release Artifact and CodeQL all succeeded. Its deterministic package is 51 files / SHA-256 `a343a028e42f17a8d111de4e1a271c4e4bd51ba8cbbc1f0de89652b0d2480455`.
+At that exact SHA, Quality Gates, the full 20-cell Compatibility matrix + Compatibility Gate, Provider Sandbox Certification, WordPress.org Submission Check, Release Artifact and CodeQL all succeeded. Its deterministic package is 53 files / SHA-256 `a343a028e42f17a8d111de4e1a271c4e4bd51ba8cbbc1f0de89652b0d2480455`.
 
 That candidate does **not** redefine the accepted Approach 2 baseline.
 
@@ -154,7 +154,7 @@ R0-R4 are bounded evidence-first work under the approved post-T3 plan. **R5/T4 i
 | Latest merged Approach 3 main | `a7a8bbfc3a1dc551127b7ead897c964e95c7cec9` |
 | Active task | **PR #108 — post-t3-ecosystem-hardening** |
 | Latest fully certified runtime-content PR checkpoint | `b06976ac689cfd0d469bd96b0d6a2b925c863747` |
-| Latest candidate package at that checkpoint | 51 files / SHA-256 `a343a028e42f17a8d111de4e1a271c4e4bd51ba8cbbc1f0de89652b0d2480455` |
+| Latest candidate package at that checkpoint | 53 files / SHA-256 `a343a028e42f17a8d111de4e1a271c4e4bd51ba8cbbc1f0de89652b0d2480455` |
 | Current operational gate | **R0 control-plane reconciliation, then remaining R1** |
 | Public release authorization | **NOT GRANTED** |
 | Source of live truth | **GitHub + exact source/check/package evidence** |
