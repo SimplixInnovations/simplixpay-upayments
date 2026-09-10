@@ -25,7 +25,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          test "$(git rev-parse HEAD^)" = "565ea0d8ffd95658e631291801ba2e3bd052b12f"
+          test "$(git rev-parse HEAD^)" = "27a847c795f9da4ab5e279302095c0ba46504672"
           test "$(git diff --name-only HEAD^ HEAD)" = ".github/workflows/tmp-presentation-checkbox-fix.yml"
           test -f scripts/tmp-presentation-checkbox-fix.py
 
@@ -52,9 +52,9 @@ jobs:
               "$use_new_design = ($this->get_option('use_new_design') === 'yes');",
           )
           forbidden = (
-              "('yes' == $this->get_option('enable_save_card'))",
-              "('yes' == $save_card_enabled)",
-              "$this->get_option('use_new_design') == 'yes'",
+              "            $save_card_enabled  = ('yes' == $this->get_option('enable_save_card'));",
+              "            $template_args = array('gateway' => $this,'save_card_enabled' => ('yes' == $save_card_enabled));",
+              "            $use_new_design = ($this->get_option('use_new_design') == 'yes') ? true : false;",
           )
           for pattern in required:
               if pattern not in text:
