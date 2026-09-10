@@ -84,7 +84,7 @@ T3 proved that a direct `return_from_upayments()` caller may lack the WC-API GET
 
 The current successor program is **post-t3-ecosystem-hardening**, governed by `docs/superpowers/plans/2026-09-10-post-t3-ecosystem-hardening.md`, with active draft PR #108 on `audit/post-t3-ecosystem-hardening`.
 
-The latest fully certified runtime-content checkpoint inside PR #108 before R0 control-plane reconciliation is `b06976ac689cfd0d469bd96b0d6a2b925c863747`. Quality, all 20 Compatibility cells plus Compatibility Gate, Provider Sandbox, WordPress.org Submission Check, Release Artifact and CodeQL succeeded at that exact head. Its deterministic package is 51 files / SHA-256 `a343a028e42f17a8d111de4e1a271c4e4bd51ba8cbbc1f0de89652b0d2480455`.
+The latest fully certified runtime-content checkpoint inside PR #108 before R0 control-plane reconciliation is `b06976ac689cfd0d469bd96b0d6a2b925c863747`. Quality, all 20 Compatibility cells plus Compatibility Gate, Provider Sandbox, WordPress.org Submission Check, Release Artifact and CodeQL succeeded at that exact head. Its deterministic package is 53 files / SHA-256 `a343a028e42f17a8d111de4e1a271c4e4bd51ba8cbbc1f0de89652b0d2480455`.
 
 Neither T2, T3 nor PR #108 silently redefines owner acceptance. A fresh owner acceptance is required at Approach 3 closeout.
 
