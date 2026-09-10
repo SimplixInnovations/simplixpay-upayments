@@ -27,6 +27,32 @@ def replace_unique_line(path, required_fragments, replacement, label):
 
 
 replace_once(
+    "src/Provider/MultiMerchantContract.php",
+    "&& preg_match('/^(?:0|[1-9][0-9]*)(?:\\.[0-9]+)?$/', $value) === 1;",
+    "&& preg_match('/^(?:0|[1-9][0-9]*)(?:\\.[0-9]+)?\\z/', $value) === 1;",
+    "strict commission terminator",
+)
+
+old_required_fixture = """    public function test_prepare_post_data_requires_every_enabled_allocation_field(): void {
+        $complete = array(
+            'woocommerce_upayments_api_key'              => 'secret',
+            'woocommerce_upayments_enable_multimerchant' => '1',
+            'woocommerce_upayments_iban_number'          => 'KW01',
+"""
+new_required_fixture = """    public function test_prepare_post_data_requires_every_enabled_allocation_field(): void {
+        $complete = array(
+            'woocommerce_upayments_api_key'              => 'secret',
+            'woocommerce_upayments_enable_multimerchant' => '1',
+            'woocommerce_upayments_iban_number'          => 'KW81CBKU0000000000001234560101',
+"""
+replace_once(
+    "tests/unit/Admin/GatewaySettingsTest.php",
+    old_required_fixture,
+    new_required_fixture,
+    "valid required-field fixture",
+)
+
+replace_once(
     "UPayments.php",
     "require_once __DIR__ . '/src/Release/Identity.php';\nrequire_once __DIR__ . '/src/Admin/GatewaySettings.php';",
     "require_once __DIR__ . '/src/Release/Identity.php';\nrequire_once __DIR__ . '/src/Provider/MultiMerchantContract.php';\nrequire_once __DIR__ . '/src/Admin/GatewaySettings.php';",
