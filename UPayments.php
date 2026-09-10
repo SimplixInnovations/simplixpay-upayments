@@ -26,6 +26,7 @@ define('UPAYMENTS_PLUGIN_FILE', __FILE__ );
 
 require_once __DIR__ . '/src/Release/Identity.php';
 require_once __DIR__ . '/src/Admin/GatewaySettings.php';
+require_once __DIR__ . '/src/Gateway/Availability.php';
 require_once __DIR__ . '/src/Provider/EndpointResolver.php';
 require_once __DIR__ . '/src/Provider/PaymentMethodAvailability.php';
 require_once __DIR__ . '/src/Payment/CheckoutPayload.php';
@@ -39,6 +40,7 @@ require_once __DIR__ . '/src/Migration/MigrationBootstrap.php';
 
 use Simplixi\SUPCheckout\Release\Identity;
 use Simplixi\SUPCheckout\Admin\GatewaySettings;
+use Simplixi\SUPCheckout\Gateway\Availability;
 use Simplixi\SUPCheckout\Provider\EndpointResolver;
 use Simplixi\SUPCheckout\Provider\PaymentMethodAvailability;
 use Simplixi\SUPCheckout\Payment\CheckoutPayload;
@@ -1737,28 +1739,7 @@ add_filter("woocommerce_available_payment_gateways", "enableUpaymentsGateway");
 // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedFunctionFound -- Legacy WooCommerce callback retained for compatibility.
 function enableUpaymentsGateway($available_gateways)
 {
-    if (is_admin()){
-        return $available_gateways;
-    }
-
-    if (isset($available_gateways["upayments"])){
-        // Keep UPayments last unless reordered.
-        $upay = $available_gateways['upayments'];
-        unset($available_gateways['upayments']);
-        $available_gateways['upayments'] = $upay;
-
-        $settings = get_option("woocommerce_upayments_settings");
-
-        if (is_checkout() && isset($available_gateways['cod']) && (isset($settings['enable_autodeduction']) && $settings['enable_autodeduction'] === 'yes')) {
-            unset($available_gateways['cod']);
-        }
-
-        if (WC()->session->get('chosen_payment_method') === 'upayments' && (isset($settings['make_default_gateway']) && $settings['make_default_gateway'] !== 'yes')) {
-            WC()->session->set('chosen_payment_method', null);
-        }
-    }
-
-    return $available_gateways;
+    return Availability::filter($available_gateways);
 }
 
 // Declare compatibility with WooCommerce's Cart & Checkout blocks (WooBlocks)

@@ -42,11 +42,13 @@ final class Availability {
                 unset($available_gateways['cod']);
             }
 
-            if (WC()->session->get('chosen_payment_method') === 'upayments'
+            $wc = function_exists('WC') ? WC() : null;
+            if ($wc && $wc->session
+                && $wc->session->get('chosen_payment_method') === 'upayments'
                 && isset($settings['make_default_gateway'])
                 && $settings['make_default_gateway'] !== 'yes'
             ) {
-                WC()->session->set('chosen_payment_method', null);
+                $wc->session->set('chosen_payment_method', null);
             }
         }
 
