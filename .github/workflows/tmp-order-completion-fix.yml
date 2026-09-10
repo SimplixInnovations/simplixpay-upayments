@@ -3,7 +3,7 @@ name: Temporary Order Completion Fix Applicator
 on:
   push:
     branches:
-      - audit/post-t3-ecosystem-hardening
+      - 'audit/post-t3-ecosystem-hardening'
 
 permissions:
   contents: write
@@ -13,27 +13,19 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
-      - name: Skip bot-triggered follow-up
-        id: actor
-        shell: bash
-        run: |
-          if [[ "$GITHUB_ACTOR" == "github-actions[bot]" ]]; then
-            echo 'run=false' >> "$GITHUB_OUTPUT"
-          else
-            echo 'run=true' >> "$GITHUB_OUTPUT"
-          fi
-
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-        if: steps.actor.outputs.run == 'true'
         with:
           ref: audit/post-t3-ecosystem-hardening
           fetch-depth: 0
 
       - name: Apply exact guarded correction
-        if: steps.actor.outputs.run == 'true'
         shell: bash
         run: |
           set -euo pipefail
+          if [[ "$GITHUB_ACTOR" == "github-actions[bot]" ]]; then
+            echo 'Bot follow-up: no mutation.'
+            exit 0
+          fi
           python3 - <<'PY'
           from pathlib import Path
           import hashlib
@@ -41,10 +33,8 @@ jobs:
           gateway_path = Path('UPayments.php')
           architecture_path = Path('tests/harness/architecture-foundation-harness.php')
           gateway = gateway_path.read_bytes()
-
           git_blob_sha = hashlib.sha1(b'blob ' + str(len(gateway)).encode() + b'\0' + gateway).hexdigest()
-          expected_blob_sha = 'f52dc13612b2cb152140b1d292a14296dae1f47f'
-          if git_blob_sha != expected_blob_sha:
+          if git_blob_sha != 'f52dc13612b2cb152140b1d292a14296dae1f47f':
               raise SystemExit(f'Unexpected UPayments.php preimage: {git_blob_sha}')
 
           text = gateway.decode('utf-8')
@@ -62,43 +52,30 @@ jobs:
           new_helper = """        public function getIsOrderComplete() {
             return $this->isOrderComplete === 'yes';
         }"""
-
-          if text.count(old_assignment) != 1:
-              raise SystemExit('Expected exactly one is_order_complete assignment preimage')
-          if text.count(old_helper) != 1:
-              raise SystemExit('Expected exactly one getIsOrderComplete helper preimage')
-
-          text = text.replace(old_assignment, new_assignment, 1)
-          text = text.replace(old_helper, new_helper, 1)
+          if text.count(old_assignment) != 1 or text.count(old_helper) != 1:
+              raise SystemExit('Order-completion source preimage mismatch')
+          text = text.replace(old_assignment, new_assignment, 1).replace(old_helper, new_helper, 1)
           new_gateway = text.encode('utf-8')
           gateway_path.write_bytes(new_gateway)
 
           architecture = architecture_path.read_text(encoding='utf-8')
           old_ratchet = '$acceptedGatewayBytes = 86212;'
-          new_ratchet = f'$acceptedGatewayBytes = {len(new_gateway)};'
           if architecture.count(old_ratchet) != 1:
-              raise SystemExit('Expected exactly one architecture byte-ratchet preimage')
-          architecture_path.write_text(architecture.replace(old_ratchet, new_ratchet, 1), encoding='utf-8')
-
+              raise SystemExit('Architecture byte-ratchet preimage mismatch')
+          architecture_path.write_text(
+              architecture.replace(old_ratchet, f'$acceptedGatewayBytes = {len(new_gateway)};', 1),
+              encoding='utf-8'
+          )
           print(f'UPayments.php bytes: {len(gateway)} -> {len(new_gateway)}')
-          print(f'UPayments.php Git blob: {git_blob_sha}')
           PY
 
           php -l UPayments.php
           php tests/harness/architecture-foundation-harness.php
           git diff --check
+          test "$(git diff --name-only | wc -l)" -eq 2
+          git diff --name-only | grep -Fx 'UPayments.php'
+          git diff --name-only | grep -Fx 'tests/harness/architecture-foundation-harness.php'
 
-          mapfile -t changed < <(git diff --name-only)
-          printf 'Changed files:\n%s\n' "${changed[*]}"
-          test "${#changed[@]}" -eq 2
-          test "${changed[0]}" = "UPayments.php"
-          test "${changed[1]}" = "tests/harness/architecture-foundation-harness.php"
-
-      - name: Commit exact correction
-        if: steps.actor.outputs.run == 'true'
-        shell: bash
-        run: |
-          set -euo pipefail
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add UPayments.php tests/harness/architecture-foundation-harness.php
