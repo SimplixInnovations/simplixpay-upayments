@@ -220,6 +220,7 @@ class WCGatewayUPaymentsBlocks extends AbstractPaymentMethodType {
         // fallback product-type snapshot for environments without live props.
         return [
             'availability_valid'         => $availability_valid,
+            'supported_currencies'       => GatewaySettings::supported_currencies(),
             'is_whitelabled'            => $whitelabled,
             'payment_icons'             => $icons,
             'saved_cards'               => $saved_cards,
