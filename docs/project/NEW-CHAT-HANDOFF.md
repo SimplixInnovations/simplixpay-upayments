@@ -14,6 +14,8 @@ Use this with [`AGENTS.md`](../../AGENTS.md), [`PROJECT-STATUS.md`](PROJECT-STAT
 - Package root/bootstrap: `supcheckout/UPayments.php`
 - Development version: `0.1.0`
 
+`for` is human-facing relationship wording only. Never encode it into repository, package, WordPress.org, namespace, REST, CSS/JS or artifact identifiers.
+
 Protected compatibility identities are contracts. Do not mechanically rename `upayments`, `woocommerce_upayments_settings`, `wc_upayments`, `_upay_*`, `UPayments_order_id`, H12 token/provenance identities, subscription/billing-attempt identities, historical payment-method values, frozen Phase 9I identities, `getAPIUrlForRetreiveCards()`, or `whitelabled`.
 
 ## Frozen regression baseline
@@ -26,6 +28,14 @@ Owner-accepted Approach 2:
 - SHA-256: `58eba75019416f39a09211c87e7ccbcbb635834fb20bc890e9efbd5fec859655`.
 
 Do not silently move this acceptance anchor. A fresh explicit owner acceptance is required at Approach 3 closeout.
+
+## Historical closed milestones retained as regression evidence
+
+- Quality Platform Q1-Q19 — **DONE / VERIFIED; permanently closed at Q19**
+- Enterprise Tasks 1-8 — **DONE / VERIFIED**
+- Final pre-clone runtime/QA closure — **DONE / VERIFIED — PR #75**
+
+These remain historical closure facts while the active post-T3 program advances. Do not rewrite or delete them when reconciling current coordinates.
 
 ## Current Approach 3 state
 
