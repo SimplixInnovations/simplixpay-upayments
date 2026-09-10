@@ -143,6 +143,27 @@ supcheckout_cert_assert(
 );
 WC()->cart = $original_cart;
 
+// The public available-gateways filter is also called by custom integrations
+// outside the normal checkout rendering path. A valid gateway must remain
+// filterable when WooCommerce has not initialized a customer session; policy
+// that requires session state must simply be skipped rather than fataling.
+$original_session = WC()->session;
+WC()->session = null;
+$sessionless_gateways = array(
+    'upayments' => (object) array('id' => 'upayments'),
+    'cod'       => (object) array('id' => 'cod'),
+);
+$sessionless_result = enableUpaymentsGateway($sessionless_gateways);
+supcheckout_cert_assert(
+    isset($sessionless_result['upayments']),
+    'Classic available-gateways filter preserves eligible UPayments without a WooCommerce session'
+);
+supcheckout_cert_assert(
+    isset($sessionless_result['cod']),
+    'Classic available-gateways filter does not mutate unrelated gateways without a WooCommerce session'
+);
+WC()->session = $original_session;
+
 supcheckout_cert_store_option_raw('woocommerce_upayments_settings', $original_settings);
 update_option('woocommerce_currency', $original_currency, false);
 wp_cache_delete('woocommerce_currency', 'options');
