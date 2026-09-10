@@ -1,0 +1,94 @@
+name: Temporary settings atomicity applicator
+
+on:
+  push:
+    branches:
+      - audit/post-t3-ecosystem-hardening
+    paths:
+      - '.github/workflows/_temporary-apply-settings-atomicity.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: audit/post-t3-ecosystem-hardening
+          fetch-depth: 0
+          persist-credentials: true
+      - name: Apply atomic settings rejection and ratchet
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD^)" = "817003f3aee4876b803b209ccd7f4d9c261ef88b"
+          test "$(git hash-object UPayments.php)" = "dcf5e4c0e6e6b7770bd686b2c34ee94f02044e06"
+          test "$(wc -c < UPayments.php | tr -d ' ')" = "86457"
+
+          python3 <<'PY'
+          from pathlib import Path
+          import re
+
+          gateway_path = Path('UPayments.php')
+          source = gateway_path.read_text()
+          pattern = re.compile(
+              r"        public function process_admin_options\(\)\n"
+              r"        \{\n.*?\n"
+              r"        \}\n\n"
+              r"        public function get_multimerchant_credentials\( \$order \) \{",
+              re.S,
+          )
+          replacement = '''        public function process_admin_options()
+        {
+            $this->init_settings();
+            $prepared = GatewaySettings::prepare_post_data($this->get_post_data());
+            if ($prepared['api_key_missing'] || $prepared['multimerchant_missing']) {
+                $message = $prepared['api_key_missing']
+                    ? "Please enter UPayments API Key"
+                    : "Please enter Multimerchant Configuration";
+                WC_Admin_Settings::add_error(__($message, 'supcheckout'));
+                return false;
+            }
+
+            $post_data = $prepared['post_data'];
+            foreach ($this->get_form_fields() as $key => $field) {
+                $this->settings[$key] = $this->get_field_value($key, $field, $post_data);
+            }
+            delete_option("upayments_maat");
+            // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- WooCommerce Settings API defines this dynamic core hook name.
+            return update_option($this->get_option_key(), apply_filters("woocommerce_settings_api_sanitized_fields_" . $this->id, $this->settings));
+        }
+
+        public function get_multimerchant_credentials( $order ) {'''
+          source, count = pattern.subn(replacement, source)
+          if count != 1:
+              raise SystemExit(f'process_admin_options replacement count={count}')
+          gateway_path.write_text(source, newline='\n')
+
+          new_size = gateway_path.stat().st_size
+          if new_size >= 86457:
+              raise SystemExit(f'monolith did not shrink: {new_size}')
+
+          arch_path = Path('tests/harness/architecture-foundation-harness.php')
+          arch = arch_path.read_text()
+          old = '$acceptedGatewayBytes = 86457;'
+          if arch.count(old) != 1:
+              raise SystemExit('architecture byte-ratchet marker count != 1')
+          arch = arch.replace(old, f'$acceptedGatewayBytes = {new_size};')
+          arch_path.write_text(arch, newline='\n')
+          print(f'UPAYMENTS_BYTES={new_size}')
+          PY
+
+          php -l UPayments.php
+          php -l tests/harness/architecture-foundation-harness.php
+          php tests/harness/architecture-foundation-harness.php
+          git diff --check
+
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add UPayments.php tests/harness/architecture-foundation-harness.php
+          git commit -m 'fix: reject incomplete multimerchant settings atomically'
+          git push origin HEAD:audit/post-t3-ecosystem-hardening
