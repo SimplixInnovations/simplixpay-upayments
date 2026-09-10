@@ -14,6 +14,11 @@ class SUPCheckoutPhpstanWooContainer {
     public $session;
 }
 
+class WC_Upayments {
+    /** @var string */
+    public $autoDeduction;
+}
+
 /** @return bool */
 function is_admin() {}
 
@@ -37,3 +42,12 @@ function wp_enqueue_style($handle, $src = '', $deps = array(), $ver = false, $me
 
 /** @return void */
 function wp_enqueue_script($handle, $src = '', $deps = array(), $ver = false, $args = array()) {}
+
+/** @return bool */
+function wp_script_is($handle, $status = 'enqueued') {}
+
+/** @return bool */
+function wp_localize_script($handle, $object_name, $l10n) {}
+
+/** @return bool */
+function is_user_logged_in() {}
