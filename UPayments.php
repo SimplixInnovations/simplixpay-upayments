@@ -203,6 +203,10 @@ function woocommerceUpaymentsInit() {
             Supports Classic and Block Checkout. Subscription auto-deduction requires separately validated provider setup.", 'supcheckout');
             $this->has_fields         = true; // Required for custom forms like Save Card/Design variations.
 
+            // Load settings and hooks
+            $this->init_form_fields();
+            $this->init_settings();
+
             $this->title = $this->get_option("title");
             $this->description = $this->get_option("description");
             $this->debug = $this->get_option("debug");
@@ -224,10 +228,6 @@ function woocommerceUpaymentsInit() {
             $this->knetChargeType = $this->get_option("knet_charge_type");
             $this->saveCardEnabled = $this->get_option("enable_save_card");
             $this->autoDeduction = $this->get_option("enable_subscriptions");
-
-            // Load settings and hooks
-            $this->init_form_fields();
-            $this->init_settings();
 
             // Register action hook for saving settings (critical for all new toggles)
             add_action( 'woocommerce_update_options_payment_gateways_' . $this->id, [$this, 'process_admin_options']);
