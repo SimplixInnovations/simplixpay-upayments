@@ -19,7 +19,7 @@ final class Availability {
      * @return array
      */
     public static function filter($available_gateways) {
-        if (is_admin() && !wp_doing_ajax()) {
+        if (is_admin() && ! wp_doing_ajax()) {
             return $available_gateways;
         }
 
@@ -34,7 +34,8 @@ final class Availability {
                 return $available_gateways;
             }
 
-            if (is_checkout()
+            $is_checkout = is_checkout();
+            if ($is_checkout
                 && isset($available_gateways['cod'])
                 && isset($settings['enable_autodeduction'])
                 && $settings['enable_autodeduction'] === 'yes'
@@ -42,15 +43,16 @@ final class Availability {
                 unset($available_gateways['cod']);
             }
 
-            $wc = function_exists('WC') ? WC() : null;
-            if (is_checkout()
-                && $wc
-                && $wc->session
-                && $wc->session->get('chosen_payment_method') === 'upayments'
-                && isset($settings['make_default_gateway'])
-                && $settings['make_default_gateway'] !== 'yes'
-            ) {
-                $wc->session->set('chosen_payment_method', null);
+            if ($is_checkout) {
+                $wc = function_exists('WC') ? WC() : null;
+                if ($wc
+                    && $wc->session
+                    && $wc->session->get('chosen_payment_method') === 'upayments'
+                    && isset($settings['make_default_gateway'])
+                    && $settings['make_default_gateway'] !== 'yes'
+                ) {
+                    $wc->session->set('chosen_payment_method', null);
+                }
             }
         }
 
