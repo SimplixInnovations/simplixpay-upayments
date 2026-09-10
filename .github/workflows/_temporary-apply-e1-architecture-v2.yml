@@ -1,0 +1,64 @@
+name: Temporary E1 architecture ownership v2
+
+on:
+  push:
+    branches:
+      - audit/post-t3-ecosystem-hardening
+    paths:
+      - '.github/workflows/_temporary-apply-e1-architecture-v2.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: audit/post-t3-ecosystem-hardening
+          fetch-depth: 0
+          persist-credentials: true
+      - name: Apply exact architecture ownership
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git hash-object tests/harness/architecture-foundation-harness.php)" = "0c8b2049ec86c0809045c6c84439dcd742302157"
+          test "$(wc -c < UPayments.php | tr -d ' ')" = "86992"
+
+          python3 <<'PY'
+          from pathlib import Path
+          p = Path('tests/harness/architecture-foundation-harness.php')
+          s = p.read_text()
+          replacements = [
+              ("$settingsReadSequence = array(\n    'variable:$settings', '=', 'name:get_option', '(', 'string:woocommerce_upayments_settings', ')', ';',\n);\n",
+               "$settingsReadSequence = array(\n    'variable:$settings', '=', 'name:get_option', '(', 'string:woocommerce_upayments_settings', ')', ';',\n);\n$availabilityDelegateSequence = array(\n    'return', 'name:Availability', '::', 'name:filter', '(', 'variable:$available_gateways', ')', ';',\n);\n$runtimeEligibilitySequence = array(\n    'name:GatewaySettings', '::', 'name:is_runtime_eligible', '(',\n    'variable:$settings', ',', 'name:get_woocommerce_currency', '(', ')', ')',\n);\n$sessionGuardSequence = array(\n    'variable:$wc', '&&', 'variable:$wc', '->', 'name:session',\n);\n"),
+              ("$checkoutOrchestrator = arch_read($root, 'src/Payment/CheckoutOrchestrator.php');\n$gatewayTokens = arch_executable_tokens($gateway);\n",
+               "$checkoutOrchestrator = arch_read($root, 'src/Payment/CheckoutOrchestrator.php');\n$gatewayAvailability = arch_read($root, 'src/Gateway/Availability.php');\n$gatewayTokens = arch_executable_tokens($gateway);\n"),
+              ("$checkoutProcess = arch_direct_public_method($checkoutOrchestratorClassTokens, 'process');\n$availabilityBinding = arch_direct_top_level_filter_callback(\n",
+               "$checkoutProcess = arch_direct_public_method($checkoutOrchestratorClassTokens, 'process');\n$gatewayAvailabilityTokens = arch_executable_tokens($gatewayAvailability);\n$gatewayAvailabilityClassTokens = arch_class_body_tokens($gatewayAvailabilityTokens, 'Availability');\n$gatewayAvailabilityFilter = arch_direct_public_method($gatewayAvailabilityClassTokens, 'filter');\n$availabilityBinding = arch_direct_top_level_filter_callback(\n"),
+              ("$acceptedGatewayBytes = 87724;\n",
+               "// Post-T3 E1 extracts the historical available-gateways policy to\n// src/Gateway/Availability.php while retaining the global callback as a thin adapter.\n$acceptedGatewayBytes = 86992;\n"),
+              ("arch_assert(is_file($root . '/src/Admin/GatewaySettings.php'), 'Admin GatewaySettings boundary exists');\n",
+               "arch_assert(is_file($root . '/src/Admin/GatewaySettings.php'), 'Admin GatewaySettings boundary exists');\narch_assert(is_file($root . '/src/Gateway/Availability.php'), 'E1 Gateway Availability boundary exists');\narch_assert(arch_contains($gatewayAvailability, 'namespace Simplixi\\\\SUPCheckout\\\\Gateway;'), 'E1 Gateway Availability uses SUPCheckout Gateway namespace');\n"),
+              ("arch_assert($availabilityBinding['found'], 'enableUpaymentsGateway remains a direct top-level registered availability callback');\narch_assert(\n    arch_has_token_sequence($availabilityBinding['body'], $settingsReadSequence),\n    'legacy WooCommerce settings option remains an executable direct global availability-callback read'\n);\n",
+               "arch_assert($availabilityBinding['found'], 'enableUpaymentsGateway remains a direct top-level registered availability callback');\narch_assert(\n    arch_has_token_sequence($availabilityBinding['body'], $availabilityDelegateSequence),\n    'legacy global availability callback directly delegates to the E1 Gateway Availability boundary'\n);\narch_assert($gatewayAvailabilityFilter['found'], 'E1 Gateway Availability filter entry point is public and executable');\narch_assert(\n    arch_has_token_sequence($gatewayAvailabilityFilter['body'], $settingsReadSequence),\n    'legacy WooCommerce settings option remains an executable availability-policy read behind the compatibility adapter'\n);\narch_assert(\n    arch_has_token_sequence($gatewayAvailabilityFilter['body'], $runtimeEligibilitySequence),\n    'E1 Gateway Availability enforces deterministic runtime eligibility before presentation policy'\n);\narch_assert(\n    arch_has_token_sequence($gatewayAvailabilityFilter['body'], $sessionGuardSequence),\n    'E1 Gateway Availability guards session-dependent policy before session access'\n);\narch_assert(\n    arch_contains($gatewayAvailability, \"is_checkout()\")\n        && arch_contains($gatewayAvailability, \"'enable_autodeduction'\")\n        && arch_contains($gatewayAvailability, \"=== 'yes'\"),\n    'E1 Gateway Availability retains checkout-scoped auto-deduction COD policy'\n);\n"),
+          ]
+          for old, new in replacements:
+              if s.count(old) != 1:
+                  raise SystemExit('architecture replacement marker count != 1: ' + old[:90])
+              s = s.replace(old, new)
+          p.write_text(s, newline='\n')
+          PY
+
+          php -l tests/harness/architecture-foundation-harness.php
+          php tests/harness/architecture-foundation-harness.php
+          git diff --check
+
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add tests/harness/architecture-foundation-harness.php
+          git diff --cached --exit-code && exit 0
+          git commit -m 'test: own extracted gateway availability architecture'
+          git push origin HEAD:audit/post-t3-ecosystem-hardening
