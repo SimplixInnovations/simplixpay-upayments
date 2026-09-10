@@ -1,159 +1,111 @@
 # SUPCheckout for UPayments — Continuation Handoff
 
-**Mandatory first step for every new chat/session:** read [`START-HERE.md`](START-HERE.md) and verify live GitHub/source/check state before relying on this compact handoff.
+**Mandatory first step:** read [`START-HERE.md`](START-HERE.md), then verify live GitHub/source/check state. Chat memory is not authority.
 
-Use this file with root [`AGENTS.md`](../../AGENTS.md), [`PROJECT-STATUS.md`](PROJECT-STATUS.md), [`OWNER-HANDOFF.md`](OWNER-HANDOFF.md), [`NAMING-IDENTITY-STANDARD.md`](NAMING-IDENTITY-STANDARD.md), [`../COMPATIBILITY.md`](../COMPATIBILITY.md) and [`RELEASE-ENGINEERING.md`](RELEASE-ENGINEERING.md).
-
-Chat memory is never authority. If this file conflicts with live evidence or another living authority, stop and reconcile current truth first.
+Use this with [`AGENTS.md`](../../AGENTS.md), [`PROJECT-STATUS.md`](PROJECT-STATUS.md), [`OWNER-HANDOFF.md`](OWNER-HANDOFF.md), [`NAMING-IDENTITY-STANDARD.md`](NAMING-IDENTITY-STANDARD.md), [`../COMPATIBILITY.md`](../COMPATIBILITY.md), and [`RELEASE-ENGINEERING.md`](RELEASE-ENGINEERING.md).
 
 ## Identity
 
 - Product: **SUPCheckout for UPayments**
-- Short name: **SUPCheckout**
-- Maintainer: **Simplix Innovations**
 - Provider: **UPayments**
 - Repository: `SimplixInnovations/supcheckout`
 - Technical slug / text domain: `supcheckout`
 - PHP namespace: `Simplixi\SUPCheckout`
-- Package root: `supcheckout/`
-- First-stable bootstrap: `supcheckout/UPayments.php`
+- Package root/bootstrap: `supcheckout/UPayments.php`
 - Development version: `0.1.0`
 
-`for` is human-facing relationship wording only. Never encode it into repository, package, WordPress.org, namespace, REST, CSS/JS or artifact identifiers.
+Protected compatibility identities are contracts. Do not mechanically rename `upayments`, `woocommerce_upayments_settings`, `wc_upayments`, `_upay_*`, `UPayments_order_id`, H12 token/provenance identities, subscription/billing-attempt identities, historical payment-method values, frozen Phase 9I identities, `getAPIUrlForRetreiveCards()`, or `whitelabled`.
 
-## Current state
+## Frozen regression baseline
 
-Pre-release engineering is mature and the repository-side pre-acceptance blocker set is closed through PR #97. Owner technical acceptance has been completed and the Approach 2 baseline is frozen.
+Owner-accepted Approach 2:
 
-- Repository Foundation / Phase 0 / Phase 9I — **DONE / VERIFIED**
-- Provider lifecycle / Security threat model — **DONE / VERIFIED**
-- Architecture A1-A5 — **DONE / VERIFIED**
-- Quality Platform Q1-Q19 — **DONE / VERIFIED; permanently closed at Q19**
-- Enterprise Tasks 1-8 — **DONE / VERIFIED**
-- Approach 2 — **DONE / VERIFIED**
-- PRs #91-#97 bounded pre-acceptance hardening — **DONE / VERIFIED / MERGED**
-- Owner technical acceptance — **ACCEPTED**
-- Accepted Approach 2 baseline — **`0c883d609906676966002eb022a82a9656eeacc5`**
-- Accepted package — **`supcheckout-0.1.0.zip` — 51 files / SHA-256 `58eba75019416f39a09211c87e7ccbcbb635834fb20bc890e9efbd5fec859655`**
-- Approach 3 — **ARCHITECTURE APPROVED / T1 DONE / VERIFIED / T2 DONE / VERIFIED / RUNTIME MODERNIZATION IN PROGRESS**
-- Full UI/UX/branding/broad launch testing — **DEFERRED until after Approach 3**
-- Public GitHub Release / WordPress.org publication — **NOT PERFORMED**
+- source SHA: `0c883d609906676966002eb022a82a9656eeacc5`;
+- package: `supcheckout-0.1.0.zip`;
+- files: 51;
+- SHA-256: `58eba75019416f39a09211c87e7ccbcbb635834fb20bc890e9efbd5fec859655`.
 
-Do not invent Q20. New work uses named, bounded tasks.
+Do not silently move this acceptance anchor. A fresh explicit owner acceptance is required at Approach 3 closeout.
 
-## Latest runtime-bearing CI-certified main
+## Current Approach 3 state
 
-Runtime-bearing T2 merge:
+- T1 — **DONE / VERIFIED**.
+- T2 — **DONE / VERIFIED / runtime-bearing**, merged main `047cc86060efb97761d7a0cc4a3806f971ab6fe1`.
+- T3 — **DONE / VERIFIED / runtime-neutral**, certified PR #107 head `f7c7d596dc4a2c8464d1acdf13dfe51028a5f9e0`, merged main `a7a8bbfc3a1dc551127b7ead897c964e95c7cec9`.
+- Current post-T3 program — **IN PROGRESS**, plan `docs/superpowers/plans/2026-09-10-post-t3-ecosystem-hardening.md`, active draft PR #108 on `audit/post-t3-ecosystem-hardening`.
+- Public tag / GitHub Release / WordPress.org publication — **NOT AUTHORIZED**.
 
-`047cc86060efb97761d7a0cc4a3806f971ab6fe1`
+T3 characterized the direct legacy return/webhook/private verifier. It also proved a direct `return_from_upayments()` caller may not carry the GET `page` marker used by `PaymentLifecycle::handle_callback()` for browser-mode inference. **T4 consolidation is therefore a separate architecture gate, not an automatic next refactor.**
 
-PR #104 exact certified head:
+## Latest fully certified runtime-content checkpoint
 
-`4cff2dc6e6d11a4b3232a6d3d70d6280a59741c4`
+`b06976ac689cfd0d469bd96b0d6a2b925c863747`
 
-Evidence:
+At that exact SHA:
 
-- PR head — **42/42 checks SUCCESS**;
-- merged main — **41/41 checks SUCCESS**;
-- T1 dependency/provider-egress guardrail — **11/0**;
-- T1 active callback characterization — **41/0**;
-- T2 direct legacy-fallback characterization — **25/0**;
-- full compatibility matrix + Compatibility Gate — **SUCCESS**;
-- Release Gate, Provider Sandbox, WordPress.org packaged Plugin Check and CodeQL/security — **SUCCESS**;
-- current deterministic candidate package — **51 files**, SHA-256 `368aaa5cb1a75e6df41ff17bb2e2126431b49da5e6b8dfe508c718433009fc04`, canonical/Linux/Windows byte-identical;
-- closed runtime topology after T2 — **main only**.
+- Quality Gates — **SUCCESS**;
+- Compatibility Certification — **20/20 runtime cells + Compatibility Gate SUCCESS**;
+- Provider Sandbox Certification — **SUCCESS**;
+- WordPress.org Submission Check — **SUCCESS**;
+- Release Artifact — **SUCCESS**;
+- CodeQL — **SUCCESS**;
+- deterministic package — 51 files / SHA-256 `a343a028e42f17a8d111de4e1a271c4e4bd51ba8cbbc1f0de89652b0d2480455`.
 
-Owner technical acceptance is **ACCEPTED** for this repository against the frozen Approach 2 baseline `0c883d609906676966002eb022a82a9656eeacc5` and accepted package SHA-256 `58eba75019416f39a09211c87e7ccbcbb635834fb20bc890e9efbd5fec859655`. Approach 3 T1 is **DONE / VERIFIED** on merged main `beb89ac0c4d8c0e9b7c8b2de1e13c237bbd37b15`. Runtime-bearing T2 is **DONE / VERIFIED** on merged main `047cc86060efb97761d7a0cc4a3806f971ab6fe1`; fresh main checks were 41/41 SUCCESS and its deterministic non-accepted candidate package is 51 files / SHA-256 `368aaa5cb1a75e6df41ff17bb2e2126431b49da5e6b8dfe508c718433009fc04`. The next gate is direct characterization of the legacy return/webhook/private verification surfaces before any further consolidation.
+Accessibility TDD evidence at that checkpoint:
 
-The pre-acceptance B-X1 malformed-settings rejection closed by PR #84 remains historical evidence; the current owner technical acceptance verdict supersedes it but does not erase it.
+- RED test `435f9ef1fddd6d54a7a066d1d764ce24bd77ba11` failed at the intended toast live-region assertion;
+- minimal markup implementation `b06976ac689cfd0d469bd96b0d6a2b925c863747`;
+- exact-head full-stack GREEN followed across the real-runtime matrix.
 
-## Protected compatibility identities
+## R0 control-plane evidence
 
-Never mechanically rename:
+R0 deliberately introduced permanent anti-staleness regression coverage.
 
-- gateway/payment ID `upayments`;
-- `woocommerce_upayments_settings`;
-- Blocks / Store API identity `upayments`;
-- callback `wc_upayments`;
-- `_upay_*` historical metadata;
-- provider order identity such as `UPayments_order_id`;
-- token/provenance/scope/generation identities;
-- `upay_process_subscriptions` and billing-attempt state;
-- historical order payment-method values;
-- frozen Phase 9I migration identities;
-- public compatibility wrapper `getAPIUrlForRetreiveCards()`;
-- normalized `whitelabled` compatibility shape.
+- Initial RED: `f57518db74fa3c35c313cb3c1997663b85168d3b` — 194 tests / 1,183 assertions / 3 intended stale-state failures.
+- Expanded RED: `55f9c8511ed7d322b6fb31358277e760140f834b` — 196 tests / 1,189 assertions / 5 intended failures after adding `START-HERE.md` and `AGENTS.md` to the living-authority ratchet.
 
-Changing one requires an approved migration with precedence, upgrade, rollback/failure semantics and regression evidence.
+The permanent regression must remain green after reconciliation. Do not remove or weaken it. Live PR #108/head/check state determines whether R0 is currently under certification or closed.
 
-## First-stable bootstrap
+## Remaining execution order
 
-`UPayments.php` is intentionally retained.
+1. Finish/certify **R0** and clean only proven-safe stale branches.
+2. Finish remaining **R1** bounded correctness characterization, including raw-input/zero-charge gaps where still unproven.
+3. Execute **E1** interactive checkout compatibility: Classic, Store API, `wc-ajax`, `admin-ajax`, REST/sessionless, embedded/custom checkout, Blocks reactive state, fragments, notice/session isolation, duplicate-ID/registration prevention.
+4. Execute **E2** economics/product compatibility with finalized Woo order amount/currency as authority and explicit zero-total handling.
+5. Execute **E3** theme/cache/analytics interaction evidence.
+6. Execute **R2** callback URL portability/no-cache safety.
+7. Execute **R3** subscription safety under the approved post-T3 plan.
+8. Execute **R4** scalability/idempotency/observability/load work.
+9. Gate **R5/T4** architecture separately; do not implement merely because characterization exists.
+10. Execute **R6** exact-head release qualification, fresh owner re-acceptance, version decision, then publication only with explicit authorization.
 
-Real WordPress upgrade qualification proved that physically renaming an already-active plugin main file can strand WordPress's stored plugin basename. A future `supcheckout.php` migration is a separate release-sensitive project, not unfinished first-release cleanup.
+## Permanent invariants
 
-## Permanent engineering controls
+- Browser/provider routing data is not payment truth.
+- Charge creation is not capture.
+- Paid state requires authenticated provider verification bound to the correct order/attempt/economics.
+- Finalized Woo order amount/currency is authoritative; `products[]` is descriptive.
+- No blind retry of non-idempotent Charge/refund/auto-deduct mutations.
+- Ambiguous identity fails closed.
+- Protected identities require explicit migration contracts.
+- Named ecosystem integrations are behaviorally characterized before special-case code.
+- Runtime fixes use RED → minimal GREEN → exact-head full recertification.
 
-Do not weaken or bypass:
+## Main-rule/release controls
 
-- Quality/H12 gates;
-- 20-cell compatibility certification, including PHP 8.2, 8.3, 8.4 and 8.5 current-stack lanes plus the PHP 7.4 compatibility floor;
-- deterministic release artifact/verifier;
-- packaged legacy + HPOS smoke;
-- historical package-root migration/rollback matrix;
-- strict official WordPress Plugin Check;
-- CodeQL/security analysis;
-- architecture, provider, security, Quality Platform and SUPCheckout-specific regression harnesses.
-
-Payment/security ambiguity fails closed. Browser redirect/callback payload alone is never financial truth. Non-idempotent operations are not blindly retried.
-
-## Supported and unsupported boundaries
-
-Repository evidence includes Classic checkout, Blocks registration/availability, HPOS/legacy storage, authenticated provider status binding, saved-card/token provenance boundaries, subscription eligibility/pre-dispatch safeguards and one additional merchant allocation.
-
-External/manual qualification remains required for production payment completion, real wallet/device completion, WPML/WCML/multilingual/multicurrency/RTL, broad browser/theme/accessibility, performance/load, penetration/PCI/legal evidence and live subscription auto-deduction.
-
-Automatic WooCommerce refunds and arbitrary marketplace multi-split are unsupported.
-
-## Repository state rule
-
-The verified closed repository topology after Approach 3 T2 PR #104 is `main` only. Temporary work branches must be scoped, reviewed and removed after merge. Open PR/issue/tag/release state must still be verified live at each session/release boundary.
-
-The Main Rule must continue to require:
+Required protected-branch checks remain:
 
 - `Governance`
 - `H12 Regression Harness`
 - `Compatibility Gate`
 - `Release Gate`
 
-with squash-only merging, linear history, deletion/non-fast-forward protection and no bypass actors.
+Squash-only linear history, review-thread resolution, deletion/non-fast-forward protection and no bypass actors must remain enforced.
 
-## Current program sequence
+Fresh live checks must also account for CodeQL/security, Provider Sandbox, WordPress.org Submission Check and deterministic cross-platform release evidence.
 
-The approved sequence is:
+## External/manual boundary
 
-`Approach 2 closed → fresh-clone owner technical acceptance → accepted baseline → Approach 3 architecture modernization → Approach 3 re-certification → full UI/UX/branding/accessibility/broad launch testing → explicit release decision.`
+Do not claim repository automation proves production payment completion, real wallet/device behavior, WPML/WCML/multilingual/multicurrency/RTL, broad browser/theme/accessibility, representative load, penetration/PCI/legal attestation, or live non-idempotent subscription auto-deduction. Record those honestly at R6.
 
-Owner technical acceptance has been completed and the Approach 2 baseline is accepted. Approach 3 architecture is **APPROVED / RECORDED**; T1 and runtime-bearing T2 are **DONE / VERIFIED**. Approach 3 runtime modernization is now in progress. The approved style remains incremental strangler modernization around A1-A5 and the already-active `PaymentLifecycle` callback strangler. Do not require final UI/UX or branding completion before Approach 3; those remain post-Approach-3 launch work unless fresh evidence proves an earlier blocker.
-
-## Next owner action
-
-Before beginning an Approach 3 implementation tranche, confirm:
-
-1. the live repository topology is `main` only with no unintended open PRs/issues/tags/releases;
-2. the frozen accepted Approach 2 baseline is still **`0c883d609906676966002eb022a82a9656eeacc5`** and its accepted package SHA-256 is still **`58eba75019416f39a09211c87e7ccbcbb635834fb20bc890e9efbd5fec859655`**.
-
-Then:
-
-1. read `.ai-architect/` and execute the approved bounded tranche against the frozen baseline;
-2. branch, implement and re-certify Approach 3 against the accepted baseline;
-3. defer final UI/UX/branding/broad launch qualification until Approach 3 is re-certified;
-4. choose the first public version and authorize publication separately.
-
-Do **not** redo Approach 2 unless fresh evidence invalidates the accepted baseline.
-
-## Historical evidence rule
-
-Old SimplixPay/SUCheckout names, old repository coordinates and old SHAs may remain in historical phase/quality/spec/plan records when they were true at that milestone. Do not rewrite historical evidence into current branding.
-
-Live evidence and living authority documents control current decisions.
+Do not invent Q20. Quality Platform Q1-Q19 is closed permanently.

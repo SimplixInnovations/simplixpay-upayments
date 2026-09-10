@@ -3,27 +3,28 @@
 **Purpose:** authoritative fresh-clone, local-acceptance and release-decision sequence
 **Canonical GitHub repository:** `SimplixInnovations/supcheckout`
 **Development version:** `0.1.0`
-**Latest runtime-bearing CI-certified main (historical):** `82d1fdaee91ee6bde6c26dfcc7ceb974d0d59847`
-**Owner technical acceptance:** **ACCEPTED**
+**Owner technical acceptance:** **ACCEPTED for the frozen Approach 2 baseline**
 **Accepted Approach 2 baseline:** **`0c883d609906676966002eb022a82a9656eeacc5`**
 **Accepted package SHA-256:** **`58eba75019416f39a09211c87e7ccbcbb635834fb20bc890e9efbd5fec859655`**
 **Accepted package:** `supcheckout-0.1.0.zip` — **51 files**
-**Approach 3 architecture modernization:** **ARCHITECTURE APPROVED / T1 DONE / VERIFIED / T2 DONE / VERIFIED / RUNTIME MODERNIZATION IN PROGRESS**
+**Latest merged Approach 3 main:** **`a7a8bbfc3a1dc551127b7ead897c964e95c7cec9`**
+**Approach 3 architecture modernization:** **ARCHITECTURE APPROVED / T1 DONE / VERIFIED / T2 DONE / VERIFIED / T3 DONE / VERIFIED / POST-T3 HARDENING IN PROGRESS**
+**Active post-T3 integration:** **draft PR #108 / `audit/post-t3-ecosystem-hardening`**
 **Public tag / GitHub Release / WordPress.org publication:** **not yet created — publication remains NOT AUTHORIZED**
 
-The final pre-acceptance runtime hardening through PR #97 has merged and been post-merge certified. Living-document-only descendants may advance `main` without changing the runtime package. The owner-accepted technical baseline is the exact commit listed above; it supersedes prior CI-certified runtime anchors for the purpose of identifying the regression reference coordinate going forward. This document remains a reusable freshness/regression procedure for future baseline re-acceptance, not a substitute for such re-acceptance when fresh evidence invalidates it. This document does not authorize publication by itself.
+The final pre-acceptance runtime hardening through PR #97 merged and was post-merge certified. The owner-accepted technical baseline is the exact Approach 2 commit above and remains the independent regression reference until a new explicit acceptance event. Approach 3 has since advanced through T3; this handoff records the current merged coordinate without redefining the accepted baseline. Living-document-only descendants may advance without changing the runtime package. This document remains a reusable freshness/regression procedure and does not authorize publication by itself.
 
 Before using this procedure in a new chat, machine, clone or session, read [`START-HERE.md`](START-HERE.md) and verify live GitHub/source/check state.
 
 ## Program sequencing boundary
 
-This owner acceptance is the mandatory technical gate between closed **Approach 2** and future **Approach 3** architecture modernization.
+The owner acceptance recorded here is the mandatory technical gate that closed **Approach 2** and authorized **Approach 3** architecture modernization.
 
 Approved sequence:
 
 `Approach 2 closed → fresh-clone owner technical acceptance → accepted baseline → Approach 3 → Approach 3 re-certification → full UI/UX/branding/accessibility/broad launch testing → explicit release decision.`
 
-Do **not** begin Approach 3 before this acceptance establishes the independent regression baseline.
+Approach 3 is already in progress. Do not rerun or redefine the Approach 2 acceptance unless fresh evidence invalidates it; instead preserve it as the frozen regression baseline while the approved Approach 3 tranches execute.
 
 This acceptance is intentionally bounded. Final UI/UX, branding, broad accessibility certification and exhaustive launch testing do **not** have to be finished before Approach 3. They remain post-Approach-3 launch work unless fresh evidence shows an earlier blocker.
 
@@ -78,13 +79,15 @@ git rev-parse HEAD
 git rev-parse origin/main
 ```
 
-Required result:
+Required result at an owner-acceptance/release boundary:
 
 - `origin` points directly to `https://github.com/SimplixInnovations/supcheckout.git`;
 - current branch is `main`;
-- remote topology shows only `origin/main` (plus `origin/HEAD -> origin/main` when displayed);
+- no unintended remote feature/audit branch remains after closeout;
 - `git status --short` is empty;
 - `HEAD` exactly equals `origin/main`.
+
+During active engineering, temporary scoped branches such as PR #108 are expected; verify them live rather than falsely claiming a `main`-only topology.
 
 ## A2. Confirm repository identity before installing dependencies
 
@@ -98,7 +101,7 @@ git worktree list
 git stash list
 ```
 
-A brand-new clone should have:
+A brand-new release/acceptance clone should have:
 
 - no local feature branches;
 - no additional worktrees;
@@ -287,6 +290,8 @@ Verify:
 - no duplicate registration;
 - unavailable methods fail closed.
 
+For Approach 3 closeout this smoke must be extended by the post-T3 plan to Store API, `wc-ajax`, `admin-ajax`, REST/sessionless and embedded/custom checkout request shapes before compatibility is claimed broadly.
+
 ## C5. Order storage
 
 Where the staging environment safely allows it, verify both:
@@ -303,6 +308,7 @@ Verify only with safe test identities:
 - eligible saved methods appear only for the correct user/account/mode scope;
 - no cross-user leakage;
 - provenance/identity ambiguity fails closed;
+- selected-card binding is explicit where a saved card is charged;
 - no customer/card token appears in browser/log output beyond what the UI legitimately requires.
 
 ## C7. Subscription boundary
@@ -312,23 +318,31 @@ Verify:
 - subscription eligibility rules;
 - mixed-cart restrictions;
 - account actions require the expected owner/nonce/state checks;
+- no first-card fallback is accepted as a substitute for explicit selected-card identity;
 - no blind non-idempotent auto-deduction is triggered simply to prove acceptance.
 
 Live auto-deduction remains an external/manual provider qualification.
 
 ## C8. Additional merchant boundary
 
-Verify the certified **one additional merchant** allocation behavior only. Do not infer arbitrary marketplace split support.
+Verify the certified **one additional merchant** allocation behavior only. Do not infer arbitrary marketplace split support. Malformed enabled additional-merchant configuration must fail closed.
 
-## C9. UI/assets/accessibility smoke
+## C9. Economics/product boundary
+
+At Approach 3 closeout verify the finalized WooCommerce order amount/currency remains payment authority, including zero-total, coupon, fee, shipping, tax/VAT and supported product-extension scenarios. Provider `products[]` is descriptive only. Do not silently mutate economics after Charge dispatch.
+
+## C10. UI/assets/accessibility smoke
 
 Verify:
 
 - payment icons load without broken URLs;
 - Apple Pay / Google Pay / Samsung Pay images render only when the corresponding provider method is actually available;
 - checkout controls remain keyboard-operable in the tested theme;
+- save-card controls have valid text associations and no nested labels;
+- status/live-region markup remains valid;
 - no obvious contrast/label/focus regression is introduced by the plugin;
-- no third-party font/icon CDN is required by checkout.
+- no third-party font/icon CDN is required by checkout;
+- plugin assets are scoped to intended checkout/admin surfaces and do not overwrite unrelated handles.
 
 A full accessibility certification remains separate evidence.
 
@@ -340,7 +354,7 @@ Before local acceptance and any release decision, verify live GitHub state:
 
 - default branch: `main`;
 - remote branches: `main` only outside temporary active work;
-- open PRs/issues: none unless intentionally opened after this closeout;
+- open PRs/issues: none unless intentionally opened for active work;
 - tags/releases: none before explicit publication approval;
 - About description/homepage/topics remain evidence-safe;
 - squash-only merge policy remains enabled;
@@ -352,6 +366,8 @@ Before local acceptance and any release decision, verify live GitHub state:
 - no bypass actor has appeared;
 - merged feature/audit branch auto-deletes.
 
+As of the current post-T3 program, PR #108 is an intentional active draft; do not misclassify it as hygiene failure while it remains the authorized work branch.
+
 ---
 
 # E. Post-acceptance and release decision
@@ -362,9 +378,13 @@ The technical acceptance above has been completed for the **Approach 2 owner-acc
 - **Accepted package:** `supcheckout-0.1.0.zip` — 51 files
 - **Accepted package SHA-256:** `58eba75019416f39a09211c87e7ccbcbb635834fb20bc890e9efbd5fec859655`
 
-That acceptance authorized Approach 3 architecture modernization. Runtime-neutral T1 `t01-architecture-guardrails-and-active-callback-characterization` is **DONE / VERIFIED** on merged main `beb89ac0c4d8c0e9b7c8b2de1e13c237bbd37b15`. Runtime-bearing T2 `legacy-callback-routing-consolidation` is **DONE / VERIFIED** on merged main `047cc86060efb97761d7a0cc4a3806f971ab6fe1`; fresh post-merge checks were 41/41 SUCCESS and the deterministic T2 candidate package is 51 files / SHA-256 `368aaa5cb1a75e6df41ff17bb2e2126431b49da5e6b8dfe508c718433009fc04`. T2 does **not** redefine the owner-accepted Approach 2 baseline; a new acceptance event is required at Approach 3 closeout. This does **not** authorize publication.
+That acceptance authorized Approach 3 architecture modernization. Runtime-neutral T1 `t01-architecture-guardrails-and-active-callback-characterization` is **DONE / VERIFIED** on merged main `beb89ac0c4d8c0e9b7c8b2de1e13c237bbd37b15`. Runtime-bearing T2 `legacy-callback-routing-consolidation` is **DONE / VERIFIED** on merged main `047cc86060efb97761d7a0cc4a3806f971ab6fe1`; its deterministic candidate package is 51 files / SHA-256 `368aaa5cb1a75e6df41ff17bb2e2126431b49da5e6b8dfe508c718433009fc04`.
 
-Approach 3 architecture scoping is complete and recorded in `.ai-architect/`. Its approved tranches must be implemented and re-certified against the frozen baseline above before the launch-facing UI/UX/branding/broad-validation program is treated as final. The repository may be engineering-ready while publication remains intentionally unapproved. Any future re-acceptance event must produce a new documented baseline SHA + package SHA-256 and must preserve the historical anchor above.
+Runtime-neutral T3 `legacy-direct-callback-characterization` is **DONE / VERIFIED**. PR #107 exact certified head was `f7c7d596dc4a2c8464d1acdf13dfe51028a5f9e0`; squash-merged main is `a7a8bbfc3a1dc551127b7ead897c964e95c7cec9`. T3 changed no production runtime files and preserved the T2 51-file package/checksum. It characterized the direct browser return, direct webhook and private legacy verifier and recorded the direct-browser request-shape constraint that blocks naïve T4 delegation.
+
+The current successor is `post-t3-ecosystem-hardening`, recorded in `docs/superpowers/plans/2026-09-10-post-t3-ecosystem-hardening.md`, with active draft PR #108. Its latest fully certified runtime-content checkpoint before R0 reconciliation is `b06976ac689cfd0d469bd96b0d6a2b925c863747`; all primary workflows, the 20-cell Compatibility Gate and CodeQL succeeded, and its deterministic 51-file candidate package SHA-256 is `a343a028e42f17a8d111de4e1a271c4e4bd51ba8cbbc1f0de89652b0d2480455`.
+
+Neither T2, T3 nor PR #108 silently redefines the owner-accepted Approach 2 baseline. A new acceptance event is required at Approach 3 closeout. T4 callback consolidation remains separately gated. This does **not** authorize publication.
 
 Before the first public release, decide explicitly:
 
@@ -411,7 +431,7 @@ sha256sum dist/supcheckout-0.1.0.zip
 cat dist/supcheckout-0.1.0.zip.sha256
 ```
 
-Also provide a short manual-smoke report covering Classic, Blocks, HPOS/legacy where practical, sandbox success/decline/cancel, settings masking and browser/admin console errors.
+Also provide a short manual-smoke report covering Classic, Blocks, HPOS/legacy where practical, sandbox success/decline/cancel, settings masking and browser/admin console errors, plus every additional E1/E2/E3/R2/R3/R4/R6 qualification the post-T3 plan ultimately marks required.
 
 For the acceptance review, also state explicitly:
 
@@ -422,7 +442,7 @@ For the acceptance review, also state explicitly:
 - any environment limitation that prevented a requested check;
 - final verdict: **ACCEPTED BASELINE** or **NOT ACCEPTED**.
 
-Only **ACCEPTED BASELINE** unlocks Approach 3.
+The historical **ACCEPTED BASELINE** verdict unlocked Approach 3. A future **ACCEPTED BASELINE** verdict at Approach 3 closeout must create a new explicitly recorded source/package coordinate; it must not overwrite the historical Approach 2 anchor.
 
 ### Current accepted baseline (recorded)
 
