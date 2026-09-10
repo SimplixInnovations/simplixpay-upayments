@@ -72,25 +72,15 @@ Read in this order after this file:
 
 Historical documents may contain former product names, old repository coordinates and old SHAs because those facts were true at the time. Do not bulk-rewrite historical evidence into current branding.
 
-## 4. Current certified pre-acceptance baseline
+## 4. Current runtime certification and accepted regression reference
 
 Latest runtime-bearing CI-certified `main`:
 
-`82d1fdaee91ee6bde6c26dfcc7ceb974d0d59847`
+`047cc86060efb97761d7a0cc4a3806f971ab6fe1`
 
-PR #97 squash-merged from exact certified head `1f2a0b8d35f96008be6ccfeb10c67fffcd3be5c0`. Post-merge `main` completed **41/41 check-runs successfully**.
+This is Approach 3 T2 PR #104's squash merge from exact certified head `4cff2dc6e6d11a4b3232a6d3d70d6280a59741c4`. The PR head completed **42/42 checks successfully** and fresh merged `main` completed **41/41 checks successfully**. Current runtime evidence includes T1 dependency/provider-egress guardrails **11/0**, T1 active callback characterization **41/0**, T2 direct legacy-fallback characterization **25/0**, the full compatibility matrix + Compatibility Gate, Release Gate, Provider Sandbox, WordPress.org packaged Plugin Check and CodeQL/security. The deterministic current runtime candidate package is **51 files**, SHA-256 `368aaa5cb1a75e6df41ff17bb2e2126431b49da5e6b8dfe508c718433009fc04`, byte-identical across canonical/Linux/Windows builds.
 
-Current exact evidence:
-
-- H12 PHP — **1936 PASS / 0 FAIL**;
-- H12 Blocks — **150 PASS / 0 FAIL**;
-- real compatibility — **20/20 runtime cells SUCCESS** plus **Compatibility Gate SUCCESS**;
-- Release Artifact — **69 PASS / 0 FAIL**;
-- WordPress.org readiness — **31 PASS / 0 FAIL**, plus official packaged Plugin Check **SUCCESS**;
-- bounded UPayments Provider Sandbox — **SUCCESS**;
-- CodeQL — **SUCCESS**;
-- canonical deterministic ZIP — **51 files**, SHA-256 `58eba75019416f39a09211c87e7ccbcbb635834fb20bc890e9efbd5fec859655`;
-- canonical, Linux and Windows package evidence — **byte-identical**.
+The separately frozen **owner-accepted Approach 2 regression reference** remains `0c883d609906676966002eb022a82a9656eeacc5` with package SHA-256 `58eba75019416f39a09211c87e7ccbcbb635834fb20bc890e9efbd5fec859655`. T2 is not owner-accepted until Approach 3 closeout re-acceptance.
 
 The bounded pre-acceptance hardening chain after the pre-acceptance B-X1 owner run is closed:
 
@@ -196,14 +186,14 @@ Do not report these deferred items as Approach 2 defects unless fresh evidence s
 | Public release authorization | **NOT GRANTED** |
 | Current program gate | **Approach 3 post-T2 evidence review / direct legacy-method characterization** |
 | Next substantive action | Characterize direct `return_from_upayments()`, `web_hook_handler()` and legacy `verify_payment_status()` compatibility behavior/call surface before deciding whether any further consolidation is safe |
-| Latest runtime-bearing CI-certified `main` (historical anchor) | `82d1fdaee91ee6bde6c26dfcc7ceb974d0d59847` — PR #97 |
-| Runtime exact-head evidence | **41/41 post-merge checks; H12 1936/0 PHP + 150/0 Blocks; compatibility 20/20; Release 69/0; WordPress.org readiness 31/0** |
-| Canonical runtime package | **51 files / SHA-256 `58eba75019416f39a09211c87e7ccbcbb635834fb20bc890e9efbd5fec859655`** |
+| Latest runtime-bearing CI-certified `main` | `047cc86060efb97761d7a0cc4a3806f971ab6fe1` — Approach 3 T2 PR #104 |
+| Runtime exact-head evidence | **T2 PR head 42/42; merged main 41/41; T1 dependency 11/0; active callback 41/0; T2 direct fallback 25/0; compatibility + Release Gate + sandbox + Plugin Check + CodeQL green** |
+| Current runtime candidate package | **51 files / SHA-256 `368aaa5cb1a75e6df41ff17bb2e2126431b49da5e6b8dfe508c718433009fc04`** |
 | Expected closed topology outside temporary work | **`main` only; no open PRs/issues** |
 | Local owner acceptance | **ACCEPTED for baseline `0c883d609906676966002eb022a82a9656eeacc5` (pre-acceptance B-X1 malformed-settings rejection closed by PR #84 remains historical evidence)** |
 | Source of live truth | **GitHub + exact source/check/package evidence** |
 
-Documentation-only reconciliation may advance the live `main` SHA while leaving the runtime-bearing anchor and 51-file package byte-identical.
+Documentation-only reconciliation may advance live `main` after the T2 runtime anchor while leaving the current 51-file T2 candidate package byte-identical. The separately accepted Approach 2 regression reference remains frozen until re-acceptance.
 
 ### Operational tracking model
 
