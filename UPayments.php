@@ -1168,23 +1168,21 @@ function woocommerceUpaymentsInit() {
         {
             $this->init_settings();
             $prepared = GatewaySettings::prepare_post_data($this->get_post_data());
-            $post_data = $prepared['post_data'];
-
-            if ($prepared['api_key_missing']){
-                WC_Admin_Settings::add_error(__("Please enter UPayments API Key", 'supcheckout'));
-            }else{
-                if ($prepared['multimerchant_missing']) {
-                    WC_Admin_Settings::add_error(__("Please enter Multimerchant Configuration", 'supcheckout'));
-                }
-                foreach ($this->get_form_fields() as $key => $field)
-                {
-                    $setting_value = $this->get_field_value($key, $field, $post_data);
-                    $this->settings[$key] = $setting_value;
-                }
-                delete_option("upayments_maat");
-                // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- WooCommerce Settings API defines this dynamic core hook name.
-                return update_option($this->get_option_key() , apply_filters("woocommerce_settings_api_sanitized_fields_" . $this->id, $this->settings));
+            if ($prepared['api_key_missing'] || $prepared['multimerchant_missing']) {
+                $message = $prepared['api_key_missing']
+                    ? "Please enter UPayments API Key"
+                    : "Please enter Multimerchant Configuration";
+                WC_Admin_Settings::add_error(__($message, 'supcheckout'));
+                return false;
             }
+
+            $post_data = $prepared['post_data'];
+            foreach ($this->get_form_fields() as $key => $field) {
+                $this->settings[$key] = $this->get_field_value($key, $field, $post_data);
+            }
+            delete_option("upayments_maat");
+            // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- WooCommerce Settings API defines this dynamic core hook name.
+            return update_option($this->get_option_key(), apply_filters("woocommerce_settings_api_sanitized_fields_" . $this->id, $this->settings));
         }
 
         public function get_multimerchant_credentials( $order ) {
