@@ -14,9 +14,19 @@ class SUPCheckoutPhpstanWooContainer {
     public $session;
 }
 
+/**
+ * Shared development-only model of the protected Classic gateway identity.
+ *
+ * Keep one WC_Upayments stub across the bounded PHPStan scan so gateway,
+ * subscription and presentation analysis cannot silently disagree about its
+ * public runtime surface.
+ */
 class WC_Upayments {
     /** @var string */
     public $autoDeduction;
+
+    /** @return void */
+    public function render_subscription_summary($order) {}
 }
 
 /** @return bool */
