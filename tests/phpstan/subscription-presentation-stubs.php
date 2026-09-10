@@ -99,10 +99,6 @@ namespace {
         public function add_order_note($note) {}
     }
 
-    class WC_Upayments {
-        public function render_subscription_summary($order) {}
-    }
-
     function absint($value) { return 0; }
     function wp_verify_nonce($nonce, $action) { return false; }
     function update_post_meta($post_id, $key, $value) { return false; }
