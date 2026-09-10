@@ -544,7 +544,7 @@ class CheckoutOrchestrator {
                 // Guest subscriptions must fail server-side.
                 if (!is_user_logged_in()) {
                     $gateway->log('Subscription checkout rejected for guest.');
-                    wc_add_notice(__("Please log in to purchase a subscription.", 'supcheckout'), "error");
+                    wc_add_notice(__("Please log in to purchase a subscription.", 'supcheckout'), 'error');
                     return ["result" => "failure", "redirect" => wc_get_checkout_url()];
                 }
                 // Subscription checkout requires cc.
@@ -779,12 +779,10 @@ class CheckoutOrchestrator {
                     return array('result' => 'failure', 'redirect' => wc_get_checkout_url());
                 }
 
-                // === Canonical JSON number grammar: no exponent, no sign, no leading
-                // zero, no whitespace, no comma, no other variation. Trailing-zero
-                // fractions such as 0.900 or 0.750 are accepted (matches first-party
-                // UPayments examples and the plugin's existing admin UI which uses
-                // step="0.010" and max="10.000"). Leading-zero invalid forms (01,
-                // 01.50, .5) and exponent/scientific notation (1e2) are rejected. ===
+                // Canonical JSON number grammar: no exponent/sign/whitespace/comma
+                // or leading-zero ambiguity. UPayments permits a main-merchant
+                // commission of exactly zero, so both zero and positive canonical
+                // decimals are valid at this field-specific boundary.
                 if (!preg_match('/^(?:0|[1-9][0-9]*)(?:\.[0-9]+)?$/', $knet_charge_raw)) {
                     $gateway->log('MultiMerchant: invalid knetCharge format.', 'warning');
                     wc_add_notice(__('Payment request could not be completed. Please try again.', 'supcheckout'), 'error');
@@ -804,21 +802,6 @@ class CheckoutOrchestrator {
                 }
                 if (!in_array($cc_charge_type, $valid_charge_types, true)) {
                     $gateway->log('MultiMerchant: invalid ccChargeType.', 'warning');
-                    wc_add_notice(__('Payment request could not be completed. Please try again.', 'supcheckout'), 'error');
-                    return array('result' => 'failure', 'redirect' => wc_get_checkout_url());
-                }
-                // Pure-PHP positive-decimal validation (no BCMath, no float, no upper bound).
-                // The plugin UI's max="10.000" is a UI hint only; the runtime accepts
-                // any canonical positive plain-decimal per UPayments examples (25, 18, 15,
-                // 10, 0.900, 0.750, etc.). Server-side rejection here would conflict with
-                // provider documentation and the existing admin UI maximum.
-                if (CheckoutPayload::compare_nonnegative_decimal_strings($knet_charge_raw, '0') <= 0) {
-                    $gateway->log('MultiMerchant: invalid knetCharge value.', 'warning');
-                    wc_add_notice(__('Payment request could not be completed. Please try again.', 'supcheckout'), 'error');
-                    return array('result' => 'failure', 'redirect' => wc_get_checkout_url());
-                }
-                if (CheckoutPayload::compare_nonnegative_decimal_strings($cc_charge_raw, '0') <= 0) {
-                    $gateway->log('MultiMerchant: invalid ccCharge value.', 'warning');
                     wc_add_notice(__('Payment request could not be completed. Please try again.', 'supcheckout'), 'error');
                     return array('result' => 'failure', 'redirect' => wc_get_checkout_url());
                 }
@@ -844,8 +827,8 @@ class CheckoutOrchestrator {
                     ),
                 );
                 $mm_amount_token = $amount_json_token;
-                $mm_knet_charge_token = CheckoutPayload::build_amount_json_token($knet_charge);
-                $mm_cc_charge_token = CheckoutPayload::build_amount_json_token($cc_charge);
+                $mm_knet_charge_token = CheckoutPayload::build_nonnegative_json_number_token($knet_charge);
+                $mm_cc_charge_token = CheckoutPayload::build_nonnegative_json_number_token($cc_charge);
                 if ($mm_knet_charge_token === null || $mm_cc_charge_token === null) {
                     $gateway->log('MultiMerchant: invalid charge JSON encoding.', 'warning');
                     wc_add_notice(__('Payment request could not be completed. Please try again.', 'supcheckout'), 'error');
