@@ -21,13 +21,17 @@ function record(condition, description) {
     }
 }
 
+function baseEvent(eventName) {
+    return String(eventName).split('.')[0];
+}
+
 function createScene(loggedIn) {
     const state = {
         plan: 'monthly',
         interval: '',
         options: [],
         intervalVisible: true,
-        handlers: {},
+        handlers: [],
     };
 
     function createOption() {
@@ -96,10 +100,24 @@ function createScene(loggedIn) {
     function bodyCollection() {
         return {
             on(eventName, selectorOrHandler, maybeHandler) {
-                const handler = typeof selectorOrHandler === 'function'
-                    ? selectorOrHandler
-                    : maybeHandler;
-                state.handlers[eventName] = handler;
+                const delegated = typeof selectorOrHandler === 'string';
+                state.handlers.push({
+                    eventName,
+                    selector: delegated ? selectorOrHandler : null,
+                    handler: delegated ? maybeHandler : selectorOrHandler,
+                });
+                return this;
+            },
+            off(eventName, selector) {
+                state.handlers = state.handlers.filter(function (entry) {
+                    if (entry.eventName !== eventName) {
+                        return true;
+                    }
+                    if (typeof selector === 'string' && entry.selector !== selector) {
+                        return true;
+                    }
+                    return false;
+                });
                 return this;
             },
         };
@@ -138,16 +156,40 @@ function createScene(loggedIn) {
     };
 
     sandbox.jQuery = jquery;
-    vm.runInNewContext(source, sandbox, { filename: SOURCE });
+
+    function evaluateSource() {
+        vm.runInNewContext(source, sandbox, { filename: SOURCE });
+    }
+
+    evaluateSource();
 
     return {
         state,
+        rerun: evaluateSource,
         trigger(eventName) {
-            const handler = state.handlers[eventName];
-            if (typeof handler !== 'function') {
+            const matching = state.handlers.filter(function (entry) {
+                return baseEvent(entry.eventName) === eventName;
+            });
+            if (matching.length === 0) {
                 throw new Error('No handler registered for ' + eventName);
             }
-            handler();
+            matching.forEach(function (entry) {
+                entry.handler();
+            });
+        },
+        addThirdPartyHandler(eventName, selector) {
+            state.handlers.push({ eventName, selector: selector || null, handler() {} });
+        },
+        countHandlers(eventName, selector) {
+            return state.handlers.filter(function (entry) {
+                return baseEvent(entry.eventName) === eventName
+                    && (typeof selector !== 'string' || entry.selector === selector);
+            }).length;
+        },
+        countExactHandlers(eventName) {
+            return state.handlers.filter(function (entry) {
+                return entry.eventName === eventName;
+            }).length;
         },
     };
 }
@@ -214,6 +256,24 @@ console.log('Running e1-classic-subscription-state-harness.js');
     record(
         scene.state.interval === '',
         'deliberate plan change resets an inherited interval even when numeric value remains valid'
+    );
+}
+
+{
+    const scene = createScene(true);
+    scene.addThirdPartyHandler('updated_checkout.thirdParty');
+    scene.rerun();
+    record(
+        scene.countHandlers('change', 'select[name="upay_subscription_plan"]') === 1,
+        'repeated subscription script evaluation owns exactly one plan-change handler'
+    );
+    record(
+        scene.countHandlers('updated_checkout') === 2,
+        'repeated subscription script evaluation preserves one first-party and one third-party updated_checkout handler'
+    );
+    record(
+        scene.countExactHandlers('updated_checkout.thirdParty') === 1,
+        'subscription handler refresh preserves unrelated namespaced updated_checkout listeners'
     );
 }
 
