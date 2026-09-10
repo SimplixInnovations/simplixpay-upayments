@@ -85,8 +85,13 @@
     };
 
     $(function () {
-        $('form.checkout').on('change', 'input[name="payment_method"]', syncPlaceOrderButton);
-        $(document.body).on('updated_checkout', syncPlaceOrderButton);
+        const $checkoutForm = $('form.checkout');
+        $checkoutForm
+            .off('change.supcheckoutPaymentLifecycle', 'input[name="payment_method"]')
+            .on('change.supcheckoutPaymentLifecycle', 'input[name="payment_method"]', syncPlaceOrderButton);
+        $(document.body)
+            .off('updated_checkout.supcheckoutPaymentLifecycle')
+            .on('updated_checkout.supcheckoutPaymentLifecycle', syncPlaceOrderButton);
         syncPlaceOrderButton();
     });
 })(jQuery, window, document);
