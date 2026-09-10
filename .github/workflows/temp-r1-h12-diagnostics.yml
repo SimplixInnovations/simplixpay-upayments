@@ -16,34 +16,25 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
           fetch-depth: 1
-      - name: Identify failing permanent harness owners
+      - name: Sweep every permanent PHP harness
         shell: bash
         run: |
           set -euo pipefail
-          harnesses=(
-            tests/harness/architecture-foundation-harness.php
-            tests/harness/architecture-bootstrap-path-harness.php
-            tests/harness/architecture-checkout-orchestration-harness.php
-            tests/harness/architecture-dependency-boundaries-harness.php
-            tests/harness/quality-platform-gateway-settings-harness.php
-            tests/harness/quality-platform-payment-runtime-harness.php
-            tests/harness/phase-9g-h12-php-harness.php
-          )
-          for h in "${harnesses[@]}"; do
-            echo "===== $h ====="
+          while IFS= read -r h; do
             set +e
             output="$(php -d error_reporting=E_ALL -d display_errors=1 "$h" 2>&1)"
             status=$?
             set -e
-            printf '%s\n' "$output" | grep -E '^(FAIL:|Architecture|A5 |Quality|H12|Summary:|TOTAL:)' || true
-            echo "exit=$status"
-          done
+            if [[ "$status" -ne 0 ]]; then
+              echo "===== NONZERO $h exit=$status ====="
+              printf '%s\n' "$output"
+            fi
+          done < <(find tests/harness -maxdepth 1 -type f -name '*-harness.php' | sort)
           echo '===== bootstrap measurements ====='
           python3 - <<'PY'
           from pathlib import Path
           import hashlib
-          p=Path('UPayments.php')
-          b=p.read_bytes()
+          b=Path('UPayments.php').read_bytes()
           normalized=b.replace(b'\r\n',b'\n').replace(b'\r',b'\n')
           print('bytes=',len(b),sep='')
           print('lines_splitlines=',len(b.splitlines()),sep='')
