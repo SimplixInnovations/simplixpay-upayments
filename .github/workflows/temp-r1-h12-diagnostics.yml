@@ -16,7 +16,7 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
           fetch-depth: 1
-      - name: Locate exact stale-ratchet sources and measurements
+      - name: Locate exact stale-ratchet owners repository-wide
         shell: bash
         run: |
           set -euo pipefail
@@ -27,7 +27,7 @@ jobs:
             'normalized SHA-256' \
             'exact lines'; do
             echo "===== $needle ====="
-            grep -R -n -F -B 10 -A 14 --include='*.php' "$needle" tests/harness || true
+            grep -R -n -F -B 10 -A 14 --exclude-dir='.git' --exclude='temp-r1-h12-diagnostics.yml' "$needle" . || true
           done
           echo '===== bootstrap measurements ====='
           python3 - <<'PY'
