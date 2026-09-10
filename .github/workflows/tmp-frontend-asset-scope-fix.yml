@@ -1,0 +1,66 @@
+name: Temporary Frontend Asset Scope Fix
+
+on:
+  push:
+    branches:
+      - audit/post-t3-ecosystem-hardening
+    paths:
+      - .github/workflows/tmp-frontend-asset-scope-fix.yml
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: true
+
+      - name: Verify guarded preimage and apply minimal relocation
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git hash-object UPayments.php)" = "c23c8ef4f9302c853688b8ff7ab7dd8ba477bcaa"
+          python3 scripts/tmp-frontend-asset-scope-fix.py
+          test "$(git diff --name-only)" = "UPayments.php"
+          test "$(wc -c < UPayments.php)" -eq 86171
+          git diff --check
+
+      - name: Verify PHP syntax and architecture ratchet
+        uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # v2.37.2
+        with:
+          php-version: '8.3'
+          coverage: none
+          tools: none
+
+      - name: Run focused static gates
+        shell: bash
+        run: |
+          set -euo pipefail
+          php -l UPayments.php
+          php tests/harness/architecture-foundation-harness.php
+          python3 - <<'PY'
+          from pathlib import Path
+          text = Path('UPayments.php').read_text(encoding='utf-8')
+          fn = text.index('        public function enqueue_scripts() {')
+          guard = text.index('            if ( ! is_checkout() || ! $this->is_available() ) {', fn)
+          enqueue = text.index("            wp_enqueue_style('supcheckout-customer'", fn)
+          assert guard < enqueue
+          assert text.count("wp_enqueue_style('supcheckout-customer'") == 1
+          print('PASS: frontend customer CSS is uniquely gated after checkout/availability preflight')
+          PY
+
+      - name: Commit only the bounded production change
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "Simplix Innovations"
+          git config user.email "136711735+SimplixInnovationsAdmin@users.noreply.github.com"
+          git add -- UPayments.php
+          test "$(git diff --cached --name-only)" = "UPayments.php"
+          git commit -m "perf: scope customer CSS to available checkout"
+          git push origin HEAD:audit/post-t3-ecosystem-hardening
