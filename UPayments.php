@@ -27,6 +27,7 @@ define('UPAYMENTS_PLUGIN_FILE', __FILE__ );
 require_once __DIR__ . '/src/Release/Identity.php';
 require_once __DIR__ . '/src/Admin/GatewaySettings.php';
 require_once __DIR__ . '/src/Gateway/Availability.php';
+require_once __DIR__ . '/src/Gateway/OrderPresentation.php';
 require_once __DIR__ . '/src/Provider/EndpointResolver.php';
 require_once __DIR__ . '/src/Provider/PaymentMethodAvailability.php';
 require_once __DIR__ . '/src/Payment/CheckoutPayload.php';
@@ -41,6 +42,7 @@ require_once __DIR__ . '/src/Migration/MigrationBootstrap.php';
 use Simplixi\SUPCheckout\Release\Identity;
 use Simplixi\SUPCheckout\Admin\GatewaySettings;
 use Simplixi\SUPCheckout\Gateway\Availability;
+use Simplixi\SUPCheckout\Gateway\OrderPresentation;
 use Simplixi\SUPCheckout\Provider\EndpointResolver;
 use Simplixi\SUPCheckout\Provider\PaymentMethodAvailability;
 use Simplixi\SUPCheckout\Payment\CheckoutPayload;
@@ -341,25 +343,7 @@ function woocommerceUpaymentsInit() {
 
         public function add_order_item_totals($total_rows, $order, $tax_display)
         {
-            $payment_status = $order->get_meta('UPayments_Result');
-            $upayment_id = $order->get_meta('UPayments_PaymentID');
-
-            $new_total_rows = [];
-
-            foreach ($total_rows as $key => $total)
-            {
-                $new_total_rows[$key] = $total;
-                if ("payment_method" === $key)
-                {
-                    $new_total_rows["payment_status"] = ["label" => "Payment Status:", "value" => $payment_status, ];
-                    if (!empty($upayment_id))
-                    {
-                        $new_total_rows["upayment_id"] = ["label" => "UPayment ID:", "value" => $upayment_id, ];
-                    }
-                }
-            }
-
-            return $new_total_rows;
+            return OrderPresentation::add_order_item_totals($total_rows, $order, $this->id);
         }
 
         /**
