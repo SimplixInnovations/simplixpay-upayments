@@ -19,7 +19,7 @@ final class Availability {
      * @return array
      */
     public static function filter($available_gateways) {
-        if (is_admin()) {
+        if (is_admin() && !wp_doing_ajax()) {
             return $available_gateways;
         }
 
