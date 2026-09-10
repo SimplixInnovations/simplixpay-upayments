@@ -1378,7 +1378,6 @@ function woocommerceUpaymentsInit() {
                 && isset($result['result'])
                 && $result['result'] === 'failure'
             ) {
-                wc_clear_notices();
                 wc_add_notice(__("Payment methods could not be loaded. Please try again.", 'supcheckout'), "error");
                 return array('result' => 'failure', 'redirect' => wc_get_checkout_url());
             }
