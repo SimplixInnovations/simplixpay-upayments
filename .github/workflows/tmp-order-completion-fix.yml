@@ -11,6 +11,33 @@ permissions:
 jobs:
   apply:
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
-      - run: echo "temporary applicator validation"
+        with:
+          ref: audit/post-t3-ecosystem-hardening
+          fetch-depth: 0
+
+      - name: Apply, verify, and commit exact correction
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ "$GITHUB_ACTOR" == "github-actions[bot]" ]]; then
+            echo 'Bot follow-up: no mutation.'
+            exit 0
+          fi
+
+          python3 scripts/tmp-order-completion-fix.py
+          php -l UPayments.php
+          php tests/harness/architecture-foundation-harness.php
+          git diff --check
+
+          test "$(git diff --name-only | wc -l)" -eq 2
+          git diff --name-only | grep -Fx 'UPayments.php'
+          git diff --name-only | grep -Fx 'tests/harness/architecture-foundation-harness.php'
+
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add UPayments.php tests/harness/architecture-foundation-harness.php
+          git commit -m 'fix: make order completion preference fail safe'
+          git push origin HEAD:audit/post-t3-ecosystem-hardening
