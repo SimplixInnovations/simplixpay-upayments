@@ -3,6 +3,7 @@
 namespace Simplixi\SUPCheckout\Gateway;
 
 use Simplixi\SUPCheckout\Release\Identity;
+use UPayments\Subscription\Helpers\Utils;
 
 defined('ABSPATH') || exit;
 
@@ -54,17 +55,20 @@ final class CheckoutAssets {
             return $located;
         }
 
-        self::enqueue_for_template($template_name);
+        /** @var \WC_Upayments $gateway */
+        $gateway = $args['gateway'];
+        self::enqueue_for_template($template_name, $gateway);
         return $located;
     }
 
     /**
      * Enqueue render-owned assets without widening frontend scope.
      *
-     * @param string $template_name Exact SUPCheckout template name.
+     * @param string         $template_name Exact SUPCheckout template name.
+     * @param \WC_Upayments $gateway       Exact rendered gateway instance.
      * @return void
      */
-    private static function enqueue_for_template($template_name) {
+    private static function enqueue_for_template($template_name, $gateway) {
         $plugin_url = plugin_dir_url(dirname(__DIR__, 2) . '/UPayments.php');
 
         wp_enqueue_style(
@@ -74,23 +78,45 @@ final class CheckoutAssets {
             Identity::VERSION
         );
 
-        if ($template_name !== 'new-design-form.php') {
-            return;
+        if ($template_name === 'new-design-form.php') {
+            wp_enqueue_style(
+                'supcheckout-checkout-new-style',
+                $plugin_url . 'assets/css/new-design.css',
+                array(),
+                Identity::VERSION
+            );
+            wp_enqueue_script(
+                'supcheckout-checkout-new-script',
+                $plugin_url . 'assets/js/new-upay.js',
+                array('jquery'),
+                Identity::VERSION,
+                true
+            );
         }
 
-        wp_enqueue_style(
-            'supcheckout-checkout-new-style',
-            $plugin_url . 'assets/css/new-design.css',
-            array(),
-            Identity::VERSION
-        );
-        wp_enqueue_script(
-            'supcheckout-checkout-new-script',
-            $plugin_url . 'assets/js/new-upay.js',
-            array('jquery'),
-            Identity::VERSION,
-            true
-        );
+        // Preserve the canonical Classic subscription predicate. The handle
+        // check prevents duplicate localization when the normal checkout page
+        // already pre-enqueued this exact first-party script.
+        if ($gateway->autoDeduction === 'yes'
+            && class_exists(Utils::class)
+            && Utils::cartHasCustomType()
+            && ! wp_script_is('supcheckout-subscription-checkout', 'enqueued')
+        ) {
+            wp_enqueue_script(
+                'supcheckout-subscription-checkout',
+                $plugin_url . 'assets/js/subscription-checkout.js',
+                array('jquery'),
+                Identity::VERSION,
+                true
+            );
+            wp_localize_script(
+                'supcheckout-subscription-checkout',
+                'wcUser',
+                array(
+                    'isLoggedIn' => is_user_logged_in(),
+                )
+            );
+        }
     }
 
     private function __construct() {}
