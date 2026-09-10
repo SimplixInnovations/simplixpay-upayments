@@ -1,0 +1,114 @@
+name: Temporary order-presentation extraction applicator
+
+on:
+  push:
+    branches:
+      - audit/post-t3-ecosystem-hardening
+    paths:
+      - '.github/workflows/_temporary-apply-order-presentation-extraction.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: audit/post-t3-ecosystem-hardening
+          fetch-depth: 0
+          persist-credentials: true
+      - name: Apply exact order-presentation extraction
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD^)" = "84d48162da6160ea8bbd344cee20b92feea62079"
+          test "$(git hash-object UPayments.php)" = "d240d152beff5589a94cff48350ff5e8c292e215"
+          test ! -e src/Gateway/OrderPresentation.php
+
+          cat > src/Gateway/OrderPresentation.php <<'PHP'
+          <?php
+
+          namespace Simplixi\SUPCheckout\Gateway;
+
+          /**
+           * Gateway-specific WooCommerce order-total presentation.
+           *
+           * The global WooCommerce order-total filter invokes every registered
+           * callback for every gateway. This boundary therefore treats orders
+           * paid through another gateway as immutable foreign presentation data.
+           */
+          final class OrderPresentation {
+              /**
+               * Append verified UPayments metadata to a UPayments order only.
+               *
+               * @param array  $total_rows Existing WooCommerce total rows.
+               * @param mixed  $order WooCommerce order object.
+               * @param string $gateway_id SUPCheckout gateway ID.
+               * @return array
+               */
+              public static function add_order_item_totals($total_rows, $order, $gateway_id) {
+                  if (!$order instanceof \WC_Order
+                      || (string) $order->get_payment_method() !== (string) $gateway_id
+                  ) {
+                      return $total_rows;
+                  }
+
+                  $payment_status = $order->get_meta('UPayments_Result');
+                  $upayment_id = $order->get_meta('UPayments_PaymentID');
+                  $new_total_rows = array();
+
+                  foreach ($total_rows as $key => $total) {
+                      $new_total_rows[$key] = $total;
+                      if ('payment_method' === $key) {
+                          $new_total_rows['payment_status'] = array(
+                              'label' => 'Payment Status:',
+                              'value' => $payment_status,
+                          );
+                          if (!empty($upayment_id)) {
+                              $new_total_rows['upayment_id'] = array(
+                                  'label' => 'UPayment ID:',
+                                  'value' => $upayment_id,
+                              );
+                          }
+                      }
+                  }
+
+                  return $new_total_rows;
+              }
+
+              private function __construct() {}
+          }
+          PHP
+
+          python3 <<'PY'
+          from pathlib import Path
+          p = Path('UPayments.php')
+          s = p.read_text()
+          replacements = [
+              ("require_once __DIR__ . '/src/Gateway/Availability.php';\n",
+               "require_once __DIR__ . '/src/Gateway/Availability.php';\nrequire_once __DIR__ . '/src/Gateway/OrderPresentation.php';\n"),
+              ("use Simplixi\\SUPCheckout\\Gateway\\Availability;\n",
+               "use Simplixi\\SUPCheckout\\Gateway\\Availability;\nuse Simplixi\\SUPCheckout\\Gateway\\OrderPresentation;\n"),
+              ('''        public function add_order_item_totals($total_rows, $order, $tax_display)\n        {\n            $payment_status = $order->get_meta('UPayments_Result');\n            $upayment_id = $order->get_meta('UPayments_PaymentID');\n\n            $new_total_rows = [];\n\n            foreach ($total_rows as $key => $total)\n            {\n                $new_total_rows[$key] = $total;\n                if ("payment_method" === $key)\n                {\n                    $new_total_rows["payment_status"] = ["label" => "Payment Status:", "value" => $payment_status, ];\n                    if (!empty($upayment_id))\n                    {\n                        $new_total_rows["upayment_id"] = ["label" => "UPayment ID:", "value" => $upayment_id, ];\n                    }\n                }\n            }\n\n            return $new_total_rows;\n        }\n''',
+               '''        public function add_order_item_totals($total_rows, $order, $tax_display)\n        {\n            return OrderPresentation::add_order_item_totals($total_rows, $order, $this->id);\n        }\n'''),
+          ]
+          for old, new in replacements:
+              if s.count(old) != 1:
+                  raise SystemExit('replacement marker count != 1: ' + old[:100])
+              s = s.replace(old, new)
+          p.write_text(s, newline='\n')
+          PY
+
+          php -l UPayments.php
+          php -l src/Gateway/OrderPresentation.php
+          git diff --check
+          echo "UPAYMENTS_BYTES=$(wc -c < UPayments.php | tr -d ' ')"
+
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add UPayments.php src/Gateway/OrderPresentation.php
+          git commit -m 'fix: scope order totals to UPayments orders'
+          git push origin HEAD:audit/post-t3-ecosystem-hardening
