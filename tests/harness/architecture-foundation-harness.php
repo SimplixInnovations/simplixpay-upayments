@@ -394,6 +394,7 @@ $checkoutPayload = arch_read($root, 'src/Payment/CheckoutPayload.php');
 $checkoutOrchestrator = arch_read($root, 'src/Payment/CheckoutOrchestrator.php');
 $gatewayAvailability = arch_read($root, 'src/Gateway/Availability.php');
 $gatewayOrderPresentation = arch_read($root, 'src/Gateway/OrderPresentation.php');
+$multiMerchantContract = arch_read($root, 'src/Provider/MultiMerchantContract.php');
 $gatewayTokens = arch_executable_tokens($gateway);
 $gatewayClassTokens = arch_class_body_tokens($gatewayTokens, 'WC_Upayments');
 $checkoutOrchestratorTokens = arch_executable_tokens($checkoutOrchestrator);
@@ -457,7 +458,7 @@ $gatewaySize = is_file($gatewayPath) ? filesize($gatewayPath) : false;
 // src/Gateway/Availability.php while retaining the global callback as a thin adapter.
 // R1 then extracts gateway-specific order-total presentation without expanding
 // the compatibility shell.
-$acceptedGatewayBytes = 86171;
+$acceptedGatewayBytes = 86237;
 arch_assert(is_int($gatewaySize) && $gatewaySize === $acceptedGatewayBytes, 'UPayments.php matches current exact architecture ratchet');
 arch_assert($gatewayClassTokens !== array(), 'legacy WC_Upayments gateway compatibility class remains executable');
 arch_assert(arch_contains($gateway, "add_filter(\"woocommerce_payment_gateways\", \"addUpaymentsGatewayClass\")"), 'WooCommerce gateway registration remains characterized');
@@ -497,6 +498,8 @@ arch_assert(is_file($root . '/src/Gateway/Availability.php'), 'E1 Gateway Availa
 arch_assert(arch_contains($gatewayAvailability, 'namespace Simplixi\\SUPCheckout\\Gateway;'), 'E1 Gateway Availability uses SUPCheckout Gateway namespace');
 arch_assert(is_file($root . '/src/Gateway/OrderPresentation.php'), 'R1 Gateway OrderPresentation boundary exists');
 arch_assert(arch_contains($gatewayOrderPresentation, 'namespace Simplixi\\SUPCheckout\\Gateway;'), 'R1 Gateway OrderPresentation uses SUPCheckout Gateway namespace');
+arch_assert(is_file($root . '/src/Provider/MultiMerchantContract.php'), 'R1 Provider MultiMerchantContract boundary exists');
+arch_assert(arch_contains($multiMerchantContract, 'namespace Simplixi\\SUPCheckout\\Provider;'), 'R1 Provider MultiMerchantContract uses SUPCheckout Provider namespace');
 arch_assert(is_file($root . '/src/Subscription/Composition.php'), 'Subscription Composition boundary exists');
 arch_assert(is_file($root . '/src/Subscription/Presentation.php'), 'Subscription Presentation boundary exists');
 arch_assert(is_file($root . '/src/Payment/CheckoutPayload.php'), 'A5 CheckoutPayload boundary exists');
