@@ -12,6 +12,22 @@
         }
     }
 
+    function submitThroughWooCheckout() {
+        const placeOrder = $('button#place_order');
+
+        if (placeOrder.length) {
+            if (placeOrder.prop('disabled')) {
+                return false;
+            }
+
+            placeOrder.trigger('click');
+            return true;
+        }
+
+        $('form.checkout').trigger('submit');
+        return true;
+    }
+
     api.submitPaymentMethod = function (buttonValue) {
         $('#upayment_payment_type').val(buttonValue);
         $('#card_token').val('');
@@ -22,7 +38,7 @@
                 checkbox.checked = false;
             }
         }
-        $('form.checkout').submit();
+        submitThroughWooCheckout();
     };
 
     api.submitSavedCard = function (button) {
@@ -33,7 +49,7 @@
         if (checkbox) {
             checkbox.checked = false;
         }
-        $('form.checkout').submit();
+        submitThroughWooCheckout();
     };
 
     api.toggleSaveCard = function (loggedUser) {
