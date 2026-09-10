@@ -25,7 +25,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          test "$(git rev-parse HEAD^)" = "9285533b2b7ac62cc6128b132892f2d04ed11304"
+          test "$(git rev-parse HEAD^)" = "7b4ffcac6d0ee6b62fc5d18c0673179a5a13c212"
           test "$(git diff --name-only HEAD^ HEAD)" = ".github/workflows/tmp-constructor-default-hydration-fix.yml"
           test -f scripts/tmp-constructor-default-hydration-fix.py
 
@@ -35,7 +35,7 @@ jobs:
           set -euo pipefail
           python3 scripts/tmp-constructor-default-hydration-fix.py
 
-      - name: Verify bounded diff and initialization order
+      - name: Verify bounded diff and constructor initialization order
         shell: bash
         run: |
           set -euo pipefail
@@ -45,12 +45,17 @@ jobs:
           python3 - <<'PY'
           from pathlib import Path
           text = Path('UPayments.php').read_text(encoding='utf-8')
-          fields = text.find('$this->init_form_fields();')
-          settings = text.find('$this->init_settings();')
-          title = text.find('$this->title = $this->get_option("title");')
+          start = text.find('public function __construct()')
+          end = text.find('public function init_form_fields()', start)
+          if start < 0 or end < 0:
+              raise SystemExit('Constructor boundaries not found')
+          ctor = text[start:end]
+          fields = ctor.find('$this->init_form_fields();')
+          settings = ctor.find('$this->init_settings();')
+          title = ctor.find('$this->title = $this->get_option("title");')
           if not (0 <= fields < settings < title):
               raise SystemExit('Constructor settings order invariant failed')
-          if text.count('$this->init_form_fields();') != 1 or text.count('$this->init_settings();') != 1:
+          if ctor.count('$this->init_form_fields();') != 1 or ctor.count('$this->init_settings();') != 1:
               raise SystemExit('Constructor initialization calls not exactly once')
           PY
           test "$(wc -c < UPayments.php)" -eq 86171
