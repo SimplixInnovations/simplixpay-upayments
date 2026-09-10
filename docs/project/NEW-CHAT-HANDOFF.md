@@ -59,7 +59,9 @@ At that exact SHA:
 - WordPress.org Submission Check — **SUCCESS**;
 - Release Artifact — **SUCCESS**;
 - CodeQL — **SUCCESS**;
-- deterministic package — 51 files / SHA-256 `a343a028e42f17a8d111de4e1a271c4e4bd51ba8cbbc1f0de89652b0d2480455`.
+- deterministic package — 53 files / SHA-256 `a343a028e42f17a8d111de4e1a271c4e4bd51ba8cbbc1f0de89652b0d2480455`.
+
+The 53-file count was independently re-read from the exact b069 installable ZIP during R0 reconciliation; the package SHA-256 remained unchanged.
 
 Accessibility TDD evidence at that checkpoint:
 
@@ -73,6 +75,9 @@ R0 deliberately introduced permanent anti-staleness regression coverage.
 
 - Initial RED: `f57518db74fa3c35c313cb3c1997663b85168d3b` — 194 tests / 1,183 assertions / 3 intended stale-state failures.
 - Expanded RED: `55f9c8511ed7d322b6fb31358277e760140f834b` — 196 tests / 1,189 assertions / 5 intended failures after adding `START-HERE.md` and `AGENTS.md` to the living-authority ratchet.
+- Runtime-bearing-coordinate RED: `c4a57a9740db382654f0c5f26225bad88293ddf9` — 197 tests / 1,223 assertions / exactly 1 intended current-coordinate failure; a separate whitespace defect was also caught by Governance and repaired without weakening the gate.
+- Reconciled candidate `98c8032a36bbae80648dc6271fcee811e2d6cad2` — full exact-head stack GREEN; artifact inspection then exposed the stale b069 file-count claim.
+- Package-evidence RED: `6db89738b861a7f98094dc4d87bda101e1730d55` — 198 tests / 1,228 assertions / exactly 1 intended failure against the stale 51-file b069 statement.
 
 The permanent regression must remain green after reconciliation. Do not remove or weaken it. Live PR #108/head/check state determines whether R0 is currently under certification or closed.
 
@@ -116,6 +121,6 @@ Fresh live checks must also account for CodeQL/security, Provider Sandbox, WordP
 
 ## External/manual boundary
 
-Do not claim repository automation proves production payment completion, real wallet/device behavior, WPML/WCML/multilingual/multicurrency/RTL, broad browser/theme/accessibility, representative load, penetration/PCI/legal attestation, or live non-idempotent subscription auto-deduction. Record those honestly at R6.
+Do not claim repository automation proves production merchant payment completion, real wallet/device behavior, WPML/WCML/multilingual/multicurrency/RTL, broad browser/theme/accessibility, representative load, penetration/PCI/legal attestation, or live non-idempotent subscription auto-deduction. Record those honestly at R6.
 
 Do not invent Q20. Quality Platform Q1-Q19 is closed permanently.
