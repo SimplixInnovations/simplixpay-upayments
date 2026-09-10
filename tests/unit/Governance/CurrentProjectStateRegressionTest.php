@@ -15,6 +15,8 @@ final class CurrentProjectStateRegressionTest extends TestCase {
      */
     private static function living_state_files(): array {
         return array(
+            'AGENTS.md',
+            'docs/project/START-HERE.md',
             'docs/project/PROJECT-STATUS.md',
             'docs/project/OWNER-HANDOFF.md',
             'docs/project/NEW-CHAT-HANDOFF.md',
@@ -33,6 +35,25 @@ final class CurrentProjectStateRegressionTest extends TestCase {
                 $path . ' must record the current merged T3 main coordinate'
             );
         }
+    }
+
+    public function test_start_here_records_post_t3_as_the_current_successor(): void {
+        $content = self::read_repository_file('docs/project/START-HERE.md');
+
+        self::assertStringContainsString('post-t3-ecosystem-hardening', $content);
+        self::assertStringContainsString('T3', $content);
+        self::assertStringNotContainsString('Continue Approach 3 from verified T2', $content);
+        self::assertStringNotContainsString('Approach 3 post-T2 evidence review / direct legacy-method characterization', $content);
+    }
+
+    public function test_agent_instructions_do_not_send_new_sessions_back_to_pre_t3_work(): void {
+        $content = self::read_repository_file('AGENTS.md');
+
+        self::assertStringContainsString('post-t3-ecosystem-hardening', $content);
+        self::assertStringNotContainsString(
+            'The next substantive action is direct characterization of the legacy return/webhook/private verification surfaces before any further consolidation.',
+            $content
+        );
     }
 
     public function test_t3_plan_is_closed_as_verified_runtime_neutral_work(): void {
