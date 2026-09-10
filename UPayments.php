@@ -1230,7 +1230,7 @@ function woocommerceUpaymentsInit() {
                 $this->log( 'Multimerchant enabled but no rules found. Using default credentials.', 'error' );
                 return $this->get_default_credentials();
             }
-            
+
             // --- Core Routing Logic ---
             
             foreach ( $rules as $rule ) {
