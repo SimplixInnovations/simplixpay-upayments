@@ -9,6 +9,7 @@ fi
 wp_root="$1"
 wp_cli="${WP_CLI_BIN:-/tmp/wp-cli.phar}"
 probe_source="${GITHUB_WORKSPACE:?GITHUB_WORKSPACE is required}/tests/integration/fixtures/request-context-probe.php"
+state_fixture="${GITHUB_WORKSPACE}/tests/integration/RequestContextState.php"
 probe_dest="$wp_root/wp-content/mu-plugins/supcheckout-request-context-probe.php"
 port="${SUPCHECKOUT_CONTEXT_PORT:-8080}"
 base_url="http://127.0.0.1:${port}"
@@ -26,7 +27,19 @@ trap cleanup EXIT
 
 [[ -x "$wp_cli" ]] || { echo "WP-CLI not executable: $wp_cli" >&2; exit 65; }
 [[ -f "$probe_source" ]] || { echo "Request-context probe missing: $probe_source" >&2; exit 66; }
-[[ -f "$wp_root/wp-load.php" ]] || { echo "WordPress runtime missing: $wp_root" >&2; exit 67; }
+[[ -f "$state_fixture" ]] || { echo "Request-context state fixture missing: $state_fixture" >&2; exit 67; }
+[[ -f "$wp_root/wp-load.php" ]] || { echo "WordPress runtime missing: $wp_root" >&2; exit 68; }
+
+set_gateway_state() {
+  local currency="$1"
+  local enabled="$2"
+  local api_key="$3"
+
+  SUPCHECKOUT_CERT_CURRENCY="$currency" \
+  SUPCHECKOUT_CERT_ENABLED="$enabled" \
+  SUPCHECKOUT_CERT_API_KEY="$api_key" \
+    "$wp_cli" eval-file "$state_fixture" --path="$wp_root" >/dev/null
+}
 
 mkdir -p "$wp_root/wp-content/mu-plugins"
 cp "$probe_source" "$probe_dest"
@@ -41,8 +54,15 @@ cp "$probe_source" "$probe_dest"
 checkout_page_id="$("$wp_cli" option get woocommerce_checkout_page_id --path="$wp_root")"
 if [[ ! "$checkout_page_id" =~ ^[1-9][0-9]*$ ]]; then
   echo "Invalid WooCommerce checkout page ID: $checkout_page_id" >&2
-  exit 68
+  exit 69
 fi
+
+# The preceding activation safety test intentionally persists malformed gateway
+# settings. Normalize the disposable HTTP fixture with the raw certification
+# writer before starting a web request. Using normal update_option() here would
+# invoke WooCommerce's settings-change observer against the malformed old value
+# and test WooCommerce internals instead of SUPCheckout request-context safety.
+set_gateway_state KWD yes certification-key
 
 php -S "127.0.0.1:${port}" -t "$wp_root" >"$server_log" 2>&1 &
 server_pid=$!
@@ -57,30 +77,8 @@ for attempt in $(seq 1 30); do
 done
 if [[ "$ready" != "1" ]]; then
   cat "$server_log" >&2
-  exit 69
+  exit 70
 fi
-
-set_gateway_state() {
-  local currency="$1"
-  local enabled="$2"
-  local api_key="$3"
-
-  # WooCommerce's payment-gateway option hooks require the settings value to
-  # remain a PHP associative array. `wp option update --format=json` decodes a
-  # JSON object to stdClass, which fatals inside WooCommerce before the HTTP
-  # probe can execute. Persist the same canonical option shape WordPress uses.
-  "$wp_cli" eval '
-    update_option("woocommerce_currency", $args[0]);
-    update_option(
-        "woocommerce_upayments_settings",
-        array(
-            "enabled" => $args[1],
-            "api_key" => $args[2],
-        )
-    );
-  ' "$currency" "$enabled" "$api_key" --path="$wp_root" >/dev/null
-  "$wp_cli" cache flush --path="$wp_root" >/dev/null
-}
 
 assert_probe() {
   local label="$1"
@@ -172,7 +170,6 @@ run_context_matrix() {
 
 # Valid configuration must expose SUPCheckout consistently, including when the
 # generic REST evaluation deliberately has no WooCommerce session object.
-set_gateway_state KWD yes certification-key
 run_context_matrix 'eligible KWD configuration' 1
 assert_probe 'eligible KWD configuration / sessionless REST' \
   "$base_url/index.php?rest_route=/supcheckout-cert/v1/context&sessionless=1" \
