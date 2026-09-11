@@ -1,4 +1,4 @@
-name: Agent E2 Payability RED
+name: Agent E2 Payability GREEN
 
 on:
   push:
@@ -8,15 +8,15 @@ on:
       - '.github/workflows/agent-e2-payability-red.yml'
 
 permissions:
-  contents: read
+  contents: write
 
 env:
   SUPCHECKOUT_PLUGIN_SLUG: supcheckout
 
 jobs:
-  red-characterization:
+  green-verification:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 25
     services:
       mysql:
         image: mysql:8.0
@@ -35,8 +35,7 @@ jobs:
         with:
           ref: audit/post-t3-ecosystem-hardening
           fetch-depth: 0
-          persist-credentials: false
-      - name: Require isolated RED staging tree
+      - name: Require isolated staging tree
         shell: bash
         run: |
           set -euo pipefail
@@ -44,21 +43,26 @@ jobs:
           ACTUAL=$(git diff --name-only "$BASE"..HEAD | sort)
           EXPECTED=$(printf '%s\n' .github/agent-e2-payability-red.py .github/workflows/agent-e2-payability-red.yml | sort)
           test "$ACTUAL" = "$EXPECTED"
-      - name: Apply test-only RED patch
+      - name: Apply minimal payability guard and regression
         shell: bash
         run: |
           set -euo pipefail
           python3 .github/agent-e2-payability-red.py
+          php -l src/Payment/CheckoutOrchestrator.php
+          php -l tests/support/wordpress-payment-runtime.php
           php -l tests/integration/OrderEconomicsRuntimeTest.php
-          test "$(git diff --name-only | tr -d '\r')" = "tests/integration/OrderEconomicsRuntimeTest.php"
+          ACTUAL=$(git diff --name-only | sort)
+          EXPECTED=$(printf '%s\n' src/Payment/CheckoutOrchestrator.php tests/support/wordpress-payment-runtime.php tests/integration/OrderEconomicsRuntimeTest.php | sort)
+          test "$ACTUAL" = "$EXPECTED"
           git diff --check
-      - name: Set up PHP 8.3
+      - name: Set up PHP 8.5
         uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240
         with:
-          php-version: '8.3'
+          php-version: '8.5'
           extensions: curl, mbstring, mysqli, zip
           coverage: none
-          tools: none
+      - name: Install locked development dependencies
+        run: composer install --no-interaction --prefer-dist --no-progress
       - name: Install pinned WP-CLI
         shell: bash
         run: |
@@ -72,5 +76,21 @@ jobs:
         run: bash scripts/install-wp-test-environment.sh '7.1' '11.1.0' "$RUNNER_TEMP/wordpress"
       - name: Activate SUPCheckout
         run: /tmp/wp-cli.phar plugin activate "$SUPCHECKOUT_PLUGIN_SLUG" --path="$RUNNER_TEMP/wordpress"
-      - name: RED - Woo non-payable order must not Charge
+      - name: Verify real-Woo payability guard and full E2 economics runtime
         run: /tmp/wp-cli.phar eval-file "$GITHUB_WORKSPACE/tests/integration/OrderEconomicsRuntimeTest.php" --path="$RUNNER_TEMP/wordpress"
+      - name: Run full quality gate
+        run: composer quality
+      - name: Commit only verified payability changes
+        shell: bash
+        run: |
+          set -euo pipefail
+          git rm .github/agent-e2-payability-red.py
+          git add src/Payment/CheckoutOrchestrator.php tests/support/wordpress-payment-runtime.php tests/integration/OrderEconomicsRuntimeTest.php
+          EXPECTED=$(printf '%s\n' .github/agent-e2-payability-red.py src/Payment/CheckoutOrchestrator.php tests/support/wordpress-payment-runtime.php tests/integration/OrderEconomicsRuntimeTest.php | sort)
+          CACHED=$(git diff --cached --name-only | sort)
+          test "$CACHED" = "$EXPECTED"
+          git diff --cached --check
+          git config user.name 'supcheckout-e2-agent'
+          git config user.email 'actions@users.noreply.github.com'
+          git commit -m 'fix(e2): reject Woo orders that no longer need payment'
+          git push origin HEAD:audit/post-t3-ecosystem-hardening
