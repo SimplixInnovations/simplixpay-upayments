@@ -77,14 +77,13 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          ACTUAL=$(git diff --name-only | sort)
           EXPECTED=$(printf '%s\n' .github/agent-e2-core-adjustments.py tests/integration/OrderEconomicsRuntimeTest.php | sort)
-          test "$ACTUAL" = "$EXPECTED"
           git diff --check
           git config user.name 'supcheckout-e2-agent'
           git config user.email 'actions@users.noreply.github.com'
-          git add tests/integration/OrderEconomicsRuntimeTest.php .github/agent-e2-core-adjustments.py
+          git add tests/integration/OrderEconomicsRuntimeTest.php
           CACHED=$(git diff --cached --name-only | sort)
           test "$CACHED" = "$EXPECTED"
+          test -z "$(git diff --name-only)"
           git commit -m 'test(e2): qualify core coupons and persisted adjustments'
           git push origin HEAD:audit/post-t3-ecosystem-hardening
