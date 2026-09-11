@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - audit/post-t3-ecosystem-hardening
+  pull_request:
+    branches:
+      - main
 
 permissions:
   contents: write
@@ -17,12 +20,13 @@ jobs:
         with:
           fetch-depth: 2
           persist-credentials: true
+          ref: audit/post-t3-ecosystem-hardening
 
       - name: Require expected parent and reconcile living state
         shell: bash
         run: |
           set -euo pipefail
-          test "$(git rev-parse HEAD^)" = "715b0b8671573a1a4d5ef1d7d998cf00da64e611"
+          test "$(git rev-parse HEAD^)" = "e7ea3865331dd1d25560a1cc45851d24cecbc237"
           python3 - <<'PY'
           from pathlib import Path
 
@@ -45,7 +49,6 @@ jobs:
                   raise SystemExit(f'{path}: expected {expected} occurrences, found {actual}: {old[:100]!r}')
               write(path, text.replace(old, new))
 
-          # AGENTS.md
           path = 'AGENTS.md'
           old = (
               f'The latest fully certified repository-executable generic E2 checkpoint inside PR #108 is `{OLD_SHA}`. '
@@ -66,7 +69,6 @@ jobs:
               'Current post-T3 state: R0, R1 and E1 are **DONE / VERIFIED** on PR #108; repository-executable generic E2 is **DONE / CERTIFIED**; E3 repository-executable runtime evidence is **DONE / VERIFIED** at the exact checkpoint above. Named paid/licensed/vendor-infrastructure qualification remains external/unverified until actually exercised. The current executable gate is **R2 callback portability / cache safety**, followed by R3 subscription safety, R4 scalability/idempotency/observability, separately gated R5/T4 architecture decision, and R6 final exact-head qualification plus owner re-acceptance.'
           )
 
-          # START-HERE.md
           path = 'docs/project/START-HERE.md'
           text = read(path)
           start = text.index('The latest fully certified repository-executable generic E2 checkpoint inside that PR is:')
@@ -94,7 +96,6 @@ That candidate does **not** redefine the accepted Approach 2 baseline.'''
           text = text.replace(old_immediate, new_immediate)
           write(path, text)
 
-          # PROJECT-STATUS.md
           path = 'docs/project/PROJECT-STATUS.md'
           text = read(path)
           text = text.replace(f'| Latest fully certified runtime-content PR checkpoint | **`{OLD_SHA}`** |', f'| Latest repository-executable E3 runtime checkpoint | **`{E3_SHA}`** |')
@@ -125,7 +126,6 @@ R0, R1 and E1 are **DONE / VERIFIED on the PR #108 branch**. Repository-executab
           text = text.replace(f'Repository-executable generic E2 is **DONE / CERTIFIED** at `{OLD_SHA}`. This covers the repository-owned generic economics/product/shipping/tax/composition/refund boundaries, including the current-runtime legacy+HPOS Ecosystem Certification lane. It does **not** convert unavailable paid/licensed named integrations into certified compatibility.\n\nCurrent executable gate: **E3 theme/cache/CDN/optimizer/analytics compatibility**.', 'Repository-executable generic E2 is **DONE / CERTIFIED**. E3 repository-executable runtime evidence is **DONE / VERIFIED** at the checkpoint above. These results do **not** convert unavailable paid/licensed or server/CDN-specific integrations into certified compatibility.\n\nCurrent executable gate: **R2 callback portability / cache safety**.')
           write(path, text)
 
-          # OWNER-HANDOFF.md: update current descendant coordinate while preserving accepted Approach 2 baseline.
           path = 'docs/project/OWNER-HANDOFF.md'
           text = read(path)
           if OLD_SHA not in text or OLD_HASH not in text:
@@ -133,11 +133,9 @@ R0, R1 and E1 are **DONE / VERIFIED on the PR #108 branch**. Repository-executab
           text = text.replace(OLD_SHA, E3_SHA)
           text = text.replace(OLD_HASH, E3_HASH)
           text = text.replace('latest fully certified repository-executable generic E2 checkpoint', 'latest repository-executable E3 runtime checkpoint')
-          text = text.replace('its deterministic 55-file candidate package SHA-256 is', 'its deterministic 55-file candidate package SHA-256 is')
           text = text.replace('Current executable gate: **E3 theme/cache/CDN/optimizer/analytics compatibility**.', 'Current executable gate: **R2 callback portability / cache safety**.')
           write(path, text)
 
-          # NEW-CHAT-HANDOFF.md
           path = 'docs/project/NEW-CHAT-HANDOFF.md'
           text = read(path)
           text = text.replace('## Latest fully certified repository-executable generic E2 checkpoint', '## Latest repository-executable E3 runtime checkpoint')
@@ -146,11 +144,9 @@ R0, R1 and E1 are **DONE / VERIFIED on the PR #108 branch**. Repository-executab
           text = text.replace('R0, R1 and E1 are **DONE / VERIFIED on PR #108 branch**. Repository-executable generic E2 is **DONE / CERTIFIED** at this checkpoint, including current-runtime legacy+HPOS Ecosystem Certification. Named paid/licensed vendor integrations remain external/unverified until separately qualified.', 'R0, R1 and E1 are **DONE / VERIFIED on PR #108 branch**. Repository-executable generic E2 is **DONE / CERTIFIED**. E3 repository-executable runtime evidence is **DONE / VERIFIED** at this checkpoint: five free themes with child-theme overrides, four free cache/optimizer coexistence lanes, delayed/combined/repeated script behavior, and analytics-return replay characterization. Named paid/licensed, CDN/server-specific and broad browser/device integrations remain external/unverified until separately qualified. GitHub default CodeQL JavaScript/TypeScript did not reach a terminal verdict at this historical SHA, so descendant merge/release qualification still requires security green.')
           text = text.replace('Current executable gate: **E3 theme/cache/CDN/optimizer/analytics compatibility**.', 'Current executable gate: **R2 callback portability / cache safety**.')
           text = text.replace('1. Execute **E3** repository-owned theme/cache/CDN/optimizer/analytics behavior against legally available runtimes; keep unavailable paid/licensed named products explicitly external/unverified.\n2. Execute **R2** callback URL portability/no-cache safety.', '1. Execute **R2** callback URL portability/no-cache safety with WooCommerce public API URL generation, subdirectory/permalink/proxy coverage and explicit no-cache response semantics.\n2. Execute **R3** subscription selected-card/identity/economic safety after R2 closes.')
-          # avoid duplicated numbering introduced by replacement
           text = text.replace('3. Execute **R3** subscription safety:', '3. Continue **R3** subscription safety:')
           write(path, text)
 
-          # implementation plan
           path = '.ai-architect/implementation-plan.md'
           text = read(path)
           text = text.replace('- E2 repository-executable generic — **DONE / CERTIFIED**.\n\nRepository-executable generic E2 exact-head checkpoint: `' + OLD_SHA + '`.', '- E2 repository-executable generic — **DONE / CERTIFIED**.\n- E3 repository-executable runtime evidence — **DONE / VERIFIED**.\n\nE3 repository-executable exact-head checkpoint: `' + E3_SHA + '`.')
@@ -158,7 +154,6 @@ R0, R1 and E1 are **DONE / VERIFIED on the PR #108 branch**. Repository-executab
           text = text.replace('Current executable gate: **E3 theme/cache/CDN/optimizer/analytics compatibility**. Repository-executable generic E2 is closed/certified; named paid/licensed integrations remain external until actually qualified. Then execute R2 callback URL portability/no-cache safety;', 'Current executable gate: **R2 callback portability / cache safety**. Repository-executable generic E2 is closed/certified and E3 repository-executable runtime evidence is done/verified; named paid/licensed and infrastructure-specific integrations remain external until actually qualified. Execute R2 callback URL portability/no-cache safety;')
           write(path, text)
 
-          # architecture contract
           path = '.ai-architect/architecture-contract.yaml'
           text = read(path)
           needle = f'    generic_e2_status: done_certified\n    current_gate: e3-theme-cache-analytics\n'
@@ -169,7 +164,6 @@ R0, R1 and E1 are **DONE / VERIFIED on the PR #108 branch**. Repository-executab
           text = text.replace('goal: Qualify E3 theme/cache/CDN/optimizer/analytics behavior, then close portability, subscription and scalability gaps under the post-T3 plan; do not treat T3 as authorization for T4 consolidation.', 'goal: Close R2 callback portability/cache safety, then subscription and scalability gaps under the post-T3 plan; keep external E3 vendor/infrastructure evidence bounded and do not treat T3 as authorization for T4 consolidation.')
           write(path, text)
 
-          # Public compatibility matrix: replace stale T2 anchor and split verified repository E3 from external browser/vendor boundaries.
           path = 'docs/COMPATIBILITY.md'
           text = read(path)
           anchor_start = text.index('## Current runtime certification anchor')
