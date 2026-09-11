@@ -1,0 +1,44 @@
+name: Agent E2 Exact Qualification
+
+on:
+  push:
+    branches:
+      - audit/post-t3-ecosystem-hardening
+    paths:
+      - '.github/workflows/agent-e2-exact-qualification.yml'
+
+permissions:
+  contents: write
+  actions: write
+
+jobs:
+  dispatch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+
+      - name: Remove helper and preserve exact candidate tree
+        shell: bash
+        env:
+          EXPECTED_PARENT: f824b0822f8f45a1e05d50eb2b552921fc29d8ba
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD^)" = "$EXPECTED_PARENT"
+          git config user.name 'Simplix Innovations Automation'
+          git config user.email 'actions@users.noreply.github.com'
+          git rm .github/workflows/agent-e2-exact-qualification.yml
+          git commit -m 'ci: dispatch exact E2 qualification'
+          git push origin HEAD:audit/post-t3-ecosystem-hardening
+
+      - name: Dispatch exact-head required workflows
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          for workflow in quality-gates.yml compatibility-certification.yml provider-sandbox-certification.yml release-artifact.yml wordpress-org-submission-check.yml; do
+            gh api --method POST "repos/${GITHUB_REPOSITORY}/actions/workflows/${workflow}/dispatches" -f ref='audit/post-t3-ecosystem-hardening'
+          done
