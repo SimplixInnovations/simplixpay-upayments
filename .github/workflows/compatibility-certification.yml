@@ -192,6 +192,9 @@ jobs:
       - name: Verify finalized Woo order economics authority
         run: /tmp/wp-cli.phar eval-file "$GITHUB_WORKSPACE/tests/integration/OrderEconomicsRuntimeTest.php" --path="$RUNNER_TEMP/wordpress"
 
+      - name: Verify checkout shipping finalization boundary
+        run: /tmp/wp-cli.phar eval-file "$GITHUB_WORKSPACE/tests/integration/CheckoutValidationBoundaryRuntimeTest.php" --path="$RUNNER_TEMP/wordpress"
+
       - name: Verify saved-card and tokenization runtime boundaries
         run: /tmp/wp-cli.phar eval-file "$GITHUB_WORKSPACE/tests/integration/SavedCardRuntimeTest.php" --path="$RUNNER_TEMP/wordpress"
 
