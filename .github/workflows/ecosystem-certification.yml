@@ -204,6 +204,11 @@ jobs:
       - name: Verify repeated embedded render ownership
         run: /tmp/wp-cli.phar eval-file "$GITHUB_WORKSPACE/tests/integration/EmbeddedRenderOwnershipTest.php" --path="$RUNNER_TEMP/wordpress"
 
+      - name: Verify child-theme WooCommerce override precedence
+        env:
+          WP_CLI_BIN: /tmp/wp-cli.phar
+        run: bash "$GITHUB_WORKSPACE/tests/integration/child-theme-override-runtime.sh" "$RUNNER_TEMP/wordpress"
+
       - name: Verify Woo checkout validation remains authoritative
         run: /tmp/wp-cli.phar eval-file "$GITHUB_WORKSPACE/tests/integration/CheckoutValidationBoundaryRuntimeTest.php" --path="$RUNNER_TEMP/wordpress"
 
