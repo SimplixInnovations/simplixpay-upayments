@@ -6024,7 +6024,16 @@ if (class_exists('Simplixi\\SUPCheckout\\Payment\\SavedCardPresentation', false)
     upay_assert_eq(strpos($classic_saved_card_html, '4111') === false, true, 'CLASSIC-PAN-1 hostile leading PAN group absent from rendered Classic HTML', 'semantic_runtime');
     upay_assert_eq(strpos($classic_saved_card_html, '1111') === false, true, 'CLASSIC-PAN-2 hostile middle PAN group absent from rendered Classic HTML', 'semantic_runtime');
     upay_assert_eq(strpos($classic_saved_card_html, '•••• 4242') !== false, true, 'CLASSIC-PAN-3 rendered Classic HTML contains bounded last-four label', 'semantic_runtime');
-    upay_assert_eq(substr_count($classic_saved_card_html, 'onclick="supCheckout.submitSavedCard(this)"'), 1, 'CLASSIC-PAN-4 Classic renders exactly one saved-card submission control', 'semantic_runtime');
+    upay_assert_eq(
+    preg_match_all(
+        '/<button\b(?=[^>]*\btype="button")(?=[^>]*\bvalue="sc1_[0-9a-f]{64}")(?=[^>]*\bonclick="[^"]*window\.supCheckout\.submitSavedCard\(this\)[^"]*window\.supcheckoutPendingAction=\{type:\'saved_card\',value:this\.value\}[^"]*")[^>]*>/',
+        $classic_saved_card_html,
+        $classic_saved_card_controls
+    ),
+    1,
+    'CLASSIC-PAN-4 Classic renders exactly one guarded saved-card submission control',
+    'semantic_runtime'
+);
     upay_assert_eq(substr_count($classic_saved_card_html, 'id="upay-button-cc"'), 1, 'CLASSIC-PAN-5 Classic saved-card controls do not duplicate the normal CC DOM id', 'semantic_runtime');
     upay_assert_eq(strpos($classic_saved_card_html, '1234567890123456') === false, true, 'CLASSIC-PAN-6 provider card token absent from rendered Classic HTML', 'semantic_runtime');
     upay_assert_eq(preg_match('/value="sc1_[0-9a-f]{64}"/', $classic_saved_card_html) === 1, true, 'CLASSIC-PAN-7 Classic saved-card control carries only an opaque selection handle', 'semantic_runtime');
