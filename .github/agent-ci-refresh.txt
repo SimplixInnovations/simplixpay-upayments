@@ -1,0 +1,1 @@
+Temporary connector-authored exact-head CI synchronization marker. Removed immediately; no runtime, package, or permanent test effect.
