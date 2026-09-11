@@ -21,8 +21,6 @@ function supcheckout_e2_product($name, $price, $virtual = false, $downloadable =
     $product->set_name($name);
     $product->set_regular_price($price);
     $product->set_price($price);
-    $product->set_virtual((bool) $virtual);
-    $product->set_downloadable((bool) $downloadable);
     $product_id = $product->save();
     supcheckout_cert_assert(is_int($product_id) && $product_id > 0, 'E2 product persists: ' . $name);
     return $product;
@@ -184,6 +182,25 @@ $payload = supcheckout_e2_assert_charge($order, $calls, 'fee-adjusted order');
 supcheckout_cert_assert(isset($payload['products']) && 1 === count($payload['products']), 'fee-adjusted order: product descriptor remains descriptive');
 supcheckout_e2_delete_order_and_products($order, array($fee_product));
 
+// Negative fee/credit: where Woo accepts a negative fee item, the persisted
+// positive grand total remains authoritative and the product line stays descriptive.
+$credit_product = supcheckout_e2_product('E2 Credit Product', '10.000');
+$order = supcheckout_e2_order(array(array($credit_product, 1)));
+$credit = new WC_Order_Item_Fee();
+$credit->set_name('E2 Certification Credit');
+$credit->set_amount('-2.000');
+$credit->set_total('-2.000');
+$credit->set_tax_status('none');
+$order->add_item($credit);
+$order->calculate_totals(false);
+$order->save();
+supcheckout_cert_assert((float) $order->get_total() > 0 && (float) $order->get_total() < 10.0, 'negative-fee fixture produces a positive reduced Woo total');
+$calls = array();
+supcheckout_e2_run($order, $calls);
+$payload = supcheckout_e2_assert_charge($order, $calls, 'negative-fee adjusted order');
+supcheckout_cert_assert(isset($payload['products']) && 1 === count($payload['products']), 'negative-fee order: product descriptor remains descriptive');
+supcheckout_e2_delete_order_and_products($order, array($credit_product));
+
 // Shipping: same rule as fees; Woo total is payment truth.
 $shipping_product = supcheckout_e2_product('E2 Shipped Product', '10.000');
 $order = supcheckout_e2_order(array(array($shipping_product, 1)));
@@ -199,6 +216,177 @@ supcheckout_e2_run($order, $calls);
 $payload = supcheckout_e2_assert_charge($order, $calls, 'shipping-adjusted order');
 supcheckout_cert_assert(isset($payload['products']) && 1 === count($payload['products']), 'shipping-adjusted order: product descriptor remains descriptive');
 supcheckout_e2_delete_order_and_products($order, array($shipping_product));
+
+// Split/multi-package style persisted shipping is represented by multiple shipping
+// items. Their aggregate affects Woo's total only; products[] remains descriptive.
+$split_product = supcheckout_e2_product('E2 Split Shipping Product', '10.000');
+$order = supcheckout_e2_order(array(array($split_product, 1)));
+foreach (array('1.250', '0.750') as $index => $shipping_total) {
+    $split_shipping = new WC_Order_Item_Shipping();
+    $split_shipping->set_method_title('E2 Split Shipping ' . ($index + 1));
+    $split_shipping->set_method_id('flat_rate');
+    $split_shipping->set_total($shipping_total);
+    $order->add_item($split_shipping);
+}
+$order->calculate_totals(false);
+$order->save();
+$calls = array();
+supcheckout_e2_run($order, $calls);
+$payload = supcheckout_e2_assert_charge($order, $calls, 'split-shipping order');
+supcheckout_cert_assert(isset($payload['products']) && 1 === count($payload['products']), 'split-shipping order: product descriptor remains descriptive');
+supcheckout_e2_delete_order_and_products($order, array($split_product));
+
+// A free promotional line beside a paid line is valid. Zero-priced descriptors are
+// representable and the paid Woo grand total, not descriptor sums, remains authority.
+$paid = supcheckout_e2_product('E2 Paid Product', '9.000');
+$promo = supcheckout_e2_product('E2 Promotional Product', '0');
+$order = supcheckout_e2_order(array(array($paid, 1), array($promo, 1)));
+supcheckout_cert_assert((float) $order->get_total() > 0, 'free-promotion fixture retains a positive Woo grand total');
+$calls = array();
+supcheckout_e2_run($order, $calls);
+$payload = supcheckout_e2_assert_charge($order, $calls, 'free-promotion plus paid order');
+supcheckout_cert_assert(isset($payload['products']) && 2 === count($payload['products']), 'free-promotion plus paid order: both exact descriptors are retained');
+supcheckout_e2_delete_order_and_products($order, array($paid, $promo));
+
+// Coupon/discount style persisted economics: the captured order-item total is lower
+// than catalog/subtotal economics and a coupon item records the discount. Charge uses
+// only the finalized Woo total; products[] describes the discounted line exactly.
+$discounted = supcheckout_e2_product('E2 Discounted Product', '10.000');
+$order = supcheckout_e2_order(array(array($discounted, 1)));
+$line_items = $order->get_items('line_item');
+$line = reset($line_items);
+supcheckout_cert_assert($line instanceof WC_Order_Item_Product, 'discount fixture has a real Woo line item');
+$line->set_subtotal('10.000');
+$line->set_total('8.000');
+$line->save();
+$coupon = new WC_Order_Item_Coupon();
+$coupon->set_code('e2-certification');
+$coupon->set_discount('2.000');
+$coupon->set_discount_tax('0');
+$order->add_item($coupon);
+$order->calculate_totals(false);
+$order->save();
+supcheckout_cert_assert(8.0 === (float) $order->get_total(), 'discount/coupon fixture finalizes the reduced Woo total');
+$calls = array();
+supcheckout_e2_run($order, $calls);
+$payload = supcheckout_e2_assert_charge($order, $calls, 'discount/coupon order');
+supcheckout_cert_assert(isset($payload['products']) && 1 === count($payload['products']), 'discount/coupon order: discounted product descriptor is retained');
+supcheckout_e2_delete_order_and_products($order, array($discounted));
+
+// Tax-bearing persisted line: tax is part of the finalized Woo grand total, while
+// products[] continues to describe the pre-tax line total and cannot redefine Charge.
+$taxed = supcheckout_e2_product('E2 Taxed Product', '10.000');
+$order = supcheckout_e2_order(array(array($taxed, 1)));
+$line_items = $order->get_items('line_item');
+$line = reset($line_items);
+supcheckout_cert_assert($line instanceof WC_Order_Item_Product, 'tax fixture has a real Woo line item');
+$line->set_subtotal_tax('0.500');
+$line->set_total_tax('0.500');
+$line->save();
+$order->calculate_totals(false);
+$order->save();
+supcheckout_cert_assert((float) $order->get_total() > 10.0, 'tax fixture finalizes a Woo total above the untaxed product line');
+$calls = array();
+supcheckout_e2_run($order, $calls);
+$payload = supcheckout_e2_assert_charge($order, $calls, 'tax-bearing order');
+supcheckout_cert_assert(isset($payload['products']) && 1 === count($payload['products']), 'tax-bearing order: product descriptor remains descriptive');
+supcheckout_e2_delete_order_and_products($order, array($taxed));
+
+// Product variation: the actual variation order line is a normal payable line and
+// should retain a faithful descriptor without inventing parent-product economics.
+$variable = new WC_Product_Variable();
+$variable->set_name('E2 Variable Parent');
+$variable_id = $variable->save();
+supcheckout_cert_assert(is_int($variable_id) && $variable_id > 0, 'variable parent persists');
+$variation = new WC_Product_Variation();
+$variation->set_parent_id($variable_id);
+$variation->set_regular_price('6.500');
+$variation->set_price('6.500');
+$variation_id = $variation->save();
+supcheckout_cert_assert(is_int($variation_id) && $variation_id > 0, 'variation persists');
+$order = supcheckout_e2_order(array(array($variation, 2)));
+$calls = array();
+supcheckout_e2_run($order, $calls);
+$payload = supcheckout_e2_assert_charge($order, $calls, 'variation order');
+supcheckout_cert_assert(isset($payload['products']) && 1 === count($payload['products']), 'variation order: variation descriptor is retained');
+supcheckout_e2_delete_order_and_products($order, array($variation, $variable));
+
+// Grouped catalog structures persist child products as order lines. The provider
+// descriptor must reflect the purchased child only, not fabricate the grouped parent.
+$group_child = supcheckout_e2_product('E2 Group Child', '4.000');
+$group_parent = new WC_Product_Grouped();
+$group_parent->set_name('E2 Group Parent');
+$group_parent->set_children(array($group_child->get_id()));
+$group_parent_id = $group_parent->save();
+supcheckout_cert_assert(is_int($group_parent_id) && $group_parent_id > 0, 'grouped parent persists');
+$order = supcheckout_e2_order(array(array($group_child, 2)));
+$calls = array();
+supcheckout_e2_run($order, $calls);
+$payload = supcheckout_e2_assert_charge($order, $calls, 'grouped-child order');
+supcheckout_cert_assert(isset($payload['products']) && 1 === count($payload['products']), 'grouped-child order: purchased child descriptor is retained once');
+supcheckout_e2_delete_order_and_products($order, array($group_child, $group_parent));
+
+// Measurement/fractional quantity: Woo may persist non-integer quantities. They are
+// authoritative order economics but are not representable by UPayments products[].
+$measured = supcheckout_e2_product('E2 Measured Product', '5.000');
+$order = supcheckout_e2_order(array(array($measured, 1)));
+$line_items = $order->get_items('line_item');
+$line = reset($line_items);
+supcheckout_cert_assert($line instanceof WC_Order_Item_Product, 'fractional-quantity fixture has a real Woo line item');
+$line->set_quantity(1.5);
+$line->set_subtotal('7.500');
+$line->set_total('7.500');
+$line->save();
+$order->calculate_totals(false);
+$order->save();
+supcheckout_cert_assert(1.5 === (float) $line->get_quantity(), 'fractional-quantity fixture preserves 1.5 units');
+$calls = array();
+supcheckout_e2_run($order, $calls);
+$payload = supcheckout_e2_assert_charge($order, $calls, 'fractional-quantity order');
+supcheckout_cert_assert(! array_key_exists('products', $payload), 'fractional-quantity order: products[] is omitted wholesale');
+supcheckout_e2_delete_order_and_products($order, array($measured));
+
+// A 100%-discounted order has no payment to initialize even if a normal product
+// and coupon history remain present in the order.
+$fully_discounted = supcheckout_e2_product('E2 Fully Discounted Product', '10.000');
+$order = supcheckout_e2_order(array(array($fully_discounted, 1)));
+$line_items = $order->get_items('line_item');
+$line = reset($line_items);
+supcheckout_cert_assert($line instanceof WC_Order_Item_Product, '100%-discount fixture has a real Woo line item');
+$line->set_subtotal('10.000');
+$line->set_total('0');
+$line->save();
+$coupon = new WC_Order_Item_Coupon();
+$coupon->set_code('e2-full-discount');
+$coupon->set_discount('10.000');
+$coupon->set_discount_tax('0');
+$order->add_item($coupon);
+$order->calculate_totals(false);
+$order->save();
+supcheckout_cert_assert(0.0 === (float) $order->get_total(), '100%-discount fixture finalizes at zero');
+$calls = array();
+$result = supcheckout_e2_run($order, $calls);
+supcheckout_cert_assert('failure' === $result['result'], '100%-discount order fails before provider Charge');
+supcheckout_cert_assert(array() === $calls, '100%-discount order emits no provider request');
+supcheckout_e2_delete_order_and_products($order, array($fully_discounted));
+
+// Deleted/unloadable catalog product: unlike descriptor-only incompatibility, this
+// prevents trusted product/subscription/opt-out classification and therefore fails
+// closed before provider transport.
+$deleted = supcheckout_e2_product('E2 Deleted Product', '5.000');
+$order = supcheckout_e2_order(array(array($deleted, 1)));
+$deleted_id = $deleted->get_id();
+wp_delete_post($deleted_id, true);
+clean_post_cache($deleted_id);
+$calls = array();
+$result = supcheckout_e2_run($order, $calls);
+supcheckout_cert_assert('failure' === $result['result'], 'deleted product order fails closed before Charge');
+supcheckout_cert_assert(array() === $calls, 'deleted product order emits no provider request');
+if ($order instanceof WC_Order) {
+    $order->delete(true);
+}
+$_POST = array();
+wc_clear_notices();
 
 // Zero-grand-total orders remain outside Charge regardless of product shape.
 $free = supcheckout_e2_product('E2 Free Product', '0');
