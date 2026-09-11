@@ -21,6 +21,8 @@ function supcheckout_e2_product($name, $price, $virtual = false, $downloadable =
     $product->set_name($name);
     $product->set_regular_price($price);
     $product->set_price($price);
+    $product->set_virtual((bool) $virtual);
+    $product->set_downloadable((bool) $downloadable);
     $product_id = $product->save();
     supcheckout_cert_assert(is_int($product_id) && $product_id > 0, 'E2 product persists: ' . $name);
     return $product;
@@ -137,7 +139,12 @@ supcheckout_e2_delete_order_and_products($order, array($first, $second));
 
 // Virtual/downloadable products use normal authoritative order economics.
 $digital = supcheckout_e2_product('E2 Digital Product', '4.250', true, true);
-$order = supcheckout_e2_order(array(array($digital, 1)));
+$digital_reloaded = wc_get_product($digital->get_id());
+supcheckout_cert_assert(
+    $digital_reloaded instanceof WC_Product && $digital_reloaded->is_virtual() && $digital_reloaded->is_downloadable(),
+    'virtual/downloadable fixture persists both Woo product capabilities'
+);
+$order = supcheckout_e2_order(array(array($digital_reloaded, 1)));
 $calls = array();
 supcheckout_e2_run($order, $calls);
 $payload = supcheckout_e2_assert_charge($order, $calls, 'virtual/downloadable order');
@@ -342,26 +349,39 @@ supcheckout_cert_assert($line instanceof WC_Order_Item_Product, 'fractional-quan
 $fractional_stock_amount = static function ($quantity) {
     return is_numeric($quantity) ? (float) $quantity : $quantity;
 };
-add_filter('woocommerce_stock_amount', $fractional_stock_amount, 10, 1);
-$line->set_quantity(1.5);
-remove_filter('woocommerce_stock_amount', $fractional_stock_amount, 10);
-$line->set_subtotal('7.500');
-$line->set_total('7.500');
-$line->save();
-$order->calculate_totals(false);
-$order->save();
-$order = wc_get_order($order->get_id());
-supcheckout_cert_assert($order instanceof WC_Order, 'fractional-quantity fixture reloads through Woo CRUD');
-$reloaded_lines = $order->get_items('line_item');
-$reloaded_line = reset($reloaded_lines);
+$core_integer_stock_filter_removed = remove_filter('woocommerce_stock_amount', 'intval', 10);
 supcheckout_cert_assert(
-    $reloaded_line instanceof WC_Order_Item_Product && 1.5 === (float) $reloaded_line->get_quantity(),
-    'fractional-quantity fixture preserves extension-filtered 1.5 units through Woo persistence'
+    true === $core_integer_stock_filter_removed,
+    'fractional-quantity fixture replaces Woo default integer stock normalization'
 );
-$calls = array();
-supcheckout_e2_run($order, $calls);
-$payload = supcheckout_e2_assert_charge($order, $calls, 'fractional-quantity order');
-supcheckout_cert_assert(! array_key_exists('products', $payload), 'fractional-quantity order: products[] is omitted wholesale');
+add_filter('woocommerce_stock_amount', $fractional_stock_amount, 10, 1);
+try {
+    $line->set_quantity(1.5);
+    $line->set_subtotal('7.500');
+    $line->set_total('7.500');
+    $line->save();
+    supcheckout_cert_assert(
+        1.5 === (float) get_metadata('order_item', $line->get_id(), '_qty', true),
+        'fractional-quantity fixture persists 1.5 in Woo order-item storage'
+    );
+    $order->calculate_totals(false);
+    $order->save();
+    $order = wc_get_order($order->get_id());
+    supcheckout_cert_assert($order instanceof WC_Order, 'fractional-quantity fixture reloads through Woo CRUD');
+    $reloaded_lines = $order->get_items('line_item');
+    $reloaded_line = reset($reloaded_lines);
+    supcheckout_cert_assert(
+        $reloaded_line instanceof WC_Order_Item_Product && 1.5 === (float) $reloaded_line->get_quantity(),
+        'fractional-quantity fixture preserves extension-filtered 1.5 units through Woo persistence'
+    );
+    $calls = array();
+    supcheckout_e2_run($order, $calls);
+    $payload = supcheckout_e2_assert_charge($order, $calls, 'fractional-quantity order');
+    supcheckout_cert_assert(! array_key_exists('products', $payload), 'fractional-quantity order: products[] is omitted wholesale');
+} finally {
+    remove_filter('woocommerce_stock_amount', $fractional_stock_amount, 10);
+    add_filter('woocommerce_stock_amount', 'intval', 10, 1);
+}
 supcheckout_e2_delete_order_and_products($order, array($measured));
 
 // A 100%-discounted order has no payment to initialize even if a normal product
