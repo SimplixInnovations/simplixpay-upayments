@@ -671,6 +671,15 @@ class FakeWCOrder extends \WC_Order {
         }
         return $total;
     }
+    public function needs_payment() {
+        // This synthetic H12 order intentionally has no Woo status machine.
+        // Existing H12 cases default to payable so they continue exercising
+        // their downstream payment/security contracts. A test may explicitly
+        // set order_data['needs_payment'] to false to model Woo's outer gate.
+        return array_key_exists('needs_payment', $this->data)
+            ? (bool) $this->data['needs_payment']
+            : true;
+    }
     public function get_billing_email() { return $this->data['billing']['email']; }
     public function get_billing_phone() { return $this->data['billing']['phone']; }
     public function get_items($type) {
