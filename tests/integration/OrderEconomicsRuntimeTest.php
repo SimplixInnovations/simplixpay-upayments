@@ -339,13 +339,25 @@ $order = supcheckout_e2_order(array(array($measured, 1)));
 $line_items = $order->get_items('line_item');
 $line = reset($line_items);
 supcheckout_cert_assert($line instanceof WC_Order_Item_Product, 'fractional-quantity fixture has a real Woo line item');
+$fractional_stock_amount = static function ($quantity) {
+    return is_numeric($quantity) ? (float) $quantity : $quantity;
+};
+add_filter('woocommerce_stock_amount', $fractional_stock_amount, 10, 1);
 $line->set_quantity(1.5);
+remove_filter('woocommerce_stock_amount', $fractional_stock_amount, 10);
 $line->set_subtotal('7.500');
 $line->set_total('7.500');
 $line->save();
 $order->calculate_totals(false);
 $order->save();
-supcheckout_cert_assert(1.5 === (float) $line->get_quantity(), 'fractional-quantity fixture preserves 1.5 units');
+$order = wc_get_order($order->get_id());
+supcheckout_cert_assert($order instanceof WC_Order, 'fractional-quantity fixture reloads through Woo CRUD');
+$reloaded_lines = $order->get_items('line_item');
+$reloaded_line = reset($reloaded_lines);
+supcheckout_cert_assert(
+    $reloaded_line instanceof WC_Order_Item_Product && 1.5 === (float) $reloaded_line->get_quantity(),
+    'fractional-quantity fixture preserves extension-filtered 1.5 units through Woo persistence'
+);
 $calls = array();
 supcheckout_e2_run($order, $calls);
 $payload = supcheckout_e2_assert_charge($order, $calls, 'fractional-quantity order');
