@@ -1,0 +1,80 @@
+name: Agent E2 Fee-only RED
+
+on:
+  push:
+    branches:
+      - audit/post-t3-ecosystem-hardening
+    paths:
+      - '.github/workflows/agent-e2-fee-only-red.yml'
+
+permissions:
+  contents: read
+
+env:
+  SUPCHECKOUT_PLUGIN_SLUG: supcheckout
+
+jobs:
+  red-characterization:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: wordpress
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h 127.0.0.1 -proot"
+          --health-interval=5s
+          --health-timeout=5s
+          --health-retries=20
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: audit/post-t3-ecosystem-hardening
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Require isolated RED staging tree
+        shell: bash
+        run: |
+          set -euo pipefail
+          BASE=cb1470ad7a6b54ae9d44ab2696937c6338488cb7
+          ACTUAL=$(git diff --name-only "$BASE"..HEAD | sort)
+          EXPECTED=$(printf '%s\n' .github/agent-e2-fee-only-red.py .github/workflows/agent-e2-fee-only-red.yml | sort)
+          test "$ACTUAL" = "$EXPECTED"
+      - name: Apply test-only RED patch
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 .github/agent-e2-fee-only-red.py
+          php -l tests/integration/OrderEconomicsRuntimeTest.php
+          php -l tests/unit/Payment/StatusVerifierTest.php
+          test "$(git diff --name-only | sort)" = "$(printf '%s\n' tests/integration/OrderEconomicsRuntimeTest.php tests/unit/Payment/StatusVerifierTest.php | sort)"
+          git diff --check
+      - name: Set up PHP 8.5
+        uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240
+        with:
+          php-version: '8.5'
+          extensions: curl, mbstring, mysqli, zip
+          coverage: none
+      - name: Install locked development dependencies
+        run: composer install --no-interaction --prefer-dist --no-progress
+      - name: Prove post-dispatch mutation characterization
+        run: vendor/bin/phpunit tests/unit/Payment/StatusVerifierTest.php
+      - name: Install pinned WP-CLI
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl -fsSL --retry 5 --retry-delay 2 --retry-all-errors --connect-timeout 15 --max-time 120 https://github.com/wp-cli/wp-cli/releases/download/v2.12.0/wp-cli-2.12.0.phar -o /tmp/wp-cli.phar
+          echo 'ce34ddd838f7351d6759068d09793f26755463b4a4610a5a5c0a97b68220d85c  /tmp/wp-cli.phar' | sha256sum -c -
+          chmod +x /tmp/wp-cli.phar
+      - name: Install real WordPress and WooCommerce runtime
+        env:
+          WP_CLI_BIN: /tmp/wp-cli.phar
+        run: bash scripts/install-wp-test-environment.sh '7.1' '11.1.0' "$RUNNER_TEMP/wordpress"
+      - name: Activate SUPCheckout
+        run: /tmp/wp-cli.phar plugin activate "$SUPCHECKOUT_PLUGIN_SLUG" --path="$RUNNER_TEMP/wordpress"
+      - name: RED - fee-only payable order must reach Charge
+        run: /tmp/wp-cli.phar eval-file "$GITHUB_WORKSPACE/tests/integration/OrderEconomicsRuntimeTest.php" --path="$RUNNER_TEMP/wordpress"
