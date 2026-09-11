@@ -50,9 +50,10 @@ jobs:
           python3 .github/agent-e2-payability-red.py
           php -l src/Payment/CheckoutOrchestrator.php
           php -l tests/support/wordpress-payment-runtime.php
+          php -l tests/phpstan/subscription-presentation-stubs.php
           php -l tests/integration/OrderEconomicsRuntimeTest.php
           ACTUAL=$(git diff --name-only | sort)
-          EXPECTED=$(printf '%s\n' src/Payment/CheckoutOrchestrator.php tests/support/wordpress-payment-runtime.php tests/integration/OrderEconomicsRuntimeTest.php | sort)
+          EXPECTED=$(printf '%s\n' src/Payment/CheckoutOrchestrator.php tests/support/wordpress-payment-runtime.php tests/phpstan/subscription-presentation-stubs.php tests/integration/OrderEconomicsRuntimeTest.php | sort)
           test "$ACTUAL" = "$EXPECTED"
           git diff --check
       - name: Set up PHP 8.5
@@ -85,8 +86,8 @@ jobs:
         run: |
           set -euo pipefail
           git rm .github/agent-e2-payability-red.py
-          git add src/Payment/CheckoutOrchestrator.php tests/support/wordpress-payment-runtime.php tests/integration/OrderEconomicsRuntimeTest.php
-          EXPECTED=$(printf '%s\n' .github/agent-e2-payability-red.py src/Payment/CheckoutOrchestrator.php tests/support/wordpress-payment-runtime.php tests/integration/OrderEconomicsRuntimeTest.php | sort)
+          git add src/Payment/CheckoutOrchestrator.php tests/support/wordpress-payment-runtime.php tests/phpstan/subscription-presentation-stubs.php tests/integration/OrderEconomicsRuntimeTest.php
+          EXPECTED=$(printf '%s\n' .github/agent-e2-payability-red.py src/Payment/CheckoutOrchestrator.php tests/support/wordpress-payment-runtime.php tests/phpstan/subscription-presentation-stubs.php tests/integration/OrderEconomicsRuntimeTest.php | sort)
           CACHED=$(git diff --cached --name-only | sort)
           test "$CACHED" = "$EXPECTED"
           git diff --cached --check
