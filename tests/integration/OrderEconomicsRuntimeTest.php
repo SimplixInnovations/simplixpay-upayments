@@ -816,4 +816,114 @@ $payload = supcheckout_e2_assert_charge($order, $calls, 'real-Woo high-precision
 supcheckout_cert_assert(! array_key_exists('products', $payload), 'real-Woo high-precision fee-less order omits products[]');
 supcheckout_e2_delete_order_and_products($order, array());
 
+
+// Address/rate changes can mutate shipping immediately before payment dispatch.
+// SUPCheckout must read the newest finalized Woo order, never an earlier checkout
+// estimate or catalog value.
+$late_shipping_product = supcheckout_e2_product('E2 Late Shipping Mutation Product', '10.000');
+$order = supcheckout_e2_order(array(array($late_shipping_product, 1)));
+$late_shipping = new WC_Order_Item_Shipping();
+$late_shipping->set_method_title('E2 Initial Address Rate');
+$late_shipping->set_method_id('e2_address_rate_initial');
+$late_shipping->set_total('2.000');
+$order->add_item($late_shipping);
+$order->set_shipping_country('KW');
+$order->set_shipping_postcode('13001');
+$order->calculate_totals(false);
+$order->save();
+supcheckout_cert_assert(12.0 === (float) $order->get_total(), 'late-shipping fixture starts with the initial finalized address rate');
+$shipping_items = $order->get_items('shipping');
+$late_shipping = reset($shipping_items);
+supcheckout_cert_assert($late_shipping instanceof WC_Order_Item_Shipping, 'late-shipping fixture reloads the shipping line before mutation');
+$late_shipping->set_method_title('E2 Recalculated Address Rate');
+$late_shipping->set_method_id('e2_address_rate_recalculated');
+$late_shipping->set_total('4.500');
+$late_shipping->save();
+$order->set_shipping_postcode('15000');
+$order->calculate_totals(false);
+$order->save();
+$order = wc_get_order($order->get_id());
+supcheckout_cert_assert($order instanceof WC_Order, 'late-shipping mutated order reloads through Woo CRUD');
+supcheckout_cert_assert('15000' === $order->get_shipping_postcode(), 'late-shipping fixture persists the changed destination before Charge');
+$shipping_items = $order->get_items('shipping');
+$late_shipping = reset($shipping_items);
+supcheckout_cert_assert($late_shipping instanceof WC_Order_Item_Shipping && 'e2_address_rate_recalculated' === $late_shipping->get_method_id(), 'late-shipping fixture persists the recalculated rate identity');
+supcheckout_cert_assert(14.5 === (float) $order->get_total(), 'late-shipping fixture finalizes the recalculated rate before Charge');
+$calls = array();
+supcheckout_e2_run($order, $calls);
+$payload = supcheckout_e2_assert_charge($order, $calls, 'late address/shipping mutation order');
+supcheckout_cert_assert(isset($payload['products']) && 1 === count($payload['products']), 'late address/shipping mutation leaves products[] descriptive only');
+supcheckout_e2_delete_order_and_products($order, array($late_shipping_product));
+
+// Inclusive-tax representation: Woo's order flag and tax item are descriptive to
+// the gateway; the finalized Woo grand total remains payment truth.
+$inclusive_tax_product = supcheckout_e2_product('E2 Inclusive Tax Product', '10.000');
+$order = supcheckout_e2_order(array(array($inclusive_tax_product, 1)));
+$inclusive_lines = $order->get_items('line_item');
+$inclusive_line = reset($inclusive_lines);
+supcheckout_cert_assert($inclusive_line instanceof WC_Order_Item_Product, 'inclusive-tax fixture has a real Woo line item');
+$inclusive_line->set_subtotal('9.500');
+$inclusive_line->set_total('9.500');
+$inclusive_line->save();
+$inclusive_tax = new WC_Order_Item_Tax();
+$inclusive_tax->set_rate_id(0);
+$inclusive_tax->set_label('E2 Included Tax');
+$inclusive_tax->set_tax_total('0.500');
+$inclusive_tax->set_shipping_tax_total('0');
+$order->add_item($inclusive_tax);
+$order->set_prices_include_tax(true);
+$order->set_cart_tax('0.500');
+$order->set_total('10.000');
+$order->save();
+$order = wc_get_order($order->get_id());
+supcheckout_cert_assert($order instanceof WC_Order && true === $order->get_prices_include_tax(), 'inclusive-tax flag persists through Woo CRUD');
+supcheckout_cert_assert(10.0 === (float) $order->get_total(), 'inclusive-tax fixture persists the finalized tax-inclusive grand total');
+$calls = array();
+supcheckout_e2_run($order, $calls);
+$payload = supcheckout_e2_assert_charge($order, $calls, 'inclusive-tax order');
+supcheckout_cert_assert(isset($payload['products']) && 1 === count($payload['products']), 'inclusive-tax order keeps line descriptor separate from grand-total authority');
+supcheckout_e2_delete_order_and_products($order, array($inclusive_tax_product));
+
+// Explicit exclusive-tax representation mirrors the common Woo model: product
+// line economics plus a separate tax component produce the finalized total.
+$exclusive_tax_product = supcheckout_e2_product('E2 Exclusive Tax Product', '10.000');
+$order = supcheckout_e2_order(array(array($exclusive_tax_product, 1)));
+$exclusive_tax = new WC_Order_Item_Tax();
+$exclusive_tax->set_rate_id(0);
+$exclusive_tax->set_label('E2 Exclusive Tax');
+$exclusive_tax->set_tax_total('0.500');
+$exclusive_tax->set_shipping_tax_total('0');
+$order->add_item($exclusive_tax);
+$order->set_prices_include_tax(false);
+$order->set_cart_tax('0.500');
+$order->set_total('10.500');
+$order->save();
+$order = wc_get_order($order->get_id());
+supcheckout_cert_assert($order instanceof WC_Order && false === $order->get_prices_include_tax(), 'exclusive-tax flag persists through Woo CRUD');
+supcheckout_cert_assert(10.5 === (float) $order->get_total(), 'exclusive-tax fixture persists the finalized tax-exclusive grand total');
+$calls = array();
+supcheckout_e2_run($order, $calls);
+$payload = supcheckout_e2_assert_charge($order, $calls, 'exclusive-tax order');
+supcheckout_cert_assert(isset($payload['products']) && 1 === count($payload['products']), 'exclusive-tax order keeps product descriptor descriptive');
+supcheckout_e2_delete_order_and_products($order, array($exclusive_tax_product));
+
+// Generic tax-exempt/reverse-charge style outcome: the external tax/VAT engine may
+// record exemption provenance, but SUPCheckout must charge only Woo's finalized
+// zero-tax balance. This is not named VAT-provider certification.
+$exempt_product = supcheckout_e2_product('E2 Tax Exempt Product', '10.000');
+$order = supcheckout_e2_order(array(array($exempt_product, 1)));
+$order->set_prices_include_tax(false);
+$order->set_cart_tax('0');
+$order->update_meta_data('E2 Tax Exemption Outcome', 'validated-exempt');
+$order->set_total('10.000');
+$order->save();
+$order = wc_get_order($order->get_id());
+supcheckout_cert_assert($order instanceof WC_Order && 'validated-exempt' === $order->get_meta('E2 Tax Exemption Outcome', true), 'generic exemption provenance persists separately from payment authority');
+supcheckout_cert_assert(10.0 === (float) $order->get_total(), 'generic tax-exempt outcome persists the finalized zero-tax balance');
+$calls = array();
+supcheckout_e2_run($order, $calls);
+$payload = supcheckout_e2_assert_charge($order, $calls, 'generic tax-exempt/reverse-charge outcome');
+supcheckout_cert_assert(isset($payload['products']) && 1 === count($payload['products']), 'generic exemption outcome leaves products[] descriptive');
+supcheckout_e2_delete_order_and_products($order, array($exempt_product));
+
 supcheckout_cert_note('real Woo order-economics certification complete');
