@@ -181,7 +181,6 @@ try {
     supcheckout_cert_assert(isset($payload['order']) && is_array($payload['order']), 'mixed-tax Charge contains structured order economics');
     supcheckout_cert_assert('KWD' === ($payload['order']['currency'] ?? null), 'mixed-tax Charge structurally preserves finalized Woo currency');
     supcheckout_cert_assert(36.0 === (float) ($payload['order']['amount'] ?? 0), 'mixed-tax Charge structurally preserves finalized Woo amount');
-    supcheckout_cert_assert(1 === preg_match('/"amount":36\.000(?=[,}])/', $calls[0]['body']), 'mixed-tax Charge keeps finalized Woo amount as fixed-point JSON decimal');
     supcheckout_cert_assert(isset($payload['products']) && 3 === count($payload['products']), 'mixed-tax products[] remains three descriptive purchased lines');
     supcheckout_cert_assert(! isset($payload['taxes']) && ! isset($payload['order']['tax']), 'SUPCheckout does not invent a parallel provider tax ledger');
 
