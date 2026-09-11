@@ -10,7 +10,7 @@ permissions:
 
 jobs:
   apply-and-certify:
-    if: github.event.head_commit.message == 'ci: stage final generic E2 executor'
+    if: github.event.head_commit.message == 'stage-final-generic-e2-executor'
     runs-on: ubuntu-latest
     timeout-minutes: 20
     services:
