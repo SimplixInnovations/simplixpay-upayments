@@ -77,10 +77,14 @@ final class CheckoutEconomicsAuthorityTest extends TestCase {
         self::assertSame('charge', $requests[0][0]);
         self::assertSame('POST', $requests[0][1]);
         self::assertIsString($requests[0][2]);
+        self::assertMatchesRegularExpression(
+            '/"order":\{[^}]*"currency":"KWD"[^}]*"amount":10\.000(?:[,}])/',
+            $requests[0][2],
+            'Finalized Woo order total must retain its exact provider-bound decimal lexeme.'
+        );
 
         $payload = json_decode($requests[0][2], true);
         self::assertIsArray($payload);
-        self::assertSame('10.000', $payload['order']['amount'], 'Finalized Woo order total remains payment authority.');
         self::assertSame('KWD', $payload['order']['currency'], 'Finalized Woo order currency remains payment authority.');
         self::assertArrayNotHasKey(
             'products',
