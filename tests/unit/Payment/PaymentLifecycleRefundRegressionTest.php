@@ -12,6 +12,18 @@ final class PaymentLifecycleRefundedOrderFixture {
         return 42;
     }
 
+    public function get_payment_method() {
+        return 'upayments';
+    }
+
+    public function get_meta($key) {
+        if ('UPayments_order_id' === $key) {
+            return 'provider-order-refunded';
+        }
+
+        return '';
+    }
+
     public function has_status($status) {
         return 'refunded' === $status;
     }
