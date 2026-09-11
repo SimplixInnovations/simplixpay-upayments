@@ -71,6 +71,7 @@ class CheckoutOrchestrator {
 
             $productArrayNew = [];
             $product_price_tokens = [];
+            $product_descriptors_available = true;
             $cart_has_custom_product = false;
             $order_has_subscription_product = false;
             $order_has_normal_product = false;
@@ -93,6 +94,29 @@ class CheckoutOrchestrator {
                     $gateway->log('Unloadable product in order.', 'warning');
                     wc_add_notice(__('Payment request could not be completed. Please try again.', 'supcheckout'), 'error');
                     return array('result' => 'failure', 'redirect' => wc_get_checkout_url());
+                }
+
+                // Subscription composition is authoritative order classification,
+                // independent of whether optional provider product descriptors can
+                // represent this line's unit economics exactly.
+                if($product->get_type() === 'custom_type'){
+                    $cart_has_custom_product = true;
+                    $order_has_subscription_product = true;
+                    $product_id = (int) $item->get_product_id();
+                    if ($product_id > 0
+                        && get_post_meta($product_id, '_upay_disable_subscription', true) === 'yes'
+                    ) {
+                        $order_has_subscription_restricted_product = true;
+                    }
+                } else {
+                    $order_has_normal_product = true;
+                }
+
+                // Once any line cannot be represented exactly, products[] is
+                // omitted wholesale. Continue classifying later lines for payment
+                // safety, but do not rebuild a partial descriptive ledger.
+                if (!$product_descriptors_available) {
+                    continue;
                 }
 
                 // Section D: Use order-line values, not current catalog price.
@@ -138,30 +162,19 @@ class CheckoutOrchestrator {
                 // uses string-based decimal division by the integer quantity.
                 $unit_price = CheckoutPayload::compute_provider_unit_price_decimal($line_total, $qty);
                 if ($unit_price === null) {
-                    // Unit price cannot be expressed as a stable provider decimal
-                    // (e.g. line_total/qty is not a clean fraction at the captured
-                    // precision). Fail closed rather than silently truncating.
-                    $gateway->log('Invalid unit price derivation.', 'warning');
-                    wc_add_notice(__('Payment request could not be completed. Please try again.', 'supcheckout'), 'error');
-                    return array('result' => 'failure', 'redirect' => wc_get_checkout_url());
+                    // products[] is optional descriptive data. If one line cannot
+                    // be expressed exactly, omit the entire descriptor array rather
+                    // than rounding it or vetoing the authoritative Woo order total.
+                    $gateway->log('Product descriptors omitted: exact unit price unavailable.', 'warning');
+                    $productArrayNew = array();
+                    $product_price_tokens = array();
+                    $product_descriptors_available = false;
+                    continue;
                 }
 
                 // Section F: UTF-8 safe truncation.
                 $normalized_name = CheckoutPayload::truncate_provider_text($item->get_name(), 255);
                 $normalized_description = CheckoutPayload::truncate_provider_text($item->get_name(), 255);
-
-                if($product->get_type() === 'custom_type'){
-                    $cart_has_custom_product = true;
-                    $order_has_subscription_product = true;
-                    $product_id = (int) $item->get_product_id();
-                    if ($product_id > 0
-                        && get_post_meta($product_id, '_upay_disable_subscription', true) === 'yes'
-                    ) {
-                        $order_has_subscription_restricted_product = true;
-                    }
-                } else {
-                    $order_has_normal_product = true;
-                }
 
                 // Section C: Use normalized values in payload.
                 // 'type' is intentionally omitted — provider does not document a
@@ -181,7 +194,7 @@ class CheckoutOrchestrator {
                 $i++;
             }
 
-            if (empty($productArrayNew)) {
+            if ($product_descriptors_available && empty($productArrayNew)) {
                 wc_add_notice(__('Payment request could not be completed. Please try again.', 'supcheckout'), 'error');
                 return array('result' => 'failure', 'redirect' => wc_get_checkout_url());
             }
@@ -888,6 +901,10 @@ class CheckoutOrchestrator {
                 ),
                 'extraMerchantData' => $extraMerchantData,
             );
+
+            if (!$product_descriptors_available) {
+                unset($payload['products']);
+            }
 
             // Whitelabel: add paymentGateway.
             if ($whitelabled) {
