@@ -16,6 +16,14 @@ if support.count(support_old) != 1:
     raise SystemExit(f'expected one support insertion point, found {support.count(support_old)}')
 support_path.write_text(support.replace(support_old, support_new, 1))
 
+phpstan_path = Path('tests/phpstan/subscription-presentation-stubs.php')
+phpstan = phpstan_path.read_text()
+phpstan_old = """        /** @return mixed */\n        public function get_total() {}\n        /** @return mixed */\n        public function get_billing_phone() {}\n"""
+phpstan_new = """        /** @return mixed */\n        public function get_total() {}\n        /** @return bool */\n        public function needs_payment() { return false; }\n        /** @return mixed */\n        public function get_billing_phone() {}\n"""
+if phpstan.count(phpstan_old) != 1:
+    raise SystemExit(f'expected one PHPStan WC_Order insertion point, found {phpstan.count(phpstan_old)}')
+phpstan_path.write_text(phpstan.replace(phpstan_old, phpstan_new, 1))
+
 p = Path('tests/integration/OrderEconomicsRuntimeTest.php')
 s = p.read_text()
 marker = "supcheckout_cert_note('real Woo order-economics certification complete');"
