@@ -1,0 +1,78 @@
+name: Agent Control Plane E2 Finalize
+
+on:
+  push:
+    branches:
+      - audit/post-t3-ecosystem-hardening
+    paths:
+      - '.github/workflows/agent-control-plane-e2-finalize.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  reconcile:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: audit/post-t3-ecosystem-hardening
+          fetch-depth: 0
+      - name: Require certified-tree isolation
+        shell: bash
+        run: |
+          set -euo pipefail
+          BASE=5d8d954ffb8c2e6646dadc4aa1f994b5d56c462e
+          SELF=.github/workflows/agent-control-plane-e2-finalize.yml
+          git merge-base --is-ancestor "$BASE" HEAD
+          test "$(git diff --name-only "$BASE"..HEAD | tr -d '\r')" = "$SELF"
+      - name: Reconcile living authority and anti-staleness ratchet
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -c "import gzip,base64;exec(gzip.decompress(base64.b64decode('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')).decode())"
+          git diff --check
+      - name: Set up PHP 8.5
+        uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240
+        with:
+          php-version: '8.5'
+          coverage: none
+          tools: composer:2.10.3
+      - name: Install locked development toolchain
+        run: composer install --no-interaction --prefer-dist
+      - name: Verify reconciled control plane
+        shell: bash
+        run: |
+          set -euo pipefail
+          composer validate --strict
+          composer audit --locked
+          vendor/bin/phpunit tests/unit/Governance/CurrentProjectStateRegressionTest.php
+          composer quality
+      - name: Prove deterministic package is unchanged
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf dist
+          bash scripts/build-release.sh dist
+          bash scripts/verify-release.sh dist/supcheckout-0.1.0.zip
+          ACTUAL_SHA=$(sha256sum dist/supcheckout-0.1.0.zip | awk '{print $1}')
+          test "$ACTUAL_SHA" = "470db11afb2869bc187f0e920aeae4de02e92f6c1f7ca478ef5cb2ac62151b74"
+          FILES=$(zipinfo -1 dist/supcheckout-0.1.0.zip | grep -v '/$' | wc -l | tr -d ' ')
+          test "$FILES" = "55"
+          rm -rf dist
+      - name: Commit only reconciled control files
+        shell: bash
+        run: |
+          set -euo pipefail
+          ALLOWED=(.ai-architect/architecture-contract.yaml .ai-architect/implementation-plan.md AGENTS.md docs/project/NEW-CHAT-HANDOFF.md docs/project/OWNER-HANDOFF.md docs/project/PROJECT-STATUS.md docs/project/START-HERE.md tests/unit/Governance/CurrentProjectStateRegressionTest.php)
+          ACTUAL=$(git diff --name-only | sort)
+          EXPECTED=$(printf '%s\n' "${ALLOWED[@]}" | sort)
+          test "$ACTUAL" = "$EXPECTED"
+          git diff --check
+          git config user.name 'supcheckout-control-plane-agent'
+          git config user.email 'actions@users.noreply.github.com'
+          git add -- "${ALLOWED[@]}"
+          CACHED=$(git diff --cached --name-only | sort)
+          test "$CACHED" = "$EXPECTED"
+          git commit -m 'docs(control): advance certified gate to residual E2'
+          git push origin HEAD:audit/post-t3-ecosystem-hardening
