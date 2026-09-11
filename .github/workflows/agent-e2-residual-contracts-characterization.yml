@@ -41,13 +41,14 @@ jobs:
           set -euo pipefail
           BASE=07531046f0d34cc5b67d859bf1d49a2debfc2fd3
           ACTUAL=$(git diff --name-only "$BASE"..HEAD | sort)
-          EXPECTED=$(printf '%s\n' .github/agent-e2-residual-contracts.py .github/workflows/agent-e2-residual-contracts-characterization.yml | sort)
+          EXPECTED=$(printf '%s\n' .github/agent-e2-precision-canonicalization.py .github/agent-e2-residual-contracts.py .github/workflows/agent-e2-residual-contracts-characterization.yml | sort)
           test "$ACTUAL" = "$EXPECTED"
       - name: Apply residual E2 characterization contracts
         shell: bash
         run: |
           set -euo pipefail
           python3 .github/agent-e2-residual-contracts.py
+          python3 .github/agent-e2-precision-canonicalization.py
           php -l tests/integration/OrderEconomicsRuntimeTest.php
           git diff --check
           test "$(git diff --name-only)" = "tests/integration/OrderEconomicsRuntimeTest.php"
@@ -94,9 +95,9 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          git rm .github/agent-e2-residual-contracts.py .github/workflows/agent-e2-residual-contracts-characterization.yml
+          git rm .github/agent-e2-precision-canonicalization.py .github/agent-e2-residual-contracts.py .github/workflows/agent-e2-residual-contracts-characterization.yml
           git add tests/integration/OrderEconomicsRuntimeTest.php
-          EXPECTED=$(printf '%s\n' .github/agent-e2-residual-contracts.py .github/workflows/agent-e2-residual-contracts-characterization.yml tests/integration/OrderEconomicsRuntimeTest.php | sort)
+          EXPECTED=$(printf '%s\n' .github/agent-e2-precision-canonicalization.py .github/agent-e2-residual-contracts.py .github/workflows/agent-e2-residual-contracts-characterization.yml tests/integration/OrderEconomicsRuntimeTest.php | sort)
           CACHED=$(git diff --cached --name-only | sort)
           test "$CACHED" = "$EXPECTED"
           git diff --cached --check
