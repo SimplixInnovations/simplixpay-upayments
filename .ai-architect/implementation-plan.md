@@ -142,13 +142,13 @@ Execution state:
 - R0 — **DONE / VERIFIED** on PR #108 branch.
 - R1 — **DONE / VERIFIED** on PR #108 branch.
 - E1 — **DONE / VERIFIED** on PR #108 branch.
-- E2 generic/core — **CERTIFIED**.
+- E2 repository-executable generic — **DONE / CERTIFIED**.
 
-Generic/core E2 exact-head checkpoint: `5d8d954ffb8c2e6646dadc4aa1f994b5d56c462e`.
+Repository-executable generic E2 exact-head checkpoint: `27e90d5a0cd2ba4f7c38889dbef15d1be851efb6`.
 
-At that exact head, Quality/H12, all 20 Compatibility cells + Compatibility Gate, Provider Sandbox, WordPress.org Submission Check, Release Artifact and CodeQL were successful; deterministic candidate package: 55 files / SHA-256 `470db11afb2869bc187f0e920aeae4de02e92f6c1f7ca478ef5cb2ac62151b74`.
+At that exact head, Quality/H12, all 20 Compatibility cells + Compatibility Gate, Provider Sandbox, WordPress.org Submission Check, Release Artifact and CodeQL were successful; deterministic candidate package: 55 files / SHA-256 `dc31c02a8047f9e5120650a46b9c16413383d6644b29f569573739a08f3e7a2d`.
 
-Current executable gate: **E2 residual ecosystem economics / extension-generated contracts**. Then execute E3 theme/cache/minification/defer/consent/analytics interaction evidence; R2 callback URL portability/no-cache safety; R3 subscription selected-card/parent/cancellation/token/economic/held-cycle safety; R4 Action Scheduler/idempotency/journal/observability/load/concurrency/failure-injection hardening; separately gate R5/T4 callback consolidation; and finish with R6 exact-head qualification plus fresh owner re-acceptance.
+Current executable gate: **E3 theme/cache/CDN/optimizer/analytics compatibility**. Repository-executable generic E2 is closed/certified; named paid/licensed integrations remain external until actually qualified. Then execute R2 callback URL portability/no-cache safety; R3 subscription selected-card/parent/cancellation/token/economic/held-cycle safety; R4 Action Scheduler/idempotency/journal/observability/load/concurrency/failure-injection hardening; separately gate R5/T4 callback consolidation; and finish with R6 exact-head qualification plus fresh owner re-acceptance.
 
 ## Runtime implementation discipline
 

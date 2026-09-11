@@ -29,7 +29,7 @@
 | Approach 3 T3 | **DONE / VERIFIED — runtime-neutral** |
 | Latest merged Approach 3 main coordinate | **`a7a8bbfc3a1dc551127b7ead897c964e95c7cec9`** |
 | Active successor program | **`post-t3-ecosystem-hardening` — PR #108** |
-| Latest fully certified runtime-content PR checkpoint | **`5d8d954ffb8c2e6646dadc4aa1f994b5d56c462e`** |
+| Latest fully certified runtime-content PR checkpoint | **`27e90d5a0cd2ba4f7c38889dbef15d1be851efb6`** |
 | Public GitHub Release | **NOT CREATED** |
 | WordPress.org publication | **NOT PERFORMED / NOT AUTHORIZED** |
 
@@ -72,21 +72,22 @@ Canonical plan: [`../superpowers/plans/2026-09-10-post-t3-ecosystem-hardening.md
 
 Active integration: draft PR #108 / `audit/post-t3-ecosystem-hardening`.
 
-Latest fully certified generic/core E2 checkpoint:
+Latest fully certified repository-executable generic E2 checkpoint:
 
-`5d8d954ffb8c2e6646dadc4aa1f994b5d56c462e`
+`27e90d5a0cd2ba4f7c38889dbef15d1be851efb6`
 
 At that exact SHA:
 
 - Quality Gates / H12 — **SUCCESS**;
 - Compatibility Certification — **20/20 runtime cells + Compatibility Gate SUCCESS**;
+- Ecosystem Certification — **current WP/Woo legacy + HPOS runtime cells + Ecosystem Gate SUCCESS**;
 - Provider Sandbox Certification — **SUCCESS**;
 - WordPress.org Submission Check — **SUCCESS**;
 - Release Artifact — **SUCCESS**;
 - CodeQL — **SUCCESS**;
-- deterministic installable package — **55 files**, SHA-256 `470db11afb2869bc187f0e920aeae4de02e92f6c1f7ca478ef5cb2ac62151b74`.
+- deterministic installable package — **55 files**, SHA-256 `dc31c02a8047f9e5120650a46b9c16413383d6644b29f569573739a08f3e7a2d`.
 
-R0, R1 and E1 are **DONE / VERIFIED on the PR #108 branch**. Generic/core E2 is **CERTIFIED** at this exact checkpoint. The earlier `b06976ac689cfd0d469bd96b0d6a2b925c863747` accessibility checkpoint remains historical evidence inside this descendant.
+R0, R1 and E1 are **DONE / VERIFIED on the PR #108 branch**. Repository-executable generic E2 is **DONE / CERTIFIED** at this exact checkpoint. Named paid/licensed vendor integrations remain external/unverified until separately qualified. The earlier `b06976ac689cfd0d469bd96b0d6a2b925c863747` accessibility checkpoint remains historical evidence inside this descendant.
 
 That earlier checkpoint contains bounded post-T3 correctness work plus the accessibility markup slice. Accessibility followed genuine TDD:
 
@@ -110,15 +111,16 @@ The permanent anti-staleness/package-evidence regression must remain GREEN after
 
 The overall post-T3 program is **not finished**.
 
-Current executable gate: **E2 residual ecosystem economics / extension-generated contracts**.
+Repository-executable generic E2 is **DONE / CERTIFIED** at `27e90d5a0cd2ba4f7c38889dbef15d1be851efb6`. This covers the repository-owned generic economics/product/shipping/tax/composition/refund boundaries, including the current-runtime legacy+HPOS Ecosystem Certification lane. It does **not** convert unavailable paid/licensed named integrations into certified compatibility.
 
-1. **E2 residual ecosystem economics:** real Woo coupon variants; payable fully-discounted product lines with shipping/tax; add-on/options and parent/child composition shells; gift-card/store-credit partial redemption; deposits/initial partial payment; broader shipping/tax/VAT recalculation variants; persisted high-precision economics; post-dispatch economic mutation; partial-refund semantics; explicit fee-only/non-product-line policy. Paid/licensed named extensions remain external until legally available.
-2. **E3 — theme/cache/analytics compatibility:** behavioral qualification across available Classic/block themes, optimizer/cache/CDN behavior, fragment/defer/delay interactions and analytics return/replay semantics. Paid themes/plugins remain external where packages are unavailable.
-3. **R2 — callback portability/cache safety:** Woo API URL abstraction, `home_url` vs `site_url`, subdirectories, permalink/index/proxy behavior, no-cache callback/public-status semantics and replay freshness.
-4. **R3 — subscription safety:** exact auto-deduct amount/currency/parent/cycle/provider binding, removal of first-card fallback, paid-parent discovery beyond `completed`, customer control policy, token-retention contract and held-cycle reconciliation.
-5. **R4 — scalability/operations:** due-work scheduling/Action Scheduler, bounded batches, durable idempotency/journal semantics, observability, load/concurrency/failure injection and queue health.
-6. **R5 / T4 — callback consolidation decision:** **separately gated architecture decision**. T3 characterization is evidence, not implementation authorization.
-7. **R6 — final release qualification:** exact-head full gates, browser/device/manual/external qualification, fresh owner re-acceptance, explicit version/publication decision.
+Current executable gate: **E3 theme/cache/CDN/optimizer/analytics compatibility**.
+
+1. **E3 — theme/cache/analytics compatibility:** qualify available Classic/block/free theme runtimes, optimizer/cache/CDN interaction behavior, repeated fragment/defer/delay execution and analytics return/replay semantics. Paid/licensed named products remain external until legally available and actually exercised.
+2. **R2 — callback portability/cache safety:** Woo API URL abstraction, `home_url` vs `site_url`, subdirectories, permalink/index/proxy behavior, explicit no-cache callback/public-status semantics and replay freshness.
+3. **R3 — subscription safety:** exact auto-deduct amount/currency/parent/cycle/provider binding, removal of first-card fallback, paid-parent discovery beyond `completed`, customer control policy, token-retention contract and held-cycle reconciliation.
+4. **R4 — scalability/operations:** due-work scheduling/Action Scheduler, bounded batches, durable idempotency/journal semantics, observability, load/concurrency/failure injection and queue health.
+5. **R5 / T4 — callback consolidation decision:** **separately gated architecture decision**. T3 characterization is evidence, not implementation authorization.
+6. **R6 — final release qualification:** exact-head full gates, browser/device/manual/external qualification, fresh owner re-acceptance, explicit version/publication decision.
 
 ## Permanent payment/security invariants
 

@@ -47,9 +47,9 @@ These remain historical closure facts while the active post-T3 program advances.
 
 T3 characterized the direct legacy return/webhook/private verifier. It also proved a direct `return_from_upayments()` caller may not carry the GET `page` marker used by `PaymentLifecycle::handle_callback()` for browser-mode inference. **T4 consolidation is therefore a separate architecture gate, not an automatic next refactor.**
 
-## Latest fully certified generic/core E2 checkpoint
+## Latest fully certified repository-executable generic E2 checkpoint
 
-`5d8d954ffb8c2e6646dadc4aa1f994b5d56c462e`
+`27e90d5a0cd2ba4f7c38889dbef15d1be851efb6`
 
 At that exact SHA:
 
@@ -59,9 +59,9 @@ At that exact SHA:
 - WordPress.org Submission Check — **SUCCESS**;
 - Release Artifact — **SUCCESS**;
 - CodeQL — **SUCCESS**;
-- deterministic package — 55 files / SHA-256 `470db11afb2869bc187f0e920aeae4de02e92f6c1f7ca478ef5cb2ac62151b74`.
+- deterministic package — 55 files / SHA-256 `dc31c02a8047f9e5120650a46b9c16413383d6644b29f569573739a08f3e7a2d`.
 
-R0, R1 and E1 are **DONE / VERIFIED on PR #108 branch**. Generic/core E2 is **CERTIFIED** at this checkpoint. The earlier b069 accessibility checkpoint remains retained historical evidence inside this certified descendant.
+R0, R1 and E1 are **DONE / VERIFIED on PR #108 branch**. Repository-executable generic E2 is **DONE / CERTIFIED** at this checkpoint, including current-runtime legacy+HPOS Ecosystem Certification. Named paid/licensed vendor integrations remain external/unverified until separately qualified. The earlier b069 accessibility checkpoint remains retained historical evidence inside this certified descendant.
 
 Accessibility TDD evidence at that earlier checkpoint:
 
@@ -83,15 +83,14 @@ The permanent regression must remain green after reconciliation. Do not remove o
 
 ## Remaining execution order
 
-Current executable gate: **E2 residual ecosystem economics / extension-generated contracts**.
+Current executable gate: **E3 theme/cache/CDN/optimizer/analytics compatibility**.
 
-1. Finish residual **E2** generic/runtime contracts and explicitly classify paid/licensed provider/product-extension cases that cannot run legally in repository CI.
-2. Execute **E3** theme/cache/analytics interaction evidence.
-3. Execute **R2** callback URL portability/no-cache safety.
-4. Execute **R3** subscription safety: exact cycle economics/identity, selected-card authority, no first-card fallback, parent discovery, cancellation/control and held-cycle reconciliation.
-5. Execute **R4** due-work scheduling, idempotency/journal, observability, load/concurrency and failure-injection hardening.
-6. Gate **R5/T4** architecture separately; do not implement merely because characterization exists.
-7. Execute **R6** exact-head release qualification, fresh owner re-acceptance and version decision; publication requires separate explicit authorization.
+1. Execute **E3** repository-owned theme/cache/CDN/optimizer/analytics behavior against legally available runtimes; keep unavailable paid/licensed named products explicitly external/unverified.
+2. Execute **R2** callback URL portability/no-cache safety.
+3. Execute **R3** subscription safety: exact cycle economics/identity, selected-card authority, no first-card fallback, parent discovery, cancellation/control and held-cycle reconciliation.
+4. Execute **R4** due-work scheduling, idempotency/journal, observability, load/concurrency and failure-injection hardening.
+5. Gate **R5/T4** architecture separately; do not implement merely because characterization exists.
+6. Execute **R6** exact-head release qualification, fresh owner re-acceptance and version decision; publication requires separate explicit authorization.
 
 ## Permanent invariants
 

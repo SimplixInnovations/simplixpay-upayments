@@ -84,11 +84,11 @@ T3 proved that a direct `return_from_upayments()` caller may lack the WC-API GET
 
 The current successor program is **post-t3-ecosystem-hardening**, governed by `docs/superpowers/plans/2026-09-10-post-t3-ecosystem-hardening.md`, with active draft PR #108 on `audit/post-t3-ecosystem-hardening`.
 
-The latest fully certified generic/core E2 checkpoint inside PR #108 is `5d8d954ffb8c2e6646dadc4aa1f994b5d56c462e`. Quality/H12, all 20 Compatibility cells plus Compatibility Gate, Provider Sandbox, WordPress.org Submission Check, Release Artifact and CodeQL succeeded at that exact head. Its deterministic package is 55 files / SHA-256 `470db11afb2869bc187f0e920aeae4de02e92f6c1f7ca478ef5cb2ac62151b74`.
+The latest fully certified repository-executable generic E2 checkpoint inside PR #108 is `27e90d5a0cd2ba4f7c38889dbef15d1be851efb6`. Quality/H12, all 20 Compatibility cells plus Compatibility Gate, Provider Sandbox, WordPress.org Submission Check, Release Artifact and CodeQL succeeded at that exact head. Its deterministic package is 55 files / SHA-256 `dc31c02a8047f9e5120650a46b9c16413383d6644b29f569573739a08f3e7a2d`.
 
 Neither T2, T3 nor PR #108 silently redefines owner acceptance. A fresh owner acceptance is required at Approach 3 closeout.
 
-Current post-T3 state: R0, R1 and E1 are **DONE / VERIFIED** on PR #108; generic/core E2 is **CERTIFIED** at the exact checkpoint above. The current executable gate is **E2 residual ecosystem economics / extension-generated contracts**, followed by E3 theme/cache/analytics evidence, R2 callback portability/cache safety, R3 subscription safety, R4 scalability/idempotency/observability, separately gated R5/T4 architecture decision, and R6 final exact-head qualification plus owner re-acceptance.
+Current post-T3 state: R0, R1 and E1 are **DONE / VERIFIED** on PR #108; repository-executable generic E2 is **DONE / CERTIFIED** at the exact checkpoint above. Named paid/licensed vendor integrations remain external/unverified until separately qualified. The current executable gate is **E3 theme/cache/CDN/optimizer/analytics compatibility**, followed by R2 callback portability/cache safety, R3 subscription safety, R4 scalability/idempotency/observability, separately gated R5/T4 architecture decision, and R6 final exact-head qualification plus owner re-acceptance.
 
 No public GitHub Release or WordPress.org publication is authorized.
 
@@ -122,6 +122,7 @@ Do not remove, skip, soften or blanket-ignore:
 
 - `.github/workflows/quality-gates.yml`;
 - `.github/workflows/compatibility-certification.yml`;
+- `.github/workflows/ecosystem-certification.yml`;
 - `.github/workflows/provider-sandbox-certification.yml`;
 - `.github/workflows/release-artifact.yml`;
 - `.github/workflows/wordpress-org-submission-check.yml`;

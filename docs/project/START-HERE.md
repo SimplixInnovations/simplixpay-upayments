@@ -103,13 +103,13 @@ Canonical plan:
 
 Active integration work is draft PR #108 on `audit/post-t3-ecosystem-hardening`.
 
-The latest fully certified generic/core E2 checkpoint inside that PR is:
+The latest fully certified repository-executable generic E2 checkpoint inside that PR is:
 
-`5d8d954ffb8c2e6646dadc4aa1f994b5d56c462e`
+`27e90d5a0cd2ba4f7c38889dbef15d1be851efb6`
 
-At that exact SHA, Quality/H12, the full 20-cell Compatibility matrix + Compatibility Gate, Provider Sandbox Certification, WordPress.org Submission Check, Release Artifact and CodeQL all succeeded. Its deterministic package is 55 files / SHA-256 `470db11afb2869bc187f0e920aeae4de02e92f6c1f7ca478ef5cb2ac62151b74`.
+At that exact SHA, Quality/H12, the full 20-cell Compatibility matrix + Compatibility Gate, Provider Sandbox Certification, WordPress.org Submission Check, Release Artifact and CodeQL all succeeded. Its deterministic package is 55 files / SHA-256 `dc31c02a8047f9e5120650a46b9c16413383d6644b29f569573739a08f3e7a2d`.
 
-R0, R1 and E1 are **DONE / VERIFIED on the PR #108 branch**. Generic/core E2 is **CERTIFIED** at this checkpoint. This does not close residual ecosystem-economics qualification or any later post-T3 tranche.
+R0, R1 and E1 are **DONE / VERIFIED on the PR #108 branch**. Repository-executable generic E2 is **DONE / CERTIFIED** at this checkpoint, including the current-runtime legacy+HPOS Ecosystem Certification lane. Named paid/licensed vendor integrations remain external/unverified until separately qualified; later post-T3 tranches remain open.
 
 That candidate does **not** redefine the accepted Approach 2 baseline.
 
@@ -155,11 +155,11 @@ R0-R4 are bounded evidence-first work under the approved post-T3 plan. **R5/T4 i
 | T3 | **DONE / VERIFIED / runtime-neutral** |
 | Latest merged Approach 3 main | `a7a8bbfc3a1dc551127b7ead897c964e95c7cec9` |
 | Active task | **PR #108 — post-t3-ecosystem-hardening** |
-| Latest fully certified runtime-content PR checkpoint | `5d8d954ffb8c2e6646dadc4aa1f994b5d56c462e` |
-| Latest candidate package at that checkpoint | 55 files / SHA-256 `470db11afb2869bc187f0e920aeae4de02e92f6c1f7ca478ef5cb2ac62151b74` |
+| Latest fully certified runtime-content PR checkpoint | `27e90d5a0cd2ba4f7c38889dbef15d1be851efb6` |
+| Latest candidate package at that checkpoint | 55 files / SHA-256 `dc31c02a8047f9e5120650a46b9c16413383d6644b29f569573739a08f3e7a2d` |
 | R0 / R1 / E1 | **DONE / VERIFIED on PR #108 branch** |
-| E2 generic/core | **CERTIFIED** at `5d8d954ffb8c2e6646dadc4aa1f994b5d56c462e` |
-| Current operational gate | **E2 residual ecosystem economics / extension-generated contracts** |
+| E2 repository-executable generic | **DONE / CERTIFIED** at `27e90d5a0cd2ba4f7c38889dbef15d1be851efb6` |
+| Current operational gate | **E3 theme/cache/CDN/optimizer/analytics compatibility** |
 | Public release authorization | **NOT GRANTED** |
 | Source of live truth | **GitHub + exact source/check/package evidence** |
 
@@ -262,4 +262,4 @@ If any of these are unknown, the session is **not bootstrapped yet**.
 
 ## 13. Immediate next step
 
-Finish R0 control-plane reconciliation under the permanent anti-staleness regression, prove the exact R0 head GREEN, reconcile PR #108 as the task ledger, clean only proven-safe stale branches, then continue the remaining R1 bounded correctness work. Do not jump directly to T4 callback consolidation.
+Execute **E3 theme/cache/CDN/optimizer/analytics compatibility** under the permanent Ecosystem Certification lane and existing checkout lifecycle harnesses. Keep named paid/licensed themes, optimizers and analytics products external/unverified unless their packages and required credentials are legally available. After E3 reaches an immutable exact-head checkpoint, continue to R2 callback portability/cache safety. Do not jump directly to R5/T4 callback consolidation.
