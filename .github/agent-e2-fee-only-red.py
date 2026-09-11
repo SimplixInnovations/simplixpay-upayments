@@ -1,5 +1,13 @@
 from pathlib import Path
 
+source_path = Path('src/Payment/CheckoutOrchestrator.php')
+source_text = source_path.read_text()
+source_old = """            if ($product_descriptors_available && empty($productArrayNew)) {\n                wc_add_notice(__('Payment request could not be completed. Please try again.', 'supcheckout'), 'error');\n                return array('result' => 'failure', 'redirect' => wc_get_checkout_url());\n            }\n"""
+source_new = """            if ($product_descriptors_available && empty($productArrayNew)) {\n                // A positive finalized Woo order can legitimately contain only fees\n                // or other non-product adjustments. products[] is descriptive only;\n                // absence of product descriptors must not veto authoritative order\n                // economics. Subscription validation below still requires a real\n                // subscription product for every non-one_time plan.\n                $gateway->log('Product descriptors omitted: order has no product line descriptors.', 'warning');\n                $product_descriptors_available = false;\n            }\n"""
+if source_text.count(source_old) != 1:
+    raise SystemExit(f'expected one source guard, found {source_text.count(source_old)}')
+source_path.write_text(source_text.replace(source_old, source_new, 1))
+
 order_path = Path('tests/integration/OrderEconomicsRuntimeTest.php')
 order_text = order_path.read_text()
 order_marker = "supcheckout_cert_note('real Woo order-economics certification complete');"
