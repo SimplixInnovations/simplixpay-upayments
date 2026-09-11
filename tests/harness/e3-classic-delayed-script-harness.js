@@ -32,6 +32,7 @@ function createScene(pendingAction) {
         checkboxChecked: true,
         placeOrderClicks: 0,
         formSubmitEvents: 0,
+        placeOrderVisible: true,
         handlers: [],
     };
 
@@ -82,8 +83,14 @@ function createScene(pendingAction) {
     function placeOrderCollection() {
         return {
             length: 1,
-            hide() { return this; },
-            show() { return this; },
+            hide() {
+                state.placeOrderVisible = false;
+                return this;
+            },
+            show() {
+                state.placeOrderVisible = true;
+                return this;
+            },
             prop(name) {
                 if (name === 'disabled') return false;
                 return undefined;
@@ -168,9 +175,34 @@ function createScene(pendingAction) {
         vm.runInNewContext(scriptSource, sandbox, { filename: SCRIPT_PATH });
     }
 
+    function dispatch(target, eventName) {
+        state.handlers
+            .filter(function (entry) {
+                return entry.target === target && entry.eventName === eventName;
+            })
+            .slice()
+            .forEach(function (entry) {
+                entry.handler.call(null, { type: eventName });
+            });
+    }
+
+    function countHandlers(target, eventName, selector) {
+        return state.handlers.filter(function (entry) {
+            if (entry.target !== target || entry.eventName !== eventName) return false;
+            if (typeof selector === 'string' && entry.selector !== selector) return false;
+            return true;
+        }).length;
+    }
+
     evaluateSource();
 
-    return { state, window, rerun: evaluateSource };
+    return {
+        state,
+        window,
+        rerun: evaluateSource,
+        dispatch,
+        countHandlers,
+    };
 }
 
 console.log('Running e3-classic-delayed-script-harness.js');
@@ -216,6 +248,51 @@ console.log('Running e3-classic-delayed-script-harness.js');
         'consumed delayed save-card toggle is cleared');
     record(scene.state.placeOrderClicks === 0,
         'save-card consent replay never submits checkout');
+}
+
+{
+    const scene = createScene(null);
+    const changeEvent = 'change.supcheckoutPaymentLifecycle';
+    const updateEvent = 'updated_checkout.supcheckoutPaymentLifecycle';
+    const selector = 'input[name="payment_method"]';
+
+    record(scene.countHandlers('form', changeEvent, selector) === 1,
+        'script initialization owns exactly one namespaced payment-method lifecycle handler');
+    record(scene.countHandlers('body', updateEvent) === 1,
+        'script initialization owns exactly one namespaced updated-checkout lifecycle handler');
+    record(scene.state.placeOrderVisible === false,
+        'initial lifecycle synchronization hides Woo place-order while SUPCheckout is selected');
+
+    scene.rerun();
+    scene.rerun();
+    record(scene.countHandlers('form', changeEvent, selector) === 1,
+        'duplicate or combined script evaluation replaces rather than stacks the payment-method lifecycle handler');
+    record(scene.countHandlers('body', updateEvent) === 1,
+        'duplicate or combined script evaluation replaces rather than stacks the updated-checkout lifecycle handler');
+
+    scene.state.selectedPaymentMethod = 'cod';
+    scene.dispatch('body', updateEvent);
+    record(scene.state.placeOrderVisible === true,
+        'an updated-checkout fragment cycle restores Woo place-order for another gateway');
+
+    scene.state.selectedPaymentMethod = 'upayments';
+    scene.dispatch('body', updateEvent);
+    record(scene.state.placeOrderVisible === false,
+        'a later updated-checkout fragment cycle re-hides Woo place-order for SUPCheckout');
+
+    for (let cycle = 0; cycle < 5; cycle++) {
+        scene.state.selectedPaymentMethod = cycle % 2 === 0 ? 'cod' : 'upayments';
+        scene.dispatch('body', updateEvent);
+    }
+    record(scene.countHandlers('body', updateEvent) === 1,
+        'repeated checkout fragment refreshes never multiply SUPCheckout lifecycle ownership');
+    record(scene.state.placeOrderClicks === 0 && scene.state.formSubmitEvents === 0,
+        'fragment lifecycle synchronization never submits checkout on its own');
+
+    scene.state.selectedPaymentMethod = 'cod';
+    scene.dispatch('form', changeEvent);
+    record(scene.state.placeOrderVisible === true,
+        'payment-method change lifecycle stays functional after repeated fragment refreshes');
 }
 
 record(!/onclick\s*=\s*["']\s*supCheckout\./.test(templateSource),
