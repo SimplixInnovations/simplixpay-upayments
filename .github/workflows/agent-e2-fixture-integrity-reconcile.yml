@@ -1,0 +1,110 @@
+name: Agent E2 Fixture Integrity Reconcile
+
+on:
+  push:
+    branches:
+      - audit/post-t3-ecosystem-hardening
+    paths:
+      - '.github/workflows/agent-e2-fixture-integrity-reconcile.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  reconcile:
+    runs-on: ubuntu-latest
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: wordpress
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h 127.0.0.1 -proot"
+          --health-interval=5s
+          --health-timeout=5s
+          --health-retries=20
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: audit/post-t3-ecosystem-hardening
+          fetch-depth: 0
+      - name: Require exact parent
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD^)" = "d2a8552f54e6fe691949b3b876d45e8233230e91"
+          test "$(git diff-tree --no-commit-id --name-only -r HEAD)" = ".github/workflows/agent-e2-fixture-integrity-reconcile.yml"
+      - name: Patch E2 fixture semantics
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          p = Path('tests/integration/OrderEconomicsRuntimeTest.php')
+          s = p.read_text()
+
+          old = """    $product->set_regular_price($price);\n    $product->set_price($price);\n    $product_id = $product->save();\n"""
+          new = """    $product->set_regular_price($price);\n    $product->set_price($price);\n    $product->set_virtual((bool) $virtual);\n    $product->set_downloadable((bool) $downloadable);\n    $product_id = $product->save();\n"""
+          if s.count(old) != 1:
+              raise SystemExit('product helper target cardinality mismatch')
+          s = s.replace(old, new, 1)
+
+          old = """$digital = supcheckout_e2_product('E2 Digital Product', '4.250', true, true);\n$order = supcheckout_e2_order(array(array($digital, 1)));\n"""
+          new = """$digital = supcheckout_e2_product('E2 Digital Product', '4.250', true, true);\n$digital_reloaded = wc_get_product($digital->get_id());\nsupcheckout_cert_assert(\n    $digital_reloaded instanceof WC_Product && $digital_reloaded->is_virtual() && $digital_reloaded->is_downloadable(),\n    'virtual/downloadable fixture persists both Woo product capabilities'\n);\n$order = supcheckout_e2_order(array(array($digital_reloaded, 1)));\n"""
+          if s.count(old) != 1:
+              raise SystemExit('digital fixture target cardinality mismatch')
+          s = s.replace(old, new, 1)
+
+          old = """$fractional_stock_amount = static function ($quantity) {\n    return is_numeric($quantity) ? (float) $quantity : $quantity;\n};\nadd_filter('woocommerce_stock_amount', $fractional_stock_amount, 10, 1);\n$line->set_quantity(1.5);\nremove_filter('woocommerce_stock_amount', $fractional_stock_amount, 10);\n"""
+          new = """$fractional_stock_amount = static function ($quantity) {\n    return is_numeric($quantity) ? (float) $quantity : $quantity;\n};\n$core_integer_stock_filter_removed = remove_filter('woocommerce_stock_amount', 'intval', 10);\nsupcheckout_cert_assert(\n    true === $core_integer_stock_filter_removed,\n    'fractional-quantity fixture replaces Woo default integer stock normalization'\n);\nadd_filter('woocommerce_stock_amount', $fractional_stock_amount, 10, 1);\ntry {\n    $line->set_quantity(1.5);\n} finally {\n    remove_filter('woocommerce_stock_amount', $fractional_stock_amount, 10);\n    add_filter('woocommerce_stock_amount', 'intval', 10, 1);\n}\n"""
+          if s.count(old) != 1:
+              raise SystemExit('fractional fixture target cardinality mismatch')
+          s = s.replace(old, new, 1)
+
+          p.write_text(s)
+          PY
+          php -l tests/integration/OrderEconomicsRuntimeTest.php
+          git diff --check
+          changed="$(git diff --name-only)"
+          test "$changed" = "tests/integration/OrderEconomicsRuntimeTest.php"
+      - name: Set up PHP 8.3
+        uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240
+        with:
+          php-version: '8.3'
+          extensions: curl, mbstring, mysqli, zip
+          coverage: none
+          tools: none
+      - name: Install pinned WP-CLI
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl -fsSL --retry 5 --retry-delay 2 --retry-all-errors --connect-timeout 15 --max-time 120 \
+            https://github.com/wp-cli/wp-cli/releases/download/v2.12.0/wp-cli-2.12.0.phar \
+            -o /tmp/wp-cli.phar
+          echo 'ce34ddd838f7351d6759068d09793f26755463b4a4610a5a5c0a97b68220d85c  /tmp/wp-cli.phar' | sha256sum -c -
+          chmod +x /tmp/wp-cli.phar
+      - name: Real Woo E2 focused probe
+        shell: bash
+        env:
+          WP_CLI_BIN: /tmp/wp-cli.phar
+        run: |
+          set -euo pipefail
+          bash scripts/install-wp-test-environment.sh "7.1" "11.1.0" "$RUNNER_TEMP/wordpress"
+          /tmp/wp-cli.phar plugin activate supcheckout --path="$RUNNER_TEMP/wordpress"
+          /tmp/wp-cli.phar eval-file "$GITHUB_WORKSPACE/tests/integration/OrderEconomicsRuntimeTest.php" --path="$RUNNER_TEMP/wordpress"
+      - name: Commit fixture correction and self-remove
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm .github/workflows/agent-e2-fixture-integrity-reconcile.yml
+          git diff --check
+          changed="$(git diff --name-only | sort)"
+          test "$changed" = "$(printf '%s\n' '.github/workflows/agent-e2-fixture-integrity-reconcile.yml' 'tests/integration/OrderEconomicsRuntimeTest.php' | sort)"
+          git config user.name 'Simplix Innovations Automation'
+          git config user.email 'actions@users.noreply.github.com'
+          git add tests/integration/OrderEconomicsRuntimeTest.php .github/workflows/agent-e2-fixture-integrity-reconcile.yml
+          git commit -m 'test(e2): make runtime fixtures semantically real'
+          git push origin HEAD:audit/post-t3-ecosystem-hardening
