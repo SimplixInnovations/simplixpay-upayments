@@ -1,0 +1,209 @@
+name: Agent H12 E2 Reconcile
+
+on:
+  push:
+    branches:
+      - audit/post-t3-ecosystem-hardening
+    paths:
+      - '.github/workflows/agent-h12-e2-reconcile.yml'
+
+permissions:
+  contents: write
+  actions: write
+
+jobs:
+  reconcile:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+
+      - name: Verify parent and reconcile stale E2 expectations
+        shell: bash
+        env:
+          EXPECTED_PARENT: 70c6fceb68f72c4d49261078602257f05ef53963
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD^)" = "$EXPECTED_PARENT"
+          python3 <<'PY'
+          from pathlib import Path
+
+          path = Path('tests/harness/phase-9g-h12-php-harness.php')
+          text = path.read_text()
+
+          def replace_between(start_marker: str, end_marker: str, replacement: str) -> None:
+              global text
+              start = text.index(start_marker)
+              end = text.index(end_marker, start)
+              text = text[:start] + replacement + text[end:]
+
+          replace_between(
+              "    } elseif ($name === 'PE-13') {",
+              "    } elseif ($name === 'PE-11') {",
+              """    } elseif ($name === 'PE-13') {
+              // Descriptive unit economics are not exactly representable. Woo order
+              // amount/currency remain authoritative; products[] must be omitted.
+              upay_assert_eq($res['result'] ?? null, 'success', 'PE-13 result=success (non-terminating descriptor degrades)', 'semantic_runtime');
+              upay_assert_eq($state['charge_calls'], 1, 'PE-13 Charge=1 (authoritative Woo order remains payable)', 'semantic_runtime');
+              upay_assert_eq([$state['create_token_calls'], $state['retrieve_calls']], [0, 0], 'PE-13 no token/retrieve side path', 'semantic_runtime');
+              $pe13_body = isset($state['last_charge_body']) ? $state['last_charge_body'] : '';
+              upay_assert(is_string($pe13_body) && strpos($pe13_body, '\"products\"') === false, 'PE-13 unrepresentable descriptor omits products[] wholesale', 'semantic_runtime');
+          """
+          )
+
+          replace_between(
+              "    } elseif ($name === 'PE-11') {",
+              "    } elseif ($name === 'PE-15') {",
+              """    } elseif ($name === 'PE-11') {
+              // Provider descriptor quantity exceeds the serialization ceiling. Woo
+              // order amount/currency remain authoritative; products[] must be omitted.
+              upay_assert_eq($res['result'] ?? null, 'success', 'PE-11 result=success (descriptor quantity ceiling degrades)', 'semantic_runtime');
+              upay_assert_eq($state['charge_calls'], 1, 'PE-11 Charge=1 (authoritative Woo order remains payable)', 'semantic_runtime');
+              upay_assert_eq([$state['create_token_calls'], $state['retrieve_calls']], [0, 0], 'PE-11 no token/retrieve side path', 'semantic_runtime');
+              $pe11_body = isset($state['last_charge_body']) ? $state['last_charge_body'] : '';
+              upay_assert(is_string($pe11_body) && strpos($pe11_body, '\"products\"') === false, 'PE-11 oversized descriptor quantity omits products[] wholesale', 'semantic_runtime');
+          """
+          )
+
+          replace_between(
+              "// ECON-E2E-3: 10.00 / 3 — non-terminating within the 7-digit cap.",
+              "// ECON-E2E-7: qty 10,000,000 with line_total=9999999.00 — overflow / cap.",
+              """// ECON-E2E-3: 10.00 / 3 — non-terminating descriptor economics.
+          // The finalized Woo order remains payment authority. Descriptor conversion
+          // failure must omit products[] rather than veto, round or fabricate Charge.
+          upay_reset_state();
+          $state =& upay_test_state();
+          $state['current_user_id'] = 88;
+          upay_default_success_environment();
+          upay_set_provider_responses([
+              'check-payment-button-status' => [
+                  'transport_ok' => true, 'http_status' => 200, 'curl_errno' => 0,
+                  'body' => json_encode(['result' => 'success', 'isWhiteLabel' => true, 'payButtons' => ['knet' => 1, 'credit_card' => 1, 'apple_pay_knet' => 0, 'apple_pay' => 0, 'samsung_pay' => 0, 'google_pay' => 0]]),
+              ],
+              'create-customer-unique-token' => [
+                  'transport_ok' => true, 'http_status' => 201, 'curl_errno' => 0,
+                  'body' => json_encode(['status' => true, 'data' => ['customerUniqueToken' => '12345678']]),
+              ],
+              'charge' => [
+                  'transport_ok' => true, 'http_status' => 201, 'curl_errno' => 0,
+                  'body' => json_encode(['status' => true, 'data' => ['link' => 'https://upayments.example.test/r?order=50002']]),
+              ],
+          ]);
+          $order = upay_make_order(50002, '10.00', [new FakeWCOrderItem_Product(new FakeWCProduct(2, 'B', 'simple'), 3, '10.00')]);
+          $gw = new WC_Upayments_Testable();
+          $gw->apiKey = 'test_api_key'; $gw->testMode = 'no';
+          $gw->saveCardEnabled = 'yes'; $gw->autoDeduction = 'no';
+          $token_calls_before = $state['create_token_calls'];
+          $charge_calls_before = $state['charge_calls'];
+          $res = upay_run_process_payment($gw, $order, false, '/checkout/', 'POST');
+          upay_assert_eq(
+              $res['result'],
+              'success',
+              'ECON-E2E-3 10.00/3 -> descriptor degrades without vetoing payment',
+              'semantic_runtime'
+          );
+          upay_assert_eq(
+              $state['create_token_calls'],
+              $token_calls_before,
+              'ECON-E2E-4 10.00/3 -> no create_token side path',
+              'semantic_runtime'
+          );
+          upay_assert_eq(
+              $state['charge_calls'],
+              $charge_calls_before + 1,
+              'ECON-E2E-5 10.00/3 -> exactly one Charge mutation',
+              'semantic_runtime'
+          );
+          $raw_charge_body = isset($state['last_charge_body']) ? $state['last_charge_body'] : '';
+          upay_assert(
+              is_string($raw_charge_body) && strpos($raw_charge_body, '\"products\"') === false,
+              'ECON-E2E-6 10.00/3 -> Charge body omits products[] wholesale',
+              'semantic_runtime'
+          );
+
+          """
+          )
+
+          replace_between(
+              "// ECON-E2E-7: qty 10,000,000 with line_total=9999999.00 — overflow / cap.",
+              "// ECON-E2E-10: Multi-line order with positive + zero-price.",
+              """// ECON-E2E-7: qty 10,000,000 exceeds provider descriptor quantity ceiling.
+          // The finalized Woo order remains payable; the optional descriptor is omitted.
+          upay_reset_state();
+          $state =& upay_test_state();
+          $state['current_user_id'] = 88;
+          upay_default_success_environment();
+          upay_set_provider_responses([
+              'check-payment-button-status' => [
+                  'transport_ok' => true, 'http_status' => 200, 'curl_errno' => 0,
+                  'body' => json_encode(['result' => 'success', 'isWhiteLabel' => true, 'payButtons' => ['knet' => 1, 'credit_card' => 1, 'apple_pay_knet' => 0, 'apple_pay' => 0, 'samsung_pay' => 0, 'google_pay' => 0]]),
+              ],
+              'create-customer-unique-token' => [
+                  'transport_ok' => true, 'http_status' => 201, 'curl_errno' => 0,
+                  'body' => json_encode(['status' => true, 'data' => ['customerUniqueToken' => '12345678']]),
+              ],
+              'charge' => [
+                  'transport_ok' => true, 'http_status' => 201, 'curl_errno' => 0,
+                  'body' => json_encode(['status' => true, 'data' => ['link' => 'https://upayments.example.test/r?order=50003']]),
+              ],
+          ]);
+          $order = upay_make_order(50003, '9999999.00', [new FakeWCOrderItem_Product(new FakeWCProduct(3, 'C', 'simple'), 10000000, '9999999.00')]);
+          $gw = new WC_Upayments_Testable();
+          $gw->apiKey = 'test_api_key'; $gw->testMode = 'no';
+          $gw->saveCardEnabled = 'yes'; $gw->autoDeduction = 'no';
+          $token_calls_before = $state['create_token_calls'];
+          $charge_calls_before = $state['charge_calls'];
+          $res = upay_run_process_payment($gw, $order, false, '/checkout/', 'POST');
+          upay_assert_eq(
+              $res['result'],
+              'success',
+              'ECON-E2E-7 qty=10000000 -> descriptor ceiling degrades without vetoing payment',
+              'semantic_runtime'
+          );
+          upay_assert_eq(
+              $state['create_token_calls'],
+              $token_calls_before,
+              'ECON-E2E-8 qty=10000000 -> no create_token side path',
+              'semantic_runtime'
+          );
+          $raw_charge_body = isset($state['last_charge_body']) ? $state['last_charge_body'] : '';
+          upay_assert(
+              $state['charge_calls'] === $charge_calls_before + 1 && is_string($raw_charge_body) && strpos($raw_charge_body, '\"products\"') === false,
+              'ECON-E2E-9 qty=10000000 -> one Charge and products[] omitted wholesale',
+              'semantic_runtime'
+          );
+
+          """
+          )
+
+          path.write_text(text)
+          PY
+          git diff --check
+          php -l tests/harness/phase-9g-h12-php-harness.php
+          php tests/harness/phase-9g-h12-php-harness.php
+
+      - name: Commit surgical guard reconciliation and remove helper workflow
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'Simplix Innovations Automation'
+          git config user.email 'actions@users.noreply.github.com'
+          git rm .github/workflows/agent-h12-e2-reconcile.yml
+          git add tests/harness/phase-9g-h12-php-harness.php
+          git diff --cached --check
+          git diff --cached --stat
+          test "$(git diff --cached --name-only | sort | tr '\n' ' ')" = ".github/workflows/agent-h12-e2-reconcile.yml tests/harness/phase-9g-h12-php-harness.php "
+          git commit -m 'test(e2): align H12 with descriptive product policy'
+          git push origin HEAD:audit/post-t3-ecosystem-hardening
+
+      - name: Dispatch exact-head qualification
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          for workflow in quality-gates.yml compatibility-certification.yml provider-sandbox-certification.yml release-artifact.yml wordpress-org-submission-check.yml; do
+            gh api --method POST "repos/${GITHUB_REPOSITORY}/actions/workflows/${workflow}/dispatches" -f ref='audit/post-t3-ecosystem-hardening'
+          done
