@@ -33,7 +33,7 @@
 | Public tag / GitHub Release | **NOT CREATED / NOT AUTHORIZED** |
 | WordPress.org publication | **NOT PERFORMED / NOT AUTHORIZED** |
 
-No Q20 exists or is justified. New work uses named bounded engineering tranches.
+No Q20 is justified. New work uses named bounded engineering tranches.
 
 ## Frozen regression authority
 
