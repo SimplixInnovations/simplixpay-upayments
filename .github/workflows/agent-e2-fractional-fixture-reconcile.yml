@@ -1,0 +1,94 @@
+name: Agent E2 Fractional Fixture Reconcile
+
+on:
+  push:
+    branches:
+      - audit/post-t3-ecosystem-hardening
+    paths:
+      - '.github/workflows/agent-e2-fractional-fixture-reconcile.yml'
+
+permissions:
+  contents: write
+  actions: write
+
+jobs:
+  reconcile:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+
+      - name: Model fractional quantity through Woo's extension seam
+        shell: bash
+        env:
+          EXPECTED_PARENT: e37faf7994a7b2b5acdc6fffc724d3499470cdbc
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD^)" = "$EXPECTED_PARENT"
+          python3 <<'PY'
+          from pathlib import Path
+          path = Path('tests/integration/OrderEconomicsRuntimeTest.php')
+          text = path.read_text()
+          old = """$line->set_quantity(1.5);
+          $line->set_subtotal('7.500');
+          $line->set_total('7.500');
+          $line->save();
+          $order->calculate_totals(false);
+          $order->save();
+          supcheckout_cert_assert(1.5 === (float) $line->get_quantity(), 'fractional-quantity fixture preserves 1.5 units');
+          $calls = array();
+          supcheckout_e2_run($order, $calls);
+          """
+          new = """$fractional_stock_amount = static function ($quantity) {
+              return is_numeric($quantity) ? (float) $quantity : $quantity;
+          };
+          add_filter('woocommerce_stock_amount', $fractional_stock_amount, 10, 1);
+          $line->set_quantity(1.5);
+          remove_filter('woocommerce_stock_amount', $fractional_stock_amount, 10);
+          $line->set_subtotal('7.500');
+          $line->set_total('7.500');
+          $line->save();
+          $order->calculate_totals(false);
+          $order->save();
+          $order = wc_get_order($order->get_id());
+          supcheckout_cert_assert($order instanceof WC_Order, 'fractional-quantity fixture reloads through Woo CRUD');
+          $reloaded_lines = $order->get_items('line_item');
+          $reloaded_line = reset($reloaded_lines);
+          supcheckout_cert_assert(
+              $reloaded_line instanceof WC_Order_Item_Product && 1.5 === (float) $reloaded_line->get_quantity(),
+              'fractional-quantity fixture preserves extension-filtered 1.5 units through Woo persistence'
+          );
+          $calls = array();
+          supcheckout_e2_run($order, $calls);
+          """
+          if text.count(old) != 1:
+              raise SystemExit('expected fractional fixture block not found exactly once')
+          path.write_text(text.replace(old, new, 1))
+          PY
+          git diff --check
+          php -l tests/integration/OrderEconomicsRuntimeTest.php
+
+      - name: Commit surgical correction and remove helper
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'Simplix Innovations Automation'
+          git config user.email 'actions@users.noreply.github.com'
+          git rm .github/workflows/agent-e2-fractional-fixture-reconcile.yml
+          git add tests/integration/OrderEconomicsRuntimeTest.php
+          git diff --cached --check
+          test "$(git diff --cached --name-only | sort | tr '\n' ' ')" = ".github/workflows/agent-e2-fractional-fixture-reconcile.yml tests/integration/OrderEconomicsRuntimeTest.php "
+          git commit -m 'test(e2): model fractional quantity through Woo filter'
+          git push origin HEAD:audit/post-t3-ecosystem-hardening
+
+      - name: Dispatch exact-head qualification
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          for workflow in quality-gates.yml compatibility-certification.yml provider-sandbox-certification.yml release-artifact.yml wordpress-org-submission-check.yml; do
+            gh api --method POST "repos/${GITHUB_REPOSITORY}/actions/workflows/${workflow}/dispatches" -f ref='audit/post-t3-ecosystem-hardening'
+          done
