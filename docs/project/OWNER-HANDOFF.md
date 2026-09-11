@@ -1,7 +1,7 @@
 # SUPCheckout for UPayments — Owner Handoff
 
 **Purpose:** authoritative fresh-clone, local-acceptance and release-decision procedure  
-**Canonical repository:** `SimplixInnovations/supcheckout`  
+**Canonical GitHub repository:** `SimplixInnovations/supcheckout`  
 **Development version:** `0.1.0`  
 **Public publication:** **NOT AUTHORIZED**
 
