@@ -10,7 +10,7 @@ permissions:
 
 jobs:
   apply-and-certify:
-    if: github.event.head_commit.message == 'stage-final-generic-e2-executor-v4'
+    if: github.event.head_commit.message == 'stage-final-generic-e2-executor-v5'
     runs-on: ubuntu-latest
     timeout-minutes: 20
     services:
