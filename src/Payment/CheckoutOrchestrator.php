@@ -193,8 +193,13 @@ class CheckoutOrchestrator {
             }
 
             if ($product_descriptors_available && empty($productArrayNew)) {
-                wc_add_notice(__('Payment request could not be completed. Please try again.', 'supcheckout'), 'error');
-                return array('result' => 'failure', 'redirect' => wc_get_checkout_url());
+                // A positive finalized Woo order can legitimately contain only fees
+                // or other non-product adjustments. products[] is descriptive only;
+                // absence of product descriptors must not veto authoritative order
+                // economics. Subscription validation below still requires a real
+                // subscription product for every non-one_time plan.
+                $gateway->log('Product descriptors omitted: order has no product line descriptors.', 'warning');
+                $product_descriptors_available = false;
             }
 
             // Q19: product-level subscription opt-out is authoritative order data.

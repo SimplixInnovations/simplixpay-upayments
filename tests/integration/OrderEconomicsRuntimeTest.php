@@ -548,4 +548,27 @@ supcheckout_cert_assert('failure' === $result['result'], 'zero-total order fails
 supcheckout_cert_assert(array() === $calls, 'zero-total order emits no provider request');
 supcheckout_e2_delete_order_and_products($order, array($free));
 
+// Fee-only payable order: Woo can persist a positive grand total without product
+// lines. Since products[] is descriptive rather than payment authority, SUPCheckout
+// must initialize Charge from the finalized Woo total and omit products[].
+$order = supcheckout_e2_order(array());
+$fee_only = new WC_Order_Item_Fee();
+$fee_only->set_name('E2 Fee-only Payable Amount');
+$fee_only->set_amount('4.250');
+$fee_only->set_total('4.250');
+$fee_only->set_tax_status('none');
+$order->add_item($fee_only);
+$order->calculate_totals(false);
+$order->save();
+$order = wc_get_order($order->get_id());
+supcheckout_cert_assert($order instanceof WC_Order, 'fee-only order reloads through Woo CRUD');
+supcheckout_cert_assert(array() === $order->get_items('line_item'), 'fee-only order has no product line items');
+supcheckout_cert_assert(1 === count($order->get_items('fee')), 'fee-only order persists one fee item');
+supcheckout_cert_assert(4.25 === (float) $order->get_total(), 'fee-only order has a positive finalized Woo total');
+$calls = array();
+supcheckout_e2_run($order, $calls);
+$payload = supcheckout_e2_assert_charge($order, $calls, 'fee-only payable order');
+supcheckout_cert_assert(! array_key_exists('products', $payload), 'fee-only payable order omits descriptive products[]');
+supcheckout_e2_delete_order_and_products($order, array());
+
 supcheckout_cert_note('real Woo order-economics certification complete');
