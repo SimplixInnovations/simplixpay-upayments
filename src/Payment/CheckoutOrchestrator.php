@@ -120,40 +120,38 @@ class CheckoutOrchestrator {
                 }
 
                 // Section D: Use order-line values, not current catalog price.
-                // Strict integer quantity validation: reject fractional, negative, zero,
-                // or out-of-range integer values. Pure integer preservation, no
-                // rounding/float math — the wire format requires an int.
+                // Provider product descriptors require a positive integer quantity,
+                // but products[] is optional descriptive data. If Woo/extension
+                // order data cannot be represented exactly, omit products[] instead
+                // of vetoing the finalized Woo order economics.
                 $qty = $item->get_quantity();
                 if (!is_int($qty) || $qty <= 0 || $qty > 9999999) {
-                    $gateway->log('Invalid product quantity.', 'warning');
-                    wc_add_notice(__('Payment request could not be completed. Please try again.', 'supcheckout'), 'error');
-                    return array('result' => 'failure', 'redirect' => wc_get_checkout_url());
+                    $gateway->log('Product descriptors omitted: quantity is not provider-representable.', 'warning');
+                    $productArrayNew = array();
+                    $product_price_tokens = array();
+                    $product_descriptors_available = false;
+                    continue;
                 }
 
                 // Section D2: Pure deterministic decimal handling.
-                // Provider requires a positive-decimal string for the line price.
-                // WC_Order_Item_Product::get_total() returns a numeric value (often
-                // a float). Section #14: we REJECT float input outright for product
-                // economics — claiming exact lexical economics while accepting a
-                // float contradicts itself. The order-line total MUST be a
-                // canonical decimal string. If WC returns a float we look up the
-                // canonical stored string value via the meta or refuse the line.
-                //
-                // Product line totals may be zero (e.g. $0.00 promotional lines);
-                // use the *nonnegative* lexical validator here. The unit_price
-                // down-stream uses the *positive* validator for provider contract.
+                // Product line economics are descriptive only. Never derive Charge
+                // authority from them and never coerce a float into an exact decimal.
                 $raw_line_total = $item->get_total();
                 if (is_float($raw_line_total)) {
-                    $gateway->log('Rejecting float line total for product economics.', 'warning');
-                    wc_add_notice(__('Payment request could not be completed. Please try again.', 'supcheckout'), 'error');
-                    return array('result' => 'failure', 'redirect' => wc_get_checkout_url());
+                    $gateway->log('Product descriptors omitted: float line total is not exact.', 'warning');
+                    $productArrayNew = array();
+                    $product_price_tokens = array();
+                    $product_descriptors_available = false;
+                    continue;
                 }
                 $line_total_canonical = CheckoutPayload::canonicalize_provider_decimal_string($raw_line_total);
                 $line_total_validation = CheckoutPayload::validate_provider_nonnegative_decimal($line_total_canonical, 'line_total');
                 if ($line_total_validation === null) {
-                    $gateway->log('Invalid line total.', 'warning');
-                    wc_add_notice(__('Payment request could not be completed. Please try again.', 'supcheckout'), 'error');
-                    return array('result' => 'failure', 'redirect' => wc_get_checkout_url());
+                    $gateway->log('Product descriptors omitted: line total is not provider-representable.', 'warning');
+                    $productArrayNew = array();
+                    $product_price_tokens = array();
+                    $product_descriptors_available = false;
+                    continue;
                 }
                 $line_total = $line_total_validation;
 
