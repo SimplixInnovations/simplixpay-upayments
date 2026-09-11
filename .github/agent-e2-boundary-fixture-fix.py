@@ -15,17 +15,21 @@ old = """try {
 """
 new = """$shipping = WC()->shipping();
 $shipping_enabled_before = $shipping->enabled;
+$ship_to_countries_before = get_option('woocommerce_ship_to_countries', '');
+$default_zone = WC_Shipping_Zones::get_zone(0);
+$shipping_instance_id = $default_zone->add_shipping_method('flat_rate');
 
 try {
+    supcheckout_cert_assert(is_int($shipping_instance_id) && $shipping_instance_id > 0, 'certification store configures one real Woo shipping method');
+    update_option('woocommerce_ship_to_countries', 'all');
+    $shipping->enabled = true;
+    $shipping->reset_shipping();
+
+    supcheckout_cert_assert(wc_get_shipping_method_count(true) > 0, 'Woo reports at least one configured shipping method');
     supcheckout_cert_assert(true === WC()->cart->needs_shipping(), 'physical cart requires shipping before payment');
     $raw_packages = WC()->cart->get_shipping_packages();
     supcheckout_cert_assert(! empty($raw_packages), 'physical cart produces at least one raw Woo shipping package');
 
-    // The minimal certification store intentionally has no shipping configuration.
-    // Enable the engine only inside this probe so Woo can calculate the real cart
-    // package and the no-rate filter can exercise checkout validation itself.
-    $shipping->enabled = true;
-    $shipping->reset_shipping();
     $packages = $shipping->calculate_shipping($raw_packages);
     supcheckout_cert_assert(! empty($packages), 'Woo shipping engine calculates the physical cart package');
     foreach ($packages as $package) {
@@ -40,6 +44,10 @@ old_finally = """} finally {
     remove_filter('woocommerce_package_rates', $force_no_rates, PHP_INT_MAX);
 """
 new_finally = """} finally {
+    if (is_int($shipping_instance_id) && $shipping_instance_id > 0) {
+        $default_zone->delete_shipping_method($shipping_instance_id);
+    }
+    update_option('woocommerce_ship_to_countries', $ship_to_countries_before);
     $shipping->enabled = $shipping_enabled_before;
     $shipping->reset_shipping();
     remove_filter('woocommerce_package_rates', $force_no_rates, PHP_INT_MAX);
