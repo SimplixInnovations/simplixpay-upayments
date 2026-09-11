@@ -103,13 +103,15 @@ Canonical plan:
 
 Active integration work is draft PR #108 on `audit/post-t3-ecosystem-hardening`.
 
-The latest fully certified repository-executable generic E2 checkpoint inside that PR is:
+The latest repository-executable E3 runtime checkpoint inside that PR is:
 
-`27e90d5a0cd2ba4f7c38889dbef15d1be851efb6`
+`540b733c29656758f2392817649fc3d4a4db585d`
 
-At that exact SHA, Quality/H12, the full 20-cell Compatibility matrix + Compatibility Gate, Provider Sandbox Certification, WordPress.org Submission Check, Release Artifact and CodeQL all succeeded. Its deterministic package is 55 files / SHA-256 `dc31c02a8047f9e5120650a46b9c16413383d6644b29f569573739a08f3e7a2d`.
+At that exact SHA, Quality/H12, the full 20-cell Compatibility matrix + Compatibility Gate, Provider Sandbox Certification, WordPress.org Submission Check, Release Artifact and the complete Ecosystem Certification matrix succeeded. E3 repository automation covers five free themes plus real child-theme WooCommerce template overrides, four free cache/optimizer coexistence plugins, delayed/combined/repeated Classic interaction behavior, and analytics-return replay characterization.
 
-R0, R1 and E1 are **DONE / VERIFIED on the PR #108 branch**. Repository-executable generic E2 is **DONE / CERTIFIED** at this checkpoint, including the current-runtime legacy+HPOS Ecosystem Certification lane. Named paid/licensed vendor integrations remain external/unverified until separately qualified; later post-T3 tranches remain open.
+GitHub default CodeQL JavaScript/TypeScript analysis did not reach a terminal verdict for this historical checkpoint; that hosted-security gap must not be rewritten as a success claim. Its deterministic package is 55 files / SHA-256 `01dbf672f9e18898a642a216b16fbf79dcc08511a617af9a8553d7341d87478c`.
+
+R0, R1 and E1 are **DONE / VERIFIED on the PR #108 branch**. Repository-executable generic E2 is **DONE / CERTIFIED**. E3 repository-executable runtime evidence is **DONE / VERIFIED** at this checkpoint. Named paid/licensed themes, paid optimizers, CDN/server-specific cache modes, browser/device visual evidence and named analytics deduplication remain external/manual unless actually exercised.
 
 That candidate does **not** redefine the accepted Approach 2 baseline.
 
@@ -155,11 +157,12 @@ R0-R4 are bounded evidence-first work under the approved post-T3 plan. **R5/T4 i
 | T3 | **DONE / VERIFIED / runtime-neutral** |
 | Latest merged Approach 3 main | `a7a8bbfc3a1dc551127b7ead897c964e95c7cec9` |
 | Active task | **PR #108 — post-t3-ecosystem-hardening** |
-| Latest fully certified runtime-content PR checkpoint | `27e90d5a0cd2ba4f7c38889dbef15d1be851efb6` |
-| Latest candidate package at that checkpoint | 55 files / SHA-256 `dc31c02a8047f9e5120650a46b9c16413383d6644b29f569573739a08f3e7a2d` |
+| Latest repository-executable E3 runtime checkpoint | `540b733c29656758f2392817649fc3d4a4db585d` |
+| Latest candidate package at that checkpoint | 55 files / SHA-256 `01dbf672f9e18898a642a216b16fbf79dcc08511a617af9a8553d7341d87478c` |
 | R0 / R1 / E1 | **DONE / VERIFIED on PR #108 branch** |
-| E2 repository-executable generic | **DONE / CERTIFIED** at `27e90d5a0cd2ba4f7c38889dbef15d1be851efb6` |
-| Current operational gate | **E3 theme/cache/CDN/optimizer/analytics compatibility** |
+| E2 repository-executable generic | **DONE / CERTIFIED** |
+| E3 repository-executable | **DONE / VERIFIED** at `540b733c29656758f2392817649fc3d4a4db585d` |
+| Current operational gate | **R2 callback portability / cache safety** |
 | Public release authorization | **NOT GRANTED** |
 | Source of live truth | **GitHub + exact source/check/package evidence** |
 
@@ -262,4 +265,4 @@ If any of these are unknown, the session is **not bootstrapped yet**.
 
 ## 13. Immediate next step
 
-Execute **E3 theme/cache/CDN/optimizer/analytics compatibility** under the permanent Ecosystem Certification lane and existing checkout lifecycle harnesses. Keep named paid/licensed themes, optimizers and analytics products external/unverified unless their packages and required credentials are legally available. After E3 reaches an immutable exact-head checkpoint, continue to R2 callback portability/cache safety. Do not jump directly to R5/T4 callback consolidation.
+Execute **R2 callback portability / cache safety** with TDD: replace hand-built callback origins with WooCommerce public API URL generation, cover home/site URL divergence and permalink/index layouts, and add explicit no-cache behavior to public payment callback/status surfaces. Preserve provider/payment authority and do not trust raw forwarded headers. Do not jump directly to R5/T4 callback consolidation.
