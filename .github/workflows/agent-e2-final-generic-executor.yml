@@ -10,7 +10,7 @@ permissions:
 
 jobs:
   apply-and-certify:
-    if: github.event.head_commit.message == 'stage-final-generic-e2-executor'
+    if: github.event.head_commit.message == 'stage-final-generic-e2-executor-v2'
     runs-on: ubuntu-latest
     timeout-minutes: 20
     services:
@@ -46,12 +46,11 @@ jobs:
           python3 .github/agent-e2-final-generic.py
           git checkout -- .github/workflows/compatibility-certification.yml
           git rm .github/agent-e2-final-generic.py
-          changed="$(git status --short)"
-          printf '%s\n' "$changed"
-          test -f tests/integration/CheckoutValidationBoundaryRuntimeTest.php
-          git diff --name-only | sort > /tmp/changed-files
+          git add tests/integration/OrderEconomicsRuntimeTest.php tests/integration/CheckoutValidationBoundaryRuntimeTest.php
+          git diff --cached --name-only | sort > /tmp/changed-files
           printf '%s\n' ".github/agent-e2-final-generic.py" "tests/integration/CheckoutValidationBoundaryRuntimeTest.php" "tests/integration/OrderEconomicsRuntimeTest.php" | sort > /tmp/expected-files
           diff -u /tmp/expected-files /tmp/changed-files
+          test -z "$(git diff --name-only)"
 
       - name: Install pinned WP-CLI
         shell: bash
@@ -83,7 +82,6 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          git add tests/integration/OrderEconomicsRuntimeTest.php tests/integration/CheckoutValidationBoundaryRuntimeTest.php .github/agent-e2-final-generic.py
           test -z "$(git diff --name-only)"
           staged="$(git diff --cached --name-only | sort)"
           expected="$(printf '%s\n' '.github/agent-e2-final-generic.py' 'tests/integration/CheckoutValidationBoundaryRuntimeTest.php' 'tests/integration/OrderEconomicsRuntimeTest.php' | sort)"
