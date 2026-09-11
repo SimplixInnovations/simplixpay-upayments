@@ -1,0 +1,207 @@
+name: Agent E2 Core Adjustments
+
+on:
+  push:
+    branches:
+      - audit/post-t3-ecosystem-hardening
+    paths:
+      - '.github/workflows/agent-e2-core-adjustments.yml'
+
+permissions:
+  contents: write
+
+env:
+  SUPCHECKOUT_PLUGIN_SLUG: supcheckout
+
+jobs:
+  focused-e2:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: wordpress
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h 127.0.0.1 -proot"
+          --health-interval=5s
+          --health-timeout=5s
+          --health-retries=20
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: audit/post-t3-ecosystem-hardening
+          fetch-depth: 0
+      - name: Require isolated staging parent
+        shell: bash
+        run: |
+          set -euo pipefail
+          BASE=a3103541fb7ddec15711bda2df8089baf5baa243
+          SELF=.github/workflows/agent-e2-core-adjustments.yml
+          git merge-base --is-ancestor "$BASE" HEAD
+          test "$(git diff --name-only "$BASE"..HEAD | tr -d '\r')" = "$SELF"
+      - name: Add residual E2 real-Woo fixtures
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          p = Path('tests/integration/OrderEconomicsRuntimeTest.php')
+          s = p.read_text()
+          marker = "// Coupon/discount style persisted economics: the captured order-item total is lower\n"
+          if s.count(marker) != 1:
+              raise SystemExit(f'expected one insertion marker, found {s.count(marker)}')
+          block = r'''// Real Woo coupon APIs: all three core discount types must reduce the persisted
+// order economics while Charge continues to use only Woo's finalized grand total.
+foreach (array(
+    array('percent', '25', 7.5),
+    array('fixed_product', '2.500', 7.5),
+    array('fixed_cart', '2.500', 7.5),
+) as $coupon_case) {
+    $coupon_product = supcheckout_e2_product('E2 Core Coupon ' . $coupon_case[0], '10.000');
+    $order = supcheckout_e2_order(array(array($coupon_product, 1)));
+    $coupon = new WC_Coupon();
+    $coupon->set_code('e2-' . str_replace('_', '-', $coupon_case[0]) . '-' . wp_generate_uuid4());
+    $coupon->set_discount_type($coupon_case[0]);
+    $coupon->set_amount($coupon_case[1]);
+    $coupon_id = $coupon->save();
+    supcheckout_cert_assert(is_int($coupon_id) && $coupon_id > 0, $coupon_case[0] . ' coupon persists through Woo CRUD');
+    $applied = $order->apply_coupon($coupon);
+    supcheckout_cert_assert(true === $applied, $coupon_case[0] . ' coupon applies through WC_Order::apply_coupon');
+    $order->save();
+    $order = wc_get_order($order->get_id());
+    supcheckout_cert_assert($order instanceof WC_Order, $coupon_case[0] . ' coupon order reloads through Woo CRUD');
+    supcheckout_cert_assert($coupon_case[2] === (float) $order->get_total(), $coupon_case[0] . ' coupon finalizes expected Woo total');
+    $calls = array();
+    supcheckout_e2_run($order, $calls);
+    $payload = supcheckout_e2_assert_charge($order, $calls, $coupon_case[0] . ' coupon order');
+    supcheckout_cert_assert(isset($payload['products']) && 1 === count($payload['products']), $coupon_case[0] . ' coupon order retains one exact descriptive line');
+    $coupon->delete(true);
+    supcheckout_e2_delete_order_and_products($order, array($coupon_product));
+}
+
+// A product may be discounted to zero while shipping keeps the finalized Woo order
+// payable. This is not a zero-total order: Charge must use the shipping-only balance.
+$shipping_due_product = supcheckout_e2_product('E2 Shipping Due After Full Discount', '10.000');
+$order = supcheckout_e2_order(array(array($shipping_due_product, 1)));
+$shipping_due = new WC_Order_Item_Shipping();
+$shipping_due->set_method_title('E2 Payable Shipping');
+$shipping_due->set_method_id('flat_rate');
+$shipping_due->set_total('2.500');
+$order->add_item($shipping_due);
+$order->calculate_totals(false);
+$order->save();
+$full_coupon = new WC_Coupon();
+$full_coupon->set_code('e2-full-line-' . wp_generate_uuid4());
+$full_coupon->set_discount_type('fixed_product');
+$full_coupon->set_amount('10.000');
+$full_coupon_id = $full_coupon->save();
+supcheckout_cert_assert(is_int($full_coupon_id) && $full_coupon_id > 0, 'full-line coupon persists through Woo CRUD');
+$applied = $order->apply_coupon($full_coupon);
+supcheckout_cert_assert(true === $applied, 'full-line coupon applies through Woo order API');
+$order->save();
+$order = wc_get_order($order->get_id());
+supcheckout_cert_assert($order instanceof WC_Order, 'shipping-due full-discount order reloads through Woo CRUD');
+supcheckout_cert_assert(2.5 === (float) $order->get_total(), 'fully discounted line leaves shipping-only positive Woo total');
+$calls = array();
+supcheckout_e2_run($order, $calls);
+$payload = supcheckout_e2_assert_charge($order, $calls, 'fully discounted line with payable shipping');
+supcheckout_cert_assert(isset($payload['products']) && 1 === count($payload['products']), 'shipping-only balance keeps zero-priced product descriptor descriptive');
+$full_coupon->delete(true);
+supcheckout_e2_delete_order_and_products($order, array($shipping_due_product));
+
+// Persisted core shipping method identities must not alter payment authority. These
+// fixtures intentionally certify the order state SUPCheckout consumes, not live rates.
+foreach (array(
+    array('free_shipping', 'E2 Free Shipping', '0', 8.0),
+    array('local_pickup', 'E2 Local Pickup', '1.250', 9.25),
+) as $shipping_case) {
+    $method_product = supcheckout_e2_product('E2 ' . $shipping_case[1] . ' Product', '8.000');
+    $order = supcheckout_e2_order(array(array($method_product, 1)));
+    $method_shipping = new WC_Order_Item_Shipping();
+    $method_shipping->set_method_title($shipping_case[1]);
+    $method_shipping->set_method_id($shipping_case[0]);
+    $method_shipping->set_total($shipping_case[2]);
+    $order->add_item($method_shipping);
+    $order->calculate_totals(false);
+    $order->save();
+    $order = wc_get_order($order->get_id());
+    supcheckout_cert_assert($order instanceof WC_Order, $shipping_case[0] . ' order reloads through Woo CRUD');
+    $shipping_items = $order->get_items('shipping');
+    $shipping_item = reset($shipping_items);
+    supcheckout_cert_assert($shipping_item instanceof WC_Order_Item_Shipping && $shipping_case[0] === $shipping_item->get_method_id(), $shipping_case[0] . ' method identity persists');
+    supcheckout_cert_assert($shipping_case[3] === (float) $order->get_total(), $shipping_case[0] . ' final Woo total is authoritative');
+    $calls = array();
+    supcheckout_e2_run($order, $calls);
+    $payload = supcheckout_e2_assert_charge($order, $calls, $shipping_case[0] . ' order');
+    supcheckout_cert_assert(isset($payload['products']) && 1 === count($payload['products']), $shipping_case[0] . ' product descriptor remains descriptive');
+    supcheckout_e2_delete_order_and_products($order, array($method_product));
+}
+
+// Product add-on/custom-option style economics are represented by the captured line
+// total plus metadata. Metadata must not become a parallel payment ledger.
+$addon_product = supcheckout_e2_product('E2 Add-on Product', '10.000');
+$order = supcheckout_e2_order(array(array($addon_product, 1)));
+$addon_lines = $order->get_items('line_item');
+$addon_line = reset($addon_lines);
+supcheckout_cert_assert($addon_line instanceof WC_Order_Item_Product, 'add-on fixture has a real Woo line item');
+$addon_line->set_subtotal('12.750');
+$addon_line->set_total('12.750');
+$addon_line->add_meta_data('E2 Add-on', 'Gift wrap', true);
+$addon_line->save();
+$order->calculate_totals(false);
+$order->save();
+$order = wc_get_order($order->get_id());
+supcheckout_cert_assert($order instanceof WC_Order, 'add-on order reloads through Woo CRUD');
+$addon_lines = $order->get_items('line_item');
+$addon_line = reset($addon_lines);
+supcheckout_cert_assert($addon_line instanceof WC_Order_Item_Product && 'Gift wrap' === $addon_line->get_meta('E2 Add-on', true), 'add-on metadata persists independently of payment authority');
+supcheckout_cert_assert(12.75 === (float) $order->get_total(), 'add-on adjusted line total becomes finalized Woo total');
+$calls = array();
+supcheckout_e2_run($order, $calls);
+$payload = supcheckout_e2_assert_charge($order, $calls, 'add-on adjusted order');
+supcheckout_cert_assert(isset($payload['products']) && 1 === count($payload['products']), 'add-on adjusted order retains exact captured line descriptor');
+supcheckout_e2_delete_order_and_products($order, array($addon_product));
+
+'''
+          p.write_text(s.replace(marker, block + marker, 1))
+          PY
+          php -l tests/integration/OrderEconomicsRuntimeTest.php
+          git diff --check
+      - name: Set up PHP 8.3
+        uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240
+        with:
+          php-version: '8.3'
+          extensions: curl, mbstring, mysqli, zip
+          coverage: none
+          tools: none
+      - name: Install pinned WP-CLI
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl -fsSL --retry 5 --retry-delay 2 --retry-all-errors --connect-timeout 15 --max-time 120 https://github.com/wp-cli/wp-cli/releases/download/v2.12.0/wp-cli-2.12.0.phar -o /tmp/wp-cli.phar
+          echo 'ce34ddd838f7351d6759068d09793f26755463b4a4610a5a5c0a97b68220d85c  /tmp/wp-cli.phar' | sha256sum -c -
+          chmod +x /tmp/wp-cli.phar
+      - name: Install real WordPress and WooCommerce runtime
+        env:
+          WP_CLI_BIN: /tmp/wp-cli.phar
+        run: bash scripts/install-wp-test-environment.sh '7.1' '11.1.0' "$RUNNER_TEMP/wordpress"
+      - name: Activate SUPCheckout
+        run: /tmp/wp-cli.phar plugin activate "$SUPCHECKOUT_PLUGIN_SLUG" --path="$RUNNER_TEMP/wordpress"
+      - name: Run focused E2 runtime
+        run: /tmp/wp-cli.phar eval-file "$GITHUB_WORKSPACE/tests/integration/OrderEconomicsRuntimeTest.php" --path="$RUNNER_TEMP/wordpress"
+      - name: Commit only E2 integration expansion
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git diff --name-only | tr -d '\r')" = "tests/integration/OrderEconomicsRuntimeTest.php"
+          git diff --check
+          git config user.name 'supcheckout-e2-agent'
+          git config user.email 'actions@users.noreply.github.com'
+          git add tests/integration/OrderEconomicsRuntimeTest.php
+          test "$(git diff --cached --name-only | tr -d '\r')" = "tests/integration/OrderEconomicsRuntimeTest.php"
+          git commit -m 'test(e2): qualify core coupons and persisted adjustments'
+          git push origin HEAD:audit/post-t3-ecosystem-hardening
