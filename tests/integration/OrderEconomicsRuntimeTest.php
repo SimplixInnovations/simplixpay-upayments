@@ -273,8 +273,9 @@ $payload = supcheckout_e2_assert_charge($order, $calls, 'discount/coupon order')
 supcheckout_cert_assert(isset($payload['products']) && 1 === count($payload['products']), 'discount/coupon order: discounted product descriptor is retained');
 supcheckout_e2_delete_order_and_products($order, array($discounted));
 
-// Tax-bearing persisted line: tax is part of the finalized Woo grand total, while
-// products[] continues to describe the pre-tax line total and cannot redefine Charge.
+// Tax-bearing persisted line: E2 certifies the finalized Woo order contract rather
+// than reconstructing Woo's tax engine without a real tax-rate object. Persisted line
+// tax evidence plus the finalized order total model the state the gateway actually reads.
 $taxed = supcheckout_e2_product('E2 Taxed Product', '10.000');
 $order = supcheckout_e2_order(array(array($taxed, 1)));
 $line_items = $order->get_items('line_item');
@@ -283,9 +284,14 @@ supcheckout_cert_assert($line instanceof WC_Order_Item_Product, 'tax fixture has
 $line->set_subtotal_tax('0.500');
 $line->set_total_tax('0.500');
 $line->save();
-$order->calculate_totals(false);
+$order->set_total('10.500');
 $order->save();
-supcheckout_cert_assert((float) $order->get_total() > 10.0, 'tax fixture finalizes a Woo total above the untaxed product line');
+$order = wc_get_order($order->get_id());
+supcheckout_cert_assert($order instanceof WC_Order, 'tax fixture reloads through Woo CRUD');
+supcheckout_cert_assert(10.5 === (float) $order->get_total(), 'tax fixture persists finalized Woo total including tax delta');
+$reloaded_lines = $order->get_items('line_item');
+$reloaded_line = reset($reloaded_lines);
+supcheckout_cert_assert($reloaded_line instanceof WC_Order_Item_Product && 0.5 === (float) $reloaded_line->get_total_tax(), 'tax fixture persists line tax evidence');
 $calls = array();
 supcheckout_e2_run($order, $calls);
 $payload = supcheckout_e2_assert_charge($order, $calls, 'tax-bearing order');
