@@ -8,7 +8,7 @@
 **Accepted Approach 2 baseline:** **`0c883d609906676966002eb022a82a9656eeacc5`**  
 **Accepted package:** `supcheckout-0.1.0.zip` — 51 files / SHA-256 `58eba75019416f39a09211c87e7ccbcbb635834fb20bc890e9efbd5fec859655`
 
-> Live GitHub source, exact-head checks and package evidence override this document if they differ. Historical milestone records stay historical; this file records only current engineering truth.
+> Live GitHub source, exact-head checks and package evidence override this document if they differ. Historical milestone records stay historical; this file records current engineering truth.
 
 ## Executive status
 
@@ -50,11 +50,7 @@ Approach 3 descendants do not silently redefine owner acceptance. A fresh explic
 
 T3 was squash-merged through PR #107 to `a7a8bbfc3a1dc551127b7ead897c964e95c7cec9`. Its exact certified PR head was `f7c7d596dc4a2c8464d1acdf13dfe51028a5f9e0`.
 
-T3 is runtime-neutral and permanently characterizes:
-
-- `WC_Upayments::return_from_upayments()`;
-- `WC_Upayments::web_hook_handler()`;
-- private `WC_Upayments::verify_payment_status()`.
+T3 is runtime-neutral and permanently characterizes `WC_Upayments::return_from_upayments()`, `WC_Upayments::web_hook_handler()`, and private `WC_Upayments::verify_payment_status()`.
 
 Direct callers of `return_from_upayments()` may not carry the WC-API GET `page` marker used by `PaymentLifecycle::handle_callback()` for browser-mode inference. T3 therefore does **not** authorize naive T4 delegation.
 
@@ -76,7 +72,7 @@ At that exact SHA:
 - Compatibility Certification — **20/20 runtime cells + Compatibility Gate SUCCESS**;
 - Ecosystem Certification — **five free parent themes with real child-theme overrides, four free cache/optimizer coexistence lanes, current-runtime legacy+HPOS lanes + Ecosystem Gate SUCCESS**;
 - Provider Sandbox Certification — **SUCCESS**;
-- WordPress.org Submission Check — **SUCCCESS**;
+- WordPress.org Submission Check — **SUCCESS**;
 - Release Artifact — **SUCCESS**;
 - delayed/combined/repeated Classic JS lifecycle harness — **26 PASS / 0 FAIL**;
 - analytics-return characterization — **27 PASS / 0 FAIL**;
@@ -100,9 +96,7 @@ The analytics characterization establishes that replayed verified browser callba
 
 ## R0 anti-staleness evidence
 
-R0 permanently introduced current-state regression coverage. Relevant historical RED/GREEN coordinates remain in Git history and the current governance test.
-
-For the E3ₒR2 transition, RED `751b0b8671573a1a4d5ef1d7d998cf00da64e611` produced 230 tests / 1,578 assertions / exactly two intended stale-state failures. The matching living-state reconciliation must keep that test GREEN.
+R0 permanently introduced current-state regression coverage. For the E3→R2 transition, RED `715b0b8671573a1a4d5ef1d7d998cf00da64e611` produced 230 tests / 1,578 assertions / exactly two intended stale-state failures. The matching living-state reconciliation must keep that test GREEN.
 
 ## Remaining post-T3 program
 
@@ -135,12 +129,7 @@ Protected contracts include `upayments`, `woocommerce_upayments_settings`, Block
 
 ## Repository/release governance
 
-Required protected-branch checks remain:
-
-- `Governance`
-- `H12 Regression Harness`
-- `Compatibility Gate`
-- `Release Gate`
+Required protected-branch checks remain `Governance`, `H12 Regression Harness`, `Compatibility Gate`, and `Release Gate`.
 
 Exact-head qualification also accounts for CodeQL/security, Provider Sandbox, WordPress.org Submission Check, deterministic cross-platform release evidence, locked dependency audit where applicable, review-thread resolution and post-merge verification.
 
