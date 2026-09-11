@@ -1,0 +1,65 @@
+name: Agent H12 semantic assertion repair
+
+on:
+  push:
+    branches:
+      - audit/post-t3-ecosystem-hardening
+    paths:
+      - .github/workflows/agent-h12-semantic-patch.yml
+
+permissions:
+  contents: write
+
+jobs:
+  patch-h12:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout triggering head
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+
+      - name: Replace stale implementation-shape assertion
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+
+          path = Path('tests/harness/phase-9g-h12-php-harness.php')
+          text = path.read_text(encoding='utf-8')
+          old = "upay_assert_eq(substr_count($classic_saved_card_html, 'onclick=\"supCheckout.submitSavedCard(this)\"'), 1, 'CLASSIC-PAN-4 Classic renders exactly one saved-card submission control', 'semantic_runtime');"
+          new = """upay_assert_eq(
+              preg_match_all(
+                  '/<button\\b(?=[^>]*\\btype=\"button\")(?=[^>]*\\bvalue=\"sc1_[0-9a-f]{64}\")(?=[^>]*\\bonclick=\"[^\"]*window\\.supCheckout\\.submitSavedCard\\(this\\)[^\"]*window\\.supcheckoutPendingAction=\\{type:\\'saved_card\\',value:this\\.value\\}[^\"]*\")[^>]*>/',
+                  $classic_saved_card_html,
+                  $classic_saved_card_controls
+              ),
+              1,
+              'CLASSIC-PAN-4 Classic renders exactly one guarded saved-card submission control',
+              'semantic_runtime'
+          );"""
+          count = text.count(old)
+          if count != 1:
+              raise SystemExit(f'expected exactly one stale CLASSIC-PAN-4 assertion, found {count}')
+          patched = text.replace(old, new, 1)
+          if patched.count('CLASSIC-PAN-4') != 1:
+              raise SystemExit('CLASSIC-PAN-4 cardinality changed unexpectedly')
+          path.write_text(patched, encoding='utf-8')
+          PY
+
+          git diff --check
+          git diff -- tests/harness/phase-9g-h12-php-harness.php
+
+      - name: Commit patch and remove one-shot workflow
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git rm .github/workflows/agent-h12-semantic-patch.yml
+          git add tests/harness/phase-9g-h12-php-harness.php
+          git diff --cached --check
+          git commit -m "test(h12): assert guarded saved-card control semantics"
+          git push origin HEAD:audit/post-t3-ecosystem-hardening
