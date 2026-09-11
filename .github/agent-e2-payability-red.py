@@ -1,5 +1,21 @@
 from pathlib import Path
 
+source_path = Path('src/Payment/CheckoutOrchestrator.php')
+source = source_path.read_text()
+source_old = """            $order = wc_get_order($order_id);\n            if (!$order || !($order instanceof \\WC_Order)) {\n                wc_add_notice(__('Payment request could not be completed. Please try again.', 'supcheckout'), 'error');\n                return array('result' => 'failure', 'redirect' => wc_get_checkout_url());\n            }\n\n            $whitelabled = false;\n"""
+source_new = """            $order = wc_get_order($order_id);\n            if (!$order || !($order instanceof \\WC_Order)) {\n                wc_add_notice(__('Payment request could not be completed. Please try again.', 'supcheckout'), 'error');\n                return array('result' => 'failure', 'redirect' => wc_get_checkout_url());\n            }\n\n            // Woo owns the canonical payability decision (status + positive total,\n            // including extension filters). process_payment() can be replayed or\n            // called outside the normal checkout UI, so reject non-payable orders\n            // before availability lookup, token work, or non-idempotent Charge.\n            if (!$order->needs_payment()) {\n                wc_add_notice(__('Payment request could not be completed. Please try again.', 'supcheckout'), 'error');\n                return array('result' => 'failure', 'redirect' => wc_get_checkout_url());\n            }\n\n            $whitelabled = false;\n"""
+if source.count(source_old) != 1:
+    raise SystemExit(f'expected one source insertion point, found {source.count(source_old)}')
+source_path.write_text(source.replace(source_old, source_new, 1))
+
+support_path = Path('tests/support/wordpress-payment-runtime.php')
+support = support_path.read_text()
+support_old = """    public function get_total() { return $this->total; }\n    public function get_items($type = '') { return $this->items; }\n"""
+support_new = """    public function get_total() { return $this->total; }\n    public function needs_payment() { return (float) $this->total > 0; }\n    public function get_items($type = '') { return $this->items; }\n"""
+if support.count(support_old) != 1:
+    raise SystemExit(f'expected one support insertion point, found {support.count(support_old)}')
+support_path.write_text(support.replace(support_old, support_new, 1))
+
 p = Path('tests/integration/OrderEconomicsRuntimeTest.php')
 s = p.read_text()
 marker = "supcheckout_cert_note('real Woo order-economics certification complete');"
