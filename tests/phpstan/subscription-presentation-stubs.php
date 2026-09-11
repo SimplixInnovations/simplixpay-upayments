@@ -65,6 +65,8 @@ namespace {
         public function get_data() {}
         /** @return mixed */
         public function get_total() {}
+        /** @return bool */
+        public function needs_payment() { return false; }
         /** @return mixed */
         public function get_billing_phone() {}
         /** @return string */

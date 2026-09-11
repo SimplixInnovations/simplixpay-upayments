@@ -55,6 +55,15 @@ class CheckoutOrchestrator {
                 return array('result' => 'failure', 'redirect' => wc_get_checkout_url());
             }
 
+            // Woo owns the canonical payability decision (status + positive total,
+            // including extension filters). process_payment() can be replayed or
+            // called outside the normal checkout UI, so reject non-payable orders
+            // before availability lookup, token work, or non-idempotent Charge.
+            if (!$order->needs_payment()) {
+                wc_add_notice(__('Payment request could not be completed. Please try again.', 'supcheckout'), 'error');
+                return array('result' => 'failure', 'redirect' => wc_get_checkout_url());
+            }
+
             $whitelabled = false;
             $order_data = $order->get_data();
             $order_total = $order->get_total();

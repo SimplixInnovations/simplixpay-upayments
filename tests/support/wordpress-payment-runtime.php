@@ -65,6 +65,7 @@ class WC_Order {
     }
 
     public function get_total() { return $this->total; }
+    public function needs_payment() { return (float) $this->total > 0; }
     public function get_items($type = '') { return $this->items; }
     public function get_billing_phone() { return $this->billing_phone; }
     public function get_meta($key) { return ''; }
