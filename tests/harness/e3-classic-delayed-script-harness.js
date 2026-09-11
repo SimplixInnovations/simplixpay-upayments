@@ -221,5 +221,11 @@ console.log('Running e3-classic-delayed-script-harness.js');
 record(!/onclick\s*=\s*["']\s*supCheckout\./.test(templateSource),
     'modern checkout template has no unconditional inline dependency on supCheckout existing before first interaction');
 
+const guardedSavedCardHandlers = templateSource.match(
+    /onclick="if\(window\.supCheckout&amp;&amp;typeof window\.supCheckout\.submitSavedCard==='function'\)\{window\.supCheckout\.submitSavedCard\(this\);\}else\{window\.supcheckoutPendingAction=\{type:'saved_card',value:this\.value\};\}"/g
+) || [];
+record(guardedSavedCardHandlers.length === 1,
+    'modern checkout template has exactly one guarded saved-card handler with canonical dispatch and queued fallback');
+
 console.log('E3 delayed-script results: ' + pass + ' passed, ' + fail + ' failed.');
 if (fail > 0) process.exitCode = 1;
