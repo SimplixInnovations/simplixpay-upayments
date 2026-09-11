@@ -47,23 +47,23 @@ These remain historical closure facts while the active post-T3 program advances.
 
 T3 characterized the direct legacy return/webhook/private verifier. It also proved a direct `return_from_upayments()` caller may not carry the GET `page` marker used by `PaymentLifecycle::handle_callback()` for browser-mode inference. **T4 consolidation is therefore a separate architecture gate, not an automatic next refactor.**
 
-## Latest fully certified runtime-content checkpoint
+## Latest fully certified generic/core E2 checkpoint
 
-`b06976ac689cfd0d469bd96b0d6a2b925c863747`
+`5d8d954ffb8c2e6646dadc4aa1f994b5d56c462e`
 
 At that exact SHA:
 
-- Quality Gates — **SUCCESS**;
+- Quality Gates / H12 — **SUCCESS**;
 - Compatibility Certification — **20/20 runtime cells + Compatibility Gate SUCCESS**;
 - Provider Sandbox Certification — **SUCCESS**;
 - WordPress.org Submission Check — **SUCCESS**;
 - Release Artifact — **SUCCESS**;
 - CodeQL — **SUCCESS**;
-- deterministic package — 53 files / SHA-256 `a343a028e42f17a8d111de4e1a271c4e4bd51ba8cbbc1f0de89652b0d2480455`.
+- deterministic package — 55 files / SHA-256 `470db11afb2869bc187f0e920aeae4de02e92f6c1f7ca478ef5cb2ac62151b74`.
 
-The 53-file count was independently re-read from the exact b069 installable ZIP during R0 reconciliation; the package SHA-256 remained unchanged.
+R0, R1 and E1 are **DONE / VERIFIED on PR #108 branch**. Generic/core E2 is **CERTIFIED** at this checkpoint. The earlier b069 accessibility checkpoint remains retained historical evidence inside this certified descendant.
 
-Accessibility TDD evidence at that checkpoint:
+Accessibility TDD evidence at that earlier checkpoint:
 
 - RED test `435f9ef1fddd6d54a7a066d1d764ce24bd77ba11` failed at the intended toast live-region assertion;
 - minimal markup implementation `b06976ac689cfd0d469bd96b0d6a2b925c863747`;
@@ -83,16 +83,15 @@ The permanent regression must remain green after reconciliation. Do not remove o
 
 ## Remaining execution order
 
-1. Finish/certify **R0** and clean only proven-safe stale branches.
-2. Finish remaining **R1** bounded correctness characterization, including raw-input/zero-charge gaps where still unproven.
-3. Execute **E1** interactive checkout compatibility: Classic, Store API, `wc-ajax`, `admin-ajax`, REST/sessionless, embedded/custom checkout, Blocks reactive state, fragments, notice/session isolation, duplicate-ID/registration prevention.
-4. Execute **E2** economics/product compatibility with finalized Woo order amount/currency as authority and explicit zero-total handling.
-5. Execute **E3** theme/cache/analytics interaction evidence.
-6. Execute **R2** callback URL portability/no-cache safety.
-7. Execute **R3** subscription safety under the approved post-T3 plan.
-8. Execute **R4** scalability/idempotency/observability/load work.
-9. Gate **R5/T4** architecture separately; do not implement merely because characterization exists.
-10. Execute **R6** exact-head release qualification, fresh owner re-acceptance, version decision, then publication only with explicit authorization.
+Current executable gate: **E2 residual ecosystem economics / extension-generated contracts**.
+
+1. Finish residual **E2** generic/runtime contracts and explicitly classify paid/licensed provider/product-extension cases that cannot run legally in repository CI.
+2. Execute **E3** theme/cache/analytics interaction evidence.
+3. Execute **R2** callback URL portability/no-cache safety.
+4. Execute **R3** subscription safety: exact cycle economics/identity, selected-card authority, no first-card fallback, parent discovery, cancellation/control and held-cycle reconciliation.
+5. Execute **R4** due-work scheduling, idempotency/journal, observability, load/concurrency and failure-injection hardening.
+6. Gate **R5/T4** architecture separately; do not implement merely because characterization exists.
+7. Execute **R6** exact-head release qualification, fresh owner re-acceptance and version decision; publication requires separate explicit authorization.
 
 ## Permanent invariants
 

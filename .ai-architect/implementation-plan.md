@@ -137,20 +137,18 @@ Canonical plan:
 
 Active integration PR: #108 / `audit/post-t3-ecosystem-hardening`.
 
-Execution sequence:
+Execution state:
 
-1. R0 — control-plane reconciliation and anti-staleness ratchet.
-2. R1 — bounded correctness/presentation/accessibility, including any remaining raw-input/zero-charge characterization.
-3. E1 — Classic, Store API, `wc-ajax`, `admin-ajax`, REST/sessionless, embedded/custom checkout, Blocks reactivity/fragments/notice/session/registration safety.
-4. E2 — finalized Woo amount/currency authority and product/economic compatibility.
-5. E3 — theme/cache/minification/defer/consent/analytics interaction evidence.
-6. R2 — callback URL portability and no-cache safety.
-7. R3 — subscription selected-card/parent/cancellation/token/economic/held-cycle safety.
-8. R4 — Action Scheduler/idempotency/journal/observability/load/concurrency/failure-injection hardening.
-9. R5/T4 — separately gated callback-consolidation architecture decision.
-10. R6 — exact-head full qualification, fresh owner re-acceptance, explicit version/publication decision.
+- R0 — **DONE / VERIFIED** on PR #108 branch.
+- R1 — **DONE / VERIFIED** on PR #108 branch.
+- E1 — **DONE / VERIFIED** on PR #108 branch.
+- E2 generic/core — **CERTIFIED**.
 
-The latest fully certified runtime-content checkpoint before R0 reconciliation is `b06976ac689cfd0d469bd96b0d6a2b925c863747`. At that exact head, the five primary workflows, all 20 Compatibility cells + Compatibility Gate and CodeQL were successful; deterministic candidate package: 51 files / SHA-256 `a343a028e42f17a8d111de4e1a271c4e4bd51ba8cbbc1f0de89652b0d2480455`.
+Generic/core E2 exact-head checkpoint: `5d8d954ffb8c2e6646dadc4aa1f994b5d56c462e`.
+
+At that exact head, Quality/H12, all 20 Compatibility cells + Compatibility Gate, Provider Sandbox, WordPress.org Submission Check, Release Artifact and CodeQL were successful; deterministic candidate package: 55 files / SHA-256 `470db11afb2869bc187f0e920aeae4de02e92f6c1f7ca478ef5cb2ac62151b74`.
+
+Current executable gate: **E2 residual ecosystem economics / extension-generated contracts**. Then execute E3 theme/cache/minification/defer/consent/analytics interaction evidence; R2 callback URL portability/no-cache safety; R3 subscription selected-card/parent/cancellation/token/economic/held-cycle safety; R4 Action Scheduler/idempotency/journal/observability/load/concurrency/failure-injection hardening; separately gate R5/T4 callback consolidation; and finish with R6 exact-head qualification plus fresh owner re-acceptance.
 
 ## Runtime implementation discipline
 

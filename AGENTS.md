@@ -84,11 +84,11 @@ T3 proved that a direct `return_from_upayments()` caller may lack the WC-API GET
 
 The current successor program is **post-t3-ecosystem-hardening**, governed by `docs/superpowers/plans/2026-09-10-post-t3-ecosystem-hardening.md`, with active draft PR #108 on `audit/post-t3-ecosystem-hardening`.
 
-The latest fully certified runtime-content checkpoint inside PR #108 before R0 control-plane reconciliation is `b06976ac689cfd0d469bd96b0d6a2b925c863747`. Quality, all 20 Compatibility cells plus Compatibility Gate, Provider Sandbox, WordPress.org Submission Check, Release Artifact and CodeQL succeeded at that exact head. Its deterministic package is 53 files / SHA-256 `a343a028e42f17a8d111de4e1a271c4e4bd51ba8cbbc1f0de89652b0d2480455`.
+The latest fully certified generic/core E2 checkpoint inside PR #108 is `5d8d954ffb8c2e6646dadc4aa1f994b5d56c462e`. Quality/H12, all 20 Compatibility cells plus Compatibility Gate, Provider Sandbox, WordPress.org Submission Check, Release Artifact and CodeQL succeeded at that exact head. Its deterministic package is 55 files / SHA-256 `470db11afb2869bc187f0e920aeae4de02e92f6c1f7ca478ef5cb2ac62151b74`.
 
 Neither T2, T3 nor PR #108 silently redefines owner acceptance. A fresh owner acceptance is required at Approach 3 closeout.
 
-Current post-T3 execution order: R0 control-plane reconciliation; R1 bounded correctness; E1 interactive checkout compatibility; E2 economics/product compatibility; E3 theme/cache/analytics evidence; R2 callback portability/cache safety; R3 subscription safety; R4 scalability/idempotency/observability; separately gated R5/T4 architecture decision; R6 final exact-head qualification and owner re-acceptance.
+Current post-T3 state: R0, R1 and E1 are **DONE / VERIFIED** on PR #108; generic/core E2 is **CERTIFIED** at the exact checkpoint above. The current executable gate is **E2 residual ecosystem economics / extension-generated contracts**, followed by E3 theme/cache/analytics evidence, R2 callback portability/cache safety, R3 subscription safety, R4 scalability/idempotency/observability, separately gated R5/T4 architecture decision, and R6 final exact-head qualification plus owner re-acceptance.
 
 No public GitHub Release or WordPress.org publication is authorized.
 

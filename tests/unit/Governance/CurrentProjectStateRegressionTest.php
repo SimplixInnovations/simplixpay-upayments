@@ -7,8 +7,8 @@ use PHPUnit\Framework\TestCase;
 final class CurrentProjectStateRegressionTest extends TestCase {
     private const T3_MERGED_MAIN_SHA = 'a7a8bbfc3a1dc551127b7ead897c964e95c7cec9';
     private const T2_RUNTIME_BEARING_MAIN_SHA = '047cc86060efb97761d7a0cc4a3806f971ab6fe1';
-    private const POST_T3_CERTIFIED_RUNTIME_SHA = 'b06976ac689cfd0d469bd96b0d6a2b925c863747';
-    private const POST_T3_CERTIFIED_PACKAGE_SHA256 = 'a343a028e42f17a8d111de4e1a271c4e4bd51ba8cbbc1f0de89652b0d2480455';
+    private const POST_T3_CERTIFIED_RUNTIME_SHA = '5d8d954ffb8c2e6646dadc4aa1f994b5d56c462e';
+    private const POST_T3_CERTIFIED_PACKAGE_SHA256 = '470db11afb2869bc187f0e920aeae4de02e92f6c1f7ca478ef5cb2ac62151b74';
 
     /**
      * Canonical living records that a fresh chat/agent may use to establish the
@@ -83,11 +83,11 @@ final class CurrentProjectStateRegressionTest extends TestCase {
 
     public function test_certified_post_t3_runtime_package_evidence_is_exact_in_living_records(): void {
         $expected = array(
-            'AGENTS.md' => 'Its deterministic package is 53 files / SHA-256 `' . self::POST_T3_CERTIFIED_PACKAGE_SHA256 . '`.',
-            'docs/project/START-HERE.md' => 'Its deterministic package is 53 files / SHA-256 `' . self::POST_T3_CERTIFIED_PACKAGE_SHA256 . '`.',
-            'docs/project/PROJECT-STATUS.md' => '- deterministic installable package — **53 files**, SHA-256 `' . self::POST_T3_CERTIFIED_PACKAGE_SHA256 . '`.',
-            'docs/project/OWNER-HANDOFF.md' => 'its deterministic 53-file candidate package SHA-256 is `' . self::POST_T3_CERTIFIED_PACKAGE_SHA256 . '`.',
-            'docs/project/NEW-CHAT-HANDOFF.md' => '- deterministic package — 53 files / SHA-256 `' . self::POST_T3_CERTIFIED_PACKAGE_SHA256 . '`.',
+            'AGENTS.md' => 'Its deterministic package is 55 files / SHA-256 `' . self::POST_T3_CERTIFIED_PACKAGE_SHA256 . '`.',
+            'docs/project/START-HERE.md' => 'Its deterministic package is 55 files / SHA-256 `' . self::POST_T3_CERTIFIED_PACKAGE_SHA256 . '`.',
+            'docs/project/PROJECT-STATUS.md' => '- deterministic installable package — **55 files**, SHA-256 `' . self::POST_T3_CERTIFIED_PACKAGE_SHA256 . '`.',
+            'docs/project/OWNER-HANDOFF.md' => 'its deterministic 55-file candidate package SHA-256 is `' . self::POST_T3_CERTIFIED_PACKAGE_SHA256 . '`.',
+            'docs/project/NEW-CHAT-HANDOFF.md' => '- deterministic package — 55 files / SHA-256 `' . self::POST_T3_CERTIFIED_PACKAGE_SHA256 . '`.',
         );
 
         foreach ($expected as $path => $package_evidence) {
@@ -95,6 +95,29 @@ final class CurrentProjectStateRegressionTest extends TestCase {
             self::assertStringContainsString(self::POST_T3_CERTIFIED_RUNTIME_SHA, $content, $path);
             self::assertStringContainsString($package_evidence, $content, $path);
         }
+    }
+
+    public function test_current_post_t3_gate_cannot_regress_before_residual_e2(): void {
+        $agents = self::read_repository_file('AGENTS.md');
+        $start = self::read_repository_file('docs/project/START-HERE.md');
+        $status = self::read_repository_file('docs/project/PROJECT-STATUS.md');
+        $handoff = self::read_repository_file('docs/project/NEW-CHAT-HANDOFF.md');
+        $implementation = self::read_repository_file('.ai-architect/implementation-plan.md');
+        $contract = self::read_repository_file('.ai-architect/architecture-contract.yaml');
+
+        self::assertStringContainsString('R0, R1 and E1 are **DONE / VERIFIED**', $agents);
+        self::assertStringContainsString('Current operational gate | **E2 residual ecosystem economics / extension-generated contracts**', $start);
+        self::assertStringContainsString('E2 generic/core | **CERTIFIED**', $start);
+        self::assertStringContainsString('Current executable gate: **E2 residual ecosystem economics / extension-generated contracts**.', $status);
+        self::assertStringContainsString('Current executable gate: **E2 residual ecosystem economics / extension-generated contracts**.', $handoff);
+        self::assertStringContainsString('Generic/core E2 exact-head checkpoint: `' . self::POST_T3_CERTIFIED_RUNTIME_SHA . '`', $implementation);
+        self::assertStringContainsString('latest_certified_runtime_checkpoint: ' . self::POST_T3_CERTIFIED_RUNTIME_SHA, $contract);
+        self::assertStringContainsString('generic_core_e2_status: certified', $contract);
+        self::assertStringContainsString('current_gate: e2-residual-ecosystem-economics', $contract);
+
+        self::assertStringNotContainsString('R0 control-plane reconciliation, then remaining R1', $start);
+        self::assertStringNotContainsString('Finish/certify **R0**', $handoff);
+        self::assertStringNotContainsString('Current gate: **E1 interactive checkout compatibility', $handoff);
     }
 
     public function test_architecture_contract_records_t3_and_rejects_the_obsolete_t2_next_candidate(): void {

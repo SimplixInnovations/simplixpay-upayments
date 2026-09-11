@@ -220,9 +220,15 @@ tranches:
     plan: docs/superpowers/plans/2026-09-10-post-t3-ecosystem-hardening.md
     preapproved_for_implementation: true
     scope: R0-R4 bounded evidence-first work only; R5/T4 remains separately gated
-    latest_certified_runtime_checkpoint: b06976ac689cfd0d469bd96b0d6a2b925c863747
-    latest_certified_package_sha256: a343a028e42f17a8d111de4e1a271c4e4bd51ba8cbbc1f0de89652b0d2480455
-    goal: Close control-plane, checkout ecosystem, economics, portability, subscription and scalability gaps under the post-T3 plan; do not treat T3 as authorization for T4 consolidation.
+    latest_certified_runtime_checkpoint: 5d8d954ffb8c2e6646dadc4aa1f994b5d56c462e
+    latest_certified_package_sha256: 470db11afb2869bc187f0e920aeae4de02e92f6c1f7ca478ef5cb2ac62151b74
+    latest_certified_package_files: 55
+    r0_status: done_verified
+    r1_status: done_verified
+    e1_status: done_verified
+    generic_core_e2_status: certified
+    current_gate: e2-residual-ecosystem-economics
+    goal: Close residual ecosystem economics, theme/cache/analytics, portability, subscription and scalability gaps under the post-T3 plan; do not treat T3 as authorization for T4 consolidation.
 completion:
   runtime_tranche_gates:
     - Quality/H12 green

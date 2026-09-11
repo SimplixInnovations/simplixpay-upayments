@@ -1,7 +1,7 @@
 # SUPCheckout for UPayments — Project Status
 
 **Status document:** canonical living engineering state
-**Last reconciled:** 2026-09-10
+**Last reconciled:** 2026-09-11
 **Canonical repository:** `SimplixInnovations/supcheckout`
 **Development version:** `0.1.0`
 **Owner technical acceptance:** **ACCEPTED for frozen Approach 2**
@@ -29,7 +29,7 @@
 | Approach 3 T3 | **DONE / VERIFIED — runtime-neutral** |
 | Latest merged Approach 3 main coordinate | **`a7a8bbfc3a1dc551127b7ead897c964e95c7cec9`** |
 | Active successor program | **`post-t3-ecosystem-hardening` — PR #108** |
-| Latest fully certified runtime-content PR checkpoint | **`b06976ac689cfd0d469bd96b0d6a2b925c863747`** |
+| Latest fully certified runtime-content PR checkpoint | **`5d8d954ffb8c2e6646dadc4aa1f994b5d56c462e`** |
 | Public GitHub Release | **NOT CREATED** |
 | WordPress.org publication | **NOT PERFORMED / NOT AUTHORIZED** |
 
@@ -72,23 +72,23 @@ Canonical plan: [`../superpowers/plans/2026-09-10-post-t3-ecosystem-hardening.md
 
 Active integration: draft PR #108 / `audit/post-t3-ecosystem-hardening`.
 
-Latest fully certified runtime-content checkpoint before R0 control-plane reconciliation:
+Latest fully certified generic/core E2 checkpoint:
 
-`b06976ac689cfd0d469bd96b0d6a2b925c863747`
+`5d8d954ffb8c2e6646dadc4aa1f994b5d56c462e`
 
 At that exact SHA:
 
-- Quality Gates — **SUCCESS**;
+- Quality Gates / H12 — **SUCCESS**;
 - Compatibility Certification — **20/20 runtime cells + Compatibility Gate SUCCESS**;
 - Provider Sandbox Certification — **SUCCESS**;
 - WordPress.org Submission Check — **SUCCESS**;
 - Release Artifact — **SUCCESS**;
 - CodeQL — **SUCCESS**;
-- deterministic installable package — **53 files**, SHA-256 `a343a028e42f17a8d111de4e1a271c4e4bd51ba8cbbc1f0de89652b0d2480455`.
+- deterministic installable package — **55 files**, SHA-256 `470db11afb2869bc187f0e920aeae4de02e92f6c1f7ca478ef5cb2ac62151b74`.
 
-The 53-file count above was independently re-read from the exact b069 installable ZIP during R0 reconciliation. The package SHA-256 is unchanged; the earlier living-document statement of 51 files for this specific b069 package was stale documentation, not a package mutation.
+R0, R1 and E1 are **DONE / VERIFIED on the PR #108 branch**. Generic/core E2 is **CERTIFIED** at this exact checkpoint. The earlier `b06976ac689cfd0d469bd96b0d6a2b925c863747` accessibility checkpoint remains historical evidence inside this descendant.
 
-That checkpoint contains bounded post-T3 correctness work plus the accessibility markup slice. Accessibility followed genuine TDD:
+That earlier checkpoint contains bounded post-T3 correctness work plus the accessibility markup slice. Accessibility followed genuine TDD:
 
 - RED test `435f9ef1fddd6d54a7a066d1d764ce24bd77ba11`;
 - RED failed at the intended toast live-region assertion;
@@ -108,18 +108,17 @@ The permanent anti-staleness/package-evidence regression must remain GREEN after
 
 ## Remaining post-T3 program
 
-The remaining program is not finished. Sequence it under the canonical post-T3 plan:
+The overall post-T3 program is **not finished**.
 
-1. **R0 — control-plane reconciliation:** keep living handoffs/architecture/PR ledger aligned to T3/current work and clean only proven-safe stale branches.
-2. **R1 — bounded local correctness:** finish remaining raw-input/zero-charge characterization and focused correctness/presentation/accessibility issues without broad architecture changes.
-3. **E1 — interactive checkout compatibility:** Classic, Store API, `wc-ajax`, `admin-ajax`, REST/sessionless, embedded/custom checkout, reactive Blocks state, fragment replacement, notice/session isolation, duplicate registration/ID safety.
-4. **E2 — economics/product compatibility:** finalized Woo order amount/currency authority, zero-total behavior, coupons, fees, taxes, shipping, dynamic pricing, add-ons, bundles/composites/mix-and-match/measurements/gift cards/deposits.
-5. **E3 — theme/cache/analytics compatibility:** theme, cache/minification/defer/consent/analytics interactions with evidence-based scope.
-6. **R2 — callback portability/cache safety:** WC API URL abstraction, `home_url` vs `site_url`, subdirectories, permalink/proxy behavior and no-cache semantics.
-7. **R3 — subscription safety:** explicit selected-card binding, no first-card fallback, parent/cancellation/token/held-cycle/economic invariants.
-8. **R4 — scalability/operations:** Action Scheduler due work, durable idempotency/journal semantics, observability, load/concurrency/failure injection.
-9. **R5 / T4 — callback consolidation decision:** **separately gated architecture decision**. T3 characterization is evidence, not implementation authorization.
-10. **R6 — final release qualification:** exact-head full gates, broad/manual qualification, fresh owner re-acceptance, explicit version/publication decision.
+Current executable gate: **E2 residual ecosystem economics / extension-generated contracts**.
+
+1. **E2 residual ecosystem economics:** real Woo coupon variants; payable fully-discounted product lines with shipping/tax; add-on/options and parent/child composition shells; gift-card/store-credit partial redemption; deposits/initial partial payment; broader shipping/tax/VAT recalculation variants; persisted high-precision economics; post-dispatch economic mutation; partial-refund semantics; explicit fee-only/non-product-line policy. Paid/licensed named extensions remain external until legally available.
+2. **E3 — theme/cache/analytics compatibility:** behavioral qualification across available Classic/block themes, optimizer/cache/CDN behavior, fragment/defer/delay interactions and analytics return/replay semantics. Paid themes/plugins remain external where packages are unavailable.
+3. **R2 — callback portability/cache safety:** Woo API URL abstraction, `home_url` vs `site_url`, subdirectories, permalink/index/proxy behavior, no-cache callback/public-status semantics and replay freshness.
+4. **R3 — subscription safety:** exact auto-deduct amount/currency/parent/cycle/provider binding, removal of first-card fallback, paid-parent discovery beyond `completed`, customer control policy, token-retention contract and held-cycle reconciliation.
+5. **R4 — scalability/operations:** due-work scheduling/Action Scheduler, bounded batches, durable idempotency/journal semantics, observability, load/concurrency/failure injection and queue health.
+6. **R5 / T4 — callback consolidation decision:** **separately gated architecture decision**. T3 characterization is evidence, not implementation authorization.
+7. **R6 — final release qualification:** exact-head full gates, browser/device/manual/external qualification, fresh owner re-acceptance, explicit version/publication decision.
 
 ## Permanent payment/security invariants
 

@@ -103,11 +103,13 @@ Canonical plan:
 
 Active integration work is draft PR #108 on `audit/post-t3-ecosystem-hardening`.
 
-The latest fully certified runtime-content checkpoint inside that PR before R0 control-plane reconciliation is:
+The latest fully certified generic/core E2 checkpoint inside that PR is:
 
-`b06976ac689cfd0d469bd96b0d6a2b925c863747`
+`5d8d954ffb8c2e6646dadc4aa1f994b5d56c462e`
 
-At that exact SHA, Quality Gates, the full 20-cell Compatibility matrix + Compatibility Gate, Provider Sandbox Certification, WordPress.org Submission Check, Release Artifact and CodeQL all succeeded. Its deterministic package is 53 files / SHA-256 `a343a028e42f17a8d111de4e1a271c4e4bd51ba8cbbc1f0de89652b0d2480455`.
+At that exact SHA, Quality/H12, the full 20-cell Compatibility matrix + Compatibility Gate, Provider Sandbox Certification, WordPress.org Submission Check, Release Artifact and CodeQL all succeeded. Its deterministic package is 55 files / SHA-256 `470db11afb2869bc187f0e920aeae4de02e92f6c1f7ca478ef5cb2ac62151b74`.
+
+R0, R1 and E1 are **DONE / VERIFIED on the PR #108 branch**. Generic/core E2 is **CERTIFIED** at this checkpoint. This does not close residual ecosystem-economics qualification or any later post-T3 tranche.
 
 That candidate does **not** redefine the accepted Approach 2 baseline.
 
@@ -153,9 +155,11 @@ R0-R4 are bounded evidence-first work under the approved post-T3 plan. **R5/T4 i
 | T3 | **DONE / VERIFIED / runtime-neutral** |
 | Latest merged Approach 3 main | `a7a8bbfc3a1dc551127b7ead897c964e95c7cec9` |
 | Active task | **PR #108 — post-t3-ecosystem-hardening** |
-| Latest fully certified runtime-content PR checkpoint | `b06976ac689cfd0d469bd96b0d6a2b925c863747` |
-| Latest candidate package at that checkpoint | 53 files / SHA-256 `a343a028e42f17a8d111de4e1a271c4e4bd51ba8cbbc1f0de89652b0d2480455` |
-| Current operational gate | **R0 control-plane reconciliation, then remaining R1** |
+| Latest fully certified runtime-content PR checkpoint | `5d8d954ffb8c2e6646dadc4aa1f994b5d56c462e` |
+| Latest candidate package at that checkpoint | 55 files / SHA-256 `470db11afb2869bc187f0e920aeae4de02e92f6c1f7ca478ef5cb2ac62151b74` |
+| R0 / R1 / E1 | **DONE / VERIFIED on PR #108 branch** |
+| E2 generic/core | **CERTIFIED** at `5d8d954ffb8c2e6646dadc4aa1f994b5d56c462e` |
+| Current operational gate | **E2 residual ecosystem economics / extension-generated contracts** |
 | Public release authorization | **NOT GRANTED** |
 | Source of live truth | **GitHub + exact source/check/package evidence** |
 
