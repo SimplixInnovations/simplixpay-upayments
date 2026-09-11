@@ -24,6 +24,10 @@ try {
     update_option('woocommerce_ship_to_countries', 'all');
     $shipping->enabled = true;
     $shipping->reset_shipping();
+    // Woo core caches this count independently. Mirror Woo's own tests and
+    // invalidate the shipping transient after changing zone methods.
+    WC_Cache_Helper::get_transient_version('shipping', true);
+    delete_transient('wc_shipping_method_count');
 
     supcheckout_cert_assert(wc_get_shipping_method_count(true) > 0, 'Woo reports at least one configured shipping method');
     supcheckout_cert_assert(true === WC()->cart->needs_shipping(), 'physical cart requires shipping before payment');
@@ -47,6 +51,8 @@ new_finally = """} finally {
     if (is_int($shipping_instance_id) && $shipping_instance_id > 0) {
         $default_zone->delete_shipping_method($shipping_instance_id);
     }
+    WC_Cache_Helper::get_transient_version('shipping', true);
+    delete_transient('wc_shipping_method_count');
     update_option('woocommerce_ship_to_countries', $ship_to_countries_before);
     $shipping->enabled = $shipping_enabled_before;
     $shipping->reset_shipping();
