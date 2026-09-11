@@ -1,13 +1,5 @@
 <?php
 
-namespace Simplixi\SUPCheckout\Payment;
-
-if (!function_exists(__NAMESPACE__ . '\\wp_generate_uuid4')) {
-    function wp_generate_uuid4() {
-        return '00000000-0000-4000-8000-000000000001';
-    }
-}
-
 namespace Simplixi\SUPCheckout\Tests\Payment;
 
 use PHPUnit\Framework\Attributes\PreserveGlobalState;
