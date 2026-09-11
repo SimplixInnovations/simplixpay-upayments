@@ -10,6 +10,7 @@ wp_root="$1"
 wp_cli="${WP_CLI_BIN:-/tmp/wp-cli.phar}"
 probe_source="${GITHUB_WORKSPACE:?GITHUB_WORKSPACE is required}/tests/integration/fixtures/request-context-probe.php"
 state_fixture="${GITHUB_WORKSPACE}/tests/integration/RequestContextState.php"
+diagnostics_helper="${GITHUB_WORKSPACE}/tests/integration/lib/http-server-diagnostics.sh"
 probe_dest="$wp_root/wp-content/mu-plugins/supcheckout-request-context-probe.php"
 port="${SUPCHECKOUT_CONTEXT_PORT:-8080}"
 base_url="http://127.0.0.1:${port}"
@@ -29,6 +30,10 @@ trap cleanup EXIT
 [[ -f "$probe_source" ]] || { echo "Request-context probe missing: $probe_source" >&2; exit 66; }
 [[ -f "$state_fixture" ]] || { echo "Request-context state fixture missing: $state_fixture" >&2; exit 67; }
 [[ -f "$wp_root/wp-load.php" ]] || { echo "WordPress runtime missing: $wp_root" >&2; exit 68; }
+[[ -f "$diagnostics_helper" ]] || { echo "HTTP diagnostics helper missing: $diagnostics_helper" >&2; exit 71; }
+
+# shellcheck source=/dev/null
+source "$diagnostics_helper"
 
 set_gateway_state() {
   local currency="$1"
@@ -68,15 +73,22 @@ php -S "127.0.0.1:${port}" -t "$wp_root" >"$server_log" 2>&1 &
 server_pid=$!
 
 ready=0
+last_ready_curl_rc=0
 for attempt in $(seq 1 30); do
   if curl -fsS --max-time 10 "$base_url/wp-login.php" >/dev/null; then
     ready=1
     break
+  else
+    last_ready_curl_rc=$?
   fi
   sleep 1
 done
 if [[ "$ready" != "1" ]]; then
-  cat "$server_log" >&2
+  supcheckout_dump_http_server_diagnostics \
+    'PHP built-in server readiness' \
+    "$last_ready_curl_rc" \
+    "$server_pid" \
+    "$server_log"
   exit 70
 fi
 
@@ -92,7 +104,11 @@ assert_probe() {
   local expect_gateway="$9"
   local output="${RUNNER_TEMP:-/tmp}/supcheckout-probe.json"
 
-  curl -fsS --max-time 20 "$url" -o "$output"
+  supcheckout_curl_once_or_diagnose \
+    "$label" \
+    "$server_pid" \
+    "$server_log" \
+    -fsS --max-time 20 "$url" -o "$output"
   php -r '
     $data = json_decode(file_get_contents($argv[1]), true);
     if (!is_array($data)) {
@@ -127,7 +143,11 @@ assert_store_api() {
   local expect_gateway="$2"
   local output="${RUNNER_TEMP:-/tmp}/supcheckout-store-api-cart.json"
 
-  curl -fsS --max-time 20 \
+  supcheckout_curl_once_or_diagnose \
+    "$label" \
+    "$server_pid" \
+    "$server_log" \
+    -fsS --max-time 20 \
     -H 'X-SUPCheckout-Cert: 1' \
     "$base_url/index.php?rest_route=/wc/store/v1/cart" \
     -o "$output"
