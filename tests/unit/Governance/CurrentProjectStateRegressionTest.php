@@ -7,8 +7,8 @@ use PHPUnit\Framework\TestCase;
 final class CurrentProjectStateRegressionTest extends TestCase {
     private const T3_MERGED_MAIN_SHA = 'a7a8bbfc3a1dc551127b7ead897c964e95c7cec9';
     private const T2_RUNTIME_BEARING_MAIN_SHA = '047cc86060efb97761d7a0cc4a3806f971ab6fe1';
-    private const POST_T3_CERTIFIED_RUNTIME_SHA = '27e90d5a0cd2ba4f7c38889dbef15d1be851efb6';
-    private const POST_T3_CERTIFIED_PACKAGE_SHA256 = 'dc31c02a8047f9e5120650a46b9c16413383d6644b29f569573739a08f3e7a2d';
+    private const POST_T3_E3_RUNTIME_CHECKPOINT_SHA = '540b733c29656758f2392817649fc3d4a4db585d';
+    private const POST_T3_E3_PACKAGE_SHA256 = '01dbf672f9e18898a642a216b16fbf79dcc08511a617af9a8553d7341d87478c';
 
     /**
      * Canonical living records that a fresh chat/agent may use to establish the
@@ -81,23 +81,23 @@ final class CurrentProjectStateRegressionTest extends TestCase {
         );
     }
 
-    public function test_certified_post_t3_runtime_package_evidence_is_exact_in_living_records(): void {
+    public function test_e3_runtime_package_evidence_is_exact_in_living_records(): void {
         $expected = array(
-            'AGENTS.md' => 'Its deterministic package is 55 files / SHA-256 `' . self::POST_T3_CERTIFIED_PACKAGE_SHA256 . '`.',
-            'docs/project/START-HERE.md' => 'Its deterministic package is 55 files / SHA-256 `' . self::POST_T3_CERTIFIED_PACKAGE_SHA256 . '`.',
-            'docs/project/PROJECT-STATUS.md' => '- deterministic installable package — **55 files**, SHA-256 `' . self::POST_T3_CERTIFIED_PACKAGE_SHA256 . '`.',
-            'docs/project/OWNER-HANDOFF.md' => 'its deterministic 55-file candidate package SHA-256 is `' . self::POST_T3_CERTIFIED_PACKAGE_SHA256 . '`.',
-            'docs/project/NEW-CHAT-HANDOFF.md' => '- deterministic package — 55 files / SHA-256 `' . self::POST_T3_CERTIFIED_PACKAGE_SHA256 . '`.',
+            'AGENTS.md' => 'Its deterministic package is 55 files / SHA-256 `' . self::POST_T3_E3_PACKAGE_SHA256 . '`.',
+            'docs/project/START-HERE.md' => 'Its deterministic package is 55 files / SHA-256 `' . self::POST_T3_E3_PACKAGE_SHA256 . '`.',
+            'docs/project/PROJECT-STATUS.md' => '- deterministic installable package — **55 files**, SHA-256 `' . self::POST_T3_E3_PACKAGE_SHA256 . '`.',
+            'docs/project/OWNER-HANDOFF.md' => 'its deterministic 55-file candidate package SHA-256 is `' . self::POST_T3_E3_PACKAGE_SHA256 . '`.',
+            'docs/project/NEW-CHAT-HANDOFF.md' => '- deterministic package — 55 files / SHA-256 `' . self::POST_T3_E3_PACKAGE_SHA256 . '`.',
         );
 
         foreach ($expected as $path => $package_evidence) {
             $content = self::read_repository_file($path);
-            self::assertStringContainsString(self::POST_T3_CERTIFIED_RUNTIME_SHA, $content, $path);
+            self::assertStringContainsString(self::POST_T3_E3_RUNTIME_CHECKPOINT_SHA, $content, $path);
             self::assertStringContainsString($package_evidence, $content, $path);
         }
     }
 
-    public function test_current_post_t3_gate_cannot_regress_before_e3(): void {
+    public function test_current_post_t3_gate_cannot_regress_before_r2(): void {
         $agents = self::read_repository_file('AGENTS.md');
         $start = self::read_repository_file('docs/project/START-HERE.md');
         $status = self::read_repository_file('docs/project/PROJECT-STATUS.md');
@@ -105,20 +105,20 @@ final class CurrentProjectStateRegressionTest extends TestCase {
         $implementation = self::read_repository_file('.ai-architect/implementation-plan.md');
         $contract = self::read_repository_file('.ai-architect/architecture-contract.yaml');
 
-        self::assertStringContainsString('R0, R1 and E1 are **DONE / VERIFIED**', $agents);
+        self::assertStringContainsString('E3 repository-executable runtime evidence is **DONE / VERIFIED**', $agents);
         self::assertStringContainsString('.github/workflows/ecosystem-certification.yml', $agents);
-        self::assertStringContainsString('Current operational gate | **E3 theme/cache/CDN/optimizer/analytics compatibility**', $start);
-        self::assertStringContainsString('E2 repository-executable generic | **DONE / CERTIFIED**', $start);
-        self::assertStringContainsString('Current executable gate: **E3 theme/cache/CDN/optimizer/analytics compatibility**.', $status);
-        self::assertStringContainsString('Current executable gate: **E3 theme/cache/CDN/optimizer/analytics compatibility**.', $handoff);
-        self::assertStringContainsString('Repository-executable generic E2 exact-head checkpoint: `' . self::POST_T3_CERTIFIED_RUNTIME_SHA . '`', $implementation);
-        self::assertStringContainsString('latest_certified_runtime_checkpoint: ' . self::POST_T3_CERTIFIED_RUNTIME_SHA, $contract);
-        self::assertStringContainsString('generic_e2_status: done_certified', $contract);
-        self::assertStringContainsString('current_gate: e3-theme-cache-analytics', $contract);
+        self::assertStringContainsString('Current operational gate | **R2 callback portability / cache safety**', $start);
+        self::assertStringContainsString('E3 repository-executable | **DONE / VERIFIED**', $start);
+        self::assertStringContainsString('Current executable gate: **R2 callback portability / cache safety**.', $status);
+        self::assertStringContainsString('Current executable gate: **R2 callback portability / cache safety**.', $handoff);
+        self::assertStringContainsString('E3 repository-executable exact-head checkpoint: `' . self::POST_T3_E3_RUNTIME_CHECKPOINT_SHA . '`', $implementation);
+        self::assertStringContainsString('latest_e3_runtime_checkpoint: ' . self::POST_T3_E3_RUNTIME_CHECKPOINT_SHA, $contract);
+        self::assertStringContainsString('e3_repository_status: done_verified', $contract);
+        self::assertStringContainsString('current_gate: r2-callback-portability-cache-safety', $contract);
 
-        self::assertStringNotContainsString('R0 control-plane reconciliation, then remaining R1', $start);
-        self::assertStringNotContainsString('Finish/certify **R0**', $handoff);
-        self::assertStringNotContainsString('Current gate: **E1 interactive checkout compatibility', $handoff);
+        self::assertStringNotContainsString('Current operational gate | **E3 theme/cache/CDN/optimizer/analytics compatibility**', $start);
+        self::assertStringNotContainsString('Current executable gate: **E3 theme/cache/CDN/optimizer/analytics compatibility**.', $handoff);
+        self::assertStringNotContainsString('current_gate: e3-theme-cache-analytics', $contract);
     }
 
     public function test_architecture_contract_records_t3_and_rejects_the_obsolete_t2_next_candidate(): void {
